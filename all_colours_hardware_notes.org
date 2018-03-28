@@ -1,0 +1,50 @@
+* notes
+
+- ignore other all_colours schematics in ERD!
+- copy and add to git so can change schematic
+- add one shot flip flop. uniflop from DDR book. remove sample and hold
+
+- Henry noise seems to be low for input into 7400/test
+- external clock for 7400 only works with comparator/noise not external signal
+- test inputs to 7400
+
+  - add clock input diode limiters DONE added on proto
+  - add maxim 7400 input limiters using tl071 DONE
+  - is Sample/HOld working? - try reverse GSD to DSG for our 2N5457 and try remove R20 - maybe needs re-design for right parts and slew NOT USED
+  - how to deal with multiple switching paths for feedback JACKS
+  - shift register in feedback path? ATMEGA
+  - further elaboration with hand/finger/capacitive sensing mandala? - changing high freq clock with hand/fingers?
+
+* key 
+
+sockets from left into pins 
+
+sockets: 2143 ???why???
+
+pins: 00001234
+
+CO  comp out
+BI  buffer in
+BO  buffer out
+BI  buffer in
+BO  buffer out
+SHI samp/hold in
+SHO samp/hold out
+SHC samp/hold clock
+
+COC comp cv
+COI comp in
+HNO henry noise out
+YNO yusynth noise out
+74O 7400 out
+74C 7400 clock
+74I 7400 in
+G   GND
+
+* atmega software
+
+length of SR 16-32? - 16=65,535
+
+- pwm out for maxim 100x, pulses out from SR, SR and CV to pwm, primitive DAC out, modes
+- CV in for SR, pulse in for lock and random leakage, knob for modes, slew knlob and cv in
+- SR code and leakage, lock/unlock

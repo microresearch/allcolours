@@ -1,0 +1,83 @@
+/*
+
+- leaky or mutating shift register and/or control of 7400
+
+- pulse out, primitive DAC out, clock out to 7400
+
+- CV in incoming bit to shift OR value for clock out, CV pulse in to lock/unlock, slew for clock out/cv in OR speed of shifting?
+- knob mode for leak etc
+
+start to list modes:
+
+1-> various shift register implementations in pulse/bit and speed as
+speed/skew CV/knob - OUT is pulse/bit and/or DAC out and OUT is 7400
+clock/PWM OUT from shift reg XOK
+
+2-> various shift register implementations in as pulse/bit (from CV -
+threshold) and speed as speed/skew CV/knob - OUT is pulse/bit and/or
+DAC out and in CV controls 7400 clock/PWM OUT and is skewed by
+speed/skew CV/knob
+
+3-> various shift register implementations in pulse/bit and speed as
+speed/skew CV/knob - OUT is pulse/bit and/or DAC out and in pulse
+controls 7400...
+
+other modes?
+
+ */
+
+#define F_CPU 16000000UL 
+
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <math.h>
+#include <avr/io.h>
+#include <avr/eeprom.h>
+#include <avr/interrupt.h>
+#include <avr/pgmspace.h>
+#include <util/delay.h>
+#include <avr/sleep.h>
+#include <avr/wdt.h>
+
+typedef int u16;
+typedef unsigned char u8;
+
+// set up adc, inputs, outputs and PWM out
+
+void adc_init(void)
+{
+	cbi(ADMUX, REFS1);
+	sbi(ADMUX, REFS0); // AVCC
+	sbi(ADMUX, ADLAR); //8 bits
+	sbi(ADCSRA, ADPS2);
+	//	sbi(ADCSRA, ADPS1); // change speed here! now div by 64
+	//	sbi(ADCSRA, ADPS0); // change speed here!
+
+	sbi(ADCSRA, ADEN);
+	sbi(ADCSRA, ADIE);
+	DDRC = 0x00;
+	PORTC = 0x00;
+}
+
+unsigned char adcread(unsigned char channel){
+  unsigned char result, high;
+  ADMUX &= 0xF8; // clear existing channel selection                
+  ADMUX |=(channel & 0x07); // set channel/pin
+  ADCSRA |= (1 << ADSC);  // Start A2D Conversions 
+  loop_until_bit_is_set(ADCSRA, ADIF); /* Wait for ADIF, will happen soon */
+  result=ADCH;
+  return result;
+}
+
+// pwm TEST!
+
+TCCR0A=(1<<COM0A1) | (1<<WGM01) | (1<<WGM00); 
+TCCR0B=(1<<CS00) | (1<<CS01);  // divide by 64 for 1KHz
+
+OCR0A=128;
+
+
+// set shift conditions
+
+// run according to mode
