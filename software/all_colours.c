@@ -1,5 +1,9 @@
 /*
 
+NEW TESTBED as not compatible with ERD/SIR
+
+TODO: do we need ISR to update OCR/PWM thing or can we update it anytime?
+
 - leaky or mutating shift register and/or control of 7400
 
 - pulse out, primitive DAC out, clock out to 7400
@@ -47,6 +51,11 @@ we can xor and other ops CV and shift reg/pulse/DAC to 7400 CLOCK
 typedef int u16;
 typedef unsigned char u8;
 
+#define BV(bit) (1<<(bit)) // Byte Value => converts bit into a byte value. One at bit location.
+#define cbi(reg, bit) reg &= ~(BV(bit)) // Clears the corresponding bit in register reg
+#define sbi(reg, bit) reg |= (BV(bit))              // Sets the corresponding bit in register reg
+
+
 // set up adc, inputs, outputs and PWM out
 
 void adc_init(void)
@@ -62,11 +71,12 @@ void adc_init(void)
 	sbi(ADCSRA, ADIE);
 }
 
-void pwm_init(void){ // pwm TEST! - from original microbdinterp but there we change TCCR1B - what is output pin?
+void pwm_init(void){ // pwm TEST! - from original microbdinterp but there we change TCCR0A - what is output pin?
+  // 16 bit counter? - PB1 pin 1 on PORT B = pin 13 OC1A
   // what range we can get?
   TCCR1A= (1<<COM1A0);// | (1<<WGM11) | (1<<WGM10); // KEEP AS CTC for filter
-  TCCR1B= (1<<WGM12) | (1<<CS11);// divide by 8 which gives?
-  OCR1A=128; // ??
+  TCCR1B= (1<<WGM12) | (1<<CS11);// divide by 8 which gives 1MHz
+  OCR1A=100; // ?? 16 bits?
 }
 
 void io_setup(void){
@@ -91,3 +101,12 @@ unsigned char adcread(unsigned char channel){
 // set shift conditions
 
 // run according to mode
+
+void main(){
+  io_setup();
+  adc_init();
+  pwm_init();
+
+  while(1){
+  }
+}

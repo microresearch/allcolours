@@ -1,8 +1,37 @@
+* 3/7
+
+clock as central - noise as clock, clock comparatored with noise,
+shift reg clock, squared up noise as clock
+
+clock as pulses
+
+clock -> shift reg // filter // comp // as noise
+
+all colours as pulse/noise/filter
+
+ripley scroll
+
+* 10/7
+
+Shift reg/mostly in software:
+
+https://www.embeddedrelated.com/showarticle/1112.php
+
+https://www.avrfreaks.net/forum/256-bit-shift-register-required?page=all
+
+http://electro-music.com/forum/topic-23881.html
+
+
 * notes
 
 - ignore other all_colours schematics in ERD!
-- copy and add to git so can change schematic
-- add one shot flip flop. uniflop from DDR book. remove sample and hold
+- copy and add to git so can change schematic - DONE
+
+- add one shot flip flop. monoflop/uniflop from DDR book - where we put this or
+  could be in atmega? - makes pulses of uniform length before 7400?
+  and after comparator
+
+monoflop=monostable multivibrator?
 
 - Henry noise seems to be low for input into 7400/test
 - external clock for 7400 only works with comparator/noise not external signal

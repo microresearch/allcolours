@@ -18,7 +18,7 @@ FUSEL = 0xf7
 
 
 #-------------------
-all: erdsir_wormversion.hex
+all: all_colours.hex
 #-------------------
 help: 
 	@echo "Usage: make all|load|load_pre|rdfuses|wrfuse1mhz|wrfuse4mhz|wrfusecrystal"
@@ -26,29 +26,29 @@ help:
 	@echo "         external crystal! uC is dead after wrfusecrystal if you do not"
 	@echo "         have an external crystal."
 #-------------------
-erdsir_wormversion.hex : erdsir_wormversion.out 
-	$(OBJCOPY) -R .eeprom -O ihex erdsir_wormversion.out erdsir_wormversion.hex 
-#	$(OBJCOPY) -O ihex erdsir_wormversion.out erdsir_wormversion.hex 
-#erdsir_wormversion.out : erdsir_wormversion.o 
-#	$(CC) $(CFLAGS) -o erdsir_wormversion.out -Wl,-Map,erdsir_wormversion.map erdsir_wormversion.o 
-erdsir_wormversion.out : erdsir_wormversion.o 
-	$(CC) ${LDFLAGS} $(CFLAGS) -o erdsir_wormversion.out  erdsir_wormversion.o 
+all_colours.hex : all_colours.out 
+	$(OBJCOPY) -R .eeprom -O ihex all_colours.out all_colours.hex 
+#	$(OBJCOPY) -O ihex all_colours.out all_colours.hex 
+#all_colours.out : all_colours.o 
+#	$(CC) $(CFLAGS) -o all_colours.out -Wl,-Map,all_colours.map all_colours.o 
+all_colours.out : all_colours.o 
+	$(CC) ${LDFLAGS} $(CFLAGS) -o all_colours.out  all_colours.o 
 
 
-erdsir_wormversion.o : erdsir_wormversion.c 
-	$(CC) $(CFLAGS) -Os -c erdsir_wormversion.c
+all_colours.o : all_colours.c 
+	$(CC) $(CFLAGS) -Os -c all_colours.c
 
-erdsir_wormversion.elf: erdsir_wormversion.o
-	$(CC) ${LDFLAGS} $(CFLAGS) -o erdsir_wormversion.elf erdsir_wormversion.o
+all_colours.elf: all_colours.o
+	$(CC) ${LDFLAGS} $(CFLAGS) -o all_colours.elf all_colours.o
 
-disasm:	erdsir_wormversion.elf
+disasm:	all_colours.elf
 	avr-objdump -d noise.elf
 
 fuse:
 	$(AVRDUDE) -F -U hfuse:w:$(FUSEH):m -U lfuse:w:$(FUSEL):m
 
 flash: all
-	$(AVRDUDE) -F -U flash:w:erdsir_wormversion.hex:i
+	$(AVRDUDE) -F -U flash:w:all_colours.hex:i
 
 
 
