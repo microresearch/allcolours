@@ -21,6 +21,24 @@ https://www.avrfreaks.net/forum/256-bit-shift-register-required?page=all
 
 http://electro-music.com/forum/topic-23881.html
 
+* 19/7
+
+- switch to MAX7490 - switched cap all purpose 2nd order x2 (so we can cascade
+  for 4th order as compared to 8th order for MAX7400):
+
+https://www.mouser.de/datasheet/2/256/MAX7490-MAX7491-91768.pdf
+
++5v, ext clock 100:1, QSOP16, 
+
+- flip flop for shift register - flips on each clock/pulse
+
+- shift register from http://www.cgs.synth.net/modules/cgs13v2_gated_comparator.html works well
+
+16 shifted outs for clock OUTS in cicle around
+
+XOR also/ INS all buffered for fingers
+
+- to start adding to a test circuit...
 
 * notes
 
