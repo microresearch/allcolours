@@ -25,6 +25,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:all_colours
 LIBS:erthenvar
+LIBS:MAX7490
 LIBS:allcolours-cache
 EELAYER 26 0
 EELAYER END
@@ -1614,18 +1615,27 @@ Wire Wire Line
 	3900 4950 4000 4950
 Wire Wire Line
 	6150 850  6150 750 
-Text Notes 3100 -200 0    118  ~ 0
-TODO: \n- add monoflop\n- check values and why some things don;t work\n- add atmega/dac/and all cvs etc...\n- how to make test board make sense\n- add all decoupling caps
 Text Notes -1400 3200 0    60   ~ 0
 what to add for second prototype?\n- atmega\n- monoflop\n?????
 $Sheet
-S 8450 4150 2200 1300
+S 4700 6250 2200 1300
 U 5AD5ACBB
 F0 "Sheet5AD5ACBA" 60
 F1 "file5AD5ACBA.sch" 60
 $EndSheet
-Text Notes 9000 4900 0    236  ~ 47
+Text Notes 5150 7150 0    236  ~ 47
 MICRO
-Text Notes 6600 3500 0    118  ~ 0
-TODO: \n- 7490 instead of 7400 (or both?)\n- add shift register and xors, dividers?\n- add finger buffers and up switchers (gates)\n- 40106 hand/clock generators/pulses\n- extra comparator
+Text Notes 7950 7450 0    118  ~ 0
+TODO: \n- 7490 instead of 7400 (or both?)\n- add shift register and xors, dividers?\n- add finger buffers and up switchers (gates or comparators)\n- add decoupling and finish micro section\n- 40106 hand/clock generators/pulses\n- extra comparator
+$Comp
+L MAX7490 U?
+U 1 1 5B564F3A
+P 8900 2550
+F 0 "U?" H 8900 3265 50  0000 C CNN
+F 1 "MAX7490" H 8900 3174 50  0000 C CNN
+F 2 "MODULE" H 8900 2550 50  0001 C CNN
+F 3 "DOCUMENTATION" H 8900 2550 50  0001 C CNN
+	1    8900 2550
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

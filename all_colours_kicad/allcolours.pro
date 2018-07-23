@@ -1,4 +1,4 @@
-update=Thu 19 Jul 2018 17:08:41 CEST
+update=Mon 23 Jul 2018 23:17:14 CEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -71,3 +71,4 @@ LibName29=contrib
 LibName30=valves
 LibName31=all_colours
 LibName32=/root/new_kicad/erthenvar
+LibName33=/root/projects/ERD_MODULES/all_colours/MAX7490
