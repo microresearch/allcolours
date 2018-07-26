@@ -34,11 +34,22 @@ https://www.mouser.de/datasheet/2/256/MAX7490-MAX7491-91768.pdf
 
 - shift register from http://www.cgs.synth.net/modules/cgs13v2_gated_comparator.html works well
 
-16 shifted outs for clock OUTS in cicle around
+16 shifted outs for clock OUTS in circle around
 
-XOR also/ INS all buffered for fingers
+XOR also/ INS all buffered for fingers - TESTED
 
 - to start adding to a test circuit...
+
+* 26/7
+
+- finger tested - op amp/buffer --|>---[] []---|>comp]=- (comparator with diode and 100k to GND)
+
+- comparator also with finger voltage divider...
+
+- question of AVR and/or shift reg/XOR etc. - but we need multiple ins
+  and outs for AVR so maybe better served with ARM or with ATMEGA128
+
+- TEST: how fast we can run shift reg...
 
 * notes
 
