@@ -1,5 +1,5 @@
-# MAKEFILE for arduino 
-MCU=atmega328p
+# makefile, written by guido socher
+MCU=atmega168
 #MCU=at90s4433
 CC=avr-gcc
 #CEXTRA=-Wa,-adhlns=$(<:.c=.lst)
@@ -11,8 +11,8 @@ OBJCOPY=avr-objcopy
 # optimize for size:
 #CFLAGS=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes -mcall-prologues ${CEXTRA}
 CFLAGS=-mmcu=$(MCU) -Os -D'AVR_IS'
-DEVICE = m328p
-AVRDUDE = avrdude -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -b 115200 
+DEVICE = m168
+AVRDUDE = avrdude -c usbasp -p $(DEVICE)
 FUSEH = 0xdf
 FUSEL = 0xf7
 
@@ -42,7 +42,7 @@ all_colours.elf: all_colours.o
 	$(CC) ${LDFLAGS} $(CFLAGS) -o all_colours.elf all_colours.o
 
 disasm:	all_colours.elf
-	avr-objdump -d all_colours.elf
+	avr-objdump -d noise.elf
 
 fuse:
 	$(AVRDUDE) -F -U hfuse:w:$(FUSEH):m -U lfuse:w:$(FUSEL):m

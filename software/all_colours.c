@@ -1,12 +1,12 @@
 /*
 
-NEW TESTBED as not compatible with ERD/SIR
-
 TODO: do we need ISR to update OCR/PWM thing or can we update it anytime?
 
 - leaky or mutating shift register and/or control of 7490
 
 - pulse out, primitive DAC out, clock out to 7490
+
+......////
 
 - CV in incoming bit or set of bits to shift and/or value for clock out, CV pulse in to lock/unlock, slew for clock out/cv in, extra as speed of shifting?
 - pulse in to shift... purpose of shifting ...
@@ -76,7 +76,7 @@ ISR(INT0_vect)
   bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
   lfsr =  (lfsr >> 1) | (bit << 15);
   // bit on pin PD3
-  PinVal(PORTD, PD3, bit);
+  PinVal(PORTD, PD3, bit); // pin 3 on arduino
 }
 
 // set up adc, inputs, outputs and PWM out
