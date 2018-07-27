@@ -1,42 +1,8 @@
 /*
 
-TODO: do we need ISR to update OCR/PWM thing or can we update it anytime?
+ *Leaky or mutating shift register and/or CV control of 7490*
 
-- leaky or mutating shift register and/or control of 7490
-
-- pulse out, primitive DAC out, clock out to 7490
-
-......////
-
-- CV in incoming bit or set of bits to shift and/or value for clock out, CV pulse in to lock/unlock, slew for clock out/cv in, extra as speed of shifting?
-- pulse in to shift... purpose of shifting ...
-- larger speed shifts for filter are important so maybe look at dividers and changing these with CV
-- knob mode for leak etc
-
-start to list modes:
-
-1-> various shift register implementations in pulse/bit and speed as
-speed/skew CV/knob - OUT is pulse/bit and/or DAC out and OUT is 7490
-clock/PWM OUT from shift reg taps ...
-
-2-> various shift register implementations in as pulse/bit (from CV -
-threshold) and speed as speed/skew CV/knob - OUT is pulse/bit and/or
-DAC out and in CV controls 7490 clock/PWM OUT and is skewed by
-speed/skew CV/knob
-
-3-> various shift register implementations in pulse/bit and speed as
-speed/skew CV/knob - OUT is pulse/bit and/or DAC out and in pulse
-controls 7490 clock/PWM out
-
-other modes?
-
-we can xor and other ops CV and shift reg/pulse/DAC to 7490 CLOCK
-
-////
-
-- pulse in, clock in (interrupt INT0 or?), (multiple in pulses?), output pulses for each SR stage...
-
-- basic 16 stage shift register - left shifts and its speed
+- many pulse ins, logic ins and outs, clock in (interrupt INT), output pulses for each SR stage...
 
  */
 
@@ -70,14 +36,36 @@ unsigned char biit=0x05;
 
 // interrupt for clock IN - rising edge on INT0 - pin PD2, pin 2 on Arduino UNO
 
-ISR(INT0_vect)
+ISR(INT0_vect) // basic 16 stage shift register - left shifts and its speed
+
 {
   // shift it through and output
   bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
   lfsr =  (lfsr >> 1) | (bit << 15);
   // bit on pin PD3
-  PinVal(PORTD, PD3, bit); // pin 3 on arduino
+  PinVal(PORTD, PD3, bit); // pin 3 on arduino / basic SR out with no IN...
+
+  // update PWM with lfsr bits
+  OCR1A=lfsr;
 }
+
+/* 
+
+- how to stop finger interference on pulse in - test with comparator
+
+also 10k to GND here on IN
+
+- that this interrupt in some modes can perform CV update of clock OUT/PWM
+- test speed of shift reg operations and speed of PWM out
+- where do we do XOR etc... as is unclocked/clocked operation
+
+- test and document range of speeds we have with OCR1A and dividers as is...
+
+- start to define modes...
+
+*/
+
+
 
 // set up adc, inputs, outputs and PWM out
 
