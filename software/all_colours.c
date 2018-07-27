@@ -51,9 +51,7 @@ ISR(INT0_vect) // basic 16 stage shift register - left shifts and its speed
 
 /* 
 
-- how to stop finger interference on pulse in - test with comparator
-
-also 10k to GND here on IN
+- how to stop finger interference on pulse in - test with comparator - works fine  - also 10k to GND here on IN - this is in comp anyways
 
 - that this interrupt in some modes can perform CV update of clock OUT/PWM
 - test speed of shift reg operations and speed of PWM out
@@ -61,7 +59,7 @@ also 10k to GND here on IN
 
 - test and document range of speeds we have with OCR1A and dividers as is...
 
-- start to define modes...
+- start to define modes and how XOR, other logic will work...
 
 */
 
