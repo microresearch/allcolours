@@ -49,7 +49,21 @@ XOR also/ INS all buffered for fingers - TESTED
 - question of AVR and/or shift reg/XOR etc. - but we need multiple ins
   and outs for AVR so maybe better served with ARM or with ATMEGA128
 
-- TEST: how fast we can run shift reg...
+- TEST: how fast we can run shift reg, speeds and settings for various PWM
+
+* 30/7
+
+- manual in the form of a poster
+
+- all digital sections (7490, AVR and even between both CLOCK) as blackboxed for 12v in and out = protection/ins and/or shift levels, CV in also
+
+pulse inputs:
+https://electronics.stackexchange.com/questions/43498/how-can-i-use-a-12-v-input-on-a-digital-arduino-pin
+zener and resistor also as in microbd/SIR
+
+pulse out as 2n2222, 
+
+- timing - for SR included code and simple pulse on/off is 130 KHz, fastest we can go with no code is 480 KHz
 
 * notes
 

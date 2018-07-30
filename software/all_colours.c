@@ -32,7 +32,7 @@ typedef unsigned char u8;
 uint16_t start_state = 0xACE1u;  /* Any nonzero start state will work. */
 uint16_t lfsr = 0xACE1u;
 uint16_t bit;                    /* Must be 16bit to allow bit<<15 later in the code */
-unsigned char biit=0x05;
+unsigned char biit=0x05, bot=0x01;
 
 // interrupt for clock IN - rising edge on INT0 - pin PD2, pin 2 on Arduino UNO
 
@@ -43,10 +43,27 @@ ISR(INT0_vect) // basic 16 stage shift register - left shifts and its speed
   bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
   lfsr =  (lfsr >> 1) | (bit << 15);
   // bit on pin PD3
-  PinVal(PORTD, PD3, bit); // pin 3 on arduino / basic SR out with no IN...
+  //  PinVal(PORTD, PD3, bit); // pin 3 on arduino / basic SR out with no IN...
+    // for time measurement we flip PD3 bit
+  //  PinVal(PORTD, PD3, bot); // measure how fast this can be!
+  PORTD=255;
+  PORTD=0;
+  /* timing here
+
+Limit for just bot^=1 and pinval is 170 KHz - with Sr stuff is 61 KHz
+
+with portd we go up to 200 KHz = 2K filter
+
+up to 250 KHz with just set of PORTD and nothing else
+
+up to 480 KHz with pulse:
+  PORTD=255;
+  PORTD=0; // checked disasm and here is two out instructions
+(pulse is maybe 60nS long)
+   */
 
   // update PWM with lfsr bits
-  OCR1A=lfsr;
+  //  OCR1A=lfsr;
 }
 
 /* 
@@ -81,15 +98,28 @@ void adc_init(void)
 }
 
 void pwm_init(void){ // pwm TEST! - from original microbdinterp but there we change TCCR0A - what is output pin?
-  // 16 bit counter? - PB1 pin 1 on PORT B = pin 13 OC1A
+   // 16 bit counter? - PB1 pin 1 on PORT B = pin 9 OC1A
   // what range we can get?
   TCCR1A= (1<<COM1A0);// | (1<<WGM11) | (1<<WGM10); // KEEP AS CTC for filter
-  //  TCCR1B= (1<<WGM12) | (1<<CS11);// divide by 8 which gives 1MHz == 10KHz for filter so maybe keep it higher/no divide... or different modes
-  TCCR1B= (1<<WGM12) | (1<<CS10); // no divider
-  OCR1A=100; // ?? 16 bits?
+    TCCR1B= (1<<WGM12) | (1<<CS11);// divide by 8 which gives 1MHz == 10KHzfor filter so maybe keep it higher/no divide... or different modes
+  //  TCCR1B= (1<<WGM12) | (1<<CS10); // no divider
+  OCR1A=1024; // ?? 16 bits?
+
+  /* about this timing:
+
+- CS10= no divider: OCR1A=0 = 8 MHz, OCR1A=1 == 100nS = 4 MHz, OCR1A=255 == 31 KHz, OCR1A=1024=8 KHz, 2048= 4KHz, 4096=2KHz
+
+8M = 80Khz cut off for filter
+
+freq = 16M/2 = 8 / (pwm_value+1)
+
+0 to 255 = 80K to 310Hz cut off???
+1024 = 80Hz
+  */
 }
 
 void io_setup(void){
+  DDRB = 0xff;
   DDRC = 0x00;
   PORTC = 0x00; // for ADC above
 
@@ -125,5 +155,6 @@ void main(){
   pwm_init();
 
   while(1){
+    PORTD=0;    
   }
 }
