@@ -63,6 +63,8 @@ zener and resistor also as in microbd/SIR
 
 pulse out as 2n2222, 
 
+avr is 5v currently
+
 - timing - for SR included code and simple pulse on/off is 130 KHz, fastest we can go with no code is 480 KHz
 
 * notes
