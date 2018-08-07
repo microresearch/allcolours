@@ -1,31 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:allcolours-rescue
-LIBS:power
-LIBS:device
-LIBS:linear
-LIBS:regul
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:all_colours
-LIBS:erthenvar
-LIBS:MAX7490
+EESchema Schematic File Version 4
 LIBS:allcolours-cache
 EELAYER 26 0
 EELAYER END
@@ -42,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L ATMEGA168A-AU U?
+L atmel:ATMEGA168A-AU U?
 U 1 1 5AD5C1D5
 P 3200 2500
 F 0 "U?" H 3250 3867 50  0000 C CNN
@@ -53,7 +26,7 @@ F 3 "" H 3200 2500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Crystal Y?
+L device:Crystal Y?
 U 1 1 5AD5C1D8
 P 4400 2050
 F 0 "Y?" V 4354 2181 50  0000 L CNN
@@ -64,7 +37,7 @@ F 3 "" H 4400 2050 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L C C?
+L device:C C?
 U 1 1 5AD5C1D9
 P 4750 1900
 F 0 "C?" V 4498 1900 50  0000 C CNN
@@ -75,7 +48,7 @@ F 3 "" H 4750 1900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R_Small R?
+L device:R_Small R?
 U 1 1 5AD5C1DC
 P 4450 2850
 F 0 "R?" V 4254 2850 50  0000 C CNN
@@ -86,7 +59,7 @@ F 3 "" H 4450 2850 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR?
+L power:GND #PWR?
 U 1 1 5AD5C1DD
 P 5200 1800
 F 0 "#PWR?" H 5200 1550 50  0001 C CNN
@@ -97,7 +70,7 @@ F 3 "" H 5200 1800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR?
+L power:+5V #PWR?
 U 1 1 5AD5C1DE
 P 4700 2800
 F 0 "#PWR?" H 4700 2650 50  0001 C CNN
@@ -108,7 +81,7 @@ F 3 "" H 4700 2800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C?
+L device:C C?
 U 1 1 5AD5C1DF
 P 4750 2200
 F 0 "C?" V 4498 2200 50  0000 C CNN
@@ -119,7 +92,7 @@ F 3 "" H 4750 2200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L +5V #PWR?
+L power:+5V #PWR?
 U 1 1 5AD5C1E2
 P 1900 1400
 F 0 "#PWR?" H 1900 1250 50  0001 C CNN
@@ -130,7 +103,7 @@ F 3 "" H 1900 1400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L power:GND #PWR?
 U 1 1 5AD5C1E3
 P 1900 3650
 F 0 "#PWR?" H 1900 3400 50  0001 C CNN
@@ -141,7 +114,7 @@ F 3 "" H 1900 3650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C?
+L device:C C?
 U 1 1 5AD5C1E4
 P 2000 1900
 F 0 "C?" V 1748 1900 50  0000 C CNN
@@ -152,7 +125,7 @@ F 3 "" H 2000 1900 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L C C?
+L device:C C?
 U 1 1 5AD5C1E5
 P 1800 1650
 F 0 "C?" V 1548 1650 50  0000 C CNN
@@ -167,7 +140,7 @@ ADC1
 Text Label 4650 2350 0    60   ~ 0
 ADC0
 $Comp
-L CONN_01X06 J?
+L allcolours-rescue:CONN_01X06 J?
 U 1 1 5AD5C290
 P 5500 2150
 F 0 "J?" H 5578 2191 50  0000 L CNN
@@ -178,7 +151,7 @@ F 3 "" H 5500 2150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L power:GND #PWR?
 U 1 1 5AD5C291
 P 5000 2300
 F 0 "#PWR?" H 5000 2050 50  0001 C CNN
@@ -189,7 +162,7 @@ F 3 "" H 5000 2300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C?
+L device:C C?
 U 1 1 5AD5C292
 P 2250 2300
 F 0 "C?" V 1998 2300 50  0000 C CNN
@@ -204,7 +177,7 @@ added aref cap
 Text Label 4300 2550 0    60   ~ 0
 ADC2
 $Comp
-L +5V #PWR?
+L power:+5V #PWR?
 U 1 1 5AD5C297
 P 5200 2550
 F 0 "#PWR?" H 5200 2400 50  0001 C CNN
@@ -225,34 +198,31 @@ Wire Wire Line
 Wire Wire Line
 	4350 1950 4350 1900
 Wire Wire Line
-	4350 1900 4600 1900
+	4350 1900 4400 1900
 Wire Wire Line
 	4200 2100 4250 2100
 Wire Wire Line
 	4250 2100 4250 2200
 Wire Wire Line
-	4250 2200 4600 2200
+	4250 2200 4400 2200
 Connection ~ 4400 1900
 Connection ~ 4400 2200
 Wire Wire Line
-	4900 2200 4900 1900
+	4900 2200 4900 2050
 Wire Wire Line
-	4200 2850 4350 2850
+	4200 2850 4300 2850
 Wire Wire Line
 	4550 2850 4700 2850
 Wire Wire Line
 	4700 2850 4700 2800
-Connection ~ 2150 1400
 Wire Wire Line
-	1500 1700 2300 1700
-Connection ~ 2150 1500
-Connection ~ 2150 1700
+	1500 1700 2000 1700
 Wire Wire Line
-	1900 2350 1900 3650
+	1900 2350 1900 2450
 Wire Wire Line
 	1900 3500 2300 3500
 Wire Wire Line
-	1900 3600 2300 3600
+	1900 3600 2100 3600
 Connection ~ 1900 3600
 Wire Wire Line
 	2100 3600 2100 3700
@@ -274,7 +244,6 @@ Wire Wire Line
 Connection ~ 1900 3500
 Wire Wire Line
 	2000 2350 2000 2050
-Connection ~ 2000 2350
 Wire Wire Line
 	1800 1800 1800 2350
 Connection ~ 1900 2350
@@ -292,13 +261,10 @@ Wire Wire Line
 	4950 1750 4350 1750
 Wire Wire Line
 	4350 1750 4350 1700
-Connection ~ 4350 1700
 Wire Wire Line
-	1500 1400 2300 1400
+	1500 1400 1900 1400
 Wire Wire Line
-	1800 2350 2000 2350
-Wire Wire Line
-	1800 1500 2300 1500
+	1800 2350 1900 2350
 Connection ~ 4300 2850
 Wire Wire Line
 	5300 2000 5000 2000
@@ -341,7 +307,7 @@ Wire Wire Line
 Wire Wire Line
 	5300 2550 5300 2400
 $Comp
-L L L?
+L device:L L?
 U 1 1 5AD5DF93
 P 1500 1550
 F 0 "L?" H 1553 1596 50  0000 L CNN
@@ -361,6 +327,287 @@ Text Label 4400 1500 0    60   ~ 0
 PWM_OUT
 Text Notes 4850 1500 0    60   ~ 0
 buffer out?
-Text Notes 4800 3600 0    118  ~ 0
-TODO: pulse input, 16 pulse outs
+Text Notes 1100 850  0    118  ~ 0
+TODO: pulse input, 16 pulse outs - so either change to atmega128 or use shift register 595 for serial in/parallel out\n- HOW MANY CV IN?\n\n- Amplifier for outgoing PWM
+Wire Wire Line
+	4400 1900 4600 1900
+Wire Wire Line
+	4400 2200 4600 2200
+Wire Wire Line
+	1900 3600 1900 3650
+Wire Wire Line
+	2100 3600 2300 3600
+Wire Wire Line
+	1900 3500 1900 3600
+Wire Wire Line
+	1900 2350 2000 2350
+Wire Wire Line
+	4300 2850 4350 2850
+Wire Wire Line
+	4900 2050 4900 1900
+Wire Wire Line
+	1900 2450 1900 3500
+Wire Wire Line
+	1800 1500 2300 1500
+Wire Wire Line
+	1900 1400 2300 1400
+Wire Wire Line
+	2000 1700 2300 1700
+$Comp
+L device:Q_NPN_BEC Q?
+U 1 1 5B6A4D24
+P 3200 4900
+F 0 "Q?" H 3391 4946 50  0000 L CNN
+F 1 "MMBT3904" H 2850 4750 50  0000 L CNN
+F 2 "" H 3400 5000 50  0001 C CNN
+F 3 "" H 3200 4900 50  0001 C CNN
+	1    3200 4900
+	1    0    0    -1  
+$EndComp
+Text Notes 3600 4300 0    60   ~ 0
+pulse out
+$Comp
+L device:R_Small R?
+U 1 1 5B6A6373
+P 2850 4900
+F 0 "R?" V 2654 4900 50  0000 C CNN
+F 1 "10K" V 2745 4900 50  0000 C CNN
+F 2 "" H 2850 4900 50  0001 C CNN
+F 3 "" H 2850 4900 50  0001 C CNN
+	1    2850 4900
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R_Small R?
+U 1 1 5B6A6444
+P 3300 4550
+F 0 "R?" H 3241 4504 50  0000 R CNN
+F 1 "47K" H 3241 4595 50  0000 R CNN
+F 2 "" H 3300 4550 50  0001 C CNN
+F 3 "" H 3300 4550 50  0001 C CNN
+	1    3300 4550
+	-1   0    0    1   
+$EndComp
+$Comp
+L device:R_Small R?
+U 1 1 5B6A64DB
+P 3450 4800
+F 0 "R?" H 3391 4754 50  0000 R CNN
+F 1 "3.3K" H 3391 4845 50  0000 R CNN
+F 2 "" H 3450 4800 50  0001 C CNN
+F 3 "" H 3450 4800 50  0001 C CNN
+	1    3450 4800
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B6A65ED
+P 3300 5150
+F 0 "#PWR?" H 3300 4900 50  0001 C CNN
+F 1 "GND" H 3305 4977 50  0000 C CNN
+F 2 "" H 3300 5150 50  0001 C CNN
+F 3 "" H 3300 5150 50  0001 C CNN
+	1    3300 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B6A6614
+P 3450 4950
+F 0 "#PWR?" H 3450 4700 50  0001 C CNN
+F 1 "GND" H 3455 4777 50  0000 C CNN
+F 2 "" H 3450 4950 50  0001 C CNN
+F 3 "" H 3450 4950 50  0001 C CNN
+	1    3450 4950
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5B6B2B70
+P 3300 4400
+F 0 "#PWR?" H 3300 4250 50  0001 C CNN
+F 1 "+12V" H 3315 4573 50  0000 C CNN
+F 2 "" H 3300 4400 50  0001 C CNN
+F 3 "" H 3300 4400 50  0001 C CNN
+	1    3300 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2950 4900 3000 4900
+Wire Wire Line
+	3300 4700 3300 4650
+Wire Wire Line
+	3300 4450 3300 4400
+Wire Wire Line
+	3300 4700 3450 4700
+Connection ~ 3300 4700
+Wire Wire Line
+	3300 5150 3300 5100
+Wire Wire Line
+	3450 4900 3450 4950
+Wire Wire Line
+	2750 4900 2600 4900
+Text Label 2600 4900 2    60   ~ 0
+P1_OUT
+$Comp
+L erthenvar:AUDIO-JACKERTHENVAR M?
+U 1 1 5B6C9584
+P 4200 4900
+F 0 "M?" H 3873 4862 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 4200 4900 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 4230 5050 20  0001 C CNN
+F 3 "" H 4200 4900 60  0001 C CNN
+	1    4200 4900
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B6C9620
+P 3850 5000
+F 0 "#PWR?" H 3850 4750 50  0001 C CNN
+F 1 "GND" H 3855 4827 50  0000 C CNN
+F 2 "" H 3850 5000 50  0001 C CNN
+F 3 "" H 3850 5000 50  0001 C CNN
+	1    3850 5000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3850 5000 3900 5000
+Wire Wire Line
+	3450 4700 3800 4700
+Connection ~ 3450 4700
+$Comp
+L Connector:Conn_01x01 J?
+U 1 1 5B70133E
+P 4200 4450
+F 0 "J?" H 4280 4492 50  0000 L CNN
+F 1 "Conn_01x01" H 4280 4401 50  0000 L CNN
+F 2 "" H 4200 4450 50  0001 C CNN
+F 3 "~" H 4200 4450 50  0001 C CNN
+	1    4200 4450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3800 4700 3800 4450
+Wire Wire Line
+	3800 4450 4000 4450
+Connection ~ 3800 4700
+Wire Wire Line
+	3800 4700 3900 4700
+Text Notes 6600 4100 0    60   ~ 0
+pulse in
+$Comp
+L device:Q_NPN_BEC Q?
+U 1 1 5B703499
+P 6700 4850
+F 0 "Q?" H 6891 4896 50  0000 L CNN
+F 1 "MMBT3904" H 6350 4700 50  0000 L CNN
+F 2 "" H 6900 4950 50  0001 C CNN
+F 3 "" H 6700 4850 50  0001 C CNN
+	1    6700 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L device:R_Small R?
+U 1 1 5B7034FD
+P 6300 4850
+F 0 "R?" V 6104 4850 50  0000 C CNN
+F 1 "100K" V 6195 4850 50  0000 C CNN
+F 2 "" H 6300 4850 50  0001 C CNN
+F 3 "" H 6300 4850 50  0001 C CNN
+	1    6300 4850
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R_Small R?
+U 1 1 5B703589
+P 6800 4500
+F 0 "R?" H 6741 4454 50  0000 R CNN
+F 1 "10K" H 6741 4545 50  0000 R CNN
+F 2 "" H 6800 4500 50  0001 C CNN
+F 3 "" H 6800 4500 50  0001 C CNN
+	1    6800 4500
+	-1   0    0    1   
+$EndComp
+$Comp
+L erthenvar:AUDIO-JACKERTHENVAR M?
+U 1 1 5B705400
+P 5800 4650
+F 0 "M?" H 5473 4612 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 5800 4650 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 5830 4800 20  0001 C CNN
+F 3 "" H 5800 4650 60  0001 C CNN
+	1    5800 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01 J?
+U 1 1 5B7054E2
+P 5900 5050
+F 0 "J?" H 5820 4825 50  0000 C CNN
+F 1 "Conn_01x01" H 5820 4916 50  0000 C CNN
+F 2 "" H 5900 5050 50  0001 C CNN
+F 3 "~" H 5900 5050 50  0001 C CNN
+	1    5900 5050
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+5V #PWR?
+U 1 1 5B7057B2
+P 6800 4350
+F 0 "#PWR?" H 6800 4200 50  0001 C CNN
+F 1 "+5V" H 6815 4523 50  0000 C CNN
+F 2 "" H 6800 4350 50  0001 C CNN
+F 3 "" H 6800 4350 50  0001 C CNN
+	1    6800 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B705850
+P 6800 5100
+F 0 "#PWR?" H 6800 4850 50  0001 C CNN
+F 1 "GND" H 6805 4927 50  0000 C CNN
+F 2 "" H 6800 5100 50  0001 C CNN
+F 3 "" H 6800 5100 50  0001 C CNN
+	1    6800 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B705885
+P 6250 4550
+F 0 "#PWR?" H 6250 4300 50  0001 C CNN
+F 1 "GND" H 6255 4377 50  0000 C CNN
+F 2 "" H 6250 4550 50  0001 C CNN
+F 3 "" H 6250 4550 50  0001 C CNN
+	1    6250 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6100 4550 6250 4550
+Wire Wire Line
+	6100 5050 6100 4850
+Wire Wire Line
+	6200 4850 6100 4850
+Connection ~ 6100 4850
+Wire Wire Line
+	6400 4850 6500 4850
+Wire Wire Line
+	6800 4650 6800 4600
+Wire Wire Line
+	6800 4400 6800 4350
+Wire Wire Line
+	6800 5100 6800 5050
+$Comp
+L atmel:ATMEGA128-16AU U?
+U 1 1 5B7139D2
+P 9300 3200
+F 0 "U?" H 9300 5378 50  0000 C CNN
+F 1 "ATMEGA128-16AU" H 9300 5287 50  0000 C CNN
+F 2 "TQFP64" H 9300 3200 50  0001 C CIN
+F 3 "http://www.atmel.com/Images/doc2467.pdf" H 9300 3200 50  0001 C CNN
+	1    9300 3200
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
