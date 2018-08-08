@@ -1,0 +1,553 @@
+EESchema Schematic File Version 4
+LIBS:allcolours-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 3
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L device:D_Zener_Small D?
+U 1 1 5B6E5322
+P 9850 2250
+F 0 "D?" V 9804 2318 50  0000 L CNN
+F 1 "zen?" V 9750 2350 50  0000 L CNN
+F 2 "" V 9850 2250 50  0001 C CNN
+F 3 "" V 9850 2250 50  0001 C CNN
+	1    9850 2250
+	0    1    1    0   
+$EndComp
+$Comp
+L device:D_Zener_Small D?
+U 1 1 5B6E5329
+P 9850 2000
+F 0 "D?" V 9804 2068 50  0000 L CNN
+F 1 "zen?" V 9895 2068 50  0000 L CNN
+F 2 "" V 9850 2000 50  0001 C CNN
+F 3 "" V 9850 2000 50  0001 C CNN
+	1    9850 2000
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B6E5330
+P 9850 2400
+F 0 "#PWR?" H 9850 2150 50  0001 C CNN
+F 1 "GND" H 9850 2250 50  0000 C CNN
+F 2 "" H 9850 2400 50  0000 C CNN
+F 3 "" H 9850 2400 50  0000 C CNN
+	1    9850 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L MAX7490:MAX7490 U?
+U 1 1 5B6E5336
+P 8650 1750
+F 0 "U?" H 8650 2465 50  0000 C CNN
+F 1 "MAX7490" H 8650 2374 50  0000 C CNN
+F 2 "MODULE" H 8650 1750 50  0001 C CNN
+F 3 "DOCUMENTATION" H 8650 1750 50  0001 C CNN
+	1    8650 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7900 2450 7900 2150
+Wire Wire Line
+	9400 2000 9450 2000
+Wire Wire Line
+	9450 2000 9450 2450
+Wire Wire Line
+	9450 2450 7900 2450
+Wire Wire Line
+	9400 2100 9500 2100
+Wire Wire Line
+	9850 2150 9850 2100
+Connection ~ 9850 2100
+$Comp
+L power:+5V #PWR?
+U 1 1 5B6E5344
+P 9850 1850
+F 0 "#PWR?" H 9850 1700 50  0001 C CNN
+F 1 "+5V" H 9865 2023 50  0000 C CNN
+F 2 "" H 9850 1850 50  0001 C CNN
+F 3 "" H 9850 1850 50  0001 C CNN
+	1    9850 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9850 2400 9850 2350
+Wire Wire Line
+	9850 1900 9850 1850
+Wire Wire Line
+	9850 2100 10100 2100
+$Comp
+L power:+5V #PWR?
+U 1 1 5B6E534D
+P 7700 2150
+F 0 "#PWR?" H 7700 2000 50  0001 C CNN
+F 1 "+5V" H 7715 2323 50  0000 C CNN
+F 2 "" H 7700 2150 50  0001 C CNN
+F 3 "" H 7700 2150 50  0001 C CNN
+	1    7700 2150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7700 2150 7750 2150
+Connection ~ 7900 2150
+Wire Wire Line
+	7900 2150 7900 2100
+$Comp
+L power:GND #PWR?
+U 1 1 5B6E5356
+P 7850 2000
+F 0 "#PWR?" H 7850 1750 50  0001 C CNN
+F 1 "GND" H 7850 2050 50  0000 C CNN
+F 2 "" H 7850 2000 50  0000 C CNN
+F 3 "" H 7850 2000 50  0000 C CNN
+	1    7850 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 2000 7900 2000
+Wire Wire Line
+	7750 2150 7750 1900
+Wire Wire Line
+	7750 1900 7900 1900
+Connection ~ 7750 2150
+Wire Wire Line
+	7750 2150 7900 2150
+$Comp
+L device:C C?
+U 1 1 5B6E5361
+P 9600 2050
+F 0 "C?" H 9625 2150 50  0000 L CNN
+F 1 "100N" H 9625 1950 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 9638 1900 50  0001 C CNN
+F 3 "" H 9600 2050 50  0000 C CNN
+	1    9600 2050
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9400 1900 9600 1900
+Wire Wire Line
+	9600 2200 9600 2350
+Wire Wire Line
+	9600 2350 9850 2350
+Connection ~ 9850 2350
+Wire Wire Line
+	10100 2100 10100 2250
+Text Notes 8400 950  0    60   ~ 0
+x2 of these?
+$Comp
+L MAX7490:MAX7490 U?
+U 1 1 5B6E5376
+P 8650 3150
+F 0 "U?" H 8650 3865 50  0000 C CNN
+F 1 "MAX7490" H 8650 3774 50  0000 C CNN
+F 2 "MODULE" H 8650 3150 50  0001 C CNN
+F 3 "DOCUMENTATION" H 8650 3150 50  0001 C CNN
+	1    8650 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7900 3850 7900 3550
+Wire Wire Line
+	9400 3400 9450 3400
+Wire Wire Line
+	9450 3400 9450 3850
+Wire Wire Line
+	9450 3850 7900 3850
+Connection ~ 7900 3550
+Wire Wire Line
+	7900 3550 7900 3500
+$Comp
+L power:GND #PWR?
+U 1 1 5B6E5383
+P 7850 3400
+F 0 "#PWR?" H 7850 3150 50  0001 C CNN
+F 1 "GND" H 7850 3450 50  0000 C CNN
+F 2 "" H 7850 3400 50  0000 C CNN
+F 3 "" H 7850 3400 50  0000 C CNN
+	1    7850 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 3400 7900 3400
+Wire Wire Line
+	7750 3300 7900 3300
+Wire Wire Line
+	7750 3550 7900 3550
+$Comp
+L device:C C?
+U 1 1 5B6E538C
+P 9600 3450
+F 0 "C?" H 9625 3550 50  0000 L CNN
+F 1 "100N" H 9625 3350 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 9638 3300 50  0001 C CNN
+F 3 "" H 9600 3450 50  0000 C CNN
+	1    9600 3450
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9400 3300 9600 3300
+Wire Wire Line
+	7750 3300 7750 3550
+$Comp
+L power:+5V #PWR?
+U 1 1 5B6E5395
+P 7650 3300
+F 0 "#PWR?" H 7650 3150 50  0001 C CNN
+F 1 "+5V" H 7665 3473 50  0000 C CNN
+F 2 "" H 7650 3300 50  0001 C CNN
+F 3 "" H 7650 3300 50  0001 C CNN
+	1    7650 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7750 3300 7650 3300
+Connection ~ 7750 3300
+$Comp
+L power:GND #PWR?
+U 1 1 5B6E539D
+P 9600 3700
+F 0 "#PWR?" H 9600 3450 50  0001 C CNN
+F 1 "GND" H 9600 3750 50  0000 C CNN
+F 2 "" H 9600 3700 50  0000 C CNN
+F 3 "" H 9600 3700 50  0000 C CNN
+	1    9600 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9600 3600 9600 3700
+Wire Wire Line
+	9500 2100 9500 3500
+Wire Wire Line
+	9500 3500 9400 3500
+Connection ~ 9500 2100
+Wire Wire Line
+	9500 2100 9850 2100
+Text Notes 1550 1050 0    60   ~ 0
+input for lower 7490
+$Comp
+L linear:TL072 U?
+U 2 1 5B6FD0C0
+P 1850 1700
+AR Path="/5B6FD0C0" Ref="U?"  Part="2" 
+AR Path="/5B6C330C/5B6FD0C0" Ref="U?"  Part="2" 
+F 0 "U?" H 2191 1746 50  0000 L CNN
+F 1 "TL072" H 2191 1655 50  0000 L CNN
+F 2 "" H 1850 1700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1850 1700 50  0001 C CNN
+	2    1850 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5B6FD0C7
+P 1750 1350
+AR Path="/5B6FD0C7" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5B6FD0C7" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 1750 1200 50  0001 C CNN
+F 1 "+12V" H 1750 1490 50  0000 C CNN
+F 2 "" H 1750 1350 50  0000 C CNN
+F 3 "" H 1750 1350 50  0000 C CNN
+	1    1750 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12VA #PWR?
+U 1 1 5B6FD0CD
+P 1750 2050
+AR Path="/5B6FD0CD" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5B6FD0CD" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 1750 1900 50  0001 C CNN
+F 1 "-12VA" H 1750 2190 50  0000 C CNN
+F 2 "" H 1750 2050 50  0000 C CNN
+F 3 "" H 1750 2050 50  0000 C CNN
+	1    1750 2050
+	-1   0    0    1   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B6FD0D3
+P 1250 1800
+AR Path="/5B6FD0D3" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5B6FD0D3" Ref="R?"  Part="1" 
+F 0 "R?" V 1330 1800 50  0000 C CNN
+F 1 "10K" V 1250 1800 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 1180 1800 50  0001 C CNN
+F 3 "" H 1250 1800 50  0000 C CNN
+	1    1250 1800
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B6FD0DA
+P 1750 2250
+AR Path="/5B6FD0DA" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5B6FD0DA" Ref="R?"  Part="1" 
+F 0 "R?" V 1830 2250 50  0000 C CNN
+F 1 "2.7K" V 1750 2250 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 1680 2250 50  0001 C CNN
+F 3 "" H 1750 2250 50  0000 C CNN
+	1    1750 2250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1400 1800 1500 1800
+Wire Wire Line
+	1600 2250 1600 2100
+Wire Wire Line
+	1600 2100 1500 2100
+Wire Wire Line
+	1500 2100 1500 1800
+Connection ~ 1500 1800
+Wire Wire Line
+	1500 1800 1550 1800
+Wire Wire Line
+	1900 2250 2150 2250
+Wire Wire Line
+	2150 2250 2150 1700
+$Comp
+L device:CP1_Small C?
+U 1 1 5B6FD0E9
+P 2350 1700
+AR Path="/5B6FD0E9" Ref="C?"  Part="1" 
+AR Path="/5B6C330C/5B6FD0E9" Ref="C?"  Part="1" 
+F 0 "C?" H 2360 1770 50  0000 L CNN
+F 1 "10u" H 2360 1620 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 2350 1700 50  0001 C CNN
+F 3 "" H 2350 1700 50  0000 C CNN
+	1    2350 1700
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2150 1700 2250 1700
+Connection ~ 2150 1700
+Text Notes 1900 2350 0    60   ~ 0
+value?
+Wire Wire Line
+	1750 1400 1750 1350
+Wire Wire Line
+	1750 2050 1750 2000
+$Comp
+L device:CP1_Small C?
+U 1 1 5B705C47
+P 1900 6350
+AR Path="/5B705C47" Ref="C?"  Part="1" 
+AR Path="/5B6C330C/5B705C47" Ref="C?"  Part="1" 
+F 0 "C?" H 1910 6420 50  0000 L CNN
+F 1 "10u" H 1910 6270 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 1900 6350 50  0001 C CNN
+F 3 "" H 1900 6350 50  0000 C CNN
+	1    1900 6350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B705C4E
+P 2200 6350
+AR Path="/5B705C4E" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5B705C4E" Ref="R?"  Part="1" 
+F 0 "R?" V 2280 6350 50  0000 C CNN
+F 1 "5.6K" V 2200 6350 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 2130 6350 50  0001 C CNN
+F 3 "" H 2200 6350 50  0000 C CNN
+	1    2200 6350
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B705C55
+P 2050 6650
+AR Path="/5B705C55" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5B705C55" Ref="R?"  Part="1" 
+F 0 "R?" V 2130 6650 50  0000 C CNN
+F 1 "39K" V 2050 6650 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 1980 6650 50  0001 C CNN
+F 3 "" H 2050 6650 50  0000 C CNN
+	1    2050 6650
+	1    0    0    -1  
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B705C5C
+P 2750 5700
+AR Path="/5B705C5C" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5B705C5C" Ref="R?"  Part="1" 
+F 0 "R?" V 2830 5700 50  0000 C CNN
+F 1 "39K" V 2750 5700 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 2680 5700 50  0001 C CNN
+F 3 "" H 2750 5700 50  0000 C CNN
+	1    2750 5700
+	0    1    1    0   
+$EndComp
+$Comp
+L device:C C?
+U 1 1 5B705C63
+P 2750 5850
+AR Path="/5B705C63" Ref="C?"  Part="1" 
+AR Path="/5B6C330C/5B705C63" Ref="C?"  Part="1" 
+F 0 "C?" H 2775 5950 50  0000 L CNN
+F 1 "18p" H 2775 5750 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 2788 5700 50  0001 C CNN
+F 3 "" H 2750 5850 50  0000 C CNN
+	1    2750 5850
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B705C6A
+P 2050 6850
+AR Path="/5B705C6A" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5B705C6A" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2050 6600 50  0001 C CNN
+F 1 "GND" H 2050 6700 50  0000 C CNN
+F 2 "" H 2050 6850 50  0000 C CNN
+F 3 "" H 2050 6850 50  0000 C CNN
+	1    2050 6850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B705C70
+P 2350 6150
+AR Path="/5B705C70" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5B705C70" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2350 5900 50  0001 C CNN
+F 1 "GND" H 2350 6000 50  0000 C CNN
+F 2 "" H 2350 6150 50  0000 C CNN
+F 3 "" H 2350 6150 50  0000 C CNN
+	1    2350 6150
+	1    0    0    -1  
+$EndComp
+Text Label 3550 6250 0    60   ~ 0
+7490_OUT
+$Comp
+L power:-12VA #PWR?
+U 1 1 5B705C77
+P 2650 6650
+AR Path="/5B705C77" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5B705C77" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2650 6500 50  0001 C CNN
+F 1 "-12VA" H 2650 6790 50  0000 C CNN
+F 2 "" H 2650 6650 50  0000 C CNN
+F 3 "" H 2650 6650 50  0000 C CNN
+	1    2650 6650
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5B705C7D
+P 2600 5600
+AR Path="/5B705C7D" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5B705C7D" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2600 5450 50  0001 C CNN
+F 1 "+12V" H 2600 5740 50  0000 C CNN
+F 2 "" H 2600 5600 50  0000 C CNN
+F 3 "" H 2600 5600 50  0000 C CNN
+	1    2600 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2000 6350 2050 6350
+Wire Wire Line
+	2050 6350 2050 6500
+Wire Wire Line
+	2050 6850 2050 6800
+Wire Wire Line
+	2400 5700 2400 5850
+Wire Wire Line
+	2400 5850 2600 5850
+Wire Wire Line
+	2400 5700 2600 5700
+Connection ~ 2400 5850
+Wire Wire Line
+	2900 5700 2900 5850
+Wire Wire Line
+	2900 5850 3050 5850
+Wire Wire Line
+	3050 5850 3050 6250
+Wire Wire Line
+	3050 6250 3550 6250
+Wire Wire Line
+	2650 6550 2650 6650
+Wire Wire Line
+	2650 5950 2600 5950
+Wire Wire Line
+	2600 5950 2600 5850
+Wire Wire Line
+	2350 6150 2400 6150
+Text Notes 1550 5350 0    60   ~ 0
+these values adapted from 3.3v - 12v schema\nso might need to be changed
+Text Notes 1900 6700 0    60   ~ 0
+?
+Wire Wire Line
+	2400 5850 2400 6150
+Connection ~ 2050 6350
+Connection ~ 2600 5700
+Wire Wire Line
+	2600 5700 2600 5600
+Connection ~ 2600 5850
+Wire Wire Line
+	2600 5850 2600 5700
+Connection ~ 2900 5850
+$Comp
+L linear:TL072 U?
+U 2 1 5B705C9B
+P 2750 6250
+AR Path="/5B705C9B" Ref="U?"  Part="2" 
+AR Path="/5B6C330C/5B705C9B" Ref="U?"  Part="2" 
+F 0 "U?" H 3091 6296 50  0000 L CNN
+F 1 "TL072" H 3091 6205 50  0000 L CNN
+F 2 "" H 2750 6250 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2750 6250 50  0001 C CNN
+	2    2750 6250
+	1    0    0    -1  
+$EndComp
+Connection ~ 2400 6150
+Wire Wire Line
+	2400 6150 2450 6150
+Connection ~ 3050 6250
+Wire Wire Line
+	2350 6350 2450 6350
+Text GLabel 10200 2850 2    118  Input ~ 0
+AVR_CLK
+Wire Wire Line
+	10100 2100 10100 1950
+Wire Wire Line
+	10100 1950 10300 1950
+Connection ~ 10100 2100
+$Comp
+L erthenvar:AUDIO-JACKERTHENVAR M?
+U 1 1 5B72C23F
+P 10600 1400
+F 0 "M?" H 10273 1362 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 10600 1400 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 10630 1550 20  0001 C CNN
+F 3 "" H 10600 1400 60  0001 C CNN
+	1    10600 1400
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B72C2B1
+P 10300 2550
+F 0 "#PWR?" H 10300 2300 50  0001 C CNN
+F 1 "GND" H 10300 2400 50  0000 C CNN
+F 2 "" H 10300 2550 50  0000 C CNN
+F 3 "" H 10300 2550 50  0000 C CNN
+	1    10300 2550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10100 2250 10400 2250
+$EndSCHEMATC

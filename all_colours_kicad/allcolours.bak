@@ -296,7 +296,7 @@ F 3 "" H 600 1700 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Text Notes 6550 800  0    60   ~ 0
-finger \ncomparator
+finger comparator
 Text Notes 7000 8700 0    60   ~ 0
 OLDER:\n- 5v supply\n- 3x tr noise sources buffered and seperate power buses sep with res and decoupled\n- s/h and voltage controlled clocks - clock for 7400 and clocks for s/h\n- comparators -s/h also uses comparator\n- prototype areas + jumpers\n- 7400\n- in and out (buffers?)
 $Comp
@@ -415,50 +415,50 @@ F 3 "" H 6000 850 50  0000 C CNN
 	1    6000 850 
 	1    0    0    -1  
 $EndComp
-Text Notes 8600 650  0    60   ~ 0
+Text Notes 8400 700  0    60   ~ 0
 euro_conn
 $Comp
 L allcolours-rescue:CONN_02X05 P4
 U 1 1 596B8735
-P 8800 1000
-F 0 "P4" H 8800 1300 50  0000 C CNN
-F 1 "CONN_02X05" H 8800 700 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 8800 -200 50  0001 C CNN
-F 3 "" H 8800 -200 50  0000 C CNN
-	1    8800 1000
+P 8600 1050
+F 0 "P4" H 8600 1350 50  0000 C CNN
+F 1 "CONN_02X05" H 8600 750 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 8600 -150 50  0001 C CNN
+F 3 "" H 8600 -150 50  0000 C CNN
+	1    8600 1050
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+12V #PWR043
 U 1 1 596B9C7E
-P 8400 750
-F 0 "#PWR043" H 8400 600 50  0001 C CNN
-F 1 "+12V" H 8400 890 50  0000 C CNN
-F 2 "" H 8400 750 50  0000 C CNN
-F 3 "" H 8400 750 50  0000 C CNN
-	1    8400 750 
+P 8200 800
+F 0 "#PWR043" H 8200 650 50  0001 C CNN
+F 1 "+12V" H 8200 940 50  0000 C CNN
+F 2 "" H 8200 800 50  0000 C CNN
+F 3 "" H 8200 800 50  0000 C CNN
+	1    8200 800 
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:-12VA #PWR044
 U 1 1 596BB6E9
-P 8450 1250
-F 0 "#PWR044" H 8450 1100 50  0001 C CNN
-F 1 "-12VA" H 8450 1390 50  0000 C CNN
-F 2 "" H 8450 1250 50  0000 C CNN
-F 3 "" H 8450 1250 50  0000 C CNN
-	1    8450 1250
+P 8250 1300
+F 0 "#PWR044" H 8250 1150 50  0001 C CNN
+F 1 "-12VA" H 8250 1440 50  0000 C CNN
+F 2 "" H 8250 1300 50  0000 C CNN
+F 3 "" H 8250 1300 50  0000 C CNN
+	1    8250 1300
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR047
 U 1 1 596A64CD
-P 9250 1000
-F 0 "#PWR047" H 9250 750 50  0001 C CNN
-F 1 "GND" H 9250 850 50  0000 C CNN
-F 2 "" H 9250 1000 50  0000 C CNN
-F 3 "" H 9250 1000 50  0000 C CNN
-	1    9250 1000
+P 9050 1050
+F 0 "#PWR047" H 9050 800 50  0001 C CNN
+F 1 "GND" H 9050 900 50  0000 C CNN
+F 2 "" H 9050 1050 50  0000 C CNN
+F 3 "" H 9050 1050 50  0000 C CNN
+	1    9050 1050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -587,24 +587,24 @@ Connection ~ 5250 1850
 Wire Wire Line
 	4900 1850 4600 1850
 Wire Wire Line
-	8550 900  8550 1000
-Connection ~ 8550 1000
+	8350 950  8350 1050
+Connection ~ 8350 1050
 Wire Wire Line
-	8550 1000 9050 1000
+	8350 1050 8850 1050
 Wire Wire Line
-	9050 900  9050 1000
-Connection ~ 9050 1000
+	8850 950  8850 1050
+Connection ~ 8850 1050
 Wire Wire Line
-	8550 800  9050 800 
+	8350 850  8850 850 
 Wire Wire Line
-	8450 1200 8550 1200
+	8250 1250 8350 1250
 Wire Wire Line
-	8400 750  8550 750 
+	8200 800  8350 800 
 Wire Wire Line
-	8550 750  8550 800 
+	8350 800  8350 850 
 Wire Wire Line
-	8450 1250 8450 1200
-Connection ~ 8550 1200
+	8250 1300 8250 1250
+Connection ~ 8350 1250
 Wire Wire Line
 	2300 1450 2150 1450
 Wire Wire Line
@@ -707,13 +707,13 @@ Wire Wire Line
 Wire Wire Line
 	5250 1850 5400 1850
 Wire Wire Line
-	8550 1000 8550 1100
+	8350 1050 8350 1150
 Wire Wire Line
-	9050 1000 9200 1000
+	8850 1050 9000 1050
 Wire Wire Line
-	9050 1000 9050 1100
+	8850 1050 8850 1150
 Wire Wire Line
-	8550 1200 9050 1200
+	8350 1250 8850 1250
 Wire Wire Line
 	7000 1250 7150 1250
 $Comp
@@ -848,19 +848,19 @@ $EndComp
 $Comp
 L power:PWR_FLAG #FLG?
 U 1 1 5B6F6BB5
-P 9200 850
-F 0 "#FLG?" H 9200 925 50  0001 C CNN
-F 1 "PWR_FLAG" H 9200 1024 50  0000 C CNN
-F 2 "" H 9200 850 50  0001 C CNN
-F 3 "" H 9200 850 50  0001 C CNN
-	1    9200 850 
+P 9000 900
+F 0 "#FLG?" H 9000 975 50  0001 C CNN
+F 1 "PWR_FLAG" H 9000 1074 50  0000 C CNN
+F 2 "" H 9000 900 50  0001 C CNN
+F 3 "" H 9000 900 50  0001 C CNN
+	1    9000 900 
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9200 1000 9200 850 
-Connection ~ 9200 1000
+	9000 1050 9000 900 
+Connection ~ 9000 1050
 Wire Wire Line
-	9200 1000 9250 1000
+	9000 1050 9050 1050
 Wire Wire Line
 	9600 850  9600 700 
 Connection ~ 9600 850 
@@ -1302,4 +1302,19 @@ Connection ~ 1800 3500
 Connection ~ 2100 2950
 Connection ~ 2100 3250
 Connection ~ 2100 3300
+Connection ~ 8350 850 
+$Comp
+L allcolours-rescue:Conn_01x01-Connector J?
+U 1 1 5B723C7A
+P 10500 2650
+F 0 "J?" H 10580 2692 50  0000 L CNN
+F 1 "Conn_01x01" H 10580 2601 50  0000 L CNN
+F 2 "" H 10500 2650 50  0001 C CNN
+F 3 "~" H 10500 2650 50  0001 C CNN
+	1    10500 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10150 2650 10300 2650
+Connection ~ 10150 2650
 $EndSCHEMATC
