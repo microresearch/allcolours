@@ -105,12 +105,12 @@ $EndComp
 $Comp
 L allcolours-rescue:CONN_01X06 J4
 U 1 1 5AD5C290
-P 10400 2850
-F 0 "J4" H 10478 2891 50  0000 L CNN
-F 1 "PROGRAM" H 10478 2800 50  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x06_Pitch2.54mm" H 10400 2850 50  0001 C CNN
-F 3 "" H 10400 2850 50  0001 C CNN
-	1    10400 2850
+P 10550 2650
+F 0 "J4" H 10628 2691 50  0000 L CNN
+F 1 "PROGRAM" H 10628 2600 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x06_Pitch2.54mm" H 10550 2650 50  0001 C CNN
+F 3 "" H 10550 2650 50  0001 C CNN
+	1    10550 2650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -127,12 +127,12 @@ $EndComp
 $Comp
 L power:+5V #PWR046
 U 1 1 5AD5C297
-P 10300 3400
-F 0 "#PWR046" H 10300 3250 50  0001 C CNN
-F 1 "+5V" H 10315 3573 50  0000 C CNN
-F 2 "" H 10300 3400 50  0001 C CNN
-F 3 "" H 10300 3400 50  0001 C CNN
-	1    10300 3400
+P 10700 2950
+F 0 "#PWR046" H 10700 2800 50  0001 C CNN
+F 1 "+5V" H 10715 3123 50  0000 C CNN
+F 2 "" H 10700 2950 50  0001 C CNN
+F 3 "" H 10700 2950 50  0001 C CNN
+	1    10700 2950
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -287,7 +287,7 @@ Wire Wire Line
 Connection ~ 2000 1250
 Wire Wire Line
 	2000 1250 2100 1250
-Text Notes 3400 850  0    60   ~ 0
+Text Notes 3650 800  0    60   ~ 0
 pulse in - few with jacks - tested with finger
 $Comp
 L device:Q_NPN_BEC Q4
@@ -404,7 +404,7 @@ F 3 "http://www.atmel.com/Images/doc2467.pdf" H 8750 3400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Notes 1100 6550 0    60   ~ 0
-CV IN x2\n- mode\n- clock
+CV IN - clock
 Text Notes 4450 6300 0    60   ~ 0
 PWM OUT/amped
 $Comp
@@ -792,8 +792,6 @@ Wire Wire Line
 	5450 6900 5600 6900
 Wire Wire Line
 	3950 7000 3750 7000
-Text Label 3750 7000 2    60   ~ 0
-PWM_OUT1
 Wire Wire Line
 	5600 7300 5600 7200
 $Comp
@@ -971,6 +969,527 @@ F 3 "" H 8650 5550 50  0001 C CNN
 	1    8650 5550
 	1    0    0    -1  
 $EndComp
-Text Notes 1250 2300 0    60   ~ 12
+Text Notes 3500 4050 0    60   ~ 12
 clock in with comparator
+Text Notes 1100 5000 0    60   ~ 0
+CV IN - mode\n
+$Comp
+L linear:MCP6002-xSN U?
+U 1 1 5B77CFF8
+P 2150 5400
+F 0 "U?" H 2491 5446 50  0000 L CNN
+F 1 "MCP6002-xSN" H 2150 5300 50  0000 L CNN
+F 2 "" H 2150 5400 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 2150 5400 50  0001 C CNN
+	1    2150 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B77CFFE
+P 2050 5750
+F 0 "#PWR?" H 2050 5500 50  0001 C CNN
+F 1 "GND" H 2055 5577 50  0000 C CNN
+F 2 "" H 2050 5750 50  0001 C CNN
+F 3 "" H 2050 5750 50  0001 C CNN
+	1    2050 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR?
+U 1 1 5B77D004
+P 2050 5050
+F 0 "#PWR?" H 2050 4900 50  0001 C CNN
+F 1 "+5V" H 2065 5223 50  0000 C CNN
+F 2 "" H 2050 5050 50  0001 C CNN
+F 3 "" H 2050 5050 50  0001 C CNN
+	1    2050 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L device:R_Small R?
+U 1 1 5B77D00A
+P 1700 5500
+F 0 "R?" V 1504 5500 50  0000 C CNN
+F 1 "100K" V 1595 5500 50  0000 C CNN
+F 2 "" H 1700 5500 50  0001 C CNN
+F 3 "" H 1700 5500 50  0001 C CNN
+	1    1700 5500
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R_Small R?
+U 1 1 5B77D010
+P 2100 5950
+F 0 "R?" V 1904 5950 50  0000 C CNN
+F 1 "66.5K- can change" V 1995 5950 50  0000 C CNN
+F 2 "" H 2100 5950 50  0001 C CNN
+F 3 "" H 2100 5950 50  0001 C CNN
+	1    2100 5950
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R_Small R?
+U 1 1 5B77D016
+P 1550 5950
+F 0 "R?" V 1354 5950 50  0000 C CNN
+F 1 "200K" V 1445 5950 50  0000 C CNN
+F 2 "" H 1550 5950 50  0001 C CNN
+F 3 "" H 1550 5950 50  0001 C CNN
+	1    1550 5950
+	0    1    1    0   
+$EndComp
+$Comp
+L erthenvar:AUDIO-JACKERTHENVAR M?
+U 1 1 5B77D01C
+P 1200 5300
+F 0 "M?" H 873 5262 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 1200 5300 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 1230 5450 20  0001 C CNN
+F 3 "" H 1200 5300 60  0001 C CNN
+	1    1200 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:Conn_01x01-Connector J?
+U 1 1 5B77D022
+P 1300 5600
+F 0 "J?" H 1220 5375 50  0000 C CNN
+F 1 "Conn_01x01" H 1220 5466 50  0000 C CNN
+F 2 "" H 1300 5600 50  0001 C CNN
+F 3 "~" H 1300 5600 50  0001 C CNN
+	1    1300 5600
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2050 5100 2050 5050
+Wire Wire Line
+	1800 5500 1850 5500
+$Comp
+L power:GND #PWR?
+U 1 1 5B77D02A
+P 1800 5300
+F 0 "#PWR?" H 1800 5050 50  0001 C CNN
+F 1 "GND" H 1805 5127 50  0000 C CNN
+F 2 "" H 1800 5300 50  0001 C CNN
+F 3 "" H 1800 5300 50  0001 C CNN
+	1    1800 5300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1800 5300 1850 5300
+Wire Wire Line
+	2050 5750 2050 5700
+Wire Wire Line
+	1800 5500 1800 5950
+Wire Wire Line
+	1800 5950 2000 5950
+Connection ~ 1800 5500
+Wire Wire Line
+	2200 5950 2450 5950
+Wire Wire Line
+	2450 5950 2450 5400
+Wire Wire Line
+	2450 5400 2750 5400
+Connection ~ 2450 5400
+Wire Wire Line
+	1650 5950 1800 5950
+Connection ~ 1800 5950
+$Comp
+L power:GND #PWR?
+U 1 1 5B77D03B
+P 1600 5200
+F 0 "#PWR?" H 1600 4950 50  0001 C CNN
+F 1 "GND" H 1605 5027 50  0000 C CNN
+F 2 "" H 1600 5200 50  0001 C CNN
+F 3 "" H 1600 5200 50  0001 C CNN
+	1    1600 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 5500 1600 5500
+Wire Wire Line
+	1500 5200 1600 5200
+Wire Wire Line
+	1500 5600 1500 5500
+Connection ~ 1500 5500
+Wire Wire Line
+	1450 5950 1300 5950
+Text Label 1300 5950 2    60   ~ 0
+AREF_-10
+Text Label 2750 5400 0    60   ~ 0
+CV_IN2
+$Comp
+L device:C_Small C?
+U 1 1 5B77D048
+P 2100 6150
+F 0 "C?" V 1871 6150 50  0000 C CNN
+F 1 "1nF" V 1962 6150 50  0000 C CNN
+F 2 "" H 2100 6150 50  0001 C CNN
+F 3 "" H 2100 6150 50  0001 C CNN
+	1    2100 6150
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1800 5950 1800 6150
+Wire Wire Line
+	1800 6150 2000 6150
+Wire Wire Line
+	2200 6150 2450 6150
+Wire Wire Line
+	2450 6150 2450 5950
+Connection ~ 2450 5950
+$Comp
+L device:C_Small C?
+U 1 1 5B77D053
+P 2750 5750
+F 0 "C?" H 2658 5704 50  0000 R CNN
+F 1 "100nF" H 2658 5795 50  0000 R CNN
+F 2 "" H 2750 5750 50  0001 C CNN
+F 3 "" H 2750 5750 50  0001 C CNN
+	1    2750 5750
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+5V #PWR?
+U 1 1 5B77D059
+P 2750 5600
+F 0 "#PWR?" H 2750 5450 50  0001 C CNN
+F 1 "+5V" H 2765 5773 50  0000 C CNN
+F 2 "" H 2750 5600 50  0001 C CNN
+F 3 "" H 2750 5600 50  0001 C CNN
+	1    2750 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B77D05F
+P 2750 5900
+F 0 "#PWR?" H 2750 5650 50  0001 C CNN
+F 1 "GND" H 2755 5727 50  0000 C CNN
+F 2 "" H 2750 5900 50  0001 C CNN
+F 3 "" H 2750 5900 50  0001 C CNN
+	1    2750 5900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2750 5850 2750 5900
+Wire Wire Line
+	2750 5600 2750 5650
+Text Notes 6850 6950 0    157  ~ 0
+TODO: add ins and out pulses for XOR, flipflop...
+$Comp
+L device:R R?
+U 1 1 5B781E00
+P 4500 4700
+F 0 "R?" V 4580 4700 50  0000 C CNN
+F 1 "10K" V 4500 4700 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 4430 4700 50  0001 C CNN
+F 3 "" H 4500 4700 50  0000 C CNN
+	1    4500 4700
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B781E07
+P 4250 4850
+F 0 "R?" V 4330 4850 50  0000 C CNN
+F 1 "100K" V 4250 4850 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 4180 4850 50  0001 C CNN
+F 3 "" H 4250 4850 50  0000 C CNN
+	1    4250 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B781E0E
+P 4250 5100
+F 0 "#PWR?" H 4250 4850 50  0001 C CNN
+F 1 "GND" H 4250 4950 50  0000 C CNN
+F 2 "" H 4250 5100 50  0000 C CNN
+F 3 "" H 4250 5100 50  0000 C CNN
+	1    4250 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B781E14
+P 4500 5550
+F 0 "R?" V 4580 5550 50  0000 C CNN
+F 1 "10K" V 4500 5550 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 4430 5550 50  0001 C CNN
+F 3 "" H 4500 5550 50  0000 C CNN
+	1    4500 5550
+	0    1    1    0   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B781E1B
+P 4700 5700
+F 0 "R?" V 4780 5700 50  0000 C CNN
+F 1 "100K" V 4700 5700 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 4630 5700 50  0001 C CNN
+F 3 "" H 4700 5700 50  0000 C CNN
+	1    4700 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5B781E22
+P 4850 5750
+F 0 "#PWR?" H 4850 5600 50  0001 C CNN
+F 1 "+12V" H 4850 5890 50  0000 C CNN
+F 2 "" H 4850 5750 50  0000 C CNN
+F 3 "" H 4850 5750 50  0000 C CNN
+	1    4850 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12VA #PWR?
+U 1 1 5B781E28
+P 5100 5150
+F 0 "#PWR?" H 5100 5000 50  0001 C CNN
+F 1 "-12VA" H 5100 5290 50  0000 C CNN
+F 2 "" H 5100 5150 50  0000 C CNN
+F 3 "" H 5100 5150 50  0000 C CNN
+	1    5100 5150
+	-1   0    0    1   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B781E2E
+P 4150 5400
+F 0 "R?" V 4230 5400 50  0000 C CNN
+F 1 "10K" V 4150 5400 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 4080 5400 50  0001 C CNN
+F 3 "" H 4150 5400 50  0000 C CNN
+	1    4150 5400
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5B781E35
+P 5100 4400
+F 0 "#PWR?" H 5100 4250 50  0001 C CNN
+F 1 "+12V" H 5100 4540 50  0000 C CNN
+F 2 "" H 5100 4400 50  0000 C CNN
+F 3 "" H 5100 4400 50  0000 C CNN
+	1    5100 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 5100 5100 5150
+Wire Wire Line
+	4250 5100 4250 5000
+Wire Wire Line
+	4650 4700 4700 4700
+Connection ~ 4250 4700
+Wire Wire Line
+	4300 5400 4350 5400
+Wire Wire Line
+	4500 5400 4500 4900
+Wire Wire Line
+	4500 4900 4900 4900
+Wire Wire Line
+	4350 5550 4350 5400
+Connection ~ 4350 5400
+Wire Wire Line
+	5500 4800 5700 4800
+Text Notes 4400 5750 0    60   ~ 0
+10K?
+$Comp
+L device:D D?
+U 1 1 5B781E46
+P 5850 4800
+F 0 "D?" H 5850 4584 50  0000 C CNN
+F 1 "1n914/4148" H 5850 4675 50  0000 C CNN
+F 2 "" H 5850 4800 50  0001 C CNN
+F 3 "" H 5850 4800 50  0001 C CNN
+	1    5850 4800
+	-1   0    0    1   
+$EndComp
+$Comp
+L device:R R?
+U 1 1 5B781E4D
+P 6100 4950
+F 0 "R?" V 6180 4950 50  0000 C CNN
+F 1 "20K" V 6100 4950 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 6030 4950 50  0001 C CNN
+F 3 "" H 6100 4950 50  0000 C CNN
+	1    6100 4950
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B781E54
+P 6100 5150
+F 0 "#PWR?" H 6100 4900 50  0001 C CNN
+F 1 "GND" H 6100 5000 50  0000 C CNN
+F 2 "" H 6100 5150 50  0000 C CNN
+F 3 "" H 6100 5150 50  0000 C CNN
+	1    6100 5150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6000 4800 6100 4800
+Wire Wire Line
+	6100 5150 6100 5100
+Connection ~ 6100 4800
+$Comp
+L power:GND #PWR?
+U 1 1 5B781E5D
+P 4700 5900
+F 0 "#PWR?" H 4700 5650 50  0001 C CNN
+F 1 "GND" H 4700 5750 50  0000 C CNN
+F 2 "" H 4700 5900 50  0000 C CNN
+F 3 "" H 4700 5900 50  0000 C CNN
+	1    4700 5900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 4500 5100 4400
+Wire Wire Line
+	4250 4700 4350 4700
+Wire Wire Line
+	4350 5400 4500 5400
+Wire Wire Line
+	6100 4800 6250 4800
+$Comp
+L linear:TL072 U?
+U 1 1 5B781E67
+P 5200 4800
+F 0 "U?" H 5541 4846 50  0000 L CNN
+F 1 "TL072" H 5541 4755 50  0000 L CNN
+F 2 "" H 5200 4800 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5200 4800 50  0001 C CNN
+	1    5200 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:Conn_01x01-Connector J?
+U 1 1 5B781E6E
+P 5150 5550
+F 0 "J?" H 5230 5592 50  0000 L CNN
+F 1 "Conn_01x01" H 5230 5501 50  0000 L CNN
+F 2 "" H 5150 5550 50  0001 C CNN
+F 3 "~" H 5150 5550 50  0001 C CNN
+	1    5150 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:Conn_01x01-Connector J?
+U 1 1 5B781E75
+P 5150 5800
+F 0 "J?" H 5230 5842 50  0000 L CNN
+F 1 "Conn_01x01" H 5230 5751 50  0000 L CNN
+F 2 "" H 5150 5800 50  0001 C CNN
+F 3 "~" H 5150 5800 50  0001 C CNN
+	1    5150 5800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4850 5750 4850 5800
+Wire Wire Line
+	4850 5800 4950 5800
+Wire Wire Line
+	4700 5900 4700 5850
+Wire Wire Line
+	4700 5550 4950 5550
+Wire Wire Line
+	4650 5550 4700 5550
+Connection ~ 4700 5550
+$Comp
+L allcolours-rescue:Conn_01x01-Connector J?
+U 1 1 5B781E82
+P 4000 5550
+F 0 "J?" H 4080 5592 50  0000 L CNN
+F 1 "Conn_01x01" H 4080 5501 50  0000 L CNN
+F 2 "" H 4000 5550 50  0001 C CNN
+F 3 "~" H 4000 5550 50  0001 C CNN
+	1    4000 5550
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4200 5550 4300 5550
+Wire Wire Line
+	4300 5550 4300 5400
+Connection ~ 4300 5400
+$Comp
+L erthenvar:AUDIO-JACKERTHENVAR M?
+U 1 1 5B781E8D
+P 3650 4500
+F 0 "M?" H 3656 4719 45  0000 C CNN
+F 1 "AUDIO-JACKERTHENVAR" H 3650 4500 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 3680 4650 20  0001 C CNN
+F 3 "" H 3650 4500 60  0001 C CNN
+	1    3650 4500
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:Conn_01x01-Connector J?
+U 1 1 5B781E94
+P 4500 4450
+F 0 "J?" H 4580 4492 50  0000 L CNN
+F 1 "Conn_01x01" H 4580 4401 50  0000 L CNN
+F 2 "" H 4500 4450 50  0001 C CNN
+F 3 "~" H 4500 4450 50  0001 C CNN
+	1    4500 4450
+	-1   0    0    1   
+$EndComp
+$Comp
+L erthenvar:AUDIO-JACKERTHENVAR M?
+U 1 1 5B781E9B
+P 3600 5200
+F 0 "M?" H 3606 5419 45  0000 C CNN
+F 1 "AUDIO-JACKERTHENVAR" H 3600 5200 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 3630 5350 20  0001 C CNN
+F 3 "" H 3600 5200 60  0001 C CNN
+	1    3600 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4700 4450 4700 4700
+Connection ~ 4700 4700
+Wire Wire Line
+	4700 4700 4900 4700
+Wire Wire Line
+	3950 4700 4250 4700
+Wire Wire Line
+	3900 5400 4000 5400
+$Comp
+L power:GND #PWR?
+U 1 1 5B781EA7
+P 4100 4400
+F 0 "#PWR?" H 4100 4150 50  0001 C CNN
+F 1 "GND" H 4100 4250 50  0000 C CNN
+F 2 "" H 4100 4400 50  0000 C CNN
+F 3 "" H 4100 4400 50  0000 C CNN
+	1    4100 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5B781EAD
+P 4050 5100
+F 0 "#PWR?" H 4050 4850 50  0001 C CNN
+F 1 "GND" H 4050 4950 50  0000 C CNN
+F 2 "" H 4050 5100 50  0000 C CNN
+F 3 "" H 4050 5100 50  0000 C CNN
+	1    4050 5100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3950 4400 4100 4400
+Wire Wire Line
+	3900 5100 4050 5100
+Text Label 6300 4800 0    60   ~ 0
+AVR_CLOCK_IN
+Text Notes 6400 5000 0    60   ~ 0
+INT0 pin
+Text GLabel 3750 7000 0    79   Input ~ 0
+PWM_OUT
+Text GLabel 10600 3100 2    79   Input ~ 0
+PWM_OUT
+Wire Wire Line
+	10050 3100 10600 3100
 $EndSCHEMATC

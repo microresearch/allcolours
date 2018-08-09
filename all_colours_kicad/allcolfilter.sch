@@ -341,186 +341,184 @@ Wire Wire Line
 $Comp
 L device:CP1_Small C?
 U 1 1 5B705C47
-P 1900 6350
+P 3250 2100
 AR Path="/5B705C47" Ref="C?"  Part="1" 
 AR Path="/5B6C330C/5B705C47" Ref="C?"  Part="1" 
-F 0 "C?" H 1910 6420 50  0000 L CNN
-F 1 "10u" H 1910 6270 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 1900 6350 50  0001 C CNN
-F 3 "" H 1900 6350 50  0000 C CNN
-	1    1900 6350
+F 0 "C?" H 3260 2170 50  0000 L CNN
+F 1 "10u" H 3260 2020 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 3250 2100 50  0001 C CNN
+F 3 "" H 3250 2100 50  0000 C CNN
+	1    3250 2100
 	0    -1   -1   0   
 $EndComp
 $Comp
 L device:R R?
 U 1 1 5B705C4E
-P 2200 6350
+P 3550 2100
 AR Path="/5B705C4E" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B705C4E" Ref="R?"  Part="1" 
-F 0 "R?" V 2280 6350 50  0000 C CNN
-F 1 "5.6K" V 2200 6350 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2130 6350 50  0001 C CNN
-F 3 "" H 2200 6350 50  0000 C CNN
-	1    2200 6350
+F 0 "R?" V 3630 2100 50  0000 C CNN
+F 1 "5.6K" V 3550 2100 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 3480 2100 50  0001 C CNN
+F 3 "" H 3550 2100 50  0000 C CNN
+	1    3550 2100
 	0    1    1    0   
 $EndComp
 $Comp
 L device:R R?
 U 1 1 5B705C55
-P 2050 6650
+P 3400 2400
 AR Path="/5B705C55" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B705C55" Ref="R?"  Part="1" 
-F 0 "R?" V 2130 6650 50  0000 C CNN
-F 1 "39K" V 2050 6650 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 1980 6650 50  0001 C CNN
-F 3 "" H 2050 6650 50  0000 C CNN
-	1    2050 6650
+F 0 "R?" V 3480 2400 50  0000 C CNN
+F 1 "39K" V 3400 2400 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 3330 2400 50  0001 C CNN
+F 3 "" H 3400 2400 50  0000 C CNN
+	1    3400 2400
 	1    0    0    -1  
 $EndComp
 $Comp
 L device:R R?
 U 1 1 5B705C5C
-P 2750 5700
+P 4100 1450
 AR Path="/5B705C5C" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B705C5C" Ref="R?"  Part="1" 
-F 0 "R?" V 2830 5700 50  0000 C CNN
-F 1 "39K" V 2750 5700 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2680 5700 50  0001 C CNN
-F 3 "" H 2750 5700 50  0000 C CNN
-	1    2750 5700
+F 0 "R?" V 4180 1450 50  0000 C CNN
+F 1 "39K" V 4100 1450 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 4030 1450 50  0001 C CNN
+F 3 "" H 4100 1450 50  0000 C CNN
+	1    4100 1450
 	0    1    1    0   
 $EndComp
 $Comp
 L device:C C?
 U 1 1 5B705C63
-P 2750 5850
+P 4100 1600
 AR Path="/5B705C63" Ref="C?"  Part="1" 
 AR Path="/5B6C330C/5B705C63" Ref="C?"  Part="1" 
-F 0 "C?" H 2775 5950 50  0000 L CNN
-F 1 "18p" H 2775 5750 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 2788 5700 50  0001 C CNN
-F 3 "" H 2750 5850 50  0000 C CNN
-	1    2750 5850
+F 0 "C?" H 4125 1700 50  0000 L CNN
+F 1 "18p" H 4125 1500 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 4138 1450 50  0001 C CNN
+F 3 "" H 4100 1600 50  0000 C CNN
+	1    4100 1600
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5B705C6A
-P 2050 6850
+P 3400 2600
 AR Path="/5B705C6A" Ref="#PWR?"  Part="1" 
 AR Path="/5B6C330C/5B705C6A" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2050 6600 50  0001 C CNN
-F 1 "GND" H 2050 6700 50  0000 C CNN
-F 2 "" H 2050 6850 50  0000 C CNN
-F 3 "" H 2050 6850 50  0000 C CNN
-	1    2050 6850
+F 0 "#PWR?" H 3400 2350 50  0001 C CNN
+F 1 "GND" H 3400 2450 50  0000 C CNN
+F 2 "" H 3400 2600 50  0000 C CNN
+F 3 "" H 3400 2600 50  0000 C CNN
+	1    3400 2600
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5B705C70
-P 2350 6150
+P 3700 1900
 AR Path="/5B705C70" Ref="#PWR?"  Part="1" 
 AR Path="/5B6C330C/5B705C70" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2350 5900 50  0001 C CNN
-F 1 "GND" H 2350 6000 50  0000 C CNN
-F 2 "" H 2350 6150 50  0000 C CNN
-F 3 "" H 2350 6150 50  0000 C CNN
-	1    2350 6150
+F 0 "#PWR?" H 3700 1650 50  0001 C CNN
+F 1 "GND" H 3700 1750 50  0000 C CNN
+F 2 "" H 3700 1900 50  0000 C CNN
+F 3 "" H 3700 1900 50  0000 C CNN
+	1    3700 1900
 	1    0    0    -1  
 $EndComp
-Text Label 3550 6250 0    60   ~ 0
-7490_OUT
 $Comp
 L power:-12VA #PWR?
 U 1 1 5B705C77
-P 2650 6650
+P 4000 2400
 AR Path="/5B705C77" Ref="#PWR?"  Part="1" 
 AR Path="/5B6C330C/5B705C77" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2650 6500 50  0001 C CNN
-F 1 "-12VA" H 2650 6790 50  0000 C CNN
-F 2 "" H 2650 6650 50  0000 C CNN
-F 3 "" H 2650 6650 50  0000 C CNN
-	1    2650 6650
+F 0 "#PWR?" H 4000 2250 50  0001 C CNN
+F 1 "-12VA" H 4000 2540 50  0000 C CNN
+F 2 "" H 4000 2400 50  0000 C CNN
+F 3 "" H 4000 2400 50  0000 C CNN
+	1    4000 2400
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+12V #PWR?
 U 1 1 5B705C7D
-P 2600 5600
+P 3950 1350
 AR Path="/5B705C7D" Ref="#PWR?"  Part="1" 
 AR Path="/5B6C330C/5B705C7D" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2600 5450 50  0001 C CNN
-F 1 "+12V" H 2600 5740 50  0000 C CNN
-F 2 "" H 2600 5600 50  0000 C CNN
-F 3 "" H 2600 5600 50  0000 C CNN
-	1    2600 5600
+F 0 "#PWR?" H 3950 1200 50  0001 C CNN
+F 1 "+12V" H 3950 1490 50  0000 C CNN
+F 2 "" H 3950 1350 50  0000 C CNN
+F 3 "" H 3950 1350 50  0000 C CNN
+	1    3950 1350
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2000 6350 2050 6350
+	3350 2100 3400 2100
 Wire Wire Line
-	2050 6350 2050 6500
+	3400 2100 3400 2250
 Wire Wire Line
-	2050 6850 2050 6800
+	3400 2600 3400 2550
 Wire Wire Line
-	2400 5700 2400 5850
+	3750 1450 3750 1600
 Wire Wire Line
-	2400 5850 2600 5850
+	3750 1600 3950 1600
 Wire Wire Line
-	2400 5700 2600 5700
-Connection ~ 2400 5850
+	3750 1450 3950 1450
+Connection ~ 3750 1600
 Wire Wire Line
-	2900 5700 2900 5850
+	4250 1450 4250 1600
 Wire Wire Line
-	2900 5850 3050 5850
+	4250 1600 4400 1600
 Wire Wire Line
-	3050 5850 3050 6250
+	4400 1600 4400 2000
 Wire Wire Line
-	3050 6250 3550 6250
+	4400 2000 4900 2000
 Wire Wire Line
-	2650 6550 2650 6650
+	4000 2300 4000 2400
 Wire Wire Line
-	2650 5950 2600 5950
+	4000 1700 3950 1700
 Wire Wire Line
-	2600 5950 2600 5850
+	3950 1700 3950 1600
 Wire Wire Line
-	2350 6150 2400 6150
-Text Notes 1550 5350 0    60   ~ 0
-these values adapted from 3.3v - 12v schema\nso might need to be changed
-Text Notes 1900 6700 0    60   ~ 0
+	3700 1900 3750 1900
+Text Notes 2900 1100 0    60   ~ 0
+out from 7490 - these values adapted from 3.3v - 12v schema\nso might need to be changed
+Text Notes 3250 2450 0    60   ~ 0
 ?
 Wire Wire Line
-	2400 5850 2400 6150
-Connection ~ 2050 6350
-Connection ~ 2600 5700
+	3750 1600 3750 1900
+Connection ~ 3400 2100
+Connection ~ 3950 1450
 Wire Wire Line
-	2600 5700 2600 5600
-Connection ~ 2600 5850
+	3950 1450 3950 1350
+Connection ~ 3950 1600
 Wire Wire Line
-	2600 5850 2600 5700
-Connection ~ 2900 5850
+	3950 1600 3950 1450
+Connection ~ 4250 1600
 $Comp
 L linear:TL072 U?
 U 2 1 5B705C9B
-P 2750 6250
+P 4100 2000
 AR Path="/5B705C9B" Ref="U?"  Part="2" 
 AR Path="/5B6C330C/5B705C9B" Ref="U?"  Part="2" 
-F 0 "U?" H 3091 6296 50  0000 L CNN
-F 1 "TL072" H 3091 6205 50  0000 L CNN
-F 2 "" H 2750 6250 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2750 6250 50  0001 C CNN
-	2    2750 6250
+F 0 "U?" H 4441 2046 50  0000 L CNN
+F 1 "TL072" H 4441 1955 50  0000 L CNN
+F 2 "" H 4100 2000 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 4100 2000 50  0001 C CNN
+	2    4100 2000
 	1    0    0    -1  
 $EndComp
-Connection ~ 2400 6150
+Connection ~ 3750 1900
 Wire Wire Line
-	2400 6150 2450 6150
-Connection ~ 3050 6250
+	3750 1900 3800 1900
+Connection ~ 4400 2000
 Wire Wire Line
-	2350 6350 2450 6350
-Text GLabel 10200 2850 2    118  Input ~ 0
-AVR_CLK
+	3700 2100 3800 2100
+Text GLabel 10400 2250 2    118  Input ~ 0
+PWM_OUT
 Wire Wire Line
 	10100 2100 10100 1950
 Wire Wire Line
@@ -540,14 +538,34 @@ $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5B72C2B1
-P 10300 2550
-F 0 "#PWR?" H 10300 2300 50  0001 C CNN
-F 1 "GND" H 10300 2400 50  0000 C CNN
-F 2 "" H 10300 2550 50  0000 C CNN
-F 3 "" H 10300 2550 50  0000 C CNN
-	1    10300 2550
+P 10350 900
+F 0 "#PWR?" H 10350 650 50  0001 C CNN
+F 1 "GND" H 10350 750 50  0000 C CNN
+F 2 "" H 10350 900 50  0000 C CNN
+F 3 "" H 10350 900 50  0000 C CNN
+	1    10350 900 
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	10100 2250 10400 2250
+Text Notes 4500 1400 0    197  ~ 0
+2x for HP and BP
+Text Notes 7400 4150 0    118  ~ 0
+one as LP one as HP - check config!
+Wire Wire Line
+	2450 1700 2650 1700
+Text Label 2650 1700 0    79   ~ 0
+7490_IN_LOW
+Wire Wire Line
+	1100 1800 950  1800
+Text GLabel 4900 2000 2    197  Input ~ 0
+7490_OUT_LP
+Text GLabel 10300 1950 2    118  Input ~ 0
+7490_CLOCK
+Text Notes 10150 1800 0    118  ~ 0
+from comparator\n
+Text Notes 10550 2500 0    118  ~ 0
+from avr
+Text Notes 9550 3100 0    118  ~ 0
+same clock or?
 $EndSCHEMATC
