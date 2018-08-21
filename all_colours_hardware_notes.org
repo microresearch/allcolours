@@ -71,6 +71,15 @@ avr is 5v currently
 
 - have 16 pulse ins and outs and configure length of SR in software (maybe add one extra cv)
 
+* 21/8
+
+- have 7490 for bandpass or highpass and 7400 for lowpass (as is 8th stage and easier)
+- gating of noise as pulses with primitive envelope/VCA with single transistor:
+
+http://www.electro-music.com/forum/topic-33190-25.html
+
+
+
 * notes
 
 - ignore other all_colours schematics in ERD!
