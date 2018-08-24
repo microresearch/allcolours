@@ -1591,8 +1591,6 @@ Wire Wire Line
 	6950 4100 6700 4100
 Text Label 6700 4100 0    60   ~ 0
 CV_IN2
-Text Notes 3600 3800 0    60   ~ 0
-we have four port free = 16 in 16 out 
 Wire Wire Line
 	10050 1750 10250 1750
 Wire Wire Line
