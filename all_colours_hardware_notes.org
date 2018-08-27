@@ -78,7 +78,10 @@ avr is 5v currently
 
 http://www.electro-music.com/forum/topic-33190-25.html
 
-r
+* 23/8
+
+- maybe 8 ins/outs for pulses to micro, 8 envelopes
+
 
 * notes
 
