@@ -944,7 +944,7 @@ F 3 "" H 8150 6050 50  0001 C CNN
 	1    8150 6050
 	1    0    0    -1  
 $EndComp
-Text Notes 1400 4550 0    60   ~ 12
+Text Notes 3350 4850 0    60   ~ 12
 clock in with comparator
 Text Notes 750  2050 0    60   ~ 0
 CV IN - mode\n
@@ -1627,6 +1627,4 @@ Wire Wire Line
 	9550 3400 9650 3400
 Text Label 9650 3400 0    60   ~ 0
 MISO
-Text Notes 3150 3000 0    60   ~ 0
-maybe one extra cv
 $EndSCHEMATC
