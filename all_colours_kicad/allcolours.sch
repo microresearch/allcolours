@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 3
+Sheet 1 4
 Title ""
 Date ""
 Rev ""
@@ -1722,4 +1722,12 @@ Wire Wire Line
 Connection ~ 6350 3300
 Text Label 6600 3300 0    60   ~ 0
 ENV_OUT0
+$Sheet
+S 8750 5250 1900 850 
+U 5BAC374C
+F0 "Sheet5BAC374B" 60
+F1 "ouroboros.sch" 60
+$EndSheet
+Text Notes 9100 5700 0    197  ~ 0
+ouroboros\n
 $EndSCHEMATC
