@@ -737,7 +737,7 @@ Wire Wire Line
 Wire Wire Line
 	2900 6100 2600 6100
 Text Label 2600 6100 2    60   ~ 0
-7490_IN_LOWER
+7490_IN_LOW
 $Comp
 L device:C C36
 U 1 1 5B836AA8
@@ -1116,4 +1116,6 @@ Text Label 6050 3350 2    60   ~ 0
 7400_LP
 Text Label 950  1750 2    60   ~ 0
 FILTER_IN
+Text Notes 6500 4850 0    60   ~ 0
+will comp interfere with pwm?
 $EndSCHEMATC

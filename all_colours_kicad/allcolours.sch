@@ -16,28 +16,6 @@ Comment4 ""
 $EndDescr
 Text Notes 900  2100 0    60   ~ 0
 bc547c cbe
-$Comp
-L device:Q_NPN_CBE Q1
-U 1 1 5965456A
-P 1250 1700
-F 0 "Q1" H 1450 1750 50  0000 L CNN
-F 1 "Q_NPN_CBE" H 1450 1650 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-92_Molded_Wide" H 1450 1800 50  0001 C CNN
-F 3 "" H 1250 1700 50  0000 C CNN
-	1    1250 1700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L device:Q_NPN_CBE Q3
-U 1 1 5965464B
-P 2000 1600
-F 0 "Q3" H 2200 1650 50  0000 L CNN
-F 1 "Q_NPN_CBE" H 2200 1550 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-92_Molded_Wide" H 2200 1700 50  0001 C CNN
-F 3 "" H 2000 1600 50  0000 C CNN
-	1    2000 1600
-	1    0    0    -1  
-$EndComp
 Text Notes 850  850  0    60   ~ 0
 yusynth noise source x2
 $Comp
@@ -957,28 +935,6 @@ Wire Wire Line
 Connection ~ 3650 1150
 Text Notes 900  4000 0    60   ~ 0
 bc547c cbe
-$Comp
-L device:Q_NPN_CBE Q5
-U 1 1 5B715E1E
-P 1250 3600
-F 0 "Q5" H 1450 3650 50  0000 L CNN
-F 1 "Q_NPN_CBE" H 1450 3550 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-92_Molded_Wide" H 1450 3700 50  0001 C CNN
-F 3 "" H 1250 3600 50  0000 C CNN
-	1    1250 3600
-	0    -1   -1   0   
-$EndComp
-$Comp
-L device:Q_NPN_CBE Q6
-U 1 1 5B715E24
-P 2000 3500
-F 0 "Q6" H 2200 3550 50  0000 L CNN
-F 1 "Q_NPN_CBE" H 2200 3450 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-92_Molded_Wide" H 2200 3600 50  0001 C CNN
-F 3 "" H 2000 3500 50  0000 C CNN
-	1    2000 3500
-	1    0    0    -1  
-$EndComp
 Text Notes 850  2750 0    60   ~ 0
 yusynth noise source x2
 $Comp
@@ -1568,17 +1524,6 @@ Wire Wire Line
 Text Notes 5200 2750 0    60   ~ 0
 primitive envelope say x2
 $Comp
-L device:Q_NPN_CBE Q7
-U 1 1 5B7FB20A
-P 5750 3900
-F 0 "Q7" H 5950 3950 50  0000 L CNN
-F 1 "Q_NPN_CBE" H 5350 3700 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-92_Molded_Wide" H 5950 4000 50  0001 C CNN
-F 3 "" H 5750 3900 50  0000 C CNN
-	1    5750 3900
-	1    0    0    -1  
-$EndComp
-$Comp
 L device:C C24
 U 1 1 5B7FB454
 P 5300 3900
@@ -1730,4 +1675,66 @@ F1 "ouroboros.sch" 60
 $EndSheet
 Text Notes 9100 5700 0    197  ~ 0
 ouroboros\n
+Text Notes 4450 4600 0    60   ~ 0
+check mmbt3904 and 2n2222: 1-B, 2-E, 3-C-tip = BEC DONE!
+$Comp
+L device:Q_NPN_BEC Q?
+U 1 1 5BB1D990
+P 1250 1700
+F 0 "Q?" V 1578 1700 50  0000 C CNN
+F 1 "Q_NPN_BEC" V 1487 1700 50  0000 C CNN
+F 2 "" H 1450 1800 50  0001 C CNN
+F 3 "" H 1250 1700 50  0001 C CNN
+	1    1250 1700
+	0    -1   -1   0   
+$EndComp
+Connection ~ 1450 1600
+$Comp
+L device:Q_NPN_BEC Q?
+U 1 1 5BB3A98F
+P 2000 1600
+F 0 "Q?" H 2191 1646 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 2191 1555 50  0000 L CNN
+F 2 "" H 2200 1700 50  0001 C CNN
+F 3 "" H 2000 1600 50  0001 C CNN
+	1    2000 1600
+	1    0    0    -1  
+$EndComp
+Connection ~ 1800 1600
+Connection ~ 2100 1400
+$Comp
+L device:Q_NPN_BEC Q?
+U 1 1 5BB3BE45
+P 1250 3600
+F 0 "Q?" V 1578 3600 50  0000 C CNN
+F 1 "Q_NPN_BEC" V 1487 3600 50  0000 C CNN
+F 2 "" H 1450 3700 50  0001 C CNN
+F 3 "" H 1250 3600 50  0001 C CNN
+	1    1250 3600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L device:Q_NPN_BEC Q?
+U 1 1 5BB3C040
+P 2000 3500
+F 0 "Q?" H 2191 3546 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 2191 3455 50  0000 L CNN
+F 2 "" H 2200 3600 50  0001 C CNN
+F 3 "" H 2000 3500 50  0001 C CNN
+	1    2000 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L device:Q_NPN_BEC Q?
+U 1 1 5BB3C268
+P 5750 3900
+F 0 "Q?" H 5941 3946 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 5941 3855 50  0000 L CNN
+F 2 "" H 5950 4000 50  0001 C CNN
+F 3 "" H 5750 3900 50  0001 C CNN
+	1    5750 3900
+	1    0    0    -1  
+$EndComp
+Text Notes 6700 900  0    60   ~ 0
+what is out with no in, do we need to mix for 7490 clock in?
 $EndSCHEMATC

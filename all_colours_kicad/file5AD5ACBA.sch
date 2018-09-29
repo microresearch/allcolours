@@ -1151,8 +1151,6 @@ Wire Wire Line
 	2400 2900 2400 2950
 Wire Wire Line
 	2400 2650 2400 2700
-Text Notes 7250 6950 0    157  ~ 0
-TODO: add ins and out pulses for XOR, flipflop...
 $Comp
 L device:R R42
 U 1 1 5B781E00
@@ -1627,4 +1625,6 @@ Wire Wire Line
 	9550 3400 9650 3400
 Text Label 9650 3400 0    60   ~ 0
 MISO
+Text Notes 2750 200  0    60   ~ 0
+transistor check out!
 $EndSCHEMATC

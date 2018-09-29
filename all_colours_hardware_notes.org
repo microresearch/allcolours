@@ -80,8 +80,18 @@ http://www.electro-music.com/forum/topic-33190-25.html
 
 * 23/8
 
-- maybe 8 ins/outs for pulses to micro, 8 envelopes
+- maybe 7 ins/outs for pulses to micro, 7 envelopes-7 env is too many?
 
+* 29/9
+
+- see new ouroboros design as centre piece - perhaps exposed gold all
+- check comparator out voltage and if we need to mix with micro/pwm for filter clock in
+- new design follows eagle/worm/toad/earth
+- earth as ripples in ripley sea
+- LFSR as outer ouroboros
+- check all possible signal paths for fingers and patchables
+- standalone - fingers only with one input and out, euro - patchable internally and externally
+- Q of switch for filter input between noise and other source (hand) 4066, 4053
 
 * notes
 
