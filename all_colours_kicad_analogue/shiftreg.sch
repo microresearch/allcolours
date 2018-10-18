@@ -1,0 +1,61 @@
+EESchema Schematic File Version 4
+LIBS:allcolours_analogue-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 5 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L 4xxx_IEEE:4015 U?
+U 1 1 5BC8EBAC
+P 4850 2150
+F 0 "U?" H 4850 2606 50  0000 C CNN
+F 1 "4015" H 4850 2515 50  0000 C CNN
+F 2 "" H 4850 2150 60  0001 C CNN
+F 3 "" H 4850 2150 60  0001 C CNN
+	1    4850 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx_IEEE:4015 U?
+U 2 1 5BC8EC12
+P 4850 2850
+F 0 "U?" H 4850 3306 50  0000 C CNN
+F 1 "4015" H 4850 3215 50  0000 C CNN
+F 2 "" H 4850 2850 60  0001 C CNN
+F 3 "" H 4850 2850 60  0001 C CNN
+	2    4850 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx_IEEE:4015 U?
+U 1 1 5BC8ED6A
+P 4850 3550
+F 0 "U?" H 4850 4006 50  0000 C CNN
+F 1 "4015" H 4850 3915 50  0000 C CNN
+F 2 "" H 4850 3550 60  0001 C CNN
+F 3 "" H 4850 3550 60  0001 C CNN
+	1    4850 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx_IEEE:4015 U?
+U 2 1 5BC8ED70
+P 4850 4250
+F 0 "U?" H 4850 4706 50  0000 C CNN
+F 1 "4015" H 4850 4615 50  0000 C CNN
+F 2 "" H 4850 4250 60  0001 C CNN
+F 3 "" H 4850 4250 60  0001 C CNN
+	2    4850 4250
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

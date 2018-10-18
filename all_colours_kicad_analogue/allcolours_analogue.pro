@@ -27,7 +27,7 @@ version=1
 NetIExt=net
 [eeschema]
 version=1
-LibDir=
+LibDir=/root/kicad-library/
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
