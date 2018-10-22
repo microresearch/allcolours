@@ -270,7 +270,7 @@ ouroboros\n
 Text Notes 600  -150 0    118  ~ 0
 core of EARTH/OSC/NOISE\n- surrounded by mandalas of transistor, SR (in?) and out, and switched cap filter (clock in 4051, 4024)
 $Sheet
-S 4100 6700 2250 600 
+S 975  5400 2250 600 
 U 5BD09509
 F0 "misc_trans" 118
 F1 "misc_trans.sch" 118
@@ -283,7 +283,7 @@ F1 "noiseandosc.sch" 118
 $EndSheet
 Text Notes 1950 2500 0    118  ~ 0
 noise\n
-Text Notes 4800 7050 0    118  ~ 0
+Text Notes 1675 5750 0    118  ~ 0
 misc trans\n
 $Sheet
 S 1100 3200 2200 600 
