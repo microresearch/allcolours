@@ -1046,28 +1046,4 @@ F 3 "" H 2025 2275 50  0000 C CNN
 	1    2025 2275
 	0    -1   -1   0   
 $EndComp
-$Comp
-L allcolours_analogue-rescue:R-device R?
-U 1 1 5BFF2D90
-P 1350 2550
-F 0 "R?" V 1430 2550 50  0000 C CNN
-F 1 "470K" V 1350 2550 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 1280 2550 50  0001 C CNN
-F 3 "" H 1350 2550 50  0000 C CNN
-	1    1350 2550
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5BFF2EE2
-P 1350 2325
-F 0 "#PWR?" H 1350 2175 50  0001 C CNN
-F 1 "+12V" H 1350 2465 50  0000 C CNN
-F 2 "" H 1350 2325 50  0000 C CNN
-F 3 "" H 1350 2325 50  0000 C CNN
-	1    1350 2325
-	1    0    0    -1  
-$EndComp
-Text Notes 975  2575 0    60   ~ 0
-bias?
 $EndSCHEMATC
