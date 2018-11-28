@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 6 6
+Sheet 6 8
 Title ""
 Date ""
 Rev ""
@@ -286,7 +286,7 @@ Wire Wire Line
 Wire Wire Line
 	3575 4675 3675 4675
 Wire Wire Line
-	3675 4675 3675 4500
+	3675 4675 3675 4550
 Wire Wire Line
 	5475 4400 5475 4300
 $Comp
@@ -424,12 +424,12 @@ $EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5BC9C3DA
-P 8075 2925
-F 0 "R?" V 7879 2925 50  0000 C CNN
-F 1 "10K" V 7970 2925 50  0000 C CNN
-F 2 "" H 8075 2925 50  0001 C CNN
-F 3 "~" H 8075 2925 50  0001 C CNN
-	1    8075 2925
+P 8075 3100
+F 0 "R?" V 7879 3100 50  0000 C CNN
+F 1 "10K" V 7970 3100 50  0000 C CNN
+F 2 "" H 8075 3100 50  0001 C CNN
+F 3 "~" H 8075 3100 50  0001 C CNN
+	1    8075 3100
 	0    1    1    0   
 $EndComp
 $Comp
@@ -499,7 +499,7 @@ F 3 "" H 7950 2650 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Text Notes 3475 5450 0    60   ~ 0
-7v supply
++-6v supply
 Wire Wire Line
 	5675 5525 5675 5375
 Text Label 5675 5375 0    60   ~ 0
@@ -539,12 +539,12 @@ Wire Wire Line
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5BCF57B0
-P 5225 6625
-F 0 "J?" H 5145 6400 50  0000 C CNN
-F 1 "clock" H 5145 6491 50  0000 C CNN
-F 2 "" H 5225 6625 50  0001 C CNN
-F 3 "" H 5225 6625 50  0001 C CNN
-	1    5225 6625
+P 4825 6375
+F 0 "J?" H 4745 6150 50  0000 C CNN
+F 1 "clock" H 4745 6241 50  0000 C CNN
+F 2 "" H 4825 6375 50  0001 C CNN
+F 3 "" H 4825 6375 50  0001 C CNN
+	1    4825 6375
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
@@ -564,28 +564,6 @@ Wire Wire Line
 	5225 6000 5225 6075
 Wire Wire Line
 	5225 6075 5425 6075
-$Comp
-L Transistor_BJT:BC547 Q?
-U 1 1 5BCF8D30
-P 3525 6100
-F 0 "Q?" H 3716 6146 50  0000 L CNN
-F 1 "BC547" H 3600 6075 50  0000 L CNN
-F 2 "Package_TO_SOT_THT:TO-92_Inline" H 3725 6025 50  0001 L CIN
-F 3 "http://www.fairchildsemi.com/ds/BC/BC547.pdf" H 3525 6100 50  0001 L CNN
-	1    3525 6100
-	1    0    0    -1  
-$EndComp
-$Comp
-L Transistor_BJT:BC557 Q?
-U 1 1 5BCF8F47
-P 4250 6075
-F 0 "Q?" H 4475 5950 50  0000 L CNN
-F 1 "BC557" H 4441 6030 50  0000 L CNN
-F 2 "Package_TO_SOT_THT:TO-92_Inline" H 4450 6000 50  0001 L CIN
-F 3 "http://www.fairchildsemi.com/ds/BC/BC557.pdf" H 4250 6075 50  0001 L CNN
-	1    4250 6075
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5BCF94E8
@@ -678,11 +656,6 @@ Wire Wire Line
 	3325 5800 3325 5850
 Wire Wire Line
 	3625 5850 3625 5900
-Wire Wire Line
-	3325 6050 3325 6100
-Wire Wire Line
-	3325 6175 3325 6100
-Connection ~ 3325 6100
 $Comp
 L power:GND #PWR?
 U 1 1 5BCFFE5F
@@ -776,11 +749,6 @@ F 3 "" H 4250 5625 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4050 6025 4050 6075
-Wire Wire Line
-	4050 6150 4050 6075
-Connection ~ 4050 6075
-Wire Wire Line
 	4050 6450 4050 6350
 Wire Wire Line
 	3925 5825 4050 5825
@@ -797,7 +765,7 @@ L power:-8V #PWR?
 U 1 1 5BD0DF5D
 P 4525 5875
 F 0 "#PWR?" H 4525 5975 50  0001 C CNN
-F 1 "-8V" H 4540 6048 50  0000 C CNN
+F 1 "-8V" H 4475 6025 50  0000 C CNN
 F 2 "" H 4525 5875 50  0001 C CNN
 F 3 "" H 4525 5875 50  0001 C CNN
 	1    4525 5875
@@ -927,8 +895,6 @@ Wire Wire Line
 	6800 3900 6800 3750
 Text Label 6800 3750 0    60   ~ 0
 C1
-Wire Wire Line
-	6900 3900 6900 3800
 Text Label 6900 3800 0    60   ~ 0
 C2
 Wire Wire Line
@@ -1030,11 +996,9 @@ Wire Wire Line
 Wire Wire Line
 	6400 4675 6500 4675
 Wire Wire Line
-	6500 4675 6500 4500
+	6500 4675 6500 4550
 Wire Wire Line
 	8300 4400 8300 4300
-Wire Wire Line
-	8000 4900 6025 4900
 $Comp
 L power:+7.5V #PWR?
 U 1 1 5BD13D65
@@ -1142,9 +1106,6 @@ Connection ~ 7650 2375
 Wire Wire Line
 	8175 2925 8350 2925
 Wire Wire Line
-	8350 2925 8350 2275
-Connection ~ 8350 2275
-Wire Wire Line
 	3350 2675 3350 3275
 Wire Wire Line
 	3350 3275 3525 3275
@@ -1173,7 +1134,7 @@ L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5BD8F28B
 P 2750 2675
 F 0 "J?" H 2670 2450 50  0000 C CNN
-F 1 "IN" H 2670 2541 50  0000 C CNN
+F 1 "FILT_IN" H 2670 2541 50  0000 C CNN
 F 2 "" H 2750 2675 50  0001 C CNN
 F 3 "" H 2750 2675 50  0001 C CNN
 	1    2750 2675
@@ -1182,14 +1143,14 @@ $EndComp
 Wire Wire Line
 	2950 2675 3050 2675
 $Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue FILT_OUT
 U 1 1 5BD955EE
-P 8950 2275
-F 0 "J?" H 9030 2317 50  0000 L CNN
-F 1 "OUT" H 9030 2226 50  0000 L CNN
-F 2 "" H 8950 2275 50  0001 C CNN
-F 3 "" H 8950 2275 50  0001 C CNN
-	1    8950 2275
+P 9075 2275
+F 0 "FILT_OUT" H 9155 2317 50  0000 L CNN
+F 1 "OUT" H 9155 2226 50  0000 L CNN
+F 2 "" H 9075 2275 50  0001 C CNN
+F 3 "" H 9075 2275 50  0001 C CNN
+	1    9075 2275
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -1216,12 +1177,12 @@ Wire Wire Line
 $Comp
 L Device:C_Small C?
 U 1 1 5BDAC979
-P 8075 3100
-F 0 "C?" V 7846 3100 50  0000 C CNN
-F 1 "100pF" V 8225 3100 50  0000 C CNN
-F 2 "" H 8075 3100 50  0001 C CNN
-F 3 "~" H 8075 3100 50  0001 C CNN
-	1    8075 3100
+P 8075 2925
+F 0 "C?" V 7846 2925 50  0000 C CNN
+F 1 "100pF" V 8000 3050 50  0000 C CNN
+F 2 "" H 8075 2925 50  0001 C CNN
+F 3 "~" H 8075 2925 50  0001 C CNN
+	1    8075 2925
 	0    1    1    0   
 $EndComp
 Wire Wire Line
@@ -1229,11 +1190,6 @@ Wire Wire Line
 Wire Wire Line
 	7650 3100 7975 3100
 Connection ~ 7650 2925
-Wire Wire Line
-	8175 3100 8350 3100
-Wire Wire Line
-	8350 3100 8350 2925
-Connection ~ 8350 2925
 Wire Wire Line
 	3250 2675 3275 2675
 Connection ~ 3350 2675
@@ -1311,4 +1267,242 @@ Wire Wire Line
 Connection ~ 3275 2675
 Wire Wire Line
 	3275 2675 3350 2675
+Text Notes 6850 5800 0    60   ~ 0
+signal is -12 to +12v. clock we divide in!
+$Comp
+L Device:R_Small R?
+U 1 1 5BCF33A4
+P 5075 6475
+F 0 "R?" H 5134 6521 50  0000 L CNN
+F 1 "1K" H 5134 6430 50  0000 L CNN
+F 2 "" H 5075 6475 50  0001 C CNN
+F 3 "~" H 5075 6475 50  0001 C CNN
+	1    5075 6475
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5BCF355F
+P 5425 6725
+F 0 "R?" H 5484 6771 50  0000 L CNN
+F 1 "47K" H 5225 6775 50  0000 L CNN
+F 2 "" H 5425 6725 50  0001 C CNN
+F 3 "~" H 5425 6725 50  0001 C CNN
+	1    5425 6725
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5BCF3A3F
+P 5075 6775
+F 0 "R?" H 5134 6821 50  0000 L CNN
+F 1 "1K" H 5134 6730 50  0000 L CNN
+F 2 "" H 5075 6775 50  0001 C CNN
+F 3 "~" H 5075 6775 50  0001 C CNN
+	1    5075 6775
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5BCF3D0D
+P 5425 6875
+F 0 "#PWR?" H 5425 6625 50  0001 C CNN
+F 1 "GND" H 5430 6702 50  0000 C CNN
+F 2 "" H 5425 6875 50  0001 C CNN
+F 3 "" H 5425 6875 50  0001 C CNN
+	1    5425 6875
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5425 6875 5425 6825
+$Comp
+L Diode:1N4148 D?
+U 1 1 5BCFC6A0
+P 5225 6625
+F 0 "D?" H 5075 6475 50  0000 C CNN
+F 1 "1N4148" H 5050 6550 50  0000 C CNN
+F 2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" H 5225 6450 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/1N4148_1N4448.pdf" H 5225 6625 50  0001 C CNN
+	1    5225 6625
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5375 6625 5425 6625
+Connection ~ 5425 6625
+Wire Wire Line
+	5025 6375 5075 6375
+$Comp
+L power:GND #PWR?
+U 1 1 5BD0DAA9
+P 5075 6925
+F 0 "#PWR?" H 5075 6675 50  0001 C CNN
+F 1 "GND" H 5080 6752 50  0000 C CNN
+F 2 "" H 5075 6925 50  0001 C CNN
+F 3 "" H 5075 6925 50  0001 C CNN
+	1    5075 6925
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5075 6625 5075 6575
+Wire Wire Line
+	5075 6675 5075 6625
+Connection ~ 5075 6625
+Wire Wire Line
+	5075 6875 5075 6925
+Wire Wire Line
+	8350 2275 8350 2925
+Connection ~ 8350 2275
+Wire Wire Line
+	8750 3100 8750 2275
+Wire Wire Line
+	8175 3100 8750 3100
+Wire Wire Line
+	8750 2275 8875 2275
+Connection ~ 8750 2275
+Wire Wire Line
+	6000 4900 8000 4900
+$Comp
+L Device:C_Small C?
+U 1 1 5C06B12A
+P 4750 5950
+F 0 "C?" H 4842 5996 50  0000 L CNN
+F 1 "100nF" H 4842 5905 50  0000 L CNN
+F 2 "" H 4750 5950 50  0001 C CNN
+F 3 "~" H 4750 5950 50  0001 C CNN
+	1    4750 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5C06C4B5
+P 4750 6100
+F 0 "#PWR?" H 4750 5850 50  0001 C CNN
+F 1 "GND" H 4755 5927 50  0000 C CNN
+F 2 "" H 4750 6100 50  0001 C CNN
+F 3 "" H 4750 6100 50  0001 C CNN
+	1    4750 6100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4525 5850 4750 5850
+Connection ~ 4525 5850
+Wire Wire Line
+	4750 6100 4750 6050
+$Comp
+L Device:C_Small C?
+U 1 1 5C088EE0
+P 3800 6500
+F 0 "C?" H 3892 6546 50  0000 L CNN
+F 1 "100nF" H 3892 6455 50  0000 L CNN
+F 2 "" H 3800 6500 50  0001 C CNN
+F 3 "~" H 3800 6500 50  0001 C CNN
+	1    3800 6500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3625 6600 3800 6600
+Connection ~ 3625 6600
+Wire Wire Line
+	3800 6350 3800 6400
+Connection ~ 3800 6350
+$Comp
+L Device:C_Small C?
+U 1 1 5C09D1F7
+P 6575 4650
+F 0 "C?" H 6667 4696 50  0000 L CNN
+F 1 "100nF" H 6667 4605 50  0000 L CNN
+F 2 "" H 6575 4650 50  0001 C CNN
+F 3 "~" H 6575 4650 50  0001 C CNN
+	1    6575 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5C09D2C7
+P 6575 4775
+F 0 "#PWR?" H 6575 4525 50  0001 C CNN
+F 1 "GND" H 6580 4602 50  0000 C CNN
+F 2 "" H 6575 4775 50  0001 C CNN
+F 3 "" H 6575 4775 50  0001 C CNN
+	1    6575 4775
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6900 3900 6900 3800
+Wire Wire Line
+	6500 4550 6575 4550
+Connection ~ 6500 4550
+Wire Wire Line
+	6500 4550 6500 4500
+Wire Wire Line
+	6575 4775 6575 4750
+$Comp
+L Device:C_Small C?
+U 1 1 5C0B9CFF
+P 3775 4650
+F 0 "C?" H 3867 4696 50  0000 L CNN
+F 1 "100nF" H 3867 4605 50  0000 L CNN
+F 2 "" H 3775 4650 50  0001 C CNN
+F 3 "~" H 3775 4650 50  0001 C CNN
+	1    3775 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5C0BAC45
+P 3775 4775
+F 0 "#PWR?" H 3775 4525 50  0001 C CNN
+F 1 "GND" H 3725 4950 50  0000 C CNN
+F 2 "" H 3775 4775 50  0001 C CNN
+F 3 "" H 3775 4775 50  0001 C CNN
+	1    3775 4775
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3675 4550 3775 4550
+Connection ~ 3675 4550
+Wire Wire Line
+	3675 4550 3675 4500
+Wire Wire Line
+	3775 4750 3775 4775
+$Comp
+L Device:Q_PNP_BEC Q?
+U 1 1 5C0D25C2
+P 4250 6075
+AR Path="/5C04EB62/5C0D25C2" Ref="Q?"  Part="1" 
+AR Path="/5BD3C927/5C0D25C2" Ref="Q?"  Part="1" 
+F 0 "Q?" H 4441 6121 50  0000 L CNN
+F 1 "Q_PNP_BEC" H 4441 6030 50  0000 L CNN
+F 2 "" H 4450 6175 50  0001 C CNN
+F 3 "~" H 4250 6075 50  0001 C CNN
+	1    4250 6075
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
+U 1 1 5C0D25DC
+P 3525 6100
+AR Path="/5C0D25DC" Ref="Q?"  Part="1" 
+AR Path="/5BD09509/5C0D25DC" Ref="Q?"  Part="1" 
+AR Path="/5C04EB62/5C0D25DC" Ref="Q?"  Part="1" 
+AR Path="/5BD3C927/5C0D25DC" Ref="Q?"  Part="1" 
+F 0 "Q?" H 3716 6146 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 3716 6055 50  0000 L CNN
+F 2 "" H 3725 6200 50  0001 C CNN
+F 3 "" H 3525 6100 50  0001 C CNN
+	1    3525 6100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4050 6025 4050 6075
+Connection ~ 4050 6075
+Wire Wire Line
+	4050 6075 4050 6150
+Wire Wire Line
+	3325 6050 3325 6100
+Connection ~ 3325 6100
+Wire Wire Line
+	3325 6100 3325 6175
+Text Notes 3050 6950 0    236  ~ 0
+smd trans
 $EndSCHEMATC

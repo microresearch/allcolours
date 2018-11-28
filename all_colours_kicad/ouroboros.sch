@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 4
+Sheet 4 5
 Title ""
 Date ""
 Rev ""
@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L device:C C?
+L allcolours-rescue:C-device C?
 U 1 1 5BAC4611
 P 2900 4500
 F 0 "C?" H 2925 4600 50  0000 L CNN
@@ -26,7 +26,7 @@ F 3 "" H 2900 4500 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L allcolours-rescue:GND-power #PWR?
 U 1 1 5BAC462C
 P 3450 5050
 F 0 "#PWR?" H 3450 4800 50  0001 C CNN
@@ -37,7 +37,7 @@ F 3 "" H 3450 5050 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R?
+L allcolours-rescue:R-device R?
 U 1 1 5BAC4639
 P 3450 4050
 F 0 "R?" V 3530 4050 50  0000 C CNN
@@ -48,7 +48,7 @@ F 3 "" H 3450 4050 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:D D?
+L allcolours-rescue:D-device D?
 U 1 1 5BAC4640
 P 3450 4400
 F 0 "D?" H 3450 4300 50  0000 C CNN
@@ -59,7 +59,7 @@ F 3 "" H 3450 4400 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L allcolours-rescue:+12V-power #PWR?
 U 1 1 5BAC465C
 P 3450 3850
 F 0 "#PWR?" H 3450 3700 50  0001 C CNN
@@ -70,7 +70,7 @@ F 3 "" H 3450 3850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:Q_NPN_BEC Q?
+L allcolours-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BB3D775
 P 3350 4800
 F 0 "Q?" H 3541 4846 50  0000 L CNN
@@ -87,7 +87,7 @@ Wire Wire Line
 Wire Wire Line
 	3450 4200 3450 4250
 $Comp
-L device:C C?
+L allcolours-rescue:C-device C?
 U 1 1 5BB5CF21
 P 3800 4300
 F 0 "C?" H 3825 4400 50  0000 L CNN
@@ -98,7 +98,7 @@ F 3 "" H 3800 4300 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L allcolours-rescue:GND-power #PWR?
 U 1 1 5BB5CF27
 P 4350 4850
 F 0 "#PWR?" H 4350 4600 50  0001 C CNN
@@ -109,7 +109,7 @@ F 3 "" H 4350 4850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R?
+L allcolours-rescue:R-device R?
 U 1 1 5BB5CF2D
 P 4350 3850
 F 0 "R?" V 4430 3850 50  0000 C CNN
@@ -120,7 +120,7 @@ F 3 "" H 4350 3850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:D D?
+L allcolours-rescue:D-device D?
 U 1 1 5BB5CF33
 P 4350 4200
 F 0 "D?" H 4350 4100 50  0000 C CNN
@@ -131,7 +131,7 @@ F 3 "" H 4350 4200 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L allcolours-rescue:+12V-power #PWR?
 U 1 1 5BB5CF39
 P 4350 3650
 F 0 "#PWR?" H 4350 3500 50  0001 C CNN
@@ -142,7 +142,7 @@ F 3 "" H 4350 3650 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:Q_NPN_BEC Q?
+L allcolours-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BB5CF3F
 P 4250 4600
 F 0 "Q?" H 4441 4646 50  0000 L CNN
@@ -159,7 +159,7 @@ Wire Wire Line
 Wire Wire Line
 	4350 4000 4350 4050
 $Comp
-L device:C C?
+L allcolours-rescue:C-device C?
 U 1 1 5BB5D0F1
 P 4650 4000
 F 0 "C?" H 4675 4100 50  0000 L CNN
@@ -170,7 +170,7 @@ F 3 "" H 4650 4000 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L allcolours-rescue:GND-power #PWR?
 U 1 1 5BB5D0F8
 P 5150 4600
 F 0 "#PWR?" H 5150 4350 50  0001 C CNN
@@ -181,7 +181,7 @@ F 3 "" H 5150 4600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R?
+L allcolours-rescue:R-device R?
 U 1 1 5BB5D0FE
 P 5150 3600
 F 0 "R?" V 5230 3600 50  0000 C CNN
@@ -192,7 +192,7 @@ F 3 "" H 5150 3600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:D D?
+L allcolours-rescue:D-device D?
 U 1 1 5BB5D105
 P 5150 3950
 F 0 "D?" H 5150 3850 50  0000 C CNN
@@ -203,7 +203,7 @@ F 3 "" H 5150 3950 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L allcolours-rescue:+12V-power #PWR?
 U 1 1 5BB5D10C
 P 5150 3400
 F 0 "#PWR?" H 5150 3250 50  0001 C CNN
@@ -214,7 +214,7 @@ F 3 "" H 5150 3400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:Q_NPN_BEC Q?
+L allcolours-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BB5D112
 P 5050 4350
 F 0 "Q?" H 5241 4396 50  0000 L CNN
@@ -233,7 +233,7 @@ Wire Wire Line
 Wire Wire Line
 	4800 4350 4850 4350
 $Comp
-L device:C C?
+L allcolours-rescue:C-device C?
 U 1 1 5BB5D2A3
 P 6950 3350
 F 0 "C?" H 6975 3450 50  0000 L CNN
@@ -244,7 +244,7 @@ F 3 "" H 6950 3350 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L allcolours-rescue:GND-power #PWR?
 U 1 1 5BB5D2AA
 P 7550 3950
 F 0 "#PWR?" H 7550 3700 50  0001 C CNN
@@ -255,7 +255,7 @@ F 3 "" H 7550 3950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R?
+L allcolours-rescue:R-device R?
 U 1 1 5BB5D2B0
 P 7550 2950
 F 0 "R?" V 7630 2950 50  0000 C CNN
@@ -266,7 +266,7 @@ F 3 "" H 7550 2950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:D D?
+L allcolours-rescue:D-device D?
 U 1 1 5BB5D2B7
 P 7550 3300
 F 0 "D?" H 7550 3200 50  0000 C CNN
@@ -277,7 +277,7 @@ F 3 "" H 7550 3300 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L allcolours-rescue:+12V-power #PWR?
 U 1 1 5BB5D2BE
 P 7550 2750
 F 0 "#PWR?" H 7550 2600 50  0001 C CNN
@@ -288,7 +288,7 @@ F 3 "" H 7550 2750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:Q_NPN_BEC Q?
+L allcolours-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BB5D2C4
 P 7450 3700
 F 0 "Q?" H 7641 3746 50  0000 L CNN
@@ -305,7 +305,7 @@ Wire Wire Line
 Wire Wire Line
 	7550 3100 7550 3150
 $Comp
-L device:C C?
+L allcolours-rescue:C-device C?
 U 1 1 5BB5D4C7
 P 6200 3700
 F 0 "C?" H 6225 3800 50  0000 L CNN
@@ -316,7 +316,7 @@ F 3 "" H 6200 3700 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L allcolours-rescue:GND-power #PWR?
 U 1 1 5BB5D4CE
 P 6700 4150
 F 0 "#PWR?" H 6700 3900 50  0001 C CNN
@@ -327,7 +327,7 @@ F 3 "" H 6700 4150 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R?
+L allcolours-rescue:R-device R?
 U 1 1 5BB5D4D4
 P 6700 3150
 F 0 "R?" V 6780 3150 50  0000 C CNN
@@ -338,7 +338,7 @@ F 3 "" H 6700 3150 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:D D?
+L allcolours-rescue:D-device D?
 U 1 1 5BB5D4DB
 P 6700 3500
 F 0 "D?" H 6700 3400 50  0000 C CNN
@@ -349,7 +349,7 @@ F 3 "" H 6700 3500 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L allcolours-rescue:+12V-power #PWR?
 U 1 1 5BB5D4E2
 P 6700 2950
 F 0 "#PWR?" H 6700 2800 50  0001 C CNN
@@ -360,7 +360,7 @@ F 3 "" H 6700 2950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:Q_NPN_BEC Q?
+L allcolours-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BB5D4E8
 P 6600 3900
 F 0 "Q?" H 6791 3946 50  0000 L CNN
@@ -377,7 +377,7 @@ Wire Wire Line
 Wire Wire Line
 	6700 3300 6700 3350
 $Comp
-L device:C C?
+L allcolours-rescue:C-device C?
 U 1 1 5BB5D7CF
 P 5500 3850
 F 0 "C?" H 5525 3950 50  0000 L CNN
@@ -388,7 +388,7 @@ F 3 "" H 5500 3850 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L allcolours-rescue:GND-power #PWR?
 U 1 1 5BB5D7D6
 P 5900 4350
 F 0 "#PWR?" H 5900 4100 50  0001 C CNN
@@ -399,7 +399,7 @@ F 3 "" H 5900 4350 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R?
+L allcolours-rescue:R-device R?
 U 1 1 5BB5D7DC
 P 5900 3350
 F 0 "R?" V 5980 3350 50  0000 C CNN
@@ -410,7 +410,7 @@ F 3 "" H 5900 3350 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:D D?
+L allcolours-rescue:D-device D?
 U 1 1 5BB5D7E3
 P 5900 3700
 F 0 "D?" H 5900 3600 50  0000 C CNN
@@ -421,7 +421,7 @@ F 3 "" H 5900 3700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L allcolours-rescue:+12V-power #PWR?
 U 1 1 5BB5D7EA
 P 5900 3150
 F 0 "#PWR?" H 5900 3000 50  0001 C CNN
@@ -432,7 +432,7 @@ F 3 "" H 5900 3150 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:Q_NPN_BEC Q?
+L allcolours-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BB5D7F0
 P 5800 4100
 F 0 "Q?" H 5991 4146 50  0000 L CNN
@@ -451,7 +451,7 @@ Wire Wire Line
 Wire Wire Line
 	5550 4100 5600 4100
 $Comp
-L device:C C?
+L allcolours-rescue:C-device C?
 U 1 1 5BB5DC4F
 P 2050 5050
 F 0 "C?" H 2075 5150 50  0000 L CNN
@@ -462,7 +462,7 @@ F 3 "" H 2050 5050 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L allcolours-rescue:GND-power #PWR?
 U 1 1 5BB5DC56
 P 2550 5300
 F 0 "#PWR?" H 2550 5050 50  0001 C CNN
@@ -473,7 +473,7 @@ F 3 "" H 2550 5300 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R?
+L allcolours-rescue:R-device R?
 U 1 1 5BB5DC5C
 P 2550 4300
 F 0 "R?" V 2630 4300 50  0000 C CNN
@@ -484,7 +484,7 @@ F 3 "" H 2550 4300 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:D D?
+L allcolours-rescue:D-device D?
 U 1 1 5BB5DC63
 P 2550 4650
 F 0 "D?" H 2550 4550 50  0000 C CNN
@@ -495,7 +495,7 @@ F 3 "" H 2550 4650 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L allcolours-rescue:+12V-power #PWR?
 U 1 1 5BB5DC6A
 P 2550 4100
 F 0 "#PWR?" H 2550 3950 50  0001 C CNN
@@ -506,7 +506,7 @@ F 3 "" H 2550 4100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:Q_NPN_BEC Q?
+L allcolours-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BB5DC70
 P 2450 5050
 F 0 "Q?" H 2641 5096 50  0000 L CNN
@@ -576,4 +576,6 @@ Wire Wire Line
 	7100 3350 7100 3700
 Wire Wire Line
 	7100 3700 7250 3700
+Text Notes 4925 5525 0    60   ~ 0
+edit for +- bias
 $EndSCHEMATC

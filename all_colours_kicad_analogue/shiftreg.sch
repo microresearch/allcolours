@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 6
+Sheet 5 8
 Title ""
 Date ""
 Rev ""
@@ -181,17 +181,6 @@ Wire Wire Line
 	5450 2300 5500 2300
 Connection ~ 5450 2300
 $Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BCE1590
-P 4125 2150
-F 0 "R?" V 4225 2150 50  0000 C CNN
-F 1 "1K" V 4020 2150 50  0000 C CNN
-F 2 "" H 4125 2150 50  0001 C CNN
-F 3 "" H 4125 2150 50  0001 C CNN
-	1    4125 2150
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5BCE1696
 P 4250 2300
@@ -206,19 +195,6 @@ Wire Wire Line
 	4225 2150 4300 2150
 Wire Wire Line
 	4250 2300 4300 2300
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5BCE17C5
-P 3775 2150
-F 0 "J?" H 3775 2075 50  0000 C CNN
-F 1 " " H 3695 2016 50  0000 C CNN
-F 2 "" H 3775 2150 50  0001 C CNN
-F 3 "" H 3775 2150 50  0001 C CNN
-	1    3775 2150
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3975 2150 4025 2150
 Wire Wire Line
 	5425 1500 5425 1450
 Wire Wire Line
@@ -357,17 +333,6 @@ Wire Wire Line
 	5450 3575 5500 3575
 Connection ~ 5450 3575
 $Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BCE3539
-P 4125 3425
-F 0 "R?" V 4225 3425 50  0000 C CNN
-F 1 "1K" V 4020 3425 50  0000 C CNN
-F 2 "" H 4125 3425 50  0001 C CNN
-F 3 "" H 4125 3425 50  0001 C CNN
-	1    4125 3425
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5BCE353F
 P 4250 3575
@@ -379,22 +344,7 @@ F 3 "" H 4250 3575 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4225 3425 4250 3425
-Wire Wire Line
 	4250 3575 4300 3575
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5BCE3547
-P 3775 3425
-F 0 "J?" H 3775 3350 50  0000 C CNN
-F 1 " " H 3695 3291 50  0000 C CNN
-F 2 "" H 3775 3425 50  0001 C CNN
-F 3 "" H 3775 3425 50  0001 C CNN
-	1    3775 3425
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3975 3425 4025 3425
 Wire Wire Line
 	4250 2675 5150 2675
 Wire Wire Line
@@ -453,34 +403,34 @@ Wire Wire Line
 $Comp
 L Device:C_Small C?
 U 1 1 5BCE5AC9
-P 6575 5350
-F 0 "C?" H 6667 5396 50  0000 L CNN
-F 1 "100N" H 6667 5305 50  0000 L CNN
-F 2 "" H 6575 5350 50  0001 C CNN
-F 3 "~" H 6575 5350 50  0001 C CNN
-	1    6575 5350
+P 1575 7100
+F 0 "C?" H 1667 7146 50  0000 L CNN
+F 1 "100N" H 1667 7055 50  0000 L CNN
+F 2 "" H 1575 7100 50  0001 C CNN
+F 3 "~" H 1575 7100 50  0001 C CNN
+	1    1575 7100
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR?
 U 1 1 5BCE5ACF
-P 6575 5200
-F 0 "#PWR?" H 6575 5050 50  0001 C CNN
-F 1 "+12V-power" H 6590 5373 50  0000 C CNN
-F 2 "" H 6575 5200 50  0001 C CNN
-F 3 "" H 6575 5200 50  0001 C CNN
-	1    6575 5200
+P 1575 6950
+F 0 "#PWR?" H 1575 6800 50  0001 C CNN
+F 1 "+12V-power" H 1590 7123 50  0000 C CNN
+F 2 "" H 1575 6950 50  0001 C CNN
+F 3 "" H 1575 6950 50  0001 C CNN
+	1    1575 6950
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5BCE5AD5
-P 6575 5500
-F 0 "#PWR?" H 6575 5250 50  0001 C CNN
-F 1 "GND" H 6580 5327 50  0000 C CNN
-F 2 "" H 6575 5500 50  0001 C CNN
-F 3 "" H 6575 5500 50  0001 C CNN
-	1    6575 5500
+P 1575 7250
+F 0 "#PWR?" H 1575 7000 50  0001 C CNN
+F 1 "GND" H 1580 7077 50  0000 C CNN
+F 2 "" H 1575 7250 50  0001 C CNN
+F 3 "" H 1575 7250 50  0001 C CNN
+	1    1575 7250
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -576,17 +526,6 @@ Wire Wire Line
 	5375 4825 5425 4825
 Connection ~ 5375 4825
 $Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BCE5B0D
-P 4050 4675
-F 0 "R?" V 4150 4675 50  0000 C CNN
-F 1 "1K" V 3945 4675 50  0000 C CNN
-F 2 "" H 4050 4675 50  0001 C CNN
-F 3 "" H 4050 4675 50  0001 C CNN
-	1    4050 4675
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5BCE5B13
 P 4175 4825
@@ -598,26 +537,11 @@ F 3 "" H 4175 4825 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4150 4675 4175 4675
-Wire Wire Line
 	4175 4825 4225 4825
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5BCE5B1B
-P 3700 4675
-F 0 "J?" H 3700 4600 50  0000 C CNN
-F 1 " " H 3620 4541 50  0000 C CNN
-F 2 "" H 3700 4675 50  0001 C CNN
-F 3 "" H 3700 4675 50  0001 C CNN
-	1    3700 4675
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
-	3900 4675 3950 4675
+	1575 7000 1575 6950
 Wire Wire Line
-	6575 5250 6575 5200
-Wire Wire Line
-	6575 5500 6575 5450
+	1575 7250 1575 7200
 $Comp
 L 4xxx_IEEE:4015 U?
 U 2 1 5BCE5B24
@@ -710,17 +634,6 @@ Wire Wire Line
 Wire Wire Line
 	5325 6000 5425 6000
 $Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BCE5B6C
-P 4050 5950
-F 0 "R?" V 4150 5950 50  0000 C CNN
-F 1 "1K" V 3945 5950 50  0000 C CNN
-F 2 "" H 4050 5950 50  0001 C CNN
-F 3 "" H 4050 5950 50  0001 C CNN
-	1    4050 5950
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5BCE5B72
 P 4175 6100
@@ -732,22 +645,7 @@ F 3 "" H 4175 6100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4150 5950 4175 5950
-Wire Wire Line
 	4175 6100 4225 6100
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5BCE5B7A
-P 3700 5950
-F 0 "J?" H 3700 5875 50  0000 C CNN
-F 1 " " H 3620 5816 50  0000 C CNN
-F 2 "" H 3700 5950 50  0001 C CNN
-F 3 "" H 3700 5950 50  0001 C CNN
-	1    3700 5950
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3900 5950 3950 5950
 Wire Wire Line
 	4175 5200 5075 5200
 Wire Wire Line
@@ -756,7 +654,6 @@ Wire Wire Line
 	5075 5050 5375 5050
 Wire Wire Line
 	4175 5200 4175 5950
-Connection ~ 4175 5950
 Wire Wire Line
 	4175 5950 4225 5950
 Connection ~ 5375 5050
@@ -774,9 +671,6 @@ Wire Wire Line
 	5200 3975 5200 3825
 Wire Wire Line
 	5200 3825 5450 3825
-Connection ~ 4175 4675
-Wire Wire Line
-	4175 4675 4225 4675
 Connection ~ 5450 3825
 Wire Wire Line
 	5375 6600 5375 6550
@@ -820,6 +714,110 @@ F 3 "" H 5375 6200 50  0001 C CNN
 	1    5375 6200
 	1    0    0    -1  
 $EndComp
-Text Notes 1875 4175 0    60   ~ 0
-comparator for clock in?!
+$Comp
+L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
+U 1 1 5C00E6CA
+P 7425 1075
+AR Path="/5AD5ACBB/5C00E6CA" Ref="Q?"  Part="1" 
+AR Path="/5C00E6CA" Ref="Q?"  Part="1" 
+AR Path="/5BD09509/5C00E6CA" Ref="Q?"  Part="1" 
+AR Path="/5BD3A596/5C00E6CA" Ref="Q?"  Part="1" 
+F 0 "Q?" H 7616 1121 50  0000 L CNN
+F 1 "MMBT3904" H 7075 925 50  0000 L CNN
+F 2 "" H 7625 1175 50  0001 C CNN
+F 3 "" H 7425 1075 50  0001 C CNN
+	1    7425 1075
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5C00E6E7
+P 7525 1725
+AR Path="/5AD5ACBB/5C00E6E7" Ref="#PWR?"  Part="1" 
+AR Path="/5C00E6E7" Ref="#PWR?"  Part="1" 
+AR Path="/5BD09509/5C00E6E7" Ref="#PWR?"  Part="1" 
+AR Path="/5BD3A596/5C00E6E7" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 7525 1475 50  0001 C CNN
+F 1 "GND" H 7530 1552 50  0000 C CNN
+F 2 "" H 7525 1725 50  0001 C CNN
+F 3 "" H 7525 1725 50  0001 C CNN
+	1    7525 1725
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5C00E6F3
+P 7525 775
+AR Path="/5AD5ACBB/5C00E6F3" Ref="#PWR?"  Part="1" 
+AR Path="/5C00E6F3" Ref="#PWR?"  Part="1" 
+AR Path="/5BD09509/5C00E6F3" Ref="#PWR?"  Part="1" 
+AR Path="/5BD3A596/5C00E6F3" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 7525 625 50  0001 C CNN
+F 1 "+12V" H 7540 948 50  0000 C CNN
+F 2 "" H 7525 775 50  0001 C CNN
+F 3 "" H 7525 775 50  0001 C CNN
+	1    7525 775 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7175 1075 7225 1075
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C00E702
+P 7725 1375
+AR Path="/5AD5ACBB/5C00E702" Ref="J?"  Part="1" 
+AR Path="/5C00E702" Ref="J?"  Part="1" 
+AR Path="/5BD09509/5C00E702" Ref="J?"  Part="1" 
+AR Path="/5BD3A596/5C00E702" Ref="J?"  Part="1" 
+F 0 "J?" H 7805 1417 50  0000 L CNN
+F 1 "PULSE OUT" H 7805 1326 50  0000 L CNN
+F 2 "" H 7725 1375 50  0001 C CNN
+F 3 "~" H 7725 1375 50  0001 C CNN
+	1    7725 1375
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:R_Small-device R?
+U 1 1 5C010A38
+P 7525 1575
+AR Path="/5AD5ACBB/5C010A38" Ref="R?"  Part="1" 
+AR Path="/5C010A38" Ref="R?"  Part="1" 
+AR Path="/5BD09509/5C010A38" Ref="R?"  Part="1" 
+AR Path="/5BD3A596/5C010A38" Ref="R?"  Part="1" 
+F 0 "R?" V 7329 1575 50  0000 C CNN
+F 1 "3K3" V 7420 1575 50  0000 C CNN
+F 2 "" H 7525 1575 50  0001 C CNN
+F 3 "" H 7525 1575 50  0001 C CNN
+	1    7525 1575
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	7525 775  7525 875 
+Wire Wire Line
+	7525 1675 7525 1725
+Text Notes 7700 1125 0    60   ~ 0
+output buffer x16\n
+Wire Wire Line
+	7525 1275 7525 1375
+Wire Wire Line
+	7525 1375 7525 1475
+Connection ~ 7525 1375
+Text Label 4225 2150 2    60   ~ 0
+IN_1
+Wire Wire Line
+	4100 3425 4250 3425
+Text Label 4100 3425 2    60   ~ 0
+IN_2
+Text Label 3875 4675 2    60   ~ 0
+IN_3
+Wire Wire Line
+	3875 4675 4175 4675
+Wire Wire Line
+	4175 4675 4225 4675
+Connection ~ 4175 4675
+Wire Wire Line
+	4175 5950 4075 5950
+Connection ~ 4175 5950
+Text Label 4075 5950 2    60   ~ 0
+IN_4
 $EndSCHEMATC
