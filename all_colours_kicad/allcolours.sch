@@ -630,8 +630,6 @@ Wire Wire Line
 Wire Wire Line
 	3250 1150 3350 1150
 Wire Wire Line
-	9250 4975 9350 4975
-Wire Wire Line
 	9250 5125 9250 5425
 Wire Wire Line
 	9800 5325 9800 5375
@@ -649,8 +647,6 @@ Wire Wire Line
 	5800 1800 5950 1800
 Wire Wire Line
 	8100 5175 8100 5275
-Wire Wire Line
-	8600 5175 8750 5175
 Wire Wire Line
 	8600 5175 8600 5275
 Wire Wire Line
@@ -775,38 +771,6 @@ Wire Wire Line
 	2025 4975 2025 5025
 Wire Wire Line
 	2175 5275 2175 5225
-$Comp
-L allcolours-rescue:PWR_FLAG-power #FLG02
-U 1 1 5B6F6A22
-P 9350 4825
-F 0 "#FLG02" H 9350 4900 50  0001 C CNN
-F 1 "PWR_FLAG" H 9350 4999 50  0000 C CNN
-F 2 "" H 9350 4825 50  0001 C CNN
-F 3 "" H 9350 4825 50  0001 C CNN
-	1    9350 4825
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:PWR_FLAG-power #FLG01
-U 1 1 5B6F6BB5
-P 8750 5025
-F 0 "#FLG01" H 8750 5100 50  0001 C CNN
-F 1 "PWR_FLAG" H 8750 5199 50  0000 C CNN
-F 2 "" H 8750 5025 50  0001 C CNN
-F 3 "" H 8750 5025 50  0001 C CNN
-	1    8750 5025
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8750 5175 8750 5025
-Connection ~ 8750 5175
-Wire Wire Line
-	8750 5175 8800 5175
-Wire Wire Line
-	9350 4975 9350 4825
-Connection ~ 9350 4975
-Wire Wire Line
-	9350 4975 9400 4975
 $Comp
 L allcolours-rescue:+5V-power #PWR062
 U 1 1 5B726638
@@ -1292,8 +1256,6 @@ F 3 "" H 10000 1050 60  0001 C CNN
 	1    10000 1050
 	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	4000 3250 4100 3250
 $Comp
 L allcolours-rescue:Conn_01x01-Connector J8
 U 1 1 5B6E23D7
@@ -1796,10 +1758,10 @@ NOISE_OUT1
 Text GLabel 4100 3250 2    60   Input ~ 0
 NOISE_OUT2
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J20
 U 1 1 5C0A53C5
 P 3875 4925
-F 0 "J?" H 3955 4967 50  0000 L CNN
+F 0 "J20" H 3955 4967 50  0000 L CNN
 F 1 "Conn_01x01" H 3955 4876 50  0000 L CNN
 F 2 "" H 3875 4925 50  0001 C CNN
 F 3 "~" H 3875 4925 50  0001 C CNN
@@ -1807,10 +1769,10 @@ F 3 "~" H 3875 4925 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J21
 U 1 1 5C0A5553
 P 3875 6075
-F 0 "J?" H 3955 6117 50  0000 L CNN
+F 0 "J21" H 3955 6117 50  0000 L CNN
 F 1 "Conn_01x01" H 3955 6026 50  0000 L CNN
 F 2 "" H 3875 6075 50  0001 C CNN
 F 3 "~" H 3875 6075 50  0001 C CNN
@@ -1818,10 +1780,10 @@ F 3 "~" H 3875 6075 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J22
 U 1 1 5C0AFBEE
 P 5000 3900
-F 0 "J?" H 5080 3942 50  0000 L CNN
+F 0 "J22" H 5080 3942 50  0000 L CNN
 F 1 "Conn_01x01" H 5080 3851 50  0000 L CNN
 F 2 "" H 5000 3900 50  0001 C CNN
 F 3 "~" H 5000 3900 50  0001 C CNN
@@ -1829,10 +1791,10 @@ F 3 "~" H 5000 3900 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J24
 U 1 1 5C0AFD8E
 P 5525 2950
-F 0 "J?" H 5605 2992 50  0000 L CNN
+F 0 "J24" H 5605 2992 50  0000 L CNN
 F 1 "Conn_01x01" H 5605 2901 50  0000 L CNN
 F 2 "" H 5525 2950 50  0001 C CNN
 F 3 "~" H 5525 2950 50  0001 C CNN
@@ -1840,10 +1802,10 @@ F 3 "~" H 5525 2950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J26
 U 1 1 5C0AFE76
 P 6900 3300
-F 0 "J?" H 6980 3342 50  0000 L CNN
+F 0 "J26" H 6980 3342 50  0000 L CNN
 F 1 "Conn_01x01" H 6980 3251 50  0000 L CNN
 F 2 "" H 6900 3300 50  0001 C CNN
 F 3 "~" H 6900 3300 50  0001 C CNN
@@ -1856,10 +1818,10 @@ Wire Wire Line
 Wire Wire Line
 	5200 3900 5275 3900
 $Comp
-L allcolours-rescue:C-device C?
+L allcolours-rescue:C-device C52
 U 1 1 5C0C5B81
 P 5450 5650
-F 0 "C?" H 5475 5750 50  0000 L CNN
+F 0 "C52" H 5475 5750 50  0000 L CNN
 F 1 "1N" H 5475 5550 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 5488 5500 50  0001 C CNN
 F 3 "" H 5450 5650 50  0000 C CNN
@@ -1867,10 +1829,10 @@ F 3 "" H 5450 5650 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L allcolours-rescue:C-device C?
+L allcolours-rescue:C-device C53
 U 1 1 5C0C5B87
 P 6300 5400
-F 0 "C?" H 6325 5500 50  0000 L CNN
+F 0 "C53" H 6325 5500 50  0000 L CNN
 F 1 "100N" H 6150 5300 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 6338 5250 50  0001 C CNN
 F 3 "" H 6300 5400 50  0000 C CNN
@@ -1878,10 +1840,10 @@ F 3 "" H 6300 5400 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:C-device C?
+L allcolours-rescue:C-device C54
 U 1 1 5C0C5B8D
 P 6500 5400
-F 0 "C?" H 6525 5500 50  0000 L CNN
+F 0 "C54" H 6525 5500 50  0000 L CNN
 F 1 "100N" H 6250 5300 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 6538 5250 50  0001 C CNN
 F 3 "" H 6500 5400 50  0000 C CNN
@@ -1889,10 +1851,10 @@ F 3 "" H 6500 5400 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR?
+L allcolours-rescue:GND-power #PWR0128
 U 1 1 5C0C5B93
 P 6400 5550
-F 0 "#PWR?" H 6400 5300 50  0001 C CNN
+F 0 "#PWR0128" H 6400 5300 50  0001 C CNN
 F 1 "GND" H 6400 5400 50  0000 C CNN
 F 2 "" H 6400 5550 50  0000 C CNN
 F 3 "" H 6400 5550 50  0000 C CNN
@@ -1900,10 +1862,10 @@ F 3 "" H 6400 5550 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR?
+L allcolours-rescue:GND-power #PWR0129
 U 1 1 5C0C5B99
 P 6000 5900
-F 0 "#PWR?" H 6000 5650 50  0001 C CNN
+F 0 "#PWR0129" H 6000 5650 50  0001 C CNN
 F 1 "GND" H 6000 5750 50  0000 C CNN
 F 2 "" H 6000 5900 50  0000 C CNN
 F 3 "" H 6000 5900 50  0000 C CNN
@@ -1911,10 +1873,10 @@ F 3 "" H 6000 5900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device R70
 U 1 1 5C0C5B9F
 P 5650 5500
-F 0 "R?" V 5730 5500 50  0000 C CNN
+F 0 "R70" V 5730 5500 50  0000 C CNN
 F 1 "1M" V 5650 5500 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 5580 5500 50  0001 C CNN
 F 3 "" H 5650 5500 50  0000 C CNN
@@ -1922,10 +1884,10 @@ F 3 "" H 5650 5500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device R71
 U 1 1 5C0C5BA5
 P 6000 4850
-F 0 "R?" V 6080 4850 50  0000 C CNN
+F 0 "R71" V 6080 4850 50  0000 C CNN
 F 1 "33K" V 6000 4850 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 5930 4850 50  0001 C CNN
 F 3 "" H 6000 4850 50  0000 C CNN
@@ -1933,10 +1895,10 @@ F 3 "" H 6000 4850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:D-device D?
+L allcolours-rescue:D-device D14
 U 1 1 5C0C5BAB
 P 6000 5250
-F 0 "D?" H 6000 5150 50  0000 C CNN
+F 0 "D14" H 6000 5150 50  0000 C CNN
 F 1 "1n4148" H 6000 5400 50  0000 C CNN
 F 2 "" H 6000 5250 50  0001 C CNN
 F 3 "" H 6000 5250 50  0001 C CNN
@@ -1978,10 +1940,10 @@ Connection ~ 6400 5550
 Wire Wire Line
 	6000 5900 6000 5850
 $Comp
-L allcolours-rescue:+12V-power #PWR?
+L allcolours-rescue:+12V-power #PWR0130
 U 1 1 5C0C5BC4
 P 5650 5250
-F 0 "#PWR?" H 5650 5100 50  0001 C CNN
+F 0 "#PWR0130" H 5650 5100 50  0001 C CNN
 F 1 "+12V" H 5650 5390 50  0000 C CNN
 F 2 "" H 5650 5250 50  0000 C CNN
 F 3 "" H 5650 5250 50  0000 C CNN
@@ -1994,10 +1956,10 @@ Wire Wire Line
 	6500 5050 6725 5050
 Connection ~ 6500 5050
 $Comp
-L allcolours-rescue:Q_NPN_BEC-device Q?
+L allcolours-rescue:Q_NPN_BEC-device Q15
 U 1 1 5C0C5BCD
 P 5900 5650
-F 0 "Q?" H 6091 5696 50  0000 L CNN
+F 0 "Q15" H 6091 5696 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 6091 5605 50  0000 L CNN
 F 2 "" H 6100 5750 50  0001 C CNN
 F 3 "" H 5900 5650 50  0001 C CNN
@@ -2005,10 +1967,10 @@ F 3 "" H 5900 5650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J23
 U 1 1 5C0C5BD3
 P 5025 5650
-F 0 "J?" H 5105 5692 50  0000 L CNN
+F 0 "J23" H 5105 5692 50  0000 L CNN
 F 1 "Conn_01x01" H 5105 5601 50  0000 L CNN
 F 2 "" H 5025 5650 50  0001 C CNN
 F 3 "~" H 5025 5650 50  0001 C CNN
@@ -2016,10 +1978,10 @@ F 3 "~" H 5025 5650 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J25
 U 1 1 5C0C5BD9
 P 5550 4700
-F 0 "J?" H 5630 4742 50  0000 L CNN
+F 0 "J25" H 5630 4742 50  0000 L CNN
 F 1 "Conn_01x01" H 5630 4651 50  0000 L CNN
 F 2 "" H 5550 4700 50  0001 C CNN
 F 3 "~" H 5550 4700 50  0001 C CNN
@@ -2027,10 +1989,10 @@ F 3 "~" H 5550 4700 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector J27
 U 1 1 5C0C5BDF
 P 6925 5050
-F 0 "J?" H 7005 5092 50  0000 L CNN
+F 0 "J27" H 7005 5092 50  0000 L CNN
 F 1 "Conn_01x01" H 7005 5001 50  0000 L CNN
 F 2 "" H 6925 5050 50  0001 C CNN
 F 3 "~" H 6925 5050 50  0001 C CNN
@@ -2042,4 +2004,10 @@ Wire Wire Line
 	6725 5050 6750 5050
 Wire Wire Line
 	5225 5650 5300 5650
+Wire Wire Line
+	9250 4975 9400 4975
+Wire Wire Line
+	8600 5175 8800 5175
+Wire Wire Line
+	4000 3250 4100 3250
 $EndSCHEMATC
