@@ -92,59 +92,11 @@ X ~ 8 300 -200 100 L 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# MAX7490_MAX7490
+# allcolours-rescue_+12V-power-allcolours-rescue
 #
-DEF MAX7490_MAX7490 U 0 40 Y Y 1 F N
-F0 "U" 0 -100 50 H V C CNN
-F1 "MAX7490_MAX7490" 0 100 50 H V C CNN
-F2 "MODULE" 0 0 50 H I C CNN
-F3 "DOCUMENTATION" 0 0 50 H I C CNN
-DRAW
-S -450 -550 450 550 1 0 0 N
-X LPA 1 -750 350 300 R 50 50 1 1 I
-X EXTCLK 10 750 -250 300 L 50 50 1 1 I
-X COM 11 750 -150 300 L 50 50 1 1 I
-X SB 12 750 -50 300 L 50 50 1 1 I
-X INVB 13 750 50 300 L 50 50 1 1 I
-X HPB 14 750 150 300 L 50 50 1 1 I
-X BPB 15 750 250 300 L 50 50 1 1 I
-X LPB 16 750 350 300 L 50 50 1 1 I
-X BPA 2 -750 250 300 R 50 50 1 1 I
-X HPA 3 -750 150 300 R 50 50 1 1 I
-X INVA 4 -750 50 300 R 50 50 1 1 I
-X SA 5 -750 -50 300 R 50 50 1 1 I
-X SHDN_ 6 -750 -150 300 R 50 50 1 1 I
-X GND 7 -750 -250 300 R 50 50 1 1 W
-X VDD 8 -750 -350 300 R 50 50 1 1 W
-X CLK 9 750 -350 300 L 50 50 1 1 I
-ENDDRAW
-ENDDEF
-#
-# all_colours_maxim_7400
-#
-DEF all_colours_maxim_7400 U 0 40 Y Y 1 F N
-F0 "U" 0 100 60 H V C CNN
-F1 "all_colours_maxim_7400" 0 0 60 H V C CNN
-F2 "" 0 0 60 H I C CNN
-F3 "" 0 0 60 H I C CNN
-DRAW
-S -250 -50 100 -450 0 1 0 N
-X COM 1 -250 -100 200 L 50 50 1 1 I
-X N 2 -250 -200 200 L 50 50 1 1 I
-X GND 3 -250 -300 200 L 50 50 1 1 W
-X VDD 4 -250 -400 200 L 50 50 1 1 W
-X OUT 5 100 -400 200 R 50 50 1 1 O
-X CS 6 100 -300 200 R 50 50 1 1 I
-X SHDN 7 100 -200 200 R 50 50 1 1 I
-X CLK 8 100 -100 200 R 50 50 1 1 W
-ENDDRAW
-ENDDEF
-#
-# allcolours-rescue_+12V-power
-#
-DEF allcolours-rescue_+12V-power #PWR 0 0 Y Y 1 F P
+DEF allcolours-rescue_+12V-power-allcolours-rescue #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -150 50 H I C CNN
-F1 "allcolours-rescue_+12V-power" 0 140 50 H V C CNN
+F1 "allcolours-rescue_+12V-power-allcolours-rescue" 0 140 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -155,11 +107,11 @@ X +12V 1 0 0 0 U 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_+5V-power
+# allcolours-rescue_+5V-power-allcolours-rescue
 #
-DEF allcolours-rescue_+5V-power #PWR 0 0 Y Y 1 F P
+DEF allcolours-rescue_+5V-power-allcolours-rescue #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -150 50 H I C CNN
-F1 "allcolours-rescue_+5V-power" 0 140 50 H V C CNN
+F1 "allcolours-rescue_+5V-power-allcolours-rescue" 0 140 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -170,11 +122,11 @@ X +5V 1 0 0 0 U 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_-12VA-power
+# allcolours-rescue_-12VA-power-allcolours-rescue
 #
-DEF allcolours-rescue_-12VA-power #PWR 0 0 Y Y 1 F P
+DEF allcolours-rescue_-12VA-power-allcolours-rescue #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -150 50 H I C CNN
-F1 "allcolours-rescue_-12VA-power" 0 140 50 H V C CNN
+F1 "allcolours-rescue_-12VA-power-allcolours-rescue" 0 140 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -183,11 +135,11 @@ X -12VA 1 0 0 0 U 50 50 0 0 W N
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_40106-Logic_CMOS_4000
+# allcolours-rescue_40106-Logic_CMOS_4000-allcolours-rescue
 #
-DEF allcolours-rescue_40106-Logic_CMOS_4000 U 0 40 Y Y 7 L N
+DEF allcolours-rescue_40106-Logic_CMOS_4000-allcolours-rescue U 0 40 Y Y 7 L N
 F0 "U" 0 50 50 H V C CNN
-F1 "allcolours-rescue_40106-Logic_CMOS_4000" 0 -50 50 H V C CNN
+F1 "allcolours-rescue_40106-Logic_CMOS_4000-allcolours-rescue" 0 -50 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -230,11 +182,11 @@ X VSS 7 0 -500 200 U 50 50 7 0 W
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_7805
+# allcolours-rescue_7805-allcolours-rescue
 #
-DEF allcolours-rescue_7805 U 0 30 N Y 1 F N
+DEF allcolours-rescue_7805-allcolours-rescue U 0 30 N Y 1 F N
 F0 "U" 150 -196 50 H V C CNN
-F1 "allcolours-rescue_7805" 0 200 50 H V C CNN
+F1 "allcolours-rescue_7805-allcolours-rescue" 0 200 50 H V C CNN
 F2 "" 0 0 50 H V C CNN
 F3 "" 0 0 50 H V C CNN
 DRAW
@@ -245,11 +197,11 @@ X VO VO 400 50 200 L 40 40 1 1 w
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_ATMEGA128-16AU-atmel
+# allcolours-rescue_ATMEGA128-16AU-atmel-allcolours-rescue
 #
-DEF allcolours-rescue_ATMEGA128-16AU-atmel U 0 40 Y Y 1 F N
+DEF allcolours-rescue_ATMEGA128-16AU-atmel-allcolours-rescue U 0 40 Y Y 1 F N
 F0 "U" -1150 1900 50 H V L BNN
-F1 "allcolours-rescue_ATMEGA128-16AU-atmel" 750 -1950 50 H V L BNN
+F1 "allcolours-rescue_ATMEGA128-16AU-atmel-allcolours-rescue" 750 -1950 50 H V L BNN
 F2 "TQFP64" 0 0 50 H I C CIN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -321,11 +273,40 @@ X PE7(IC3/INT7) 9 -1300 -1700 150 R 40 40 1 1 B
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_C-device
+# allcolours-rescue_AUDIO-JACKERTHENVAR-erthenvar
 #
-DEF allcolours-rescue_C-device C 0 10 N Y 1 F N
+DEF ~allcolours-rescue_AUDIO-JACKERTHENVAR-erthenvar M 0 40 Y Y 1 L N
+F0 "M" -295 175 45 H V L BNN
+F1 "allcolours-rescue_AUDIO-JACKERTHENVAR-erthenvar" 0 0 45 H I L BNN
+F2 "erthenvar_ERTHENVAR-JACK" 30 150 20 H I C CNN
+F3 "" 0 0 60 H I C CNN
+$FPLIST
+ *ERTHENVAR-JACK*
+$ENDFPLIST
+DRAW
+S -300 -200 -200 100 1 1 0 F
+P 2 1 0 0 -200 100 200 100 N
+P 2 1 0 0 -100 -200 -50 -150 N
+P 2 1 0 0 -50 -150 0 -200 N
+P 2 1 0 0 0 -200 200 -200 N
+P 2 1 0 0 50 -100 100 -100 N
+P 2 1 0 0 100 -150 50 -100 N
+P 2 1 0 0 100 -100 100 0 N
+P 2 1 0 0 100 -100 150 -100 N
+P 2 1 0 0 150 -100 100 -150 N
+P 2 1 0 0 200 0 100 0 N
+X RING 1@1 300 100 200 L 40 40 1 1 B
+X RING 1@2 300 100 200 L 40 40 1 1 B N
+X NORM 2 300 0 200 L 40 40 1 1 B
+X TIP 3 300 -200 200 L 40 40 1 1 B
+ENDDRAW
+ENDDEF
+#
+# allcolours-rescue_C-device-allcolours-rescue
+#
+DEF allcolours-rescue_C-device-allcolours-rescue C 0 10 N Y 1 F N
 F0 "C" 25 100 50 H V L CNN
-F1 "allcolours-rescue_C-device" 25 -100 50 H V L CNN
+F1 "allcolours-rescue_C-device-allcolours-rescue" 25 -100 50 H V L CNN
 F2 "" 38 -150 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -339,11 +320,11 @@ X ~ 2 0 -150 110 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_CONN_01X06
+# allcolours-rescue_CONN_01X06-allcolours-rescue
 #
-DEF allcolours-rescue_CONN_01X06 J 0 40 Y N 1 F N
+DEF allcolours-rescue_CONN_01X06-allcolours-rescue J 0 40 Y N 1 F N
 F0 "J" 0 350 50 H V C CNN
-F1 "allcolours-rescue_CONN_01X06" 100 0 50 V V C CNN
+F1 "allcolours-rescue_CONN_01X06-allcolours-rescue" 100 0 50 V V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -369,11 +350,11 @@ X P6 6 -200 -250 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_CONN_02X05
+# allcolours-rescue_CONN_02X05-allcolours-rescue
 #
-DEF allcolours-rescue_CONN_02X05 J 0 1 Y N 1 F N
+DEF allcolours-rescue_CONN_02X05-allcolours-rescue J 0 1 Y N 1 F N
 F0 "J" 0 300 50 H V C CNN
-F1 "allcolours-rescue_CONN_02X05" 0 -300 50 H V C CNN
+F1 "allcolours-rescue_CONN_02X05-allcolours-rescue" 0 -300 50 H V C CNN
 F2 "" 0 -1200 50 H I C CNN
 F3 "" 0 -1200 50 H I C CNN
 $FPLIST
@@ -408,11 +389,11 @@ X P9 9 -250 -200 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_CP1_Small-device
+# allcolours-rescue_CP1_Small-device-allcolours-rescue
 #
-DEF allcolours-rescue_CP1_Small-device C 0 10 N N 1 F N
+DEF allcolours-rescue_CP1_Small-device-allcolours-rescue C 0 10 N N 1 F N
 F0 "C" 10 70 50 H V L CNN
-F1 "allcolours-rescue_CP1_Small-device" 10 -80 50 H V L CNN
+F1 "allcolours-rescue_CP1_Small-device-allcolours-rescue" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -428,11 +409,11 @@ X ~ 2 0 -100 80 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_C_Small-device
+# allcolours-rescue_C_Small-device-allcolours-rescue
 #
-DEF allcolours-rescue_C_Small-device C 0 10 N N 1 F N
+DEF allcolours-rescue_C_Small-device-allcolours-rescue C 0 10 N N 1 F N
 F0 "C" 10 70 50 H V L CNN
-F1 "allcolours-rescue_C_Small-device" 10 -80 50 H V L CNN
+F1 "allcolours-rescue_C_Small-device-allcolours-rescue" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -446,11 +427,11 @@ X ~ 2 0 -100 80 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_Conn_01x01-Connector
+# allcolours-rescue_Conn_01x01-Connector-allcolours-rescue
 #
-DEF allcolours-rescue_Conn_01x01-Connector J 0 40 Y N 1 F N
+DEF allcolours-rescue_Conn_01x01-Connector-allcolours-rescue J 0 40 Y N 1 F N
 F0 "J" 0 100 50 H V C CNN
-F1 "allcolours-rescue_Conn_01x01-Connector" 0 -100 50 H V C CNN
+F1 "allcolours-rescue_Conn_01x01-Connector-allcolours-rescue" 0 -100 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -468,11 +449,11 @@ X Pin_1 1 -200 0 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_Crystal-device
+# allcolours-rescue_Crystal-device-allcolours-rescue
 #
-DEF allcolours-rescue_Crystal-device Y 0 40 N N 1 F N
+DEF allcolours-rescue_Crystal-device-allcolours-rescue Y 0 40 N N 1 F N
 F0 "Y" 0 150 50 H V C CNN
-F1 "allcolours-rescue_Crystal-device" 0 -150 50 H V C CNN
+F1 "allcolours-rescue_Crystal-device-allcolours-rescue" 0 -150 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -489,11 +470,11 @@ X 2 2 150 0 50 L 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_D-device
+# allcolours-rescue_D-device-allcolours-rescue
 #
-DEF allcolours-rescue_D-device D 0 40 N N 1 F N
+DEF allcolours-rescue_D-device-allcolours-rescue D 0 40 N N 1 F N
 F0 "D" 0 100 50 H V C CNN
-F1 "allcolours-rescue_D-device" 0 -100 50 H V C CNN
+F1 "allcolours-rescue_D-device-allcolours-rescue" 0 -100 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -512,11 +493,11 @@ X A 2 150 0 100 L 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_D_Zener_Small-device
+# allcolours-rescue_D_Zener_Small-device-allcolours-rescue
 #
-DEF allcolours-rescue_D_Zener_Small-device D 0 10 N N 1 F N
+DEF allcolours-rescue_D_Zener_Small-device-allcolours-rescue D 0 10 N N 1 F N
 F0 "D" 0 90 50 H V C CNN
-F1 "allcolours-rescue_D_Zener_Small-device" 0 -90 50 H V C CNN
+F1 "allcolours-rescue_D_Zener_Small-device-allcolours-rescue" 0 -90 50 H V C CNN
 F2 "" 0 0 50 V I C CNN
 F3 "" 0 0 50 V I C CNN
 $FPLIST
@@ -535,11 +516,11 @@ X A 2 100 0 70 L 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_GND-power
+# allcolours-rescue_GND-power-allcolours-rescue
 #
-DEF allcolours-rescue_GND-power #PWR 0 0 Y Y 1 F P
+DEF allcolours-rescue_GND-power-allcolours-rescue #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -250 50 H I C CNN
-F1 "allcolours-rescue_GND-power" 0 -150 50 H V C CNN
+F1 "allcolours-rescue_GND-power-allcolours-rescue" 0 -150 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -548,11 +529,11 @@ X GND 1 0 0 0 D 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_L-device
+# allcolours-rescue_L-device-allcolours-rescue
 #
-DEF allcolours-rescue_L-device L 0 40 N N 1 F N
+DEF allcolours-rescue_L-device-allcolours-rescue L 0 40 N N 1 F N
 F0 "L" -50 0 50 V V C CNN
-F1 "allcolours-rescue_L-device" 75 0 50 V V C CNN
+F1 "allcolours-rescue_L-device-allcolours-rescue" 75 0 50 V V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -571,11 +552,39 @@ X 2 2 0 -150 50 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_MCP6002-xSN-linear
+# allcolours-rescue_MAX7490-MAX7490
 #
-DEF allcolours-rescue_MCP6002-xSN-linear U 0 20 Y Y 2 F N
+DEF allcolours-rescue_MAX7490-MAX7490 U 0 40 Y Y 1 F N
+F0 "U" 0 -100 50 H V C CNN
+F1 "allcolours-rescue_MAX7490-MAX7490" 0 100 50 H V C CNN
+F2 "MODULE" 0 0 50 H I C CNN
+F3 "DOCUMENTATION" 0 0 50 H I C CNN
+DRAW
+S -450 -550 450 550 1 0 0 N
+X LPA 1 -750 350 300 R 50 50 1 1 I
+X EXTCLK 10 750 -250 300 L 50 50 1 1 I
+X COM 11 750 -150 300 L 50 50 1 1 I
+X SB 12 750 -50 300 L 50 50 1 1 I
+X INVB 13 750 50 300 L 50 50 1 1 I
+X HPB 14 750 150 300 L 50 50 1 1 I
+X BPB 15 750 250 300 L 50 50 1 1 I
+X LPB 16 750 350 300 L 50 50 1 1 I
+X BPA 2 -750 250 300 R 50 50 1 1 I
+X HPA 3 -750 150 300 R 50 50 1 1 I
+X INVA 4 -750 50 300 R 50 50 1 1 I
+X SA 5 -750 -50 300 R 50 50 1 1 I
+X SHDN_ 6 -750 -150 300 R 50 50 1 1 I
+X GND 7 -750 -250 300 R 50 50 1 1 W
+X VDD 8 -750 -350 300 R 50 50 1 1 W
+X CLK 9 750 -350 300 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# allcolours-rescue_MCP6002-xSN-linear-allcolours-rescue
+#
+DEF allcolours-rescue_MCP6002-xSN-linear-allcolours-rescue U 0 20 Y Y 2 F N
 F0 "U" 0 200 50 H V L CNN
-F1 "allcolours-rescue_MCP6002-xSN-linear" 0 -200 50 H V L CNN
+F1 "allcolours-rescue_MCP6002-xSN-linear-allcolours-rescue" 0 -200 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -604,11 +613,11 @@ X ~ 7 300 0 100 L 50 50 2 1 O
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_POT_TRIM-device
+# allcolours-rescue_POT_TRIM-device-allcolours-rescue
 #
-DEF allcolours-rescue_POT_TRIM-device RV 0 40 Y N 1 F N
+DEF allcolours-rescue_POT_TRIM-device-allcolours-rescue RV 0 40 Y N 1 F N
 F0 "RV" -175 0 50 V V C CNN
-F1 "allcolours-rescue_POT_TRIM-device" -100 0 50 V V C CNN
+F1 "allcolours-rescue_POT_TRIM-device-allcolours-rescue" -100 0 50 V V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -624,11 +633,11 @@ X 3 3 0 -150 50 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_PWR_FLAG-power
+# allcolours-rescue_PWR_FLAG-power-allcolours-rescue
 #
-DEF allcolours-rescue_PWR_FLAG-power #FLG 0 0 N N 1 F P
+DEF allcolours-rescue_PWR_FLAG-power-allcolours-rescue #FLG 0 0 N N 1 F P
 F0 "#FLG" 0 75 50 H I C CNN
-F1 "allcolours-rescue_PWR_FLAG-power" 0 150 50 H V C CNN
+F1 "allcolours-rescue_PWR_FLAG-power-allcolours-rescue" 0 150 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -637,11 +646,11 @@ X pwr 1 0 0 0 U 50 50 0 0 w
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_Q_NPN_BEC-device
+# allcolours-rescue_Q_NPN_BEC-device-allcolours-rescue
 #
-DEF allcolours-rescue_Q_NPN_BEC-device Q 0 0 Y N 1 F N
+DEF allcolours-rescue_Q_NPN_BEC-device-allcolours-rescue Q 0 0 Y N 1 F N
 F0 "Q" 200 50 50 H V L CNN
-F1 "allcolours-rescue_Q_NPN_BEC-device" 200 -50 50 H V L CNN
+F1 "allcolours-rescue_Q_NPN_BEC-device-allcolours-rescue" 200 -50 50 H V L CNN
 F2 "" 200 100 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -656,11 +665,11 @@ X C 3 100 200 100 D 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_R-device
+# allcolours-rescue_R-device-allcolours-rescue
 #
-DEF allcolours-rescue_R-device R 0 0 N Y 1 F N
+DEF allcolours-rescue_R-device-allcolours-rescue R 0 0 N Y 1 F N
 F0 "R" 80 0 50 V V C CNN
-F1 "allcolours-rescue_R-device" 0 0 50 V V C CNN
+F1 "allcolours-rescue_R-device-allcolours-rescue" 0 0 50 V V C CNN
 F2 "" -70 0 50 V I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -674,11 +683,11 @@ X ~ 2 0 -150 50 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_R_Small-device
+# allcolours-rescue_R_Small-device-allcolours-rescue
 #
-DEF allcolours-rescue_R_Small-device R 0 10 N N 1 F N
+DEF allcolours-rescue_R_Small-device-allcolours-rescue R 0 10 N N 1 F N
 F0 "R" 30 20 50 H V L CNN
-F1 "allcolours-rescue_R_Small-device" 30 -40 50 H V L CNN
+F1 "allcolours-rescue_R_Small-device-allcolours-rescue" 30 -40 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -691,11 +700,11 @@ X ~ 2 0 -100 30 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_TL072-linear
+# allcolours-rescue_TL072-linear-allcolours-rescue
 #
-DEF allcolours-rescue_TL072-linear U 0 20 Y Y 2 F N
+DEF allcolours-rescue_TL072-linear-allcolours-rescue U 0 20 Y Y 2 F N
 F0 "U" 0 200 50 H V L CNN
-F1 "allcolours-rescue_TL072-linear" 0 -200 50 H V L CNN
+F1 "allcolours-rescue_TL072-linear-allcolours-rescue" 0 -200 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -724,32 +733,23 @@ X ~ 7 300 0 100 L 50 50 2 1 O
 ENDDRAW
 ENDDEF
 #
-# erthenvar_AUDIO-JACKERTHENVAR
+# allcolours-rescue_maxim_7400-all_colours
 #
-DEF ~erthenvar_AUDIO-JACKERTHENVAR M 0 40 Y Y 1 L N
-F0 "M" -295 175 45 H V L BNN
-F1 "erthenvar_AUDIO-JACKERTHENVAR" 0 0 45 H I L BNN
-F2 "erthenvar_ERTHENVAR-JACK" 30 150 20 H I C CNN
+DEF allcolours-rescue_maxim_7400-all_colours U 0 40 Y Y 1 F N
+F0 "U" 0 100 60 H V C CNN
+F1 "allcolours-rescue_maxim_7400-all_colours" 0 0 60 H V C CNN
+F2 "" 0 0 60 H I C CNN
 F3 "" 0 0 60 H I C CNN
-$FPLIST
- *ERTHENVAR-JACK*
-$ENDFPLIST
 DRAW
-S -300 -200 -200 100 1 1 0 F
-P 2 1 0 0 -200 100 200 100 N
-P 2 1 0 0 -100 -200 -50 -150 N
-P 2 1 0 0 -50 -150 0 -200 N
-P 2 1 0 0 0 -200 200 -200 N
-P 2 1 0 0 50 -100 100 -100 N
-P 2 1 0 0 100 -150 50 -100 N
-P 2 1 0 0 100 -100 100 0 N
-P 2 1 0 0 100 -100 150 -100 N
-P 2 1 0 0 150 -100 100 -150 N
-P 2 1 0 0 200 0 100 0 N
-X RING 1@1 300 100 200 L 40 40 1 1 B
-X RING 1@2 300 100 200 L 40 40 1 1 B N
-X NORM 2 300 0 200 L 40 40 1 1 B
-X TIP 3 300 -200 200 L 40 40 1 1 B
+S -250 -50 100 -450 0 1 0 N
+X COM 1 -250 -100 200 L 50 50 1 1 I
+X N 2 -250 -200 200 L 50 50 1 1 I
+X GND 3 -250 -300 200 L 50 50 1 1 W
+X VDD 4 -250 -400 200 L 50 50 1 1 W
+X OUT 5 100 -400 200 R 50 50 1 1 O
+X CS 6 100 -300 200 R 50 50 1 1 I
+X SHDN 7 100 -200 200 R 50 50 1 1 I
+X CLK 8 100 -100 200 R 50 50 1 1 W
 ENDDRAW
 ENDDEF
 #

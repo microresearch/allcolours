@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L allcolours-rescue:D_Zener_Small-device D5
+L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D5
 U 1 1 5B6E5322
 P 4750 4950
 F 0 "D5" V 4704 5018 50  0000 L CNN
@@ -26,7 +26,7 @@ F 3 "" V 4750 4950 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:D_Zener_Small-device D4
+L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D4
 U 1 1 5B6E5329
 P 4750 4700
 F 0 "D4" V 4704 4768 50  0000 L CNN
@@ -37,7 +37,7 @@ F 3 "" V 4750 4700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR0101
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0101
 U 1 1 5B6E5330
 P 4750 5100
 F 0 "#PWR0101" H 4750 4850 50  0001 C CNN
@@ -48,7 +48,7 @@ F 3 "" H 4750 5100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MAX7490:MAX7490 U8
+L allcolours-rescue:MAX7490-MAX7490 U8
 U 1 1 5B6E5336
 P 3550 4450
 F 0 "U8" H 3550 5165 50  0000 C CNN
@@ -70,7 +70,7 @@ Wire Wire Line
 	4750 4850 4750 4800
 Connection ~ 4750 4800
 $Comp
-L allcolours-rescue:+5V-power #PWR0100
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR0100
 U 1 1 5B6E5344
 P 4750 4550
 F 0 "#PWR0100" H 4750 4400 50  0001 C CNN
@@ -87,7 +87,7 @@ Wire Wire Line
 Wire Wire Line
 	4750 4800 5000 4800
 $Comp
-L allcolours-rescue:+5V-power #PWR095
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR095
 U 1 1 5B6E534D
 P 2600 4850
 F 0 "#PWR095" H 2600 4700 50  0001 C CNN
@@ -103,7 +103,7 @@ Connection ~ 2800 4850
 Wire Wire Line
 	2800 4850 2800 4800
 $Comp
-L allcolours-rescue:GND-power #PWR096
+L allcolours-rescue:GND-power-allcolours-rescue #PWR096
 U 1 1 5B6E5356
 P 2750 4700
 F 0 "#PWR096" H 2750 4450 50  0001 C CNN
@@ -123,7 +123,7 @@ Connection ~ 2650 4850
 Wire Wire Line
 	2650 4850 2800 4850
 $Comp
-L allcolours-rescue:C-device C38
+L allcolours-rescue:C-device-allcolours-rescue C38
 U 1 1 5B6E5361
 P 4500 4750
 F 0 "C38" H 4525 4850 50  0000 L CNN
@@ -147,7 +147,7 @@ HIGHPASS - in MODE 3!\nor should it be bandpass
 Text Notes 8725 4275 0    60   ~ 0
 input for lower 7490
 $Comp
-L allcolours-rescue:TL072-linear U?
+L allcolours-rescue:TL072-linear-allcolours-rescue U?
 U 2 1 5B6FD0C0
 P 9025 4925
 AR Path="/5B6FD0C0" Ref="U?"  Part="2" 
@@ -160,7 +160,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 9025 4925 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
 U 1 1 5B6FD0C7
 P 8925 4575
 AR Path="/5B6FD0C7" Ref="#PWR?"  Part="1" 
@@ -173,7 +173,7 @@ F 3 "" H 8925 4575 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:-12VA-power #PWR?
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
 U 1 1 5B6FD0CD
 P 8925 5275
 AR Path="/5B6FD0CD" Ref="#PWR?"  Part="1" 
@@ -186,7 +186,7 @@ F 3 "" H 8925 5275 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B6FD0D3
 P 8425 5025
 AR Path="/5B6FD0D3" Ref="R?"  Part="1" 
@@ -199,7 +199,7 @@ F 3 "" H 8425 5025 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B6FD0DA
 P 8925 5475
 AR Path="/5B6FD0DA" Ref="R?"  Part="1" 
@@ -227,7 +227,7 @@ Wire Wire Line
 Wire Wire Line
 	9325 5475 9325 4925
 $Comp
-L allcolours-rescue:CP1_Small-device C?
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
 U 1 1 5B6FD0E9
 P 9525 4925
 AR Path="/5B6FD0E9" Ref="C?"  Part="1" 
@@ -249,7 +249,7 @@ Wire Wire Line
 Wire Wire Line
 	8925 5275 8925 5225
 $Comp
-L allcolours-rescue:CP1_Small-device C?
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
 U 1 1 5B705C47
 P 6050 1600
 AR Path="/5B705C47" Ref="C?"  Part="1" 
@@ -262,7 +262,7 @@ F 3 "" H 6050 1600 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B705C4E
 P 6350 1600
 AR Path="/5B705C4E" Ref="R?"  Part="1" 
@@ -275,7 +275,7 @@ F 3 "" H 6350 1600 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B705C55
 P 6200 1900
 AR Path="/5B705C55" Ref="R?"  Part="1" 
@@ -288,7 +288,7 @@ F 3 "" H 6200 1900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B705C5C
 P 6900 950
 AR Path="/5B705C5C" Ref="R?"  Part="1" 
@@ -301,7 +301,7 @@ F 3 "" H 6900 950 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:C-device C?
+L allcolours-rescue:C-device-allcolours-rescue C?
 U 1 1 5B705C63
 P 6900 1100
 AR Path="/5B705C63" Ref="C?"  Part="1" 
@@ -314,7 +314,7 @@ F 3 "" H 6900 1100 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5B705C6A
 P 6200 2100
 AR Path="/5B705C6A" Ref="#PWR?"  Part="1" 
@@ -327,7 +327,7 @@ F 3 "" H 6200 2100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5B705C70
 P 6500 1400
 AR Path="/5B705C70" Ref="#PWR?"  Part="1" 
@@ -340,7 +340,7 @@ F 3 "" H 6500 1400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:-12VA-power #PWR?
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
 U 1 1 5B705C77
 P 6800 1900
 AR Path="/5B705C77" Ref="#PWR?"  Part="1" 
@@ -353,7 +353,7 @@ F 3 "" H 6800 1900 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
 U 1 1 5B705C7D
 P 6750 850
 AR Path="/5B705C7D" Ref="#PWR?"  Part="1" 
@@ -409,7 +409,7 @@ Wire Wire Line
 	6750 1100 6750 950 
 Connection ~ 7050 1100
 $Comp
-L allcolours-rescue:TL072-linear U?
+L allcolours-rescue:TL072-linear-allcolours-rescue U?
 U 1 1 5B705C9B
 P 6900 1500
 AR Path="/5B705C9B" Ref="U?"  Part="2" 
@@ -478,7 +478,7 @@ Wire Wire Line
 Text Label 4400 5250 0    60   ~ 0
 CLOCK
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7D3CA7
 P 2550 4400
 AR Path="/5B7D3CA7" Ref="R?"  Part="1" 
@@ -497,7 +497,7 @@ Wire Wire Line
 Text Label 2250 4400 2    60   ~ 0
 7490_IN_LOW
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7D5D40
 P 3550 3600
 AR Path="/5B7D5D40" Ref="R?"  Part="1" 
@@ -520,7 +520,7 @@ Wire Wire Line
 Wire Wire Line
 	4500 4400 4300 4400
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7D8C95
 P 2550 4100
 AR Path="/5B7D8C95" Ref="R?"  Part="1" 
@@ -549,7 +549,7 @@ Wire Wire Line
 	2700 4350 2700 4400
 Connection ~ 2700 4400
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7DE33A
 P 2400 4100
 AR Path="/5B7DE33A" Ref="R?"  Part="1" 
@@ -562,7 +562,7 @@ F 3 "" H 2400 4100 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7DE3BC
 P 2250 4100
 AR Path="/5B7DE3BC" Ref="R?"  Part="1" 
@@ -603,7 +603,7 @@ Wire Wire Line
 Connection ~ 2400 4250
 Connection ~ 2550 4250
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7EAA51
 P 4650 4050
 AR Path="/5B7EAA51" Ref="R?"  Part="1" 
@@ -616,7 +616,7 @@ F 3 "" H 4650 4050 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7EAB16
 P 4800 4050
 AR Path="/5B7EAB16" Ref="R?"  Part="1" 
@@ -629,7 +629,7 @@ F 3 "" H 4800 4050 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7EAB84
 P 4950 4050
 AR Path="/5B7EAB84" Ref="R?"  Part="1" 
@@ -681,7 +681,7 @@ Wire Wire Line
 Text Notes 3100 5500 0    60   ~ 0
 7400 for low pass
 $Comp
-L all_colours:maxim_7400 U10
+L allcolours-rescue:maxim_7400-all_colours U10
 U 1 1 5B827130
 P 3600 6000
 F 0 "U10" H 3550 6147 60  0000 C CNN
@@ -694,7 +694,7 @@ $EndComp
 Text Label 4400 6100 0    60   ~ 0
 CLOCK
 $Comp
-L allcolours-rescue:GND-power #PWR097
+L allcolours-rescue:GND-power-allcolours-rescue #PWR097
 U 1 1 5B82ACD0
 P 2800 6300
 F 0 "#PWR097" H 2800 6050 50  0001 C CNN
@@ -705,7 +705,7 @@ F 3 "" H 2800 6300 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+5V-power #PWR098
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR098
 U 1 1 5B82AD0B
 P 2850 6650
 F 0 "#PWR098" H 2850 6500 50  0001 C CNN
@@ -731,7 +731,7 @@ Wire Wire Line
 Text Label 2600 6100 2    60   ~ 0
 7490_IN_LOW
 $Comp
-L allcolours-rescue:C-device C36
+L allcolours-rescue:C-device-allcolours-rescue C36
 U 1 1 5B836AA8
 P 2350 6500
 F 0 "C36" H 2375 6600 50  0000 L CNN
@@ -742,7 +742,7 @@ F 3 "" H 2350 6500 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR094
+L allcolours-rescue:GND-power-allcolours-rescue #PWR094
 U 1 1 5B83A4B5
 P 2350 6700
 F 0 "#PWR094" H 2350 6450 50  0001 C CNN
@@ -753,7 +753,7 @@ F 3 "" H 2350 6700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+5V-power #PWR093
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR093
 U 1 1 5B83A4F2
 P 2350 6300
 F 0 "#PWR093" H 2350 6150 50  0001 C CNN
@@ -768,7 +768,7 @@ Wire Wire Line
 Wire Wire Line
 	2350 6650 2350 6700
 $Comp
-L allcolours-rescue:C-device C33
+L allcolours-rescue:C-device-allcolours-rescue C33
 U 1 1 5B841AB5
 P 1900 6500
 F 0 "C33" H 1925 6600 50  0000 L CNN
@@ -779,7 +779,7 @@ F 3 "" H 1900 6500 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR090
+L allcolours-rescue:GND-power-allcolours-rescue #PWR090
 U 1 1 5B841ABB
 P 1900 6700
 F 0 "#PWR090" H 1900 6450 50  0001 C CNN
@@ -790,7 +790,7 @@ F 3 "" H 1900 6700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+5V-power #PWR089
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR089
 U 1 1 5B841AC1
 P 1900 6300
 F 0 "#PWR089" H 1900 6150 50  0001 C CNN
@@ -805,7 +805,7 @@ Wire Wire Line
 Wire Wire Line
 	1900 6650 1900 6700
 $Comp
-L allcolours-rescue:C-device C34
+L allcolours-rescue:C-device-allcolours-rescue C34
 U 1 1 5B845936
 P 2150 5000
 F 0 "C34" H 2175 5100 50  0000 L CNN
@@ -816,7 +816,7 @@ F 3 "" H 2150 5000 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR092
+L allcolours-rescue:GND-power-allcolours-rescue #PWR092
 U 1 1 5B84593C
 P 2150 5200
 F 0 "#PWR092" H 2150 4950 50  0001 C CNN
@@ -827,7 +827,7 @@ F 3 "" H 2150 5200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+5V-power #PWR091
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR091
 U 1 1 5B845942
 P 2150 4800
 F 0 "#PWR091" H 2150 4650 50  0001 C CNN
@@ -842,7 +842,7 @@ Wire Wire Line
 Wire Wire Line
 	2150 5150 2150 5200
 $Comp
-L allcolours-rescue:C-device C32
+L allcolours-rescue:C-device-allcolours-rescue C32
 U 1 1 5B84594A
 P 1700 5000
 F 0 "C32" H 1725 5100 50  0000 L CNN
@@ -853,7 +853,7 @@ F 3 "" H 1700 5000 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR086
+L allcolours-rescue:GND-power-allcolours-rescue #PWR086
 U 1 1 5B845950
 P 1700 5200
 F 0 "#PWR086" H 1700 4950 50  0001 C CNN
@@ -864,7 +864,7 @@ F 3 "" H 1700 5200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+5V-power #PWR085
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR085
 U 1 1 5B845956
 P 1700 4800
 F 0 "#PWR085" H 1700 4650 50  0001 C CNN
@@ -879,7 +879,7 @@ Wire Wire Line
 Wire Wire Line
 	1700 5150 1700 5200
 $Comp
-L allcolours-rescue:C-device C37
+L allcolours-rescue:C-device-allcolours-rescue C37
 U 1 1 5B84A5AB
 P 2950 5650
 F 0 "C37" H 2975 5750 50  0000 L CNN
@@ -890,7 +890,7 @@ F 3 "" H 2950 5650 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR099
+L allcolours-rescue:GND-power-allcolours-rescue #PWR099
 U 1 1 5B84A6E3
 P 2950 5850
 F 0 "#PWR099" H 2950 5600 50  0001 C CNN
@@ -916,7 +916,7 @@ Wire Wire Line
 Text Label 4400 6400 0    60   ~ 0
 7400_LP
 $Comp
-L allcolours-rescue:CP1_Small-device C?
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
 U 1 1 5B85D9A3
 P 6350 3350
 AR Path="/5B85D9A3" Ref="C?"  Part="1" 
@@ -929,7 +929,7 @@ F 3 "" H 6350 3350 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B85D9A9
 P 6650 3350
 AR Path="/5B85D9A9" Ref="R?"  Part="1" 
@@ -942,7 +942,7 @@ F 3 "" H 6650 3350 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B85D9AF
 P 6500 3650
 AR Path="/5B85D9AF" Ref="R?"  Part="1" 
@@ -955,7 +955,7 @@ F 3 "" H 6500 3650 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B85D9B5
 P 7200 2700
 AR Path="/5B85D9B5" Ref="R?"  Part="1" 
@@ -968,7 +968,7 @@ F 3 "" H 7200 2700 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:C-device C?
+L allcolours-rescue:C-device-allcolours-rescue C?
 U 1 1 5B85D9BB
 P 7200 2850
 AR Path="/5B85D9BB" Ref="C?"  Part="1" 
@@ -981,7 +981,7 @@ F 3 "" H 7200 2850 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5B85D9C1
 P 6500 3850
 AR Path="/5B85D9C1" Ref="#PWR?"  Part="1" 
@@ -994,7 +994,7 @@ F 3 "" H 6500 3850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:GND-power #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5B85D9C7
 P 6800 3150
 AR Path="/5B85D9C7" Ref="#PWR?"  Part="1" 
@@ -1007,7 +1007,7 @@ F 3 "" H 6800 3150 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:-12VA-power #PWR?
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
 U 1 1 5B85D9CD
 P 7100 3650
 AR Path="/5B85D9CD" Ref="#PWR?"  Part="1" 
@@ -1020,7 +1020,7 @@ F 3 "" H 7100 3650 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
 U 1 1 5B85D9D3
 P 7050 2600
 AR Path="/5B85D9D3" Ref="#PWR?"  Part="1" 
@@ -1074,7 +1074,7 @@ Wire Wire Line
 	7050 2850 7050 2700
 Connection ~ 7350 2850
 $Comp
-L allcolours-rescue:TL072-linear U?
+L allcolours-rescue:TL072-linear-allcolours-rescue U?
 U 2 1 5B85D9F0
 P 7200 3250
 AR Path="/5B85D9F0" Ref="U?"  Part="2" 
@@ -1105,7 +1105,7 @@ FILTER_IN
 Text Notes 775  700  0    60   ~ 0
 filter in path - DG419 switched noise in
 $Comp
-L allcolours-rescue:R-device R?
+L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5C05C278
 P 5350 4650
 AR Path="/5C05C278" Ref="R?"  Part="1" 
@@ -1118,7 +1118,7 @@ F 3 "" H 5350 4650 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L allcolours-rescue:R-device 1K?
+L allcolours-rescue:R-device-allcolours-rescue 1K?
 U 1 1 5C05C44D
 P 5450 4950
 AR Path="/5C05C44D" Ref="1K?"  Part="1" 
@@ -1158,7 +1158,7 @@ Wire Wire Line
 Wire Wire Line
 	3150 1300 3250 1300
 $Comp
-L allcolours-rescue:+12V-power #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
 U 1 1 5C12AC11
 P 750 1400
 AR Path="/5C12AC11" Ref="#PWR?"  Part="1" 
@@ -1171,7 +1171,7 @@ F 3 "" H 750 1400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:-12VA-power #PWR?
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
 U 1 1 5C12AC66
 P 750 1800
 AR Path="/5C12AC66" Ref="#PWR?"  Part="1" 
@@ -1184,7 +1184,7 @@ F 3 "" H 750 1800 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:C-device C55
+L allcolours-rescue:C-device-allcolours-rescue C55
 U 1 1 5C12B94E
 P 750 1600
 F 0 "C55" H 775 1700 50  0000 L CNN
@@ -1197,7 +1197,7 @@ $EndComp
 Wire Wire Line
 	750  1750 750  1775
 $Comp
-L allcolours-rescue:PWR_FLAG-power #FLG0102
+L allcolours-rescue:PWR_FLAG-power-allcolours-rescue #FLG0102
 U 1 1 5C147A9D
 P 1075 1825
 F 0 "#FLG0102" H 1075 1900 50  0001 C CNN
@@ -1215,7 +1215,7 @@ Connection ~ 750  1775
 Wire Wire Line
 	750  1775 750  1800
 $Comp
-L allcolours-rescue:Conn_01x01-Connector J?
+L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5C157BC2
 P 3475 2175
 AR Path="/5C157BC2" Ref="J?"  Part="1" 
@@ -1228,7 +1228,7 @@ F 3 "~" H 3475 2175 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L erthenvar:AUDIO-JACKERTHENVAR M?
+L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
 U 1 1 5C157BC9
 P 3600 1700
 AR Path="/5C157BC9" Ref="M?"  Part="1" 
@@ -1243,7 +1243,7 @@ $EndComp
 Wire Wire Line
 	3150 1500 3225 1500
 $Comp
-L allcolours-rescue:GND-power #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5C16F471
 P 3225 1800
 AR Path="/5C16F471" Ref="#PWR?"  Part="1" 
@@ -1285,7 +1285,7 @@ Wire Wire Line
 Wire Wire Line
 	3700 6100 4400 6100
 $Comp
-L allcolours-rescue:GND-power #PWR0134
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0134
 U 1 1 5C09F49B
 P 8600 4850
 F 0 "#PWR0134" H 8600 4600 50  0001 C CNN
