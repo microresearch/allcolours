@@ -309,4 +309,43 @@ Text Label 4700 3250 0    79   ~ 0
 IN_2
 Wire Wire Line
 	4550 2125 4550 2250
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C0129EF
+P 4900 3250
+AR Path="/5C0129EF" Ref="J?"  Part="1" 
+AR Path="/5C04EB62/5C0129EF" Ref="J?"  Part="1" 
+F 0 "J?" H 4820 3025 50  0000 C CNN
+F 1 "x" H 4820 3116 50  0000 C CNN
+F 2 "" H 4900 3250 50  0001 C CNN
+F 3 "" H 4900 3250 50  0001 C CNN
+	1    4900 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C013D6B
+P 4775 2950
+AR Path="/5C013D6B" Ref="J?"  Part="1" 
+AR Path="/5C04EB62/5C013D6B" Ref="J?"  Part="1" 
+F 0 "J?" H 4695 2725 50  0000 C CNN
+F 1 "x" H 4695 2816 50  0000 C CNN
+F 2 "" H 4775 2950 50  0001 C CNN
+F 3 "" H 4775 2950 50  0001 C CNN
+	1    4775 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C013DDB
+P 1500 3250
+AR Path="/5C013DDB" Ref="J?"  Part="1" 
+AR Path="/5C04EB62/5C013DDB" Ref="J?"  Part="1" 
+F 0 "J?" H 1420 3025 50  0000 C CNN
+F 1 "x" H 1420 3116 50  0000 C CNN
+F 2 "" H 1500 3250 50  0001 C CNN
+F 3 "" H 1500 3250 50  0001 C CNN
+	1    1500 3250
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC

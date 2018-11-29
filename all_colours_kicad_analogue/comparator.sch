@@ -223,39 +223,6 @@ F 3 "" H 3625 1775 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:R-device R?
-U 1 1 5C044F71
-P 5100 2600
-F 0 "R?" V 5180 2600 50  0000 C CNN
-F 1 "10K" V 5100 2600 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5030 2600 50  0001 C CNN
-F 3 "" H 5100 2600 50  0000 C CNN
-	1    5100 2600
-	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R-device R?
-U 1 1 5C044F77
-P 5300 2750
-F 0 "R?" V 5380 2750 50  0000 C CNN
-F 1 "100K" V 5300 2750 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5230 2750 50  0001 C CNN
-F 3 "" H 5300 2750 50  0000 C CNN
-	1    5300 2750
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5C044F7D
-P 5450 2800
-F 0 "#PWR?" H 5450 2650 50  0001 C CNN
-F 1 "+12V" H 5450 2940 50  0000 C CNN
-F 2 "" H 5450 2800 50  0000 C CNN
-F 3 "" H 5450 2800 50  0000 C CNN
-	1    5450 2800
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours_analogue-rescue:-12VA-power #PWR?
 U 1 1 5C044F83
 P 5700 2200
@@ -280,18 +247,7 @@ $EndComp
 Wire Wire Line
 	5700 2150 5700 2200
 Wire Wire Line
-	4900 2450 4950 2450
-Wire Wire Line
-	5100 2450 5100 1950
-Wire Wire Line
-	5100 1950 5500 1950
-Wire Wire Line
-	4950 2600 4950 2450
-Connection ~ 4950 2450
-Wire Wire Line
 	6100 1850 6300 1850
-Text Notes 5000 2800 0    60   ~ 0
-10K?
 $Comp
 L allcolours_analogue-rescue:D-device D?
 U 1 1 5C044F97
@@ -303,21 +259,8 @@ F 3 "" H 6450 1850 50  0001 C CNN
 	1    6450 1850
 	-1   0    0    1   
 $EndComp
-$Comp
-L allcolours_analogue-rescue:GND-power #PWR?
-U 1 1 5C044FAC
-P 5300 2950
-F 0 "#PWR?" H 5300 2700 50  0001 C CNN
-F 1 "GND" H 5300 2800 50  0000 C CNN
-F 2 "" H 5300 2950 50  0000 C CNN
-F 3 "" H 5300 2950 50  0000 C CNN
-	1    5300 2950
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5700 1550 5700 1450
-Wire Wire Line
-	4950 2450 5100 2450
 $Comp
 L allcolours_analogue-rescue:TL072-linear U?
 U 1 1 5C044FB5
@@ -329,64 +272,27 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5800 1850 50  0001 C CNN
 	1    5800 1850
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5450 2800 5450 2850
-Wire Wire Line
-	5450 2850 5550 2850
-Wire Wire Line
-	5300 2950 5300 2900
-Wire Wire Line
-	5300 2600 5550 2600
-Wire Wire Line
-	5250 2600 5300 2600
-Connection ~ 5300 2600
-Wire Wire Line
-	5300 1500 5300 1750
-Wire Wire Line
-	5300 1750 5500 1750
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5C044FC3
-P 5100 1500
-F 0 "J?" H 5020 1275 50  0000 C CNN
-F 1 "Conn_01x01" H 5020 1366 50  0000 C CNN
-F 2 "" H 5100 1500 50  0001 C CNN
-F 3 "" H 5100 1500 50  0001 C CNN
-	1    5100 1500
+P 5250 1750
+F 0 "J?" H 5170 1525 50  0000 C CNN
+F 1 "Conn_01x01" H 5170 1616 50  0000 C CNN
+F 2 "" H 5250 1750 50  0001 C CNN
+F 3 "" H 5250 1750 50  0001 C CNN
+	1    5250 1750
 	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5C044FC9
-P 4700 2450
-F 0 "J?" H 4620 2225 50  0000 C CNN
-F 1 "Conn_01x01" H 4620 2316 50  0000 C CNN
-F 2 "" H 4700 2450 50  0001 C CNN
-F 3 "" H 4700 2450 50  0001 C CNN
-	1    4700 2450
+P 5250 1950
+F 0 "J?" H 5170 1725 50  0000 C CNN
+F 1 "Conn_01x01" H 5170 1816 50  0000 C CNN
+F 2 "" H 5250 1950 50  0001 C CNN
+F 3 "" H 5250 1950 50  0001 C CNN
+	1    5250 1950
 	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5C044FCF
-P 5750 2600
-F 0 "J?" H 5830 2642 50  0000 L CNN
-F 1 "Conn_01x01" H 5830 2551 50  0000 L CNN
-F 2 "" H 5750 2600 50  0001 C CNN
-F 3 "" H 5750 2600 50  0001 C CNN
-	1    5750 2600
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5C044FD5
-P 5750 2850
-F 0 "J?" H 5830 2892 50  0000 L CNN
-F 1 "Conn_01x01" H 5830 2801 50  0000 L CNN
-F 2 "" H 5750 2850 50  0001 C CNN
-F 3 "" H 5750 2850 50  0001 C CNN
-	1    5750 2850
-	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
@@ -403,4 +309,8 @@ Text Notes 4875 950  0    60   ~ 0
 finger comparator for shift reg inputs x4\n
 Wire Wire Line
 	6600 1850 6675 1850
+Wire Wire Line
+	5450 1750 5500 1750
+Wire Wire Line
+	5450 1950 5500 1950
 $EndSCHEMATC

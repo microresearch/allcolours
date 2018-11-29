@@ -91,7 +91,16 @@ http://www.electro-music.com/forum/topic-33190-25.html
 - LFSR as outer ouroboros
 - check all possible signal paths for fingers and patchables
 - standalone - fingers only with one input and out, euro - patchable internally and externally
-- Q of switch for filter input between noise and other source (hand) 4066, 4053
+- Q of switch for filter input between noise and other source (hand) 4066, 4053 - now dg419
+
+* 29/11
+
+- whether 7490 should be set up as bandpass
+- all patch points finalized
+- what is size in HP (for standalone we could use 4ms pod as 26, 32 or 60 HP - also frap tools) - 32HP=162.5mm
+- how many pulse in/outs from atmega 6in 6out 2env? 6 ouroboros...
+- sketch analogue only version for larger home etch... - fingers and two jacks...
+- how to connect top and bottom pcb - check height of jacks
 
 * notes
 

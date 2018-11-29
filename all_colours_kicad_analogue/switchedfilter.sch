@@ -1503,6 +1503,6 @@ Wire Wire Line
 Connection ~ 3325 6100
 Wire Wire Line
 	3325 6100 3325 6175
-Text Notes 3050 6950 0    236  ~ 0
+Text Notes 3050 6950 0    79   ~ 0
 smd trans
 $EndSCHEMATC

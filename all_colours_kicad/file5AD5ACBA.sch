@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 5
+Sheet 2 4
 Title ""
 Date ""
 Rev ""
@@ -944,7 +944,7 @@ F 3 "" H 8150 6050 50  0001 C CNN
 	1    8150 6050
 	1    0    0    -1  
 $EndComp
-Text Notes 5500 4600 0    60   ~ 12
+Text Notes 4100 4300 0    60   ~ 12
 clock in with comparator
 Text Notes 750  2050 0    60   ~ 0
 CV IN - mode\n
@@ -1625,8 +1625,12 @@ Wire Wire Line
 	9550 3400 9650 3400
 Text Label 9650 3400 0    60   ~ 0
 MISO
-Text Notes 6775 750  0    60   ~ 0
-TODO: control of 4053 switch noise/finger input to filter_in
 Text Notes 1750 1350 0    60   ~ 0
 optional R
+Text Notes 5600 250  0    197  ~ 39
+how many pulse in/outs?\n
+Wire Wire Line
+	9550 3100 9850 3100
+Text GLabel 9850 3100 2    79   Input ~ 0
+filterinswitch
 $EndSCHEMATC
