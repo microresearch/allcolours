@@ -302,10 +302,10 @@ $EndSheet
 Text Notes 1725 4225 0    118  ~ 0
 filter\n
 $Comp
-L Amplifier_Operational:TL071 U?
+L Amplifier_Operational:TL071 U1
 U 1 1 5BD701E6
 P 9150 3150
-F 0 "U?" H 9491 3196 50  0000 L CNN
+F 0 "U1" H 9491 3196 50  0000 L CNN
 F 1 "TL071" H 9491 3105 50  0000 L CNN
 F 2 "" H 9200 3200 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 9300 3300 50  0001 C CNN
@@ -313,10 +313,10 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 9300 3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Small R?
+L Device:R_Small R1
 U 1 1 5BD701ED
 P 8650 3250
-F 0 "R?" V 8846 3250 50  0000 C CNN
+F 0 "R1" V 8846 3250 50  0000 C CNN
 F 1 "10K" V 8755 3250 50  0000 C CNN
 F 2 "" H 8650 3250 50  0001 C CNN
 F 3 "~" H 8650 3250 50  0001 C CNN
@@ -324,10 +324,10 @@ F 3 "~" H 8650 3250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:R_Small R?
+L Device:R_Small R3
 U 1 1 5BD701F4
 P 9675 3150
-F 0 "R?" V 9479 3150 50  0000 C CNN
+F 0 "R3" V 9479 3150 50  0000 C CNN
 F 1 "330R" V 9570 3150 50  0000 C CNN
 F 2 "" H 9675 3150 50  0001 C CNN
 F 3 "~" H 9675 3150 50  0001 C CNN
@@ -335,10 +335,10 @@ F 3 "~" H 9675 3150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:R_Small R?
+L Device:R_Small R2
 U 1 1 5BD701FB
 P 9175 3975
-F 0 "R?" V 8979 3975 50  0000 C CNN
+F 0 "R2" V 8979 3975 50  0000 C CNN
 F 1 "10K" V 9070 3975 50  0000 C CNN
 F 2 "" H 9175 3975 50  0001 C CNN
 F 3 "~" H 9175 3975 50  0001 C CNN
@@ -346,10 +346,10 @@ F 3 "~" H 9175 3975 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:-12V #PWR?
+L power:-12V #PWR04
 U 1 1 5BD70202
 P 9050 3525
-F 0 "#PWR?" H 9050 3625 50  0001 C CNN
+F 0 "#PWR04" H 9050 3625 50  0001 C CNN
 F 1 "-12V" H 9065 3698 50  0000 C CNN
 F 2 "" H 9050 3525 50  0001 C CNN
 F 3 "" H 9050 3525 50  0001 C CNN
@@ -357,10 +357,10 @@ F 3 "" H 9050 3525 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L power:+12V #PWR?
+L power:+12V #PWR03
 U 1 1 5BD70208
 P 9050 2800
-F 0 "#PWR?" H 9050 2650 50  0001 C CNN
+F 0 "#PWR03" H 9050 2650 50  0001 C CNN
 F 1 "+12V" H 9065 2973 50  0000 C CNN
 F 2 "" H 9050 2800 50  0001 C CNN
 F 3 "" H 9050 2800 50  0001 C CNN
@@ -379,10 +379,10 @@ Wire Wire Line
 	9450 3150 9525 3150
 Connection ~ 8750 3250
 $Comp
-L power:GND #PWR?
+L power:GND #PWR02
 U 1 1 5BD70220
 P 8600 2900
-F 0 "#PWR?" H 8600 2650 50  0001 C CNN
+F 0 "#PWR02" H 8600 2650 50  0001 C CNN
 F 1 "GND" H 8605 2727 50  0000 C CNN
 F 2 "" H 8600 2900 50  0001 C CNN
 F 3 "" H 8600 2900 50  0001 C CNN
@@ -400,10 +400,10 @@ Wire Wire Line
 Wire Wire Line
 	8400 3250 8550 3250
 $Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J2
 U 1 1 5BD714DB
 P 8000 3250
-F 0 "J?" H 7920 3025 50  0000 C CNN
+F 0 "J2" H 7920 3025 50  0000 C CNN
 F 1 "MAIN OUT" H 7920 3116 50  0000 C CNN
 F 2 "" H 8000 3250 50  0001 C CNN
 F 3 "" H 8000 3250 50  0001 C CNN
@@ -411,10 +411,10 @@ F 3 "" H 8000 3250 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
+L allcolours_analogue-rescue:AUDIO-JACKERTHENVAR-erthenvar M2
 U 1 1 5BD72004
 P 10475 3350
-F 0 "M?" H 10148 3312 45  0000 R CNN
+F 0 "M2" H 10148 3312 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR-erthenvar" H 10475 3350 45  0001 L BNN
 F 2 "erthenvar_ERTHENVAR-JACK" H 10505 3500 20  0001 C CNN
 F 3 "" H 10475 3350 60  0001 C CNN
@@ -422,10 +422,10 @@ F 3 "" H 10475 3350 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR?
+L allcolours_analogue-rescue:GND-power #PWR05
 U 1 1 5BD7215D
 P 10150 3600
-F 0 "#PWR?" H 10150 3350 50  0001 C CNN
+F 0 "#PWR05" H 10150 3350 50  0001 C CNN
 F 1 "GND-power" H 10155 3427 50  0000 C CNN
 F 2 "" H 10150 3600 50  0001 C CNN
 F 3 "" H 10150 3600 50  0001 C CNN
@@ -441,10 +441,10 @@ MAIN OUT
 Text Notes 5125 2700 0    197  ~ 0
 MAIN IN
 $Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J1
 U 1 1 5BD75EC5
 P 6500 3150
-F 0 "J?" H 6579 3192 50  0000 L CNN
+F 0 "J1" H 6579 3192 50  0000 L CNN
 F 1 "MAIN IN" H 6579 3101 50  0000 L CNN
 F 2 "" H 6500 3150 50  0001 C CNN
 F 3 "" H 6500 3150 50  0001 C CNN
@@ -452,10 +452,10 @@ F 3 "" H 6500 3150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
+L allcolours_analogue-rescue:AUDIO-JACKERTHENVAR-erthenvar M1
 U 1 1 5BD75FEA
 P 5375 3250
-F 0 "M?" H 5381 3469 45  0000 C CNN
+F 0 "M1" H 5381 3469 45  0000 C CNN
 F 1 "AUDIO-JACKERTHENVAR-erthenvar" H 5375 3250 45  0001 L BNN
 F 2 "erthenvar_ERTHENVAR-JACK" H 5405 3400 20  0001 C CNN
 F 3 "" H 5375 3250 60  0001 C CNN
@@ -463,10 +463,10 @@ F 3 "" H 5375 3250 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR?
+L allcolours_analogue-rescue:GND-power #PWR01
 U 1 1 5BD760AE
 P 5800 2975
-F 0 "#PWR?" H 5800 2725 50  0001 C CNN
+F 0 "#PWR01" H 5800 2725 50  0001 C CNN
 F 1 "GND-power" H 5805 2802 50  0000 C CNN
 F 2 "" H 5800 2975 50  0001 C CNN
 F 3 "" H 5800 2975 50  0001 C CNN
@@ -487,10 +487,10 @@ Connection ~ 9525 3150
 Wire Wire Line
 	9525 3150 9575 3150
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C?
+L allcolours_analogue-rescue:CP1_Small-device C2
 U 1 1 5BD03889
 P 8300 3250
-F 0 "C?" H 8310 3320 50  0000 L CNN
+F 0 "C2" H 8310 3320 50  0000 L CNN
 F 1 "10u" H 8310 3170 50  0000 L CNN
 F 2 "SMD_Packages:SMD-1206_Pol" H 8300 3250 50  0001 C CNN
 F 3 "" H 8300 3250 50  0000 C CNN
@@ -506,10 +506,10 @@ $EndSheet
 Text Notes 1500 6500 0    157  ~ 0
 comp
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C?
+L allcolours_analogue-rescue:CP1_Small-device C1
 U 1 1 5BD3569E
 P 6075 3150
-F 0 "C?" H 6085 3220 50  0000 L CNN
+F 0 "C1" H 6085 3220 50  0000 L CNN
 F 1 "10u" H 6085 3070 50  0000 L CNN
 F 2 "SMD_Packages:SMD-1206_Pol" H 6075 3150 50  0001 C CNN
 F 3 "" H 6075 3150 50  0000 C CNN

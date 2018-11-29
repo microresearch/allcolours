@@ -274,7 +274,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J3
 U 1 1 5B70133E
 P 2400 1000
 F 0 "J3" H 2480 1042 50  0000 L CNN
-F 1 "Conn_01x01" H 2480 951 50  0000 L CNN
+F 1 "pulse_out" H 2480 951 50  0000 L CNN
 F 2 "" H 2400 1000 50  0001 C CNN
 F 3 "~" H 2400 1000 50  0001 C CNN
 	1    2400 1000
@@ -338,7 +338,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J5
 U 1 1 5B7054E2
 P 3900 1750
 F 0 "J5" H 3820 1525 50  0000 C CNN
-F 1 "Conn_01x01" H 3820 1616 50  0000 C CNN
+F 1 "pulse_in" H 3820 1616 50  0000 C CNN
 F 2 "" H 3900 1750 50  0001 C CNN
 F 3 "~" H 3900 1750 50  0001 C CNN
 	1    3900 1750
@@ -405,8 +405,8 @@ F 3 "http://www.atmel.com/Images/doc2467.pdf" H 8250 3900 50  0001 C CNN
 $EndComp
 Text Notes 800  3500 0    60   ~ 0
 CV IN - clock
-Text Notes 3800 6200 0    60   ~ 0
-PWM OUT/amped
+Text Notes 800  6550 0    60   ~ 0
+PWM OUT/amped - but for where as we already have pwm direct?
 $Comp
 L allcolours-rescue:MCP6002-xSN-linear-allcolours-rescue U3
 U 1 1 5B6A86F6
@@ -489,7 +489,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J2
 U 1 1 5B6A8DBB
 P 1000 4100
 F 0 "J2" H 920 3875 50  0000 C CNN
-F 1 "Conn_01x01" H 920 3966 50  0000 C CNN
+F 1 "cv_in clock" H 1075 4200 50  0000 C CNN
 F 2 "" H 1000 4100 50  0001 C CNN
 F 3 "~" H 1000 4100 50  0001 C CNN
 	1    1000 4100
@@ -659,7 +659,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J6
 U 1 1 5B6E4631
 P 3200 7050
 F 0 "J6" H 3280 7092 50  0000 L CNN
-F 1 "Conn_01x01" H 3280 7001 50  0000 L CNN
+F 1 "pwm_out" H 3280 7001 50  0000 L CNN
 F 2 "" H 3200 7050 50  0001 C CNN
 F 3 "~" H 3200 7050 50  0001 C CNN
 	1    3200 7050
@@ -1030,7 +1030,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J15
 U 1 1 5B77D022
 P 950 2650
 F 0 "J15" H 870 2425 50  0000 C CNN
-F 1 "Conn_01x01" H 870 2516 50  0000 C CNN
+F 1 "cv_in mode" H 1025 2775 50  0000 C CNN
 F 2 "" H 950 2650 50  0001 C CNN
 F 3 "~" H 950 2650 50  0001 C CNN
 	1    950  2650
@@ -1343,7 +1343,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J18
 U 1 1 5B781E6E
 P 4950 5800
 F 0 "J18" H 5030 5842 50  0000 L CNN
-F 1 "Conn_01x01" H 5030 5751 50  0000 L CNN
+F 1 "clock_in comp divider" H 5030 5751 50  0000 L CNN
 F 2 "" H 4950 5800 50  0001 C CNN
 F 3 "~" H 4950 5800 50  0001 C CNN
 	1    4950 5800
@@ -1354,7 +1354,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J19
 U 1 1 5B781E75
 P 4950 6050
 F 0 "J19" H 5030 6092 50  0000 L CNN
-F 1 "Conn_01x01" H 5030 6001 50  0000 L CNN
+F 1 "12V" H 5030 6001 50  0000 L CNN
 F 2 "" H 4950 6050 50  0001 C CNN
 F 3 "~" H 4950 6050 50  0001 C CNN
 	1    4950 6050
@@ -1376,7 +1376,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J16
 U 1 1 5B781E82
 P 3800 5800
 F 0 "J16" H 3880 5842 50  0000 L CNN
-F 1 "Conn_01x01" H 3880 5751 50  0000 L CNN
+F 1 "clock_in comp2" H 3880 5751 50  0000 L CNN
 F 2 "" H 3800 5800 50  0001 C CNN
 F 3 "~" H 3800 5800 50  0001 C CNN
 	1    3800 5800
@@ -1403,7 +1403,7 @@ L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J17
 U 1 1 5B781E94
 P 4300 4700
 F 0 "J17" H 4380 4742 50  0000 L CNN
-F 1 "Conn_01x01" H 4380 4651 50  0000 L CNN
+F 1 "clock_in comp1" H 4175 4475 50  0000 L CNN
 F 2 "" H 4300 4700 50  0001 C CNN
 F 3 "~" H 4300 4700 50  0001 C CNN
 	1    4300 4700
@@ -1613,8 +1613,6 @@ Wire Wire Line
 	10250 1550 10050 1550
 Text Label 10050 1550 0    60   ~ 0
 RESET
-Wire Wire Line
-	9550 3200 9650 3200
 Text Label 9650 3200 0    60   ~ 0
 SCK
 Wire Wire Line
@@ -1627,10 +1625,20 @@ Text Label 9650 3400 0    60   ~ 0
 MISO
 Text Notes 1750 1350 0    60   ~ 0
 optional R
-Text Notes 5600 250  0    197  ~ 39
-how many pulse in/outs?\n
+Text Notes 2900 50   0    157  ~ 31
+6 pulse in // 6 pulse out - high and low freq\n\nwe have how many ports?
 Wire Wire Line
 	9550 3100 9850 3100
 Text GLabel 9850 3100 2    79   Input ~ 0
 filterinswitch
+Text GLabel 9950 3300 2    79   Input ~ 0
+clockinswitch
+Wire Wire Line
+	9950 3200 9950 3300
+Wire Wire Line
+	9550 3200 9950 3200
+Wire Wire Line
+	9550 5000 9850 5000
+Text Label 9850 5000 0    63   ~ 0
+HF_PULSE_IN
 $EndSCHEMATC

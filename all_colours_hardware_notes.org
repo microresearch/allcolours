@@ -95,12 +95,33 @@ http://www.electro-music.com/forum/topic-33190-25.html
 
 * 29/11
 
-- whether 7490 should be set up as bandpass
-- all patch points finalized
-- what is size in HP (for standalone we could use 4ms pod as 26, 32 or 60 HP - also frap tools) - 32HP=162.5mm
+- set 7490 as high pass and spec resistors - 10K for R2 and R4 and 200K for R3
+- how to resolve finger/filter clock routings? - with another analogue switch // dg419
+
+- list all jacks: *check this*
+
+filter: in, clock in, comp1, comp2, lpoutx3, hpoutx3 [for feedback]
+
+AVR/LFSR: cv_in, cv_in, comp1, comp2 for clock, pulses in, pulses out (how many?), hf pulse out, hf pulse in...
+
+so we need straight clock in without comp?
+
+noise: 2x noise out for patchings
+
+ouroboros: in and out
+
+- what is size in HP (for standalone we could use 4ms pod as 26, 32 or 60 HP - also frap tools)= *32HP=162.5mm*
+
+(height 128.5)
+
 - how many pulse in/outs from atmega 6in 6out 2env? 6 ouroboros...
+
+pulse in and out low and high frequency versions??? where to place?
+
+6x pulse in/out low +1 pulse in HF, +1 pulse out HF
+
 - sketch analogue only version for larger home etch... - fingers and two jacks...
-- how to connect top and bottom pcb - check height of jacks
+- how to connect top and bottom pcb - *check height of jacks*
 
 * notes
 
