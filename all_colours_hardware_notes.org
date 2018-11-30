@@ -102,7 +102,7 @@ http://www.electro-music.com/forum/topic-33190-25.html
 
 filter: in, clock in, comp1, comp2, lpoutx3, hpoutx3 [for feedback]
 
-AVR/LFSR: cv_in, cv_in, comp1, comp2 for clock, pulses in, pulses out (how many?), hf pulse out, hf pulse in...
+AVR/LFSR: cv_in, cv_in, comp1, comp2 for clock, pulse in, pulse out, hf pulse out, hf pulse in
 
 noise: 2x noise out for patchings, comp1, comp2, compout for processing
 
@@ -148,7 +148,7 @@ where we put comparator/env/low and high freq sections?
 
 comparator=gatekeeper/triangle
 
-- maybe lose filter comp if we have as modular
+- lose filter comp as we have comparator as modular, lose also avr comp for clock (replaced with pulse in)
 
 * notes
 

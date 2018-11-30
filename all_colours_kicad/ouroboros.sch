@@ -704,5 +704,76 @@ F 3 "~" H 7000 925 50  0001 C CNN
 $EndComp
 Connection ~ 7000 1125
 Wire Wire Line
-	7000 1125 7600 1125
+	7000 1125 7250 1125
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
+U 1 1 5C1AF60A
+P 9450 1550
+F 0 "M?" H 9123 1512 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 9450 1550 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 9480 1700 20  0001 C CNN
+F 3 "" H 9450 1550 60  0001 C CNN
+	1    9450 1550
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5C1AF611
+P 9050 1650
+F 0 "#PWR?" H 9050 1400 50  0001 C CNN
+F 1 "GND" H 9050 1500 50  0000 C CNN
+F 2 "" H 9050 1650 50  0000 C CNN
+F 3 "" H 9050 1650 50  0000 C CNN
+	1    9050 1650
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	9050 1650 9150 1650
+Wire Wire Line
+	9050 1350 9150 1350
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
+U 1 1 5C1AF61A
+P 9450 2200
+F 0 "M?" H 9123 2162 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 9450 2200 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 9480 2350 20  0001 C CNN
+F 3 "" H 9450 2200 60  0001 C CNN
+	1    9450 2200
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5C1AF621
+P 9050 2300
+F 0 "#PWR?" H 9050 2050 50  0001 C CNN
+F 1 "GND" H 9050 2150 50  0000 C CNN
+F 2 "" H 9050 2300 50  0000 C CNN
+F 3 "" H 9050 2300 50  0000 C CNN
+	1    9050 2300
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	9050 2300 9150 2300
+Wire Wire Line
+	9050 2000 9150 2000
+Wire Wire Line
+	7250 1125 7250 950 
+Wire Wire Line
+	7250 950  7350 950 
+Connection ~ 7250 1125
+Wire Wire Line
+	7250 1125 7600 1125
+Text Label 7350 950  0    60   ~ 0
+OURO_OUT
+Text Label 9050 1350 2    60   ~ 0
+OURO_OUT
+Text Label 1475 2400 2    60   ~ 0
+OURO_IN
+Wire Wire Line
+	1475 2400 1475 2475
+Wire Wire Line
+	1475 2475 1700 2475
+Text Label 9050 2000 2    60   ~ 0
+OURO_IN
 $EndSCHEMATC
