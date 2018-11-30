@@ -48,50 +48,6 @@ X VSS 7 0 -500 200 U 50 50 7 0 W
 ENDDRAW
 ENDDEF
 #
-# Analog_Switch_DG419xY
-#
-DEF Analog_Switch_DG419xY U 0 10 Y Y 2 F N
-F0 "U" -125 185 50 H V L CNN
-F1 "Analog_Switch_DG419xY" -125 115 50 H V L CNN
-F2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" 0 -300 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-ALIAS ADG419BR MAX319xSA
-$FPLIST
- SOIC*3.9x4.9mm*P1.27mm*
-$ENDFPLIST
-DRAW
-C -85 -100 20 1 1 10 N
-C 85 -200 20 1 1 10 N
-C 85 0 20 1 1 10 N
-S -150 75 150 -300 1 1 10 f
-S -150 400 250 -400 2 1 10 f
-P 2 1 1 0 -200 -100 -110 -100 N
-P 2 1 1 10 -65 -95 100 -25 N
-P 2 1 1 0 0 -300 0 -280 N
-P 2 1 1 0 0 -270 0 -260 N
-P 2 1 1 0 0 -250 0 -240 N
-P 2 1 1 0 0 -230 0 -220 N
-P 2 1 1 0 0 -210 0 -200 N
-P 2 1 1 0 0 -190 0 -180 N
-P 2 1 1 0 0 -170 0 -160 N
-P 2 1 1 0 0 -150 0 -140 N
-P 2 1 1 0 0 -130 0 -120 N
-P 2 1 1 0 0 -110 0 -100 N
-P 2 1 1 0 0 -90 0 -80 N
-P 2 1 1 0 0 -90 0 -80 N
-P 2 1 1 0 200 -200 110 -200 N
-P 2 1 1 0 200 0 110 0 N
-X GND 3 0 -500 100 U 50 50 2 0 W
-X V+ 4 0 500 100 D 50 50 2 0 W
-X VL 5 100 500 100 D 50 50 2 0 W
-X V- 7 100 -500 100 U 50 50 2 0 W
-X ~ 1 -300 -100 100 R 50 50 1 1 P
-X ~ 2 300 0 100 L 50 50 1 1 P
-X ~ 6 0 -400 100 U 50 50 1 1 I
-X ~ 8 300 -200 100 L 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
 # allcolours-rescue_+12V-power-allcolours-rescue
 #
 DEF allcolours-rescue_+12V-power-allcolours-rescue #PWR 0 0 Y Y 1 F P
@@ -630,19 +586,6 @@ P 2 0 1 0 100 0 60 0 N
 X 1 1 0 150 50 D 50 50 1 1 P
 X 2 2 150 0 50 L 50 50 1 1 P
 X 3 3 0 -150 50 U 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
-# allcolours-rescue_PWR_FLAG-power-allcolours-rescue
-#
-DEF allcolours-rescue_PWR_FLAG-power-allcolours-rescue #FLG 0 0 N N 1 F P
-F0 "#FLG" 0 75 50 H I C CNN
-F1 "allcolours-rescue_PWR_FLAG-power-allcolours-rescue" 0 150 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-DRAW
-P 6 0 1 0 0 0 0 50 -40 75 0 100 40 75 0 50 N
-X pwr 1 0 0 0 U 50 50 0 0 w
 ENDDRAW
 ENDDEF
 #

@@ -104,13 +104,15 @@ filter: in, clock in, comp1, comp2, lpoutx3, hpoutx3 [for feedback]
 
 AVR/LFSR: cv_in, cv_in, comp1, comp2 for clock, pulses in, pulses out (how many?), hf pulse out, hf pulse in...
 
-so we need straight clock in without comp?
-
-noise: 2x noise out for patchings
+noise: 2x noise out for patchings, comparator in for one noise source
 
 ouroboros: in and out
 
-- what is size in HP (for standalone we could use 4ms pod as 26, 32 or 60 HP - also frap tools)= *32HP=162.5mm*
+envelopes?
+
+/////
+
+- what is size in HP (for standalone we could use 4ms pod as 26, 32 or 60 HP - also frap tools)= *32HP=162.5mm* or 42HP?=213mm
 
 (height 128.5)
 
@@ -122,6 +124,17 @@ pulse in and out low and high frequency versions??? where to place?
 
 - sketch analogue only version for larger home etch... - fingers and two jacks...
 - how to connect top and bottom pcb - *check height of jacks*
+
+- comparator on one noise source
+
+- normal signal path noise->comp->filter/pwm clock on filter->LP/HP OUT
+
+- *check comp as usual/flat gives straight noise out*
+
+* 30/11
+1
+- decision to make all patchable by jack and finger. so no switches/dg419
+- thus we need to work out common patches so we can have all jacks
 
 * notes
 

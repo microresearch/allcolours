@@ -405,8 +405,6 @@ F 3 "http://www.atmel.com/Images/doc2467.pdf" H 8250 3900 50  0001 C CNN
 $EndComp
 Text Notes 800  3500 0    60   ~ 0
 CV IN - clock
-Text Notes 800  6550 0    60   ~ 0
-PWM OUT/amped - but for where as we already have pwm direct?
 $Comp
 L allcolours-rescue:MCP6002-xSN-linear-allcolours-rescue U3
 U 1 1 5B6A86F6
@@ -1465,8 +1463,6 @@ Text GLabel 10100 3600 2    79   Input ~ 0
 PWM_OUT
 Wire Wire Line
 	9550 3600 10100 3600
-Text Notes 3050 7350 0    60   ~ 0
-no jack out!
 $Comp
 L allcolours-rescue:+5V-power-allcolours-rescue #PWR081
 U 1 1 5B70FF88
@@ -1628,17 +1624,38 @@ optional R
 Text Notes 2900 50   0    157  ~ 31
 6 pulse in // 6 pulse out - high and low freq\n\nwe have how many ports?
 Wire Wire Line
-	9550 3100 9850 3100
-Text GLabel 9850 3100 2    79   Input ~ 0
-filterinswitch
-Text GLabel 9950 3300 2    79   Input ~ 0
-clockinswitch
-Wire Wire Line
-	9950 3200 9950 3300
-Wire Wire Line
-	9550 3200 9950 3200
-Wire Wire Line
 	9550 5000 9850 5000
 Text Label 9850 5000 0    63   ~ 0
 HF_PULSE_IN
+Wire Wire Line
+	9550 3200 9950 3200
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
+U 1 1 5C091C8C
+P 3500 6575
+F 0 "M?" H 3173 6537 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 3500 6575 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 3530 6725 20  0001 C CNN
+F 3 "" H 3500 6575 60  0001 C CNN
+	1    3500 6575
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5C091C92
+P 3150 6675
+F 0 "#PWR?" H 3150 6425 50  0001 C CNN
+F 1 "GND" H 3155 6502 50  0000 C CNN
+F 2 "" H 3150 6675 50  0001 C CNN
+F 3 "" H 3150 6675 50  0001 C CNN
+	1    3150 6675
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3150 6675 3200 6675
+Wire Wire Line
+	3000 7050 3000 6375
+Wire Wire Line
+	3000 6375 3200 6375
+Connection ~ 3000 7050
 $EndSCHEMATC

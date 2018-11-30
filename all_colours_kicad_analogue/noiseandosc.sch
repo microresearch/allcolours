@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 8
+Sheet 4 9
 Title ""
 Date ""
 Rev ""
@@ -49,17 +49,6 @@ F 1 "47K" V 3250 1350 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 3180 1350 50  0001 C CNN
 F 3 "" H 3250 1350 50  0000 C CNN
 	1    3250 1350
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R-device R40
-U 1 1 5BD303DC
-P 3900 1000
-F 0 "R40" V 3980 1000 50  0000 C CNN
-F 1 "22R" V 3900 1000 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 3830 1000 50  0001 C CNN
-F 3 "" H 3900 1000 50  0000 C CNN
-	1    3900 1000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -109,12 +98,12 @@ $EndComp
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR067
 U 1 1 5BD303FE
-P 4050 850
-F 0 "#PWR067" H 4050 700 50  0001 C CNN
-F 1 "+12V" H 4050 990 50  0000 C CNN
-F 2 "" H 4050 850 50  0000 C CNN
-F 3 "" H 4050 850 50  0000 C CNN
-	1    4050 850 
+P 3900 1075
+F 0 "#PWR067" H 3900 925 50  0001 C CNN
+F 1 "+12V" H 3900 1215 50  0000 C CNN
+F 2 "" H 3900 1075 50  0000 C CNN
+F 3 "" H 3900 1075 50  0000 C CNN
+	1    3900 1075
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -183,7 +172,7 @@ F 3 "" H 5300 1100 50  0000 C CNN
 	1    5300 1100
 	0    1    1    0   
 $EndComp
-Text Label 5900 1500 1    60   ~ 0
+Text Label 8180 1880 1    60   ~ 0
 Y_NOISE_OUT_1
 $Comp
 L allcolours_analogue-rescue:C-device C23
@@ -228,8 +217,6 @@ Wire Wire Line
 	3600 1750 3600 1650
 Connection ~ 3250 1200
 Wire Wire Line
-	3900 1200 3900 1150
-Wire Wire Line
 	3900 1500 3900 1550
 Wire Wire Line
 	3600 1350 3750 1350
@@ -237,8 +224,6 @@ Wire Wire Line
 	3750 1350 3750 1550
 Wire Wire Line
 	3750 1550 3900 1550
-Wire Wire Line
-	3900 850  4050 850 
 Wire Wire Line
 	4300 1600 4350 1600
 Wire Wire Line
@@ -265,8 +250,6 @@ Wire Wire Line
 	3950 1600 3950 1500
 Wire Wire Line
 	3950 1500 3900 1500
-Wire Wire Line
-	5800 1500 5900 1500
 Wire Wire Line
 	3450 2050 3900 2050
 Wire Wire Line
@@ -1008,4 +991,211 @@ Wire Wire Line
 	2050 5000 2050 5050
 Wire Wire Line
 	2050 5350 2050 5400
+$Comp
+L allcolours_analogue-rescue:R-device R?
+U 1 1 5C00C70B
+P 6440 2635
+F 0 "R?" V 6520 2635 50  0000 C CNN
+F 1 "10K" V 6440 2635 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 6370 2635 50  0001 C CNN
+F 3 "" H 6440 2635 50  0000 C CNN
+	1    6440 2635
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:R-device R?
+U 1 1 5C00C712
+P 6640 2785
+F 0 "R?" V 6720 2785 50  0000 C CNN
+F 1 "100K" V 6640 2785 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 6570 2785 50  0001 C CNN
+F 3 "" H 6640 2785 50  0000 C CNN
+	1    6640 2785
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5C00C719
+P 6790 2835
+F 0 "#PWR?" H 6790 2685 50  0001 C CNN
+F 1 "+12V" H 6790 2975 50  0000 C CNN
+F 2 "" H 6790 2835 50  0000 C CNN
+F 3 "" H 6790 2835 50  0000 C CNN
+	1    6790 2835
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:-12VA-power #PWR?
+U 1 1 5C00C71F
+P 7040 2235
+F 0 "#PWR?" H 7040 2085 50  0001 C CNN
+F 1 "-12VA" H 7040 2375 50  0000 C CNN
+F 2 "" H 7040 2235 50  0000 C CNN
+F 3 "" H 7040 2235 50  0000 C CNN
+	1    7040 2235
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5C00C725
+P 7040 1485
+F 0 "#PWR?" H 7040 1335 50  0001 C CNN
+F 1 "+12V" H 7040 1625 50  0000 C CNN
+F 2 "" H 7040 1485 50  0000 C CNN
+F 3 "" H 7040 1485 50  0000 C CNN
+	1    7040 1485
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7040 2185 7040 2235
+Wire Wire Line
+	6240 2485 6290 2485
+Wire Wire Line
+	6440 2485 6440 1985
+Wire Wire Line
+	6440 1985 6840 1985
+Wire Wire Line
+	6290 2635 6290 2485
+Connection ~ 6290 2485
+Wire Wire Line
+	7440 1885 7640 1885
+Text Notes 6340 2835 0    60   ~ 0
+10K?
+$Comp
+L allcolours_analogue-rescue:D-device D?
+U 1 1 5C00C733
+P 7790 1885
+F 0 "D?" H 7790 1669 50  0000 C CNN
+F 1 "1n914/4148" H 7790 1760 50  0000 C CNN
+F 2 "" H 7790 1885 50  0001 C CNN
+F 3 "" H 7790 1885 50  0001 C CNN
+	1    7790 1885
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:R-device R?
+U 1 1 5C00C73A
+P 8040 2035
+F 0 "R?" V 8120 2035 50  0000 C CNN
+F 1 "20K" V 8040 2035 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 7970 2035 50  0001 C CNN
+F 3 "" H 8040 2035 50  0000 C CNN
+	1    8040 2035
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5C00C741
+P 8040 2235
+F 0 "#PWR?" H 8040 1985 50  0001 C CNN
+F 1 "GND" H 8040 2085 50  0000 C CNN
+F 2 "" H 8040 2235 50  0000 C CNN
+F 3 "" H 8040 2235 50  0000 C CNN
+	1    8040 2235
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7940 1885 8040 1885
+Wire Wire Line
+	8040 2235 8040 2185
+Connection ~ 8040 1885
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5C00C74A
+P 6640 2985
+F 0 "#PWR?" H 6640 2735 50  0001 C CNN
+F 1 "GND" H 6640 2835 50  0000 C CNN
+F 2 "" H 6640 2985 50  0000 C CNN
+F 3 "" H 6640 2985 50  0000 C CNN
+	1    6640 2985
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7040 1585 7040 1485
+Wire Wire Line
+	6290 2485 6440 2485
+Wire Wire Line
+	8040 1885 8190 1885
+$Comp
+L allcolours_analogue-rescue:TL072-linear U?
+U 1 1 5C00C753
+P 7140 1885
+F 0 "U?" H 7481 1931 50  0000 L CNN
+F 1 "TL072" H 7481 1840 50  0000 L CNN
+F 2 "" H 7140 1885 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7140 1885 50  0001 C CNN
+	1    7140 1885
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6790 2835 6790 2885
+Wire Wire Line
+	6790 2885 6890 2885
+Wire Wire Line
+	6640 2985 6640 2935
+Wire Wire Line
+	6640 2635 6890 2635
+Wire Wire Line
+	6590 2635 6640 2635
+Connection ~ 6640 2635
+Wire Wire Line
+	6640 1785 6840 1785
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C00C769
+P 6040 2485
+AR Path="/5BD863C8/5C00C769" Ref="J?"  Part="1" 
+AR Path="/5BD2D603/5C00C769" Ref="J?"  Part="1" 
+F 0 "J?" H 5960 2260 50  0000 C CNN
+F 1 "comp_noise1" H 5960 2351 50  0000 C CNN
+F 2 "" H 6040 2485 50  0001 C CNN
+F 3 "" H 6040 2485 50  0001 C CNN
+	1    6040 2485
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C00C770
+P 7090 2635
+AR Path="/5BD863C8/5C00C770" Ref="J?"  Part="1" 
+AR Path="/5BD2D603/5C00C770" Ref="J?"  Part="1" 
+F 0 "J?" H 7170 2677 50  0000 L CNN
+F 1 "comp_noise2" H 7170 2586 50  0000 L CNN
+F 2 "" H 7090 2635 50  0001 C CNN
+F 3 "" H 7090 2635 50  0001 C CNN
+	1    7090 2635
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C00C777
+P 7090 2885
+AR Path="/5BD863C8/5C00C777" Ref="J?"  Part="1" 
+AR Path="/5BD2D603/5C00C777" Ref="J?"  Part="1" 
+F 0 "J?" H 7170 2927 50  0000 L CNN
+F 1 "12V" H 7170 2836 50  0000 L CNN
+F 2 "" H 7090 2885 50  0001 C CNN
+F 3 "" H 7090 2885 50  0001 C CNN
+	1    7090 2885
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C00C77E
+P 8390 1885
+AR Path="/5BD863C8/5C00C77E" Ref="J?"  Part="1" 
+AR Path="/5BD2D603/5C00C77E" Ref="J?"  Part="1" 
+F 0 "J?" H 8470 1927 50  0000 L CNN
+F 1 "noise1_comp_out" H 8470 1836 50  0000 L CNN
+F 2 "" H 8390 1885 50  0001 C CNN
+F 3 "" H 8390 1885 50  0001 C CNN
+	1    8390 1885
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5800 1500 6640 1500
+Wire Wire Line
+	6640 1500 6640 1785
+Wire Wire Line
+	3900 1075 3900 1200
 $EndSCHEMATC

@@ -415,8 +415,6 @@ Wire Wire Line
 Connection ~ 7200 1500
 Wire Wire Line
 	6500 1600 6600 1600
-Text GLabel 2950 2575 2    118  Input ~ 0
-PWM_OUT
 Wire Wire Line
 	5000 4800 5000 4650
 Wire Wire Line
@@ -1076,8 +1074,6 @@ Text Label 6050 3350 2    60   ~ 0
 7400_LP
 Text Label 8125 5025 2    60   ~ 0
 FILTER_IN
-Text Notes 775  700  0    60   ~ 0
-filter in path - DG419 switched noise in
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5C05C278
@@ -1108,97 +1104,17 @@ Wire Wire Line
 	5500 4650 5575 4650
 Wire Wire Line
 	5600 4950 5675 4950
-Text GLabel 2800 1750 0    79   Input ~ 0
-filterinswitch
-Text Label 2075 1250 0    79   ~ 0
-FILTER_IN
-Text GLabel 3250 1300 2    79   Input ~ 0
-NOISE_OUT1
-$Comp
-L Analog_Switch:DG419xY U4
-U 1 1 5C114506
-P 2850 1300
-F 0 "U4" H 2850 1542 50  0000 C CNN
-F 1 "DG419xY" H 2850 1451 50  0000 C CNN
-F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 2850 1000 50  0001 C CNN
-F 3 "https://datasheets.maximintegrated.com/en/ds/DG417-DG419.pdf" H 2850 1300 50  0001 C CNN
-	1    2850 1300
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2800 1750 2850 1750
-Wire Wire Line
-	2850 1750 2850 1700
-Wire Wire Line
-	3150 1300 3250 1300
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
-U 1 1 5C12AC11
-P 750 1400
-AR Path="/5C12AC11" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5C12AC11" Ref="#PWR0131"  Part="1" 
-F 0 "#PWR0131" H 750 1250 50  0001 C CNN
-F 1 "+12V" H 750 1540 50  0000 C CNN
-F 2 "" H 750 1400 50  0000 C CNN
-F 3 "" H 750 1400 50  0000 C CNN
-	1    750  1400
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
-U 1 1 5C12AC66
-P 750 1800
-AR Path="/5C12AC66" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5C12AC66" Ref="#PWR0132"  Part="1" 
-F 0 "#PWR0132" H 750 1650 50  0001 C CNN
-F 1 "-12VA" H 750 1940 50  0000 C CNN
-F 2 "" H 750 1800 50  0000 C CNN
-F 3 "" H 750 1800 50  0000 C CNN
-	1    750  1800
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:C-device-allcolours-rescue C55
-U 1 1 5C12B94E
-P 750 1600
-F 0 "C55" H 775 1700 50  0000 L CNN
-F 1 "100N" H 775 1500 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 788 1450 50  0001 C CNN
-F 3 "" H 750 1600 50  0000 C CNN
-	1    750  1600
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	750  1750 750  1775
-$Comp
-L allcolours-rescue:PWR_FLAG-power-allcolours-rescue #FLG0102
-U 1 1 5C147A9D
-P 1075 1825
-F 0 "#FLG0102" H 1075 1900 50  0001 C CNN
-F 1 "PWR_FLAG-power" H 1075 1998 50  0000 C CNN
-F 2 "" H 1075 1825 50  0001 C CNN
-F 3 "" H 1075 1825 50  0001 C CNN
-	1    1075 1825
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	750  1775 1075 1775
-Wire Wire Line
-	1075 1775 1075 1825
-Connection ~ 750  1775
-Wire Wire Line
-	750  1775 750  1800
 $Comp
 L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5C157BC2
-P 3400 1500
+P 2300 1100
 AR Path="/5C157BC2" Ref="J?"  Part="1" 
 AR Path="/5B6C330C/5C157BC2" Ref="J28"  Part="1" 
-F 0 "J28" H 3480 1542 50  0000 L CNN
-F 1 "filter_in" H 3480 1451 50  0000 L CNN
-F 2 "" H 3400 1500 50  0001 C CNN
-F 3 "~" H 3400 1500 50  0001 C CNN
-	1    3400 1500
+F 0 "J28" H 2380 1142 50  0000 L CNN
+F 1 "filter_in" H 2380 1051 50  0000 L CNN
+F 2 "" H 2300 1100 50  0001 C CNN
+F 3 "~" H 2300 1100 50  0001 C CNN
+	1    2300 1100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1259,23 +1175,11 @@ Wire Wire Line
 Wire Wire Line
 	8600 4825 8600 4850
 Wire Wire Line
-	750  1400 750  1450
-Wire Wire Line
-	1975 1250 2075 1250
-Wire Wire Line
-	3150 1500 3200 1500
-Wire Wire Line
 	1975 950  2125 950 
 Wire Wire Line
 	1975 1050 2025 1050
 Wire Wire Line
 	2025 1050 2025 1100
-Wire Wire Line
-	2025 1100 2200 1100
-Wire Wire Line
-	2200 1100 2200 1400
-Wire Wire Line
-	2200 1400 2550 1400
 $Comp
 L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5C0D3788
@@ -1321,130 +1225,56 @@ Wire Wire Line
 $Comp
 L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
 U 1 1 5C110757
-P 1700 2475
+P 1675 1625
 AR Path="/5C110757" Ref="M?"  Part="1" 
 AR Path="/5B6C330C/5C110757" Ref="M?"  Part="1" 
-F 0 "M?" H 1373 2437 45  0000 R CNN
-F 1 "AUDIO-JACKERTHENVAR" H 1700 2475 45  0001 L BNN
-F 2 "erthenvar_ERTHENVAR-JACK" H 1730 2625 20  0001 C CNN
-F 3 "" H 1700 2475 60  0001 C CNN
-	1    1700 2475
+F 0 "M?" H 1348 1587 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR" H 1675 1625 45  0001 L BNN
+F 2 "erthenvar_ERTHENVAR-JACK" H 1705 1775 20  0001 C CNN
+F 3 "" H 1675 1625 60  0001 C CNN
+	1    1675 1625
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5C110B81
-P 2100 2175
-F 0 "#PWR?" H 2100 1925 50  0001 C CNN
-F 1 "GND" H 2100 2025 50  0000 C CNN
-F 2 "" H 2100 2175 50  0000 C CNN
-F 3 "" H 2100 2175 50  0000 C CNN
-	1    2100 2175
+P 2075 1325
+F 0 "#PWR?" H 2075 1075 50  0001 C CNN
+F 1 "GND" H 2075 1175 50  0000 C CNN
+F 2 "" H 2075 1325 50  0000 C CNN
+F 3 "" H 2075 1325 50  0000 C CNN
+	1    2075 1325
 	1    0    0    -1  
 $EndComp
 Text Label 5675 4950 0    60   ~ 0
-clock_in
+CLOCK_IN
 Wire Wire Line
-	2000 2375 2000 2175
+	1975 1525 1975 1325
 Wire Wire Line
-	2000 2175 2100 2175
-Text Notes 1875 2100 0    118  ~ 0
-switch finger or pwm out to jack
-$Comp
-L Analog_Switch:DG419xY U?
-U 1 1 5C138028
-P 2600 2375
-F 0 "U?" H 2600 2617 50  0000 C CNN
-F 1 "DG419xY" H 2600 2526 50  0000 C CNN
-F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 2600 2075 50  0001 C CNN
-F 3 "https://datasheets.maximintegrated.com/en/ds/DG417-DG419.pdf" H 2600 2375 50  0001 C CNN
-	1    2600 2375
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
-U 1 1 5C138154
-P 775 2525
-AR Path="/5C138154" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5C138154" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 775 2375 50  0001 C CNN
-F 1 "+12V" H 775 2665 50  0000 C CNN
-F 2 "" H 775 2525 50  0000 C CNN
-F 3 "" H 775 2525 50  0000 C CNN
-	1    775  2525
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
-U 1 1 5C13815A
-P 775 2925
-AR Path="/5C13815A" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5C13815A" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 775 2775 50  0001 C CNN
-F 1 "-12VA" H 775 3065 50  0000 C CNN
-F 2 "" H 775 2925 50  0000 C CNN
-F 3 "" H 775 2925 50  0000 C CNN
-	1    775  2925
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:C-device-allcolours-rescue C?
-U 1 1 5C138160
-P 775 2725
-F 0 "C?" H 800 2825 50  0000 L CNN
-F 1 "100N" H 800 2625 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 813 2575 50  0001 C CNN
-F 3 "" H 775 2725 50  0000 C CNN
-	1    775  2725
-	-1   0    0    1   
-$EndComp
+	1975 1325 2075 1325
 Wire Wire Line
-	775  2875 775  2900
-$Comp
-L allcolours-rescue:PWR_FLAG-power-allcolours-rescue #FLG?
-U 1 1 5C138167
-P 1100 2950
-F 0 "#FLG?" H 1100 3025 50  0001 C CNN
-F 1 "PWR_FLAG-power" H 1100 3123 50  0000 C CNN
-F 2 "" H 1100 2950 50  0001 C CNN
-F 3 "" H 1100 2950 50  0001 C CNN
-	1    1100 2950
-	-1   0    0    1   
-$EndComp
+	2025 1100 2100 1100
 Wire Wire Line
-	775  2900 1100 2900
-Wire Wire Line
-	1100 2900 1100 2950
-Connection ~ 775  2900
-Wire Wire Line
-	775  2900 775  2925
-Wire Wire Line
-	775  2525 775  2575
+	1975 1250 2175 1250
+Text Label 2175 1250 0    60   ~ 0
+FILTER_IN
+Text Label 2100 1825 0    60   ~ 0
+CLOCK_IN
 $Comp
 L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5C141A8E
-P 3150 2375
-AR Path="/5C141A8E" Ref="J?"  Part="1" 
-AR Path="/5B6C330C/5C141A8E" Ref="J?"  Part="1" 
-F 0 "J?" H 3230 2417 50  0000 L CNN
-F 1 "filter_clock" H 3230 2326 50  0000 L CNN
-F 2 "" H 3150 2375 50  0001 C CNN
-F 3 "~" H 3150 2375 50  0001 C CNN
-	1    3150 2375
+U 1 1 5C07F602
+P 2300 1625
+AR Path="/5C07F602" Ref="J?"  Part="1" 
+AR Path="/5B6C330C/5C07F602" Ref="J?"  Part="1" 
+F 0 "J?" H 2380 1667 50  0000 L CNN
+F 1 "clock_in" H 2380 1576 50  0000 L CNN
+F 2 "" H 2300 1625 50  0001 C CNN
+F 3 "~" H 2300 1625 50  0001 C CNN
+	1    2300 1625
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2900 2375 2950 2375
+	1975 1625 2100 1625
 Wire Wire Line
-	2900 2575 2950 2575
-Wire Wire Line
-	2000 2475 2300 2475
-Text Label 2075 2675 0    60   ~ 0
-clock_in
-Wire Wire Line
-	2000 2675 2075 2675
-Text GLabel 2600 2900 0    79   Input ~ 0
-clockinswitch
-Wire Wire Line
-	2600 2775 2600 2900
+	1975 1825 2100 1825
 $EndSCHEMATC

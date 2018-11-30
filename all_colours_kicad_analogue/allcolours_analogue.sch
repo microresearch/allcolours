@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 8
+Sheet 1 9
 Title ""
 Date ""
 Rev ""
@@ -532,4 +532,12 @@ F1 "revealed.sch" 60
 $EndSheet
 Text Notes 1700 7475 0    157  ~ 0
 revealed
+$Sheet
+S 7100 5150 1800 325 
+U 5C0A69D0
+F0 "sketching" 60
+F1 "sketches.sch" 60
+$EndSheet
+Text Notes 7625 5400 0    118  ~ 0
+sketches and discards
 $EndSCHEMATC
