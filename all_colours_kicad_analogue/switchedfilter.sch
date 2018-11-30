@@ -1124,11 +1124,11 @@ $EndComp
 Wire Wire Line
 	2950 2675 3050 2675
 $Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue FILT_OUT1
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue FILT_OUT
 U 1 1 5BD955EE
 P 9075 2275
-F 0 "FILT_OUT1" H 9155 2317 50  0000 L CNN
-F 1 "OUT" H 9155 2226 50  0000 L CNN
+F 0 "FILT_OUT" H 9155 2317 50  0000 L CNN
+F 1 "JOUT" H 9025 2165 50  0000 L CNN
 F 2 "" H 9075 2275 50  0001 C CNN
 F 3 "" H 9075 2275 50  0001 C CNN
 	1    9075 2275

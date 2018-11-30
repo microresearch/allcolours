@@ -50,7 +50,7 @@ Wire Wire Line
 Wire Wire Line
 	3925 1775 3925 2125
 Wire Wire Line
-	3475 1775 3625 1775
+	3475 1775 3600 1775
 Wire Wire Line
 	3075 2375 3175 2375
 Wire Wire Line
@@ -60,7 +60,7 @@ Wire Wire Line
 Wire Wire Line
 	2175 2275 2175 2575
 Wire Wire Line
-	1675 2275 1875 2275
+	1675 2275 1850 2275
 Wire Wire Line
 	1025 3575 1025 2825
 Wire Wire Line
@@ -499,12 +499,12 @@ Wire Wire Line
 Wire Wire Line
 	2575 1995 2775 1995
 Wire Wire Line
-	2775 1995 2775 2075
+	2775 1995 2775 2000
 Connection ~ 2575 1995
 Wire Wire Line
 	2575 1995 2575 2025
 Wire Wire Line
-	4275 1550 4475 1550
+	4275 1550 4425 1550
 Wire Wire Line
 	4475 1550 4475 1625
 Connection ~ 4275 1550
@@ -528,4 +528,84 @@ Wire Wire Line
 Connection ~ 5025 1300
 Wire Wire Line
 	5025 1300 5025 1325
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C01A3F3
+P 1850 2075
+F 0 "J?" V 1816 1987 50  0000 R CNN
+F 1 "our" V 1725 1987 50  0000 R CNN
+F 2 "" H 1850 2075 50  0001 C CNN
+F 3 "" H 1850 2075 50  0001 C CNN
+	1    1850 2075
+	0    -1   -1   0   
+$EndComp
+Connection ~ 1850 2275
+Wire Wire Line
+	1850 2275 1875 2275
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C01D0D1
+P 2775 1800
+F 0 "J?" V 2741 1712 50  0000 R CNN
+F 1 "our" V 2650 1712 50  0000 R CNN
+F 2 "" H 2775 1800 50  0001 C CNN
+F 3 "" H 2775 1800 50  0001 C CNN
+	1    2775 1800
+	0    -1   -1   0   
+$EndComp
+Connection ~ 2775 2000
+Wire Wire Line
+	2775 2000 2775 2075
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C01D153
+P 3600 1575
+F 0 "J?" V 3566 1487 50  0000 R CNN
+F 1 "our" V 3475 1487 50  0000 R CNN
+F 2 "" H 3600 1575 50  0001 C CNN
+F 3 "" H 3600 1575 50  0001 C CNN
+	1    3600 1575
+	0    -1   -1   0   
+$EndComp
+Connection ~ 3600 1775
+Wire Wire Line
+	3600 1775 3625 1775
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C01D5DC
+P 4425 1350
+F 0 "J?" V 4391 1262 50  0000 R CNN
+F 1 "our" V 4300 1262 50  0000 R CNN
+F 2 "" H 4425 1350 50  0001 C CNN
+F 3 "" H 4425 1350 50  0001 C CNN
+	1    4425 1350
+	0    -1   -1   0   
+$EndComp
+Connection ~ 4425 1550
+Wire Wire Line
+	4425 1550 4475 1550
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C01D658
+P 5925 925
+F 0 "J?" V 5891 837 50  0000 R CNN
+F 1 "our" V 5800 837 50  0000 R CNN
+F 2 "" H 5925 925 50  0001 C CNN
+F 3 "" H 5925 925 50  0001 C CNN
+	1    5925 925 
+	0    -1   -1   0   
+$EndComp
+Connection ~ 5925 1125
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C01E0C5
+P 5175 1100
+F 0 "J?" V 5141 1012 50  0000 R CNN
+F 1 "our" V 5050 1012 50  0000 R CNN
+F 2 "" H 5175 1100 50  0001 C CNN
+F 3 "" H 5175 1100 50  0001 C CNN
+	1    5175 1100
+	0    -1   -1   0   
+$EndComp
+Connection ~ 5175 1300
 $EndSCHEMATC
