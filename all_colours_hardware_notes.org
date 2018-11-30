@@ -104,11 +104,11 @@ filter: in, clock in, comp1, comp2, lpoutx3, hpoutx3 [for feedback]
 
 AVR/LFSR: cv_in, cv_in, comp1, comp2 for clock, pulses in, pulses out (how many?), hf pulse out, hf pulse in...
 
-noise: 2x noise out for patchings, comparator in for one noise source
+noise: 2x noise out for patchings, comp1, comp2, compout for processing
 
 ouroboros: in and out
 
-envelopes?
+envelopes? - maybe leave as fingers only or one envelope in, in2, out
 
 /////
 
@@ -123,18 +123,32 @@ pulse in and out low and high frequency versions??? where to place?
 6x pulse in/out low +1 pulse in HF, +1 pulse out HF
 
 - sketch analogue only version for larger home etch... - fingers and two jacks...
-- how to connect top and bottom pcb - *check height of jacks*
+- how to connect top and bottom pcb - jack height = 11mm (smd options for top panel?), how many connections 
+
+eg reich: SL 2X36G SMD2,54 on one side and 8.5mm on the other
 
 - comparator on one noise source
 
 - normal signal path noise->comp->filter/pwm clock on filter->LP/HP OUT
 
-- *check comp as usual/flat gives straight noise out*
+- check comp as usual/flat gives straight noise out - which it would never do so we need to make this modular/seperate
 
 * 30/11
-1
-- decision to make all patchable by jack and finger. so no switches/dg419
+
+- decision to make all patchable by jack and finger. so no switches/dg419, no norms
 - thus we need to work out common patches so we can have all jacks
+
+layers: 
+
+filter
+avr/LFSR/pulses
+noise-ouroboros-osc
+
+where we put comparator/env/low and high freq sections?
+
+comparator=gatekeeper/triangle
+
+- maybe lose filter comp if we have as modular
 
 * notes
 
