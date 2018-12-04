@@ -17,7 +17,7 @@ $EndDescr
 Text Notes 900  2100 0    60   ~ 0
 bc547c cbe
 Text Notes 850  850  0    60   ~ 0
-yusynth noise source x2
+noise source x2
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C4
 U 1 1 59679B9B
@@ -46,7 +46,7 @@ U 1 1 59679C98
 P 1450 1200
 F 0 "R1" V 1530 1200 50  0000 C CNN
 F 1 "47K" V 1450 1200 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 1380 1200 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 1380 1200 50  0001 C CNN
 F 3 "" H 1450 1200 50  0000 C CNN
 	1    1450 1200
 	1    0    0    -1  
@@ -57,7 +57,7 @@ U 1 1 5967A041
 P 2100 1200
 F 0 "R6" V 2180 1200 50  0000 C CNN
 F 1 "10K" V 2100 1200 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2030 1200 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2030 1200 50  0001 C CNN
 F 3 "" H 2100 1200 50  0000 C CNN
 	1    2100 1200
 	1    0    0    -1  
@@ -68,7 +68,7 @@ U 1 1 5967A047
 P 1800 1350
 F 0 "R2" V 1880 1350 50  0000 C CNN
 F 1 "150K" V 1800 1350 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 1730 1350 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 1730 1350 50  0001 C CNN
 F 3 "" H 1800 1350 50  0000 C CNN
 	1    1800 1350
 	1    0    0    -1  
@@ -112,7 +112,7 @@ U 1 1 5967CC22
 P 2700 1450
 F 0 "R11" V 2780 1450 50  0000 C CNN
 F 1 "33k" V 2700 1450 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2630 1450 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2630 1450 50  0001 C CNN
 F 3 "" H 2700 1450 50  0000 C CNN
 	1    2700 1450
 	0    1    1    0   
@@ -167,7 +167,7 @@ U 1 1 596804D2
 P 3500 950
 F 0 "C6" H 3525 1050 50  0000 L CNN
 F 1 "10p" H 3525 850 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 3538 800 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 3538 800 50  0001 C CNN
 F 3 "" H 3500 950 50  0000 C CNN
 	1    3500 950 
 	0    1    1    0   
@@ -211,7 +211,7 @@ U 1 1 5968BE3D
 P 8885 5955
 F 0 "C12" H 8910 6055 50  0000 L CNN
 F 1 "100N" H 8910 5855 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 8923 5805 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 8923 5805 50  0001 C CNN
 F 3 "" H 8885 5955 50  0000 C CNN
 	1    8885 5955
 	0    1    1    0   
@@ -233,7 +233,7 @@ U 1 1 5968C026
 P 9735 5955
 F 0 "C15" H 9760 6055 50  0000 L CNN
 F 1 "100N" H 9760 5855 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 9773 5805 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 9773 5805 50  0001 C CNN
 F 3 "" H 9735 5955 50  0000 C CNN
 	1    9735 5955
 	0    1    1    0   
@@ -255,7 +255,7 @@ U 1 1 5968DE2C
 P 600 1700
 F 0 "C9" H 625 1800 50  0000 L CNN
 F 1 "100N" H 625 1600 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 638 1550 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 638 1550 50  0001 C CNN
 F 3 "" H 600 1700 50  0000 C CNN
 	1    600  1700
 	-1   0    0    1   
@@ -270,7 +270,7 @@ U 1 1 5967E495
 P 6265 1185
 F 0 "R26" V 6345 1185 50  0000 C CNN
 F 1 "10K" V 6265 1185 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 6195 1185 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 6195 1185 50  0001 C CNN
 F 3 "" H 6265 1185 50  0000 C CNN
 	1    6265 1185
 	0    1    1    0   
@@ -281,7 +281,7 @@ U 1 1 5967E681
 P 6015 1335
 F 0 "R24" V 6095 1335 50  0000 C CNN
 F 1 "100K" V 6015 1335 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5945 1335 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 5945 1335 50  0001 C CNN
 F 3 "" H 6015 1335 50  0000 C CNN
 	1    6015 1335
 	1    0    0    -1  
@@ -303,7 +303,7 @@ U 1 1 5967F385
 P 6265 2035
 F 0 "R27" V 6345 2035 50  0000 C CNN
 F 1 "10K" V 6265 2035 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 6195 2035 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 6195 2035 50  0001 C CNN
 F 3 "" H 6265 2035 50  0000 C CNN
 	1    6265 2035
 	0    1    1    0   
@@ -314,7 +314,7 @@ U 1 1 5967F51F
 P 6465 2185
 F 0 "R28" V 6545 2185 50  0000 C CNN
 F 1 "100K" V 6465 2185 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 6395 2185 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 6395 2185 50  0001 C CNN
 F 3 "" H 6465 2185 50  0000 C CNN
 	1    6465 2185
 	1    0    0    -1  
@@ -347,7 +347,7 @@ U 1 1 59682456
 P 5915 1885
 F 0 "R23" V 5995 1885 50  0000 C CNN
 F 1 "10K" V 5915 1885 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5845 1885 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 5845 1885 50  0001 C CNN
 F 3 "" H 5915 1885 50  0000 C CNN
 	1    5915 1885
 	0    1    1    0   
@@ -415,7 +415,7 @@ U 1 1 596A1808
 P 3850 1350
 F 0 "R21" V 3930 1350 50  0000 C CNN
 F 1 "1K" V 3850 1350 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 3780 1350 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 3780 1350 50  0001 C CNN
 F 3 "" H 3850 1350 50  0000 C CNN
 	1    3850 1350
 	0    -1   -1   0   
@@ -552,7 +552,7 @@ U 1 1 5A8DC0DA
 P 7615 1285
 F 0 "D6" H 7615 1069 50  0000 C CNN
 F 1 "1n914/4148" H 7615 1160 50  0000 C CNN
-F 2 "" H 7615 1285 50  0001 C CNN
+F 2 "Diodes_SMD:D_SOD-323" H 7615 1285 50  0001 C CNN
 F 3 "" H 7615 1285 50  0001 C CNN
 	1    7615 1285
 	-1   0    0    1   
@@ -563,7 +563,7 @@ U 1 1 5A8DC4EE
 P 7865 1435
 F 0 "R37" V 7945 1435 50  0000 C CNN
 F 1 "20K" V 7865 1435 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 7795 1435 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 7795 1435 50  0001 C CNN
 F 3 "" H 7865 1435 50  0000 C CNN
 	1    7865 1435
 	1    0    0    -1  
@@ -640,7 +640,7 @@ U 1 1 5B6FF2C7
 P 1825 4825
 F 0 "J1" H 1905 4867 50  0000 L CNN
 F 1 "osc11" H 1905 4776 50  0000 L CNN
-F 2 "" H 1825 4825 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1825 4825 50  0001 C CNN
 F 3 "~" H 1825 4825 50  0001 C CNN
 	1    1825 4825
 	-1   0    0    1   
@@ -651,7 +651,7 @@ U 2 1 5B6FD3B3
 P 3300 1350
 F 0 "U1" H 3641 1396 50  0000 L CNN
 F 1 "TL072" H 3641 1305 50  0000 L CNN
-F 2 "" H 3300 1350 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-8-N" H 3300 1350 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3300 1350 50  0001 C CNN
 	2    3300 1350
 	1    0    0    -1  
@@ -662,7 +662,7 @@ U 1 1 5B6FE02A
 P 6965 1285
 F 0 "U6" H 7306 1331 50  0000 L CNN
 F 1 "TL072" H 7306 1240 50  0000 L CNN
-F 2 "" H 6965 1285 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-8-N" H 6965 1285 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6965 1285 50  0001 C CNN
 	1    6965 1285
 	1    0    0    -1  
@@ -675,7 +675,7 @@ U 1 1 5B6D0CC1
 P 2475 4825
 F 0 "U2" H 2475 4975 50  0000 C CNN
 F 1 "40106" H 2475 4625 50  0000 C CNN
-F 2 "" H 2475 4825 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 2475 4825 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2475 4825 50  0001 C CNN
 	1    2475 4825
 	1    0    0    -1  
@@ -686,7 +686,7 @@ U 1 1 5B6D0DB7
 P 2475 4525
 F 0 "R19" V 2555 4525 50  0000 C CNN
 F 1 "10K" V 2475 4525 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2405 4525 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2405 4525 50  0001 C CNN
 F 3 "" H 2475 4525 50  0000 C CNN
 	1    2475 4525
 	0    1    1    0   
@@ -697,7 +697,7 @@ U 1 1 5B6D10B1
 P 2175 5075
 F 0 "C8" H 2200 5175 50  0000 L CNN
 F 1 "1N" H 2200 4975 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 2213 4925 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2213 4925 50  0001 C CNN
 F 3 "" H 2175 5075 50  0000 C CNN
 	1    2175 5075
 	-1   0    0    1   
@@ -708,7 +708,7 @@ U 1 1 5B6D14A4
 P 1825 4975
 F 0 "J7" H 1905 5017 50  0000 L CNN
 F 1 "osc12" H 1905 4926 50  0000 L CNN
-F 2 "" H 1825 4975 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1825 4975 50  0001 C CNN
 F 3 "~" H 1825 4975 50  0001 C CNN
 	1    1825 4975
 	-1   0    0    1   
@@ -774,7 +774,7 @@ U 1 1 5B6C90C4
 P 3225 4925
 F 0 "U5" H 3566 4971 50  0000 L CNN
 F 1 "TL072" H 3566 4880 50  0000 L CNN
-F 2 "" H 3225 4925 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-8-N" H 3225 4925 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3225 4925 50  0001 C CNN
 	1    3225 4925
 	1    0    0    -1  
@@ -854,7 +854,7 @@ U 1 1 5B70AE2B
 P 3500 1150
 F 0 "RV1" V 3293 1150 50  0000 C CNN
 F 1 "1M" V 3550 1000 50  0000 C CNN
-F 2 "" H 3500 1150 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" H 3500 1150 50  0001 C CNN
 F 3 "" H 3500 1150 50  0001 C CNN
 	1    3500 1150
 	0    1    1    0   
@@ -877,7 +877,7 @@ Connection ~ 3650 1150
 Text Notes 900  4000 0    60   ~ 0
 bc547c cbe
 Text Notes 850  2750 0    60   ~ 0
-yusynth noise source x2
+noise source x2
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C11
 U 1 1 5B715E2B
@@ -906,7 +906,7 @@ U 1 1 5B715E37
 P 1450 3100
 F 0 "R3" V 1530 3100 50  0000 C CNN
 F 1 "47K" V 1450 3100 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 1380 3100 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 1380 3100 50  0001 C CNN
 F 3 "" H 1450 3100 50  0000 C CNN
 	1    1450 3100
 	1    0    0    -1  
@@ -917,7 +917,7 @@ U 1 1 5B715E43
 P 2100 3100
 F 0 "R31" V 2180 3100 50  0000 C CNN
 F 1 "10K" V 2100 3100 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2030 3100 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2030 3100 50  0001 C CNN
 F 3 "" H 2100 3100 50  0000 C CNN
 	1    2100 3100
 	1    0    0    -1  
@@ -928,7 +928,7 @@ U 1 1 5B715E49
 P 1800 3250
 F 0 "R29" V 1880 3250 50  0000 C CNN
 F 1 "150K" V 1800 3250 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 1730 3250 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 1730 3250 50  0001 C CNN
 F 3 "" H 1800 3250 50  0000 C CNN
 	1    1800 3250
 	1    0    0    -1  
@@ -972,7 +972,7 @@ U 1 1 5B715E61
 P 2700 3350
 F 0 "R32" V 2780 3350 50  0000 C CNN
 F 1 "33k" V 2700 3350 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2630 3350 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2630 3350 50  0001 C CNN
 F 3 "" H 2700 3350 50  0000 C CNN
 	1    2700 3350
 	0    1    1    0   
@@ -1027,7 +1027,7 @@ U 1 1 5B715E7F
 P 3500 2850
 F 0 "C23" H 3525 2950 50  0000 L CNN
 F 1 "10p" H 3525 2750 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 3538 2700 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 3538 2700 50  0001 C CNN
 F 3 "" H 3500 2850 50  0000 C CNN
 	1    3500 2850
 	0    1    1    0   
@@ -1038,7 +1038,7 @@ U 1 1 5B715E86
 P 3850 3250
 F 0 "R33" V 3930 3250 50  0000 C CNN
 F 1 "1K" V 3850 3250 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 3780 3250 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 3780 3250 50  0001 C CNN
 F 3 "" H 3850 3250 50  0000 C CNN
 	1    3850 3250
 	0    -1   -1   0   
@@ -1113,7 +1113,7 @@ U 1 1 5B715EB0
 P 3300 3250
 F 0 "U1" H 3641 3296 50  0000 L CNN
 F 1 "TL072" H 3641 3205 50  0000 L CNN
-F 2 "" H 3300 3250 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-8-N" H 3300 3250 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3300 3250 50  0001 C CNN
 	1    3300 3250
 	1    0    0    -1  
@@ -1124,7 +1124,7 @@ U 1 1 5B715EB6
 P 3500 3050
 F 0 "RV2" V 3293 3050 50  0000 C CNN
 F 1 "1M" V 3550 2900 50  0000 C CNN
-F 2 "" H 3500 3050 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" H 3500 3050 50  0001 C CNN
 F 3 "" H 3500 3050 50  0001 C CNN
 	1    3500 3050
 	0    1    1    0   
@@ -1159,7 +1159,7 @@ U 1 1 5B6B93E8
 P 6915 2035
 F 0 "J12" H 6995 2077 50  0000 L CNN
 F 1 "comp3" H 6995 1986 50  0000 L CNN
-F 2 "" H 6915 2035 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6915 2035 50  0001 C CNN
 F 3 "~" H 6915 2035 50  0001 C CNN
 	1    6915 2035
 	1    0    0    -1  
@@ -1170,7 +1170,7 @@ U 1 1 5B6B991E
 P 6915 2285
 F 0 "J13" H 6995 2327 50  0000 L CNN
 F 1 "+12v" H 6995 2236 50  0000 L CNN
-F 2 "" H 6915 2285 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6915 2285 50  0001 C CNN
 F 3 "~" H 6915 2285 50  0001 C CNN
 	1    6915 2285
 	1    0    0    -1  
@@ -1192,7 +1192,7 @@ U 1 1 5B6D8CC3
 P 5765 2035
 F 0 "J10" H 5845 2077 50  0000 L CNN
 F 1 "comp2" H 5845 1986 50  0000 L CNN
-F 2 "" H 5765 2035 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 5765 2035 50  0001 C CNN
 F 3 "~" H 5765 2035 50  0001 C CNN
 	1    5765 2035
 	-1   0    0    1   
@@ -1208,7 +1208,7 @@ U 1 1 5B6CCB33
 P 9825 2200
 F 0 "M6" H 9498 2162 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 9825 2200 45  0001 L BNN
-F 2 "erthenvar_ERTHENVAR-JACK" H 9855 2350 20  0001 C CNN
+F 2 "erthenvar:ERTHENVAR-JACK" H 9855 2350 20  0001 C CNN
 F 3 "" H 9825 2200 60  0001 C CNN
 	1    9825 2200
 	-1   0    0    1   
@@ -1219,7 +1219,7 @@ U 1 1 5B6E23D7
 P 1825 5975
 F 0 "J8" H 1905 6017 50  0000 L CNN
 F 1 "osc21" H 1905 5926 50  0000 L CNN
-F 2 "" H 1825 5975 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1825 5975 50  0001 C CNN
 F 3 "~" H 1825 5975 50  0001 C CNN
 	1    1825 5975
 	-1   0    0    1   
@@ -1232,7 +1232,7 @@ U 1 1 5B6E23E4
 P 2475 5675
 F 0 "R25" V 3025 5725 50  0000 C CNN
 F 1 "10K" V 2475 5675 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2405 5675 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2405 5675 50  0001 C CNN
 F 3 "" H 2475 5675 50  0000 C CNN
 	1    2475 5675
 	0    1    1    0   
@@ -1243,7 +1243,7 @@ U 1 1 5B6E23EA
 P 2175 6225
 F 0 "C10" H 2200 6325 50  0000 L CNN
 F 1 "100N" H 2200 6125 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 2213 6075 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2213 6075 50  0001 C CNN
 F 3 "" H 2175 6225 50  0000 C CNN
 	1    2175 6225
 	-1   0    0    1   
@@ -1254,7 +1254,7 @@ U 1 1 5B6E23F0
 P 1825 6125
 F 0 "J9" H 1905 6167 50  0000 L CNN
 F 1 "osc22" H 1905 6076 50  0000 L CNN
-F 2 "" H 1825 6125 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1825 6125 50  0001 C CNN
 F 3 "~" H 1825 6125 50  0001 C CNN
 	1    1825 6125
 	-1   0    0    1   
@@ -1304,7 +1304,7 @@ U 2 1 5B6E240B
 P 3225 6075
 F 0 "U5" H 3566 6121 50  0000 L CNN
 F 1 "TL072" H 3566 6030 50  0000 L CNN
-F 2 "" H 3225 6075 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-8-N" H 3225 6075 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3225 6075 50  0001 C CNN
 	2    3225 6075
 	1    0    0    -1  
@@ -1354,7 +1354,7 @@ U 1 1 5B723263
 P 5415 985
 F 0 "M5" H 5421 1204 45  0000 C CNN
 F 1 "AUDIO-JACKERTHENVAR" H 5415 985 45  0001 L BNN
-F 2 "erthenvar_ERTHENVAR-JACK" H 5445 1135 20  0001 C CNN
+F 2 "erthenvar:ERTHENVAR-JACK" H 5445 1135 20  0001 C CNN
 F 3 "" H 5415 985 60  0001 C CNN
 	1    5415 985 
 	1    0    0    -1  
@@ -1365,7 +1365,7 @@ U 1 1 5B739301
 P 6265 935
 F 0 "J11" H 6345 977 50  0000 L CNN
 F 1 "comp1" H 6345 886 50  0000 L CNN
-F 2 "" H 6265 935 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6265 935 50  0001 C CNN
 F 3 "~" H 6265 935 50  0001 C CNN
 	1    6265 935 
 	-1   0    0    1   
@@ -1376,7 +1376,7 @@ U 1 1 5B7393F3
 P 5365 1685
 F 0 "M4" H 5371 1904 45  0000 C CNN
 F 1 "AUDIO-JACKERTHENVAR" H 5365 1685 45  0001 L BNN
-F 2 "erthenvar_ERTHENVAR-JACK" H 5395 1835 20  0001 C CNN
+F 2 "erthenvar:ERTHENVAR-JACK" H 5395 1835 20  0001 C CNN
 F 3 "" H 5365 1685 60  0001 C CNN
 	1    5365 1685
 	1    0    0    -1  
@@ -1424,7 +1424,7 @@ U 1 1 5B7FB454
 P 5425 3900
 F 0 "C24" H 5450 4000 50  0000 L CNN
 F 1 "1N" H 5450 3800 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 5463 3750 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 5463 3750 50  0001 C CNN
 F 3 "" H 5425 3900 50  0000 C CNN
 	1    5425 3900
 	0    -1   -1   0   
@@ -1435,7 +1435,7 @@ U 1 1 5B7FB5A7
 P 6275 3650
 F 0 "C25" H 6300 3750 50  0000 L CNN
 F 1 "100N" H 6125 3550 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 6313 3500 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 6313 3500 50  0001 C CNN
 F 3 "" H 6275 3650 50  0000 C CNN
 	1    6275 3650
 	-1   0    0    1   
@@ -1446,7 +1446,7 @@ U 1 1 5B7FB6C7
 P 6475 3650
 F 0 "C26" H 6500 3750 50  0000 L CNN
 F 1 "100N" H 6225 3550 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 6513 3500 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 6513 3500 50  0001 C CNN
 F 3 "" H 6475 3650 50  0000 C CNN
 	1    6475 3650
 	-1   0    0    1   
@@ -1479,7 +1479,7 @@ U 1 1 5B7FC09F
 P 5625 3750
 F 0 "R34" V 5705 3750 50  0000 C CNN
 F 1 "1M" V 5625 3750 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5555 3750 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 5555 3750 50  0001 C CNN
 F 3 "" H 5625 3750 50  0000 C CNN
 	1    5625 3750
 	1    0    0    -1  
@@ -1490,7 +1490,7 @@ U 1 1 5B7FC242
 P 5975 3100
 F 0 "R35" V 6055 3100 50  0000 C CNN
 F 1 "33K" V 5975 3100 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5905 3100 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 5905 3100 50  0001 C CNN
 F 3 "" H 5975 3100 50  0000 C CNN
 	1    5975 3100
 	1    0    0    -1  
@@ -1501,7 +1501,7 @@ U 1 1 5B7FDD26
 P 5975 3500
 F 0 "D1" H 5975 3400 50  0000 C CNN
 F 1 "1n4148" H 5975 3650 50  0000 C CNN
-F 2 "" H 5975 3500 50  0001 C CNN
+F 2 "Diodes_SMD:D_SOD-323" H 5975 3500 50  0001 C CNN
 F 3 "" H 5975 3500 50  0001 C CNN
 	1    5975 3500
 	0    -1   -1   0   
@@ -1568,7 +1568,7 @@ U 1 1 5BB1D990
 P 1250 1700
 F 0 "Q1" V 1578 1700 50  0000 C CNN
 F 1 "Q_NPN_BEC" V 1487 1700 50  0000 C CNN
-F 2 "" H 1450 1800 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 1450 1800 50  0001 C CNN
 F 3 "" H 1250 1700 50  0001 C CNN
 	1    1250 1700
 	0    -1   -1   0   
@@ -1580,7 +1580,7 @@ U 1 1 5BB3A98F
 P 2000 1600
 F 0 "Q5" H 2191 1646 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 2191 1555 50  0000 L CNN
-F 2 "" H 2200 1700 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 2200 1700 50  0001 C CNN
 F 3 "" H 2000 1600 50  0001 C CNN
 	1    2000 1600
 	1    0    0    -1  
@@ -1593,7 +1593,7 @@ U 1 1 5BB3BE45
 P 1250 3600
 F 0 "Q3" V 1578 3600 50  0000 C CNN
 F 1 "Q_NPN_BEC" V 1487 3600 50  0000 C CNN
-F 2 "" H 1450 3700 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 1450 3700 50  0001 C CNN
 F 3 "" H 1250 3600 50  0001 C CNN
 	1    1250 3600
 	0    -1   -1   0   
@@ -1604,7 +1604,7 @@ U 1 1 5BB3C040
 P 2000 3500
 F 0 "Q6" H 2191 3546 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 2191 3455 50  0000 L CNN
-F 2 "" H 2200 3600 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 2200 3600 50  0001 C CNN
 F 3 "" H 2000 3500 50  0001 C CNN
 	1    2000 3500
 	1    0    0    -1  
@@ -1615,7 +1615,7 @@ U 1 1 5BB3C268
 P 5875 3900
 F 0 "Q7" H 6066 3946 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 6066 3855 50  0000 L CNN
-F 2 "" H 6075 4000 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 6075 4000 50  0001 C CNN
 F 3 "" H 5875 3900 50  0001 C CNN
 	1    5875 3900
 	1    0    0    -1  
@@ -1626,7 +1626,7 @@ U 1 1 5C020573
 P 650 3325
 F 0 "C43" H 675 3425 50  0000 L CNN
 F 1 "100N" H 675 3225 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 688 3175 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 688 3175 50  0001 C CNN
 F 3 "" H 650 3325 50  0000 C CNN
 	1    650  3325
 	-1   0    0    1   
@@ -1663,7 +1663,7 @@ U 1 1 5C02A9C9
 P 900 5475
 F 0 "C44" H 925 5575 50  0000 L CNN
 F 1 "100N" H 925 5375 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 938 5325 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 938 5325 50  0001 C CNN
 F 3 "" H 900 5475 50  0000 C CNN
 	1    900  5475
 	-1   0    0    1   
@@ -1700,7 +1700,7 @@ U 2 1 5C035A2D
 P 2475 5975
 F 0 "U2" H 2500 6125 50  0000 C CNN
 F 1 "40106" H 2500 6050 50  0000 C CNN
-F 2 "" H 2475 5975 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 2475 5975 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2475 5975 50  0001 C CNN
 	2    2475 5975
 	1    0    0    -1  
@@ -1712,7 +1712,7 @@ U 1 1 5C0A53C5
 P 3875 4925
 F 0 "J20" H 3955 4967 50  0000 L CNN
 F 1 "osc_out1HIFREQ" H 3955 4876 50  0000 L CNN
-F 2 "" H 3875 4925 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3875 4925 50  0001 C CNN
 F 3 "~" H 3875 4925 50  0001 C CNN
 	1    3875 4925
 	1    0    0    -1  
@@ -1723,7 +1723,7 @@ U 1 1 5C0A5553
 P 3875 6075
 F 0 "J21" H 3955 6117 50  0000 L CNN
 F 1 "osc_out2" H 3955 6026 50  0000 L CNN
-F 2 "" H 3875 6075 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3875 6075 50  0001 C CNN
 F 3 "~" H 3875 6075 50  0001 C CNN
 	1    3875 6075
 	1    0    0    -1  
@@ -1734,7 +1734,7 @@ U 1 1 5C0AFBEE
 P 5000 3900
 F 0 "J22" H 5080 3942 50  0000 L CNN
 F 1 "env1_sig" H 5080 3851 50  0000 L CNN
-F 2 "" H 5000 3900 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 5000 3900 50  0001 C CNN
 F 3 "~" H 5000 3900 50  0001 C CNN
 	1    5000 3900
 	-1   0    0    1   
@@ -1745,7 +1745,7 @@ U 1 1 5C0AFD8E
 P 5525 2950
 F 0 "J24" H 5605 2992 50  0000 L CNN
 F 1 "env1in" H 5605 2901 50  0000 L CNN
-F 2 "" H 5525 2950 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 5525 2950 50  0001 C CNN
 F 3 "~" H 5525 2950 50  0001 C CNN
 	1    5525 2950
 	-1   0    0    1   
@@ -1756,7 +1756,7 @@ U 1 1 5C0AFE76
 P 6900 3300
 F 0 "J26" H 6980 3342 50  0000 L CNN
 F 1 "env1_out" H 6980 3251 50  0000 L CNN
-F 2 "" H 6900 3300 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6900 3300 50  0001 C CNN
 F 3 "~" H 6900 3300 50  0001 C CNN
 	1    6900 3300
 	1    0    0    -1  
@@ -1775,43 +1775,43 @@ Wire Wire Line
 Text Notes 5335 4490 0    60   ~ 0
 primitive envelope 2\n
 $Comp
-L allcolours-rescue:C-device-allcolours-rescue C?
+L allcolours-rescue:C-device-allcolours-rescue C52
 U 1 1 5C0430CC
 P 5435 5640
-F 0 "C?" H 5460 5740 50  0000 L CNN
+F 0 "C52" H 5460 5740 50  0000 L CNN
 F 1 "1N" H 5460 5540 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 5473 5490 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 5473 5490 50  0001 C CNN
 F 3 "" H 5435 5640 50  0000 C CNN
 	1    5435 5640
 	0    -1   -1   0   
 $EndComp
 $Comp
-L allcolours-rescue:C-device-allcolours-rescue C?
+L allcolours-rescue:C-device-allcolours-rescue C53
 U 1 1 5C0430D2
 P 6285 5390
-F 0 "C?" H 6310 5490 50  0000 L CNN
+F 0 "C53" H 6310 5490 50  0000 L CNN
 F 1 "100N" H 6135 5290 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 6323 5240 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 6323 5240 50  0001 C CNN
 F 3 "" H 6285 5390 50  0000 C CNN
 	1    6285 5390
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:C-device-allcolours-rescue C?
+L allcolours-rescue:C-device-allcolours-rescue C54
 U 1 1 5C0430D8
 P 6485 5390
-F 0 "C?" H 6510 5490 50  0000 L CNN
+F 0 "C54" H 6510 5490 50  0000 L CNN
 F 1 "100N" H 6235 5290 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 6523 5240 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 6523 5240 50  0001 C CNN
 F 3 "" H 6485 5390 50  0000 C CNN
 	1    6485 5390
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR072
 U 1 1 5C0430DE
 P 6385 5540
-F 0 "#PWR?" H 6385 5290 50  0001 C CNN
+F 0 "#PWR072" H 6385 5290 50  0001 C CNN
 F 1 "GND" H 6385 5390 50  0000 C CNN
 F 2 "" H 6385 5540 50  0000 C CNN
 F 3 "" H 6385 5540 50  0000 C CNN
@@ -1819,10 +1819,10 @@ F 3 "" H 6385 5540 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR071
 U 1 1 5C0430E4
 P 5985 5890
-F 0 "#PWR?" H 5985 5640 50  0001 C CNN
+F 0 "#PWR071" H 5985 5640 50  0001 C CNN
 F 1 "GND" H 5985 5740 50  0000 C CNN
 F 2 "" H 5985 5890 50  0000 C CNN
 F 3 "" H 5985 5890 50  0000 C CNN
@@ -1830,34 +1830,34 @@ F 3 "" H 5985 5890 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R5
 U 1 1 5C0430EA
 P 5635 5490
-F 0 "R?" V 5715 5490 50  0000 C CNN
+F 0 "R5" V 5715 5490 50  0000 C CNN
 F 1 "1M" V 5635 5490 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5565 5490 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 5565 5490 50  0001 C CNN
 F 3 "" H 5635 5490 50  0000 C CNN
 	1    5635 5490
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R30
 U 1 1 5C0430F0
 P 5985 4840
-F 0 "R?" V 6065 4840 50  0000 C CNN
+F 0 "R30" V 6065 4840 50  0000 C CNN
 F 1 "33K" V 5985 4840 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 5915 4840 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 5915 4840 50  0001 C CNN
 F 3 "" H 5985 4840 50  0000 C CNN
 	1    5985 4840
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:D-device-allcolours-rescue D?
+L allcolours-rescue:D-device-allcolours-rescue D3
 U 1 1 5C0430F6
 P 5985 5240
-F 0 "D?" H 5985 5140 50  0000 C CNN
+F 0 "D3" H 5985 5140 50  0000 C CNN
 F 1 "1n4148" H 5985 5390 50  0000 C CNN
-F 2 "" H 5985 5240 50  0001 C CNN
+F 2 "Diodes_SMD:D_SOD-323" H 5985 5240 50  0001 C CNN
 F 3 "" H 5985 5240 50  0001 C CNN
 	1    5985 5240
 	0    -1   -1   0   
@@ -1895,10 +1895,10 @@ Connection ~ 6385 5540
 Wire Wire Line
 	5985 5890 5985 5840
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR070
 U 1 1 5C04310F
 P 5635 5240
-F 0 "#PWR?" H 5635 5090 50  0001 C CNN
+F 0 "#PWR070" H 5635 5090 50  0001 C CNN
 F 1 "+12V" H 5635 5380 50  0000 C CNN
 F 2 "" H 5635 5240 50  0000 C CNN
 F 3 "" H 5635 5240 50  0000 C CNN
@@ -1911,45 +1911,45 @@ Wire Wire Line
 	6485 5040 6710 5040
 Connection ~ 6485 5040
 $Comp
-L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
+L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q15
 U 1 1 5C043118
 P 5885 5640
-F 0 "Q?" H 6076 5686 50  0000 L CNN
+F 0 "Q15" H 6076 5686 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 6076 5595 50  0000 L CNN
-F 2 "" H 6085 5740 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 6085 5740 50  0001 C CNN
 F 3 "" H 5885 5640 50  0001 C CNN
 	1    5885 5640
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J17
 U 1 1 5C04311E
 P 5010 5640
-F 0 "J?" H 5090 5682 50  0000 L CNN
+F 0 "J17" H 5090 5682 50  0000 L CNN
 F 1 "env2_sig" H 5090 5591 50  0000 L CNN
-F 2 "" H 5010 5640 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 5010 5640 50  0001 C CNN
 F 3 "~" H 5010 5640 50  0001 C CNN
 	1    5010 5640
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J18
 U 1 1 5C043124
 P 5535 4690
-F 0 "J?" H 5615 4732 50  0000 L CNN
+F 0 "J18" H 5615 4732 50  0000 L CNN
 F 1 "env2in" H 5615 4641 50  0000 L CNN
-F 2 "" H 5535 4690 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 5535 4690 50  0001 C CNN
 F 3 "~" H 5535 4690 50  0001 C CNN
 	1    5535 4690
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J19
 U 1 1 5C04312A
 P 6910 5040
-F 0 "J?" H 6990 5082 50  0000 L CNN
+F 0 "J19" H 6990 5082 50  0000 L CNN
 F 1 "env2_out" H 6990 4991 50  0000 L CNN
-F 2 "" H 6910 5040 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6910 5040 50  0001 C CNN
 F 3 "~" H 6910 5040 50  0001 C CNN
 	1    6910 5040
 	1    0    0    -1  
@@ -1960,12 +1960,12 @@ Wire Wire Line
 Wire Wire Line
 	5210 5640 5285 5640
 $Comp
-L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J14
 U 1 1 5C06A9A1
 P 4225 3400
-F 0 "J?" H 4305 3442 50  0000 L CNN
+F 0 "J14" H 4305 3442 50  0000 L CNN
 F 1 "noise_out2" H 4305 3351 50  0000 L CNN
-F 2 "" H 4225 3400 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4225 3400 50  0001 C CNN
 F 3 "~" H 4225 3400 50  0001 C CNN
 	1    4225 3400
 	1    0    0    -1  
@@ -1977,21 +1977,21 @@ Wire Wire Line
 	4025 3250 4100 3250
 Connection ~ 6015 1185
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
+L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M8
 U 1 1 5C0A76E3
 P 8635 1085
-F 0 "M?" H 8641 1304 45  0000 C CNN
+F 0 "M8" H 8641 1304 45  0000 C CNN
 F 1 "AUDIO-JACKERTHENVAR" H 8635 1085 45  0001 L BNN
-F 2 "erthenvar_ERTHENVAR-JACK" H 8665 1235 20  0001 C CNN
+F 2 "erthenvar:ERTHENVAR-JACK" H 8665 1235 20  0001 C CNN
 F 3 "" H 8635 1085 60  0001 C CNN
 	1    8635 1085
 	-1   0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR075
 U 1 1 5C0A76EA
 P 8185 985
-F 0 "#PWR?" H 8185 735 50  0001 C CNN
+F 0 "#PWR075" H 8185 735 50  0001 C CNN
 F 1 "GND" H 8185 835 50  0000 C CNN
 F 2 "" H 8185 985 50  0000 C CNN
 F 3 "" H 8185 985 50  0000 C CNN
@@ -2004,12 +2004,12 @@ Wire Wire Line
 	7865 1285 8130 1285
 Connection ~ 7865 1285
 $Comp
-L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J23
 U 1 1 5C0ED881
 P 8330 1470
-F 0 "J?" H 8410 1512 50  0000 L CNN
+F 0 "J23" H 8410 1512 50  0000 L CNN
 F 1 "comp_out" H 8410 1421 50  0000 L CNN
-F 2 "" H 8330 1470 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 8330 1470 50  0001 C CNN
 F 3 "~" H 8330 1470 50  0001 C CNN
 	1    8330 1470
 	1    0    0    -1  
@@ -2026,12 +2026,12 @@ NOISE_OUT1
 Text Label 4100 3250 0    60   ~ 0
 NOISE_OUT1
 $Comp
-L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J16
 U 1 1 5C142034
 P 4240 1465
-F 0 "J?" H 4320 1507 50  0000 L CNN
+F 0 "J16" H 4320 1507 50  0000 L CNN
 F 1 "noise_out1" H 4320 1416 50  0000 L CNN
-F 2 "" H 4240 1465 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4240 1465 50  0001 C CNN
 F 3 "~" H 4240 1465 50  0001 C CNN
 	1    4240 1465
 	1    0    0    -1  
@@ -2044,10 +2044,10 @@ Connection ~ 4025 1350
 Wire Wire Line
 	4025 1350 4080 1350
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR076
 U 1 1 5C14F61F
 P 9425 2300
-F 0 "#PWR?" H 9425 2050 50  0001 C CNN
+F 0 "#PWR076" H 9425 2050 50  0001 C CNN
 F 1 "GND" H 9425 2150 50  0000 C CNN
 F 2 "" H 9425 2300 50  0000 C CNN
 F 3 "" H 9425 2300 50  0000 C CNN
@@ -2061,21 +2061,21 @@ Wire Wire Line
 Text Label 9425 2000 2    60   ~ 0
 NOISE_OUT1
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
+L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M9
 U 1 1 5C175512
 P 9825 2850
-F 0 "M?" H 9498 2812 45  0000 R CNN
+F 0 "M9" H 9498 2812 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 9825 2850 45  0001 L BNN
-F 2 "erthenvar_ERTHENVAR-JACK" H 9855 3000 20  0001 C CNN
+F 2 "erthenvar:ERTHENVAR-JACK" H 9855 3000 20  0001 C CNN
 F 3 "" H 9825 2850 60  0001 C CNN
 	1    9825 2850
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR077
 U 1 1 5C175518
 P 9425 2950
-F 0 "#PWR?" H 9425 2700 50  0001 C CNN
+F 0 "#PWR077" H 9425 2700 50  0001 C CNN
 F 1 "GND" H 9425 2800 50  0000 C CNN
 F 2 "" H 9425 2950 50  0000 C CNN
 F 3 "" H 9425 2950 50  0000 C CNN

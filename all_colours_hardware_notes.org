@@ -152,6 +152,10 @@ comparator=gatekeeper/triangle
 
 - maybe add extra modular comp
 
+* 4/12
+
+- check footprints for both projects...
+
 * notes
 
 - ignore other all_colours schematics in ERD!

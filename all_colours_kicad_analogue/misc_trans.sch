@@ -22,7 +22,7 @@ AR Path="/5BD18BA3" Ref="C?"  Part="1"
 AR Path="/5BD09509/5BD18BA3" Ref="C19"  Part="1" 
 F 0 "C19" H 2075 2300 50  0000 L CNN
 F 1 "1N" H 2075 2100 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 2088 2050 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2088 2050 50  0001 C CNN
 F 3 "" H 2050 2200 50  0000 C CNN
 	1    2050 2200
 	0    -1   -1   0   
@@ -35,7 +35,7 @@ AR Path="/5BD18BAA" Ref="C?"  Part="1"
 AR Path="/5BD09509/5BD18BAA" Ref="C20"  Part="1" 
 F 0 "C20" H 2925 2050 50  0000 L CNN
 F 1 "100N" H 2750 1850 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 2938 1800 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2938 1800 50  0001 C CNN
 F 3 "" H 2900 1950 50  0000 C CNN
 	1    2900 1950
 	-1   0    0    1   
@@ -48,7 +48,7 @@ AR Path="/5BD18BB1" Ref="C?"  Part="1"
 AR Path="/5BD09509/5BD18BB1" Ref="C21"  Part="1" 
 F 0 "C21" H 3125 2050 50  0000 L CNN
 F 1 "100N" H 2850 1850 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 3138 1800 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 3138 1800 50  0001 C CNN
 F 3 "" H 3100 1950 50  0000 C CNN
 	1    3100 1950
 	-1   0    0    1   
@@ -87,7 +87,7 @@ AR Path="/5BD18BC4" Ref="R?"  Part="1"
 AR Path="/5BD09509/5BD18BC4" Ref="R14"  Part="1" 
 F 0 "R14" V 2330 2050 50  0000 C CNN
 F 1 "1M" V 2250 2050 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2180 2050 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2180 2050 50  0001 C CNN
 F 3 "" H 2250 2050 50  0000 C CNN
 	1    2250 2050
 	1    0    0    -1  
@@ -100,7 +100,7 @@ AR Path="/5BD18BCB" Ref="R?"  Part="1"
 AR Path="/5BD09509/5BD18BCB" Ref="R15"  Part="1" 
 F 0 "R15" V 2680 1400 50  0000 C CNN
 F 1 "33K" V 2600 1400 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2530 1400 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" V 2530 1400 50  0001 C CNN
 F 3 "" H 2600 1400 50  0000 C CNN
 	1    2600 1400
 	1    0    0    -1  
@@ -113,7 +113,7 @@ AR Path="/5BD18BD2" Ref="D?"  Part="1"
 AR Path="/5BD09509/5BD18BD2" Ref="D13"  Part="1" 
 F 0 "D13" H 2600 1700 50  0000 C CNN
 F 1 "1n4148" H 2600 1950 50  0000 C CNN
-F 2 "" H 2600 1800 50  0001 C CNN
+F 2 "Diodes_SMD:D_SOD-323" H 2600 1800 50  0001 C CNN
 F 3 "" H 2600 1800 50  0001 C CNN
 	1    2600 1800
 	0    -1   -1   0   
@@ -129,12 +129,6 @@ Wire Wire Line
 Connection ~ 2250 2200
 Wire Wire Line
 	1750 2200 1900 2200
-Text Label 1750 2200 2    60   ~ 0
-SIG_IN0
-Wire Wire Line
-	2600 1250 2350 1250
-Text Label 2350 1250 2    60   ~ 0
-ENV_IN0
 Wire Wire Line
 	2600 1600 3100 1600
 Wire Wire Line
@@ -174,10 +168,6 @@ Wire Wire Line
 Wire Wire Line
 	3100 1600 3350 1600
 Connection ~ 3100 1600
-Text Label 3350 1600 0    60   ~ 0
-ENV_OUT0
-Text Notes 1400 1000 0    60   ~ 0
-check mmbt3904 and 2n2222: 1-B, 2-E, 3-C-tip = BEC DONE!
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BD18BF9
@@ -186,920 +176,472 @@ AR Path="/5BD18BF9" Ref="Q?"  Part="1"
 AR Path="/5BD09509/5BD18BF9" Ref="Q15"  Part="1" 
 F 0 "Q15" H 2691 2246 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 2691 2155 50  0000 L CNN
-F 2 "" H 2700 2300 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 2700 2300 50  0001 C CNN
 F 3 "" H 2500 2200 50  0001 C CNN
 	1    2500 2200
 	1    0    0    -1  
 $EndComp
 Text Notes 2900 1350 0    60   ~ 0
 envelope\n
-Text Notes 7750 3200 0    197  ~ 0
+Text Notes 5215 925  0    197  ~ 0
 logic xor
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BD11FA8
-P 8775 4450
+P 7550 2710
 AR Path="/5BD11FA8" Ref="Q?"  Part="1" 
 AR Path="/5BD09509/5BD11FA8" Ref="Q23"  Part="1" 
-F 0 "Q23" H 8966 4496 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 8966 4405 50  0000 L CNN
-F 2 "" H 8975 4550 50  0001 C CNN
-F 3 "" H 8775 4450 50  0001 C CNN
-	1    8775 4450
+F 0 "Q23" H 7741 2756 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 7741 2665 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 7750 2810 50  0001 C CNN
+F 3 "" H 7550 2710 50  0001 C CNN
+	1    7550 2710
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BD11FAE
-P 8775 5025
+P 7550 3285
 AR Path="/5BD11FAE" Ref="Q?"  Part="1" 
 AR Path="/5BD09509/5BD11FAE" Ref="Q24"  Part="1" 
-F 0 "Q24" H 8966 5071 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 8966 4980 50  0000 L CNN
-F 2 "" H 8975 5125 50  0001 C CNN
-F 3 "" H 8775 5025 50  0001 C CNN
-	1    8775 5025
+F 0 "Q24" H 7741 3331 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 7741 3240 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 7750 3385 50  0001 C CNN
+F 3 "" H 7550 3285 50  0001 C CNN
+	1    7550 3285
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD12CDF
-P 8425 4450
+P 7200 2710
 AR Path="/5AD5ACBB/5BD12CDF" Ref="R?"  Part="1" 
 AR Path="/5BD12CDF" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD12CDF" Ref="R31"  Part="1" 
-F 0 "R31" V 8229 4450 50  0000 C CNN
-F 1 "10K" V 8320 4450 50  0000 C CNN
-F 2 "" H 8425 4450 50  0001 C CNN
-F 3 "" H 8425 4450 50  0001 C CNN
-	1    8425 4450
+F 0 "R31" V 7004 2710 50  0000 C CNN
+F 1 "10K" V 7095 2710 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7200 2710 50  0001 C CNN
+F 3 "" H 7200 2710 50  0001 C CNN
+	1    7200 2710
 	0    1    -1   0   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD12DB7
-P 8425 5025
+P 7200 3285
 AR Path="/5AD5ACBB/5BD12DB7" Ref="R?"  Part="1" 
 AR Path="/5BD12DB7" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD12DB7" Ref="R32"  Part="1" 
-F 0 "R32" V 8229 5025 50  0000 C CNN
-F 1 "10K" V 8320 5025 50  0000 C CNN
-F 2 "" H 8425 5025 50  0001 C CNN
-F 3 "" H 8425 5025 50  0001 C CNN
-	1    8425 5025
+F 0 "R32" V 7004 3285 50  0000 C CNN
+F 1 "10K" V 7095 3285 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7200 3285 50  0001 C CNN
+F 3 "" H 7200 3285 50  0001 C CNN
+	1    7200 3285
 	0    1    -1   0   
 $EndComp
 Wire Wire Line
-	8525 4450 8575 4450
+	7300 2710 7350 2710
 Wire Wire Line
-	8525 5025 8575 5025
+	7300 3285 7350 3285
 Wire Wire Line
-	8875 4650 8875 4825
+	7650 2910 7650 3085
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR?
 U 1 1 5BD14C85
-P 8875 4125
+P 7650 2385
 AR Path="/5AD5ACBB/5BD14C85" Ref="#PWR?"  Part="1" 
 AR Path="/5BD14C85" Ref="#PWR?"  Part="1" 
 AR Path="/5BD09509/5BD14C85" Ref="#PWR052"  Part="1" 
-F 0 "#PWR052" H 8875 3975 50  0001 C CNN
-F 1 "+12V" H 8890 4298 50  0000 C CNN
-F 2 "" H 8875 4125 50  0001 C CNN
-F 3 "" H 8875 4125 50  0001 C CNN
-	1    8875 4125
+F 0 "#PWR052" H 7650 2235 50  0001 C CNN
+F 1 "+12V" H 7665 2558 50  0000 C CNN
+F 2 "" H 7650 2385 50  0001 C CNN
+F 3 "" H 7650 2385 50  0001 C CNN
+	1    7650 2385
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:GND-power #PWR?
 U 1 1 5BD14CD5
-P 8875 5550
+P 7650 3810
 AR Path="/5AD5ACBB/5BD14CD5" Ref="#PWR?"  Part="1" 
 AR Path="/5BD14CD5" Ref="#PWR?"  Part="1" 
 AR Path="/5BD09509/5BD14CD5" Ref="#PWR053"  Part="1" 
-F 0 "#PWR053" H 8875 5300 50  0001 C CNN
-F 1 "GND" H 8880 5377 50  0000 C CNN
-F 2 "" H 8875 5550 50  0001 C CNN
-F 3 "" H 8875 5550 50  0001 C CNN
-	1    8875 5550
+F 0 "#PWR053" H 7650 3560 50  0001 C CNN
+F 1 "GND" H 7655 3637 50  0000 C CNN
+F 2 "" H 7650 3810 50  0001 C CNN
+F 3 "" H 7650 3810 50  0001 C CNN
+	1    7650 3810
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BD15856
-P 7425 5400
+P 6200 3660
 AR Path="/5BD15856" Ref="Q?"  Part="1" 
 AR Path="/5BD09509/5BD15856" Ref="Q21"  Part="1" 
-F 0 "Q21" H 7616 5446 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 7616 5355 50  0000 L CNN
-F 2 "" H 7625 5500 50  0001 C CNN
-F 3 "" H 7425 5400 50  0001 C CNN
-	1    7425 5400
+F 0 "Q21" H 6391 3706 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 6391 3615 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 6400 3760 50  0001 C CNN
+F 3 "" H 6200 3660 50  0001 C CNN
+	1    6200 3660
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BD1585C
-P 7425 5975
+P 6200 4235
 AR Path="/5BD1585C" Ref="Q?"  Part="1" 
 AR Path="/5BD09509/5BD1585C" Ref="Q22"  Part="1" 
-F 0 "Q22" H 7616 6021 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 7616 5930 50  0000 L CNN
-F 2 "" H 7625 6075 50  0001 C CNN
-F 3 "" H 7425 5975 50  0001 C CNN
-	1    7425 5975
+F 0 "Q22" H 6391 4281 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 6391 4190 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 6400 4335 50  0001 C CNN
+F 3 "" H 6200 4235 50  0001 C CNN
+	1    6200 4235
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD15862
-P 7075 5400
+P 5850 3660
 AR Path="/5AD5ACBB/5BD15862" Ref="R?"  Part="1" 
 AR Path="/5BD15862" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD15862" Ref="R27"  Part="1" 
-F 0 "R27" V 6879 5400 50  0000 C CNN
-F 1 "10K" V 6970 5400 50  0000 C CNN
-F 2 "" H 7075 5400 50  0001 C CNN
-F 3 "" H 7075 5400 50  0001 C CNN
-	1    7075 5400
+F 0 "R27" V 5654 3660 50  0000 C CNN
+F 1 "10K" V 5745 3660 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 5850 3660 50  0001 C CNN
+F 3 "" H 5850 3660 50  0001 C CNN
+	1    5850 3660
 	0    1    -1   0   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD15868
-P 7075 5975
+P 5850 4235
 AR Path="/5AD5ACBB/5BD15868" Ref="R?"  Part="1" 
 AR Path="/5BD15868" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD15868" Ref="R28"  Part="1" 
-F 0 "R28" V 6879 5975 50  0000 C CNN
-F 1 "10K" V 6970 5975 50  0000 C CNN
-F 2 "" H 7075 5975 50  0001 C CNN
-F 3 "" H 7075 5975 50  0001 C CNN
-	1    7075 5975
+F 0 "R28" V 5654 4235 50  0000 C CNN
+F 1 "10K" V 5745 4235 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 5850 4235 50  0001 C CNN
+F 3 "" H 5850 4235 50  0001 C CNN
+	1    5850 4235
 	0    1    -1   0   
 $EndComp
 Wire Wire Line
-	7175 5400 7225 5400
+	5950 3660 6000 3660
 Wire Wire Line
-	7175 5975 7225 5975
+	5950 4235 6000 4235
 Wire Wire Line
-	7525 5600 7525 5775
+	6300 3860 6300 4035
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR?
 U 1 1 5BD15871
-P 7525 4900
+P 6300 3160
 AR Path="/5AD5ACBB/5BD15871" Ref="#PWR?"  Part="1" 
 AR Path="/5BD15871" Ref="#PWR?"  Part="1" 
 AR Path="/5BD09509/5BD15871" Ref="#PWR050"  Part="1" 
-F 0 "#PWR050" H 7525 4750 50  0001 C CNN
-F 1 "+12V" H 7650 4950 50  0000 C CNN
-F 2 "" H 7525 4900 50  0001 C CNN
-F 3 "" H 7525 4900 50  0001 C CNN
-	1    7525 4900
+F 0 "#PWR050" H 6300 3010 50  0001 C CNN
+F 1 "+12V" H 6425 3210 50  0000 C CNN
+F 2 "" H 6300 3160 50  0001 C CNN
+F 3 "" H 6300 3160 50  0001 C CNN
+	1    6300 3160
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BD160A5
-P 7400 3425
+P 6175 1685
 AR Path="/5BD160A5" Ref="Q?"  Part="1" 
 AR Path="/5BD09509/5BD160A5" Ref="Q19"  Part="1" 
-F 0 "Q19" H 7591 3471 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 7591 3380 50  0000 L CNN
-F 2 "" H 7600 3525 50  0001 C CNN
-F 3 "" H 7400 3425 50  0001 C CNN
-	1    7400 3425
+F 0 "Q19" H 6366 1731 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 6366 1640 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 6375 1785 50  0001 C CNN
+F 3 "" H 6175 1685 50  0001 C CNN
+	1    6175 1685
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5BD160AB
-P 7400 4000
+P 6175 2260
 AR Path="/5BD160AB" Ref="Q?"  Part="1" 
 AR Path="/5BD09509/5BD160AB" Ref="Q20"  Part="1" 
-F 0 "Q20" H 7591 4046 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 7591 3955 50  0000 L CNN
-F 2 "" H 7600 4100 50  0001 C CNN
-F 3 "" H 7400 4000 50  0001 C CNN
-	1    7400 4000
+F 0 "Q20" H 6366 2306 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 6366 2215 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 6375 2360 50  0001 C CNN
+F 3 "" H 6175 2260 50  0001 C CNN
+	1    6175 2260
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD160B1
-P 7050 3425
+P 5825 1685
 AR Path="/5AD5ACBB/5BD160B1" Ref="R?"  Part="1" 
 AR Path="/5BD160B1" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD160B1" Ref="R25"  Part="1" 
-F 0 "R25" V 6854 3425 50  0000 C CNN
-F 1 "10K" V 6945 3425 50  0000 C CNN
-F 2 "" H 7050 3425 50  0001 C CNN
-F 3 "" H 7050 3425 50  0001 C CNN
-	1    7050 3425
+F 0 "R25" V 5629 1685 50  0000 C CNN
+F 1 "10K" V 5720 1685 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 5825 1685 50  0001 C CNN
+F 3 "" H 5825 1685 50  0001 C CNN
+	1    5825 1685
 	0    1    -1   0   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD160B7
-P 7050 4000
+P 5825 2260
 AR Path="/5AD5ACBB/5BD160B7" Ref="R?"  Part="1" 
 AR Path="/5BD160B7" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD160B7" Ref="R26"  Part="1" 
-F 0 "R26" V 6854 4000 50  0000 C CNN
-F 1 "10K" V 6945 4000 50  0000 C CNN
-F 2 "" H 7050 4000 50  0001 C CNN
-F 3 "" H 7050 4000 50  0001 C CNN
-	1    7050 4000
+F 0 "R26" V 5629 2260 50  0000 C CNN
+F 1 "10K" V 5720 2260 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 5825 2260 50  0001 C CNN
+F 3 "" H 5825 2260 50  0001 C CNN
+	1    5825 2260
 	0    1    -1   0   
 $EndComp
 Wire Wire Line
-	7150 3425 7200 3425
+	5925 1685 5975 1685
 Wire Wire Line
-	7150 4000 7200 4000
+	5925 2260 5975 2260
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR?
 U 1 1 5BD160C0
-P 7500 3100
+P 6275 1360
 AR Path="/5AD5ACBB/5BD160C0" Ref="#PWR?"  Part="1" 
 AR Path="/5BD160C0" Ref="#PWR?"  Part="1" 
 AR Path="/5BD09509/5BD160C0" Ref="#PWR048"  Part="1" 
-F 0 "#PWR048" H 7500 2950 50  0001 C CNN
-F 1 "+12V" H 7515 3273 50  0000 C CNN
-F 2 "" H 7500 3100 50  0001 C CNN
-F 3 "" H 7500 3100 50  0001 C CNN
-	1    7500 3100
+F 0 "#PWR048" H 6275 1210 50  0001 C CNN
+F 1 "+12V" H 6290 1533 50  0000 C CNN
+F 2 "" H 6275 1360 50  0001 C CNN
+F 3 "" H 6275 1360 50  0001 C CNN
+	1    6275 1360
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD17170
-P 7500 4375
+P 6275 2635
 AR Path="/5AD5ACBB/5BD17170" Ref="R?"  Part="1" 
 AR Path="/5BD17170" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD17170" Ref="R29"  Part="1" 
-F 0 "R29" V 7304 4375 50  0000 C CNN
-F 1 "1K" V 7395 4375 50  0000 C CNN
-F 2 "" H 7500 4375 50  0001 C CNN
-F 3 "" H 7500 4375 50  0001 C CNN
-	1    7500 4375
+F 0 "R29" V 6079 2635 50  0000 C CNN
+F 1 "1K" V 6170 2635 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6275 2635 50  0001 C CNN
+F 3 "" H 6275 2635 50  0001 C CNN
+	1    6275 2635
 	1    0    0    1   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:GND-power #PWR?
 U 1 1 5BD17339
-P 7525 6275
+P 6300 4535
 AR Path="/5AD5ACBB/5BD17339" Ref="#PWR?"  Part="1" 
 AR Path="/5BD17339" Ref="#PWR?"  Part="1" 
 AR Path="/5BD09509/5BD17339" Ref="#PWR051"  Part="1" 
-F 0 "#PWR051" H 7525 6025 50  0001 C CNN
-F 1 "GND" H 7530 6102 50  0000 C CNN
-F 2 "" H 7525 6275 50  0001 C CNN
-F 3 "" H 7525 6275 50  0001 C CNN
-	1    7525 6275
+F 0 "#PWR051" H 6300 4285 50  0001 C CNN
+F 1 "GND" H 6305 4362 50  0000 C CNN
+F 2 "" H 6300 4535 50  0001 C CNN
+F 3 "" H 6300 4535 50  0001 C CNN
+	1    6300 4535
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:GND-power #PWR?
 U 1 1 5BD17384
-P 7500 4525
+P 6275 2785
 AR Path="/5AD5ACBB/5BD17384" Ref="#PWR?"  Part="1" 
 AR Path="/5BD17384" Ref="#PWR?"  Part="1" 
 AR Path="/5BD09509/5BD17384" Ref="#PWR049"  Part="1" 
-F 0 "#PWR049" H 7500 4275 50  0001 C CNN
-F 1 "GND" H 7505 4352 50  0000 C CNN
-F 2 "" H 7500 4525 50  0001 C CNN
-F 3 "" H 7500 4525 50  0001 C CNN
-	1    7500 4525
+F 0 "#PWR049" H 6275 2535 50  0001 C CNN
+F 1 "GND" H 6280 2612 50  0000 C CNN
+F 2 "" H 6275 2785 50  0001 C CNN
+F 3 "" H 6275 2785 50  0001 C CNN
+	1    6275 2785
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD173EF
-P 8875 5375
+P 7650 3635
 AR Path="/5AD5ACBB/5BD173EF" Ref="R?"  Part="1" 
 AR Path="/5BD173EF" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD173EF" Ref="R33"  Part="1" 
-F 0 "R33" V 8679 5375 50  0000 C CNN
-F 1 "1K" V 8770 5375 50  0000 C CNN
-F 2 "" H 8875 5375 50  0001 C CNN
-F 3 "" H 8875 5375 50  0001 C CNN
-	1    8875 5375
+F 0 "R33" V 7454 3635 50  0000 C CNN
+F 1 "1K" V 7545 3635 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7650 3635 50  0001 C CNN
+F 3 "" H 7650 3635 50  0001 C CNN
+	1    7650 3635
 	1    0    0    1   
 $EndComp
 Wire Wire Line
-	8875 5225 8875 5275
+	7650 3485 7650 3535
 Wire Wire Line
-	8875 5475 8875 5550
+	7650 3735 7650 3810
 Wire Wire Line
-	7500 4200 7500 4225
+	6275 2460 6275 2485
 Wire Wire Line
-	7500 4475 7500 4525
+	6275 2735 6275 2785
 Wire Wire Line
-	7525 6175 7525 6275
+	6300 4435 6300 4535
 Wire Wire Line
-	8875 4125 8875 4250
+	7650 2385 7650 2510
 Wire Wire Line
-	7500 3100 7500 3225
+	6275 1360 6275 1435
 Wire Wire Line
-	7500 4225 8075 4225
+	6275 2485 6850 2485
 Wire Wire Line
-	8325 4225 8325 4450
-Connection ~ 7500 4225
+	7100 2485 7100 2710
+Connection ~ 6275 2485
 Wire Wire Line
-	7500 4225 7500 4275
+	6275 2485 6275 2535
 Wire Wire Line
-	7525 3175 7675 3175
+	6450 1435 6450 2060
 Wire Wire Line
-	7675 3175 7675 3800
+	6275 1885 6850 1885
 Wire Wire Line
-	7675 3800 7500 3800
+	6850 1885 6850 2485
+Connection ~ 6850 2485
 Wire Wire Line
-	7500 3625 8075 3625
+	6850 2485 7100 2485
 Wire Wire Line
-	8075 3625 8075 4225
-Connection ~ 8075 4225
+	5725 2260 5550 2260
 Wire Wire Line
-	8075 4225 8325 4225
+	5550 2260 5550 4235
 Wire Wire Line
-	6950 4000 6775 4000
+	5550 4235 5750 4235
 Wire Wire Line
-	6775 4000 6775 5975
+	5700 1685 5700 3660
 Wire Wire Line
-	6775 5975 6975 5975
+	5700 3660 5750 3660
 Wire Wire Line
-	6925 3425 6925 5400
+	5700 1685 5725 1685
 Wire Wire Line
-	6925 5400 6975 5400
+	5700 3660 5275 3660
+Connection ~ 5700 3660
 Wire Wire Line
-	6925 3425 6950 3425
-Wire Wire Line
-	6925 5400 6500 5400
-Connection ~ 6925 5400
-Wire Wire Line
-	6775 5975 6500 5975
-Connection ~ 6775 5975
+	5550 4235 5275 4235
+Connection ~ 5550 4235
 $Comp
 L allcolours_analogue-rescue:R_Small-device R?
 U 1 1 5BD25B50
-P 7525 5050
+P 6300 3310
 AR Path="/5AD5ACBB/5BD25B50" Ref="R?"  Part="1" 
 AR Path="/5BD25B50" Ref="R?"  Part="1" 
 AR Path="/5BD09509/5BD25B50" Ref="R30"  Part="1" 
-F 0 "R30" V 7329 5050 50  0000 C CNN
-F 1 "1K" V 7420 5050 50  0000 C CNN
-F 2 "" H 7525 5050 50  0001 C CNN
-F 3 "" H 7525 5050 50  0001 C CNN
-	1    7525 5050
+F 0 "R30" V 6104 3310 50  0000 C CNN
+F 1 "1K" V 6195 3310 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6300 3310 50  0001 C CNN
+F 3 "" H 6300 3310 50  0001 C CNN
+	1    6300 3310
 	1    0    0    1   
 $EndComp
 Wire Wire Line
-	7525 4900 7525 4950
+	6300 3160 6300 3210
 Wire Wire Line
-	7525 5150 7525 5175
+	6300 3410 6300 3435
 Wire Wire Line
-	7525 5175 8325 5175
+	6300 3435 7100 3435
 Wire Wire Line
-	8325 5175 8325 5025
-Connection ~ 7525 5175
+	7100 3435 7100 3285
+Connection ~ 6300 3435
 Wire Wire Line
-	7525 5175 7525 5200
+	6300 3435 6300 3460
 Wire Wire Line
-	8875 5275 9150 5275
-Connection ~ 8875 5275
+	7650 3535 7925 3535
+Connection ~ 7650 3535
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5BD2B236
-P 9350 5275
+P 8125 3535
 AR Path="/5AD5ACBB/5BD2B236" Ref="J?"  Part="1" 
 AR Path="/5BD2B236" Ref="J?"  Part="1" 
 AR Path="/5BD09509/5BD2B236" Ref="J17"  Part="1" 
-F 0 "J17" H 9270 5050 50  0000 C CNN
-F 1 "XOR OUT" H 9270 5141 50  0000 C CNN
-F 2 "" H 9350 5275 50  0001 C CNN
-F 3 "~" H 9350 5275 50  0001 C CNN
-	1    9350 5275
+F 0 "J17" H 8045 3310 50  0000 C CNN
+F 1 "XOR OUT" H 8045 3401 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 8125 3535 50  0001 C CNN
+F 3 "~" H 8125 3535 50  0001 C CNN
+	1    8125 3535
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5BD2B3EA
-P 6300 5400
+P 5075 3660
 AR Path="/5AD5ACBB/5BD2B3EA" Ref="J?"  Part="1" 
 AR Path="/5BD2B3EA" Ref="J?"  Part="1" 
 AR Path="/5BD09509/5BD2B3EA" Ref="J15"  Part="1" 
-F 0 "J15" H 6220 5175 50  0000 C CNN
-F 1 "XOR IN" H 6220 5266 50  0000 C CNN
-F 2 "" H 6300 5400 50  0001 C CNN
-F 3 "~" H 6300 5400 50  0001 C CNN
-	1    6300 5400
+F 0 "J15" H 4995 3435 50  0000 C CNN
+F 1 "XOR IN" H 4995 3526 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 5075 3660 50  0001 C CNN
+F 3 "~" H 5075 3660 50  0001 C CNN
+	1    5075 3660
 	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
 U 1 1 5BD2B4A8
-P 6300 5975
+P 5075 4235
 AR Path="/5AD5ACBB/5BD2B4A8" Ref="J?"  Part="1" 
 AR Path="/5BD2B4A8" Ref="J?"  Part="1" 
 AR Path="/5BD09509/5BD2B4A8" Ref="J16"  Part="1" 
-F 0 "J16" H 6220 5750 50  0000 C CNN
-F 1 "XOR IN" H 6220 5841 50  0000 C CNN
-F 2 "" H 6300 5975 50  0001 C CNN
-F 3 "~" H 6300 5975 50  0001 C CNN
-	1    6300 5975
+F 0 "J16" H 4995 4010 50  0000 C CNN
+F 1 "XOR IN" H 4995 4101 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 5075 4235 50  0001 C CNN
+F 3 "~" H 5075 4235 50  0001 C CNN
+	1    5075 4235
 	-1   0    0    1   
 $EndComp
-Text Notes 3925 4200 0    118  ~ 0
-or 5 trans xor
 $Comp
-L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
-U 1 1 5BD2E16D
-P 1825 4375
-AR Path="/5BD2E16D" Ref="Q?"  Part="1" 
-AR Path="/5BD09509/5BD2E16D" Ref="Q13"  Part="1" 
-F 0 "Q13" H 2016 4421 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 2016 4330 50  0000 L CNN
-F 2 "" H 2025 4475 50  0001 C CNN
-F 3 "" H 1825 4375 50  0001 C CNN
-	1    1825 4375
-	1    0    0    -1  
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C157F1D
+P 1550 2200
+AR Path="/5AD5ACBB/5C157F1D" Ref="J?"  Part="1" 
+AR Path="/5C157F1D" Ref="J?"  Part="1" 
+AR Path="/5BD09509/5C157F1D" Ref="J55"  Part="1" 
+F 0 "J55" H 1470 1975 50  0000 C CNN
+F 1 "ENV SIG" H 1470 2066 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1550 2200 50  0001 C CNN
+F 3 "~" H 1550 2200 50  0001 C CNN
+	1    1550 2200
+	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD2E173
-P 1475 4375
-AR Path="/5AD5ACBB/5BD2E173" Ref="R?"  Part="1" 
-AR Path="/5BD2E173" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD2E173" Ref="R10"  Part="1" 
-F 0 "R10" V 1279 4375 50  0000 C CNN
-F 1 "10K" V 1370 4375 50  0000 C CNN
-F 2 "" H 1475 4375 50  0001 C CNN
-F 3 "" H 1475 4375 50  0001 C CNN
-	1    1475 4375
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	1575 4375 1625 4375
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5BD2E17B
-P 1925 3875
-AR Path="/5AD5ACBB/5BD2E17B" Ref="#PWR?"  Part="1" 
-AR Path="/5BD2E17B" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD2E17B" Ref="#PWR030"  Part="1" 
-F 0 "#PWR030" H 1925 3725 50  0001 C CNN
-F 1 "+12V" H 2050 3925 50  0000 C CNN
-F 2 "" H 1925 3875 50  0001 C CNN
-F 3 "" H 1925 3875 50  0001 C CNN
-	1    1925 3875
-	1    0    0    -1  
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C15816D
+P 2350 1250
+AR Path="/5AD5ACBB/5C15816D" Ref="J?"  Part="1" 
+AR Path="/5C15816D" Ref="J?"  Part="1" 
+AR Path="/5BD09509/5C15816D" Ref="J56"  Part="1" 
+F 0 "J56" H 2270 1025 50  0000 C CNN
+F 1 "ENV IN" H 2270 1116 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 2350 1250 50  0001 C CNN
+F 3 "~" H 2350 1250 50  0001 C CNN
+	1    2350 1250
+	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD2E185
-P 1925 4025
-AR Path="/5AD5ACBB/5BD2E185" Ref="R?"  Part="1" 
-AR Path="/5BD2E185" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD2E185" Ref="R12"  Part="1" 
-F 0 "R12" V 1729 4025 50  0000 C CNN
-F 1 "1K" V 1820 4025 50  0000 C CNN
-F 2 "" H 1925 4025 50  0001 C CNN
-F 3 "" H 1925 4025 50  0001 C CNN
-	1    1925 4025
-	1    0    0    1   
-$EndComp
-Wire Wire Line
-	1925 3875 1925 3925
-Wire Wire Line
-	1925 4125 1925 4150
-$Comp
-L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
-U 1 1 5BD31B8F
-P 1825 5550
-AR Path="/5BD31B8F" Ref="Q?"  Part="1" 
-AR Path="/5BD09509/5BD31B8F" Ref="Q14"  Part="1" 
-F 0 "Q14" H 2016 5596 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 2016 5505 50  0000 L CNN
-F 2 "" H 2025 5650 50  0001 C CNN
-F 3 "" H 1825 5550 50  0001 C CNN
-	1    1825 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD31B95
-P 1475 5550
-AR Path="/5AD5ACBB/5BD31B95" Ref="R?"  Part="1" 
-AR Path="/5BD31B95" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD31B95" Ref="R11"  Part="1" 
-F 0 "R11" V 1279 5550 50  0000 C CNN
-F 1 "10K" V 1370 5550 50  0000 C CNN
-F 2 "" H 1475 5550 50  0001 C CNN
-F 3 "" H 1475 5550 50  0001 C CNN
-	1    1475 5550
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	1575 5550 1625 5550
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5BD31B9D
-P 1925 5050
-AR Path="/5AD5ACBB/5BD31B9D" Ref="#PWR?"  Part="1" 
-AR Path="/5BD31B9D" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD31B9D" Ref="#PWR032"  Part="1" 
-F 0 "#PWR032" H 1925 4900 50  0001 C CNN
-F 1 "+12V" H 2050 5100 50  0000 C CNN
-F 2 "" H 1925 5050 50  0001 C CNN
-F 3 "" H 1925 5050 50  0001 C CNN
-	1    1925 5050
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD31BA3
-P 1925 5200
-AR Path="/5AD5ACBB/5BD31BA3" Ref="R?"  Part="1" 
-AR Path="/5BD31BA3" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD31BA3" Ref="R13"  Part="1" 
-F 0 "R13" V 1729 5200 50  0000 C CNN
-F 1 "1K" V 1820 5200 50  0000 C CNN
-F 2 "" H 1925 5200 50  0001 C CNN
-F 3 "" H 1925 5200 50  0001 C CNN
-	1    1925 5200
-	1    0    0    1   
-$EndComp
-Wire Wire Line
-	1925 5050 1925 5100
-Wire Wire Line
-	1925 5300 1925 5325
-$Comp
-L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
-U 1 1 5BD33FED
-P 3025 4450
-AR Path="/5BD33FED" Ref="Q?"  Part="1" 
-AR Path="/5BD09509/5BD33FED" Ref="Q17"  Part="1" 
-F 0 "Q17" H 3216 4496 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 3216 4405 50  0000 L CNN
-F 2 "" H 3225 4550 50  0001 C CNN
-F 3 "" H 3025 4450 50  0001 C CNN
-	1    3025 4450
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD33FF3
-P 2675 4450
-AR Path="/5AD5ACBB/5BD33FF3" Ref="R?"  Part="1" 
-AR Path="/5BD33FF3" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD33FF3" Ref="R18"  Part="1" 
-F 0 "R18" V 2479 4450 50  0000 C CNN
-F 1 "10K" V 2570 4450 50  0000 C CNN
-F 2 "" H 2675 4450 50  0001 C CNN
-F 3 "" H 2675 4450 50  0001 C CNN
-	1    2675 4450
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	2775 4450 2825 4450
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5BD33FFB
-P 3125 3950
-AR Path="/5AD5ACBB/5BD33FFB" Ref="#PWR?"  Part="1" 
-AR Path="/5BD33FFB" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD33FFB" Ref="#PWR039"  Part="1" 
-F 0 "#PWR039" H 3125 3800 50  0001 C CNN
-F 1 "+12V" H 3250 4000 50  0000 C CNN
-F 2 "" H 3125 3950 50  0001 C CNN
-F 3 "" H 3125 3950 50  0001 C CNN
-	1    3125 3950
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD34001
-P 3125 4100
-AR Path="/5AD5ACBB/5BD34001" Ref="R?"  Part="1" 
-AR Path="/5BD34001" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD34001" Ref="R21"  Part="1" 
-F 0 "R21" V 2929 4100 50  0000 C CNN
-F 1 "1K" V 3020 4100 50  0000 C CNN
-F 2 "" H 3125 4100 50  0001 C CNN
-F 3 "" H 3125 4100 50  0001 C CNN
-	1    3125 4100
-	1    0    0    1   
-$EndComp
-Wire Wire Line
-	3125 3950 3125 4000
-Wire Wire Line
-	3125 4200 3125 4225
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD3A6A5
-P 2675 4650
-AR Path="/5AD5ACBB/5BD3A6A5" Ref="R?"  Part="1" 
-AR Path="/5BD3A6A5" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD3A6A5" Ref="R19"  Part="1" 
-F 0 "R19" V 2479 4650 50  0000 C CNN
-F 1 "10K" V 2570 4650 50  0000 C CNN
-F 2 "" H 2675 4650 50  0001 C CNN
-F 3 "" H 2675 4650 50  0001 C CNN
-	1    2675 4650
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	2825 4450 2825 4650
-Wire Wire Line
-	2825 4650 2775 4650
-Connection ~ 2825 4450
-$Comp
-L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
-U 1 1 5BD3CCD1
-P 4050 5250
-AR Path="/5BD3CCD1" Ref="Q?"  Part="1" 
-AR Path="/5BD09509/5BD3CCD1" Ref="Q18"  Part="1" 
-F 0 "Q18" H 4241 5296 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 4241 5205 50  0000 L CNN
-F 2 "" H 4250 5350 50  0001 C CNN
-F 3 "" H 4050 5250 50  0001 C CNN
-	1    4050 5250
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD3CCD7
-P 3700 5250
-AR Path="/5AD5ACBB/5BD3CCD7" Ref="R?"  Part="1" 
-AR Path="/5BD3CCD7" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD3CCD7" Ref="R22"  Part="1" 
-F 0 "R22" V 3504 5250 50  0000 C CNN
-F 1 "10K" V 3595 5250 50  0000 C CNN
-F 2 "" H 3700 5250 50  0001 C CNN
-F 3 "" H 3700 5250 50  0001 C CNN
-	1    3700 5250
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	3800 5250 3850 5250
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5BD3CCDF
-P 4150 4750
-AR Path="/5AD5ACBB/5BD3CCDF" Ref="#PWR?"  Part="1" 
-AR Path="/5BD3CCDF" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD3CCDF" Ref="#PWR042"  Part="1" 
-F 0 "#PWR042" H 4150 4600 50  0001 C CNN
-F 1 "+12V" H 4275 4800 50  0000 C CNN
-F 2 "" H 4150 4750 50  0001 C CNN
-F 3 "" H 4150 4750 50  0001 C CNN
-	1    4150 4750
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD3CCE5
-P 4150 4900
-AR Path="/5AD5ACBB/5BD3CCE5" Ref="R?"  Part="1" 
-AR Path="/5BD3CCE5" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD3CCE5" Ref="R24"  Part="1" 
-F 0 "R24" V 3954 4900 50  0000 C CNN
-F 1 "1K" V 4045 4900 50  0000 C CNN
-F 2 "" H 4150 4900 50  0001 C CNN
-F 3 "" H 4150 4900 50  0001 C CNN
-	1    4150 4900
-	1    0    0    1   
-$EndComp
-Wire Wire Line
-	4150 4750 4150 4800
-Wire Wire Line
-	4150 5000 4150 5050
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD3CCED
-P 3700 5450
-AR Path="/5AD5ACBB/5BD3CCED" Ref="R?"  Part="1" 
-AR Path="/5BD3CCED" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD3CCED" Ref="R23"  Part="1" 
-F 0 "R23" V 3504 5450 50  0000 C CNN
-F 1 "10K" V 3595 5450 50  0000 C CNN
-F 2 "" H 3700 5450 50  0001 C CNN
-F 3 "" H 3700 5450 50  0001 C CNN
-	1    3700 5450
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	3850 5250 3850 5450
-Wire Wire Line
-	3850 5450 3800 5450
-Connection ~ 3850 5250
-$Comp
-L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
-U 1 1 5BD3F89F
-P 3000 5925
-AR Path="/5BD3F89F" Ref="Q?"  Part="1" 
-AR Path="/5BD09509/5BD3F89F" Ref="Q16"  Part="1" 
-F 0 "Q16" H 3191 5971 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 3191 5880 50  0000 L CNN
-F 2 "" H 3200 6025 50  0001 C CNN
-F 3 "" H 3000 5925 50  0001 C CNN
-	1    3000 5925
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD3F8A5
-P 2650 5925
-AR Path="/5AD5ACBB/5BD3F8A5" Ref="R?"  Part="1" 
-AR Path="/5BD3F8A5" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD3F8A5" Ref="R16"  Part="1" 
-F 0 "R16" V 2454 5925 50  0000 C CNN
-F 1 "10K" V 2545 5925 50  0000 C CNN
-F 2 "" H 2650 5925 50  0001 C CNN
-F 3 "" H 2650 5925 50  0001 C CNN
-	1    2650 5925
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	2750 5925 2800 5925
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5BD3F8AD
-P 3100 5425
-AR Path="/5AD5ACBB/5BD3F8AD" Ref="#PWR?"  Part="1" 
-AR Path="/5BD3F8AD" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD3F8AD" Ref="#PWR037"  Part="1" 
-F 0 "#PWR037" H 3100 5275 50  0001 C CNN
-F 1 "+12V" H 3225 5475 50  0000 C CNN
-F 2 "" H 3100 5425 50  0001 C CNN
-F 3 "" H 3100 5425 50  0001 C CNN
-	1    3100 5425
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD3F8B3
-P 3100 5575
-AR Path="/5AD5ACBB/5BD3F8B3" Ref="R?"  Part="1" 
-AR Path="/5BD3F8B3" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD3F8B3" Ref="R20"  Part="1" 
-F 0 "R20" V 2904 5575 50  0000 C CNN
-F 1 "1K" V 2995 5575 50  0000 C CNN
-F 2 "" H 3100 5575 50  0001 C CNN
-F 3 "" H 3100 5575 50  0001 C CNN
-	1    3100 5575
-	1    0    0    1   
-$EndComp
-Wire Wire Line
-	3100 5425 3100 5475
-Wire Wire Line
-	3100 5675 3100 5725
-$Comp
-L allcolours_analogue-rescue:R_Small-device R?
-U 1 1 5BD3F8BB
-P 2650 6125
-AR Path="/5AD5ACBB/5BD3F8BB" Ref="R?"  Part="1" 
-AR Path="/5BD3F8BB" Ref="R?"  Part="1" 
-AR Path="/5BD09509/5BD3F8BB" Ref="R17"  Part="1" 
-F 0 "R17" V 2454 6125 50  0000 C CNN
-F 1 "10K" V 2545 6125 50  0000 C CNN
-F 2 "" H 2650 6125 50  0001 C CNN
-F 3 "" H 2650 6125 50  0001 C CNN
-	1    2650 6125
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	2800 5925 2800 6125
-Wire Wire Line
-	2800 6125 2750 6125
-Connection ~ 2800 5925
-Wire Wire Line
-	1375 4375 1325 4375
-Wire Wire Line
-	1375 5550 1225 5550
-$Comp
-L allcolours_analogue-rescue:GND-power #PWR?
-U 1 1 5BD498B2
-P 1925 4675
-AR Path="/5AD5ACBB/5BD498B2" Ref="#PWR?"  Part="1" 
-AR Path="/5BD498B2" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD498B2" Ref="#PWR031"  Part="1" 
-F 0 "#PWR031" H 1925 4425 50  0001 C CNN
-F 1 "GND" H 1930 4502 50  0000 C CNN
-F 2 "" H 1925 4675 50  0001 C CNN
-F 3 "" H 1925 4675 50  0001 C CNN
-	1    1925 4675
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:GND-power #PWR?
-U 1 1 5BD4992B
-P 1925 5850
-AR Path="/5AD5ACBB/5BD4992B" Ref="#PWR?"  Part="1" 
-AR Path="/5BD4992B" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD4992B" Ref="#PWR033"  Part="1" 
-F 0 "#PWR033" H 1925 5600 50  0001 C CNN
-F 1 "GND" H 1930 5677 50  0000 C CNN
-F 2 "" H 1925 5850 50  0001 C CNN
-F 3 "" H 1925 5850 50  0001 C CNN
-	1    1925 5850
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:GND-power #PWR?
-U 1 1 5BD499A4
-P 3125 4725
-AR Path="/5AD5ACBB/5BD499A4" Ref="#PWR?"  Part="1" 
-AR Path="/5BD499A4" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD499A4" Ref="#PWR040"  Part="1" 
-F 0 "#PWR040" H 3125 4475 50  0001 C CNN
-F 1 "GND" H 3130 4552 50  0000 C CNN
-F 2 "" H 3125 4725 50  0001 C CNN
-F 3 "" H 3125 4725 50  0001 C CNN
-	1    3125 4725
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:GND-power #PWR?
-U 1 1 5BD49A1D
-P 3100 6200
-AR Path="/5AD5ACBB/5BD49A1D" Ref="#PWR?"  Part="1" 
-AR Path="/5BD49A1D" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD49A1D" Ref="#PWR038"  Part="1" 
-F 0 "#PWR038" H 3100 5950 50  0001 C CNN
-F 1 "GND" H 3105 6027 50  0000 C CNN
-F 2 "" H 3100 6200 50  0001 C CNN
-F 3 "" H 3100 6200 50  0001 C CNN
-	1    3100 6200
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:GND-power #PWR?
-U 1 1 5BD49A96
-P 4150 5525
-AR Path="/5AD5ACBB/5BD49A96" Ref="#PWR?"  Part="1" 
-AR Path="/5BD49A96" Ref="#PWR?"  Part="1" 
-AR Path="/5BD09509/5BD49A96" Ref="#PWR046"  Part="1" 
-F 0 "#PWR046" H 4150 5275 50  0001 C CNN
-F 1 "GND" H 4155 5352 50  0000 C CNN
-F 2 "" H 4150 5525 50  0001 C CNN
-F 3 "" H 4150 5525 50  0001 C CNN
-	1    4150 5525
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C15828C
+P 3550 1600
+AR Path="/5AD5ACBB/5C15828C" Ref="J?"  Part="1" 
+AR Path="/5C15828C" Ref="J?"  Part="1" 
+AR Path="/5BD09509/5C15828C" Ref="J57"  Part="1" 
+F 0 "J57" H 3470 1375 50  0000 C CNN
+F 1 "ENV OUT" H 3470 1466 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3550 1600 50  0001 C CNN
+F 3 "~" H 3550 1600 50  0001 C CNN
+	1    3550 1600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1925 4575 1925 4675
+	2550 1250 2600 1250
 Wire Wire Line
-	3125 4650 3125 4725
+	6275 2060 6450 2060
 Wire Wire Line
-	4150 5450 4150 5525
+	6275 1435 6450 1435
+Connection ~ 6275 1435
 Wire Wire Line
-	1925 5750 1925 5850
-Wire Wire Line
-	3100 6125 3100 6200
-Wire Wire Line
-	1225 5550 1225 6125
-Wire Wire Line
-	1225 6125 2550 6125
-Connection ~ 1225 5550
-Wire Wire Line
-	1225 5550 975  5550
-Wire Wire Line
-	1325 4375 1325 6000
-Wire Wire Line
-	1325 6000 2550 6000
-Wire Wire Line
-	2550 6000 2550 5925
-Connection ~ 1325 4375
-Wire Wire Line
-	1325 4375 875  4375
-Wire Wire Line
-	1925 4150 2575 4150
-Wire Wire Line
-	2575 4150 2575 4450
-Connection ~ 1925 4150
-Wire Wire Line
-	1925 4150 1925 4175
-Wire Wire Line
-	1925 5325 2575 5325
-Wire Wire Line
-	2575 5325 2575 4650
-Connection ~ 1925 5325
-Wire Wire Line
-	1925 5325 1925 5350
-Wire Wire Line
-	3125 4225 3600 4225
-Wire Wire Line
-	3600 4225 3600 5250
-Connection ~ 3125 4225
-Wire Wire Line
-	3125 4225 3125 4250
-Wire Wire Line
-	3100 5725 3600 5725
-Wire Wire Line
-	3600 5725 3600 5450
-Connection ~ 3100 5725
-Wire Wire Line
-	4150 5050 4625 5050
-Connection ~ 4150 5050
-Text Notes 4725 925  0    236  ~ 47
-all +12V 0V - no mid, no bias\n
+	6275 1435 6275 1485
 $EndSCHEMATC
