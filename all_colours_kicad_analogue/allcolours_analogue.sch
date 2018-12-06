@@ -30,12 +30,12 @@ $EndComp
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR043
 U 1 1 596B9C7E
-P 5400 2725
-F 0 "#PWR043" H 5400 2575 50  0001 C CNN
-F 1 "+12V" H 5400 2865 50  0000 C CNN
-F 2 "" H 5400 2725 50  0000 C CNN
-F 3 "" H 5400 2725 50  0000 C CNN
-	1    5400 2725
+P 5045 2665
+F 0 "#PWR043" H 5045 2515 50  0001 C CNN
+F 1 "+12V" H 5045 2790 50  0000 C CNN
+F 2 "" H 5045 2665 50  0000 C CNN
+F 3 "" H 5045 2665 50  0000 C CNN
+	1    5045 2665
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -60,13 +60,7 @@ Connection ~ 6050 2975
 Wire Wire Line
 	5550 2775 6050 2775
 Wire Wire Line
-	5450 3175 5550 3175
-Wire Wire Line
-	5400 2725 5550 2725
-Wire Wire Line
 	5550 2725 5550 2775
-Wire Wire Line
-	5450 3225 5450 3175
 Connection ~ 5550 3175
 Wire Wire Line
 	5550 2975 5550 3075
@@ -259,12 +253,12 @@ MAIN IN
 $Comp
 L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J1
 U 1 1 5BD75EC5
-P 6500 1625
-F 0 "J1" H 6579 1667 50  0000 L CNN
-F 1 "MAIN IN" H 6579 1576 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6500 1625 50  0001 C CNN
-F 3 "" H 6500 1625 50  0001 C CNN
-	1    6500 1625
+P 7525 1525
+F 0 "J1" H 7604 1567 50  0000 L CNN
+F 1 "MAIN IN" H 7604 1476 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 7525 1525 50  0001 C CNN
+F 3 "" H 7525 1525 50  0001 C CNN
+	1    7525 1525
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -338,8 +332,6 @@ Wire Wire Line
 	5975 1925 5975 1625
 Wire Wire Line
 	6175 1625 6300 1625
-Text Notes 6225 1875 0    60   ~ 0
-or buffer?
 $Sheet
 S 1025 7050 1750 475 
 U 5C04EB62
@@ -359,14 +351,171 @@ sketches
 $Comp
 L power:-12V #PWR0112
 U 1 1 5C1172CA
-P 5450 3225
-F 0 "#PWR0112" H 5450 3325 50  0001 C CNN
-F 1 "-12V" H 5465 3398 50  0000 C CNN
-F 2 "" H 5450 3225 50  0001 C CNN
-F 3 "" H 5450 3225 50  0001 C CNN
-	1    5450 3225
+P 4965 3210
+F 0 "#PWR0112" H 4965 3310 50  0001 C CNN
+F 1 "-12V" H 4980 3383 50  0000 C CNN
+F 2 "" H 4965 3210 50  0001 C CNN
+F 3 "" H 4965 3210 50  0001 C CNN
+	1    4965 3210
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	6050 2975 6250 2975
+$Comp
+L Amplifier_Operational:TL071 U6
+U 1 1 5C0972A8
+P 6900 1525
+F 0 "U6" H 7241 1571 50  0000 L CNN
+F 1 "TL071" H 7241 1480 50  0000 L CNN
+F 2 "SMD_Packages:SOIC-8-N" H 6950 1575 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7050 1675 50  0001 C CNN
+	1    6900 1525
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R12
+U 1 1 5C0972AF
+P 6400 1625
+F 0 "R12" V 6596 1625 50  0000 C CNN
+F 1 "10K" V 6505 1625 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6400 1625 50  0001 C CNN
+F 3 "~" H 6400 1625 50  0001 C CNN
+	1    6400 1625
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_Small R17
+U 1 1 5C0972BD
+P 6925 2350
+F 0 "R17" V 6729 2350 50  0000 C CNN
+F 1 "10K" V 6820 2350 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6925 2350 50  0001 C CNN
+F 3 "~" H 6925 2350 50  0001 C CNN
+	1    6925 2350
+	0    1    1    0   
+$EndComp
+$Comp
+L power:-12V #PWR014
+U 1 1 5C0972C4
+P 6800 1900
+F 0 "#PWR014" H 6800 2000 50  0001 C CNN
+F 1 "-12V" H 6815 2073 50  0000 C CNN
+F 2 "" H 6800 1900 50  0001 C CNN
+F 3 "" H 6800 1900 50  0001 C CNN
+	1    6800 1900
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+12V #PWR010
+U 1 1 5C0972CA
+P 6800 1175
+F 0 "#PWR010" H 6800 1025 50  0001 C CNN
+F 1 "+12V" H 6815 1348 50  0000 C CNN
+F 2 "" H 6800 1175 50  0001 C CNN
+F 3 "" H 6800 1175 50  0001 C CNN
+	1    6800 1175
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6800 1175 6800 1225
+Wire Wire Line
+	6800 1825 6800 1900
+Wire Wire Line
+	6500 1625 6600 1625
+Wire Wire Line
+	6525 1425 6600 1425
+Wire Wire Line
+	7200 1525 7275 1525
+Connection ~ 6500 1625
+$Comp
+L power:GND #PWR07
+U 1 1 5C0972D6
+P 6350 1275
+F 0 "#PWR07" H 6350 1025 50  0001 C CNN
+F 1 "GND" H 6355 1102 50  0000 C CNN
+F 2 "" H 6350 1275 50  0001 C CNN
+F 3 "" H 6350 1275 50  0001 C CNN
+	1    6350 1275
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6525 1425 6525 1275
+Wire Wire Line
+	6525 1275 6350 1275
+Wire Wire Line
+	6500 2350 6825 2350
+Wire Wire Line
+	6500 1625 6500 2350
+Wire Wire Line
+	7025 2350 7275 2350
+Wire Wire Line
+	7275 2350 7275 1525
+Connection ~ 7275 1525
+Wire Wire Line
+	7275 1525 7325 1525
+$Comp
+L allcolours_analogue-rescue:CP1_Small-device C15
+U 1 1 5C09A8D2
+P 5425 2825
+F 0 "C15" H 5435 2895 50  0000 L CNN
+F 1 "10u" H 5435 2745 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 5425 2825 50  0001 C CNN
+F 3 "" H 5425 2825 50  0000 C CNN
+	1    5425 2825
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5425 2925 5425 2975
+Wire Wire Line
+	5425 2975 5550 2975
+$Comp
+L allcolours_analogue-rescue:CP1_Small-device C14
+U 1 1 5C09B317
+P 5330 3075
+F 0 "C14" H 5340 3145 50  0000 L CNN
+F 1 "10u" H 5340 2995 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 5330 3075 50  0001 C CNN
+F 3 "" H 5330 3075 50  0000 C CNN
+	1    5330 3075
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5330 2975 5425 2975
+Connection ~ 5425 2975
+$Comp
+L Device:D D7
+U 1 1 5C09E123
+P 5195 2725
+F 0 "D7" H 5195 2941 50  0000 C CNN
+F 1 "D" H 5195 2850 50  0000 C CNN
+F 2 "Diodes_SMD:D_SOD-123" H 5195 2725 50  0001 C CNN
+F 3 "~" H 5195 2725 50  0001 C CNN
+	1    5195 2725
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5045 2665 5045 2725
+Wire Wire Line
+	5345 2725 5425 2725
+Connection ~ 5425 2725
+Wire Wire Line
+	5425 2725 5550 2725
+$Comp
+L Device:D D5
+U 1 1 5C0A0CE1
+P 5115 3175
+F 0 "D5" H 5115 2959 50  0000 C CNN
+F 1 "D" H 5115 3050 50  0000 C CNN
+F 2 "Diodes_SMD:D_SOD-123" H 5115 3175 50  0001 C CNN
+F 3 "~" H 5115 3175 50  0001 C CNN
+	1    5115 3175
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5330 3175 5550 3175
+Wire Wire Line
+	5265 3175 5330 3175
+Connection ~ 5330 3175
+Wire Wire Line
+	4965 3175 4965 3210
 $EndSCHEMATC

@@ -379,23 +379,23 @@ $EndComp
 $Comp
 L allcolours-rescue:+12V-power-allcolours-rescue #PWR043
 U 1 1 596B9C7E
-P 7435 5755
-F 0 "#PWR043" H 7435 5605 50  0001 C CNN
-F 1 "+12V" H 7435 5895 50  0000 C CNN
-F 2 "" H 7435 5755 50  0000 C CNN
-F 3 "" H 7435 5755 50  0000 C CNN
-	1    7435 5755
+P 7330 5390
+F 0 "#PWR043" H 7330 5240 50  0001 C CNN
+F 1 "+12V" H 7320 5520 50  0000 C CNN
+F 2 "" H 7330 5390 50  0000 C CNN
+F 3 "" H 7330 5390 50  0000 C CNN
+	1    7330 5390
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:-12VA-power-allcolours-rescue #PWR044
 U 1 1 596BB6E9
-P 7485 6255
-F 0 "#PWR044" H 7485 6105 50  0001 C CNN
-F 1 "-12VA" H 7485 6395 50  0000 C CNN
-F 2 "" H 7485 6255 50  0000 C CNN
-F 3 "" H 7485 6255 50  0000 C CNN
-	1    7485 6255
+P 7490 6535
+F 0 "#PWR044" H 7490 6385 50  0001 C CNN
+F 1 "-12VA" H 7490 6675 50  0000 C CNN
+F 2 "" H 7490 6535 50  0000 C CNN
+F 3 "" H 7490 6535 50  0000 C CNN
+	1    7490 6535
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -526,17 +526,6 @@ Wire Wire Line
 	8085 5905 8085 6005
 Connection ~ 8085 6005
 Wire Wire Line
-	7585 5805 8085 5805
-Wire Wire Line
-	7485 6205 7585 6205
-Wire Wire Line
-	7435 5755 7585 5755
-Wire Wire Line
-	7585 5755 7585 5805
-Wire Wire Line
-	7485 6255 7485 6205
-Connection ~ 7585 6205
-Wire Wire Line
 	2300 1450 2150 1450
 Wire Wire Line
 	2150 1450 2150 1350
@@ -632,8 +621,6 @@ Wire Wire Line
 	7585 6005 7585 6105
 Wire Wire Line
 	8085 6005 8085 6105
-Wire Wire Line
-	7585 6205 8085 6205
 $Comp
 L allcolours-rescue:Conn_01x01-Connector-allcolours-rescue J1
 U 1 1 5B6FF2C7
@@ -1149,7 +1136,6 @@ Connection ~ 1800 3500
 Connection ~ 2100 2950
 Connection ~ 2100 3250
 Connection ~ 2100 3300
-Connection ~ 7585 5805
 Wire Wire Line
 	3525 4925 3675 4925
 Connection ~ 3525 4925
@@ -2088,4 +2074,106 @@ Wire Wire Line
 	9425 2650 9525 2650
 Text Label 9425 2650 2    60   ~ 0
 NOISE_OUT2
+$Comp
+L 4xxx:40106 U12
+U 7 1 5C0A3BC7
+P 1400 5515
+F 0 "U12" H 1630 5561 50  0000 L CNN
+F 1 "40106" H 1630 5470 50  0000 L CNN
+F 2 "SMD_Packages:SOIC-14_N" H 1400 5515 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1400 5515 50  0001 C CNN
+	7    1400 5515
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0176
+U 1 1 5C0A3CE1
+P 1400 4960
+F 0 "#PWR0176" H 1400 4810 50  0001 C CNN
+F 1 "+12V" H 1400 5100 50  0000 C CNN
+F 2 "" H 1400 4960 50  0000 C CNN
+F 3 "" H 1400 4960 50  0000 C CNN
+	1    1400 4960
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0177
+U 1 1 5C0A3E54
+P 1400 6060
+F 0 "#PWR0177" H 1400 5810 50  0001 C CNN
+F 1 "GND" H 1400 5910 50  0000 C CNN
+F 2 "" H 1400 6060 50  0000 C CNN
+F 3 "" H 1400 6060 50  0000 C CNN
+	1    1400 6060
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1400 4960 1400 5015
+Wire Wire Line
+	1400 6015 1400 6060
+$Comp
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C55
+U 1 1 5C0C5436
+P 7440 5790
+F 0 "C55" H 7450 5860 50  0000 L CNN
+F 1 "10u" H 7450 5710 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 7440 5790 50  0001 C CNN
+F 3 "" H 7440 5790 50  0000 C CNN
+	1    7440 5790
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C56
+U 1 1 5C0C57BA
+P 7470 6105
+F 0 "C56" H 7480 6175 50  0000 L CNN
+F 1 "10u" H 7480 6025 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 7470 6105 50  0001 C CNN
+F 3 "" H 7470 6105 50  0000 C CNN
+	1    7470 6105
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:D D14
+U 1 1 5C0C6ED7
+P 7385 5540
+F 0 "D14" V 7339 5619 50  0000 L CNN
+F 1 "D" V 7430 5619 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" H 7385 5540 50  0001 C CNN
+F 3 "~" H 7385 5540 50  0001 C CNN
+	1    7385 5540
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7330 5390 7385 5390
+$Comp
+L Device:D D15
+U 1 1 5C0D4BAD
+P 7490 6355
+F 0 "D15" V 7444 6434 50  0000 L CNN
+F 1 "D" V 7535 6434 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" H 7490 6355 50  0001 C CNN
+F 3 "~" H 7490 6355 50  0001 C CNN
+	1    7490 6355
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7385 5690 7440 5690
+Wire Wire Line
+	7440 5890 7545 5890
+Wire Wire Line
+	7545 5890 7545 5805
+Wire Wire Line
+	7545 5805 8085 5805
+Wire Wire Line
+	7470 6005 7585 6005
+Wire Wire Line
+	7585 6005 7585 6010
+Wire Wire Line
+	7470 6205 7490 6205
+Connection ~ 7490 6205
+Wire Wire Line
+	7490 6205 7585 6205
+Wire Wire Line
+	7490 6505 7490 6535
 $EndSCHEMATC

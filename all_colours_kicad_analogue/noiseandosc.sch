@@ -270,21 +270,10 @@ $EndComp
 Text Notes 2605 4485 0    60   ~ 0
 finger oscillator\n
 $Comp
-L allcolours_analogue-rescue:40106-Logic_CMOS_4000-allcolours-rescue U2
-U 1 1 5BD3046D
-P 2955 4985
-F 0 "U2" H 2955 5135 50  0000 C CNN
-F 1 "40106" H 2955 4785 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2955 4985 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2955 4985 50  0001 C CNN
-	1    2955 4985
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours_analogue-rescue:R-device R36
 U 1 1 5BD30474
 P 2955 4685
-F 0 "R36" V 3035 4685 50  0000 C CNN
+F 0 "R36" V 2860 4710 50  0000 C CNN
 F 1 "10K" V 2955 4685 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 2885 4685 50  0001 C CNN
 F 3 "" H 2955 4685 50  0000 C CNN
@@ -365,7 +354,6 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3705 5085 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3255 4985 3405 4985
-Connection ~ 3255 4985
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR069
 U 1 1 5BD304A7
@@ -709,21 +697,10 @@ $EndComp
 Text Notes 2605 5635 0    60   ~ 0
 finger oscillator\n
 $Comp
-L allcolours_analogue-rescue:40106-Logic_CMOS_4000-allcolours-rescue U3
-U 1 1 5BD3058E
-P 6310 4890
-F 0 "U3" H 6310 5040 50  0000 C CNN
-F 1 "40106" H 6310 4690 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 6310 4890 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 6310 4890 50  0001 C CNN
-	1    6310 4890
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours_analogue-rescue:R-device R37
 U 1 1 5BD30595
 P 6310 4590
-F 0 "R37" V 6390 4590 50  0000 C CNN
+F 0 "R37" V 6200 4590 50  0000 C CNN
 F 1 "10K" V 6310 4590 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 6240 4590 50  0001 C CNN
 F 3 "" H 6310 4590 50  0000 C CNN
@@ -804,7 +781,6 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7060 4990 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6610 4890 6760 4890
-Connection ~ 6610 4890
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR071
 U 1 1 5BD305C8
@@ -1021,5 +997,66 @@ F 2 "" H 3995 1855 50  0001 C CNN
 F 3 "" H 3995 1855 50  0001 C CNN
 	1    3995 1855
 	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR022
+U 1 1 5C0A6EB7
+P 4930 5820
+F 0 "#PWR022" H 4930 5570 50  0001 C CNN
+F 1 "GND" H 4930 5670 50  0000 C CNN
+F 2 "" H 4930 5820 50  0000 C CNN
+F 3 "" H 4930 5820 50  0000 C CNN
+	1    4930 5820
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR015
+U 1 1 5C0A6F1C
+P 4930 4710
+F 0 "#PWR015" H 4930 4560 50  0001 C CNN
+F 1 "+12V" H 4930 4850 50  0000 C CNN
+F 2 "" H 4930 4710 50  0000 C CNN
+F 3 "" H 4930 4710 50  0000 C CNN
+	1    4930 4710
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4930 4710 4930 4760
+Wire Wire Line
+	4930 5760 4930 5820
+$Comp
+L 4xxx:40106 U2
+U 1 1 5C0AF088
+P 2955 4985
+F 0 "U2" H 2975 4830 50  0000 C CNN
+F 1 "40106" H 2955 5211 50  0000 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 2955 4985 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2955 4985 50  0001 C CNN
+	1    2955 4985
+	1    0    0    -1  
+$EndComp
+Connection ~ 3255 4985
+$Comp
+L 4xxx:40106 U2
+U 2 1 5C0B00FE
+P 6310 4890
+F 0 "U2" H 6310 5207 50  0000 C CNN
+F 1 "40106" H 6310 5116 50  0000 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 6310 4890 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 6310 4890 50  0001 C CNN
+	2    6310 4890
+	1    0    0    -1  
+$EndComp
+Connection ~ 6610 4890
+$Comp
+L 4xxx:40106 U2
+U 7 1 5C0B0FBE
+P 4930 5260
+F 0 "U2" H 5160 5306 50  0000 L CNN
+F 1 "40106" H 5160 5215 50  0000 L CNN
+F 2 "SMD_Packages:SOIC-14_N" H 4930 5260 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4930 5260 50  0001 C CNN
+	7    4930 5260
+	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
