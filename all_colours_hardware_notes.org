@@ -152,9 +152,15 @@ comparator=gatekeeper/triangle
 
 - maybe add extra modular comp
 
-* 4/12
+* 4/12 ++ 
+
+TODO:
 
 - check footprints for both projects...
+- misc graphical elements and overlays...
+- noise as drops for analogue/etc
+
+
 
 * notes
 
