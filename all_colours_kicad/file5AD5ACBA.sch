@@ -1108,8 +1108,6 @@ $EndComp
 Wire Wire Line
 	8760 2345 8760 2145
 Wire Wire Line
-	9935 4240 9885 4240
-Wire Wire Line
 	8860 2345 8860 2195
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR084
@@ -1149,12 +1147,7 @@ Wire Wire Line
 Wire Wire Line
 	10375 3135 10375 3435
 Connection ~ 10375 3435
-Wire Wire Line
-	9885 4240 9885 4140
-Connection ~ 9885 4240
-Wire Wire Line
-	9885 4240 9835 4240
-Text Label 9885 4140 0    60   ~ 0
+Text Label 10070 4190 0    60   ~ 0
 RESET
 Wire Wire Line
 	10125 1800 10325 1800
@@ -2867,7 +2860,7 @@ Connection ~ 9975 3435
 Wire Wire Line
 	9545 2940 9610 2940
 Wire Wire Line
-	9545 4240 9635 4240
+	9545 4240 9585 4240
 Wire Wire Line
 	9545 3040 9605 3040
 Text Label 9605 3040 0    60   ~ 0
@@ -2928,4 +2921,13 @@ Wire Wire Line
 	9575 1765 9795 1765
 Wire Wire Line
 	9795 1765 9795 1715
+Wire Wire Line
+	9835 4240 9935 4240
+Wire Wire Line
+	9585 4240 9585 4190
+Wire Wire Line
+	9585 4190 10070 4190
+Connection ~ 9585 4240
+Wire Wire Line
+	9585 4240 9635 4240
 $EndSCHEMATC

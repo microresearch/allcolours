@@ -1299,4 +1299,169 @@ Wire Wire Line
 	1505 6130 1505 6210
 Wire Wire Line
 	2810 6515 2810 6555
+Text Notes 6850 4600 0    98   ~ 0
+flip flop audio path (for use with switched noise)
+$Comp
+L 4xxx:4013 U?
+U 1 1 5C1B1F8B
+P 8075 5275
+F 0 "U?" H 8075 5753 50  0000 C CNN
+F 1 "4013" H 8075 5662 50  0000 C CNN
+F 2 "" H 8075 5275 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 8075 5275 50  0001 C CNN
+	1    8075 5275
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5C1B2494
+P 8075 5625
+AR Path="/5BAC374C/5C1B2494" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5C1B2494" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 8075 5375 50  0001 C CNN
+F 1 "GND" H 8075 5475 50  0000 C CNN
+F 2 "" H 8075 5625 50  0000 C CNN
+F 3 "" H 8075 5625 50  0000 C CNN
+	1    8075 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5C1B2544
+P 8550 5175
+F 0 "R?" H 8609 5221 50  0000 L CNN
+F 1 "1K" H 8609 5130 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 8550 5175 50  0001 C CNN
+F 3 "~" H 8550 5175 50  0001 C CNN
+	1    8550 5175
+	0    1    1    0   
+$EndComp
+$Comp
+L 4xxx:4013 U?
+U 3 1 5C1B3577
+P 9475 5350
+F 0 "U?" H 9705 5396 50  0000 L CNN
+F 1 "4013" H 9705 5305 50  0000 L CNN
+F 2 "" H 9475 5350 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 9475 5350 50  0001 C CNN
+	3    9475 5350
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5C1B36EB
+P 9475 4900
+AR Path="/5BAC374C/5C1B36EB" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5C1B36EB" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 9475 4750 50  0001 C CNN
+F 1 "+12V" H 9475 5040 50  0000 C CNN
+F 2 "" H 9475 4900 50  0000 C CNN
+F 3 "" H 9475 4900 50  0000 C CNN
+	1    9475 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5C1B3768
+P 9475 5800
+AR Path="/5BAC374C/5C1B3768" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5C1B3768" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 9475 5550 50  0001 C CNN
+F 1 "GND" H 9475 5650 50  0000 C CNN
+F 2 "" H 9475 5800 50  0000 C CNN
+F 3 "" H 9475 5800 50  0000 C CNN
+	1    9475 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5C1B381E
+P 6950 5475
+F 0 "J?" V 6823 5555 50  0000 L CNN
+F 1 "touch" V 6914 5555 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6950 5475 50  0001 C CNN
+F 3 "" H 6950 5475 50  0001 C CNN
+	1    6950 5475
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8375 5175 8450 5175
+Wire Wire Line
+	8375 5375 8550 5375
+Wire Wire Line
+	8550 5375 8550 4925
+Wire Wire Line
+	7600 4925 7600 5175
+Wire Wire Line
+	7600 5175 7775 5175
+Wire Wire Line
+	7600 4925 8550 4925
+Wire Wire Line
+	8075 5575 8075 5600
+Wire Wire Line
+	7750 4975 7750 5600
+Wire Wire Line
+	7750 5600 7875 5600
+Connection ~ 8075 5600
+Wire Wire Line
+	8075 5600 8075 5625
+Wire Wire Line
+	7750 4975 8075 4975
+Wire Wire Line
+	9475 4900 9475 4950
+Wire Wire Line
+	9475 5750 9475 5800
+$Comp
+L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
+U 1 1 5C20E917
+P 7400 5475
+AR Path="/5BAC374C/5C20E917" Ref="Q?"  Part="1" 
+AR Path="/5C0A69D0/5C20E917" Ref="Q?"  Part="1" 
+F 0 "Q?" H 7591 5521 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 7591 5430 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 7600 5575 50  0001 C CNN
+F 3 "" H 7400 5475 50  0001 C CNN
+	1    7400 5475
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5C20E91D
+P 7500 5000
+AR Path="/5BAC374C/5C20E91D" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5C20E91D" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 7500 4850 50  0001 C CNN
+F 1 "+12V" H 7500 5140 50  0000 C CNN
+F 2 "" H 7500 5000 50  0000 C CNN
+F 3 "" H 7500 5000 50  0000 C CNN
+	1    7500 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5C231997
+P 7500 5125
+F 0 "R?" H 7559 5171 50  0000 L CNN
+F 1 "1K" H 7559 5080 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 7500 5125 50  0001 C CNN
+F 3 "~" H 7500 5125 50  0001 C CNN
+	1    7500 5125
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7500 5000 7500 5025
+Wire Wire Line
+	7500 5225 7500 5275
+Wire Wire Line
+	7500 5675 7875 5675
+Wire Wire Line
+	7875 5675 7875 5600
+Connection ~ 7875 5600
+Wire Wire Line
+	7875 5600 8075 5600
+Wire Wire Line
+	7500 5275 7775 5275
+Connection ~ 7500 5275
+Wire Wire Line
+	7150 5475 7200 5475
 $EndSCHEMATC

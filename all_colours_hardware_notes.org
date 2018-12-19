@@ -152,15 +152,40 @@ comparator=gatekeeper/triangle
 
 - maybe add extra modular comp
 
-* 4/12 ++ 
+* 4/12 ++  19/12
 
 TODO:
 
-- check footprints for both projects...
+- +check footprints for both projects...+
 - misc graphical elements and overlays...
 - noise as drops for analogue/etc
+- flip-flops/toggle analogue switches (for touch open analogue version):
 
+flip flops: 4013, 7474, 7473
 
+dg419 or 4066/4053 or even transistor switch (as in rough envelope but then we have one way only - but we can use for other audio paths)
+
+the simplest thing to do is to AC couple the in/out pins and bias them
+to the middle of the 4053's power supply. In a +9V system, this only
+needs a two resistor divider and a cap, then a resistor and capacitor
+per in/out pin.
+
+- test 7490 as bandpass again with noise source
+- question of mhz for pwm -> test
+
+- *low pass on output in case pwm comes through*
+
+- for analogue only: flipflops for shift register so we have access to
+  all ins (which are also outs but guess simpler/unbuffered), delay
+  (switchable) on ouroboros - cap to gns
+
+- question of bias for ouroboros...
+
+TEST: flipflop touch switch and SR, bias on ouroboros. delay on ouroboros
+
+refs:
+
+http://mickeydelp.com/blog/anatomy-of-a-drum-machine?
 
 * notes
 

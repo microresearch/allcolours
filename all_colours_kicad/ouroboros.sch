@@ -776,4 +776,6 @@ Wire Wire Line
 	1475 2475 1700 2475
 Text Label 9050 2000 2    60   ~ 0
 OURO_IN
+Text Notes 6330 3690 0    197  ~ 0
+bias?
 $EndSCHEMATC
