@@ -170,6 +170,15 @@ to the middle of the 4053's power supply. In a +9V system, this only
 needs a two resistor divider and a cap, then a resistor and capacitor
 per in/out pin.
 
+what are paths to switch
+
+circles/layers:
+1-exposed comparator
+2-ouroboros
+3-switched noise
+4-SR
+5-filter (paths in?) 
+
 - test 7490 as bandpass again with noise source
 - question of mhz for pwm -> test
 
@@ -186,6 +195,12 @@ TEST: flipflop touch switch and SR, bias on ouroboros. delay on ouroboros
 refs:
 
 http://mickeydelp.com/blog/anatomy-of-a-drum-machine?
+
+http://www.sdiy.org/richardc64/new_drums/dr110/dr110a1.html
+
+transistor comparator: http://ch00ftech.com/2012/06/20/2279/
+
+question of abstracting out connections and elements. eg. clocks, different clock sources and should we divide these?
 
 * notes
 

@@ -1300,7 +1300,7 @@ Wire Wire Line
 Wire Wire Line
 	2810 6515 2810 6555
 Text Notes 6850 4600 0    98   ~ 0
-flip flop audio path (for use with switched noise)
+flip flop audio path (for use with switched noise and audio paths 4066/053)
 $Comp
 L 4xxx:4013 U?
 U 1 1 5C1B1F8B

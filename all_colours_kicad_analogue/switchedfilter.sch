@@ -1505,4 +1505,8 @@ Wire Wire Line
 Wire Wire Line
 	8300 4400 8300 4425
 Connection ~ 8300 4400
+Text Notes 2850 2325 0    60   ~ 0
+damping
+Text Notes 5850 1600 0    79   ~ 0
+on outside circle - different in out points
 $EndSCHEMATC
