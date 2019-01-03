@@ -2176,4 +2176,6 @@ Wire Wire Line
 	7490 6205 7585 6205
 Wire Wire Line
 	7490 6505 7490 6535
+Text Notes 7975 3850 0    157  ~ 31
+panel breakout to add!
 $EndSCHEMATC

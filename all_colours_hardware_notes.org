@@ -202,6 +202,12 @@ transistor comparator: http://ch00ftech.com/2012/06/20/2279/
 
 question of abstracting out connections and elements. eg. clocks, different clock sources and should we divide these?
 
+* 3/1 design notes
+
+- panel breakout for euro/less analogue version: replace pads, how many?, include voltages and in/out - interchangeable front panel
+- hand drawn transistor ouroboros in centre
+- led triggered by micro in middle underneath exposed/no soldermask portion (how to expose all?)
+
 * notes
 
 - ignore other all_colours schematics in ERD!
