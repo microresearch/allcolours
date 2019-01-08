@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 9 9
+Sheet 9 10
 Title ""
 Date ""
 Rev ""
@@ -1302,10 +1302,10 @@ Wire Wire Line
 Text Notes 6850 4600 0    98   ~ 0
 flip flop audio path (for use with switched noise and audio paths 4066/053)
 $Comp
-L 4xxx:4013 U?
+L 4xxx:4013 U3
 U 1 1 5C1B1F8B
 P 8075 5275
-F 0 "U?" H 8075 5753 50  0000 C CNN
+F 0 "U3" H 8075 5753 50  0000 C CNN
 F 1 "4013" H 8075 5662 50  0000 C CNN
 F 2 "" H 8075 5275 50  0001 C CNN
 F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 8075 5275 50  0001 C CNN
@@ -1317,8 +1317,8 @@ L allcolours_analogue-rescue:GND-power #PWR?
 U 1 1 5C1B2494
 P 8075 5625
 AR Path="/5BAC374C/5C1B2494" Ref="#PWR?"  Part="1" 
-AR Path="/5C0A69D0/5C1B2494" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 8075 5375 50  0001 C CNN
+AR Path="/5C0A69D0/5C1B2494" Ref="#PWR027"  Part="1" 
+F 0 "#PWR027" H 8075 5375 50  0001 C CNN
 F 1 "GND" H 8075 5475 50  0000 C CNN
 F 2 "" H 8075 5625 50  0000 C CNN
 F 3 "" H 8075 5625 50  0000 C CNN
@@ -1326,10 +1326,10 @@ F 3 "" H 8075 5625 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Small R?
+L Device:R_Small R102
 U 1 1 5C1B2544
 P 8550 5175
-F 0 "R?" H 8609 5221 50  0000 L CNN
+F 0 "R102" H 8609 5221 50  0000 L CNN
 F 1 "1K" H 8609 5130 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 8550 5175 50  0001 C CNN
 F 3 "~" H 8550 5175 50  0001 C CNN
@@ -1337,10 +1337,10 @@ F 3 "~" H 8550 5175 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L 4xxx:4013 U?
+L 4xxx:4013 U3
 U 3 1 5C1B3577
 P 9475 5350
-F 0 "U?" H 9705 5396 50  0000 L CNN
+F 0 "U3" H 9705 5396 50  0000 L CNN
 F 1 "4013" H 9705 5305 50  0000 L CNN
 F 2 "" H 9475 5350 50  0001 C CNN
 F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 9475 5350 50  0001 C CNN
@@ -1352,8 +1352,8 @@ L allcolours_analogue-rescue:+12V-power #PWR?
 U 1 1 5C1B36EB
 P 9475 4900
 AR Path="/5BAC374C/5C1B36EB" Ref="#PWR?"  Part="1" 
-AR Path="/5C0A69D0/5C1B36EB" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 9475 4750 50  0001 C CNN
+AR Path="/5C0A69D0/5C1B36EB" Ref="#PWR031"  Part="1" 
+F 0 "#PWR031" H 9475 4750 50  0001 C CNN
 F 1 "+12V" H 9475 5040 50  0000 C CNN
 F 2 "" H 9475 4900 50  0000 C CNN
 F 3 "" H 9475 4900 50  0000 C CNN
@@ -1365,8 +1365,8 @@ L allcolours_analogue-rescue:GND-power #PWR?
 U 1 1 5C1B3768
 P 9475 5800
 AR Path="/5BAC374C/5C1B3768" Ref="#PWR?"  Part="1" 
-AR Path="/5C0A69D0/5C1B3768" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 9475 5550 50  0001 C CNN
+AR Path="/5C0A69D0/5C1B3768" Ref="#PWR032"  Part="1" 
+F 0 "#PWR032" H 9475 5550 50  0001 C CNN
 F 1 "GND" H 9475 5650 50  0000 C CNN
 F 2 "" H 9475 5800 50  0000 C CNN
 F 3 "" H 9475 5800 50  0000 C CNN
@@ -1374,10 +1374,10 @@ F 3 "" H 9475 5800 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J23
 U 1 1 5C1B381E
 P 6950 5475
-F 0 "J?" V 6823 5555 50  0000 L CNN
+F 0 "J23" V 6823 5555 50  0000 L CNN
 F 1 "touch" V 6914 5555 50  0000 L CNN
 F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6950 5475 50  0001 C CNN
 F 3 "" H 6950 5475 50  0001 C CNN
@@ -1416,8 +1416,8 @@ L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
 U 1 1 5C20E917
 P 7400 5475
 AR Path="/5BAC374C/5C20E917" Ref="Q?"  Part="1" 
-AR Path="/5C0A69D0/5C20E917" Ref="Q?"  Part="1" 
-F 0 "Q?" H 7591 5521 50  0000 L CNN
+AR Path="/5C0A69D0/5C20E917" Ref="Q5"  Part="1" 
+F 0 "Q5" H 7591 5521 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 7591 5430 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 7600 5575 50  0001 C CNN
 F 3 "" H 7400 5475 50  0001 C CNN
@@ -1429,8 +1429,8 @@ L allcolours_analogue-rescue:+12V-power #PWR?
 U 1 1 5C20E91D
 P 7500 5000
 AR Path="/5BAC374C/5C20E91D" Ref="#PWR?"  Part="1" 
-AR Path="/5C0A69D0/5C20E91D" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 7500 4850 50  0001 C CNN
+AR Path="/5C0A69D0/5C20E91D" Ref="#PWR026"  Part="1" 
+F 0 "#PWR026" H 7500 4850 50  0001 C CNN
 F 1 "+12V" H 7500 5140 50  0000 C CNN
 F 2 "" H 7500 5000 50  0000 C CNN
 F 3 "" H 7500 5000 50  0000 C CNN
@@ -1438,10 +1438,10 @@ F 3 "" H 7500 5000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Small R?
+L Device:R_Small R49
 U 1 1 5C231997
 P 7500 5125
-F 0 "R?" H 7559 5171 50  0000 L CNN
+F 0 "R49" H 7559 5171 50  0000 L CNN
 F 1 "1K" H 7559 5080 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 7500 5125 50  0001 C CNN
 F 3 "~" H 7500 5125 50  0001 C CNN

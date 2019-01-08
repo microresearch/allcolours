@@ -2142,7 +2142,7 @@ F 1 "D" V 7430 5619 50  0000 L CNN
 F 2 "Diodes_SMD:D_SOD-123" H 7385 5540 50  0001 C CNN
 F 3 "~" H 7385 5540 50  0001 C CNN
 	1    7385 5540
-	0    1    1    0   
+	0    -1   -1   0   
 $EndComp
 Wire Wire Line
 	7330 5390 7385 5390
@@ -2155,7 +2155,7 @@ F 1 "D" V 7535 6434 50  0000 L CNN
 F 2 "Diodes_SMD:D_SOD-123" H 7490 6355 50  0001 C CNN
 F 3 "~" H 7490 6355 50  0001 C CNN
 	1    7490 6355
-	0    1    1    0   
+	0    -1   -1   0   
 $EndComp
 Wire Wire Line
 	7385 5690 7440 5690
@@ -2170,12 +2170,12 @@ Wire Wire Line
 Wire Wire Line
 	7585 6005 7585 6010
 Wire Wire Line
+	7490 6505 7490 6535
+Text Notes 7975 3850 0    157  ~ 31
+panel breakout to add!
+Wire Wire Line
 	7470 6205 7490 6205
 Connection ~ 7490 6205
 Wire Wire Line
 	7490 6205 7585 6205
-Wire Wire Line
-	7490 6505 7490 6535
-Text Notes 7975 3850 0    157  ~ 31
-panel breakout to add!
 $EndSCHEMATC

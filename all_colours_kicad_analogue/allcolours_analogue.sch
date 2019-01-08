@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 9
+Sheet 1 10
 Title ""
 Date ""
 Rev ""
@@ -14,61 +14,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Notes 5600 2625 0    60   ~ 0
-euro_conn
-$Comp
-L allcolours_analogue-rescue:CONN_02X05-allcolours-rescue P4
-U 1 1 596B8735
-P 5800 2975
-F 0 "P4" H 5800 3275 50  0000 C CNN
-F 1 "CONN_02X05" H 5800 2675 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 5800 1775 50  0001 C CNN
-F 3 "" H 5800 1775 50  0000 C CNN
-	1    5800 2975
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR043
-U 1 1 596B9C7E
-P 5045 2665
-F 0 "#PWR043" H 5045 2515 50  0001 C CNN
-F 1 "+12V" H 5045 2790 50  0000 C CNN
-F 2 "" H 5045 2665 50  0000 C CNN
-F 3 "" H 5045 2665 50  0000 C CNN
-	1    5045 2665
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:GND-power #PWR047
-U 1 1 596A64CD
-P 6250 2975
-F 0 "#PWR047" H 6250 2725 50  0001 C CNN
-F 1 "GND" H 6250 2825 50  0000 C CNN
-F 2 "" H 6250 2975 50  0000 C CNN
-F 3 "" H 6250 2975 50  0000 C CNN
-	1    6250 2975
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5550 2875 5550 2975
-Connection ~ 5550 2975
-Wire Wire Line
-	5550 2975 6050 2975
-Wire Wire Line
-	6050 2875 6050 2975
-Connection ~ 6050 2975
-Wire Wire Line
-	5550 2775 6050 2775
-Wire Wire Line
-	5550 2725 5550 2775
-Connection ~ 5550 3175
-Wire Wire Line
-	5550 2975 5550 3075
-Wire Wire Line
-	6050 2975 6050 3075
-Wire Wire Line
-	5550 3175 6050 3175
-Connection ~ 5550 2775
 $Sheet
 S 1225 575  1900 850 
 U 5BAC374C
@@ -349,19 +294,6 @@ $EndSheet
 Text Notes 4075 7275 0    118  ~ 0
 sketches
 $Comp
-L power:-12V #PWR0112
-U 1 1 5C1172CA
-P 4965 3210
-F 0 "#PWR0112" H 4965 3310 50  0001 C CNN
-F 1 "-12V" H 4980 3383 50  0000 C CNN
-F 2 "" H 4965 3210 50  0001 C CNN
-F 3 "" H 4965 3210 50  0001 C CNN
-	1    4965 3210
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	6050 2975 6250 2975
-$Comp
 L Amplifier_Operational:TL071 U6
 U 1 1 5C0972A8
 P 6900 1525
@@ -453,69 +385,10 @@ Wire Wire Line
 Connection ~ 7275 1525
 Wire Wire Line
 	7275 1525 7325 1525
-$Comp
-L allcolours_analogue-rescue:CP1_Small-device C15
-U 1 1 5C09A8D2
-P 5425 2825
-F 0 "C15" H 5435 2895 50  0000 L CNN
-F 1 "10u" H 5435 2745 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 5425 2825 50  0001 C CNN
-F 3 "" H 5425 2825 50  0000 C CNN
-	1    5425 2825
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5425 2925 5425 2975
-Wire Wire Line
-	5425 2975 5550 2975
-$Comp
-L allcolours_analogue-rescue:CP1_Small-device C14
-U 1 1 5C09B317
-P 5330 3075
-F 0 "C14" H 5340 3145 50  0000 L CNN
-F 1 "10u" H 5340 2995 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 5330 3075 50  0001 C CNN
-F 3 "" H 5330 3075 50  0000 C CNN
-	1    5330 3075
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5330 2975 5425 2975
-Connection ~ 5425 2975
-$Comp
-L Device:D D7
-U 1 1 5C09E123
-P 5195 2725
-F 0 "D7" H 5195 2941 50  0000 C CNN
-F 1 "D" H 5195 2850 50  0000 C CNN
-F 2 "Diodes_SMD:D_SOD-123" H 5195 2725 50  0001 C CNN
-F 3 "~" H 5195 2725 50  0001 C CNN
-	1    5195 2725
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5045 2665 5045 2725
-Wire Wire Line
-	5345 2725 5425 2725
-Connection ~ 5425 2725
-Wire Wire Line
-	5425 2725 5550 2725
-$Comp
-L Device:D D5
-U 1 1 5C0A0CE1
-P 5115 3175
-F 0 "D5" H 5115 2959 50  0000 C CNN
-F 1 "D" H 5115 3050 50  0000 C CNN
-F 2 "Diodes_SMD:D_SOD-123" H 5115 3175 50  0001 C CNN
-F 3 "~" H 5115 3175 50  0001 C CNN
-	1    5115 3175
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	5330 3175 5550 3175
-Wire Wire Line
-	5265 3175 5330 3175
-Connection ~ 5330 3175
-Wire Wire Line
-	4965 3175 4965 3210
+$Sheet
+S 8400 5375 1600 525 
+U 5C3A9A19
+F0 "eurorack_power" 60
+F1 "eurorack_power.sch" 60
+$EndSheet
 $EndSCHEMATC
