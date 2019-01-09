@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 9
+Sheet 2 10
 Title ""
 Date ""
 Rev ""
@@ -611,10 +611,10 @@ Connection ~ 5175 1300
 Text Notes 4350 3475 0    197  ~ 0
 bias?
 $Comp
-L allcolours_analogue-rescue:C-device C?
+L allcolours_analogue-rescue:C-device C14
 U 1 1 5C2585AF
 P 1400 4100
-F 0 "C?" H 1425 4200 50  0000 L CNN
+F 0 "C14" H 1425 4200 50  0000 L CNN
 F 1 "1N" H 1425 4000 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805" H 1438 3950 50  0001 C CNN
 F 3 "" H 1400 4100 50  0000 C CNN
@@ -622,10 +622,10 @@ F 3 "" H 1400 4100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR?
+L allcolours_analogue-rescue:GND-power #PWR023
 U 1 1 5C25863A
 P 1400 4300
-F 0 "#PWR?" H 1400 4050 50  0001 C CNN
+F 0 "#PWR023" H 1400 4050 50  0001 C CNN
 F 1 "GND" H 1400 4150 50  0000 C CNN
 F 2 "" H 1400 4300 50  0000 C CNN
 F 3 "" H 1400 4300 50  0000 C CNN
