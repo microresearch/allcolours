@@ -182,7 +182,7 @@ circles/layers:
 - test 7490 as bandpass again with noise source
 - question of mhz for pwm -> test
 
-- *low pass on output in case pwm comes through*
+- *place low pass on output in case pwm comes through*
 
 - for analogue only: flipflops for shift register so we have access to
   all ins (which are also outs but guess simpler/unbuffered), delay
@@ -204,9 +204,29 @@ question of abstracting out connections and elements. eg. clocks, different cloc
 
 * 3/1 design notes
 
-- panel breakout for euro/less analogue version: replace pads, how many?, include voltages and in/out - interchangeable front panel
+- panel breakout for euro/less analogue version: replace pads, *how many?*, include voltages and in/out - interchangeable front panels hand-made perhaps
 - hand drawn transistor ouroboros in centre
 - led triggered by micro in middle underneath exposed/no soldermask portion (how to expose all?)
+
+* 7/1 tests:
+
+- 1M on ouroboros makes things quieter and more stable - we could use finger pads for bias up and down
+
+- TODO:
+- test sr cell idea(?) from philips pdf
+- capacitor delay on ouroboros - say 1n between collector and base (noisier but need to see how it works properly...
+- 7490 bandpass with noise source
+- pwm mhz changes
+- flip/flop touch
+- in out transistor micro pulses
+- offsetted clocks with logical operations across clock rings - SR is
+  NOT pulses (we could AND it with its clock), but out of micro SR
+  simulation IS pulses
+
+
+
+
+
 
 * notes
 
