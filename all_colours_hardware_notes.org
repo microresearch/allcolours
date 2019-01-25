@@ -216,13 +216,13 @@ question of abstracting out connections and elements. eg. clocks, different cloc
 - test sr cell idea(?) from philips pdf
 - capacitor delay on ouroboros - say 1n between collector and base (noisier but need to see how it works properly...
 - 7490 bandpass with noise source
-- pwm mhz changes
+- pwm mhz changes DONE
 - flip/flop touch
 - in out transistor micro pulses
 - offsetted clocks with logical operations across clock rings - SR is
   NOT pulses (we could AND it with its clock), but out of micro SR
   simulation IS pulses
-
+- different smd transistors tested for noise generators and re-check BEC layout etc...
 
 
 
