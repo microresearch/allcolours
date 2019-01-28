@@ -391,4 +391,6 @@ U 5C3A9A19
 F0 "eurorack_power" 60
 F1 "eurorack_power.sch" 60
 $EndSheet
+Text Notes 6725 3225 0    157  ~ 0
+check all transistor pins
 $EndSCHEMATC

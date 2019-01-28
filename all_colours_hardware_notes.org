@@ -213,6 +213,7 @@ question of abstracting out connections and elements. eg. clocks, different cloc
 - 1M on ouroboros makes things quieter and more stable - we could use finger pads for bias up and down
 
 - TODO:
+
 - test sr cell idea(?) from philips pdf
 - capacitor delay on ouroboros - say 1n between collector and base (noisier but need to see how it works properly...
 - 7490 bandpass with noise source

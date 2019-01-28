@@ -1059,4 +1059,6 @@ F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4930 5260 50  0001
 	7    4930 5260
 	1    0    0    -1  
 $EndComp
+Text Notes 7350 975  0    157  ~ 0
+check trimmer footprint?
 $EndSCHEMATC
