@@ -225,6 +225,17 @@ question of abstracting out connections and elements. eg. clocks, different cloc
   simulation IS pulses
 - different smd transistors tested for noise generators and re-check BEC layout etc...
 
+* 29/1 from touch: analogue/breakup tests
+
+- only so many fingers, so use more flipflopped paths as a way of patching
+- audio in/out path should not use fingers
+- test individual circuits and keep simple ones as insignias...
+- pads too small and too close to gnd/other signals
+- for ouroboros we need switching in/out to avoid oscillation
+- check transistor layouts!
+
+
+
 
 
 
