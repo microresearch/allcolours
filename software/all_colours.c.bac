@@ -37,7 +37,40 @@ uint16_t start_state = 0xACE1u;  /* Any nonzero start state will work. */
 uint16_t lfsr = 0xACE1u;
 uint16_t bit;                    /* Must be 16bit to allow bit<<15 later in the code */
 unsigned char biit=0x05, bot=0x01;
+
+// interrupt for clock IN - rising edge on INT0 - pin PD2, pin 2 on Arduino UNO
+
+ISR(INT0_vect) // basic 16 stage shift register - left shifts and its speed
+
+{
+  // SR as pulsing and also as continuous
   
+  // shift it through and output
+  bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
+  lfsr =  (lfsr >> 1) | (bit << 15);
+  // bit on pin PD3
+  //  PinVal(PORTD, PD3, bit); // pin 3 on arduino / basic SR out with no IN...
+    // for time measurement we flip PD3 bit
+  //  PinVal(PORTD, PD3, bot); // measure how fast this can be!
+  PORTD=255;
+  PORTD=0;
+  /* timing here
+
+Limit for just bot^=1 and pinval is 170 KHz - with Sr stuff is 61 KHz
+
+with portd we go up to 200 KHz = 2K filter
+
+up to 250 KHz with just set of PORTD and nothing else
+
+up to 480 KHz with pulse:
+  PORTD=255;
+  PORTD=0; // checked disasm and here is two out instructions
+(pulse is maybe 60nS long)
+   */
+
+  // update PWM with lfsr bits
+  //  OCR1A=lfsr;
+}
 
 /* 
 
@@ -128,16 +161,6 @@ void main(){
   pwm_init();
 
   while(1){
-  // shift it through and output
-    //    bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
-    //    lfsr =  (lfsr >> 1) | (bit << 15);
-  // bit on pin PD3
-    //    PinVal(PORTD, PD3, bit); // pin 3 on arduino / basic SR out with no IN... in while 50-100KHz
-    // for time measurement we flip PD3 bit
-  //  PinVal(PORTD, PD3, bot); // measure how fast this can be!
-        PORTD=255; // in main loop this gives us 4 MHz
-	_delay_us(10); // with 1 uS delay we get 440 KHz
-        PORTD=0;
-	_delay_us(10);
+    PORTD=0;    
   }
 }

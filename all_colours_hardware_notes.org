@@ -212,14 +212,24 @@ question of abstracting out connections and elements. eg. clocks, different cloc
 
 - 1M on ouroboros makes things quieter and more stable - we could use finger pads for bias up and down
 
-- TODO:
+- TODO/TEST:
 
 - test sr cell idea(?) from philips pdf
-- capacitor delay on ouroboros - say 1n between collector and base (noisier but need to see how it works properly...
+- capacitor delay on ouroboros - say 1n between collector and base (noisier but need to see how it works properly)...
+
+// for simple All Colours
+
++- pwm mhz changes DONE+
+
 - 7490 bandpass with noise source
-- pwm mhz changes DONE
 - flip/flop touch
-- in out transistor micro pulses
+
+- in out transistor micro pulses and inv/non-inv amps for finger ins? (buffers on first straight followers)
+
+OUT - lose pull down and reduce collector to 1k, base is 10k - at highest freqency we lose gain (MHz)
+
+IN -
+
 - offsetted clocks with logical operations across clock rings - SR is
   NOT pulses (we could AND it with its clock), but out of micro SR
   simulation IS pulses
@@ -234,6 +244,9 @@ question of abstracting out connections and elements. eg. clocks, different cloc
 - for ouroboros we need switching in/out to avoid oscillation
 - check transistor layouts!
 
+* 7/2
+
+- what we could do for test SMD assembly/quote - STM, base board or front panel with ouroboros and other simple circuits...
 
 
 
