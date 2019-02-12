@@ -1,3 +1,9 @@
+* notes/phrases
+
+- a flip flop is both memory and switch, swithcing back to oscillation to envelope and to change
+- the gate is a gatekeeper
+- self switching is the latch which is memory, positive feedback
+
 * 3/7
 
 clock as central - noise as clock, clock comparatored with noise,
@@ -248,6 +254,11 @@ IN -
 
 - what we could do for test SMD assembly/quote - STM, base board or front panel with ouroboros and other simple circuits...
 
+* 12/2
+
+- ALL pulses/SR are in interrupts, all as multiple pulse outs without modes/cases for these, modes only for how SR connects...
+- open and close ouroboros in one place with both touch flipflops and finger/transistor in
+- spiral out from ouroboros with switch/latch/env elements/recursive/noise
 
 
 
