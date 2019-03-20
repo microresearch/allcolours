@@ -227,18 +227,20 @@ question of abstracting out connections and elements. eg. clocks, different cloc
 
 +- pwm mhz changes DONE+
 
-- 7490 bandpass with noise source
-- flip/flop touch
++- 7490 bandpass with noise sourceDONE+
+
+- flip/flop touch 4013
 
 - in out transistor micro pulses and inv/non-inv amps for finger ins? (buffers on first straight followers)
 
 OUT - lose pull down and reduce collector to 1k, base is 10k - at highest freqency we lose gain (MHz)
 
-IN -
+IN - could reduce base resistor (47k) but seems to work ok with buffered signals, test more, and no pulldown, and with hc14?
 
 - offsetted clocks with logical operations across clock rings - SR is
   NOT pulses (we could AND it with its clock), but out of micro SR
   simulation IS pulses
+
 - different smd transistors tested for noise generators and re-check BEC layout etc...
 
 * 29/1 from touch: analogue/breakup tests
@@ -256,13 +258,16 @@ IN -
 
 * 12/2
 
-- ALL pulses/SR are in interrupts, all as multiple pulse outs without modes/cases for these, modes only for how SR connects...
+- ALL pulses/SR are in interrupts, all as multiple pulse outs without modes/cases for these, modes only for how SR connects and for slower SR stuff
+
 - open and close ouroboros in one place with both touch flipflops and finger/transistor in
+
 - spiral out from ouroboros with switch/latch/env elements/recursive/noise
 
+* 20/3
 
-
-
+- add extra 7490 in chain for extra poles
+- add 4 or 8 bit DAC on shift register/AVR
 
 * notes
 
