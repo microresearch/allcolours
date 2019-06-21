@@ -269,6 +269,22 @@ IN - could reduce base resistor (47k) but seems to work ok with buffered signals
 - add extra 7490 in chain for extra poles
 - add 4 or 8 bit DAC on shift register/AVR
 
+* 21/6
+
+- for all colours smaller panel: 20hp, one side is black mask on bare
+  pcb, other side is gold on black mask (or black mask on gold)
+
+filtered low freq pwm, 4 bit DAC (for both low and high sides),
+trimmers for noise level on back, finger osc centre pads into mix,
+maybe top or bottom is diff amp (TO TEST) and other is comparator (x2
+on each side)...
+
+- tested comparator with pwm in and this can be interesting with external CV
+- also mix back filter feedback is very crackly and could pulse nicely somehow? (env returned?)
+- we need to swop pwm around so 16 bit is HF to get good range, and 8 bit is LF but we want to be able to change pulse width
+- check all possible paths
+
+
 * notes
 
 - ignore other all_colours schematics in ERD!
