@@ -1,53 +1,6 @@
 EESchema-LIBRARY Version 2.4
 #encoding utf-8
 #
-# 4xxx_40106
-#
-DEF 4xxx_40106 U 0 40 Y Y 7 L N
-F0 "U" 0 50 50 H V C CNN
-F1 "4xxx_40106" 0 -50 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-$FPLIST
- DIP?14*
-$ENDFPLIST
-DRAW
-S -200 300 200 -300 7 1 10 f
-P 3 1 0 0 -25 -50 -25 50 25 50 N
-P 4 1 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 1 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 2 0 0 -25 -50 -25 50 25 50 N
-P 4 2 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 2 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 3 0 0 -25 -50 -25 50 25 50 N
-P 4 3 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 3 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 4 0 0 -25 -50 -25 50 25 50 N
-P 4 4 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 4 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 5 0 0 -25 -50 -25 50 25 50 N
-P 4 5 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 5 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 6 0 0 -25 -50 -25 50 25 50 N
-P 4 6 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 6 0 0 -50 -50 25 -50 25 50 50 50 N
-X ~ 1 -300 0 150 R 50 50 1 0 I
-X ~ 2 300 0 150 L 50 50 1 0 O I
-X ~ 3 -300 0 150 R 50 50 2 0 I
-X ~ 4 300 0 150 L 50 50 2 0 O I
-X ~ 5 -300 0 150 R 50 50 3 0 I
-X ~ 6 300 0 150 L 50 50 3 0 O I
-X ~ 8 300 0 150 L 50 50 4 0 O I
-X ~ 9 -300 0 150 R 50 50 4 0 I
-X ~ 10 300 0 150 L 50 50 5 0 O I
-X ~ 11 -300 0 150 R 50 50 5 0 I
-X ~ 12 300 0 150 L 50 50 6 0 O I
-X ~ 13 -300 0 150 R 50 50 6 0 I
-X VDD 14 0 500 200 D 50 50 7 0 W
-X VSS 7 0 -500 200 U 50 50 7 0 W
-ENDDRAW
-ENDDEF
-#
 # Device_D
 #
 DEF Device_D D 0 40 N N 1 F N
@@ -67,6 +20,56 @@ P 2 0 1 0 50 0 -50 0 N
 P 4 0 1 8 50 50 50 -50 -50 0 50 50 N
 X K 1 -150 0 100 R 50 50 1 1 P
 X A 2 150 0 100 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Device_Opamp_Dual_Generic
+#
+DEF Device_Opamp_Dual_Generic U 0 20 Y Y 3 F N
+F0 "U" 0 200 50 H V L CNN
+F1 "Device_Opamp_Dual_Generic" 0 -200 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ SOIC*3.9x4.9mm*P1.27mm*
+ DIP*W7.62mm*
+ MSOP*3x3mm*P0.65mm*
+ SSOP*2.95x2.8mm*P0.65mm*
+ TSSOP*3x3mm*P0.65mm*
+ VSSOP*P0.5mm*
+ TO?99*
+$ENDFPLIST
+DRAW
+P 4 1 1 10 -200 200 200 0 -200 -200 -200 200 f
+P 4 2 1 10 -200 200 200 0 -200 -200 -200 200 f
+X ~ 1 300 0 100 L 50 50 1 1 O
+X - 2 -300 -100 100 R 50 50 1 1 I
+X + 3 -300 100 100 R 50 50 1 1 I
+X + 5 -300 100 100 R 50 50 2 1 I
+X - 6 -300 -100 100 R 50 50 2 1 I
+X ~ 7 300 0 100 L 50 50 2 1 O
+X V- 4 -100 -300 150 U 50 50 3 1 W
+X V+ 8 -100 300 150 D 50 50 3 1 W
+ENDDRAW
+ENDDEF
+#
+# Device_R_POT
+#
+DEF Device_R_POT RV 0 40 Y N 1 F N
+F0 "RV" -175 0 50 V V C CNN
+F1 "Device_R_POT" -100 0 50 V V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Potentiometer*
+$ENDFPLIST
+DRAW
+S 40 100 -40 -100 0 1 10 N
+P 2 0 1 0 100 0 60 0 N
+P 4 0 1 0 45 0 90 20 90 -20 45 0 F
+X 1 1 0 150 50 D 50 50 1 1 P
+X 2 2 150 0 50 L 50 50 1 1 P
+X 3 3 0 -150 50 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
@@ -118,6 +121,28 @@ X PD5 9 600 -1000 100 L 50 50 1 1 T
 ENDDRAW
 ENDDEF
 #
+# Regulator_Linear_LM1117-5.0
+#
+DEF Regulator_Linear_LM1117-5.0 U 0 10 Y Y 1 F N
+F0 "U" -150 125 50 H V C CNN
+F1 "Regulator_Linear_LM1117-5.0" 0 125 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+ALIAS LM1117-2.5 LM1117-3.3 LM1117-5.0 TLV1117-15 TLV1117-18 TLV1117-25 TLV1117-33 TLV1117-50
+$FPLIST
+ SOT?223*
+ TO?263*
+ TO?252*
+ TO?220*
+$ENDFPLIST
+DRAW
+S -200 -200 200 75 0 1 10 f
+X GND 1 0 -300 100 U 50 50 1 1 W
+X VO 2 300 0 100 L 50 50 1 1 w
+X VI 3 -300 0 100 R 50 50 1 1 W
+ENDDRAW
+ENDDEF
+#
 # allcolours-rescue_+12V-power-allcolours-rescue
 #
 DEF allcolours-rescue_+12V-power-allcolours-rescue #PWR 0 0 Y Y 1 F P
@@ -158,53 +183,6 @@ F3 "" 0 0 50 H I C CNN
 DRAW
 P 6 0 1 0 0 0 0 50 30 50 0 100 -30 50 0 50 F
 X -12VA 1 0 0 0 U 50 50 0 0 W N
-ENDDRAW
-ENDDEF
-#
-# allcolours-rescue_40106-Logic_CMOS_4000-allcolours-rescue
-#
-DEF allcolours-rescue_40106-Logic_CMOS_4000-allcolours-rescue U 0 40 Y Y 7 L N
-F0 "U" 0 50 50 H V C CNN
-F1 "allcolours-rescue_40106-Logic_CMOS_4000-allcolours-rescue" 0 -50 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-$FPLIST
- DIP?14*
-$ENDFPLIST
-DRAW
-S -200 300 200 -300 7 1 10 f
-P 3 1 0 0 -25 -50 -25 50 25 50 N
-P 4 1 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 1 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 2 0 0 -25 -50 -25 50 25 50 N
-P 4 2 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 2 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 3 0 0 -25 -50 -25 50 25 50 N
-P 4 3 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 3 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 4 0 0 -25 -50 -25 50 25 50 N
-P 4 4 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 4 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 5 0 0 -25 -50 -25 50 25 50 N
-P 4 5 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 5 0 0 -50 -50 25 -50 25 50 50 50 N
-P 3 6 0 0 -25 -50 -25 50 25 50 N
-P 4 6 0 10 -150 150 -150 -150 150 0 -150 150 f
-P 4 6 0 0 -50 -50 25 -50 25 50 50 50 N
-X ~ 1 -300 0 150 R 50 50 1 0 I
-X ~ 2 300 0 150 L 50 50 1 0 O I
-X ~ 3 -300 0 150 R 50 50 2 0 I
-X ~ 4 300 0 150 L 50 50 2 0 O I
-X ~ 5 -300 0 150 R 50 50 3 0 I
-X ~ 6 300 0 150 L 50 50 3 0 O I
-X ~ 8 300 0 150 L 50 50 4 0 O I
-X ~ 9 -300 0 150 R 50 50 4 0 I
-X ~ 10 300 0 150 L 50 50 5 0 O I
-X ~ 11 -300 0 150 R 50 50 5 0 I
-X ~ 12 300 0 150 L 50 50 6 0 O I
-X ~ 13 -300 0 150 R 50 50 6 0 I
-X VDD 14 0 500 200 D 50 50 7 0 W
-X VSS 7 0 -500 200 U 50 50 7 0 W
 ENDDRAW
 ENDDEF
 #
@@ -377,28 +355,6 @@ X ~ 2 0 -100 80 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# allcolours-rescue_Conn_01x01-Connector-allcolours-rescue
-#
-DEF allcolours-rescue_Conn_01x01-Connector-allcolours-rescue J 0 40 Y N 1 F N
-F0 "J" 0 100 50 H V C CNN
-F1 "allcolours-rescue_Conn_01x01-Connector-allcolours-rescue" 0 -100 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-$FPLIST
- Connector*:*_??x*mm*
- Connector*:*1x??x*mm*
- Pin?Header?Straight?1X*
- Pin?Header?Angled?1X*
- Socket?Strip?Straight?1X*
- Socket?Strip?Angled?1X*
-$ENDFPLIST
-DRAW
-S -50 5 0 -5 1 1 6 N
-S -50 50 50 -50 1 1 10 f
-X Pin_1 1 -200 0 150 R 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
 # allcolours-rescue_Crystal-device-allcolours-rescue
 #
 DEF allcolours-rescue_Crystal-device-allcolours-rescue Y 0 40 N N 1 F N
@@ -417,29 +373,6 @@ P 2 0 1 20 75 -50 75 50 N
 P 2 0 1 0 100 0 75 0 N
 X 1 1 -150 0 50 R 50 50 1 1 P
 X 2 2 150 0 50 L 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
-# allcolours-rescue_D-device-allcolours-rescue
-#
-DEF allcolours-rescue_D-device-allcolours-rescue D 0 40 N N 1 F N
-F0 "D" 0 100 50 H V C CNN
-F1 "allcolours-rescue_D-device-allcolours-rescue" 0 -100 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-$FPLIST
- TO-???*
- *SingleDiode
- *_Diode_*
- *SingleDiode*
- D_*
-$ENDFPLIST
-DRAW
-P 2 0 1 8 -50 50 -50 -50 N
-P 2 0 1 0 50 0 -50 0 N
-P 4 0 1 8 50 50 50 -50 -50 0 50 50 N
-X K 1 -150 0 100 R 50 50 1 1 P
-X A 2 150 0 100 L 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
