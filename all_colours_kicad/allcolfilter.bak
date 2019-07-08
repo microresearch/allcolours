@@ -912,7 +912,7 @@ Wire Wire Line
 	5740 1495 5740 1520
 Wire Wire Line
 	5840 3160 5840 3260
-Text Label 6790 3810 0    60   ~ 0
+Text Label 7505 3695 0    60   ~ 0
 7490_OUT
 Connection ~ 4010 2360
 Connection ~ 5840 3260
@@ -925,4 +925,30 @@ Wire Wire Line
 	6290 3810 6790 3810
 Text Notes 5425 2825 0    118  ~ 0
 filter outs x2
+$Comp
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
+U 1 1 5D412D70
+P 6930 3965
+AR Path="/5D412D70" Ref="C?"  Part="1" 
+AR Path="/5B6C330C/5D412D70" Ref="C?"  Part="1" 
+F 0 "C?" H 6940 4035 50  0000 L CNN
+F 1 "10u" H 6940 3885 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 6930 3965 50  0001 C CNN
+F 3 "" H 6930 3965 50  0000 C CNN
+	1    6930 3965
+	0    -1   -1   0   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D412E97
+P 7310 3960
+AR Path="/5D412E97" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5D412E97" Ref="R?"  Part="1" 
+F 0 "R?" V 7390 3960 50  0000 C CNN
+F 1 "10K" V 7310 3960 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 7240 3960 50  0001 C CNN
+F 3 "" H 7310 3960 50  0000 C CNN
+	1    7310 3960
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC

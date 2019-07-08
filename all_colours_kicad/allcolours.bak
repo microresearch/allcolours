@@ -1862,4 +1862,6 @@ F 3 "" H 7605 5630 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	7420 5630 7455 5630
+Text Notes 5090 1200 0    79   ~ 0
+comp in 1 always???
 $EndSCHEMATC
