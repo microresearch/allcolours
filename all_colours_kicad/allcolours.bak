@@ -901,7 +901,7 @@ $EndComp
 Text Notes 3415 2940 0    118  ~ 0
 MAX4392
 Text Notes 1380 6345 0    157  ~ 0
-12V/5V/10V supply
+12V/5V/10V supply/-10v ref
 Wire Wire Line
 	935  3560 935  3615
 Wire Wire Line
@@ -959,7 +959,7 @@ L power:+10V #PWR?
 U 1 1 5D3A42B1
 P 2925 2895
 F 0 "#PWR?" H 2925 2745 50  0001 C CNN
-F 1 "+10V" H 2940 3068 50  0000 C CNN
+F 1 "+10V" H 2945 2940 50  0000 C CNN
 F 2 "" H 2925 2895 50  0001 C CNN
 F 3 "" H 2925 2895 50  0001 C CNN
 	1    2925 2895
@@ -1509,7 +1509,7 @@ L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D56C7A1
 P 1260 5155
 F 0 "R?" V 1340 5155 50  0000 C CNN
-F 1 "10K" V 1260 5155 50  0000 C CNN
+F 1 "100K" V 1260 5155 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1190 5155 50  0001 C CNN
 F 3 "" H 1260 5155 50  0000 C CNN
 	1    1260 5155
@@ -1520,7 +1520,7 @@ L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D56CA0B
 P 1235 5270
 F 0 "R?" V 1315 5270 50  0000 C CNN
-F 1 "10K" V 1235 5270 50  0000 C CNN
+F 1 "100K" V 1235 5270 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1165 5270 50  0001 C CNN
 F 3 "" H 1235 5270 50  0000 C CNN
 	1    1235 5270
@@ -1531,7 +1531,7 @@ L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D56CABD
 P 1685 5330
 F 0 "R?" V 1765 5330 50  0000 C CNN
-F 1 "10K" V 1685 5330 50  0000 C CNN
+F 1 "47K" V 1685 5330 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1615 5330 50  0001 C CNN
 F 3 "" H 1685 5330 50  0000 C CNN
 	1    1685 5330
@@ -1580,8 +1580,8 @@ F 3 "" H 2300 5055 50  0000 C CNN
 	1    2300 5055
 	0    1    1    0   
 $EndComp
-Text Notes 1235 5625 0    118  ~ 0
-inverting
+Text Notes -770 5715 0    118  ~ 0
+inverting  0 to +10v IN 0-5 v out
 Wire Wire Line
 	1835 5330 2075 5330
 $Comp
@@ -1738,4 +1738,128 @@ F 3 "" H 6640 1380 50  0001 C CNN
 	1    6640 1380
 	1    0    0    -1  
 $EndComp
+$Comp
+L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D?
+U 1 1 5D258E38
+P 5760 7210
+AR Path="/5AD5ACBB/5D258E38" Ref="D?"  Part="1" 
+AR Path="/5D258E38" Ref="D?"  Part="1" 
+F 0 "D?" V 5806 7142 50  0000 R CNN
+F 1 "zen?" V 5715 7142 50  0000 R CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" V 5760 7210 50  0001 C CNN
+F 3 "https://en.wikipedia.org/wiki/Zener_diode" V 5760 7210 50  0001 C CNN
+	1    5760 7210
+	0    -1   -1   0   
+$EndComp
+$Comp
+L allcolours-rescue:R_Small-device-allcolours-rescue R?
+U 1 1 5D258E3F
+P 5760 6960
+AR Path="/5AD5ACBB/5D258E3F" Ref="R?"  Part="1" 
+AR Path="/5D258E3F" Ref="R?"  Part="1" 
+F 0 "R?" V 5564 6960 50  0000 C CNN
+F 1 "470R" V 5655 6960 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 5760 6960 50  0001 C CNN
+F 3 "" H 5760 6960 50  0001 C CNN
+	1    5760 6960
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:C-device-allcolours-rescue C?
+U 1 1 5D258E46
+P 6010 7210
+AR Path="/5AD5ACBB/5D258E46" Ref="C?"  Part="1" 
+AR Path="/5D258E46" Ref="C?"  Part="1" 
+F 0 "C?" V 5758 7210 50  0000 C CNN
+F 1 "100N" V 5849 7210 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0805" H 6048 7060 50  0001 C CNN
+F 3 "" H 6010 7210 50  0001 C CNN
+	1    6010 7210
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
+U 1 1 5D258E4D
+P 5760 6810
+AR Path="/5AD5ACBB/5D258E4D" Ref="#PWR?"  Part="1" 
+AR Path="/5D258E4D" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 5760 6660 50  0001 C CNN
+F 1 "-12VA" H 5775 6983 50  0000 C CNN
+F 2 "" H 5760 6810 50  0001 C CNN
+F 3 "" H 5760 6810 50  0001 C CNN
+	1    5760 6810
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D258E53
+P 5760 7360
+AR Path="/5AD5ACBB/5D258E53" Ref="#PWR?"  Part="1" 
+AR Path="/5D258E53" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 5760 7110 50  0001 C CNN
+F 1 "GND" H 5765 7187 50  0000 C CNN
+F 2 "" H 5760 7360 50  0001 C CNN
+F 3 "" H 5760 7360 50  0001 C CNN
+	1    5760 7360
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5760 6860 5760 6810
+Wire Wire Line
+	5760 7110 5760 7060
+Wire Wire Line
+	5760 7060 6010 7060
+Connection ~ 5760 7060
+Wire Wire Line
+	5760 7310 5760 7360
+Wire Wire Line
+	5760 7360 6010 7360
+Connection ~ 5760 7360
+Wire Wire Line
+	6010 7060 6260 7060
+Connection ~ 6010 7060
+Wire Wire Line
+	1385 4955 1440 4955
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D26CAC5
+P 1235 5415
+F 0 "R?" V 1315 5415 50  0000 C CNN
+F 1 "100K" V 1235 5415 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1165 5415 50  0001 C CNN
+F 3 "" H 1235 5415 50  0000 C CNN
+	1    1235 5415
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1380 5415 1385 5415
+Wire Wire Line
+	1425 5415 1425 5330
+Connection ~ 1385 5415
+Wire Wire Line
+	1385 5415 1425 5415
+Connection ~ 1425 5330
+Text GLabel 6260 7060 2    60   Input ~ 0
+AREF-10
+Text GLabel 1030 5415 0    60   Input ~ 0
+AREF-10
+Wire Wire Line
+	1030 5415 1085 5415
+Text GLabel 3920 3215 2    60   Input ~ 0
+FAST_NOISE
+Wire Wire Line
+	3870 3215 3920 3215
+$Comp
+L allcolours-rescue:C-device-allcolours-rescue C?
+U 1 1 5D2AC391
+P 7605 5630
+F 0 "C?" H 7630 5730 50  0000 L CNN
+F 1 "100N" H 7630 5530 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 7643 5480 50  0001 C CNN
+F 3 "" H 7605 5630 50  0000 C CNN
+	1    7605 5630
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7420 5630 7455 5630
 $EndSCHEMATC
