@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 4
+Sheet 1 5
 Title ""
 Date ""
 Rev ""
@@ -169,80 +169,69 @@ F 3 "" H 3400 950 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:7805-allcolours-rescue U9
-U 1 1 5968B83B
-P 9115 4885
-F 0 "U9" H 9265 4689 50  0000 C CNN
-F 1 "7805" H 9115 5085 50  0000 C CNN
-F 2 "TO_SOT_Packages_THT:TO-220_Vertical" H 9115 4885 50  0001 C CNN
-F 3 "" H 9115 4885 50  0000 C CNN
-	1    9115 4885
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours-rescue:+12V-power-allcolours-rescue #PWR041
 U 1 1 5968B92C
-P 8685 5755
-F 0 "#PWR041" H 8685 5605 50  0001 C CNN
-F 1 "+12V" H 8685 5895 50  0000 C CNN
-F 2 "" H 8685 5755 50  0000 C CNN
-F 3 "" H 8685 5755 50  0000 C CNN
-	1    8685 5755
+P 2160 6665
+F 0 "#PWR041" H 2160 6515 50  0001 C CNN
+F 1 "+12V" H 2160 6805 50  0000 C CNN
+F 2 "" H 2160 6665 50  0000 C CNN
+F 3 "" H 2160 6665 50  0000 C CNN
+	1    2160 6665
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR045
 U 1 1 5968B9D9
-P 9285 6205
-F 0 "#PWR045" H 9285 5955 50  0001 C CNN
-F 1 "GND" H 9285 6055 50  0000 C CNN
-F 2 "" H 9285 6205 50  0000 C CNN
-F 3 "" H 9285 6205 50  0000 C CNN
-	1    9285 6205
+P 2760 7115
+F 0 "#PWR045" H 2760 6865 50  0001 C CNN
+F 1 "GND" H 2760 6965 50  0000 C CNN
+F 2 "" H 2760 7115 50  0000 C CNN
+F 3 "" H 2760 7115 50  0000 C CNN
+	1    2760 7115
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C12
 U 1 1 5968BE3D
-P 8885 5955
-F 0 "C12" H 8910 6055 50  0000 L CNN
-F 1 "100N" H 8910 5855 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 8923 5805 50  0001 C CNN
-F 3 "" H 8885 5955 50  0000 C CNN
-	1    8885 5955
+P 2360 6865
+F 0 "C12" H 2385 6965 50  0000 L CNN
+F 1 "100N" H 2385 6765 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2398 6715 50  0001 C CNN
+F 3 "" H 2360 6865 50  0000 C CNN
+	1    2360 6865
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C13
 U 1 1 5968BF2C
-P 8885 6255
-F 0 "C13" H 8895 6325 50  0000 L CNN
-F 1 "10u" H 8895 6175 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 8885 6255 50  0001 C CNN
-F 3 "" H 8885 6255 50  0000 C CNN
-	1    8885 6255
+P 2360 7165
+F 0 "C13" H 2370 7235 50  0000 L CNN
+F 1 "10u" H 2370 7085 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 2360 7165 50  0001 C CNN
+F 3 "" H 2360 7165 50  0000 C CNN
+	1    2360 7165
 	0    -1   -1   0   
 $EndComp
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C15
 U 1 1 5968C026
-P 9735 5955
-F 0 "C15" H 9760 6055 50  0000 L CNN
-F 1 "100N" H 9760 5855 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 9773 5805 50  0001 C CNN
-F 3 "" H 9735 5955 50  0000 C CNN
-	1    9735 5955
+P 3210 6865
+F 0 "C15" H 3235 6965 50  0000 L CNN
+F 1 "100N" H 3235 6765 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 3248 6715 50  0001 C CNN
+F 3 "" H 3210 6865 50  0000 C CNN
+	1    3210 6865
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C14
 U 1 1 5968C101
-P 9535 6155
-F 0 "C14" H 9545 6225 50  0000 L CNN
-F 1 "10u" H 9545 6075 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 9535 6155 50  0001 C CNN
-F 3 "" H 9535 6155 50  0000 C CNN
-	1    9535 6155
+P 3010 7065
+F 0 "C14" H 3020 7135 50  0000 L CNN
+F 1 "10u" H 3020 6985 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 3010 7065 50  0001 C CNN
+F 3 "" H 3010 7065 50  0000 C CNN
+	1    3010 7065
 	0    1    1    0   
 $EndComp
 $Comp
@@ -259,113 +248,91 @@ $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R26
 U 1 1 5967E495
-P 6265 1185
-F 0 "R26" V 6345 1185 50  0000 C CNN
-F 1 "10K" V 6265 1185 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 6195 1185 50  0001 C CNN
-F 3 "" H 6265 1185 50  0000 C CNN
-	1    6265 1185
+P 5940 1280
+F 0 "R26" V 6020 1280 50  0000 C CNN
+F 1 "10K" V 5940 1280 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5870 1280 50  0001 C CNN
+F 3 "" H 5940 1280 50  0000 C CNN
+	1    5940 1280
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R24
 U 1 1 5967E681
-P 6015 1335
-F 0 "R24" V 6095 1335 50  0000 C CNN
-F 1 "100K" V 6015 1335 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 5945 1335 50  0001 C CNN
-F 3 "" H 6015 1335 50  0000 C CNN
-	1    6015 1335
+P 5690 1430
+F 0 "R24" V 5770 1430 50  0000 C CNN
+F 1 "100K" V 5690 1430 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5620 1430 50  0001 C CNN
+F 3 "" H 5690 1430 50  0000 C CNN
+	1    5690 1430
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR024
 U 1 1 5967EB3B
-P 6015 1585
-F 0 "#PWR024" H 6015 1335 50  0001 C CNN
-F 1 "GND" H 6015 1435 50  0000 C CNN
-F 2 "" H 6015 1585 50  0000 C CNN
-F 3 "" H 6015 1585 50  0000 C CNN
-	1    6015 1585
+P 5690 1680
+F 0 "#PWR024" H 5690 1430 50  0001 C CNN
+F 1 "GND" H 5690 1530 50  0000 C CNN
+F 2 "" H 5690 1680 50  0000 C CNN
+F 3 "" H 5690 1680 50  0000 C CNN
+	1    5690 1680
 	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:-12VA-power-allcolours-rescue #PWR030
-U 1 1 59680F55
-P 6865 1635
-F 0 "#PWR030" H 6865 1485 50  0001 C CNN
-F 1 "-12VA" H 6865 1775 50  0000 C CNN
-F 2 "" H 6865 1635 50  0000 C CNN
-F 3 "" H 6865 1635 50  0000 C CNN
-	1    6865 1635
-	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R23
 U 1 1 59682456
-P 5915 1885
-F 0 "R23" V 5995 1885 50  0000 C CNN
-F 1 "10K" V 5915 1885 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 5845 1885 50  0001 C CNN
-F 3 "" H 5915 1885 50  0000 C CNN
-	1    5915 1885
+P 5590 1980
+F 0 "R23" V 5670 1980 50  0000 C CNN
+F 1 "10K" V 5590 1980 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5520 1980 50  0001 C CNN
+F 3 "" H 5590 1980 50  0000 C CNN
+	1    5590 1980
 	0    1    1    0   
 $EndComp
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR029
-U 1 1 59682D0C
-P 6865 885
-F 0 "#PWR029" H 6865 735 50  0001 C CNN
-F 1 "+12V" H 6865 1025 50  0000 C CNN
-F 2 "" H 6865 885 50  0000 C CNN
-F 3 "" H 6865 885 50  0000 C CNN
-	1    6865 885 
-	1    0    0    -1  
-$EndComp
-Text Notes 7635 5655 0    60   ~ 0
+Text Notes 1110 6565 0    60   ~ 0
 euro_conn
 $Comp
 L allcolours-rescue:CONN_02X05-allcolours-rescue P4
 U 1 1 596B8735
-P 7835 6005
-F 0 "P4" H 7835 6305 50  0000 C CNN
-F 1 "CONN_02X05" H 7835 5705 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 7835 4805 50  0001 C CNN
-F 3 "" H 7835 4805 50  0000 C CNN
-	1    7835 6005
+P 1310 6915
+F 0 "P4" H 1310 7215 50  0000 C CNN
+F 1 "CONN_02X05" H 1310 6615 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 1310 5715 50  0001 C CNN
+F 3 "" H 1310 5715 50  0000 C CNN
+	1    1310 6915
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:+12V-power-allcolours-rescue #PWR043
 U 1 1 596B9C7E
-P 7330 5390
-F 0 "#PWR043" H 7330 5240 50  0001 C CNN
-F 1 "+12V" H 7320 5520 50  0000 C CNN
-F 2 "" H 7330 5390 50  0000 C CNN
-F 3 "" H 7330 5390 50  0000 C CNN
-	1    7330 5390
+P 805 6300
+F 0 "#PWR043" H 805 6150 50  0001 C CNN
+F 1 "+12V" H 795 6430 50  0000 C CNN
+F 2 "" H 805 6300 50  0000 C CNN
+F 3 "" H 805 6300 50  0000 C CNN
+	1    805  6300
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:-12VA-power-allcolours-rescue #PWR044
 U 1 1 596BB6E9
-P 7490 6535
-F 0 "#PWR044" H 7490 6385 50  0001 C CNN
-F 1 "-12VA" H 7490 6675 50  0000 C CNN
-F 2 "" H 7490 6535 50  0000 C CNN
-F 3 "" H 7490 6535 50  0000 C CNN
-	1    7490 6535
+P 965 7445
+F 0 "#PWR044" H 965 7295 50  0001 C CNN
+F 1 "-12VA" H 965 7585 50  0000 C CNN
+F 2 "" H 965 7445 50  0000 C CNN
+F 3 "" H 965 7445 50  0000 C CNN
+	1    965  7445
 	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR047
 U 1 1 596A64CD
-P 8285 6005
-F 0 "#PWR047" H 8285 5755 50  0001 C CNN
-F 1 "GND" H 8285 5855 50  0000 C CNN
-F 2 "" H 8285 6005 50  0000 C CNN
-F 3 "" H 8285 6005 50  0000 C CNN
-	1    8285 6005
+P 1760 6915
+F 0 "#PWR047" H 1760 6665 50  0001 C CNN
+F 1 "GND" H 1760 6765 50  0000 C CNN
+F 2 "" H 1760 6915 50  0000 C CNN
+F 3 "" H 1760 6915 50  0000 C CNN
+	1    1760 6915
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -425,48 +392,46 @@ Wire Wire Line
 	2900 1150 3250 1150
 Connection ~ 2900 1450
 Wire Wire Line
-	3250 1150 3250 1100
+	2160 6715 2210 6715
 Wire Wire Line
-	8685 5805 8735 5805
+	2160 6715 2160 6665
 Wire Wire Line
-	8685 5805 8685 5755
+	2760 7015 2760 7065
 Wire Wire Line
-	9285 6105 9285 6155
+	2210 6715 2210 6865
+Connection ~ 2210 6715
 Wire Wire Line
-	8735 5805 8735 5955
-Connection ~ 8735 5805
+	2210 7165 2260 7165
+Connection ~ 2210 6865
 Wire Wire Line
-	8735 6255 8785 6255
-Connection ~ 8735 5955
+	2510 7165 2460 7165
 Wire Wire Line
-	9035 6255 8985 6255
+	2510 6865 2510 7065
 Wire Wire Line
-	9035 5955 9035 6155
+	2510 7065 2760 7065
+Connection ~ 2760 7065
+Connection ~ 2510 7065
 Wire Wire Line
-	9035 6155 9285 6155
-Connection ~ 9285 6155
-Connection ~ 9035 6155
+	3360 7065 3110 7065
 Wire Wire Line
-	9885 6155 9635 6155
+	3360 6715 3360 6865
+Connection ~ 3360 6865
 Wire Wire Line
-	9885 5805 9885 5955
-Connection ~ 9885 5955
+	6540 1680 6540 1730
 Wire Wire Line
-	6865 1585 6865 1635
+	5690 1680 5690 1580
 Wire Wire Line
-	6015 1585 6015 1485
+	5940 1980 5940 1480
 Wire Wire Line
-	6265 1885 6265 1385
+	5940 1480 6185 1480
 Wire Wire Line
-	6265 1385 6665 1385
+	1060 6815 1060 6915
+Connection ~ 1060 6915
 Wire Wire Line
-	7585 5905 7585 6005
-Connection ~ 7585 6005
+	1060 6915 1560 6915
 Wire Wire Line
-	7585 6005 8085 6005
-Wire Wire Line
-	8085 5905 8085 6005
-Connection ~ 8085 6005
+	1560 6815 1560 6915
+Connection ~ 1560 6915
 Wire Wire Line
 	2300 1450 2150 1450
 Wire Wire Line
@@ -474,16 +439,16 @@ Wire Wire Line
 Wire Wire Line
 	2150 1350 2100 1350
 Wire Wire Line
-	7265 1285 7465 1285
+	6940 1380 7140 1380
 Wire Wire Line
-	6865 985  6865 885 
+	6540 1080 6540 980 
 $Sheet
-S 8600 825  2050 550 
+S 9210 5235 900  260 
 U 5AD5ACBB
 F0 "Sheet5AD5ACBA" 60
 F1 "file5AD5ACBA.sch" 60
 $EndSheet
-Text Notes 8950 1250 0    236  ~ 0
+Text Notes 9285 5470 0    157  ~ 0
 MICRO
 Wire Wire Line
 	1650 1900 2100 1900
@@ -492,57 +457,46 @@ Wire Wire Line
 Wire Wire Line
 	2900 1450 3000 1450
 Wire Wire Line
-	8735 5955 8735 6255
+	2210 6865 2210 7165
 Wire Wire Line
-	9285 6155 9285 6205
+	2760 7065 2760 7115
 Wire Wire Line
-	9035 6155 9035 6255
+	2510 7065 2510 7165
 Wire Wire Line
-	9885 5955 9885 6155
+	3360 6865 3360 7065
 Wire Wire Line
-	6015 1185 6115 1185
+	5690 1280 5790 1280
 Wire Wire Line
-	7585 6005 7585 6105
+	1060 6915 1060 7015
 Wire Wire Line
-	8085 6005 8085 6105
-$Comp
-L allcolours-rescue:TL072-linear-allcolours-rescue U1
-U 2 1 5B6FD3B3
-P 3300 1350
-F 0 "U1" H 3641 1396 50  0000 L CNN
-F 1 "TL072" H 3641 1305 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 3300 1350 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3300 1350 50  0001 C CNN
-	2    3300 1350
-	1    0    0    -1  
-$EndComp
+	1560 6915 1560 7015
 $Comp
 L allcolours-rescue:TL072-linear-allcolours-rescue U6
 U 1 1 5B6FE02A
-P 6965 1285
-F 0 "U6" H 7306 1331 50  0000 L CNN
-F 1 "TL072" H 7306 1240 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 6965 1285 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6965 1285 50  0001 C CNN
-	1    6965 1285
+P 3300 1350
+F 0 "U6" H 3641 1396 50  0000 L CNN
+F 1 "TL072" H 3641 1305 50  0000 L CNN
+F 2 "SMD_Packages:SOIC-8-N" H 3300 1350 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3300 1350 50  0001 C CNN
+	1    3300 1350
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:+5V-power-allcolours-rescue #PWR062
 U 1 1 5B726638
-P 9985 5755
-F 0 "#PWR062" H 9985 5605 50  0001 C CNN
-F 1 "+5V" H 10000 5928 50  0000 C CNN
-F 2 "" H 9985 5755 50  0001 C CNN
-F 3 "" H 9985 5755 50  0001 C CNN
-	1    9985 5755
+P 3460 6665
+F 0 "#PWR062" H 3460 6515 50  0001 C CNN
+F 1 "+5V" H 3475 6838 50  0000 C CNN
+F 2 "" H 3460 6665 50  0001 C CNN
+F 3 "" H 3460 6665 50  0001 C CNN
+	1    3460 6665
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9885 5805 9985 5805
+	3360 6715 3460 6715
 Wire Wire Line
-	9985 5805 9985 5755
-Connection ~ 9885 5805
+	3460 6715 3460 6665
+Connection ~ 3360 6715
 $Comp
 L allcolours-rescue:+12V-power-allcolours-rescue #PWR05
 U 1 1 5B6F02C7
@@ -570,48 +524,24 @@ Wire Wire Line
 Wire Wire Line
 	725  1525 725  1575
 $Sheet
-S 9700 1750 950  300 
+S 9265 5765 760  200 
 U 5B6C330C
 F0 "Sheet5B6C330B" 60
 F1 "allcolfilter.sch" 60
 $EndSheet
-Text Notes 9925 1975 0    118  ~ 0
+Text Notes 9400 5950 0    118  ~ 0
 FILTER\n
-$Comp
-L allcolours-rescue:POT_TRIM-device-allcolours-rescue RV1
-U 1 1 5B70AE2B
-P 3400 1100
-F 0 "RV1" V 3193 1100 50  0000 C CNN
-F 1 "100K" V 3450 950 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 3400 1100 50  0001 C CNN
-F 3 "" H 3400 1100 50  0001 C CNN
-	1    3400 1100
-	0    1    1    0   
-$EndComp
-$Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M6
-U 1 1 5B6CCB33
-P 12825 1675
-F 0 "M6" H 12498 1637 45  0000 R CNN
-F 1 "AUDIO-JACKERTHENVAR" H 12825 1675 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 12855 1825 20  0001 C CNN
-F 3 "" H 12825 1675 60  0001 C CNN
-	1    12825 1675
-	-1   0    0    1   
-$EndComp
-Text Notes 12000 1175 0    157  ~ 0
-ins/outs/norms\n
 Wire Wire Line
-	5715 1185 6015 1185
+	5390 1280 5690 1280
 Wire Wire Line
-	5665 1885 5765 1885
+	5340 1980 5440 1980
 $Sheet
-S 8785 2515 1900 850 
+S 9245 6145 1425 240 
 U 5BAC374C
 F0 "Sheet5BAC374B" 60
 F1 "ouroboros.sch" 60
 $EndSheet
-Text Notes 9135 2965 0    197  ~ 0
+Text Notes 9215 6350 0    197  ~ 0
 ouroboros\n
 $Comp
 L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q1
@@ -639,121 +569,80 @@ $EndComp
 Connection ~ 1800 1600
 Connection ~ 2100 1400
 Wire Wire Line
-	8085 6005 8285 6005
-Connection ~ 6015 1185
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR076
-U 1 1 5C14F61F
-P 12425 1775
-F 0 "#PWR076" H 12425 1525 50  0001 C CNN
-F 1 "GND" H 12425 1625 50  0000 C CNN
-F 2 "" H 12425 1775 50  0000 C CNN
-F 3 "" H 12425 1775 50  0000 C CNN
-	1    12425 1775
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	12425 1775 12525 1775
-Wire Wire Line
-	12425 1475 12525 1475
-$Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M9
-U 1 1 5C175512
-P 12825 2325
-F 0 "M9" H 12498 2287 45  0000 R CNN
-F 1 "AUDIO-JACKERTHENVAR" H 12825 2325 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 12855 2475 20  0001 C CNN
-F 3 "" H 12825 2325 60  0001 C CNN
-	1    12825 2325
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR077
-U 1 1 5C175518
-P 12425 2425
-F 0 "#PWR077" H 12425 2175 50  0001 C CNN
-F 1 "GND" H 12425 2275 50  0000 C CNN
-F 2 "" H 12425 2425 50  0000 C CNN
-F 3 "" H 12425 2425 50  0000 C CNN
-	1    12425 2425
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	12425 2425 12525 2425
-Wire Wire Line
-	12425 2125 12525 2125
+	1560 6915 1760 6915
+Connection ~ 5690 1280
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C55
 U 1 1 5C0C5436
-P 7440 5790
-F 0 "C55" H 7450 5860 50  0000 L CNN
-F 1 "10u" H 7450 5710 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 7440 5790 50  0001 C CNN
-F 3 "" H 7440 5790 50  0000 C CNN
-	1    7440 5790
+P 915 6700
+F 0 "C55" H 925 6770 50  0000 L CNN
+F 1 "10u" H 925 6620 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 915 6700 50  0001 C CNN
+F 3 "" H 915 6700 50  0000 C CNN
+	1    915  6700
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C56
 U 1 1 5C0C57BA
-P 7470 6105
-F 0 "C56" H 7480 6175 50  0000 L CNN
-F 1 "10u" H 7480 6025 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 7470 6105 50  0001 C CNN
-F 3 "" H 7470 6105 50  0000 C CNN
-	1    7470 6105
+P 945 7015
+F 0 "C56" H 955 7085 50  0000 L CNN
+F 1 "10u" H 955 6935 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 945 7015 50  0001 C CNN
+F 3 "" H 945 7015 50  0000 C CNN
+	1    945  7015
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:D D14
 U 1 1 5C0C6ED7
-P 7385 5540
-F 0 "D14" V 7339 5619 50  0000 L CNN
-F 1 "D" V 7430 5619 50  0000 L CNN
-F 2 "Diodes_SMD:D_SOD-123" H 7385 5540 50  0001 C CNN
-F 3 "~" H 7385 5540 50  0001 C CNN
-	1    7385 5540
+P 860 6450
+F 0 "D14" V 814 6529 50  0000 L CNN
+F 1 "D" V 905 6529 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" H 860 6450 50  0001 C CNN
+F 3 "~" H 860 6450 50  0001 C CNN
+	1    860  6450
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	7330 5390 7385 5390
+	805  6300 860  6300
 $Comp
 L Device:D D15
 U 1 1 5C0D4BAD
-P 7490 6355
-F 0 "D15" V 7444 6434 50  0000 L CNN
-F 1 "D" V 7535 6434 50  0000 L CNN
-F 2 "Diodes_SMD:D_SOD-123" H 7490 6355 50  0001 C CNN
-F 3 "~" H 7490 6355 50  0001 C CNN
-	1    7490 6355
+P 965 7265
+F 0 "D15" V 919 7344 50  0000 L CNN
+F 1 "D" V 1010 7344 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" H 965 7265 50  0001 C CNN
+F 3 "~" H 965 7265 50  0001 C CNN
+	1    965  7265
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	7385 5690 7440 5690
+	860  6600 915  6600
 Wire Wire Line
-	7440 5890 7545 5890
+	915  6800 1020 6800
 Wire Wire Line
-	7545 5890 7545 5805
+	1020 6800 1020 6715
 Wire Wire Line
-	7545 5805 8085 5805
+	1020 6715 1060 6715
 Wire Wire Line
-	7470 6005 7585 6005
+	945  6915 1060 6915
 Wire Wire Line
-	7585 6005 7585 6010
+	1060 6915 1060 6920
 Wire Wire Line
-	7490 6505 7490 6535
+	965  7415 965  7445
 Wire Wire Line
-	7470 6205 7490 6205
-Connection ~ 7490 6205
+	945  7115 965  7115
+Connection ~ 965  7115
 Wire Wire Line
-	7490 6205 7585 6205
+	965  7115 1060 7115
 Wire Wire Line
 	4000 1350 4080 1350
 Wire Wire Line
-	6415 1185 6665 1185
+	6090 1280 6340 1280
 Wire Wire Line
-	6065 1885 6265 1885
-Text Notes 6075 700  0    157  ~ 0
+	5740 1980 5940 1980
+Text Notes 5190 745  0    157  ~ 0
 comparator slow x2
 Wire Wire Line
 	3600 1350 3625 1350
@@ -768,11 +657,6 @@ F 3 "" H 3575 1250 50  0000 C CNN
 	1    3575 1250
 	0    1    1    0   
 $EndComp
-Connection ~ 3250 1100
-Wire Wire Line
-	3250 1100 3250 950 
-Wire Wire Line
-	3400 1250 3425 1250
 Wire Wire Line
 	3550 950  3725 950 
 Wire Wire Line
@@ -789,253 +673,1069 @@ Wire Wire Line
 Connection ~ 3725 1250
 Text Notes 1550 725  0    157  ~ 0
 slow noise source
-Text GLabel 4075 1350 2    60   Input ~ 0
+Text GLabel 4080 1350 2    60   Input ~ 0
 SLOW_NOISE
-Text Notes 1310 3250 0    157  ~ 0
+Text Notes 1280 2600 0    157  ~ 0
 fast noise source
-Text Notes 6125 2500 0    157  ~ 0
+Text Notes 5170 2840 0    157  ~ 0
 comparator fast x2
-Text Notes 5975 3675 0    157  ~ 0
-diff amp to filter
-Text Notes 1260 5985 0    157  ~ 0
-mix to filter clock
+Text Notes 4310 5065 0    157  ~ 0
+diff amp to filter audio in
+Text Notes 915  4595 0    157  ~ 0
+mix to filter clock - check
 Text Notes 1925 2185 0    79   Italic 0
 MMBT3904 is bec
 $Comp
 L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
 U 1 1 5D34D49F
-P 1750 4395
-F 0 "Q?" V 2078 4395 50  0000 C CNN
-F 1 "Q_NPN_BEC" V 1987 4395 50  0000 C CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 1950 4495 50  0001 C CNN
-F 3 "" H 1750 4395 50  0001 C CNN
-	1    1750 4395
+P 1325 3535
+F 0 "Q?" V 1653 3535 50  0000 C CNN
+F 1 "Q_NPN_BEC" V 1562 3535 50  0000 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 1525 3635 50  0001 C CNN
+F 3 "" H 1325 3535 50  0001 C CNN
+	1    1325 3535
 	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
 U 1 1 5D34D577
-P 2200 4395
-F 0 "Q?" V 2528 4395 50  0000 C CNN
-F 1 "Q_NPN_BEC" V 2437 4395 50  0000 C CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 2400 4495 50  0001 C CNN
-F 3 "" H 2200 4395 50  0001 C CNN
-	1    2200 4395
+P 1780 3535
+F 0 "Q?" V 2108 3535 50  0000 C CNN
+F 1 "Q_NPN_BEC" V 2017 3535 50  0000 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 1980 3635 50  0001 C CNN
+F 3 "" H 1780 3535 50  0001 C CNN
+	1    1780 3535
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D34D702
-P 1795 4120
-F 0 "R?" V 1875 4120 50  0000 C CNN
-F 1 "47K" V 1795 4120 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1725 4120 50  0001 C CNN
-F 3 "" H 1795 4120 50  0000 C CNN
-	1    1795 4120
+P 1375 3260
+F 0 "R?" V 1455 3260 50  0000 C CNN
+F 1 "47K" V 1375 3260 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1305 3260 50  0001 C CNN
+F 3 "" H 1375 3260 50  0000 C CNN
+	1    1375 3260
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D34D7F6
-P 2295 3970
-F 0 "R?" V 2375 3970 50  0000 C CNN
-F 1 "4K7" V 2295 3970 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 2225 3970 50  0001 C CNN
-F 3 "" H 2295 3970 50  0000 C CNN
-	1    2295 3970
+P 1880 3145
+F 0 "R?" V 1960 3145 50  0000 C CNN
+F 1 "4K7" V 1880 3145 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1810 3145 50  0001 C CNN
+F 3 "" H 1880 3145 50  0000 C CNN
+	1    1880 3145
 	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5D34D917
-P 1365 4490
-F 0 "#PWR?" H 1365 4240 50  0001 C CNN
-F 1 "GND" H 1365 4340 50  0000 C CNN
-F 2 "" H 1365 4490 50  0000 C CNN
-F 3 "" H 1365 4490 50  0000 C CNN
-	1    1365 4490
+P 935 3615
+F 0 "#PWR?" H 935 3365 50  0001 C CNN
+F 1 "GND" H 935 3465 50  0000 C CNN
+F 2 "" H 935 3615 50  0000 C CNN
+F 3 "" H 935 3615 50  0000 C CNN
+	1    935  3615
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5D34D968
-P 2300 4660
-F 0 "#PWR?" H 2300 4410 50  0001 C CNN
-F 1 "GND" H 2300 4510 50  0000 C CNN
-F 2 "" H 2300 4660 50  0000 C CNN
-F 3 "" H 2300 4660 50  0000 C CNN
-	1    2300 4660
+P 1880 3785
+F 0 "#PWR?" H 1880 3535 50  0001 C CNN
+F 1 "GND" H 1880 3635 50  0000 C CNN
+F 2 "" H 1880 3785 50  0000 C CNN
+F 3 "" H 1880 3785 50  0000 C CNN
+	1    1880 3785
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C?
 U 1 1 5D34D9B9
-P 1355 4270
-F 0 "C?" H 1380 4370 50  0000 L CNN
-F 1 "100N" H 1380 4170 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 1393 4120 50  0001 C CNN
-F 3 "" H 1355 4270 50  0000 C CNN
-	1    1355 4270
+P 935 3410
+F 0 "C?" H 960 3510 50  0000 L CNN
+F 1 "100N" H 960 3310 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 973 3260 50  0001 C CNN
+F 3 "" H 935 3410 50  0000 C CNN
+	1    935  3410
 	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C?
 U 1 1 5D34DB19
-P 2545 4145
-F 0 "C?" H 2570 4245 50  0000 L CNN
-F 1 "100N" H 2570 4045 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 2583 3995 50  0001 C CNN
-F 3 "" H 2545 4145 50  0000 C CNN
-	1    2545 4145
+P 2065 3315
+F 0 "C?" H 2090 3415 50  0000 L CNN
+F 1 "100N" H 2090 3215 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2103 3165 50  0001 C CNN
+F 3 "" H 2065 3315 50  0000 C CNN
+	1    2065 3315
 	0    -1   -1   0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D34DD25
-P 2920 4125
-F 0 "R?" V 3000 4125 50  0000 C CNN
-F 1 "10K" V 2920 4125 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 2850 4125 50  0001 C CNN
-F 3 "" H 2920 4125 50  0000 C CNN
-	1    2920 4125
+P 2410 3315
+F 0 "R?" V 2490 3315 50  0000 C CNN
+F 1 "10K" V 2410 3315 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2340 3315 50  0001 C CNN
+F 3 "" H 2410 3315 50  0000 C CNN
+	1    2410 3315
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D34DE09
-P 3435 4310
-F 0 "R?" V 3515 4310 50  0000 C CNN
-F 1 "47K" V 3435 4310 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 3365 4310 50  0001 C CNN
-F 3 "" H 3435 4310 50  0000 C CNN
-	1    3435 4310
+P 2815 3510
+F 0 "R?" V 2895 3510 50  0000 C CNN
+F 1 "47K" V 2815 3510 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2745 3510 50  0001 C CNN
+F 3 "" H 2815 3510 50  0000 C CNN
+	1    2815 3510
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D34DE81
-P 3750 4090
-F 0 "R?" V 3830 4090 50  0000 C CNN
-F 1 "1K" V 3750 4090 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 3680 4090 50  0001 C CNN
-F 3 "" H 3750 4090 50  0000 C CNN
-	1    3750 4090
+P 3385 3215
+F 0 "R?" V 3465 3215 50  0000 C CNN
+F 1 "1K" V 3385 3215 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 3315 3215 50  0001 C CNN
+F 3 "" H 3385 3215 50  0000 C CNN
+	1    3385 3215
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C?
 U 1 1 5D34E098
-P 4105 4095
-F 0 "C?" H 4130 4195 50  0000 L CNN
-F 1 "100N" H 4130 3995 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 4143 3945 50  0001 C CNN
-F 3 "" H 4105 4095 50  0000 C CNN
-	1    4105 4095
+P 3720 3215
+F 0 "C?" H 3745 3315 50  0000 L CNN
+F 1 "100N" H 3745 3115 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 3758 3065 50  0001 C CNN
+F 3 "" H 3720 3215 50  0000 C CNN
+	1    3720 3215
 	0    -1   -1   0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D34E15A
-P 3125 3485
-F 0 "R?" V 3205 3485 50  0000 C CNN
-F 1 "10K" V 3125 3485 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 3055 3485 50  0001 C CNN
-F 3 "" H 3125 3485 50  0000 C CNN
-	1    3125 3485
+P 2450 2930
+F 0 "R?" V 2530 2930 50  0000 C CNN
+F 1 "10K" V 2450 2930 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2380 2930 50  0001 C CNN
+F 3 "" H 2450 2930 50  0000 C CNN
+	1    2450 2930
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D34E1E8
-P 3490 3485
-F 0 "R?" V 3570 3485 50  0000 C CNN
-F 1 "10K" V 3490 3485 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 3420 3485 50  0001 C CNN
-F 3 "" H 3490 3485 50  0000 C CNN
-	1    3490 3485
+P 2775 2930
+F 0 "R?" V 2845 2935 50  0000 C CNN
+F 1 "10K" V 2775 2930 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2705 2930 50  0001 C CNN
+F 3 "" H 2775 2930 50  0000 C CNN
+	1    2775 2930
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR?
 U 1 1 5D34E29A
-P 2965 3600
-F 0 "#PWR?" H 2965 3350 50  0001 C CNN
-F 1 "GND" H 2965 3450 50  0000 C CNN
-F 2 "" H 2965 3600 50  0000 C CNN
-F 3 "" H 2965 3600 50  0000 C CNN
-	1    2965 3600
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:+5V-power-allcolours-rescue #PWR?
-U 1 1 5D34FA29
-P 4440 3830
-F 0 "#PWR?" H 4440 3680 50  0001 C CNN
-F 1 "+5V" H 4455 4003 50  0000 C CNN
-F 2 "" H 4440 3830 50  0001 C CNN
-F 3 "" H 4440 3830 50  0001 C CNN
-	1    4440 3830
+P 2300 2970
+F 0 "#PWR?" H 2300 2720 50  0001 C CNN
+F 1 "GND" H 2300 2820 50  0000 C CNN
+F 2 "" H 2300 2970 50  0000 C CNN
+F 3 "" H 2300 2970 50  0000 C CNN
+	1    2300 2970
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
 U 1 1 5D34FBB7
-P 2310 3750
-F 0 "#PWR?" H 2310 3600 50  0001 C CNN
-F 1 "+12V" H 2300 3880 50  0000 C CNN
-F 2 "" H 2310 3750 50  0000 C CNN
-F 3 "" H 2310 3750 50  0000 C CNN
-	1    2310 3750
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:+5V-power-allcolours-rescue #PWR?
-U 1 1 5D35288B
-P 3755 3460
-F 0 "#PWR?" H 3755 3310 50  0001 C CNN
-F 1 "+5V" H 3770 3633 50  0000 C CNN
-F 2 "" H 3755 3460 50  0001 C CNN
-F 3 "" H 3755 3460 50  0001 C CNN
-	1    3755 3460
+P 1880 2950
+F 0 "#PWR?" H 1880 2800 50  0001 C CNN
+F 1 "+12V" H 1870 3080 50  0000 C CNN
+F 2 "" H 1880 2950 50  0000 C CNN
+F 3 "" H 1880 2950 50  0000 C CNN
+	1    1880 2950
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9585 5805 9885 5805
+	3060 6715 3360 6715
 Wire Wire Line
-	8735 5805 8985 5805
+	2210 6715 2460 6715
 $Comp
 L Regulator_Linear:LM1117-5.0 U?
 U 1 1 5D355EF9
-P 9285 5805
-F 0 "U?" H 9285 6047 50  0000 C CNN
-F 1 "LM1117-5.0" H 9285 5956 50  0000 C CNN
-F 2 "" H 9285 5805 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 9285 5805 50  0001 C CNN
-	1    9285 5805
+P 2760 6715
+F 0 "U?" H 2760 6957 50  0000 C CNN
+F 1 "LM1117-5.0" H 2760 6866 50  0000 C CNN
+F 2 "" H 2760 6715 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 2760 6715 50  0001 C CNN
+	1    2760 6715
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9285 6155 9390 6155
+	2760 7065 2865 7065
 Wire Wire Line
-	9390 6155 9390 6050
+	2865 7065 2865 6960
 Wire Wire Line
-	9390 6050 9585 6050
+	2865 6960 3060 6960
 Wire Wire Line
-	9585 6050 9585 5955
-Connection ~ 9390 6155
+	3060 6960 3060 6865
+Connection ~ 2865 7065
 Wire Wire Line
-	9390 6155 9435 6155
+	2865 7065 2910 7065
 $Comp
 L Device:Opamp_Dual_Generic U?
 U 1 1 5D35FFF9
-P 3430 4030
-F 0 "U?" H 3430 4397 50  0000 C CNN
-F 1 "Opamp_Dual_Generic" H 3430 4306 50  0000 C CNN
-F 2 "" H 3430 4030 50  0001 C CNN
-F 3 "~" H 3430 4030 50  0001 C CNN
-	1    3430 4030
+P 2900 3215
+F 0 "U?" H 2900 3582 50  0000 C CNN
+F 1 "Opamp_Dual_Generic" H 2900 3491 50  0000 C CNN
+F 2 "" H 2900 3215 50  0001 C CNN
+F 3 "~" H 2900 3215 50  0001 C CNN
+	1    2900 3215
 	1    0    0    -1  
 $EndComp
-Text Notes 3330 3935 0    118  ~ 0
+Text Notes 3415 2940 0    118  ~ 0
 MAX4392
+Text Notes 1380 6345 0    157  ~ 0
+12V/5V/10V supply
+Wire Wire Line
+	935  3560 935  3615
+Wire Wire Line
+	935  3260 1225 3260
+Wire Wire Line
+	1225 3335 1225 3260
+Connection ~ 1225 3260
+Wire Wire Line
+	1525 3535 1580 3535
+Wire Wire Line
+	1880 3295 1880 3315
+Wire Wire Line
+	1915 3315 1880 3315
+Connection ~ 1880 3315
+Wire Wire Line
+	1880 3315 1880 3335
+Wire Wire Line
+	1525 3260 1525 3315
+Wire Wire Line
+	1525 3315 1880 3315
+Wire Wire Line
+	1880 3315 1885 3315
+Wire Wire Line
+	1880 2995 1880 2950
+Wire Wire Line
+	1880 3735 1880 3785
+Wire Wire Line
+	2215 3315 2260 3315
+Wire Wire Line
+	2560 3315 2580 3315
+Wire Wire Line
+	2580 3315 2580 3510
+Wire Wire Line
+	2580 3510 2665 3510
+Connection ~ 2580 3315
+Wire Wire Line
+	2580 3315 2600 3315
+Wire Wire Line
+	3200 3215 3220 3215
+Wire Wire Line
+	2965 3510 3220 3510
+Wire Wire Line
+	3220 3510 3220 3215
+Connection ~ 3220 3215
+Wire Wire Line
+	3220 3215 3235 3215
+Wire Wire Line
+	3535 3215 3570 3215
+Wire Wire Line
+	2300 2930 2300 2970
+Wire Wire Line
+	2600 2930 2625 2930
+$Comp
+L power:+10V #PWR?
+U 1 1 5D3A42B1
+P 2925 2895
+F 0 "#PWR?" H 2925 2745 50  0001 C CNN
+F 1 "+10V" H 2940 3068 50  0000 C CNN
+F 2 "" H 2925 2895 50  0001 C CNN
+F 3 "" H 2925 2895 50  0001 C CNN
+	1    2925 2895
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2925 2895 2925 2930
+Connection ~ 1060 6715
+Wire Wire Line
+	1060 6715 1560 6715
+$Comp
+L Device:Opamp_Dual_Generic U?
+U 1 1 5D4011E8
+P 6370 3300
+F 0 "U?" H 6370 3667 50  0000 C CNN
+F 1 "Opamp_Dual_Generic" H 6370 3576 50  0000 C CNN
+F 2 "" H 6370 3300 50  0001 C CNN
+F 3 "~" H 6370 3300 50  0001 C CNN
+	1    6370 3300
+	1    0    0    -1  
+$EndComp
+Text Notes 6770 3175 0    118  ~ 0
+MAX4392
+$Comp
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
+U 1 1 5D402302
+P 6690 5960
+F 0 "#PWR?" H 6690 5810 50  0001 C CNN
+F 1 "-12VA" H 6690 6100 50  0000 C CNN
+F 2 "" H 6690 5960 50  0000 C CNN
+F 3 "" H 6690 5960 50  0000 C CNN
+	1    6690 5960
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3250 950  3250 1150
+Wire Wire Line
+	3395 1250 3395 1150
+Wire Wire Line
+	3395 1150 3250 1150
+Connection ~ 3250 1150
+Wire Wire Line
+	3395 1250 3425 1250
+$Comp
+L Device:R_POT RV?
+U 1 1 5D415F53
+P 6185 1985
+F 0 "RV?" V 6071 1985 50  0000 C CNN
+F 1 "R_POT" V 5980 1985 50  0000 C CNN
+F 2 "" H 6185 1985 50  0001 C CNN
+F 3 "~" H 6185 1985 50  0001 C CNN
+	1    6185 1985
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D42547D
+P 6335 2380
+F 0 "#PWR?" H 6335 2130 50  0001 C CNN
+F 1 "GND" H 6340 2207 50  0000 C CNN
+F 2 "" H 6335 2380 50  0001 C CNN
+F 3 "" H 6335 2380 50  0001 C CNN
+	1    6335 2380
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+10V #PWR?
+U 1 1 5D4255F5
+P 6540 980
+F 0 "#PWR?" H 6540 830 50  0001 C CNN
+F 1 "+10V" H 6555 1153 50  0000 C CNN
+F 2 "" H 6540 980 50  0001 C CNN
+F 3 "" H 6540 980 50  0001 C CNN
+	1    6540 980 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D425E42
+P 6540 1730
+F 0 "#PWR?" H 6540 1480 50  0001 C CNN
+F 1 "GND" H 6545 1557 50  0000 C CNN
+F 2 "" H 6540 1730 50  0001 C CNN
+F 3 "" H 6540 1730 50  0001 C CNN
+	1    6540 1730
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D443EEE
+P 6185 1630
+F 0 "R?" V 6265 1630 50  0000 C CNN
+F 1 "10K" V 6185 1630 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6115 1630 50  0001 C CNN
+F 3 "" H 6185 1630 50  0000 C CNN
+	1    6185 1630
+	-1   0    0    1   
+$EndComp
+Connection ~ 6185 1480
+Wire Wire Line
+	6185 1480 6340 1480
+Wire Wire Line
+	6185 1780 6185 1835
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D454123
+P 6335 2185
+F 0 "R?" V 6415 2185 50  0000 C CNN
+F 1 "?adj" V 6335 2185 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6265 2185 50  0001 C CNN
+F 3 "" H 6335 2185 50  0000 C CNN
+	1    6335 2185
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D4541FF
+P 6035 2175
+F 0 "R?" V 6115 2175 50  0000 C CNN
+F 1 "?adj" V 6035 2175 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5965 2175 50  0001 C CNN
+F 3 "" H 6035 2175 50  0000 C CNN
+	1    6035 2175
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+10V #PWR?
+U 1 1 5D4542D3
+P 5900 2325
+F 0 "#PWR?" H 5900 2175 50  0001 C CNN
+F 1 "+10V" H 5915 2498 50  0000 C CNN
+F 2 "" H 5900 2325 50  0001 C CNN
+F 3 "" H 5900 2325 50  0001 C CNN
+	1    5900 2325
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 2325 6035 2325
+Wire Wire Line
+	6335 2335 6335 2380
+Wire Wire Line
+	6335 1985 6335 2035
+Wire Wire Line
+	6035 1985 6035 2025
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D484FD4
+P 5670 3200
+F 0 "R?" V 5750 3200 50  0000 C CNN
+F 1 "10K" V 5670 3200 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5600 3200 50  0001 C CNN
+F 3 "" H 5670 3200 50  0000 C CNN
+	1    5670 3200
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D484FDB
+P 5420 3350
+F 0 "R?" V 5500 3350 50  0000 C CNN
+F 1 "100K" V 5420 3350 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5350 3350 50  0001 C CNN
+F 3 "" H 5420 3350 50  0000 C CNN
+	1    5420 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D484FE2
+P 5420 3600
+F 0 "#PWR?" H 5420 3350 50  0001 C CNN
+F 1 "GND" H 5420 3450 50  0000 C CNN
+F 2 "" H 5420 3600 50  0000 C CNN
+F 3 "" H 5420 3600 50  0000 C CNN
+	1    5420 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D484FE8
+P 5320 3900
+F 0 "R?" V 5400 3900 50  0000 C CNN
+F 1 "10K" V 5320 3900 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5250 3900 50  0001 C CNN
+F 3 "" H 5320 3900 50  0000 C CNN
+	1    5320 3900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6985 4265 6985 4315
+Wire Wire Line
+	5420 3600 5420 3500
+Wire Wire Line
+	5670 3900 5670 3400
+Wire Wire Line
+	5670 3400 5915 3400
+Wire Wire Line
+	6670 3300 6870 3300
+Wire Wire Line
+	6985 3665 6985 3565
+Wire Wire Line
+	5420 3200 5520 3200
+Wire Wire Line
+	5120 3200 5420 3200
+Wire Wire Line
+	5070 3900 5170 3900
+Connection ~ 5420 3200
+Wire Wire Line
+	5820 3200 6070 3200
+Wire Wire Line
+	5470 3900 5670 3900
+$Comp
+L Device:R_POT RV?
+U 1 1 5D485002
+P 5915 3905
+F 0 "RV?" V 5801 3905 50  0000 C CNN
+F 1 "R_POT" V 5710 3905 50  0000 C CNN
+F 2 "" H 5915 3905 50  0001 C CNN
+F 3 "~" H 5915 3905 50  0001 C CNN
+	1    5915 3905
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D485009
+P 6065 4300
+F 0 "#PWR?" H 6065 4050 50  0001 C CNN
+F 1 "GND" H 6070 4127 50  0000 C CNN
+F 2 "" H 6065 4300 50  0001 C CNN
+F 3 "" H 6065 4300 50  0001 C CNN
+	1    6065 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+10V #PWR?
+U 1 1 5D48500F
+P 6985 3565
+F 0 "#PWR?" H 6985 3415 50  0001 C CNN
+F 1 "+10V" H 7000 3738 50  0000 C CNN
+F 2 "" H 6985 3565 50  0001 C CNN
+F 3 "" H 6985 3565 50  0001 C CNN
+	1    6985 3565
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D485015
+P 6985 4315
+F 0 "#PWR?" H 6985 4065 50  0001 C CNN
+F 1 "GND" H 6990 4142 50  0000 C CNN
+F 2 "" H 6985 4315 50  0001 C CNN
+F 3 "" H 6985 4315 50  0001 C CNN
+	1    6985 4315
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D48501B
+P 5915 3550
+F 0 "R?" V 5995 3550 50  0000 C CNN
+F 1 "10K" V 5915 3550 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5845 3550 50  0001 C CNN
+F 3 "" H 5915 3550 50  0000 C CNN
+	1    5915 3550
+	-1   0    0    1   
+$EndComp
+Connection ~ 5915 3400
+Wire Wire Line
+	5915 3400 6070 3400
+Wire Wire Line
+	5915 3700 5915 3755
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D485025
+P 6065 4105
+F 0 "R?" V 6145 4105 50  0000 C CNN
+F 1 "?adj" V 6065 4105 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5995 4105 50  0001 C CNN
+F 3 "" H 6065 4105 50  0000 C CNN
+	1    6065 4105
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D48502C
+P 5765 4095
+F 0 "R?" V 5845 4095 50  0000 C CNN
+F 1 "?adj" V 5765 4095 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5695 4095 50  0001 C CNN
+F 3 "" H 5765 4095 50  0000 C CNN
+	1    5765 4095
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+10V #PWR?
+U 1 1 5D485033
+P 5630 4245
+F 0 "#PWR?" H 5630 4095 50  0001 C CNN
+F 1 "+10V" H 5645 4418 50  0000 C CNN
+F 2 "" H 5630 4245 50  0001 C CNN
+F 3 "" H 5630 4245 50  0001 C CNN
+	1    5630 4245
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5630 4245 5765 4245
+Wire Wire Line
+	6065 4255 6065 4300
+Wire Wire Line
+	6065 3905 6065 3955
+Wire Wire Line
+	5765 3905 5765 3945
+Wire Wire Line
+	2600 3115 2600 2930
+Connection ~ 2600 2930
+$Comp
+L Device:Opamp_Dual_Generic U?
+U 3 1 5D4931B0
+P 3605 3750
+F 0 "U?" H 3563 3796 50  0000 L CNN
+F 1 "Opamp_Dual_Generic" H 3563 3705 50  0000 L CNN
+F 2 "" H 3605 3750 50  0001 C CNN
+F 3 "~" H 3605 3750 50  0001 C CNN
+	3    3605 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Opamp_Dual_Generic U?
+U 3 1 5D49B5C4
+P 7085 3965
+F 0 "U?" H 7043 4011 50  0000 L CNN
+F 1 "Opamp_Dual_Generic" H 7043 3920 50  0000 L CNN
+F 2 "" H 7085 3965 50  0001 C CNN
+F 3 "~" H 7085 3965 50  0001 C CNN
+	3    7085 3965
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D4A8C4A
+P 3505 4100
+F 0 "#PWR?" H 3505 3850 50  0001 C CNN
+F 1 "GND" H 3505 3950 50  0000 C CNN
+F 2 "" H 3505 4100 50  0000 C CNN
+F 3 "" H 3505 4100 50  0000 C CNN
+	1    3505 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+10V #PWR?
+U 1 1 5D4A8D92
+P 3505 3420
+F 0 "#PWR?" H 3505 3270 50  0001 C CNN
+F 1 "+10V" H 3625 3470 50  0000 C CNN
+F 2 "" H 3505 3420 50  0001 C CNN
+F 3 "" H 3505 3420 50  0001 C CNN
+	1    3505 3420
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3505 3420 3505 3450
+Wire Wire Line
+	3505 4050 3505 4100
+$Comp
+L allcolours-rescue:TL072-linear-allcolours-rescue U?
+U 2 1 5D402320
+P 6790 5630
+F 0 "U?" H 7131 5676 50  0000 L CNN
+F 1 "TL072" H 7131 5585 50  0000 L CNN
+F 2 "SMD_Packages:SOIC-8-N" H 6790 5630 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6790 5630 50  0001 C CNN
+	2    6790 5630
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D402330
+P 6295 5530
+F 0 "R?" V 6375 5530 50  0000 C CNN
+F 1 "100K" V 6295 5530 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6225 5530 50  0001 C CNN
+F 3 "" H 6295 5530 50  0000 C CNN
+	1    6295 5530
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D40230F
+P 7270 5630
+F 0 "R?" V 7350 5630 50  0000 C CNN
+F 1 "1K" V 7270 5630 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 7200 5630 50  0001 C CNN
+F 3 "" H 7270 5630 50  0000 C CNN
+	1    7270 5630
+	0    -1   -1   0   
+$EndComp
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+U 1 1 5D4022FC
+P 6690 5290
+F 0 "#PWR?" H 6690 5140 50  0001 C CNN
+F 1 "+12V" H 6690 5430 50  0000 C CNN
+F 2 "" H 6690 5290 50  0000 C CNN
+F 3 "" H 6690 5290 50  0000 C CNN
+	1    6690 5290
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D4E0CBD
+P 6285 5730
+F 0 "R?" V 6365 5730 50  0000 C CNN
+F 1 "100K" V 6285 5730 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6215 5730 50  0001 C CNN
+F 3 "" H 6285 5730 50  0000 C CNN
+	1    6285 5730
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D4E0F8E
+P 6745 6200
+F 0 "R?" V 6825 6200 50  0000 C CNN
+F 1 "100K" V 6745 6200 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6675 6200 50  0001 C CNN
+F 3 "" H 6745 6200 50  0000 C CNN
+	1    6745 6200
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D4E1612
+P 6465 5355
+F 0 "R?" V 6545 5355 50  0000 C CNN
+F 1 "100K" V 6465 5355 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6395 5355 50  0001 C CNN
+F 3 "" H 6465 5355 50  0000 C CNN
+	1    6465 5355
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D4E186C
+P 6345 5200
+F 0 "#PWR?" H 6345 4950 50  0001 C CNN
+F 1 "GND" H 6350 5027 50  0000 C CNN
+F 2 "" H 6345 5200 50  0001 C CNN
+F 3 "" H 6345 5200 50  0001 C CNN
+	1    6345 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6445 5530 6465 5530
+Wire Wire Line
+	6435 5730 6460 5730
+Wire Wire Line
+	6465 5505 6465 5530
+Connection ~ 6465 5530
+Wire Wire Line
+	6465 5530 6490 5530
+Wire Wire Line
+	6345 5200 6465 5200
+Wire Wire Line
+	6465 5200 6465 5205
+Wire Wire Line
+	6690 5290 6690 5330
+Wire Wire Line
+	7090 5630 7105 5630
+Wire Wire Line
+	6690 5930 6690 5960
+Wire Wire Line
+	6595 6200 6460 6200
+Wire Wire Line
+	6460 6200 6460 5730
+Connection ~ 6460 5730
+Wire Wire Line
+	6460 5730 6490 5730
+Wire Wire Line
+	6895 6200 7105 6200
+Wire Wire Line
+	7105 6200 7105 5630
+Connection ~ 7105 5630
+Wire Wire Line
+	7105 5630 7120 5630
+$Sheet
+S 9200 4765 1785 325 
+U 5D551D52
+F0 "Sheet5D551D51" 60
+F1 "ionorms.sch" 60
+$EndSheet
+Text Notes 9260 4995 0    150  ~ 0
+in/outs/norms
+$Comp
+L Device:Opamp_Dual_Generic U?
+U 1 1 5D5654D8
+P 1740 5055
+F 0 "U?" H 1740 5422 50  0000 C CNN
+F 1 "Opamp_Dual_Generic" H 1740 5331 50  0000 C CNN
+F 2 "" H 1740 5055 50  0001 C CNN
+F 3 "~" H 1740 5055 50  0001 C CNN
+	1    1740 5055
+	1    0    0    -1  
+$EndComp
+Text Notes 1845 4965 0    118  ~ 0
+MAX4392
+$Comp
+L Device:Opamp_Dual_Generic U?
+U 3 1 5D565820
+P 2870 5315
+F 0 "U?" H 2828 5361 50  0000 L CNN
+F 1 "Opamp_Dual_Generic" H 2828 5270 50  0000 L CNN
+F 2 "" H 2870 5315 50  0001 C CNN
+F 3 "~" H 2870 5315 50  0001 C CNN
+	3    2870 5315
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D565827
+P 2770 5665
+F 0 "#PWR?" H 2770 5415 50  0001 C CNN
+F 1 "GND" H 2770 5515 50  0000 C CNN
+F 2 "" H 2770 5665 50  0000 C CNN
+F 3 "" H 2770 5665 50  0000 C CNN
+	1    2770 5665
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+10V #PWR?
+U 1 1 5D56582D
+P 2770 4985
+F 0 "#PWR?" H 2770 4835 50  0001 C CNN
+F 1 "+10V" H 2890 5035 50  0000 C CNN
+F 2 "" H 2770 4985 50  0001 C CNN
+F 3 "" H 2770 4985 50  0001 C CNN
+	1    2770 4985
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2770 4985 2770 5015
+Wire Wire Line
+	2770 5615 2770 5665
+Text Notes 2035 -225 0    150  ~ 0
+TODO: all bypass.
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D56C7A1
+P 1260 5155
+F 0 "R?" V 1340 5155 50  0000 C CNN
+F 1 "10K" V 1260 5155 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1190 5155 50  0001 C CNN
+F 3 "" H 1260 5155 50  0000 C CNN
+	1    1260 5155
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D56CA0B
+P 1235 5270
+F 0 "R?" V 1315 5270 50  0000 C CNN
+F 1 "10K" V 1235 5270 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1165 5270 50  0001 C CNN
+F 3 "" H 1235 5270 50  0000 C CNN
+	1    1235 5270
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D56CABD
+P 1685 5330
+F 0 "R?" V 1765 5330 50  0000 C CNN
+F 1 "10K" V 1685 5330 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1615 5330 50  0001 C CNN
+F 3 "" H 1685 5330 50  0000 C CNN
+	1    1685 5330
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D56CBD1
+P 1385 4955
+F 0 "#PWR?" H 1385 4705 50  0001 C CNN
+F 1 "GND" H 1385 4805 50  0000 C CNN
+F 2 "" H 1385 4955 50  0000 C CNN
+F 3 "" H 1385 4955 50  0000 C CNN
+	1    1385 4955
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1410 5155 1425 5155
+Wire Wire Line
+	1385 5270 1425 5270
+Wire Wire Line
+	1425 5270 1425 5155
+Connection ~ 1425 5155
+Wire Wire Line
+	1425 5155 1440 5155
+Wire Wire Line
+	1425 5270 1425 5330
+Wire Wire Line
+	1425 5330 1535 5330
+Connection ~ 1425 5270
+Wire Wire Line
+	2040 5055 2075 5055
+Wire Wire Line
+	2075 5330 2075 5055
+Connection ~ 2075 5055
+Wire Wire Line
+	2075 5055 2150 5055
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D59A7B9
+P 2300 5055
+F 0 "R?" V 2380 5055 50  0000 C CNN
+F 1 "1K" V 2300 5055 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2230 5055 50  0001 C CNN
+F 3 "" H 2300 5055 50  0000 C CNN
+	1    2300 5055
+	0    1    1    0   
+$EndComp
+Text Notes 1235 5625 0    118  ~ 0
+inverting
+Wire Wire Line
+	1835 5330 2075 5330
+$Comp
+L Regulator_Linear:uA7810 U?
+U 1 1 5D5B27ED
+P 4400 6725
+F 0 "U?" H 4400 6967 50  0000 C CNN
+F 1 "uA7810" H 4400 6876 50  0000 C CNN
+F 2 "" H 4425 6575 50  0001 L CIN
+F 3 "http://www.ti.com/lit/ds/symlink/ua78.pdf" H 4400 6675 50  0001 C CNN
+	1    4400 6725
+	1    0    0    -1  
+$EndComp
+Text Notes 3555 7485 0    118  ~ 0
+78M10 - TO-252-3
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+U 1 1 5D5B3B39
+P 3800 6675
+F 0 "#PWR?" H 3800 6525 50  0001 C CNN
+F 1 "+12V" H 3800 6815 50  0000 C CNN
+F 2 "" H 3800 6675 50  0000 C CNN
+F 3 "" H 3800 6675 50  0000 C CNN
+	1    3800 6675
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D5B3B3F
+P 4400 7125
+F 0 "#PWR?" H 4400 6875 50  0001 C CNN
+F 1 "GND" H 4400 6975 50  0000 C CNN
+F 2 "" H 4400 7125 50  0000 C CNN
+F 3 "" H 4400 7125 50  0000 C CNN
+	1    4400 7125
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:C-device-allcolours-rescue C?
+U 1 1 5D5B3B45
+P 4000 6875
+F 0 "C?" H 4025 6975 50  0000 L CNN
+F 1 "100N" H 4025 6775 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 4038 6725 50  0001 C CNN
+F 3 "" H 4000 6875 50  0000 C CNN
+	1    4000 6875
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
+U 1 1 5D5B3B4C
+P 4000 7175
+F 0 "C?" H 4010 7245 50  0000 L CNN
+F 1 "10u" H 4010 7095 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 4000 7175 50  0001 C CNN
+F 3 "" H 4000 7175 50  0000 C CNN
+	1    4000 7175
+	0    -1   -1   0   
+$EndComp
+$Comp
+L allcolours-rescue:C-device-allcolours-rescue C?
+U 1 1 5D5B3B53
+P 4850 6875
+F 0 "C?" H 4875 6975 50  0000 L CNN
+F 1 "100N" H 4875 6775 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 4888 6725 50  0001 C CNN
+F 3 "" H 4850 6875 50  0000 C CNN
+	1    4850 6875
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
+U 1 1 5D5B3B5A
+P 4650 7075
+F 0 "C?" H 4660 7145 50  0000 L CNN
+F 1 "10u" H 4660 6995 50  0000 L CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 4650 7075 50  0001 C CNN
+F 3 "" H 4650 7075 50  0000 C CNN
+	1    4650 7075
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3800 6725 3850 6725
+Wire Wire Line
+	3800 6725 3800 6675
+Wire Wire Line
+	4400 7025 4400 7075
+Wire Wire Line
+	3850 6725 3850 6875
+Connection ~ 3850 6725
+Wire Wire Line
+	3850 7175 3900 7175
+Connection ~ 3850 6875
+Wire Wire Line
+	4150 7175 4100 7175
+Wire Wire Line
+	4150 6875 4150 7075
+Wire Wire Line
+	4150 7075 4400 7075
+Connection ~ 4400 7075
+Connection ~ 4150 7075
+Wire Wire Line
+	5000 7075 4750 7075
+Wire Wire Line
+	5000 6725 5000 6875
+Connection ~ 5000 6875
+Wire Wire Line
+	3850 6875 3850 7175
+Wire Wire Line
+	4400 7075 4400 7125
+Wire Wire Line
+	4150 7075 4150 7175
+Wire Wire Line
+	5000 6875 5000 7075
+Wire Wire Line
+	5000 6725 5100 6725
+Wire Wire Line
+	5100 6725 5100 6675
+Connection ~ 5000 6725
+Wire Wire Line
+	4700 6725 5000 6725
+Wire Wire Line
+	3850 6725 4100 6725
+Wire Wire Line
+	4400 7075 4505 7075
+Wire Wire Line
+	4505 7075 4505 6970
+Wire Wire Line
+	4505 6970 4700 6970
+Wire Wire Line
+	4700 6970 4700 6875
+Connection ~ 4505 7075
+Wire Wire Line
+	4505 7075 4550 7075
+$Comp
+L power:+10V #PWR?
+U 1 1 5D5BCE4E
+P 5100 6675
+F 0 "#PWR?" H 5100 6525 50  0001 C CNN
+F 1 "+10V" H 5220 6725 50  0000 C CNN
+F 2 "" H 5100 6675 50  0001 C CNN
+F 3 "" H 5100 6675 50  0001 C CNN
+	1    5100 6675
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:TL072-linear-allcolours-rescue U?
+U 1 1 5D5CD93F
+P 6640 1380
+F 0 "U?" H 6981 1426 50  0000 L CNN
+F 1 "TL072-linear-allcolours-rescue" H 6981 1335 50  0000 L CNN
+F 2 "" H 6640 1380 50  0001 C CNN
+F 3 "" H 6640 1380 50  0001 C CNN
+	1    6640 1380
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 4
+Sheet 2 5
 Title ""
 Date ""
 Rev ""
@@ -270,17 +270,6 @@ Wire Wire Line
 Wire Wire Line
 	4075 1725 4075 1675
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR050
-U 1 1 5B6DA0CC
-P 1860 6475
-F 0 "#PWR050" H 1860 6325 50  0001 C CNN
-F 1 "+12V" H 1875 6648 50  0000 C CNN
-F 2 "" H 1860 6475 50  0001 C CNN
-F 3 "" H 1860 6475 50  0001 C CNN
-	1    1860 6475
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours-rescue:+12V-power-allcolours-rescue #PWR054
 U 1 1 5B6DA115
 P 2460 7075
@@ -339,7 +328,7 @@ $Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R16
 U 1 1 5B6E538E
 P 1810 7425
-F 0 "R16" V 1614 7425 50  0000 C CNN
+F 0 "R16" V 1715 7425 50  0000 C CNN
 F 1 "20K" V 1895 7435 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 1810 7425 50  0001 C CNN
 F 3 "" H 1810 7425 50  0001 C CNN
@@ -392,15 +381,9 @@ Wire Wire Line
 Wire Wire Line
 	3725 1775 3725 1725
 Wire Wire Line
-	1210 6975 1260 6975
-Wire Wire Line
 	1510 6975 1560 6975
 Wire Wire Line
 	1560 6775 1660 6775
-Wire Wire Line
-	1860 6575 1860 6475
-Wire Wire Line
-	1860 7225 1860 7175
 Wire Wire Line
 	1710 7425 1560 7425
 Wire Wire Line
@@ -416,62 +399,10 @@ Wire Wire Line
 	2260 6875 2310 6875
 Wire Wire Line
 	2510 6875 2660 6875
-$Comp
-L allcolours-rescue:R_Small-device-allcolours-rescue R14
-U 1 1 5B7212C9
-P 1260 7175
-F 0 "R14" V 1064 7175 50  0000 C CNN
-F 1 "47K" V 1155 7175 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 1260 7175 50  0001 C CNN
-F 3 "" H 1260 7175 50  0001 C CNN
-	1    1260 7175
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR048
-U 1 1 5B721367
-P 1260 7325
-F 0 "#PWR048" H 1260 7075 50  0001 C CNN
-F 1 "GND" H 1265 7152 50  0000 C CNN
-F 2 "" H 1260 7325 50  0001 C CNN
-F 3 "" H 1260 7325 50  0001 C CNN
-	1    1260 7325
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2460 7375 2460 7325
 Wire Wire Line
 	2460 7075 2460 7125
-Wire Wire Line
-	1260 7275 1260 7325
-Wire Wire Line
-	1260 7075 1260 6975
-Connection ~ 1260 6975
-Wire Wire Line
-	1260 6975 1310 6975
-Connection ~ 2260 6875
-$Comp
-L allcolours-rescue:TL072-linear-allcolours-rescue U11
-U 1 1 5B6D9F73
-P 1960 6875
-F 0 "U11" H 2301 6921 50  0000 L CNN
-F 1 "TL072" H 2301 6830 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 1960 6875 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1960 6875 50  0001 C CNN
-	1    1960 6875
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:-12VA-power-allcolours-rescue #PWR067
-U 1 1 5B7292D8
-P 1860 7225
-F 0 "#PWR067" H 1860 7075 50  0001 C CNN
-F 1 "-12VA" H 1875 7398 50  0000 C CNN
-F 2 "" H 1860 7225 50  0001 C CNN
-F 3 "" H 1860 7225 50  0001 C CNN
-	1    1860 7225
-	-1   0    0    1   
-$EndComp
 $Comp
 L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D2
 U 1 1 5B790D75
@@ -983,8 +914,8 @@ Text GLabel 9860 3040 2    118  Input ~ 0
 PWM_OUT_LF
 Wire Wire Line
 	9545 3040 9860 3040
-Text Notes 530  6250 0    157  ~ 0
-PWM out x2 lf and hf
+Text Notes -1905 6455 0    157  ~ 0
+PWM out x2 lf is filtered, hf is fast 4392
 Wire Wire Line
 	9545 4740 9600 4740
 Wire Wire Line
@@ -1047,8 +978,6 @@ Wire Wire Line
 	4725 6595 4725 6635
 Text Notes 4655 7390 0    157  ~ 0
 0-5v\n
-Text Notes 560  5620 0    157  Italic 0
-check = also fast for hf!
 $Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R?
 U 1 1 5D2E2867
@@ -1085,4 +1014,24 @@ Wire Wire Line
 Wire Wire Line
 	1610 1155 1720 1155
 Connection ~ 1610 1155
+Wire Wire Line
+	1210 6975 1310 6975
+$Comp
+L Device:Opamp_Dual_Generic U?
+U 1 1 5D3B432B
+P 1960 6875
+AR Path="/5D3B432B" Ref="U?"  Part="1" 
+AR Path="/5AD5ACBB/5D3B432B" Ref="U?"  Part="1" 
+F 0 "U?" H 1960 7242 50  0000 C CNN
+F 1 "Opamp_Dual_Generic" H 1960 7151 50  0000 C CNN
+F 2 "" H 1960 6875 50  0001 C CNN
+F 3 "~" H 1960 6875 50  0001 C CNN
+	1    1960 6875
+	1    0    0    -1  
+$EndComp
+Text Notes 2660 6665 0    118  ~ 0
+MAX4392
+Connection ~ 2260 6875
+Text Notes 1355 3200 0    118  ~ 0
+4 bit DAC x2
 $EndSCHEMATC
