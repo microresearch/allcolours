@@ -682,7 +682,7 @@ comparator fast x2
 Text Notes 4310 5065 0    157  ~ 0
 diff amp to filter audio in
 Text Notes 915  4595 0    157  ~ 0
-mix to filter clock - check
+mix to filter clock
 Text Notes 1925 2185 0    79   Italic 0
 MMBT3904 is bec
 $Comp
@@ -1580,7 +1580,7 @@ F 3 "" H 2300 5055 50  0000 C CNN
 	1    2300 5055
 	0    1    1    0   
 $EndComp
-Text Notes -770 5715 0    118  ~ 0
+Text Notes 705  6000 0    118  ~ 0
 inverting  0 to +10v IN 0-5 v out
 Wire Wire Line
 	1835 5330 2075 5330

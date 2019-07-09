@@ -1088,4 +1088,8 @@ Wire Wire Line
 	2930 2045 2955 2045
 Text Notes -990 2205 0    79   ~ 0
 norm to gnd pulses in if not used
+Text GLabel 1380 4995 0    60   Input ~ 0
+COMPLF_OUT
+Text GLabel 2915 4940 0    60   Input ~ 0
+COMPHF_OUT
 $EndSCHEMATC

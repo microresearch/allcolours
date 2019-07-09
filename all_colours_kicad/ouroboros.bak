@@ -308,7 +308,7 @@ Wire Wire Line
 Wire Wire Line
 	4690 6415 4690 6450
 Wire Wire Line
-	4350 6215 4390 6215
+	4350 6215 4375 6215
 Wire Wire Line
 	5710 6045 5710 6090
 $Comp
@@ -534,4 +534,53 @@ Text Label 3140 2135 0    60   ~ 0
 hf_in
 Text Notes 4320 5400 0    118  ~ 0
 re-check this for freq control!
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D25D0B2
+P 4375 6065
+F 0 "R?" V 4455 6065 50  0000 C CNN
+F 1 "?K" V 4380 6060 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 4305 6065 50  0001 C CNN
+F 3 "" H 4375 6065 50  0000 C CNN
+	1    4375 6065
+	-1   0    0    1   
+$EndComp
+Connection ~ 4375 6215
+Wire Wire Line
+	4375 6215 4390 6215
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D25D28D
+P 4375 6420
+F 0 "R?" V 4455 6420 50  0000 C CNN
+F 1 "?K" V 4380 6415 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 4305 6420 50  0001 C CNN
+F 3 "" H 4375 6420 50  0000 C CNN
+	1    4375 6420
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D25D32F
+P 4370 6630
+F 0 "#PWR?" H 4370 6380 50  0001 C CNN
+F 1 "GND" H 4370 6480 50  0000 C CNN
+F 2 "" H 4370 6630 50  0000 C CNN
+F 3 "" H 4370 6630 50  0000 C CNN
+	1    4370 6630
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+U 1 1 5D25D36A
+P 4370 5850
+F 0 "#PWR?" H 4370 5700 50  0001 C CNN
+F 1 "+12V" H 4370 5990 50  0000 C CNN
+F 2 "" H 4370 5850 50  0000 C CNN
+F 3 "" H 4370 5850 50  0000 C CNN
+	1    4370 5850
+	1    0    0    -1  
+$EndComp
+Text Notes 5950 6040 0    315  Italic 63
+?
 $EndSCHEMATC
