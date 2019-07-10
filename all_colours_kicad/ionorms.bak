@@ -1086,10 +1086,22 @@ Text GLabel 2930 2045 0    60   Input ~ 0
 NOISELF_OUT
 Wire Wire Line
 	2930 2045 2955 2045
-Text Notes -990 2205 0    79   ~ 0
+Text Notes 655  1720 0    79   ~ 0
 norm to gnd pulses in if not used
 Text GLabel 1380 4995 0    60   Input ~ 0
 COMPLF_OUT
 Text GLabel 2915 4940 0    60   Input ~ 0
 COMPHF_OUT
+Text Notes 2215 2755 0    118  ~ 0
+no_NORM
+Text Notes 3690 2750 0    118  ~ 0
+no_NORM
+Text Notes 2075 4240 0    118  ~ 0
+no_NORM
+Text Notes 3690 4235 0    118  ~ 0
+no_NORM
+Text Notes 425  1300 0    118  ~ 0
+no_NORM
+Text Notes 2080 1255 0    118  ~ 0
+no_NORM
 $EndSCHEMATC
