@@ -21,20 +21,25 @@ u8 testing[16]={160,800,128,255,128,250,770,180,290,299,313,230,444,222,110,450}
 // Interrupt is called once a millisecond, 
 SIGNAL(TIMER0_COMPA_vect) 
 {
-  y++;
+  /*  y++;
   if (y==160) {
   y=0;
   x++;
   if (x>16) x=0;
   OCR1A=testing[x];
-  }
-  
+  }*/
+
+  // test toggle pin 8 PB0
+  PORTB=1; // in main loop this gives us 4 MHz
+  PORTB=0;
+  OCR0A = 0x20; // 0xOF should be 1 MHz - but fastest we go is 444 Khz = 4K filter  
 }
 
 void setup() {
-  pinMode(0,OUTPUT); //  we always need this
-  pinMode(9,OUTPUT); //  we always need this
-  pinMode(11,OUTPUT); //  we always need this
+  pinMode(0,OUTPUT); //  we always need these
+  pinMode(9,OUTPUT); 
+  pinMode(8,OUTPUT); 
+  pinMode(11,OUTPUT);
     // for pin
     
   cli();//stop interrupts
@@ -47,9 +52,11 @@ void setup() {
   OCR1A=32; //0=8 MHz // start at 8 for around 1MHz=10K filter
 
 // interrupt at 1KHz to change pwm = timer0
-
-  OCR0A = 0xAF;
-  TCCR0B= (1<<CS01) | (1<<CS00); // 64 divisor = 1 millisecond
+  TCNT0=0;
+  //  OCR0A = 0x01; // 0xOF should be 1 MHz 
+  ///  TCCR0B= (1<<CS01) | (1<<CS00); // 64 divisor = 1 millisecond
+  TCCR0A= (1<<WGM01); // CTC mode clear on compared match 
+  TCCR0B= (1<<CS00); // no divider
   TIMSK0 |= _BV(OCIE0A); // enable timer0 overflow interrupt
 
   
