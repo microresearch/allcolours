@@ -1,4 +1,37 @@
-b//#define F_CPU 16000000UL 
+//#define F_CPU 16000000UL 
+
+/*
+
+//////
+
+1 pulse ins, 1 clock pulse in on each side LF, HF (these 2 are two interrupts PD2, PD3, INT0, INT1) -> all inverted
+
+- mode CV, speedl cv, speedh cv
+
+- always pulses out, DAC out and PWM out.
+
+Shift registers -> pulses out, DAC out, PWM out/DAC style (low and high side):
+
+- length of SR (16 bits, 32 bits, x bits), shrink and extend, pulses count length?
+- leaky on/off (leaks on clocks?)
+- speed/clocking of SR is from CV, or speed follows pulse in/clock
+- toggle lock loop on clock/pulse in (speed CV only modes) - or always include it with AND or XOR?
+- entry into SR from pulse ins, or as LFSR (random)
+- entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
+- xors back in, no xors back in
+- sr as pulses or as bits
+
+PWMs low and high so more combinations:
+
+- pwms follow each speed cv
+- pwml follows cv, other is DAC style from SR - and can combine each also say mix DAC and cv
+- pwmh follows cv, other is DAC style from SR
+- both pwmh and pwml follow DAC style
+- speed for DAC style updates is from speed cv for each
+- speed for DAC updates is from pulse in for each
+- pwms follow each pulse in for each
+
+*/
 
 #include <stdio.h>
 #include <stdint.h>
@@ -24,12 +57,22 @@ uint16_t start_state = 0xACE1u;  /* Any nonzero start state will work. */
 uint16_t lfsr = 0xACE1u;
 uint16_t bit;                    /* Must be 16bit to allow bit<<15 later in the code */
 
-ISR(INT0_vect) // doesn't run faster than 444 KHz
+ISR(INT0_vect) // doesn't run faster than 444 KHz - pin2 PD2
+{
+  //    PORTB=1; //pin 8 PB0
+  //    PORTB=0;
+  //  PinVal(PORTB, 0, 1);
+  //  PinVal(PORTB, 0, 0);  
+}
 
+ISR(INT1_vect) // doesn't run faster than 444 KHz - pin3 PD3
 {
   //  PORTB=1; //pin 8 PB0
-  //    PORTB=0;
+  //  PORTB=0;
+  //  PinVal(PORTD, 0, 1); // pin PD0 = 0
+  //  PinVal(PORTD, 0, 0);  
 }
+
 
 SIGNAL(TIMER0_COMPA_vect) // again around 444 KHz speed 
 {
@@ -48,11 +91,11 @@ SIGNAL(TIMER0_COMPA_vect) // again around 444 KHz speed
 
   bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
   lfsr =  (lfsr >> 1) | (bit << 15);
-  //  PinVal(PORTB, 0, bit); // pin 3 on arduino / basic SR out with no IN...
+  //  PinVal(PORTB, 0, bit); // pin 8 on arduino / basic SR out with no IN...
   // or bit as very short pulse is nicer!
   if (bit==1) {
-    PORTB=1; 
-    PORTB=0;
+    //    PORTB=1; 
+    //    PORTB=0;
   }    
   
 }
@@ -91,8 +134,10 @@ void setup() {
 
   // set up interrupt INT0 on pin PD2 which is arduino pin 2
 
-    EICRA |= ((1 << ISC01) | (1 << ISC00)); // Rising edge of INT0 will fire the ISR - this is for clock in
-    EIMSK |= (1 << INT0); // Enable INT0 interrupt, will call INT0_vect ISR when INT0 fires
+    // but as inverted we want falling edge and also INT1 - test this
+     
+    EICRA |= ((1 << ISC01) | (1 << ISC11)); // for clocks in - falling edge triggers INT0 and INT1
+    EIMSK |= ((1 << INT0) | (1 << ISC01)); // Enable INT0 and INT1 interrupt, will call INT0_vect ISR when INT0 fires... etc
   
       sei();//allow interrupts
 }
@@ -104,10 +149,12 @@ void loop() {
    //  OCR1A=x;
    //   delay(10);
 
-  PORTD=255; // in main loop this gives us 4 MHz - ON
+  // read modes and adjust accordingly
+  
+  // PORTD=255; // in main loop this gives us 4 MHz - ON
   // with fast timer interrupt this drops to 119 KHz
   //  _delay_ms(1000);
-  PORTD=0; // off
+  //  PORTD=0; // off
   //  _delay_us(1); // with 1 uS delay we get 440 KHz
    //   _delay_us(1000000);
   //     _delay_ms(1000);
