@@ -10,7 +10,7 @@
 
 - always pulses out, DAC out and PWM out.
 
-Shift registers -> pulses out, DAC out, PWM out/DAC style (low and high side):
+Shift registers -> pulses out, DAC out, PWM out/DAC style (for each low and high side):
 
 - length of SR (16 bits, 32 bits, x bits), shrink and extend, pulses count length?
 - leaky on/off (leaks on clocks?)
@@ -19,7 +19,13 @@ Shift registers -> pulses out, DAC out, PWM out/DAC style (low and high side):
 - entry into SR from pulse ins, or as LFSR (random)
 - entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
 - xors back in, no xors back in
-- sr as pulses or as bits
+- sr as pulses or as bits is ONLY a choice on HF side
+- which bits form the usual DAC out and the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM)
+- wild card of SR speed from DAC style SR output?
+
+recursions: 
+
+SR is clocked by its own HIGH output or logic XOR/AND with clock in, SR usual feedback, SR speed from own DAC out
 
 PWMs low and high so more combinations:
 
@@ -91,12 +97,12 @@ SIGNAL(TIMER0_COMPA_vect) // again around 444 KHz speed
 
   bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
   lfsr =  (lfsr >> 1) | (bit << 15);
-  //  PinVal(PORTB, 0, bit); // pin 8 on arduino / basic SR out with no IN...
-  // or bit as very short pulse is nicer!
-  if (bit==1) {
-    //    PORTB=1; 
-    //    PORTB=0;
-  }    
+  PinVal(PORTB, 0, bit); // pin 8 on arduino / basic SR out with no IN...
+  // or bit as very short pulse is nicer but only for HF!
+  /*    if (bit==1) {
+    PORTB=1; 
+    PORTB=0;
+    }*/  
   
 }
 
@@ -116,10 +122,11 @@ void setup() {
   TCCR1B= (1<<WGM12) | (1<<CS10);// no pre-scale
   OCR1A=64; // 0=8 MHz // start at 8 for around 1MHz=10K filter
 
-		//interrupt at 1KHz to change pwm = timer0
+  //interrupt at full speed to change pwm = timer0
     TCNT0=0;
     TCCR0A= (1<<WGM01); // CTC mode clear on compared match
-    TCCR0B= (1<<CS00); // no divider
+    //    TCCR0B= (1<<CS00); // no divider
+    TCCR0B=((1<<CS01) | (1<<CS00));  // divide by 64 - tested for SR but run fast and divide for LF
     TIMSK0 |= _BV(OCIE0A); // enable timer0 overflow interrupt
 
   
@@ -129,7 +136,6 @@ void setup() {
     //    TCCR2A = _BV(COM2A1) | _BV(WGM21); // ctc?
     //    TCCR2B = _BV(CS20); // no prescale
   //    TCCR2A = _BV(COM2A0) | _BV(WGM21) | _BV(WGM21);
-  //    TCCR2B=(1<<CS21) | (1<<CS20);  // divide by 64 for 250KHz
   //    OCR2A=1;
 
   // set up interrupt INT0 on pin PD2 which is arduino pin 2
