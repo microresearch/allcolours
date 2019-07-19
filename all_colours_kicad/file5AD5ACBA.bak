@@ -147,7 +147,7 @@ F 3 "" H 1250 1375 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Notes 2080 1060 0    118  ~ 0
-pulses out x4 (2xLF 2xHF)\ninverted - 5v out?
+pulses out x4 (2xLF 2xHF)\ninverted - 10v out?
 $Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R9
 U 1 1 5B6A6373
@@ -164,7 +164,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R10
 U 1 1 5B6A6444
 P 1350 1025
 F 0 "R10" H 1291 979 50  0000 R CNN
-F 1 "4.7K" H 1291 1070 50  0000 R CNN
+F 1 "10K" H 1291 1070 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 1350 1025 50  0001 C CNN
 F 3 "" H 1350 1025 50  0001 C CNN
 	1    1350 1025
@@ -179,17 +179,6 @@ F 1 "GND" H 1355 1452 50  0000 C CNN
 F 2 "" H 1350 1625 50  0001 C CNN
 F 3 "" H 1350 1625 50  0001 C CNN
 	1    1350 1625
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR016
-U 1 1 5B6B2B70
-P 1350 875
-F 0 "#PWR016" H 1350 725 50  0001 C CNN
-F 1 "+12V" H 1365 1048 50  0000 C CNN
-F 2 "" H 1350 875 50  0001 C CNN
-F 3 "" H 1350 875 50  0001 C CNN
-	1    1350 875 
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -887,44 +876,13 @@ Wire Wire Line
 	4875 6910 5195 6910
 Wire Wire Line
 	4725 6595 4725 6635
-Text Notes 4655 7390 0    157  ~ 0
-0-5v\n
-$Comp
-L allcolours-rescue:R_Small-device-allcolours-rescue R?
-U 1 1 5D2E2867
-P 1610 1280
-F 0 "R?" H 1551 1234 50  0000 R CNN
-F 1 "3.3K" H 1551 1325 50  0000 R CNN
-F 2 "Resistors_SMD:R_0805" H 1610 1280 50  0001 C CNN
-F 3 "" H 1610 1280 50  0001 C CNN
-	1    1610 1280
-	1    0    0    -1  
-$EndComp
+Text Notes 4480 7735 0    157  ~ 0
+0-5v is fine!\n
 Wire Wire Line
 	1345 1160 1350 1160
 Connection ~ 1350 1160
 Wire Wire Line
 	1350 1160 1350 1125
-Wire Wire Line
-	1345 1155 1610 1155
-Wire Wire Line
-	1610 1155 1610 1180
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
-U 1 1 5D2F0083
-P 1610 1410
-F 0 "#PWR?" H 1610 1160 50  0001 C CNN
-F 1 "GND" H 1615 1237 50  0000 C CNN
-F 2 "" H 1610 1410 50  0001 C CNN
-F 3 "" H 1610 1410 50  0001 C CNN
-	1    1610 1410
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1610 1380 1610 1410
-Wire Wire Line
-	1610 1155 1720 1155
-Connection ~ 1610 1155
 Wire Wire Line
 	1640 6975 1740 6975
 $Comp
@@ -1443,4 +1401,17 @@ F 3 "" H 1540 6975 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1400 6975 1440 6975
+Wire Wire Line
+	1345 1155 1720 1155
+$Comp
+L power:+10V #PWR?
+U 1 1 5D33EE6E
+P 1350 875
+F 0 "#PWR?" H 1350 725 50  0001 C CNN
+F 1 "+10V" H 1365 1048 50  0000 C CNN
+F 2 "" H 1350 875 50  0001 C CNN
+F 3 "" H 1350 875 50  0001 C CNN
+	1    1350 875 
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
