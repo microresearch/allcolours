@@ -12,13 +12,15 @@
 
 Shift registers -> pulses out, DAC out, PWM out/DAC style (for each low and high side):
 
-- length of SR (16 bits, 32 bits, x bits), shrink and extend, pulses count length?
-- leaky on/off (leaks on clocks?)
+?mode low/mode high? - *thus we need seperate mode knobs*!
+
+- length of SR (16 bits, 32 bits, x bits), shrink and extend, howdo we get to length? -> pulses count length, speed cv is length with pulses as speed
+- leaky on/off (leaks on clock pulse so use with CV speed)
 - speed/clocking of SR is from CV, or speed follows pulse in/clock
 - toggle lock loop on clock/pulse in (speed CV only modes) - or always include it with AND or XOR?
 - entry into SR from pulse ins, or as LFSR (random)
 - entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
-- xors back in, no xors back in
+- xors back in, no xors back in - and which xors? select by clock pulse?
 - sr as pulses or as bits is ONLY a choice on HF side
 - which bits form the usual DAC out and the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM)
 - wild card of SR speed from DAC style SR output?
@@ -29,13 +31,18 @@ SR is clocked by its own HIGH output or logic XOR/AND with clock in, SR usual fe
 
 PWMs low and high so more combinations:
 
+each follows: CV, update DAC(speed by CV or speed from clock), clock
+
+or can mix/combine/logical op one against the other
+
 - pwms follow each speed cv
 - pwml follows cv, other is DAC style from SR - and can combine each also say mix DAC and cv
 - pwmh follows cv, other is DAC style from SR
 - both pwmh and pwml follow DAC style
-- speed for DAC style updates is from speed cv for each
-- speed for DAC updates is from pulse in for each
-- pwms follow each pulse in for each
+- speed for DAC style updates is from speed cv for each or speed for DAC updates is from pulse in for each -> speed is same speed as DAC/shiftreg speed!
+- pwms follow each clock pulse in for each...
+
+values in array of pointers to avoid any switch routines
 
 */
 
