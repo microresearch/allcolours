@@ -138,7 +138,7 @@ Wire Wire Line
 	3760 2610 4010 2610
 Connection ~ 4010 2610
 Text Notes 2060 1010 0    60   ~ 0
-HIGHPASS - in MODE 3! OR BANDPASS buT 2x these - check!\n
+BANDPASS + 2x these - check!\n
 Text Notes 5840 990  0    118  ~ 0
 inputs x1 for both filters
 $Comp
