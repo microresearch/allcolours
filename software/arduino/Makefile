@@ -1,6 +1,5 @@
-BOARD_TAG = pro5v
-BOARD_CLOCK=16mhz
-ARDUINO_LIBS = Wire 
-MONITOR_PORT = /dev/ttyACM1
-F_CPU = 16000000L
+BOARD_TAG = uno
+ARDUINO_LIBS = 
+OPTIMIZATION_LEVEL = fast
+MONITOR_PORT = /dev/ttyACM0 
 include /root/Arduino-Makefile/Arduino.mk

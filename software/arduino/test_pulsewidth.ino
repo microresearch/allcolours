@@ -4,9 +4,11 @@
 
 //////
 
+-o2 how?
+
 1 pulse ins, 1 clock pulse in on each side LF, HF (these 2 are two interrupts PD2, PD3, INT0, INT1) -> all inverted
 
-- mode CV, speedl cv, speedh cv
+- modeh CV, model cv, speedl cv, speedh cv - check we have spare ADC!
 
 - always pulses out, DAC out and PWM out.
 
@@ -24,6 +26,8 @@ Shift registers -> pulses out, DAC out, PWM out/DAC style (for each low and high
 - sr as pulses or as bits is ONLY a choice on HF side
 - which bits form the usual DAC out and the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM)
 - wild card of SR speed from DAC style SR output?
+
+// HF SR: 32 stages max, LF: 16 or 24 max
 
 recursions: 
 
@@ -62,13 +66,59 @@ typedef int u16;
 typedef unsigned char u8;
 int x=0, y=0;
 
-u8 testing[16]={160,800,128,255,128,250,770,180,290,299,313,230,444,222,110,450};
+u16 testing[16]={160,800,128,255,128,250,770,180,290,299,313,230,444,222,110,450};
 
 #define PinVal(Port, Bit, Val)    Port = Val ? Port | (1 << Bit) : Port & ~(1 << Bit);
 
 uint16_t start_state = 0xACE1u;  /* Any nonzero start state will work. */
 uint16_t lfsr = 0xACE1u;
 uint16_t bit;                    /* Must be 16bit to allow bit<<15 later in the code */
+
+//uint8_t g_buf[4]={0xff,0xff,0xfa,0xfa}; 
+
+inline uint8_t lfsr32()
+{
+  static uint32_t shift_register=0xff;;// = (uint8_t *)g_buf;
+  uint32_t bit;
+  uint8_t carry_out, carry_in;
+
+  
+  //shift into 32 bit shift register         
+  //  if(shift_register & (1uL<<31))
+  //      carry_out=1;
+  //  else
+  //    carry_out=0;
+  //  bit=((shift_register)^binmask32)&0x01;
+  bit= ((shift_register >> 31) ^ (shift_register >> 29) ^ (shift_register >> 25) ^ (shift_register >> 24)) & 1u; // 32 is 31, 29, 25, 24
+  // try these as bitmasks
+      //      printf("bit: %d ", bit);
+  //  carry_in = bit;// | carry_out;
+  shift_register=shift_register<<1; // we are shifting left << so bit 31 is out last one
+  shift_register+=bit;         
+  return bit;   //
+}
+
+uint8_t shift8bits[4]={0xfa,0xfb,0xaa,0xab};
+
+inline uint8_t lfsr8() //   // test with 4x 8 bits: - this is faster say 60K
+{
+  //  uint8_t x;
+  //  bit= ((shift_register >> 31) ^ (shift_register >> 29) ^ (shift_register >> 25) ^ (shift_register >> 24)) & 1u; // 32 is 31, 29, 25, 24
+  bit= ((shift8bits[0]>>7) ^ (shift8bits[0]>>5) ^ (shift8bits[0]>>1) ^ (shift8bits[0]>>0)) & 0x01;
+  
+  shift8bits[0]=shift8bits[0]<<1;
+  shift8bits[0]|=shift8bits[1]>>7;
+
+  shift8bits[1]=shift8bits[1]<<1;
+  shift8bits[1]|=shift8bits[2]>>7;
+
+  shift8bits[2]=shift8bits[2]<<1;
+  shift8bits[2]|=shift8bits[3]>>7;
+
+  shift8bits[3]=shift8bits[3]<<1;  
+  shift8bits[3]|=bit;           
+  return bit; //
+}
 
 ISR(INT0_vect) // doesn't run faster than 444 KHz - pin2 PD2
 {
@@ -102,16 +152,23 @@ SIGNAL(TIMER0_COMPA_vect) // again around 444 KHz speed
   //    PORTB=0;
   OCR0A = 0x01; // 0xOF should be 1 MHz - but fastest we go is 444 Khz = 4K filter  
 
-  bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
-  lfsr =  (lfsr >> 1) | (bit << 15);
-  PinVal(PORTB, 0, bit); // pin 8 on arduino / basic SR out with no IN...
+  //    bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
+  //    lfsr =  (lfsr >> 1) | (bit << 15);
+  //    PinVal(PORTB, 0, bit); // pin 8 on arduino / basic SR out with no IN...
   // or bit as very short pulse is nicer but only for HF!
-  /*    if (bit==1) {
+  //  PORTB=lfsr32(); // noise is not fast enough
+  //   PORTB=lfsr8(); // noise is not fast enough
+  bit=lfsr8(); //
+   //     PORTB=1; 
+   //      PORTB=0;
+  //  PORTB=0;
+     if (bit==1) {
     PORTB=1; 
     PORTB=0;
-    }*/  
+    }
   
 }
+
 
 void setup() {
   pinMode(0,OUTPUT); //  we always need these
@@ -129,33 +186,41 @@ void setup() {
   TCCR1B= (1<<WGM12) | (1<<CS10);// no pre-scale
   OCR1A=64; // 0=8 MHz // start at 8 for around 1MHz=10K filter
 
-  //interrupt at full speed to change pwm = timer0
-    TCNT0=0;
-    TCCR0A= (1<<WGM01); // CTC mode clear on compared match
-    //    TCCR0B= (1<<CS00); // no divider
-    TCCR0B=((1<<CS01) | (1<<CS00));  // divide by 64 - tested for SR but run fast and divide for LF
-    TIMSK0 |= _BV(OCIE0A); // enable timer0 overflow interrupt
-
-  
-    // 1024= 7 Khz= 7000/100=70Hz 1khz-10Hz in the filter
-
   // OCR2A is for pulsed envelopes - so fast PWM into low pass filter a la ERD/SIR 
     //    TCCR2A = _BV(COM2A1) | _BV(WGM21); // ctc?
     //    TCCR2B = _BV(CS20); // no prescale
   //    TCCR2A = _BV(COM2A0) | _BV(WGM21) | _BV(WGM21);
   //    OCR2A=1;
 
+  
+  //interrupt at full speed to change pwm = timer0
+    TCNT0=0;
+    TCCR0A= (1<<WGM01); // CTC mode clear on compared match
+    TCCR0B= (1<<CS00); // no divider
+    //TCCR0B=((1<<CS01) | (1<<CS00));  // divide by 64 - tested for SR but run fast and divide for LF
+    TIMSK0 |= _BV(OCIE0A); // enable timer0 overflow interrupt
+    OCR0A = 0x01; // 0xOF should be 1 MHz - but fastest we go is 444 Khz = 4K filter  
+  
+    // 1024= 7 Khz= 7000/100=70Hz 1khz-10Hz in the filter
+
   // set up interrupt INT0 on pin PD2 which is arduino pin 2
 
     // but as inverted we want falling edge and also INT1 - test this
      
-    EICRA |= ((1 << ISC01) | (1 << ISC11)); // for clocks in - falling edge triggers INT0 and INT1
-    EIMSK |= ((1 << INT0) | (1 << ISC01)); // Enable INT0 and INT1 interrupt, will call INT0_vect ISR when INT0 fires... etc
+    //    EICRA |= ((1 << ISC01) | (1 << ISC11)); // for clocks in - falling edge triggers INT0 and INT1
+    //    EIMSK |= ((1 << INT0) | (1 << ISC01)); // Enable INT0 and INT1 interrupt, will call INT0_vect ISR when INT0 fires... etc
   
       sei();//allow interrupts
 }
 
 void loop() {
+
+  // mode and speed ADC readings
+
+  // slow/LF SR and all PWM updates...
+
+  //  PORTB=lfsr32(); // noise is not fast enough // test in main
+  
   //   x--;
    //   if (x<8) x=256;
    //         OCR1A=x*4;
