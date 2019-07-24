@@ -4,7 +4,9 @@
 
 //////
 
--o2 how?
+- speed question as fastest we can do is say 1 MHz pulse without any processing in interrupt and in asm
+
+/////
 
 1 pulse ins, 1 clock pulse in on each side LF, HF (these 2 are two interrupts PD2, PD3, INT0, INT1) -> all inverted
 
@@ -33,7 +35,11 @@ recursions:
 
 SR is clocked by its own HIGH output or logic XOR/AND with clock in, SR usual feedback, SR speed from own DAC out
 
-----> each SR has 1 pulse in, 1 clock pulse in, 2 pulse out and 4 bit DAC out 
+----> each SR has 1 pulse in, 1 clock pulse in, 2 pulse out and 4 bit DAC out:
+
+pulse ins can leak, switch bits, input bits, select xor bits, select lengths, xor pulse in/not clock with last bit f sr -> input for sr
+
+pulse outs all at different taps (to ins also)
 
 ////PWM update in main loop speed???
 
