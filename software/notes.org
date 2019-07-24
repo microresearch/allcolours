@@ -1,6 +1,7 @@
 * oder notes in comments:
 
 - CV in incoming bit or set of bits to shift and/or value for clock out, CV pulse in to lock/unlock, slew for clock out/cv in, extra as speed of shifting?
+
 - pulse in to shift... purpose of shifting ...
 - larger speed shifts for filter are important so maybe look at dividers and changing these with CV
 - knob mode for leak etc

@@ -31,15 +31,18 @@ all_colours.hex : all_colours.out
 #	$(OBJCOPY) -O ihex all_colours.out all_colours.hex 
 #all_colours.out : all_colours.o 
 #	$(CC) $(CFLAGS) -o all_colours.out -Wl,-Map,all_colours.map all_colours.o 
-all_colours.out : all_colours.o 
-	$(CC) ${LDFLAGS} $(CFLAGS) -o all_colours.out  all_colours.o 
+all_colours.out : all_colours.o  test.o
+	$(CC) ${LDFLAGS} $(CFLAGS) -o all_colours.out  all_colours.o test.o
 
 
 all_colours.o : all_colours.c 
 	$(CC) $(CFLAGS) -Os -c all_colours.c
 
-all_colours.elf: all_colours.o
-	$(CC) ${LDFLAGS} $(CFLAGS) -o all_colours.elf all_colours.o
+test.o: test.S
+	$(CC) $(CFLAGS) -Os -c test.S
+
+all_colours.elf: all_colours.o test.o
+	$(CC) ${LDFLAGS} $(CFLAGS) -o all_colours.elf all_colours.o test.o
 
 disasm:	all_colours.elf
 	avr-objdump -d all_colours.elf
