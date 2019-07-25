@@ -4,13 +4,20 @@
 
 //////
 
-- speed question as fastest we can do is say 1 MHz pulse without any processing in interrupt and in asm
+- speed question as fastest we can do is say 1 MHz pulse without any processing in timed interrupt and in asm = 10K 
+- so if we port to STM we need: timed and pin interrupts, 2xPWM outs, GPIO in and out (3.3v), CV ins we have from WORM
 
 /////
 
 1 pulse ins, 1 clock pulse in on each side LF, HF (these 2 are two interrupts PD2, PD3, INT0, INT1) -> all inverted
 
-- modeh CV, model cv, speedl cv, speedh cv - check we have spare ADC!
+- modeh CV, model cv, speedl cv, speedh cv 
+
+----> each SR has 1 pulse in, 1 clock pulse in, 2 pulse out and 4 bit DAC out:
+
+pulse ins can leak, switch bits, input bits, select xor bits, select lengths, xor pulse in/not clock with last bit of sr -> input for sr
+
+pulse outs all at different taps (to ins also)
 
 - always pulses out, DAC out and PWM out.
 
@@ -31,15 +38,24 @@ Shift registers -> pulses out, DAC out, PWM out/DAC style (for each low and high
 
 // HF SR: 32 stages max, LF: 16 or 24 max
 
+HF SR in timed interrupt:
+
+HF SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits
+
+1- get bit in from pulse in, xor with last SR bit and shift out /output(length?)
+
+2- as above, bit leaks?
+3- as above, no xor, no leaks
+4- no xor, leaks
+5- as pulses or as bits out
+6- bits in from CV
+
+/////////////
+
 recursions: 
 
 SR is clocked by its own HIGH output or logic XOR/AND with clock in, SR usual feedback, SR speed from own DAC out
 
-----> each SR has 1 pulse in, 1 clock pulse in, 2 pulse out and 4 bit DAC out:
-
-pulse ins can leak, switch bits, input bits, select xor bits, select lengths, xor pulse in/not clock with last bit f sr -> input for sr
-
-pulse outs all at different taps (to ins also)
 
 ////PWM update in main loop speed???
 
@@ -116,36 +132,38 @@ inline uint8_t lfsr32()
 
 uint8_t shift8bits[4]={0xfa,0xfb,0xaa,0xab};
 
-uint8_t lfsr8() //   // test with 4x 8 bits: - this is faster say 78KHz with -O3
+inline uint8_t lfsr8() //   // test with 4x 8 bits: - this is faster say 78KHz with -O3
 {
-  //  uint8_t x;
+  uint8_t out;
   //  bit= ((shift_register >> 31) ^ (shift_register >> 29) ^ (shift_register >> 25) ^ (shift_register >> 24)) & 1u; // 32 is 31, 29, 25, 24
-  //  bit= ((shift8bits[0]>>7) ^ (shift8bits[0]>>5) ^ (shift8bits[0]>>1) ^ (shift8bits[0]>>0)) & 0x01;
-  bit=bit^1;
-  
+    bit= ((shift8bits[0]>>7) ^ (shift8bits[0]>>5) ^ (shift8bits[0]>>1) ^ (shift8bits[0]>>0)) & 0x01;
+  //  bit=bit^1; // test case
+
+  out=shift8bits[0]>>7;
   shift8bits[0]=shift8bits[0]<<1;
-  shift8bits[0]|=shift8bits[1]>>7;
+  shift8bits[0]+=shift8bits[1]>>7;
 
   shift8bits[1]=shift8bits[1]<<1;
-  shift8bits[1]|=shift8bits[2]>>7;
+  shift8bits[1]+=shift8bits[2]>>7;
 
   shift8bits[2]=shift8bits[2]<<1;
-  shift8bits[2]|=shift8bits[3]>>7;
+  shift8bits[2]+=shift8bits[3]>>7;
 
   shift8bits[3]=shift8bits[3]<<1;  
-  shift8bits[3]|=bit;
+  shift8bits[3]+=bit;
 
   // try to translate into assembly inline
   
-  return bit; //
+  return out; //
 }
 
-ISR(INT0_vect) // doesn't run faster than 444 KHz - pin2 PD2
+ISR(INT0_vect) // doesn't run faster than 444 KHz - pin2 PD2 - pin interrupt
 {
   //    PORTB=1; //pin 8 PB0
   //    PORTB=0;
   //  PinVal(PORTB, 0, 1);
   //  PinVal(PORTB, 0, 0);  
+  PORTB=lfsr8(); //    59KHz is fastest for this as it stands = around 1K filter even with changes to filter design
 }
 
 ISR(INT1_vect) // doesn't run faster than 444 KHz - pin3 PD3
@@ -175,7 +193,7 @@ SIGNAL(TIMER0_COMPA_vect) // again around 444 KHz speed
   //    PinVal(PORTB, 0, bit); // pin 8 on arduino / basic SR out with no IN...
   // or bit as very short pulse is nicer but only for HF!
   //  PORTB=lfsr32(); // noise is not fast enough
-  //  PORTB=lfsr8(); // noise is not fast enough
+  //  PORTB=lfsr8();
 
   
   //  bit=lfsr8(); //
@@ -209,12 +227,12 @@ void setup() {
 
   cli();//stop interrupts
 
-  // we have 3 timers and 2 are used for PWm, one for interrupts which runs at 1Khz
+  // we have 3 timers and 2 are used for PWm, one for interrupts which runs at X.Khz
   
   // OCR1A is the fast one - 16 bit CTC!
   TCCR1A= (1<<COM1A0);// | (1<<WGM11) | (1<<WGM10); // KEEP AS CTC for filter
   TCCR1B= (1<<WGM12) | (1<<CS10);// no pre-scale
-  OCR1A=64; // 0=8 MHz // start at 8 for around 1MHz=10K filter
+  OCR1A=4; // 0=8 MHz // start at 8 for around 1MHz=10K filter
 
   // OCR2A is for pulsed envelopes - so fast PWM into low pass filter a la ERD/SIR 
     //    TCCR2A = _BV(COM2A1) | _BV(WGM21); // ctc?
@@ -228,7 +246,7 @@ void setup() {
     TCCR0A= (1<<WGM01); // CTC mode clear on compared match
     TCCR0B= (1<<CS00); // no divider
     //TCCR0B=((1<<CS01) | (1<<CS00));  // divide by 64 - tested for SR but run fast and divide for LF
-    TIMSK0 |= _BV(OCIE0A); // enable timer0 overflow interrupt
+    //    TIMSK0 |= _BV(OCIE0A); // enable timer0 overflow interrupt
     OCR0A = 0x0f; // 0xOF should be 1 MHz - but fastest we go is 444 Khz = 4K filter  - fastest in assembly is 1 MHz more or less
   
     // 1024= 7 Khz= 7000/100=70Hz 1khz-10Hz in the filter
@@ -250,7 +268,7 @@ void main() {
   while(1){
   //  PORTB |= _BV(0);   // 515/520 KHz    
   //  PORTB &= ~(_BV(0));
-  }
+  
   
   // mode and speed ADC readings
 
@@ -258,12 +276,12 @@ void main() {
 
   //  PORTB=lfsr32(); // noise is not fast enough // test in main
   
-  //   x--;
-   //   if (x<8) x=256;
-   //         OCR1A=x*4;
-   //  OCR1A=x;
-   //   delay(10);
-
+    //    x--;
+    //    if (x<4) x=256;
+    //    OCR1A=x*4;
+    //    OCR1A=x;
+    //    _delay_ms(10);
+  }
   // read modes and adjust accordingly
   
   // PORTD=255; // in main loop this gives us 4 MHz - ON
