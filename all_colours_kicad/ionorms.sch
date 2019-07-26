@@ -381,7 +381,7 @@ Wire Wire Line
 Wire Wire Line
 	1270 5685 1370 5685
 Text GLabel 1270 5685 0    60   Input ~ 0
-MIXCLK_INL
+CLK_INL
 $Comp
 L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
 U 1 1 5D24A036
@@ -409,7 +409,7 @@ Wire Wire Line
 Wire Wire Line
 	2810 5630 2910 5630
 Text GLabel 2810 5630 0    60   Input ~ 0
-MIXCLK_INH
+CLK_INH
 $Comp
 L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M?
 U 1 1 5D24AA21

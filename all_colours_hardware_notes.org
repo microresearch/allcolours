@@ -284,6 +284,51 @@ on each side)...
 - we need to swop pwm around so 16 bit is HF to get good range, and 8 bit is LF but we want to be able to change pulse width
 - check all possible paths
 
+* 25/7
+
+- avr at 16 MHz 8 bit is too slow for fast shift register action so options:
+
+outboard flipflops under hardware control - too complex
+STM - which one, small package, easy development
+FPGA - nice in long term?
+
+we need:
+
+1 or 2 timed and 2 pin interrupts, 2xPWM outs (so 3 or 4 timers), 4x CV ins ADC
+
+GPIO in and out (3.3v): how many: 4ins(2 are interrupts), 5 pulse out, 1x4bitDACs,  2PWm outs, 4CV in (total 19!)
+
+stm32 as we can use worm code and stlink programmer...
+
+choose _==*> STM32F103CBT6 - see peaks - LQFP-48  72 MHz 5euros -> test board ordered
+
+3 timers and one PWM... ok
+
+//setup programming/build env/makefile/try pwm/gpio/ADC/interrupts/schematic
+
+////////////////
+
+///NO to below as programming is usb only via IC:
+
+Cortex-M0+ - teensy LC, 48 MHz
+
+M4 - teensy 3.2 72/96MHz 
+
+MKL26Z64VFT4 Cortex-M0+
+
+MK20DX256VLH7 Cortex-M4
+
+//coding/programming - but teensy is programmed via usb?
+
+https://github.com/PaulStoffregen/cores/blob/master/teensy3/Makefile
+
+http://kevincuzner.com/2014/04/28/teensy-3-1-bare-metal/
+
+https://github.com/djmdjm/teensy3
+
+* 26/7
+
+- different clocks for high and low pwm but keep diff of audio signals in to filters
 
 * notes
 

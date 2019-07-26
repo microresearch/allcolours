@@ -136,28 +136,6 @@ F 3 "" H 2800 1250 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR013
-U 1 1 5967EB4D
-P 3200 1000
-F 0 "#PWR013" H 3200 850 50  0001 C CNN
-F 1 "+12V" H 3200 1140 50  0000 C CNN
-F 2 "" H 3200 1000 50  0000 C CNN
-F 3 "" H 3200 1000 50  0000 C CNN
-	1    3200 1000
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:-12VA-power-allcolours-rescue #PWR014
-U 1 1 5967F1D3
-P 3200 1700
-F 0 "#PWR014" H 3200 1550 50  0001 C CNN
-F 1 "-12VA" H 3200 1840 50  0000 C CNN
-F 2 "" H 3200 1700 50  0000 C CNN
-F 3 "" H 3200 1700 50  0000 C CNN
-	1    3200 1700
-	-1   0    0    1   
-$EndComp
-$Comp
 L allcolours-rescue:C-device-allcolours-rescue C6
 U 1 1 596804D2
 P 3400 950
@@ -383,10 +361,6 @@ Wire Wire Line
 Wire Wire Line
 	2800 1250 3000 1250
 Wire Wire Line
-	3200 1050 3200 1000
-Wire Wire Line
-	3200 1650 3200 1700
-Wire Wire Line
 	2900 1450 2900 1150
 Wire Wire Line
 	2900 1150 3250 1150
@@ -417,7 +391,7 @@ Wire Wire Line
 	3360 6715 3360 6865
 Connection ~ 3360 6865
 Wire Wire Line
-	6540 1680 6540 1730
+	7505 1905 7505 1955
 Wire Wire Line
 	5690 1680 5690 1580
 Wire Wire Line
@@ -441,7 +415,7 @@ Wire Wire Line
 Wire Wire Line
 	6940 1380 7140 1380
 Wire Wire Line
-	6540 1080 6540 980 
+	7505 1305 7505 1205
 $Sheet
 S 9210 5235 900  260 
 U 5AD5ACBB
@@ -470,17 +444,6 @@ Wire Wire Line
 	1060 6915 1060 7015
 Wire Wire Line
 	1560 6915 1560 7015
-$Comp
-L allcolours-rescue:TL072-linear-allcolours-rescue U6
-U 1 1 5B6FE02A
-P 3300 1350
-F 0 "U6" H 3641 1396 50  0000 L CNN
-F 1 "TL072" H 3641 1305 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 3300 1350 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3300 1350 50  0001 C CNN
-	1    3300 1350
-	1    0    0    -1  
-$EndComp
 $Comp
 L allcolours-rescue:+5V-power-allcolours-rescue #PWR062
 U 1 1 5B726638
@@ -541,7 +504,7 @@ U 5BAC374C
 F0 "Sheet5BAC374B" 60
 F1 "ouroboros.sch" 60
 $EndSheet
-Text Notes 9215 6350 0    197  ~ 0
+Text Notes 9740 6355 0    197  ~ 0
 ouroboros\n
 $Comp
 L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q1
@@ -642,7 +605,7 @@ Wire Wire Line
 	6090 1280 6340 1280
 Wire Wire Line
 	5740 1980 5940 1980
-Text Notes 5190 745  0    157  ~ 0
+Text Notes 6020 875  0    157  ~ 0
 comparator slow x2
 Wire Wire Line
 	3600 1350 3625 1350
@@ -681,8 +644,6 @@ Text Notes 5170 2840 0    157  ~ 0
 comparator fast x2
 Text Notes 4310 5065 0    157  ~ 0
 diff amp to filter audio in
-Text Notes 915  4595 0    157  ~ 0
-mix to filter clock
 Text Notes 1925 2185 0    79   Italic 0
 MMBT3904 is bec
 $Comp
@@ -892,14 +853,12 @@ L Device:Opamp_Dual_Generic U?
 U 1 1 5D35FFF9
 P 2900 3215
 F 0 "U?" H 2900 3582 50  0000 C CNN
-F 1 "Opamp_Dual_Generic" H 2900 3491 50  0000 C CNN
+F 1 "max4392" H 3095 3360 50  0000 C CNN
 F 2 "" H 2900 3215 50  0001 C CNN
 F 3 "~" H 2900 3215 50  0001 C CNN
 	1    2900 3215
 	1    0    0    -1  
 $EndComp
-Text Notes 3415 2940 0    118  ~ 0
-MAX4392
 Text Notes 1380 6345 0    157  ~ 0
 12V/5V/10V supply/-10v ref
 Wire Wire Line
@@ -975,24 +934,11 @@ L Device:Opamp_Dual_Generic U?
 U 1 1 5D4011E8
 P 6370 3300
 F 0 "U?" H 6370 3667 50  0000 C CNN
-F 1 "Opamp_Dual_Generic" H 6370 3576 50  0000 C CNN
+F 1 "max4392" H 6370 3576 50  0000 C CNN
 F 2 "" H 6370 3300 50  0001 C CNN
 F 3 "~" H 6370 3300 50  0001 C CNN
 	1    6370 3300
 	1    0    0    -1  
-$EndComp
-Text Notes 6770 3175 0    118  ~ 0
-MAX4392
-$Comp
-L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
-U 1 1 5D402302
-P 6690 5960
-F 0 "#PWR?" H 6690 5810 50  0001 C CNN
-F 1 "-12VA" H 6690 6100 50  0000 C CNN
-F 2 "" H 6690 5960 50  0000 C CNN
-F 3 "" H 6690 5960 50  0000 C CNN
-	1    6690 5960
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3250 950  3250 1150
@@ -1028,23 +974,23 @@ $EndComp
 $Comp
 L power:+10V #PWR?
 U 1 1 5D4255F5
-P 6540 980
-F 0 "#PWR?" H 6540 830 50  0001 C CNN
-F 1 "+10V" H 6555 1153 50  0000 C CNN
-F 2 "" H 6540 980 50  0001 C CNN
-F 3 "" H 6540 980 50  0001 C CNN
-	1    6540 980 
+P 7505 1205
+F 0 "#PWR?" H 7505 1055 50  0001 C CNN
+F 1 "+10V" H 7520 1378 50  0000 C CNN
+F 2 "" H 7505 1205 50  0001 C CNN
+F 3 "" H 7505 1205 50  0001 C CNN
+	1    7505 1205
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5D425E42
-P 6540 1730
-F 0 "#PWR?" H 6540 1480 50  0001 C CNN
-F 1 "GND" H 6545 1557 50  0000 C CNN
-F 2 "" H 6540 1730 50  0001 C CNN
-F 3 "" H 6540 1730 50  0001 C CNN
-	1    6540 1730
+P 7505 1955
+F 0 "#PWR?" H 7505 1705 50  0001 C CNN
+F 1 "GND" H 7510 1782 50  0000 C CNN
+F 2 "" H 7505 1955 50  0001 C CNN
+F 3 "" H 7505 1955 50  0001 C CNN
+	1    7505 1955
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1324,17 +1270,6 @@ Wire Wire Line
 Wire Wire Line
 	3505 4050 3505 4100
 $Comp
-L allcolours-rescue:TL072-linear-allcolours-rescue U?
-U 2 1 5D402320
-P 6790 5630
-F 0 "U?" H 7131 5676 50  0000 L CNN
-F 1 "TL072" H 7131 5585 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 6790 5630 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6790 5630 50  0001 C CNN
-	2    6790 5630
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D402330
 P 6295 5530
@@ -1355,17 +1290,6 @@ F 2 "Resistors_SMD:R_0805" V 7200 5630 50  0001 C CNN
 F 3 "" H 7270 5630 50  0000 C CNN
 	1    7270 5630
 	0    -1   -1   0   
-$EndComp
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
-U 1 1 5D4022FC
-P 6690 5290
-F 0 "#PWR?" H 6690 5140 50  0001 C CNN
-F 1 "+12V" H 6690 5430 50  0000 C CNN
-F 2 "" H 6690 5290 50  0000 C CNN
-F 3 "" H 6690 5290 50  0000 C CNN
-	1    6690 5290
-	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
@@ -1425,12 +1349,6 @@ Wire Wire Line
 Wire Wire Line
 	6465 5200 6465 5205
 Wire Wire Line
-	6690 5290 6690 5330
-Wire Wire Line
-	7090 5630 7105 5630
-Wire Wire Line
-	6690 5930 6690 5960
-Wire Wire Line
 	6595 6200 6460 6200
 Wire Wire Line
 	6460 6200 6460 5730
@@ -1441,9 +1359,6 @@ Wire Wire Line
 	6895 6200 7105 6200
 Wire Wire Line
 	7105 6200 7105 5630
-Connection ~ 7105 5630
-Wire Wire Line
-	7105 5630 7120 5630
 $Sheet
 S 9200 4765 1785 325 
 U 5D551D52
@@ -1452,138 +1367,6 @@ F1 "ionorms.sch" 60
 $EndSheet
 Text Notes 9260 4995 0    150  ~ 0
 in/outs/norms
-$Comp
-L Device:Opamp_Dual_Generic U?
-U 1 1 5D5654D8
-P 1740 5055
-F 0 "U?" H 1740 5422 50  0000 C CNN
-F 1 "Opamp_Dual_Generic" H 1740 5331 50  0000 C CNN
-F 2 "" H 1740 5055 50  0001 C CNN
-F 3 "~" H 1740 5055 50  0001 C CNN
-	1    1740 5055
-	1    0    0    -1  
-$EndComp
-Text Notes 1845 4965 0    118  ~ 0
-MAX4392
-$Comp
-L Device:Opamp_Dual_Generic U?
-U 3 1 5D565820
-P 2870 5315
-F 0 "U?" H 2828 5361 50  0000 L CNN
-F 1 "Opamp_Dual_Generic" H 2828 5270 50  0000 L CNN
-F 2 "" H 2870 5315 50  0001 C CNN
-F 3 "~" H 2870 5315 50  0001 C CNN
-	3    2870 5315
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
-U 1 1 5D565827
-P 2770 5665
-F 0 "#PWR?" H 2770 5415 50  0001 C CNN
-F 1 "GND" H 2770 5515 50  0000 C CNN
-F 2 "" H 2770 5665 50  0000 C CNN
-F 3 "" H 2770 5665 50  0000 C CNN
-	1    2770 5665
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+10V #PWR?
-U 1 1 5D56582D
-P 2770 4985
-F 0 "#PWR?" H 2770 4835 50  0001 C CNN
-F 1 "+10V" H 2890 5035 50  0000 C CNN
-F 2 "" H 2770 4985 50  0001 C CNN
-F 3 "" H 2770 4985 50  0001 C CNN
-	1    2770 4985
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2770 4985 2770 5015
-Wire Wire Line
-	2770 5615 2770 5665
-Text Notes 2035 -225 0    150  ~ 0
-TODO: all bypass.
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D56C7A1
-P 1260 5155
-F 0 "R?" V 1340 5155 50  0000 C CNN
-F 1 "100K" V 1260 5155 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1190 5155 50  0001 C CNN
-F 3 "" H 1260 5155 50  0000 C CNN
-	1    1260 5155
-	0    1    1    0   
-$EndComp
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D56CA0B
-P 1235 5270
-F 0 "R?" V 1315 5270 50  0000 C CNN
-F 1 "100K" V 1235 5270 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1165 5270 50  0001 C CNN
-F 3 "" H 1235 5270 50  0000 C CNN
-	1    1235 5270
-	0    1    1    0   
-$EndComp
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D56CABD
-P 1685 5330
-F 0 "R?" V 1765 5330 50  0000 C CNN
-F 1 "47K" V 1685 5330 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1615 5330 50  0001 C CNN
-F 3 "" H 1685 5330 50  0000 C CNN
-	1    1685 5330
-	0    1    1    0   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
-U 1 1 5D56CBD1
-P 1385 4955
-F 0 "#PWR?" H 1385 4705 50  0001 C CNN
-F 1 "GND" H 1385 4805 50  0000 C CNN
-F 2 "" H 1385 4955 50  0000 C CNN
-F 3 "" H 1385 4955 50  0000 C CNN
-	1    1385 4955
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1410 5155 1425 5155
-Wire Wire Line
-	1385 5270 1425 5270
-Wire Wire Line
-	1425 5270 1425 5155
-Connection ~ 1425 5155
-Wire Wire Line
-	1425 5155 1440 5155
-Wire Wire Line
-	1425 5270 1425 5330
-Wire Wire Line
-	1425 5330 1535 5330
-Connection ~ 1425 5270
-Wire Wire Line
-	2040 5055 2075 5055
-Wire Wire Line
-	2075 5330 2075 5055
-Connection ~ 2075 5055
-Wire Wire Line
-	2075 5055 2150 5055
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D59A7B9
-P 2300 5055
-F 0 "R?" V 2380 5055 50  0000 C CNN
-F 1 "1K" V 2300 5055 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 2230 5055 50  0001 C CNN
-F 3 "" H 2300 5055 50  0000 C CNN
-	1    2300 5055
-	0    1    1    0   
-$EndComp
-Text Notes 705  6000 0    118  ~ 0
-inverting  0 to +10v IN 0-5 v out
-Wire Wire Line
-	1835 5330 2075 5330
 $Comp
 L Regulator_Linear:uA7810 U?
 U 1 1 5D5B27ED
@@ -1728,17 +1511,6 @@ F 3 "" H 5100 6675 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:TL072-linear-allcolours-rescue U?
-U 1 1 5D5CD93F
-P 6640 1380
-F 0 "U?" H 6981 1426 50  0000 L CNN
-F 1 "TL072-linear-allcolours-rescue" H 6981 1335 50  0000 L CNN
-F 2 "" H 6640 1380 50  0001 C CNN
-F 3 "" H 6640 1380 50  0001 C CNN
-	1    6640 1380
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D?
 U 1 1 5D258E38
 P 5760 7210
@@ -1818,33 +1590,8 @@ Connection ~ 5760 7360
 Wire Wire Line
 	6010 7060 6260 7060
 Connection ~ 6010 7060
-Wire Wire Line
-	1385 4955 1440 4955
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D26CAC5
-P 1235 5415
-F 0 "R?" V 1315 5415 50  0000 C CNN
-F 1 "100K" V 1235 5415 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1165 5415 50  0001 C CNN
-F 3 "" H 1235 5415 50  0000 C CNN
-	1    1235 5415
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	1380 5415 1385 5415
-Wire Wire Line
-	1425 5415 1425 5330
-Connection ~ 1385 5415
-Wire Wire Line
-	1385 5415 1425 5415
-Connection ~ 1425 5330
 Text GLabel 6260 7060 2    60   Input ~ 0
 AREF-10
-Text GLabel 1030 5415 0    60   Input ~ 0
-AREF-10
-Wire Wire Line
-	1030 5415 1085 5415
 Text GLabel 3920 3215 2    60   Input ~ 0
 FAST_NOISE
 Wire Wire Line
@@ -1864,4 +1611,126 @@ Wire Wire Line
 	7420 5630 7455 5630
 Text Notes 5090 1200 0    79   ~ 0
 comp in 1 always???
+Text Notes 5655 -190 0    197  ~ 0
+add bypass caps all
+$Comp
+L Amplifier_Operational:TL082 U?
+U 1 1 5D38ACB7
+P 6640 1380
+F 0 "U?" H 6640 1747 50  0000 C CNN
+F 1 "TL082" H 6640 1656 50  0000 C CNN
+F 2 "" H 6640 1380 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6640 1380 50  0001 C CNN
+	1    6640 1380
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 3 1 5D3A0346
+P 7605 1605
+F 0 "U?" H 7563 1651 50  0000 L CNN
+F 1 "TL082" H 7563 1560 50  0000 L CNN
+F 2 "" H 7605 1605 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 7605 1605 50  0001 C CNN
+	3    7605 1605
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 1 1 5D3B6058
+P 3300 1350
+F 0 "U?" H 3300 1717 50  0000 C CNN
+F 1 "TL082" H 3300 1626 50  0000 C CNN
+F 2 "" H 3300 1350 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 3300 1350 50  0001 C CNN
+	1    3300 1350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4810 1665 4810 1715
+Wire Wire Line
+	4810 1065 4810 965 
+$Comp
+L Amplifier_Operational:TL082 U?
+U 3 1 5D3B62F7
+P 4910 1365
+F 0 "U?" H 4868 1411 50  0000 L CNN
+F 1 "TL082" H 4868 1320 50  0000 L CNN
+F 2 "" H 4910 1365 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 4910 1365 50  0001 C CNN
+	3    4910 1365
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 1 1 5D3C1238
+P 6790 5630
+F 0 "U?" H 6790 5997 50  0000 C CNN
+F 1 "TL082" H 6790 5906 50  0000 C CNN
+F 2 "" H 6790 5630 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6790 5630 50  0001 C CNN
+	1    6790 5630
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+U 1 1 5D3D7ACE
+P 4810 965
+F 0 "#PWR?" H 4810 815 50  0001 C CNN
+F 1 "+12V" H 4810 1105 50  0000 C CNN
+F 2 "" H 4810 965 50  0000 C CNN
+F 3 "" H 4810 965 50  0000 C CNN
+	1    4810 965 
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
+U 1 1 5D3D7EDC
+P 4810 1715
+F 0 "#PWR?" H 4810 1565 50  0001 C CNN
+F 1 "-12VA" H 4810 1855 50  0000 C CNN
+F 2 "" H 4810 1715 50  0000 C CNN
+F 3 "" H 4810 1715 50  0000 C CNN
+	1    4810 1715
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7905 5900 7905 5950
+Wire Wire Line
+	7905 5300 7905 5200
+$Comp
+L Amplifier_Operational:TL082 U?
+U 3 1 5D3DAC0B
+P 8005 5600
+F 0 "U?" H 7963 5646 50  0000 L CNN
+F 1 "TL082" H 7963 5555 50  0000 L CNN
+F 2 "" H 8005 5600 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 8005 5600 50  0001 C CNN
+	3    8005 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+U 1 1 5D3DAC12
+P 7905 5200
+F 0 "#PWR?" H 7905 5050 50  0001 C CNN
+F 1 "+12V" H 7905 5340 50  0000 C CNN
+F 2 "" H 7905 5200 50  0000 C CNN
+F 3 "" H 7905 5200 50  0000 C CNN
+	1    7905 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
+U 1 1 5D3DAC18
+P 7905 5950
+F 0 "#PWR?" H 7905 5800 50  0001 C CNN
+F 1 "-12VA" H 7905 6090 50  0000 C CNN
+F 2 "" H 7905 5950 50  0000 C CNN
+F 3 "" H 7905 5950 50  0000 C CNN
+	1    7905 5950
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7090 5630 7120 5630
 $EndSCHEMATC

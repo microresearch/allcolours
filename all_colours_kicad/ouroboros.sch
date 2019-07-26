@@ -96,7 +96,7 @@ F 3 "" H 2300 2075 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Notes 845  750  0    118  ~ 0
-2x ouroboros - LF and HF - 5(or 3) and 3 - buffer ins and outs, pull up thing x3
+2x ouroboros - LF and HF - 5(or 3) and 3 - buffer ins and outs, pull up thing x2
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5D36387A
@@ -606,6 +606,242 @@ Wire Wire Line
 Connection ~ 3485 6985
 Wire Wire Line
 	3485 6985 3970 6985
-Text Notes 5755 1950 0    157  ~ 0
+Text Notes 5110 1890 0    157  ~ 0
 buffers x4 in and out x2
+$Comp
+L Amplifier_Operational:TL082 U?
+U 1 1 5D32DA27
+P 5915 2620
+F 0 "U?" H 5915 2987 50  0000 C CNN
+F 1 "TL082" H 5915 2896 50  0000 C CNN
+F 2 "" H 5915 2620 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5915 2620 50  0001 C CNN
+	1    5915 2620
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 2 1 5D32DB44
+P 5905 3090
+F 0 "U?" H 5905 3457 50  0000 C CNN
+F 1 "TL082" H 5905 3366 50  0000 C CNN
+F 2 "" H 5905 3090 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5905 3090 50  0001 C CNN
+	2    5905 3090
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 3 1 5D32EC65
+P 6805 2580
+F 0 "U?" H 6763 2626 50  0000 L CNN
+F 1 "TL082" H 6763 2535 50  0000 L CNN
+F 2 "" H 6805 2580 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6805 2580 50  0001 C CNN
+	3    6805 2580
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5D32F02B
+P 7095 2575
+F 0 "C?" H 7187 2621 50  0000 L CNN
+F 1 "C_Small" H 7187 2530 50  0000 L CNN
+F 2 "" H 7095 2575 50  0001 C CNN
+F 3 "~" H 7095 2575 50  0001 C CNN
+	1    7095 2575
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5615 2860 6215 2860
+Wire Wire Line
+	6215 2860 6215 2620
+Wire Wire Line
+	5615 2720 5615 2860
+Wire Wire Line
+	5605 3190 5605 3315
+Wire Wire Line
+	5605 3315 6205 3315
+Wire Wire Line
+	6205 3315 6205 3090
+Wire Wire Line
+	5615 2520 5505 2520
+Wire Wire Line
+	5605 2990 5515 2990
+Wire Wire Line
+	6215 2620 6295 2620
+Connection ~ 6215 2620
+Wire Wire Line
+	6205 3090 6310 3090
+Connection ~ 6205 3090
+$Comp
+L power:+12V #PWR?
+U 1 1 5D337BB1
+P 6705 2240
+F 0 "#PWR?" H 6705 2090 50  0001 C CNN
+F 1 "+12V" H 6720 2413 50  0000 C CNN
+F 2 "" H 6705 2240 50  0001 C CNN
+F 3 "" H 6705 2240 50  0001 C CNN
+	1    6705 2240
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5D337C33
+P 7095 2445
+F 0 "#PWR?" H 7095 2295 50  0001 C CNN
+F 1 "+12V" H 7110 2618 50  0000 C CNN
+F 2 "" H 7095 2445 50  0001 C CNN
+F 3 "" H 7095 2445 50  0001 C CNN
+	1    7095 2445
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5D337CF6
+P 7095 2710
+F 0 "#PWR?" H 7095 2810 50  0001 C CNN
+F 1 "-12V" H 7110 2883 50  0000 C CNN
+F 2 "" H 7095 2710 50  0001 C CNN
+F 3 "" H 7095 2710 50  0001 C CNN
+	1    7095 2710
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5D337DE8
+P 6705 2910
+F 0 "#PWR?" H 6705 3010 50  0001 C CNN
+F 1 "-12V" H 6720 3083 50  0000 C CNN
+F 2 "" H 6705 2910 50  0001 C CNN
+F 3 "" H 6705 2910 50  0001 C CNN
+	1    6705 2910
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7095 2675 7095 2710
+Wire Wire Line
+	6705 2880 6705 2910
+Wire Wire Line
+	6705 2240 6705 2280
+Wire Wire Line
+	7095 2445 7095 2475
+$Comp
+L Amplifier_Operational:TL082 U?
+U 1 1 5D33DFE5
+P 5895 3910
+F 0 "U?" H 5895 4277 50  0000 C CNN
+F 1 "TL082" H 5895 4186 50  0000 C CNN
+F 2 "" H 5895 3910 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5895 3910 50  0001 C CNN
+	1    5895 3910
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 2 1 5D33DFEC
+P 5885 4380
+F 0 "U?" H 5885 4747 50  0000 C CNN
+F 1 "TL082" H 5885 4656 50  0000 C CNN
+F 2 "" H 5885 4380 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5885 4380 50  0001 C CNN
+	2    5885 4380
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 3 1 5D33DFF3
+P 6785 3870
+F 0 "U?" H 6743 3916 50  0000 L CNN
+F 1 "TL082" H 6743 3825 50  0000 L CNN
+F 2 "" H 6785 3870 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6785 3870 50  0001 C CNN
+	3    6785 3870
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5D33DFFA
+P 7075 3865
+F 0 "C?" H 7167 3911 50  0000 L CNN
+F 1 "C_Small" H 7167 3820 50  0000 L CNN
+F 2 "" H 7075 3865 50  0001 C CNN
+F 3 "~" H 7075 3865 50  0001 C CNN
+	1    7075 3865
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5595 4150 6195 4150
+Wire Wire Line
+	6195 4150 6195 3910
+Wire Wire Line
+	5595 4010 5595 4150
+Wire Wire Line
+	5585 4480 5585 4605
+Wire Wire Line
+	5585 4605 6185 4605
+Wire Wire Line
+	6185 4605 6185 4380
+Wire Wire Line
+	5595 3810 5485 3810
+Wire Wire Line
+	5585 4280 5495 4280
+Wire Wire Line
+	6195 3910 6275 3910
+Connection ~ 6195 3910
+Wire Wire Line
+	6185 4380 6290 4380
+Connection ~ 6185 4380
+$Comp
+L power:+12V #PWR?
+U 1 1 5D33E00D
+P 6685 3530
+F 0 "#PWR?" H 6685 3380 50  0001 C CNN
+F 1 "+12V" H 6700 3703 50  0000 C CNN
+F 2 "" H 6685 3530 50  0001 C CNN
+F 3 "" H 6685 3530 50  0001 C CNN
+	1    6685 3530
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5D33E013
+P 7075 3735
+F 0 "#PWR?" H 7075 3585 50  0001 C CNN
+F 1 "+12V" H 7090 3908 50  0000 C CNN
+F 2 "" H 7075 3735 50  0001 C CNN
+F 3 "" H 7075 3735 50  0001 C CNN
+	1    7075 3735
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5D33E019
+P 7075 4000
+F 0 "#PWR?" H 7075 4100 50  0001 C CNN
+F 1 "-12V" H 7090 4173 50  0000 C CNN
+F 2 "" H 7075 4000 50  0001 C CNN
+F 3 "" H 7075 4000 50  0001 C CNN
+	1    7075 4000
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5D33E01F
+P 6685 4200
+F 0 "#PWR?" H 6685 4300 50  0001 C CNN
+F 1 "-12V" H 6700 4373 50  0000 C CNN
+F 2 "" H 6685 4200 50  0001 C CNN
+F 3 "" H 6685 4200 50  0001 C CNN
+	1    6685 4200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7075 3965 7075 4000
+Wire Wire Line
+	6685 4170 6685 4200
+Wire Wire Line
+	6685 3530 6685 3570
+Wire Wire Line
+	7075 3735 7075 3765
 $EndSCHEMATC

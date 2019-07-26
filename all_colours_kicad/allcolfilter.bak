@@ -19,7 +19,7 @@ L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D5
 U 1 1 5B6E5322
 P 4010 2510
 F 0 "D5" V 3964 2578 50  0000 L CNN
-F 1 "5819" V 3910 2610 50  0000 L CNN
+F 1 "5819" V 3945 2320 50  0000 L CNN
 F 2 "Diodes_SMD:D_SOD-123" V 4010 2510 50  0001 C CNN
 F 3 "" V 4010 2510 50  0001 C CNN
 	1    4010 2510
@@ -30,7 +30,7 @@ L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D4
 U 1 1 5B6E5329
 P 4010 2260
 F 0 "D4" V 3964 2328 50  0000 L CNN
-F 1 "BAT85/1n5819" V 4055 2328 50  0000 L CNN
+F 1 "BAT85/1n5819" V 3895 2335 50  0000 L CNN
 F 2 "Diodes_SMD:D_SOD-123" V 4010 2260 50  0001 C CNN
 F 3 "" V 4010 2260 50  0001 C CNN
 	1    4010 2260
@@ -138,48 +138,9 @@ Wire Wire Line
 	3760 2610 4010 2610
 Connection ~ 4010 2610
 Text Notes 2060 1010 0    60   ~ 0
-BANDPASS + 2x these - check!\n
+BANDPASS 
 Text Notes 5840 990  0    118  ~ 0
 inputs x1 for both filters
-$Comp
-L allcolours-rescue:TL072-linear-allcolours-rescue U?
-U 2 1 5B6FD0C0
-P 6165 1595
-AR Path="/5B6FD0C0" Ref="U?"  Part="2" 
-AR Path="/5B6C330C/5B6FD0C0" Ref="U11"  Part="2" 
-F 0 "U11" H 6506 1641 50  0000 L CNN
-F 1 "TL072" H 6506 1550 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 6165 1595 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6165 1595 50  0001 C CNN
-	2    6165 1595
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
-U 1 1 5B6FD0C7
-P 6065 1245
-AR Path="/5B6FD0C7" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5B6FD0C7" Ref="#PWR087"  Part="1" 
-F 0 "#PWR087" H 6065 1095 50  0001 C CNN
-F 1 "+12V" H 6065 1385 50  0000 C CNN
-F 2 "" H 6065 1245 50  0000 C CNN
-F 3 "" H 6065 1245 50  0000 C CNN
-	1    6065 1245
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
-U 1 1 5B6FD0CD
-P 6065 1945
-AR Path="/5B6FD0CD" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5B6FD0CD" Ref="#PWR088"  Part="1" 
-F 0 "#PWR088" H 6065 1795 50  0001 C CNN
-F 1 "-12VA" H 6065 2085 50  0000 C CNN
-F 2 "" H 6065 1945 50  0000 C CNN
-F 3 "" H 6065 1945 50  0000 C CNN
-	1    6065 1945
-	-1   0    0    1   
-$EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B6FD0D3
@@ -234,13 +195,6 @@ F 3 "" H 6665 1595 50  0000 C CNN
 	1    6665 1595
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	6465 1595 6565 1595
-Connection ~ 6465 1595
-Wire Wire Line
-	6065 1295 6065 1245
-Wire Wire Line
-	6065 1945 6065 1895
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
 U 1 1 5B705C47
@@ -269,55 +223,29 @@ F 3 "" H 5440 3910 50  0000 C CNN
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5B705C55
-P 5290 4210
-AR Path="/5B705C55" Ref="R?"  Part="1" 
-AR Path="/5B6C330C/5B705C55" Ref="R57"  Part="1" 
-F 0 "R57" V 5370 4210 50  0000 C CNN
-F 1 "?K" V 5290 4210 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 5220 4210 50  0001 C CNN
-F 3 "" H 5290 4210 50  0000 C CNN
-	1    5290 4210
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B705C5C
-P 5990 3260
+P 5945 4145
 AR Path="/5B705C5C" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B705C5C" Ref="R61"  Part="1" 
-F 0 "R61" V 6070 3260 50  0000 C CNN
-F 1 "10K" V 5990 3260 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 5920 3260 50  0001 C CNN
-F 3 "" H 5990 3260 50  0000 C CNN
-	1    5990 3260
+F 0 "R61" V 6025 4145 50  0000 C CNN
+F 1 "10K" V 5945 4145 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 5875 4145 50  0001 C CNN
+F 3 "" H 5945 4145 50  0000 C CNN
+	1    5945 4145
 	0    1    1    0   
 $EndComp
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C?
 U 1 1 5B705C63
-P 5990 3410
+P 5945 4335
 AR Path="/5B705C63" Ref="C?"  Part="1" 
 AR Path="/5B6C330C/5B705C63" Ref="C41"  Part="1" 
-F 0 "C41" H 6015 3510 50  0000 L CNN
-F 1 "18p" H 6015 3310 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 6028 3260 50  0001 C CNN
-F 3 "" H 5990 3410 50  0000 C CNN
-	1    5990 3410
+F 0 "C41" H 5970 4435 50  0000 L CNN
+F 1 "18p" H 5970 4235 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 5983 4185 50  0001 C CNN
+F 3 "" H 5945 4335 50  0000 C CNN
+	1    5945 4335
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
-U 1 1 5B705C6A
-P 5290 4410
-AR Path="/5B705C6A" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5B705C6A" Ref="#PWR0102"  Part="1" 
-F 0 "#PWR0102" H 5290 4160 50  0001 C CNN
-F 1 "GND" H 5290 4260 50  0000 C CNN
-F 2 "" H 5290 4410 50  0000 C CNN
-F 3 "" H 5290 4410 50  0000 C CNN
-	1    5290 4410
-	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR?
@@ -335,79 +263,33 @@ $EndComp
 $Comp
 L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
 U 1 1 5B705C77
-P 5890 4210
+P 7035 4230
 AR Path="/5B705C77" Ref="#PWR?"  Part="1" 
 AR Path="/5B6C330C/5B705C77" Ref="#PWR0106"  Part="1" 
-F 0 "#PWR0106" H 5890 4060 50  0001 C CNN
-F 1 "-12VA" H 5890 4350 50  0000 C CNN
-F 2 "" H 5890 4210 50  0000 C CNN
-F 3 "" H 5890 4210 50  0000 C CNN
-	1    5890 4210
+F 0 "#PWR0106" H 7035 4080 50  0001 C CNN
+F 1 "-12VA" H 7035 4370 50  0000 C CNN
+F 2 "" H 7035 4230 50  0000 C CNN
+F 3 "" H 7035 4230 50  0000 C CNN
+	1    7035 4230
 	-1   0    0    1   
 $EndComp
 $Comp
 L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
 U 1 1 5B705C7D
-P 5840 3160
+P 7035 3545
 AR Path="/5B705C7D" Ref="#PWR?"  Part="1" 
 AR Path="/5B6C330C/5B705C7D" Ref="#PWR0105"  Part="1" 
-F 0 "#PWR0105" H 5840 3010 50  0001 C CNN
-F 1 "+12V" H 5840 3300 50  0000 C CNN
-F 2 "" H 5840 3160 50  0000 C CNN
-F 3 "" H 5840 3160 50  0000 C CNN
-	1    5840 3160
+F 0 "#PWR0105" H 7035 3395 50  0001 C CNN
+F 1 "+12V" H 7035 3685 50  0000 C CNN
+F 2 "" H 7035 3545 50  0000 C CNN
+F 3 "" H 7035 3545 50  0000 C CNN
+	1    7035 3545
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	5240 3910 5290 3910
 Wire Wire Line
-	5290 3910 5290 4060
-Wire Wire Line
-	5290 4410 5290 4360
-Wire Wire Line
-	5640 3260 5640 3410
-Wire Wire Line
-	5640 3410 5840 3410
-Wire Wire Line
-	5640 3260 5840 3260
-Connection ~ 5640 3410
-Wire Wire Line
-	6140 3260 6140 3410
-Wire Wire Line
-	6140 3410 6290 3410
-Wire Wire Line
-	6290 3410 6290 3810
-Wire Wire Line
-	5890 4110 5890 4210
-Wire Wire Line
-	5890 3510 5840 3510
-Wire Wire Line
-	5590 3710 5640 3710
-Text Notes 5140 4260 0    60   ~ 0
-?
-Wire Wire Line
-	5640 3410 5640 3710
-Connection ~ 5290 3910
-Connection ~ 6140 3410
-$Comp
-L allcolours-rescue:TL072-linear-allcolours-rescue U?
-U 1 1 5B705C9B
-P 5990 3810
-AR Path="/5B705C9B" Ref="U?"  Part="2" 
-AR Path="/5B6C330C/5B705C9B" Ref="U13"  Part="1" 
-F 0 "U13" H 6331 3856 50  0000 L CNN
-F 1 "TL072" H 6331 3765 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 5990 3810 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5990 3810 50  0001 C CNN
-	1    5990 3810
-	1    0    0    -1  
-$EndComp
-Connection ~ 5640 3710
-Wire Wire Line
-	5640 3710 5690 3710
-Connection ~ 6290 3810
-Wire Wire Line
-	5590 3910 5690 3910
+	5590 3910 5625 3910
 Wire Wire Line
 	6765 1595 6965 1595
 Text Label 6965 1595 0    79   ~ 0
@@ -437,8 +319,6 @@ Wire Wire Line
 Connection ~ 3660 2360
 Wire Wire Line
 	3660 2360 4010 2360
-Text Label 3660 2810 0    60   ~ 0
-CLOCK
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7D3CA7
@@ -653,8 +533,6 @@ F 3 "" H 2860 3560 60  0001 C CNN
 	1    2860 3560
 	1    0    0    -1  
 $EndComp
-Text Label 3660 3660 0    60   ~ 0
-CLOCK
 $Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR097
 U 1 1 5B82ACD0
@@ -877,8 +755,6 @@ Wire Wire Line
 	2410 3360 2410 3060
 Text Label 3660 3960 0    60   ~ 0
 7400_LP
-Text Label 5265 1695 2    60   ~ 0
-FILTER_IN
 Wire Wire Line
 	2410 3660 2610 3660
 Wire Wire Line
@@ -910,45 +786,187 @@ Wire Wire Line
 	5865 1495 5740 1495
 Wire Wire Line
 	5740 1495 5740 1520
-Wire Wire Line
-	5840 3160 5840 3260
-Text Label 7505 3695 0    60   ~ 0
-7490_OUT
 Connection ~ 4010 2360
-Connection ~ 5840 3260
-Wire Wire Line
-	5840 3260 5840 3410
-Connection ~ 5840 3410
-Wire Wire Line
-	5840 3410 5840 3510
-Wire Wire Line
-	6290 3810 6790 3810
 Text Notes 5425 2825 0    118  ~ 0
 filter outs x2
 $Comp
-L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
-U 1 1 5D412D70
-P 6930 3965
-AR Path="/5D412D70" Ref="C?"  Part="1" 
-AR Path="/5B6C330C/5D412D70" Ref="C?"  Part="1" 
-F 0 "C?" H 6940 4035 50  0000 L CNN
-F 1 "10u" H 6940 3885 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 6930 3965 50  0001 C CNN
-F 3 "" H 6930 3965 50  0000 C CNN
-	1    6930 3965
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5D412E97
+P 6485 3810
+AR Path="/5D412E97" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5D412E97" Ref="R?"  Part="1" 
+F 0 "R?" V 6565 3810 50  0000 C CNN
+F 1 "1K" V 6485 3810 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6415 3810 50  0001 C CNN
+F 3 "" H 6485 3810 50  0000 C CNN
+	1    6485 3810
 	0    -1   -1   0   
 $EndComp
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D412E97
-P 7310 3960
-AR Path="/5D412E97" Ref="R?"  Part="1" 
-AR Path="/5B6C330C/5D412E97" Ref="R?"  Part="1" 
-F 0 "R?" V 7390 3960 50  0000 C CNN
-F 1 "10K" V 7310 3960 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 7240 3960 50  0001 C CNN
-F 3 "" H 7310 3960 50  0000 C CNN
-	1    7310 3960
+L Amplifier_Operational:TL082 U?
+U 1 1 5D3F372F
+P 6165 1595
+F 0 "U?" H 6165 1962 50  0000 C CNN
+F 1 "TL082" H 6165 1871 50  0000 C CNN
+F 2 "" H 6165 1595 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6165 1595 50  0001 C CNN
+	1    6165 1595
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 3 1 5D3F4A23
+P 7135 3885
+F 0 "U?" H 7093 3931 50  0000 L CNN
+F 1 "TL082" H 7093 3840 50  0000 L CNN
+F 2 "" H 7135 3885 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 7135 3885 50  0001 C CNN
+	3    7135 3885
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 1 1 5D3F4AB9
+P 5990 3810
+F 0 "U?" H 5990 4177 50  0000 C CNN
+F 1 "TL082" H 5990 4086 50  0000 C CNN
+F 2 "" H 5990 3810 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5990 3810 50  0001 C CNN
+	1    5990 3810
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6465 1595 6565 1595
+Wire Wire Line
+	7035 3545 7035 3585
+Wire Wire Line
+	7035 4185 7035 4230
+Wire Wire Line
+	6285 3810 6290 3810
+Connection ~ 6290 3810
+Wire Wire Line
+	6290 3810 6335 3810
+Wire Wire Line
+	5590 3710 5690 3710
+Wire Wire Line
+	5625 3910 5625 4145
+Wire Wire Line
+	5625 4145 5795 4145
+Connection ~ 5625 3910
+Wire Wire Line
+	5625 3910 5690 3910
+Wire Wire Line
+	5625 4145 5625 4335
+Wire Wire Line
+	5625 4335 5795 4335
+Connection ~ 5625 4145
+Wire Wire Line
+	6095 4145 6095 4335
+Wire Wire Line
+	6095 4145 6290 4145
+Wire Wire Line
+	6290 4145 6290 3810
+Connection ~ 6095 4145
+$Comp
+L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
+U 1 1 5D436DFB
+P 8080 2075
+AR Path="/5D436DFB" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5D436DFB" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 8080 1925 50  0001 C CNN
+F 1 "-12VA" H 8080 2215 50  0000 C CNN
+F 2 "" H 8080 2075 50  0000 C CNN
+F 3 "" H 8080 2075 50  0000 C CNN
+	1    8080 2075
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+U 1 1 5D436E01
+P 8080 1390
+AR Path="/5D436E01" Ref="#PWR?"  Part="1" 
+AR Path="/5B6C330C/5D436E01" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 8080 1240 50  0001 C CNN
+F 1 "+12V" H 8080 1530 50  0000 C CNN
+F 2 "" H 8080 1390 50  0000 C CNN
+F 3 "" H 8080 1390 50  0000 C CNN
+	1    8080 1390
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U?
+U 3 1 5D436E07
+P 8180 1730
+F 0 "U?" H 8138 1776 50  0000 L CNN
+F 1 "TL082" H 8138 1685 50  0000 L CNN
+F 2 "" H 8180 1730 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 8180 1730 50  0001 C CNN
+	3    8180 1730
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8080 1390 8080 1430
+Wire Wire Line
+	8080 2030 8080 2075
+$Comp
+L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D?
+U 1 1 5D3DBDD3
+P 3660 3790
+F 0 "D?" V 3614 3858 50  0000 L CNN
+F 1 "5819" V 3585 3580 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" V 3660 3790 50  0001 C CNN
+F 3 "" V 3660 3790 50  0001 C CNN
+	1    3660 3790
 	0    1    1    0   
 $EndComp
+$Comp
+L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D?
+U 1 1 5D3DBDDA
+P 3660 3540
+F 0 "D?" V 3614 3608 50  0000 L CNN
+F 1 "BAT85/1n5819" V 3575 3295 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" V 3660 3540 50  0001 C CNN
+F 3 "" V 3660 3540 50  0001 C CNN
+	1    3660 3540
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+U 1 1 5D3DBDE1
+P 3660 3940
+F 0 "#PWR?" H 3660 3690 50  0001 C CNN
+F 1 "GND" H 3660 3790 50  0000 C CNN
+F 2 "" H 3660 3940 50  0000 C CNN
+F 3 "" H 3660 3940 50  0000 C CNN
+	1    3660 3940
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3660 3690 3660 3660
+$Comp
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR?
+U 1 1 5D3DBDE8
+P 3660 3390
+F 0 "#PWR?" H 3660 3240 50  0001 C CNN
+F 1 "+5V" H 3760 3440 50  0000 C CNN
+F 2 "" H 3660 3390 50  0001 C CNN
+F 3 "" H 3660 3390 50  0001 C CNN
+	1    3660 3390
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3660 3940 3660 3890
+Wire Wire Line
+	3660 3440 3660 3390
+Connection ~ 3660 3660
+Wire Wire Line
+	3660 3660 3660 3640
+Wire Wire Line
+	3660 3660 4075 3660
+Text GLabel 4075 3660 2    60   Input ~ 0
+CLK_INH
+Text GLabel 4075 2360 2    60   Input ~ 0
+CLK_INL
+Wire Wire Line
+	4010 2360 4075 2360
 $EndSCHEMATC
