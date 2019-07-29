@@ -178,10 +178,6 @@ Wire Wire Line
 Connection ~ 5815 1695
 Wire Wire Line
 	5815 1695 5865 1695
-Wire Wire Line
-	6215 2145 6465 2145
-Wire Wire Line
-	6465 2145 6465 1595
 $Comp
 L allcolours-rescue:CP1_Small-device-allcolours-rescue C?
 U 1 1 5B6FD0E9
@@ -836,7 +832,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5990 3810 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6465 1595 6565 1595
+	6465 1595 6500 1595
 Wire Wire Line
 	7035 3545 7035 3585
 Wire Wire Line
@@ -872,8 +868,8 @@ L allcolours-rescue:-12VA-power-allcolours-rescue #PWR?
 U 1 1 5D436DFB
 P 8080 2075
 AR Path="/5D436DFB" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5D436DFB" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 8080 1925 50  0001 C CNN
+AR Path="/5B6C330C/5D436DFB" Ref="#PWR0161"  Part="1" 
+F 0 "#PWR0161" H 8080 1925 50  0001 C CNN
 F 1 "-12VA" H 8080 2215 50  0000 C CNN
 F 2 "" H 8080 2075 50  0000 C CNN
 F 3 "" H 8080 2075 50  0000 C CNN
@@ -885,8 +881,8 @@ L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
 U 1 1 5D436E01
 P 8080 1390
 AR Path="/5D436E01" Ref="#PWR?"  Part="1" 
-AR Path="/5B6C330C/5D436E01" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 8080 1240 50  0001 C CNN
+AR Path="/5B6C330C/5D436E01" Ref="#PWR0162"  Part="1" 
+F 0 "#PWR0162" H 8080 1240 50  0001 C CNN
 F 1 "+12V" H 8080 1530 50  0000 C CNN
 F 2 "" H 8080 1390 50  0000 C CNN
 F 3 "" H 8080 1390 50  0000 C CNN
@@ -931,10 +927,10 @@ F 3 "" V 3660 3540 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0163
 U 1 1 5D3DBDE1
 P 3660 3940
-F 0 "#PWR?" H 3660 3690 50  0001 C CNN
+F 0 "#PWR0163" H 3660 3690 50  0001 C CNN
 F 1 "GND" H 3660 3790 50  0000 C CNN
 F 2 "" H 3660 3940 50  0000 C CNN
 F 3 "" H 3660 3940 50  0000 C CNN
@@ -944,10 +940,10 @@ $EndComp
 Wire Wire Line
 	3660 3690 3660 3660
 $Comp
-L allcolours-rescue:+5V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR0164
 U 1 1 5D3DBDE8
 P 3660 3390
-F 0 "#PWR?" H 3660 3240 50  0001 C CNN
+F 0 "#PWR0164" H 3660 3240 50  0001 C CNN
 F 1 "+5V" H 3760 3440 50  0000 C CNN
 F 2 "" H 3660 3390 50  0001 C CNN
 F 3 "" H 3660 3390 50  0001 C CNN
@@ -969,4 +965,15 @@ Text GLabel 4075 2360 2    60   Input ~ 0
 CLK_INL
 Wire Wire Line
 	4010 2360 4075 2360
+Text Notes 2640 1055 0    60   ~ 0
+change values and maybe add resistor to raise F0 ratio
+Text Notes 2000 760  0    60   ~ 0
+5v supply ONLY but we have clocks 10v amped... so half...
+Wire Wire Line
+	6500 1595 6500 2145
+Wire Wire Line
+	6215 2145 6500 2145
+Connection ~ 6500 1595
+Wire Wire Line
+	6500 1595 6565 1595
 $EndSCHEMATC

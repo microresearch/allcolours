@@ -300,7 +300,7 @@ GPIO in and out (3.3v): how many: 4ins(2 are interrupts), 5 pulse out, 1x4bitDAC
 
 stm32 as we can use worm code and stlink programmer...
 
-choose _==*> STM32F103CBT6 - see peaks - LQFP-48  72 MHz 5euros -> test board ordered
+choose _==*> STM32F103CBT6 - see peaks, braids  - LQFP-48  72 MHz 5euros -> test board ordered
 
 3 timers and one PWM... ok
 
@@ -329,6 +329,18 @@ https://github.com/djmdjm/teensy3
 * 26/7
 
 - different clocks for high and low pwm but keep diff of audio signals in to filters
+
+but how do we deal with PWM filter?
+
+STM32F103 base: https://github.com/trebisky/stm32f103/tree/master/interrupt
+
+https://github.com/avislab/STM32F103/tree/master/Example_ADC
+
+peaks: https://github.com/pichenettes/eurorack/tree/master/peaks
+
+braids: https://github.com/pichenettes/eurorack/tree/master/braids
+
+
 
 * notes
 

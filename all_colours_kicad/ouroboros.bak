@@ -78,8 +78,6 @@ mmbt or 2n2222\n
 Wire Wire Line
 	2400 2275 2400 2330
 Wire Wire Line
-	2050 2075 2075 2075
-Wire Wire Line
 	2400 1875 2530 1875
 Wire Wire Line
 	2330 1875 2400 1875
@@ -96,21 +94,7 @@ F 3 "" H 2300 2075 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Notes 845  750  0    118  ~ 0
-2x ouroboros - LF and HF - 5(or 3) and 3 - buffer ins and outs, pull up thing x2
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D36387A
-P 2075 1925
-F 0 "R?" V 2155 1925 50  0000 C CNN
-F 1 "1M" V 2075 1925 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 2005 1925 50  0001 C CNN
-F 3 "" H 2075 1925 50  0000 C CNN
-	1    2075 1925
-	1    0    0    -1  
-$EndComp
-Connection ~ 2075 2075
-Wire Wire Line
-	2075 2075 2100 2075
+2x ouroboros - LF and HF - 5(or 3) and 3 - buffer ins and outs\n\n- to test one last time with this new config
 Text Notes 720  1755 0    118  ~ 0
 HF\n
 $Comp
@@ -118,7 +102,7 @@ L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
 U 1 1 5D3E8088
 P 2215 6720
 F 0 "Q?" H 2406 6766 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 2406 6675 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 2485 7015 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 2415 6820 50  0001 C CNN
 F 3 "" H 2215 6720 50  0001 C CNN
 	1    2215 6720
@@ -136,10 +120,10 @@ F 3 "" H 2510 6520 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0165
 U 1 1 5D3E9699
 P 2315 6955
-F 0 "#PWR?" H 2315 6705 50  0001 C CNN
+F 0 "#PWR0165" H 2315 6705 50  0001 C CNN
 F 1 "GND" H 2315 6805 50  0000 C CNN
 F 2 "" H 2315 6955 50  0000 C CNN
 F 3 "" H 2315 6955 50  0000 C CNN
@@ -171,10 +155,10 @@ F 3 "~" H 3235 6795 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0166
 U 1 1 5D3EB020
 P 3035 6280
-F 0 "#PWR?" H 3035 6130 50  0001 C CNN
+F 0 "#PWR0166" H 3035 6130 50  0001 C CNN
 F 1 "+12V" H 3035 6420 50  0000 C CNN
 F 2 "" H 3035 6280 50  0000 C CNN
 F 3 "" H 3035 6280 50  0000 C CNN
@@ -182,10 +166,10 @@ F 3 "" H 3035 6280 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0167
 U 1 1 5D3EB076
 P 3335 6550
-F 0 "#PWR?" H 3335 6400 50  0001 C CNN
+F 0 "#PWR0167" H 3335 6400 50  0001 C CNN
 F 1 "+12V" H 3335 6690 50  0000 C CNN
 F 2 "" H 3335 6550 50  0000 C CNN
 F 3 "" H 3335 6550 50  0000 C CNN
@@ -239,10 +223,10 @@ F 3 "" H 3515 1675 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0168
 U 1 1 5D3EF0BC
 P 3235 2130
-F 0 "#PWR?" H 3235 1880 50  0001 C CNN
+F 0 "#PWR0168" H 3235 1880 50  0001 C CNN
 F 1 "GND" H 3235 1980 50  0000 C CNN
 F 2 "" H 3235 2130 50  0000 C CNN
 F 3 "" H 3235 2130 50  0000 C CNN
@@ -261,10 +245,10 @@ F 3 "" H 3165 1475 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0169
 U 1 1 5D3EF0C9
 P 3165 1275
-F 0 "#PWR?" H 3165 1125 50  0001 C CNN
+F 0 "#PWR0169" H 3165 1125 50  0001 C CNN
 F 1 "+12V" H 3165 1415 50  0000 C CNN
 F 2 "" H 3165 1275 50  0000 C CNN
 F 3 "" H 3165 1275 50  0000 C CNN
@@ -277,27 +261,11 @@ Wire Wire Line
 	3165 1625 3165 1675
 Wire Wire Line
 	3235 2075 3235 2130
-Wire Wire Line
-	3235 1675 3365 1675
-Wire Wire Line
-	3165 1675 3235 1675
-Connection ~ 3235 1675
 $Comp
-L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
-U 1 1 5D3EF0D6
-P 3135 1875
-F 0 "Q?" H 3326 1921 50  0000 L CNN
-F 1 "Q_NPN_BEC" H 3326 1830 50  0000 L CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 3335 1975 50  0001 C CNN
-F 3 "" H 3135 1875 50  0001 C CNN
-	1    3135 1875
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0170
 U 1 1 5D3EF888
 P 4060 1930
-F 0 "#PWR?" H 4060 1680 50  0001 C CNN
+F 0 "#PWR0170" H 4060 1680 50  0001 C CNN
 F 1 "GND" H 4060 1780 50  0000 C CNN
 F 2 "" H 4060 1930 50  0000 C CNN
 F 3 "" H 4060 1930 50  0000 C CNN
@@ -316,10 +284,10 @@ F 3 "" H 3990 1275 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0171
 U 1 1 5D3EF895
 P 3990 1075
-F 0 "#PWR?" H 3990 925 50  0001 C CNN
+F 0 "#PWR0171" H 3990 925 50  0001 C CNN
 F 1 "+12V" H 3990 1215 50  0000 C CNN
 F 2 "" H 3990 1075 50  0000 C CNN
 F 3 "" H 3990 1075 50  0000 C CNN
@@ -349,22 +317,6 @@ F 3 "" H 3960 1675 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2910 1875 2935 1875
-Connection ~ 2910 1875
-$Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
-U 1 1 5D3EF0DD
-P 2910 1725
-F 0 "R?" V 2990 1725 50  0000 C CNN
-F 1 "1M" V 2910 1725 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 2840 1725 50  0001 C CNN
-F 3 "" H 2910 1725 50  0000 C CNN
-	1    2910 1725
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2830 1875 2910 1875
-Wire Wire Line
 	1750 2075 1750 2530
 Wire Wire Line
 	1750 2530 4190 2530
@@ -378,44 +330,14 @@ Connection ~ 3705 1675
 Wire Wire Line
 	3705 1675 3760 1675
 Text Label 3705 1455 1    60   ~ 0
-hf_push
+hf_p1
 Wire Wire Line
 	4190 2030 4415 2030
 Connection ~ 4190 2030
 Wire Wire Line
 	4190 2030 4190 1475
-Wire Wire Line
-	2075 2075 2075 2265
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
-U 1 1 5D3F631A
-P 2075 1740
-F 0 "#PWR?" H 2075 1590 50  0001 C CNN
-F 1 "+12V" H 2075 1880 50  0000 C CNN
-F 2 "" H 2075 1740 50  0000 C CNN
-F 3 "" H 2075 1740 50  0000 C CNN
-	1    2075 1740
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
-U 1 1 5D3F6398
-P 2910 1545
-F 0 "#PWR?" H 2910 1395 50  0001 C CNN
-F 1 "+12V" H 2910 1685 50  0000 C CNN
-F 2 "" H 2910 1545 50  0000 C CNN
-F 3 "" H 2910 1545 50  0000 C CNN
-	1    2910 1545
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2910 1545 2910 1575
-Wire Wire Line
-	2075 1740 2075 1775
 Text Label 4415 2025 0    60   ~ 0
 hf_out
-Text Label 2075 2265 0    60   ~ 0
-hf_in
 Text Notes 890  6045 0    118  ~ 0
 x2 lf and hf - re-done but maybe some value change
 $Comp
@@ -450,10 +372,10 @@ Connection ~ 1955 6720
 Wire Wire Line
 	1955 6720 1955 6760
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0174
 U 1 1 5D27201D
 P 1955 6335
-F 0 "#PWR?" H 1955 6185 50  0001 C CNN
+F 0 "#PWR0174" H 1955 6185 50  0001 C CNN
 F 1 "+12V" H 1955 6475 50  0000 C CNN
 F 2 "" H 1955 6335 50  0000 C CNN
 F 3 "" H 1955 6335 50  0000 C CNN
@@ -490,10 +412,10 @@ Connection ~ 1635 6960
 Wire Wire Line
 	1635 6960 1655 6960
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0175
 U 1 1 5D275D8F
 P 1635 7295
-F 0 "#PWR?" H 1635 7045 50  0001 C CNN
+F 0 "#PWR0175" H 1635 7045 50  0001 C CNN
 F 1 "GND" H 1635 7145 50  0000 C CNN
 F 2 "" H 1635 7295 50  0000 C CNN
 F 3 "" H 1635 7295 50  0000 C CNN
@@ -503,10 +425,10 @@ $EndComp
 Wire Wire Line
 	1635 7260 1635 7295
 $Comp
-L power:-12V #PWR?
+L power:-12V #PWR0176
 U 1 1 5D2777B6
 P 1955 7200
-F 0 "#PWR?" H 1955 7300 50  0001 C CNN
+F 0 "#PWR0176" H 1955 7300 50  0001 C CNN
 F 1 "-12V" H 1970 7373 50  0000 C CNN
 F 2 "" H 1955 7200 50  0001 C CNN
 F 3 "" H 1955 7200 50  0001 C CNN
@@ -527,10 +449,10 @@ F 3 "~" H 3685 6800 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0177
 U 1 1 5D2793D3
 P 3785 6555
-F 0 "#PWR?" H 3785 6405 50  0001 C CNN
+F 0 "#PWR0177" H 3785 6405 50  0001 C CNN
 F 1 "+12V" H 3785 6695 50  0000 C CNN
 F 2 "" H 3785 6555 50  0000 C CNN
 F 3 "" H 3785 6555 50  0000 C CNN
@@ -566,10 +488,10 @@ F 3 "~" H 4175 6800 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR?
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0178
 U 1 1 5D27A2B1
 P 4275 6555
-F 0 "#PWR?" H 4275 6405 50  0001 C CNN
+F 0 "#PWR0178" H 4275 6405 50  0001 C CNN
 F 1 "+12V" H 4275 6695 50  0000 C CNN
 F 2 "" H 4275 6555 50  0000 C CNN
 F 3 "" H 4275 6555 50  0000 C CNN
@@ -675,10 +597,10 @@ Wire Wire Line
 	6205 3090 6310 3090
 Connection ~ 6205 3090
 $Comp
-L power:+12V #PWR?
+L power:+12V #PWR0179
 U 1 1 5D337BB1
 P 6705 2240
-F 0 "#PWR?" H 6705 2090 50  0001 C CNN
+F 0 "#PWR0179" H 6705 2090 50  0001 C CNN
 F 1 "+12V" H 6720 2413 50  0000 C CNN
 F 2 "" H 6705 2240 50  0001 C CNN
 F 3 "" H 6705 2240 50  0001 C CNN
@@ -686,10 +608,10 @@ F 3 "" H 6705 2240 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+12V #PWR?
+L power:+12V #PWR0180
 U 1 1 5D337C33
 P 7095 2445
-F 0 "#PWR?" H 7095 2295 50  0001 C CNN
+F 0 "#PWR0180" H 7095 2295 50  0001 C CNN
 F 1 "+12V" H 7110 2618 50  0000 C CNN
 F 2 "" H 7095 2445 50  0001 C CNN
 F 3 "" H 7095 2445 50  0001 C CNN
@@ -697,10 +619,10 @@ F 3 "" H 7095 2445 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:-12V #PWR?
+L power:-12V #PWR0181
 U 1 1 5D337CF6
 P 7095 2710
-F 0 "#PWR?" H 7095 2810 50  0001 C CNN
+F 0 "#PWR0181" H 7095 2810 50  0001 C CNN
 F 1 "-12V" H 7110 2883 50  0000 C CNN
 F 2 "" H 7095 2710 50  0001 C CNN
 F 3 "" H 7095 2710 50  0001 C CNN
@@ -708,10 +630,10 @@ F 3 "" H 7095 2710 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L power:-12V #PWR?
+L power:-12V #PWR0182
 U 1 1 5D337DE8
 P 6705 2910
-F 0 "#PWR?" H 6705 3010 50  0001 C CNN
+F 0 "#PWR0182" H 6705 3010 50  0001 C CNN
 F 1 "-12V" H 6720 3083 50  0000 C CNN
 F 2 "" H 6705 2910 50  0001 C CNN
 F 3 "" H 6705 2910 50  0001 C CNN
@@ -793,10 +715,10 @@ Wire Wire Line
 	6185 4380 6290 4380
 Connection ~ 6185 4380
 $Comp
-L power:+12V #PWR?
+L power:+12V #PWR0183
 U 1 1 5D33E00D
 P 6685 3530
-F 0 "#PWR?" H 6685 3380 50  0001 C CNN
+F 0 "#PWR0183" H 6685 3380 50  0001 C CNN
 F 1 "+12V" H 6700 3703 50  0000 C CNN
 F 2 "" H 6685 3530 50  0001 C CNN
 F 3 "" H 6685 3530 50  0001 C CNN
@@ -804,10 +726,10 @@ F 3 "" H 6685 3530 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+12V #PWR?
+L power:+12V #PWR0184
 U 1 1 5D33E013
 P 7075 3735
-F 0 "#PWR?" H 7075 3585 50  0001 C CNN
+F 0 "#PWR0184" H 7075 3585 50  0001 C CNN
 F 1 "+12V" H 7090 3908 50  0000 C CNN
 F 2 "" H 7075 3735 50  0001 C CNN
 F 3 "" H 7075 3735 50  0001 C CNN
@@ -815,10 +737,10 @@ F 3 "" H 7075 3735 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:-12V #PWR?
+L power:-12V #PWR0185
 U 1 1 5D33E019
 P 7075 4000
-F 0 "#PWR?" H 7075 4100 50  0001 C CNN
+F 0 "#PWR0185" H 7075 4100 50  0001 C CNN
 F 1 "-12V" H 7090 4173 50  0000 C CNN
 F 2 "" H 7075 4000 50  0001 C CNN
 F 3 "" H 7075 4000 50  0001 C CNN
@@ -826,10 +748,10 @@ F 3 "" H 7075 4000 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L power:-12V #PWR?
+L power:-12V #PWR0186
 U 1 1 5D33E01F
 P 6685 4200
-F 0 "#PWR?" H 6685 4300 50  0001 C CNN
+F 0 "#PWR0186" H 6685 4300 50  0001 C CNN
 F 1 "-12V" H 6700 4373 50  0000 C CNN
 F 2 "" H 6685 4200 50  0001 C CNN
 F 3 "" H 6685 4200 50  0001 C CNN
@@ -844,4 +766,43 @@ Wire Wire Line
 	6685 3530 6685 3570
 Wire Wire Line
 	7075 3735 7075 3765
+Wire Wire Line
+	3165 1675 3235 1675
+Wire Wire Line
+	3235 1675 3365 1675
+Connection ~ 3235 1675
+$Comp
+L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
+U 1 1 5D3EF0D6
+P 3135 1875
+F 0 "Q?" H 3326 1921 50  0000 L CNN
+F 1 "Q_NPN_BEC" H 3326 1830 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 3335 1975 50  0001 C CNN
+F 3 "" H 3135 1875 50  0001 C CNN
+	1    3135 1875
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2830 1875 2875 1875
+Wire Wire Line
+	2050 2075 2080 2075
+Text Label 2530 1675 1    60   ~ 0
+hf_in
+Wire Wire Line
+	2530 1675 2530 1875
+Connection ~ 2530 1875
+Wire Wire Line
+	2875 1875 2875 1700
+Connection ~ 2875 1875
+Wire Wire Line
+	2875 1875 2935 1875
+Text Label 2875 1700 0    60   ~ 0
+hf_p2
+Wire Wire Line
+	2080 2075 2080 1980
+Connection ~ 2080 2075
+Wire Wire Line
+	2080 2075 2100 2075
+Text Label 2080 1980 0    60   ~ 0
+hf_p3
 $EndSCHEMATC

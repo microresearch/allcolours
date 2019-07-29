@@ -26,10 +26,10 @@ F 3 "" H 1560 1280 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0187
 U 1 1 5D55E905
 P 1160 1380
-F 0 "#PWR?" H 1160 1130 50  0001 C CNN
+F 0 "#PWR0187" H 1160 1130 50  0001 C CNN
 F 1 "GND" H 1160 1230 50  0000 C CNN
 F 2 "" H 1160 1380 50  0000 C CNN
 F 3 "" H 1160 1380 50  0000 C CNN
@@ -58,10 +58,10 @@ F 3 "" H 3115 1240 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0188
 U 1 1 5D2438EC
 P 2715 1340
-F 0 "#PWR?" H 2715 1090 50  0001 C CNN
+F 0 "#PWR0188" H 2715 1090 50  0001 C CNN
 F 1 "GND" H 2715 1190 50  0000 C CNN
 F 2 "" H 2715 1340 50  0000 C CNN
 F 3 "" H 2715 1340 50  0000 C CNN
@@ -86,10 +86,10 @@ F 3 "" H 1730 2035 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0189
 U 1 1 5D243BA2
 P 1330 2135
-F 0 "#PWR?" H 1330 1885 50  0001 C CNN
+F 0 "#PWR0189" H 1330 1885 50  0001 C CNN
 F 1 "GND" H 1330 1985 50  0000 C CNN
 F 2 "" H 1330 2135 50  0000 C CNN
 F 3 "" H 1330 2135 50  0000 C CNN
@@ -114,10 +114,10 @@ F 3 "" H 1720 2730 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0190
 U 1 1 5D243BB2
 P 1320 2830
-F 0 "#PWR?" H 1320 2580 50  0001 C CNN
+F 0 "#PWR0190" H 1320 2580 50  0001 C CNN
 F 1 "GND" H 1320 2680 50  0000 C CNN
 F 2 "" H 1320 2830 50  0000 C CNN
 F 3 "" H 1320 2830 50  0000 C CNN
@@ -142,10 +142,10 @@ F 3 "" H 1700 3580 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0191
 U 1 1 5D243EAB
 P 1300 3680
-F 0 "#PWR?" H 1300 3430 50  0001 C CNN
+F 0 "#PWR0191" H 1300 3430 50  0001 C CNN
 F 1 "GND" H 1300 3530 50  0000 C CNN
 F 2 "" H 1300 3680 50  0000 C CNN
 F 3 "" H 1300 3680 50  0000 C CNN
@@ -170,10 +170,10 @@ F 3 "" H 1690 4275 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0192
 U 1 1 5D243EBB
 P 1290 4375
-F 0 "#PWR?" H 1290 4125 50  0001 C CNN
+F 0 "#PWR0192" H 1290 4125 50  0001 C CNN
 F 1 "GND" H 1290 4225 50  0000 C CNN
 F 2 "" H 1290 4375 50  0000 C CNN
 F 3 "" H 1290 4375 50  0000 C CNN
@@ -198,10 +198,10 @@ F 3 "" H 3255 2045 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0193
 U 1 1 5D2445BE
 P 2855 2145
-F 0 "#PWR?" H 2855 1895 50  0001 C CNN
+F 0 "#PWR0193" H 2855 1895 50  0001 C CNN
 F 1 "GND" H 2855 1995 50  0000 C CNN
 F 2 "" H 2855 2145 50  0000 C CNN
 F 3 "" H 2855 2145 50  0000 C CNN
@@ -226,10 +226,10 @@ F 3 "" H 3245 2740 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0194
 U 1 1 5D2445CE
 P 2845 2840
-F 0 "#PWR?" H 2845 2590 50  0001 C CNN
+F 0 "#PWR0194" H 2845 2590 50  0001 C CNN
 F 1 "GND" H 2845 2690 50  0000 C CNN
 F 2 "" H 2845 2840 50  0000 C CNN
 F 3 "" H 2845 2840 50  0000 C CNN
@@ -254,10 +254,10 @@ F 3 "" H 3240 3525 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0195
 U 1 1 5D2449EF
 P 2840 3625
-F 0 "#PWR?" H 2840 3375 50  0001 C CNN
+F 0 "#PWR0195" H 2840 3375 50  0001 C CNN
 F 1 "GND" H 2840 3475 50  0000 C CNN
 F 2 "" H 2840 3625 50  0000 C CNN
 F 3 "" H 2840 3625 50  0000 C CNN
@@ -282,10 +282,10 @@ F 3 "" H 3230 4220 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0196
 U 1 1 5D2449FF
 P 2830 4320
-F 0 "#PWR?" H 2830 4070 50  0001 C CNN
+F 0 "#PWR0196" H 2830 4070 50  0001 C CNN
 F 1 "GND" H 2830 4170 50  0000 C CNN
 F 2 "" H 2830 4320 50  0000 C CNN
 F 3 "" H 2830 4320 50  0000 C CNN
@@ -310,10 +310,10 @@ F 3 "" H 1715 4995 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0197
 U 1 1 5D2459BA
 P 1315 5095
-F 0 "#PWR?" H 1315 4845 50  0001 C CNN
+F 0 "#PWR0197" H 1315 4845 50  0001 C CNN
 F 1 "GND" H 1315 4945 50  0000 C CNN
 F 2 "" H 1315 5095 50  0000 C CNN
 F 3 "" H 1315 5095 50  0000 C CNN
@@ -338,10 +338,10 @@ F 3 "" H 3255 4940 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0198
 U 1 1 5D2459CA
 P 2855 5040
-F 0 "#PWR?" H 2855 4790 50  0001 C CNN
+F 0 "#PWR0198" H 2855 4790 50  0001 C CNN
 F 1 "GND" H 2855 4890 50  0000 C CNN
 F 2 "" H 2855 5040 50  0000 C CNN
 F 3 "" H 2855 5040 50  0000 C CNN
@@ -366,10 +366,10 @@ F 3 "" H 1670 5885 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0199
 U 1 1 5D24A02D
 P 1270 5985
-F 0 "#PWR?" H 1270 5735 50  0001 C CNN
+F 0 "#PWR0199" H 1270 5735 50  0001 C CNN
 F 1 "GND" H 1270 5835 50  0000 C CNN
 F 2 "" H 1270 5985 50  0000 C CNN
 F 3 "" H 1270 5985 50  0000 C CNN
@@ -394,10 +394,10 @@ F 3 "" H 3210 5830 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0200
 U 1 1 5D24A03D
 P 2810 5930
-F 0 "#PWR?" H 2810 5680 50  0001 C CNN
+F 0 "#PWR0200" H 2810 5680 50  0001 C CNN
 F 1 "GND" H 2810 5780 50  0000 C CNN
 F 2 "" H 2810 5930 50  0000 C CNN
 F 3 "" H 2810 5930 50  0000 C CNN
@@ -422,10 +422,10 @@ F 3 "" H 1715 6615 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0201
 U 1 1 5D24AA28
 P 1315 6715
-F 0 "#PWR?" H 1315 6465 50  0001 C CNN
+F 0 "#PWR0201" H 1315 6465 50  0001 C CNN
 F 1 "GND" H 1315 6565 50  0000 C CNN
 F 2 "" H 1315 6715 50  0000 C CNN
 F 3 "" H 1315 6715 50  0000 C CNN
@@ -450,10 +450,10 @@ F 3 "" H 3255 6560 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0202
 U 1 1 5D24AA38
 P 2855 6660
-F 0 "#PWR?" H 2855 6410 50  0001 C CNN
+F 0 "#PWR0202" H 2855 6410 50  0001 C CNN
 F 1 "GND" H 2855 6510 50  0000 C CNN
 F 2 "" H 2855 6660 50  0000 C CNN
 F 3 "" H 2855 6660 50  0000 C CNN
@@ -478,10 +478,10 @@ F 3 "" H 4940 2035 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0203
 U 1 1 5D24C1A8
 P 4540 2135
-F 0 "#PWR?" H 4540 1885 50  0001 C CNN
+F 0 "#PWR0203" H 4540 1885 50  0001 C CNN
 F 1 "GND" H 4540 1985 50  0000 C CNN
 F 2 "" H 4540 2135 50  0000 C CNN
 F 3 "" H 4540 2135 50  0000 C CNN
@@ -506,10 +506,10 @@ F 3 "" H 4930 2730 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0204
 U 1 1 5D24C1B8
 P 4530 2830
-F 0 "#PWR?" H 4530 2580 50  0001 C CNN
+F 0 "#PWR0204" H 4530 2580 50  0001 C CNN
 F 1 "GND" H 4530 2680 50  0000 C CNN
 F 2 "" H 4530 2830 50  0000 C CNN
 F 3 "" H 4530 2830 50  0000 C CNN
@@ -534,10 +534,10 @@ F 3 "" H 4925 3515 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0205
 U 1 1 5D24C1C8
 P 4525 3615
-F 0 "#PWR?" H 4525 3365 50  0001 C CNN
+F 0 "#PWR0205" H 4525 3365 50  0001 C CNN
 F 1 "GND" H 4525 3465 50  0000 C CNN
 F 2 "" H 4525 3615 50  0000 C CNN
 F 3 "" H 4525 3615 50  0000 C CNN
@@ -562,10 +562,10 @@ F 3 "" H 4915 4210 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0206
 U 1 1 5D24C1D8
 P 4515 4310
-F 0 "#PWR?" H 4515 4060 50  0001 C CNN
+F 0 "#PWR0206" H 4515 4060 50  0001 C CNN
 F 1 "GND" H 4515 4160 50  0000 C CNN
 F 2 "" H 4515 4310 50  0000 C CNN
 F 3 "" H 4515 4310 50  0000 C CNN
@@ -592,10 +592,10 @@ F 3 "" H 7300 1965 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0207
 U 1 1 5D250DFA
 P 6900 2065
-F 0 "#PWR?" H 6900 1815 50  0001 C CNN
+F 0 "#PWR0207" H 6900 1815 50  0001 C CNN
 F 1 "GND" H 6900 1915 50  0000 C CNN
 F 2 "" H 6900 2065 50  0000 C CNN
 F 3 "" H 6900 2065 50  0000 C CNN
@@ -620,10 +620,10 @@ F 3 "" H 8825 1975 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0208
 U 1 1 5D250E0A
 P 8425 2075
-F 0 "#PWR?" H 8425 1825 50  0001 C CNN
+F 0 "#PWR0208" H 8425 1825 50  0001 C CNN
 F 1 "GND" H 8425 1925 50  0000 C CNN
 F 2 "" H 8425 2075 50  0000 C CNN
 F 3 "" H 8425 2075 50  0000 C CNN
@@ -648,10 +648,10 @@ F 3 "" H 10510 1965 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0209
 U 1 1 5D250E1A
 P 10110 2065
-F 0 "#PWR?" H 10110 1815 50  0001 C CNN
+F 0 "#PWR0209" H 10110 1815 50  0001 C CNN
 F 1 "GND" H 10110 1915 50  0000 C CNN
 F 2 "" H 10110 2065 50  0000 C CNN
 F 3 "" H 10110 2065 50  0000 C CNN
@@ -676,10 +676,10 @@ F 3 "" H 7340 2735 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0210
 U 1 1 5D25217E
 P 6940 2835
-F 0 "#PWR?" H 6940 2585 50  0001 C CNN
+F 0 "#PWR0210" H 6940 2585 50  0001 C CNN
 F 1 "GND" H 6940 2685 50  0000 C CNN
 F 2 "" H 6940 2835 50  0000 C CNN
 F 3 "" H 6940 2835 50  0000 C CNN
@@ -704,10 +704,10 @@ F 3 "" H 8865 2745 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0211
 U 1 1 5D25218E
 P 8465 2845
-F 0 "#PWR?" H 8465 2595 50  0001 C CNN
+F 0 "#PWR0211" H 8465 2595 50  0001 C CNN
 F 1 "GND" H 8465 2695 50  0000 C CNN
 F 2 "" H 8465 2845 50  0000 C CNN
 F 3 "" H 8465 2845 50  0000 C CNN
@@ -732,10 +732,10 @@ F 3 "" H 10550 2735 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0212
 U 1 1 5D25219E
 P 10150 2835
-F 0 "#PWR?" H 10150 2585 50  0001 C CNN
+F 0 "#PWR0212" H 10150 2585 50  0001 C CNN
 F 1 "GND" H 10150 2685 50  0000 C CNN
 F 2 "" H 10150 2835 50  0000 C CNN
 F 3 "" H 10150 2835 50  0000 C CNN
@@ -760,10 +760,10 @@ F 3 "" H 7355 3655 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0213
 U 1 1 5D253D50
 P 6955 3755
-F 0 "#PWR?" H 6955 3505 50  0001 C CNN
+F 0 "#PWR0213" H 6955 3505 50  0001 C CNN
 F 1 "GND" H 6955 3605 50  0000 C CNN
 F 2 "" H 6955 3755 50  0000 C CNN
 F 3 "" H 6955 3755 50  0000 C CNN
@@ -788,10 +788,10 @@ F 3 "" H 8895 3600 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0214
 U 1 1 5D253D60
 P 8495 3700
-F 0 "#PWR?" H 8495 3450 50  0001 C CNN
+F 0 "#PWR0214" H 8495 3450 50  0001 C CNN
 F 1 "GND" H 8495 3550 50  0000 C CNN
 F 2 "" H 8495 3700 50  0000 C CNN
 F 3 "" H 8495 3700 50  0000 C CNN
@@ -816,10 +816,10 @@ F 3 "" H 7290 4570 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0215
 U 1 1 5D255F8A
 P 6890 4670
-F 0 "#PWR?" H 6890 4420 50  0001 C CNN
+F 0 "#PWR0215" H 6890 4420 50  0001 C CNN
 F 1 "GND" H 6890 4520 50  0000 C CNN
 F 2 "" H 6890 4670 50  0000 C CNN
 F 3 "" H 6890 4670 50  0000 C CNN
@@ -844,10 +844,10 @@ F 3 "" H 8830 4515 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0216
 U 1 1 5D255F9A
 P 8430 4615
-F 0 "#PWR?" H 8430 4365 50  0001 C CNN
+F 0 "#PWR0216" H 8430 4365 50  0001 C CNN
 F 1 "GND" H 8430 4465 50  0000 C CNN
 F 2 "" H 8430 4615 50  0000 C CNN
 F 3 "" H 8430 4615 50  0000 C CNN
@@ -872,10 +872,10 @@ F 3 "" H 7240 5305 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0217
 U 1 1 5D257DE3
 P 6840 5405
-F 0 "#PWR?" H 6840 5155 50  0001 C CNN
+F 0 "#PWR0217" H 6840 5155 50  0001 C CNN
 F 1 "GND" H 6840 5255 50  0000 C CNN
 F 2 "" H 6840 5405 50  0000 C CNN
 F 3 "" H 6840 5405 50  0000 C CNN
@@ -900,10 +900,10 @@ F 3 "" H 8765 5315 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0218
 U 1 1 5D257DF3
 P 8365 5415
-F 0 "#PWR?" H 8365 5165 50  0001 C CNN
+F 0 "#PWR0218" H 8365 5165 50  0001 C CNN
 F 1 "GND" H 8365 5265 50  0000 C CNN
 F 2 "" H 8365 5415 50  0000 C CNN
 F 3 "" H 8365 5415 50  0000 C CNN
@@ -928,10 +928,10 @@ F 3 "" H 10450 5305 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0219
 U 1 1 5D257E03
 P 10050 5405
-F 0 "#PWR?" H 10050 5155 50  0001 C CNN
+F 0 "#PWR0219" H 10050 5155 50  0001 C CNN
 F 1 "GND" H 10050 5255 50  0000 C CNN
 F 2 "" H 10050 5405 50  0000 C CNN
 F 3 "" H 10050 5405 50  0000 C CNN
@@ -956,10 +956,10 @@ F 3 "" H 7280 6075 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0220
 U 1 1 5D257E13
 P 6880 6175
-F 0 "#PWR?" H 6880 5925 50  0001 C CNN
+F 0 "#PWR0220" H 6880 5925 50  0001 C CNN
 F 1 "GND" H 6880 6025 50  0000 C CNN
 F 2 "" H 6880 6175 50  0000 C CNN
 F 3 "" H 6880 6175 50  0000 C CNN
@@ -984,10 +984,10 @@ F 3 "" H 8805 6085 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0221
 U 1 1 5D257E23
 P 8405 6185
-F 0 "#PWR?" H 8405 5935 50  0001 C CNN
+F 0 "#PWR0221" H 8405 5935 50  0001 C CNN
 F 1 "GND" H 8405 6035 50  0000 C CNN
 F 2 "" H 8405 6185 50  0000 C CNN
 F 3 "" H 8405 6185 50  0000 C CNN
@@ -1012,10 +1012,10 @@ F 3 "" H 10490 6075 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0222
 U 1 1 5D257E33
 P 10090 6175
-F 0 "#PWR?" H 10090 5925 50  0001 C CNN
+F 0 "#PWR0222" H 10090 5925 50  0001 C CNN
 F 1 "GND" H 10090 6025 50  0000 C CNN
 F 2 "" H 10090 6175 50  0000 C CNN
 F 3 "" H 10090 6175 50  0000 C CNN
@@ -1042,10 +1042,10 @@ F 3 "" H 6345 7185 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0223
 U 1 1 5D2472EE
 P 5945 7285
-F 0 "#PWR?" H 5945 7035 50  0001 C CNN
+F 0 "#PWR0223" H 5945 7035 50  0001 C CNN
 F 1 "GND" H 5945 7135 50  0000 C CNN
 F 2 "" H 5945 7285 50  0000 C CNN
 F 3 "" H 5945 7285 50  0000 C CNN
