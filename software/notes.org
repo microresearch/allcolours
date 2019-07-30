@@ -1,4 +1,4 @@
-* oder notes in comments:
+* older/// notes in comments or in hardware notes
 
 - CV in incoming bit or set of bits to shift and/or value for clock out, CV pulse in to lock/unlock, slew for clock out/cv in, extra as speed of shifting?
 
@@ -6,7 +6,7 @@
 - larger speed shifts for filter are important so maybe look at dividers and changing these with CV
 - knob mode for leak etc
 
-start to list modes// now there is NO DAC out!
+start to list modes
 
 1-> various shift register implementations in pulse/bit and speed as
 speed/skew CV/knob - OUT is pulse/bit and/or DAC out and OUT is 7490

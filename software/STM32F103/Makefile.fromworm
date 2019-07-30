@@ -1,0 +1,100 @@
+# System specifications - where are these used?
+F_CRYSTAL      = 8000000L
+F_CPU          = 72000000L
+SYSCLOCK       = SYSCLK_FREQ_72MHz
+FAMILY         = f10x
+DENSITY        = md
+MEMORY_MODE = flash
+
+#TOOL_PREFIX = /opt/ARM/arm-linaro-eabi-4.6
+TOOL_PREFIX = /root/ARM/gcc-arm-none-eabi-4_9-2015q2
+
+PRG_PREFIX = $(TOOL_PREFIX)/bin/arm-none-eabi-
+
+CC      = $(PRG_PREFIX)gcc
+LD      = $(PRG_PREFIX)gcc
+
+
+# Object files
+OBJECTS =
+
+# Linker script
+LDSCRIPT = stm32_flash.ld
+
+# -DTESTING option for wavetables...
+# we need -Os to keep size in limits
+
+CFLAGS  =  	-std=gnu99  \
+		-mthumb \
+		-c -lm -lc -fno-common -Os \
+		-mcpu=cortex-m3 \
+		-fno-unroll-loops
+
+AFLAGS  = -mlittle-endian -mthumb -mcpu=cortex-m3 -mthumb 
+#LFLAGS  = -Map main.map -nostartfiles -T $(LDSCRIPT)
+#LFLAGS  = -T $(LDSCRIPT) -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -L/root/CMSIS/FFTEX
+#LFLAGS_END = -larm_cortexM4lf_math -Wl,--gc-sections,-Map=myfile.map -lm -lc
+
+#LFLAGS  = -T $(LDSCRIPT) -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16  -L$(LIB_PREFIX) 
+#LFLAGS_END = -lm -lc -Wl,--gc-sections,-Map=myfile.map
+
+LFLAGS  = -T $(LDSCRIPT) -mcpu=cortex-m3 -mthumb
+#LFLAGS_END = -larm_cortexM4lf_math -ldsplib_lm4f -Wl,--gc-sections,-Map=myfile.map -lm -lc
+LFLAGS_END =  -Wl,--gc-sections,-Map=myfile.map -lm -lc
+
+# Executables
+ARCH = arm-none-eabi
+#CC = $(ARCH)-gcc
+#LD = $(ARCH)-ld -v
+
+OBJCPY      = $(PRG_PREFIX)objcopy
+OBJDMP      = $(PRG_PREFIX)objdump
+
+AS = $(PRG_PREFIX)as
+#OBJCPY = $(ARCH)-objcopy
+#OBJDMP = $(ARCH)-objdump
+GDB = $(PRG_PREFIX)-gdb
+
+#CPFLAGS = --output-target=binary -j .text -j .data
+CPFLAGS = --output-target=binary
+ODFLAGS	= -x --syms
+
+FLASH = st-flash
+
+# Targets
+all: main.bin
+
+clean:
+	-rm -f $(OBJECTS) *.lst *.elf *.bin *.map *.dmp
+
+flash: gdb_flash
+
+stlink_flash: main.bin
+	$(FLASH) write main.bin 0x08000000
+
+gdb_flash: main.elf
+	$(GDB) -x flash_cmd.gdb -batch
+
+disassemble: main.elf
+	$(OBJDMP) -dS main.elf > main.dis
+
+dist:
+	tar -c *.h *.c *.s Makefile *.cmd *.cfg openocd_doflash | gzip > darkint.zip
+
+main.ihex: main.elf
+	$(OBJCPY) --output-target=ihex main.elf main.ihex
+
+main.bin: main.elf 
+	$(OBJCPY) $(CPFLAGS) main.elf main.bin
+	$(OBJDMP) $(ODFLAGS) main.elf > main.dmp
+	ls -l main.elf main.bin
+
+main.elf: $(OBJECTS) $(LDSCRIPT)
+	$(LD) $(LFLAGS) -o main.elf $(OBJECTS) $(LFLAGS_END)
+
+startup_stm32f4xx.o: startup_stm32f4xx.s
+	$(AS) $(AFLAGS) startup_stm32f4xx.s -o startup_stm32f4xx.o > startup_stm32f4xx.lst
+
+%.o: %.c %.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
