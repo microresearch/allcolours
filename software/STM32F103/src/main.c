@@ -22,23 +22,44 @@ int main(void)
   EXTI_InitTypeDef EXTI_InitStructure;
   ADC_InitTypeDef ADC_InitStructure;
   DMA_InitTypeDef DMA_InitStructure;
-  uint16_t ADCBuffer[] = {0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA };
+  __IO uint16_t ADCBuffer[] = {0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA };
   SystemInit();
 
-  int x=0;
+  uint32_t x,acc=0;
 
   
   /////////////////////// keep map of I/O for schematic:::
-  
-  // 4x analogue inputs -   DAC=PA0-PA7, PB0, PB1 (pref using DMA?)
 
+  /*
+  - LF: PWM out, clock pin interrupt in, pulse in, 4xbit DAC out, 2 pulse out,
+
+  - HF: PWM out, clock pin interrupt in, pulse in, 3 pulse out
+
++ 4xcv adc - modeh CV, model cv, speedl cv, speedh cv 
+
++ LF timer loop/interrupt (which updates all CVs)
++ HF timer loop
+
+  ////////////////////////
+  */
+  
+  // we need to organise timers for 2x PWM for pins and 2x timers
+
+  //there are 4 timers -> 2 int->2 and 3 // global interrupts test, 2 pwm->1 and 4
+
+  
+  // 4x analogue inputs -   DAC=PA0-PA7, PB0, PB1 (pref using DMA?) -> seems to work so far
+  DMA_DeInit(DMA1_Channel1);
+
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
   DMA_InitStructure.DMA_BufferSize = 4;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCBuffer;
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&ADCBuffer[0];
   DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular; //was so in WORM
+
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -46,11 +67,11 @@ int main(void)
   DMA_Init(DMA1_Channel1, &DMA_InitStructure);
  
   DMA_Cmd(DMA1_Channel1, ENABLE);
- 
+  
   RCC_ADCCLKConfig(RCC_PCLK2_Div6);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_ADC1, ENABLE);
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure); // in PA1
@@ -70,19 +91,19 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure); // in PA4
 
-  
+  ADC_DeInit(ADC1);
   ADC_InitStructure.ADC_ContinuousConvMode = ENABLE; // in worm was disable
-  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Left; // in worm is left
+  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Left; // in peaks and in worm is left
   ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
   ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
-  //  ADC_InitStructure.ADC_NbrOfChannel = 4; // unused in worm
+  ADC_InitStructure.ADC_NbrOfChannel = 4; // unused in worm
   ADC_InitStructure.ADC_ScanConvMode = ENABLE;
   ADC_Init(ADC1, &ADC_InitStructure);
  
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_1Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 2, ADC_SampleTime_1Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 3, ADC_SampleTime_1Cycles5); 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 4, ADC_SampleTime_1Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 2, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 3, ADC_SampleTime_239Cycles5); 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 4, ADC_SampleTime_239Cycles5);
 
   ADC_Cmd(ADC1, ENABLE);
   ADC_DMACmd(ADC1, ENABLE);
@@ -97,20 +118,23 @@ int main(void)
   
   // two PWM - fast (speed range- 2MHz->x) and slow (speed range???) on 2 pins
   // example for A0
-    
+  // convert to timer1 -> T1C1= PA8    
+
+  TIM_DeInit(TIM1);
+
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
  
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
  
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 16; // fastest gives 12 MHz our max for filter is 4 Mhz
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 1;
-  TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
+  TIM_TimeBase_InitStructure.TIM_Period = 1; // fastest gives 12 MHz our max for filter is 4 Mhz
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 32;
+  TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OC_InitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
@@ -119,16 +143,16 @@ int main(void)
   TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-  TIM_OC_InitStructure.TIM_Pulse = 4; // pulse size
-  TIM_OC1Init(TIM2, &TIM_OC_InitStructure); // T2C1E is pin A0!
- 
-  TIM_Cmd(TIM2, ENABLE);
-  
+  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
+  TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T2C1E is pin A0!
+  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+  TIM_Cmd(TIM1, ENABLE);
+  TIM_CtrlPWMOutputs(TIM1, ENABLE); // we needed this for timer1 to be added
   
   // 2 pin interrupts (falling edge)
   // test on pin 0 - port B - check where EXTI lines go in manual
   
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  /*  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
  
@@ -147,7 +171,8 @@ int main(void)
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
   NVIC_Init(&NVIC_InitStructure);
-
+  */
+  
   // timer interrupts x2 fastest and slow
 
   /*  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
@@ -179,6 +204,7 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
+
     while(1)
     {
       // test with a 32 bit shift register structure
@@ -187,13 +213,16 @@ int main(void)
       //      shift_register+=bit;         
       //      if (bit==1)      GPIOC->ODR = GPIO_Pin_13; // pin 13 on C - this one gives us 3.3 MHz with simple toggle -O3 compile
       //      else      GPIOC->ODR = 0;
-      //          GPIOC->ODR ^= GPIO_Pin_13;
-      //      TIM_TimeBase_InitStructure.TIM_Period = 2200+x; // fastest gives 12 MHz our max for filter is 4 Mhz - is this best way do this?
-      //      TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
-  TIM_TimeBase_InitStructure.TIM_Period = ADCBuffer[0]; // fastest gives 12 MHz our max for filter is 4 Mhz - is this best way do this?
-  TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
+  //  GPIOC->ODR ^= GPIO_Pin_13;
+  //  x++;
+  x=(ADCBuffer[0]);
+
+  acc = acc - (acc >> 4) + x; // smoothing
+  x=acc>>4;
+  TIM1->ARR = x;//period
+  TIM1->CCR1 = x/2; // pulse  
       //      x++;
-      //      if (x>10000) x=0;
-	  //            delay(5000000);
+  ///  if (x>2560) x=1280;
+  delay(50000); 
     }
 }
