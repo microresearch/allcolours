@@ -31,14 +31,17 @@ int main(void)
   /////////////////////// keep map of I/O for schematic:::
 
   /*
-  - LF: PWM out, clock pin interrupt in, pulse in, 4xbit DAC out, 2 pulse out,
+  - LF: PWM out-tim3c1->PB4, clock pin interrupt in->sayPB5-EXTI5, pulse in->PB6, 4xbit DAC out/continuous=PB9,10,11,12, 2 pulse out/cont=PB13,14
 
-  - HF: PWM out, clock pin interrupt in, pulse in, 3 pulse out
 
-+ 4xcv adc - modeh CV, model cv, speedl cv, speedh cv 
+  - HF: PWM out-tim1c1->PA8, clock pin interrupt in->PB7=EXTI7, pulse in->PB8//can be interrupt?, 3 pulse out/continuous=PC13/14/15
 
-+ LF timer loop/interrupt (which updates all CVs)
-+ HF timer loop
+[++ we could maybe have more pulses ins and outs, say 3x each on each side as we have room on panel maybe]
+
++ 4xcv adc - modeh CV, model cv, speedl cv, speedh cv = ADC0,1,2,3=PA0,1,2,3
+
++ LF timer loop/interrupt (which updates all CVs) =timer2
++ HF timer loop =timer3
 
   ////////////////////////
   */
@@ -71,22 +74,22 @@ int main(void)
   RCC_ADCCLKConfig(RCC_PCLK2_Div6);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_ADC1, ENABLE);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure); // in PA1
  
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure); // in PA2
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure); // in PA3
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure); // in PA4
@@ -100,10 +103,10 @@ int main(void)
   ADC_InitStructure.ADC_ScanConvMode = ENABLE;
   ADC_Init(ADC1, &ADC_InitStructure);
  
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_239Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 2, ADC_SampleTime_239Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 3, ADC_SampleTime_239Cycles5); 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 4, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 0, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_239Cycles5); 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 3, ADC_SampleTime_239Cycles5);
 
   ADC_Cmd(ADC1, ENABLE);
   ADC_DMACmd(ADC1, ENABLE);
@@ -160,7 +163,7 @@ int main(void)
  
   EXTI_InitStructure.EXTI_Line = EXTI_Line0;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling->
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
  
