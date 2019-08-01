@@ -1,0 +1,63 @@
+
+* NOTES
+
+- modeL and modeH knobs seperate
+- max 64 modes= 4PWM x 16SR
+
+* SR modes - low and high
+
+- length of SR (16 bits, 32 bits, x bits), shrink and extend, howdo we get to length? -> pulses count length????, speed cv is length with pulses as speed
+- leaky on/off (leaks on clock pulse so use with CV speed)
+- speed/clocking of SR is from CV, or speed follows pulse in/clock
+- toggle lock loop on clock/pulse in (speed CV only modes) - or always include it with AND or XOR?
+- entry into SR from pulse ins, or as LFSR (random)
+- entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
+- xors back in, no xors back in - and which xors? select by clock pulse?
+- sr as pulses or as bits (HF only?)
+
+- which bits form the usual DAC out and the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM) - wide only
+
+
+- recursion: clock in of SR is XOR or other logic with output but
+
+// HF SR: 32 stages max, LF: 16 or 24 max
+
+SR in timed interrupt:
+OR
+SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
+
+--> can we divide into pulse_in modes/speed_in modes
+
+clock/pulse in modes:
+
+cv/speed in modes:
+
+*combine both with speed as divider of clock/pulse in clock/pulse modes*
+
+what can always be selected: external bits are always ANDed in (pullup?)
+
+1- get bit in from pulse in, xor with last SR bit and shift out /output(length?)
+2- as above, bit leaks on pulse - cv only
+3- no xor, no leaks - circulation toggles - no in - cv only
+4- no xor, leaks - circulation toggles - no in - cv only
+////5- as pulses or as bits out - general option for hf or lf sides
+6- bits in from CV as ADC - pulse only
+7- LFSR: taps for each to give noise but with bits in ANDed
+8- length from cv - pulse only
+9- recursion: clock in of SR is XOR or other logic with output but
+10- leaks with pulses (how often?)
+11- toggle circulation with CV somehow / threshold
+
+
+* pwm modes low and high
+
+each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
+
+1- pwm follows speed cv
+2- pwm follows DAC from SR (not same on LF as DAC bits) -> speed for DAC style updates is from speed cv 
+-3- or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
+4- pwms follow clock pulse in for each
+
+* modes tech
+
+values in array of pointers to avoid any switch routines

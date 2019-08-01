@@ -837,7 +837,7 @@ F 3 "~" H 2900 3215 50  0001 C CNN
 	1    2900 3215
 	1    0    0    -1  
 $EndComp
-Text Notes -600 5140 0    157  ~ 0
+Text Notes 1190 6115 0    157  ~ 0
 12V/3.3V/5V/10V supply/-10v ref
 Wire Wire Line
 	935  3560 935  3615
