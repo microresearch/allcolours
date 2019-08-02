@@ -98,10 +98,10 @@ Text Notes 845  750  0    118  ~ 0
 Text Notes 720  1755 0    118  ~ 0
 HF\n
 $Comp
-L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
+L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q16
 U 1 1 5D3E8088
 P 2215 6720
-F 0 "Q?" H 2406 6766 50  0000 L CNN
+F 0 "Q16" H 2406 6766 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 2485 7015 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 2415 6820 50  0001 C CNN
 F 3 "" H 2215 6720 50  0001 C CNN
@@ -109,10 +109,10 @@ F 3 "" H 2215 6720 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R107
 U 1 1 5D3E8AC4
 P 2510 6520
-F 0 "R?" V 2590 6520 50  0000 C CNN
+F 0 "R107" V 2590 6520 50  0000 C CNN
 F 1 "47K" V 2515 6515 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 2440 6520 50  0001 C CNN
 F 3 "" H 2510 6520 50  0000 C CNN
@@ -131,10 +131,10 @@ F 3 "" H 2315 6955 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:Q_PNP_BEC Q?
+L Device:Q_PNP_BEC Q17
 U 1 1 5D3EA0E5
 P 2935 6520
-F 0 "Q?" H 3126 6474 50  0000 L CNN
+F 0 "Q17" H 3126 6474 50  0000 L CNN
 F 1 "Q_PNP_BEC" H 3125 6330 50  0000 L CNN
 F 2 "" H 3135 6620 50  0001 C CNN
 F 3 "~" H 2935 6520 50  0001 C CNN
@@ -144,10 +144,10 @@ $EndComp
 Text Notes 2175 6390 0    60   ~ 0
 MMBT3906BEC
 $Comp
-L Device:Q_PNP_BEC Q?
+L Device:Q_PNP_BEC Q19
 U 1 1 5D3EAD6B
 P 3235 6795
-F 0 "Q?" H 3426 6749 50  0000 L CNN
+F 0 "Q19" H 3426 6749 50  0000 L CNN
 F 1 "Q_PNP_BEC" H 3426 6840 50  0000 L CNN
 F 2 "" H 3435 6895 50  0001 C CNN
 F 3 "~" H 3235 6795 50  0001 C CNN
@@ -197,10 +197,10 @@ Wire Wire Line
 Wire Wire Line
 	3335 6550 3335 6595
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R109
 U 1 1 5D3EC8D9
 P 3335 7180
-F 0 "R?" V 3415 7180 50  0000 C CNN
+F 0 "R109" V 3415 7180 50  0000 C CNN
 F 1 "47K" V 3340 7175 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 3265 7180 50  0001 C CNN
 F 3 "" H 3335 7180 50  0000 C CNN
@@ -212,10 +212,10 @@ Wire Wire Line
 Text Notes 3440 7240 0    60   ~ 0
 out
 $Comp
-L allcolours-rescue:C-device-allcolours-rescue C?
+L allcolours-rescue:C-device-allcolours-rescue C67
 U 1 1 5D3EF0AE
 P 3515 1675
-F 0 "C?" H 3540 1775 50  0000 L CNN
+F 0 "C67" H 3540 1775 50  0000 L CNN
 F 1 "1NF" H 3540 1575 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805" H 3553 1525 50  0001 C CNN
 F 3 "" H 3515 1675 50  0000 C CNN
@@ -234,10 +234,10 @@ F 3 "" H 3235 2130 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R108
 U 1 1 5D3EF0C2
 P 3165 1475
-F 0 "R?" V 3245 1475 50  0000 C CNN
+F 0 "R108" V 3245 1475 50  0000 C CNN
 F 1 "33K" V 3165 1475 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 3095 1475 50  0001 C CNN
 F 3 "" H 3165 1475 50  0000 C CNN
@@ -273,10 +273,10 @@ F 3 "" H 4060 1930 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R111
 U 1 1 5D3EF88E
 P 3990 1275
-F 0 "R?" V 4070 1275 50  0000 C CNN
+F 0 "R111" V 4070 1275 50  0000 C CNN
 F 1 "33K" V 3990 1275 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 3920 1275 50  0001 C CNN
 F 3 "" H 3990 1275 50  0000 C CNN
@@ -306,10 +306,10 @@ Wire Wire Line
 	3990 1475 4060 1475
 Connection ~ 4060 1475
 $Comp
-L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
+L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q21
 U 1 1 5D3EF8A2
 P 3960 1675
-F 0 "Q?" H 4151 1721 50  0000 L CNN
+F 0 "Q21" H 4151 1721 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 4151 1630 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 4160 1775 50  0001 C CNN
 F 3 "" H 3960 1675 50  0001 C CNN
@@ -329,22 +329,22 @@ Wire Wire Line
 Connection ~ 3705 1675
 Wire Wire Line
 	3705 1675 3760 1675
-Text Label 3705 1455 1    60   ~ 0
+Text Label 3705 1455 2    60   ~ 0
 hf_p1
 Wire Wire Line
 	4190 2030 4415 2030
 Connection ~ 4190 2030
 Wire Wire Line
 	4190 2030 4190 1475
-Text Label 4415 2025 0    60   ~ 0
+Text Label 4415 2030 0    60   ~ 0
 hf_out
 Text Notes 890  6045 0    118  ~ 0
 x2 lf and hf - re-done but maybe some value change
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R106
 U 1 1 5D26F9A1
 P 1955 6525
-F 0 "R?" V 2035 6525 50  0000 C CNN
+F 0 "R106" V 2035 6525 50  0000 C CNN
 F 1 "1M" V 1960 6520 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1885 6525 50  0001 C CNN
 F 3 "" H 1955 6525 50  0000 C CNN
@@ -354,10 +354,10 @@ $EndComp
 Wire Wire Line
 	2315 6520 2360 6520
 $Comp
-L Device:Q_PNP_BEC Q?
+L Device:Q_PNP_BEC Q15
 U 1 1 5D26FCD3
 P 1855 6960
-F 0 "Q?" H 2046 6914 50  0000 L CNN
+F 0 "Q15" H 2046 6914 50  0000 L CNN
 F 1 "Q_PNP_BEC" H 2165 7230 50  0000 L CNN
 F 2 "" H 2055 7060 50  0001 C CNN
 F 3 "~" H 1855 6960 50  0001 C CNN
@@ -385,10 +385,10 @@ $EndComp
 Wire Wire Line
 	1955 6335 1955 6375
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R104
 U 1 1 5D274F89
 P 1460 6960
-F 0 "R?" V 1540 6960 50  0000 C CNN
+F 0 "R104" V 1540 6960 50  0000 C CNN
 F 1 "100K" V 1465 6955 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1390 6960 50  0001 C CNN
 F 3 "" H 1460 6960 50  0000 C CNN
@@ -398,10 +398,10 @@ $EndComp
 Wire Wire Line
 	1610 6960 1635 6960
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R105
 U 1 1 5D275C24
 P 1635 7110
-F 0 "R?" V 1715 7110 50  0000 C CNN
+F 0 "R105" V 1715 7110 50  0000 C CNN
 F 1 "1K" V 1640 7105 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1565 7110 50  0001 C CNN
 F 3 "" H 1635 7110 50  0000 C CNN
@@ -438,10 +438,10 @@ $EndComp
 Wire Wire Line
 	1955 7160 1955 7200
 $Comp
-L Device:Q_PNP_BEC Q?
+L Device:Q_PNP_BEC Q20
 U 1 1 5D2793CC
 P 3685 6800
-F 0 "Q?" H 3876 6754 50  0000 L CNN
+F 0 "Q20" H 3876 6754 50  0000 L CNN
 F 1 "Q_PNP_BEC" H 3876 6845 50  0000 L CNN
 F 2 "" H 3885 6900 50  0001 C CNN
 F 3 "~" H 3685 6800 50  0001 C CNN
@@ -462,10 +462,10 @@ $EndComp
 Wire Wire Line
 	3785 6555 3785 6600
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R110
 U 1 1 5D2793DA
 P 3785 7185
-F 0 "R?" V 3865 7185 50  0000 C CNN
+F 0 "R110" V 3865 7185 50  0000 C CNN
 F 1 "47K" V 3790 7180 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 3715 7185 50  0001 C CNN
 F 3 "" H 3785 7185 50  0000 C CNN
@@ -477,10 +477,10 @@ Wire Wire Line
 Text Notes 3890 7245 0    60   ~ 0
 out\n
 $Comp
-L Device:Q_PNP_BEC Q?
+L Device:Q_PNP_BEC Q22
 U 1 1 5D27A2AA
 P 4175 6800
-F 0 "Q?" H 4366 6754 50  0000 L CNN
+F 0 "Q22" H 4366 6754 50  0000 L CNN
 F 1 "Q_PNP_BEC" H 4366 6845 50  0000 L CNN
 F 2 "" H 4375 6900 50  0001 C CNN
 F 3 "~" H 4175 6800 50  0001 C CNN
@@ -501,10 +501,10 @@ $EndComp
 Wire Wire Line
 	4275 6555 4275 6600
 $Comp
-L allcolours-rescue:R-device-allcolours-rescue R?
+L allcolours-rescue:R-device-allcolours-rescue R112
 U 1 1 5D27A2B8
 P 4275 7185
-F 0 "R?" V 4355 7185 50  0000 C CNN
+F 0 "R112" V 4355 7185 50  0000 C CNN
 F 1 "47K" V 4280 7180 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 4205 7185 50  0001 C CNN
 F 3 "" H 4275 7185 50  0000 C CNN
@@ -516,266 +516,262 @@ Wire Wire Line
 Text Notes 4380 7245 0    60   ~ 0
 out
 Wire Wire Line
-	3065 6795 3065 6985
-Wire Wire Line
 	3485 6985 3485 6800
 Wire Wire Line
 	3970 6985 3970 6800
 Wire Wire Line
 	3970 6800 3975 6800
-Wire Wire Line
-	3065 6985 3485 6985
 Connection ~ 3485 6985
 Wire Wire Line
 	3485 6985 3970 6985
-Text Notes 5110 1890 0    157  ~ 0
+Text Notes 5730 910  0    157  ~ 0
 buffers x4 in and out x2
 $Comp
-L Amplifier_Operational:TL082 U?
+L Amplifier_Operational:TL082 U22
 U 1 1 5D32DA27
-P 5915 2620
-F 0 "U?" H 5915 2987 50  0000 C CNN
-F 1 "TL082" H 5915 2896 50  0000 C CNN
-F 2 "" H 5915 2620 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5915 2620 50  0001 C CNN
-	1    5915 2620
+P 6535 1640
+F 0 "U22" H 6535 2007 50  0000 C CNN
+F 1 "TL082" H 6535 1916 50  0000 C CNN
+F 2 "" H 6535 1640 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6535 1640 50  0001 C CNN
+	1    6535 1640
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amplifier_Operational:TL082 U?
+L Amplifier_Operational:TL082 U13
 U 2 1 5D32DB44
-P 5905 3090
-F 0 "U?" H 5905 3457 50  0000 C CNN
-F 1 "TL082" H 5905 3366 50  0000 C CNN
-F 2 "" H 5905 3090 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5905 3090 50  0001 C CNN
-	2    5905 3090
+P 6525 2110
+F 0 "U13" H 6525 2477 50  0000 C CNN
+F 1 "TL082" H 6525 2386 50  0000 C CNN
+F 2 "" H 6525 2110 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6525 2110 50  0001 C CNN
+	2    6525 2110
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amplifier_Operational:TL082 U?
+L Amplifier_Operational:TL082 U21
 U 3 1 5D32EC65
-P 6805 2580
-F 0 "U?" H 6763 2626 50  0000 L CNN
-F 1 "TL082" H 6763 2535 50  0000 L CNN
-F 2 "" H 6805 2580 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6805 2580 50  0001 C CNN
-	3    6805 2580
+P 8870 1645
+F 0 "U21" H 8828 1691 50  0000 L CNN
+F 1 "TL082" H 8828 1600 50  0000 L CNN
+F 2 "" H 8870 1645 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 8870 1645 50  0001 C CNN
+	3    8870 1645
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C_Small C?
+L Device:C_Small C69
 U 1 1 5D32F02B
-P 7095 2575
-F 0 "C?" H 7187 2621 50  0000 L CNN
-F 1 "C_Small" H 7187 2530 50  0000 L CNN
-F 2 "" H 7095 2575 50  0001 C CNN
-F 3 "~" H 7095 2575 50  0001 C CNN
-	1    7095 2575
+P 9160 1640
+F 0 "C69" H 9252 1686 50  0000 L CNN
+F 1 "C_Small" H 9252 1595 50  0000 L CNN
+F 2 "" H 9160 1640 50  0001 C CNN
+F 3 "~" H 9160 1640 50  0001 C CNN
+	1    9160 1640
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5615 2860 6215 2860
+	6235 1880 6835 1880
 Wire Wire Line
-	6215 2860 6215 2620
+	6835 1880 6835 1640
 Wire Wire Line
-	5615 2720 5615 2860
+	6235 1740 6235 1880
 Wire Wire Line
-	5605 3190 5605 3315
+	6225 2210 6225 2335
 Wire Wire Line
-	5605 3315 6205 3315
+	6225 2335 6825 2335
 Wire Wire Line
-	6205 3315 6205 3090
+	6825 2335 6825 2110
 Wire Wire Line
-	5615 2520 5505 2520
+	6235 1540 6125 1540
 Wire Wire Line
-	5605 2990 5515 2990
+	6225 2010 6135 2010
 Wire Wire Line
-	6215 2620 6295 2620
-Connection ~ 6215 2620
+	6835 1640 6915 1640
+Connection ~ 6835 1640
 Wire Wire Line
-	6205 3090 6310 3090
-Connection ~ 6205 3090
+	6825 2110 6930 2110
+Connection ~ 6825 2110
 $Comp
 L power:+12V #PWR0179
 U 1 1 5D337BB1
-P 6705 2240
-F 0 "#PWR0179" H 6705 2090 50  0001 C CNN
-F 1 "+12V" H 6720 2413 50  0000 C CNN
-F 2 "" H 6705 2240 50  0001 C CNN
-F 3 "" H 6705 2240 50  0001 C CNN
-	1    6705 2240
+P 8770 1305
+F 0 "#PWR0179" H 8770 1155 50  0001 C CNN
+F 1 "+12V" H 8785 1478 50  0000 C CNN
+F 2 "" H 8770 1305 50  0001 C CNN
+F 3 "" H 8770 1305 50  0001 C CNN
+	1    8770 1305
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+12V #PWR0180
 U 1 1 5D337C33
-P 7095 2445
-F 0 "#PWR0180" H 7095 2295 50  0001 C CNN
-F 1 "+12V" H 7110 2618 50  0000 C CNN
-F 2 "" H 7095 2445 50  0001 C CNN
-F 3 "" H 7095 2445 50  0001 C CNN
-	1    7095 2445
+P 9160 1510
+F 0 "#PWR0180" H 9160 1360 50  0001 C CNN
+F 1 "+12V" H 9175 1683 50  0000 C CNN
+F 2 "" H 9160 1510 50  0001 C CNN
+F 3 "" H 9160 1510 50  0001 C CNN
+	1    9160 1510
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:-12V #PWR0181
 U 1 1 5D337CF6
-P 7095 2710
-F 0 "#PWR0181" H 7095 2810 50  0001 C CNN
-F 1 "-12V" H 7110 2883 50  0000 C CNN
-F 2 "" H 7095 2710 50  0001 C CNN
-F 3 "" H 7095 2710 50  0001 C CNN
-	1    7095 2710
+P 9160 1775
+F 0 "#PWR0181" H 9160 1875 50  0001 C CNN
+F 1 "-12V" H 9175 1948 50  0000 C CNN
+F 2 "" H 9160 1775 50  0001 C CNN
+F 3 "" H 9160 1775 50  0001 C CNN
+	1    9160 1775
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:-12V #PWR0182
 U 1 1 5D337DE8
-P 6705 2910
-F 0 "#PWR0182" H 6705 3010 50  0001 C CNN
-F 1 "-12V" H 6720 3083 50  0000 C CNN
-F 2 "" H 6705 2910 50  0001 C CNN
-F 3 "" H 6705 2910 50  0001 C CNN
-	1    6705 2910
+P 8770 1975
+F 0 "#PWR0182" H 8770 2075 50  0001 C CNN
+F 1 "-12V" H 8785 2148 50  0000 C CNN
+F 2 "" H 8770 1975 50  0001 C CNN
+F 3 "" H 8770 1975 50  0001 C CNN
+	1    8770 1975
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	7095 2675 7095 2710
+	9160 1740 9160 1775
 Wire Wire Line
-	6705 2880 6705 2910
+	8770 1945 8770 1975
 Wire Wire Line
-	6705 2240 6705 2280
+	8770 1305 8770 1345
 Wire Wire Line
-	7095 2445 7095 2475
+	9160 1510 9160 1540
 $Comp
-L Amplifier_Operational:TL082 U?
+L Amplifier_Operational:TL082 U21
 U 1 1 5D33DFE5
-P 5895 3910
-F 0 "U?" H 5895 4277 50  0000 C CNN
-F 1 "TL082" H 5895 4186 50  0000 C CNN
-F 2 "" H 5895 3910 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5895 3910 50  0001 C CNN
-	1    5895 3910
+P 6515 2930
+F 0 "U21" H 6515 3297 50  0000 C CNN
+F 1 "TL082" H 6515 3206 50  0000 C CNN
+F 2 "" H 6515 2930 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6515 2930 50  0001 C CNN
+	1    6515 2930
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amplifier_Operational:TL082 U?
+L Amplifier_Operational:TL082 U11
 U 2 1 5D33DFEC
-P 5885 4380
-F 0 "U?" H 5885 4747 50  0000 C CNN
-F 1 "TL082" H 5885 4656 50  0000 C CNN
-F 2 "" H 5885 4380 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5885 4380 50  0001 C CNN
-	2    5885 4380
+P 6505 3400
+F 0 "U11" H 6505 3767 50  0000 C CNN
+F 1 "TL082" H 6505 3676 50  0000 C CNN
+F 2 "" H 6505 3400 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6505 3400 50  0001 C CNN
+	2    6505 3400
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amplifier_Operational:TL082 U?
+L Amplifier_Operational:TL082 U20
 U 3 1 5D33DFF3
-P 6785 3870
-F 0 "U?" H 6743 3916 50  0000 L CNN
-F 1 "TL082" H 6743 3825 50  0000 L CNN
-F 2 "" H 6785 3870 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6785 3870 50  0001 C CNN
-	3    6785 3870
+P 8850 2935
+F 0 "U20" H 8808 2981 50  0000 L CNN
+F 1 "TL082" H 8808 2890 50  0000 L CNN
+F 2 "" H 8850 2935 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 8850 2935 50  0001 C CNN
+	3    8850 2935
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C_Small C?
+L Device:C_Small C68
 U 1 1 5D33DFFA
-P 7075 3865
-F 0 "C?" H 7167 3911 50  0000 L CNN
-F 1 "C_Small" H 7167 3820 50  0000 L CNN
-F 2 "" H 7075 3865 50  0001 C CNN
-F 3 "~" H 7075 3865 50  0001 C CNN
-	1    7075 3865
+P 9140 2930
+F 0 "C68" H 9232 2976 50  0000 L CNN
+F 1 "C_Small" H 9232 2885 50  0000 L CNN
+F 2 "" H 9140 2930 50  0001 C CNN
+F 3 "~" H 9140 2930 50  0001 C CNN
+	1    9140 2930
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5595 4150 6195 4150
+	6215 3170 6815 3170
 Wire Wire Line
-	6195 4150 6195 3910
+	6815 3170 6815 2930
 Wire Wire Line
-	5595 4010 5595 4150
+	6215 3030 6215 3170
 Wire Wire Line
-	5585 4480 5585 4605
+	6205 3500 6205 3625
 Wire Wire Line
-	5585 4605 6185 4605
+	6205 3625 6805 3625
 Wire Wire Line
-	6185 4605 6185 4380
+	6805 3625 6805 3400
 Wire Wire Line
-	5595 3810 5485 3810
+	6215 2830 6105 2830
 Wire Wire Line
-	5585 4280 5495 4280
+	6205 3300 6115 3300
 Wire Wire Line
-	6195 3910 6275 3910
-Connection ~ 6195 3910
+	6815 2930 6895 2930
+Connection ~ 6815 2930
 Wire Wire Line
-	6185 4380 6290 4380
-Connection ~ 6185 4380
+	6805 3400 6910 3400
+Connection ~ 6805 3400
 $Comp
 L power:+12V #PWR0183
 U 1 1 5D33E00D
-P 6685 3530
-F 0 "#PWR0183" H 6685 3380 50  0001 C CNN
-F 1 "+12V" H 6700 3703 50  0000 C CNN
-F 2 "" H 6685 3530 50  0001 C CNN
-F 3 "" H 6685 3530 50  0001 C CNN
-	1    6685 3530
+P 8750 2595
+F 0 "#PWR0183" H 8750 2445 50  0001 C CNN
+F 1 "+12V" H 8765 2768 50  0000 C CNN
+F 2 "" H 8750 2595 50  0001 C CNN
+F 3 "" H 8750 2595 50  0001 C CNN
+	1    8750 2595
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+12V #PWR0184
 U 1 1 5D33E013
-P 7075 3735
-F 0 "#PWR0184" H 7075 3585 50  0001 C CNN
-F 1 "+12V" H 7090 3908 50  0000 C CNN
-F 2 "" H 7075 3735 50  0001 C CNN
-F 3 "" H 7075 3735 50  0001 C CNN
-	1    7075 3735
+P 9140 2800
+F 0 "#PWR0184" H 9140 2650 50  0001 C CNN
+F 1 "+12V" H 9155 2973 50  0000 C CNN
+F 2 "" H 9140 2800 50  0001 C CNN
+F 3 "" H 9140 2800 50  0001 C CNN
+	1    9140 2800
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:-12V #PWR0185
 U 1 1 5D33E019
-P 7075 4000
-F 0 "#PWR0185" H 7075 4100 50  0001 C CNN
-F 1 "-12V" H 7090 4173 50  0000 C CNN
-F 2 "" H 7075 4000 50  0001 C CNN
-F 3 "" H 7075 4000 50  0001 C CNN
-	1    7075 4000
+P 9140 3065
+F 0 "#PWR0185" H 9140 3165 50  0001 C CNN
+F 1 "-12V" H 9155 3238 50  0000 C CNN
+F 2 "" H 9140 3065 50  0001 C CNN
+F 3 "" H 9140 3065 50  0001 C CNN
+	1    9140 3065
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:-12V #PWR0186
 U 1 1 5D33E01F
-P 6685 4200
-F 0 "#PWR0186" H 6685 4300 50  0001 C CNN
-F 1 "-12V" H 6700 4373 50  0000 C CNN
-F 2 "" H 6685 4200 50  0001 C CNN
-F 3 "" H 6685 4200 50  0001 C CNN
-	1    6685 4200
+P 8750 3265
+F 0 "#PWR0186" H 8750 3365 50  0001 C CNN
+F 1 "-12V" H 8765 3438 50  0000 C CNN
+F 2 "" H 8750 3265 50  0001 C CNN
+F 3 "" H 8750 3265 50  0001 C CNN
+	1    8750 3265
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	7075 3965 7075 4000
+	9140 3030 9140 3065
 Wire Wire Line
-	6685 4170 6685 4200
+	8750 3235 8750 3265
 Wire Wire Line
-	6685 3530 6685 3570
+	8750 2595 8750 2635
 Wire Wire Line
-	7075 3735 7075 3765
+	9140 2800 9140 2830
 Wire Wire Line
 	3165 1675 3235 1675
 Wire Wire Line
 	3235 1675 3365 1675
 Connection ~ 3235 1675
 $Comp
-L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q?
+L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q18
 U 1 1 5D3EF0D6
 P 3135 1875
-F 0 "Q?" H 3326 1921 50  0000 L CNN
+F 0 "Q18" H 3326 1921 50  0000 L CNN
 F 1 "Q_NPN_BEC" H 3326 1830 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 3335 1975 50  0001 C CNN
 F 3 "" H 3135 1875 50  0001 C CNN
@@ -805,4 +801,43 @@ Wire Wire Line
 	2080 2075 2100 2075
 Text Label 2080 1980 0    60   ~ 0
 hf_p3
+Text GLabel 1265 6195 0    60   Input ~ 0
+OUR_INL
+Text GLabel 1270 6960 0    60   Input ~ 0
+OUR_INH
+Text Label 6930 2110 0    60   ~ 0
+hf_in
+Text Label 6915 1640 0    60   ~ 0
+lf_in
+Wire Wire Line
+	1270 6960 1310 6960
+Text Label 6115 3300 2    60   ~ 0
+hf_out
+Text Label 6105 2830 2    60   ~ 0
+lf_out
+Text GLabel 6125 1540 0    60   Input ~ 0
+FILTLF_OUT
+Text GLabel 6135 2010 0    60   Input ~ 0
+FILTHF_OUT
+Text GLabel 6895 2930 2    60   Input ~ 0
+OURLF_OUT
+Text GLabel 6910 3400 2    60   Input ~ 0
+OURHF_OUT
+Wire Wire Line
+	3335 7330 3335 7410
+Text Label 3335 7410 0    60   ~ 0
+hf_p1
+Wire Wire Line
+	3785 7335 3785 7400
+Text Label 3785 7400 0    60   ~ 0
+hf_p2
+Wire Wire Line
+	4275 7335 4275 7395
+Text Label 4275 7395 0    60   ~ 0
+hf_p3
+Wire Wire Line
+	3035 6795 3035 6985
+Wire Wire Line
+	3035 6985 3485 6985
+Connection ~ 3035 6795
 $EndSCHEMATC
