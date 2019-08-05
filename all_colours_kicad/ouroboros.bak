@@ -336,7 +336,7 @@ Wire Wire Line
 Connection ~ 4190 2030
 Wire Wire Line
 	4190 2030 4190 1475
-Text Label 4415 2025 0    60   ~ 0
+Text Label 4415 2030 0    60   ~ 0
 hf_out
 Text Notes 890  6045 0    118  ~ 0
 x2 lf and hf - re-done but maybe some value change

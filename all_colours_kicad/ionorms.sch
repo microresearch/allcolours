@@ -434,7 +434,7 @@ F 3 "" H 1315 6715 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	1315 6715 1415 6715
-Text GLabel 1315 6415 0    60   Input ~ 0
+Text GLabel 1320 6415 0    60   Input ~ 0
 OUR_INL
 $Comp
 L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M16

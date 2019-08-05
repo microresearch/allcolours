@@ -31,12 +31,12 @@ int main(void)
   /////////////////////// keep map of I/O for schematic:::
 
   /*
-  - LF: PWM out-tim3c1->PB4, clock pin interrupt in->sayPB5-EXTI5, pulse in->PB6, 4xbit DAC out=PB9,10,11,12, 2 pulse out=inverted=PB13,14
+  - LF: PWM out-tim3c1->PB4X, clock pin interrupt in->sayPB5-EXTI5X, pulse in->PB6X, 4xbit DAC out=PB9,10,11,12X, 2X pulse out=inverted=PB13,14X
 
 
-  - HF: PWM out-tim1c1->PA8, clock pin interrupt in->PB7=EXTI7, pulse in->PB8//can be interrupt?, 3 pulse out=inverted=PC13/14/15
+  - HF: PWM out-tim1c1->PA8X, clock pin interrupt in->PB7=EXTI7X, pulse in->PB8//can be interrupt tooX, 3 pulse out=inverted=PC13/14/15X
 
-+ 4xcv adc - modeh CV, model cv, speedl cv, speedh cv = ADC0,1,2,3=PA0,1,2,3
++ 4xcv adc - modeh CV, model cv, speedl cv, speedh cv = ADC0,1,2,3=PA0,1,2,3 X
 
 + LF timer loop/interrupt (which updates all CVs) =timer2
 + HF timer loop =timer3
