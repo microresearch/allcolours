@@ -2148,10 +2148,10 @@ Wire Wire Line
 Wire Wire Line
 	9320 1890 9365 1890
 $Comp
-L power:+3.3V #PWR?
+L power:+3.3V #PWR0142
 U 1 1 5DD7AA32
 P 9310 750
-F 0 "#PWR?" H 9310 600 50  0001 C CNN
+F 0 "#PWR0142" H 9310 600 50  0001 C CNN
 F 1 "+3.3V" H 9325 923 50  0000 C CNN
 F 2 "" H 9310 750 50  0001 C CNN
 F 3 "" H 9310 750 50  0001 C CNN
@@ -2159,10 +2159,10 @@ F 3 "" H 9310 750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R_Small-device-allcolours-rescue R?
+L allcolours-rescue:R_Small-device-allcolours-rescue R67
 U 1 1 5DD7AC11
 P 9310 890
-F 0 "R?" H 9251 844 50  0000 R CNN
+F 0 "R67" H 9251 844 50  0000 R CNN
 F 1 "10K" H 9251 935 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 9310 890 50  0001 C CNN
 F 3 "" H 9310 890 50  0001 C CNN
@@ -2173,10 +2173,10 @@ Connection ~ 9310 990
 Wire Wire Line
 	9310 790  9310 750 
 $Comp
-L allcolours-rescue:C-device-allcolours-rescue C?
+L allcolours-rescue:C-device-allcolours-rescue C2
 U 1 1 5DD8BC28
 P 9075 1040
-F 0 "C?" V 9195 795 50  0000 C CNN
+F 0 "C2" V 9195 795 50  0000 C CNN
 F 1 "100N" V 9230 960 50  0000 C CNN
 F 2 "Capacitors_SMD:C_0805" H 9113 890 50  0001 C CNN
 F 3 "" H 9075 1040 50  0001 C CNN

@@ -4,6 +4,15 @@
 - the gate is a gatekeeper
 - self switching is the latch which is memory, positive feedback
 
+* for manual
+
+- start with Aurora Consurgens/rising dawn All Colours stuff (see notebook)
+- A suggested signal path high frequency noise channeled to the gatekeeper ... same for low frequency
+
+high and low, left and right, as above so below
+
+
+
 * 3/7
 
 clock as central - noise as clock, clock comparatored with noise,
@@ -271,7 +280,7 @@ IN - could reduce base resistor (47k) but seems to work ok with buffered signals
 
 * 21/6
 
-- for all colours smaller panel: 20hp, one side is black mask on bare
+- for all colours smaller panel: 20hp, one side is gold on bare
   pcb, other side is gold on black mask (or black mask on gold)
 
 filtered low freq pwm, 4 bit DAC (for both low and high sides),
