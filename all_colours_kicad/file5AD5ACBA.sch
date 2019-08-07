@@ -512,7 +512,7 @@ U 1 1 5D418906
 P 10065 2290
 F 0 "U16" H 10040 1170 50  0000 C CNN
 F 1 "STM32F103CBTx" H 10025 2070 50  0000 C CNN
-F 2 "Package_QFP:LQFP-48_7x7mm_P0.5mm" H 9465 890 50  0001 R CNN
+F 2 "Housings_QFP:LQFP-48_7x7mm_Pitch0.5mm" H 9465 890 50  0001 R CNN
 F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/CD00161566.pdf" H 10065 2290 50  0001 C CNN
 	1    10065 2290
 	1    0    0    -1  

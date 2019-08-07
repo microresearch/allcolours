@@ -131,13 +131,11 @@ F 3 "" H 3760 2310 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	3560 2160 3710 2160
-Wire Wire Line
 	3760 2460 3760 2610
 Wire Wire Line
 	3760 2610 4010 2610
 Connection ~ 4010 2610
-Text Notes 2650 590  0    60   ~ 0
+Text Notes 2500 735  0    60   ~ 0
 BANDPASS 
 Text Notes 5840 990  0    118  ~ 0
 inputs x1 for both filters
@@ -292,221 +290,116 @@ Text Label 6965 1595 0    79   ~ 0
 7490_IN_LOW
 Wire Wire Line
 	5415 1695 5265 1695
-Wire Wire Line
-	3560 2060 3710 2060
-Wire Wire Line
-	3710 2060 3710 2160
-Connection ~ 3710 2160
-Wire Wire Line
-	3710 2160 3760 2160
-Wire Wire Line
-	3760 2160 3810 2160
-Connection ~ 3760 2160
-Text Label 3810 2160 0    60   ~ 0
-COM
-Wire Wire Line
-	2060 2060 1910 2060
-Text Label 1910 2060 0    60   ~ 0
-COM
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7D3CA7
-P 1810 1960
+P 1570 1960
 AR Path="/5B7D3CA7" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7D3CA7" Ref="R52"  Part="1" 
-F 0 "R52" V 1890 1960 50  0000 C CNN
-F 1 "200K" V 1810 1960 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1740 1960 50  0001 C CNN
-F 3 "" H 1810 1960 50  0000 C CNN
-	1    1810 1960
+F 0 "R52" V 1650 1960 50  0000 C CNN
+F 1 "200K" V 1570 1960 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1500 1960 50  0001 C CNN
+F 3 "" H 1570 1960 50  0000 C CNN
+	1    1570 1960
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	1960 1960 2060 1960
-Wire Wire Line
-	1660 1960 1510 1960
-Text Label 1510 1960 2    60   ~ 0
+Text Label 1360 1960 2    60   ~ 0
 7490_IN_LOW
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7D5D40
-P 2810 1160
+P 2735 1135
 AR Path="/5B7D5D40" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7D5D40" Ref="R53"  Part="1" 
-F 0 "R53" V 2890 1160 50  0000 C CNN
-F 1 "200K" V 2810 1160 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 2740 1160 50  0001 C CNN
-F 3 "" H 2810 1160 50  0000 C CNN
-	1    2810 1160
+F 0 "R53" V 2815 1135 50  0000 C CNN
+F 1 "200K" V 2735 1135 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2665 1135 50  0001 C CNN
+F 3 "" H 2735 1135 50  0000 C CNN
+	1    2735 1135
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	1960 1860 1960 1510
-Wire Wire Line
-	1960 1160 2660 1160
-Wire Wire Line
-	2960 1160 3760 1160
-Wire Wire Line
-	3760 1160 3760 1960
-Wire Wire Line
-	3760 1960 3560 1960
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7D8C95
-P 1810 1660
+P 1875 1860
 AR Path="/5B7D8C95" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7D8C95" Ref="R51"  Part="1" 
-F 0 "R51" V 1890 1660 50  0000 C CNN
-F 1 "200K" V 1810 1660 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1740 1660 50  0001 C CNN
-F 3 "" H 1810 1660 50  0000 C CNN
-	1    1810 1660
-	-1   0    0    1   
+F 0 "R51" V 1820 1680 50  0000 C CNN
+F 1 "200K" V 1875 1860 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1805 1860 50  0001 C CNN
+F 3 "" H 1875 1860 50  0000 C CNN
+	1    1875 1860
+	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	1960 1860 2060 1860
-Wire Wire Line
-	1810 1510 1960 1510
-Connection ~ 1960 1510
-Wire Wire Line
-	1960 1510 1960 1160
-Wire Wire Line
-	1810 1810 1910 1810
-Wire Wire Line
-	1910 1810 1910 1910
-Wire Wire Line
-	1910 1910 1960 1910
-Wire Wire Line
-	1960 1910 1960 1960
-Connection ~ 1960 1960
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7DE33A
-P 1660 1660
+P 1875 1760
 AR Path="/5B7DE33A" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7DE33A" Ref="R50"  Part="1" 
-F 0 "R50" V 1740 1660 50  0000 C CNN
-F 1 "200K" V 1660 1660 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1590 1660 50  0001 C CNN
-F 3 "" H 1660 1660 50  0000 C CNN
-	1    1660 1660
-	-1   0    0    1   
+F 0 "R50" V 1905 1580 50  0000 C CNN
+F 1 "200K" V 1875 1760 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1805 1760 50  0001 C CNN
+F 3 "" H 1875 1760 50  0000 C CNN
+	1    1875 1760
+	0    -1   -1   0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7DE3BC
-P 1510 1660
+P 1875 1660
 AR Path="/5B7DE3BC" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7DE3BC" Ref="R49"  Part="1" 
-F 0 "R49" V 1590 1660 50  0000 C CNN
-F 1 "10K" V 1510 1660 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 1440 1660 50  0001 C CNN
-F 3 "" H 1510 1660 50  0000 C CNN
-	1    1510 1660
-	-1   0    0    1   
+F 0 "R49" V 1955 1660 50  0000 C CNN
+F 1 "10K" V 1875 1660 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1805 1660 50  0001 C CNN
+F 3 "" H 1875 1660 50  0000 C CNN
+	1    1875 1660
+	0    -1   -1   0   
 $EndComp
 Wire Wire Line
 	5350 4555 5150 4555
-Wire Wire Line
-	3560 1860 3810 1860
-Text Label 3910 1860 0    60   ~ 0
+Text Label 4080 1565 0    60   ~ 0
 7490_BP
-Wire Wire Line
-	2060 1660 2060 1410
-Wire Wire Line
-	2060 1410 1660 1410
-Wire Wire Line
-	1660 1410 1660 1510
-Wire Wire Line
-	2060 1760 2010 1760
-Wire Wire Line
-	2010 1760 2010 1310
-Wire Wire Line
-	2010 1310 1510 1310
-Wire Wire Line
-	1510 1310 1510 1510
-Wire Wire Line
-	1510 1810 1660 1810
-Wire Wire Line
-	1660 1810 1810 1810
-Connection ~ 1660 1810
-Connection ~ 1810 1810
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7EAA51
-P 3910 1610
+P 3760 1760
 AR Path="/5B7EAA51" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7EAA51" Ref="R54"  Part="1" 
-F 0 "R54" V 3990 1610 50  0000 C CNN
-F 1 "200K" V 3910 1610 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 3840 1610 50  0001 C CNN
-F 3 "" H 3910 1610 50  0000 C CNN
-	1    3910 1610
-	-1   0    0    1   
+F 0 "R54" V 3705 1580 50  0000 C CNN
+F 1 "200K" V 3760 1760 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 3690 1760 50  0001 C CNN
+F 3 "" H 3760 1760 50  0000 C CNN
+	1    3760 1760
+	0    -1   -1   0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7EAB16
-P 4060 1610
+P 3760 1860
 AR Path="/5B7EAB16" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7EAB16" Ref="R55"  Part="1" 
-F 0 "R55" V 4140 1610 50  0000 C CNN
-F 1 "200K" V 4060 1610 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 3990 1610 50  0001 C CNN
-F 3 "" H 4060 1610 50  0000 C CNN
-	1    4060 1610
-	-1   0    0    1   
+F 0 "R55" V 3710 1655 50  0000 C CNN
+F 1 "200K" V 3760 1860 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 3690 1860 50  0001 C CNN
+F 3 "" H 3760 1860 50  0000 C CNN
+	1    3760 1860
+	0    -1   -1   0   
 $EndComp
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R?
 U 1 1 5B7EAB84
-P 4210 1610
+P 3760 1660
 AR Path="/5B7EAB84" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B7EAB84" Ref="R56"  Part="1" 
-F 0 "R56" V 4290 1610 50  0000 C CNN
-F 1 "10K" V 4210 1610 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 4140 1610 50  0001 C CNN
-F 3 "" H 4210 1610 50  0000 C CNN
-	1    4210 1610
-	-1   0    0    1   
+F 0 "R56" V 3840 1660 50  0000 C CNN
+F 1 "10K" V 3755 1655 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 3690 1660 50  0001 C CNN
+F 3 "" H 3760 1660 50  0000 C CNN
+	1    3760 1660
+	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	3910 1760 4060 1760
-Wire Wire Line
-	4210 1760 4060 1760
-Connection ~ 4060 1760
-Wire Wire Line
-	3760 1960 3910 1960
-Wire Wire Line
-	3910 1960 3910 1910
-Wire Wire Line
-	3910 1910 4060 1910
-Wire Wire Line
-	4060 1910 4060 1760
-Connection ~ 3760 1960
-Wire Wire Line
-	3810 1860 3810 1460
-Wire Wire Line
-	3810 1460 3910 1460
-Connection ~ 3810 1860
-Wire Wire Line
-	3810 1860 3910 1860
-Wire Wire Line
-	3560 1760 3710 1760
-Wire Wire Line
-	3710 1760 3710 1410
-Wire Wire Line
-	3710 1410 4060 1410
-Wire Wire Line
-	4060 1410 4060 1460
-Wire Wire Line
-	4210 1460 4210 1360
-Wire Wire Line
-	4210 1360 3610 1360
-Wire Wire Line
-	3610 1360 3610 1660
-Wire Wire Line
-	3610 1660 3560 1660
 Text Notes 2420 3825 0    60   ~ 0
 7400 for low pass
 $Comp
@@ -1188,6 +1081,89 @@ Wire Wire Line
 	3020 4725 3020 4870
 Wire Wire Line
 	3020 4870 3160 4870
-Text Notes 1840 715  0    60   ~ 0
-change/check values - added resistor to raise F0 ratio
+Text Notes 1655 955  0    60   ~ 0
+ - added resistor to raise F0 ratio\n - re-check!
+Wire Wire Line
+	3560 2160 3760 2160
+Wire Wire Line
+	2025 1760 2040 1760
+Wire Wire Line
+	3560 1660 3610 1660
+Wire Wire Line
+	3560 1760 3595 1760
+Wire Wire Line
+	3560 1860 3610 1860
+Wire Wire Line
+	2025 1660 2060 1660
+Wire Wire Line
+	2025 1860 2060 1860
+Wire Wire Line
+	1725 1860 1725 1960
+Wire Wire Line
+	1720 1960 1725 1960
+Connection ~ 1725 1960
+Wire Wire Line
+	1725 1960 2060 1960
+Wire Wire Line
+	1725 1760 1725 1860
+Connection ~ 1725 1860
+Wire Wire Line
+	2040 1760 2040 1135
+Wire Wire Line
+	2040 1135 2585 1135
+Connection ~ 2040 1760
+Wire Wire Line
+	2040 1760 2060 1760
+Wire Wire Line
+	3560 1960 3580 1960
+Wire Wire Line
+	3580 1960 3580 1135
+Wire Wire Line
+	3580 1135 2885 1135
+Wire Wire Line
+	3580 1960 3910 1960
+Wire Wire Line
+	3910 1960 3910 1860
+Connection ~ 3580 1960
+Wire Wire Line
+	3910 1860 3910 1760
+Connection ~ 3910 1860
+Wire Wire Line
+	3595 1760 3595 1710
+Wire Wire Line
+	3595 1710 4080 1710
+Wire Wire Line
+	4080 1710 4080 1565
+Connection ~ 3595 1760
+Wire Wire Line
+	3595 1760 3610 1760
+Wire Wire Line
+	1360 1960 1420 1960
+Wire Wire Line
+	2060 2060 1255 2060
+Wire Wire Line
+	1255 2060 1255 1490
+Wire Wire Line
+	1255 1490 2060 1490
+Wire Wire Line
+	2060 1490 2060 1660
+Connection ~ 2060 1660
+Wire Wire Line
+	3560 2060 3960 2060
+Wire Wire Line
+	3960 2060 3960 1530
+Wire Wire Line
+	3960 1530 3560 1530
+Wire Wire Line
+	3560 1530 3560 1660
+Connection ~ 3560 1660
+Wire Wire Line
+	3910 1660 3910 1760
+Connection ~ 3910 1760
+Wire Wire Line
+	1725 1655 1725 1660
+Connection ~ 1725 1760
+Connection ~ 1725 1660
+Wire Wire Line
+	1725 1660 1725 1760
 $EndSCHEMATC

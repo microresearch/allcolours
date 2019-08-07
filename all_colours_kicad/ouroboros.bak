@@ -387,7 +387,7 @@ L allcolours-rescue:R-device-allcolours-rescue R104
 U 1 1 5D274F89
 P 1505 7245
 F 0 "R104" V 1585 7245 50  0000 C CNN
-F 1 "100K" V 1510 7240 50  0000 C CNN
+F 1 "39K" V 1510 7240 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1435 7245 50  0001 C CNN
 F 3 "" H 1505 7245 50  0000 C CNN
 	1    1505 7245
@@ -422,17 +422,6 @@ F 3 "" H 1680 7580 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	1680 7545 1680 7580
-$Comp
-L power:-12V #PWR0176
-U 1 1 5D2777B6
-P 2000 7485
-F 0 "#PWR0176" H 2000 7585 50  0001 C CNN
-F 1 "-12V" H 2015 7658 50  0000 C CNN
-F 2 "" H 2000 7485 50  0001 C CNN
-F 3 "" H 2000 7485 50  0001 C CNN
-	1    2000 7485
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
 	2000 7445 2000 7485
 $Comp
@@ -1247,7 +1236,7 @@ L allcolours-rescue:R-device-allcolours-rescue R68
 U 1 1 5D4CF3D9
 P 1560 5740
 F 0 "R68" V 1640 5740 50  0000 C CNN
-F 1 "100K" V 1565 5735 50  0000 C CNN
+F 1 "39K" V 1565 5735 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 1490 5740 50  0001 C CNN
 F 3 "" H 1560 5740 50  0000 C CNN
 	1    1560 5740
@@ -1282,17 +1271,6 @@ F 3 "" H 1735 6075 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	1735 6040 1735 6075
-$Comp
-L power:-12V #PWR026
-U 1 1 5D4CF3F1
-P 2055 5980
-F 0 "#PWR026" H 2055 6080 50  0001 C CNN
-F 1 "-12V" H 2070 6153 50  0000 C CNN
-F 2 "" H 2055 5980 50  0001 C CNN
-F 3 "" H 2055 5980 50  0001 C CNN
-	1    2055 5980
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
 	2055 5940 2055 5980
 $Comp
@@ -1405,4 +1383,30 @@ Connection ~ 6835 1640
 Connection ~ 6235 1745
 Wire Wire Line
 	6235 1745 6235 1880
+Text Notes 2185 7725 0    60   ~ 0
+maybe adjust 47K test!
+Text Notes 2250 6270 0    60   ~ 0
+maybe adjust 47K test!
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0143
+U 1 1 5D555D72
+P 2055 5980
+F 0 "#PWR0143" H 2055 5730 50  0001 C CNN
+F 1 "GND" H 2055 5830 50  0000 C CNN
+F 2 "" H 2055 5980 50  0000 C CNN
+F 3 "" H 2055 5980 50  0000 C CNN
+	1    2055 5980
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0144
+U 1 1 5D555E19
+P 2000 7485
+F 0 "#PWR0144" H 2000 7235 50  0001 C CNN
+F 1 "GND" H 2000 7335 50  0000 C CNN
+F 2 "" H 2000 7485 50  0000 C CNN
+F 3 "" H 2000 7485 50  0000 C CNN
+	1    2000 7485
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

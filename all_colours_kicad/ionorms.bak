@@ -15,12 +15,12 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M1
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M1-speedlfin1
 U 1 1 5D55E8FD
 P 1560 1280
-F 0 "M1" H 1233 1242 45  0000 R CNN
+F 0 "M1-speedlfin1" H 1233 1242 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1560 1280 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1590 1430 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1590 1430 20  0001 C CNN
 F 3 "" H 1560 1280 60  0001 C CNN
 	1    1560 1280
 	-1   0    0    1   
@@ -47,12 +47,12 @@ OUTs
 Text GLabel 1160 1080 0    60   Input ~ 0
 SPEEDLF_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M9
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M9-speedhfin1
 U 1 1 5D2438E5
 P 3115 1240
-F 0 "M9" H 2788 1202 45  0000 R CNN
+F 0 "M9-speedhfin1" H 2788 1202 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3115 1240 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3145 1390 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3145 1390 20  0001 C CNN
 F 3 "" H 3115 1240 60  0001 C CNN
 	1    3115 1240
 	-1   0    0    1   
@@ -75,12 +75,12 @@ Wire Wire Line
 Text GLabel 2715 1040 0    60   Input ~ 0
 SPEEDHF_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M8
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M8-pulself1in1
 U 1 1 5D243B9B
 P 1730 2035
-F 0 "M8" H 1403 1997 45  0000 R CNN
+F 0 "M8-pulself1in1" H 1700 2270 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1730 2035 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1760 2185 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1760 2185 20  0001 C CNN
 F 3 "" H 1730 2035 60  0001 C CNN
 	1    1730 2035
 	-1   0    0    1   
@@ -103,12 +103,12 @@ Wire Wire Line
 Text GLabel 1330 1835 0    60   Input ~ 0
 PULSELF1_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M7
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M7-pulselfclkin1
 U 1 1 5D243BAB
 P 1720 2730
-F 0 "M7" H 1393 2692 45  0000 R CNN
+F 0 "M7-pulselfclkin1" H 1570 2960 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1720 2730 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1750 2880 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1750 2880 20  0001 C CNN
 F 3 "" H 1720 2730 60  0001 C CNN
 	1    1720 2730
 	-1   0    0    1   
@@ -131,12 +131,12 @@ Wire Wire Line
 Text GLabel 1320 2530 0    60   Input ~ 0
 PULSELFCLK_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M4
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M4-pulsehf1in1
 U 1 1 5D243EA4
 P 1700 3580
-F 0 "M4" H 1373 3542 45  0000 R CNN
+F 0 "M4-pulsehf1in1" H 1540 3805 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1700 3580 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1730 3730 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1730 3730 20  0001 C CNN
 F 3 "" H 1700 3580 60  0001 C CNN
 	1    1700 3580
 	-1   0    0    1   
@@ -159,12 +159,12 @@ Wire Wire Line
 Text GLabel 1300 3380 0    60   Input ~ 0
 PULSEHF1_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M3
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M3-pulsehfclkin1
 U 1 1 5D243EB4
 P 1690 4275
-F 0 "M3" H 1363 4237 45  0000 R CNN
+F 0 "M3-pulsehfclkin1" H 1360 4465 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1690 4275 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1720 4425 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1720 4425 20  0001 C CNN
 F 3 "" H 1690 4275 60  0001 C CNN
 	1    1690 4275
 	-1   0    0    1   
@@ -187,12 +187,12 @@ Wire Wire Line
 Text GLabel 1290 4075 0    60   Input ~ 0
 PULSEHFCLK_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M14
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M14-cmplf1in1
 U 1 1 5D2445B7
 P 3255 2045
-F 0 "M14" H 2928 2007 45  0000 R CNN
+F 0 "M14-cmplf1in1" H 3140 2235 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3255 2045 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3285 2195 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3285 2195 20  0001 C CNN
 F 3 "" H 3255 2045 60  0001 C CNN
 	1    3255 2045
 	-1   0    0    1   
@@ -215,12 +215,12 @@ Wire Wire Line
 Text GLabel 2855 1845 0    60   Input ~ 0
 COMPLF1_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M13
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M13-complf2in1
 U 1 1 5D2445C7
 P 3245 2740
-F 0 "M13" H 2918 2702 45  0000 R CNN
+F 0 "M13-complf2in1" H 2918 2702 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3245 2740 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3275 2890 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3275 2890 20  0001 C CNN
 F 3 "" H 3245 2740 60  0001 C CNN
 	1    3245 2740
 	-1   0    0    1   
@@ -243,12 +243,12 @@ Wire Wire Line
 Text GLabel 2845 2540 0    60   Input ~ 0
 COMPLF2_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M12
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M12-comphf1in1
 U 1 1 5D2449E8
 P 3240 3525
-F 0 "M12" H 2913 3487 45  0000 R CNN
+F 0 "M12-comphf1in1" H 2995 3690 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3240 3525 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3270 3675 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3270 3675 20  0001 C CNN
 F 3 "" H 3240 3525 60  0001 C CNN
 	1    3240 3525
 	-1   0    0    1   
@@ -271,12 +271,12 @@ Wire Wire Line
 Text GLabel 2840 3325 0    60   Input ~ 0
 COMPHF1_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M11
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M11-comphf2in1
 U 1 1 5D2449F8
 P 3230 4220
-F 0 "M11" H 2903 4182 45  0000 R CNN
+F 0 "M11-comphf2in1" H 2903 4182 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3230 4220 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3260 4370 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3260 4370 20  0001 C CNN
 F 3 "" H 3230 4220 60  0001 C CNN
 	1    3230 4220
 	-1   0    0    1   
@@ -299,12 +299,12 @@ Wire Wire Line
 Text GLabel 2830 4020 0    60   Input ~ 0
 COMPHF2_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M5
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M5-difffilaudinl1
 U 1 1 5D2459B3
 P 1715 4995
-F 0 "M5" H 1388 4957 45  0000 R CNN
+F 0 "M5-difffilaudinl1" H 1475 5170 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1715 4995 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1745 5145 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1745 5145 20  0001 C CNN
 F 3 "" H 1715 4995 60  0001 C CNN
 	1    1715 4995
 	-1   0    0    1   
@@ -327,12 +327,12 @@ Wire Wire Line
 Text GLabel 1315 4795 0    60   Input ~ 0
 DIFFFILAUD_INL
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M15
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M15-difffilaudinh1
 U 1 1 5D2459C3
 P 3255 4940
-F 0 "M15" H 2928 4902 45  0000 R CNN
+F 0 "M15-difffilaudinh1" H 2928 4902 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3255 4940 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3285 5090 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3285 5090 20  0001 C CNN
 F 3 "" H 3255 4940 60  0001 C CNN
 	1    3255 4940
 	-1   0    0    1   
@@ -355,12 +355,12 @@ Wire Wire Line
 Text GLabel 2855 4740 0    60   Input ~ 0
 DIFFFILAUD_INH
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M2
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M2-clkinl1
 U 1 1 5D24A026
 P 1670 5885
-F 0 "M2" H 1343 5847 45  0000 R CNN
+F 0 "M2-clkinl1" H 1330 6070 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1670 5885 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1700 6035 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1700 6035 20  0001 C CNN
 F 3 "" H 1670 5885 60  0001 C CNN
 	1    1670 5885
 	-1   0    0    1   
@@ -383,12 +383,12 @@ Wire Wire Line
 Text GLabel 1270 5685 0    60   Input ~ 0
 CLK_INL
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M10
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M10-clkinh1
 U 1 1 5D24A036
 P 3210 5830
-F 0 "M10" H 2883 5792 45  0000 R CNN
+F 0 "M10-clkinh1" H 2883 5792 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3210 5830 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3240 5980 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3240 5980 20  0001 C CNN
 F 3 "" H 3210 5830 60  0001 C CNN
 	1    3210 5830
 	-1   0    0    1   
@@ -411,12 +411,12 @@ Wire Wire Line
 Text GLabel 2810 5630 0    60   Input ~ 0
 CLK_INH
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M6
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M6-ourinl1
 U 1 1 5D24AA21
 P 1715 6615
-F 0 "M6" H 1388 6577 45  0000 R CNN
+F 0 "M6-ourinl1" H 1388 6577 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1715 6615 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1745 6765 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1745 6765 20  0001 C CNN
 F 3 "" H 1715 6615 60  0001 C CNN
 	1    1715 6615
 	-1   0    0    1   
@@ -437,12 +437,12 @@ Wire Wire Line
 Text GLabel 1320 6415 0    60   Input ~ 0
 OUR_INL
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M16
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M16-ourinh1
 U 1 1 5D24AA31
 P 3255 6560
-F 0 "M16" H 2928 6522 45  0000 R CNN
+F 0 "M16-ourinh1" H 2928 6522 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 3255 6560 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3285 6710 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3285 6710 20  0001 C CNN
 F 3 "" H 3255 6560 60  0001 C CNN
 	1    3255 6560
 	-1   0    0    1   
@@ -465,12 +465,12 @@ Wire Wire Line
 Text GLabel 2855 6360 0    60   Input ~ 0
 OUR_INH
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M20
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M20-complf1clkin1
 U 1 1 5D24C1A1
 P 4940 2035
-F 0 "M20" H 4613 1997 45  0000 R CNN
+F 0 "M20-complf1clkin1" H 4613 1997 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 4940 2035 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 4970 2185 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 4970 2185 20  0001 C CNN
 F 3 "" H 4940 2035 60  0001 C CNN
 	1    4940 2035
 	-1   0    0    1   
@@ -493,12 +493,12 @@ Wire Wire Line
 Text GLabel 4540 1835 0    60   Input ~ 0
 COMPLF1_CLK_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M19
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M19-complf2clkin1
 U 1 1 5D24C1B1
 P 4930 2730
-F 0 "M19" H 4603 2692 45  0000 R CNN
+F 0 "M19-complf2clkin1" H 4603 2692 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 4930 2730 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 4960 2880 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 4960 2880 20  0001 C CNN
 F 3 "" H 4930 2730 60  0001 C CNN
 	1    4930 2730
 	-1   0    0    1   
@@ -521,12 +521,12 @@ Wire Wire Line
 Text GLabel 4530 2530 0    60   Input ~ 0
 COMPLF2_CLK_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M18
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M18-comphf1clkin1
 U 1 1 5D24C1C1
 P 4925 3515
-F 0 "M18" H 4598 3477 45  0000 R CNN
+F 0 "M18-comphf1clkin1" H 4598 3477 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 4925 3515 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 4955 3665 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 4955 3665 20  0001 C CNN
 F 3 "" H 4925 3515 60  0001 C CNN
 	1    4925 3515
 	-1   0    0    1   
@@ -549,12 +549,12 @@ Wire Wire Line
 Text GLabel 4525 3315 0    60   Input ~ 0
 COMPHF1_CLK_IN
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M17
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M17-comphf2clkin1
 U 1 1 5D24C1D1
 P 4915 4210
-F 0 "M17" H 4588 4172 45  0000 R CNN
+F 0 "M17-comphf2clkin1" H 4588 4172 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 4915 4210 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 4945 4360 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 4945 4360 20  0001 C CNN
 F 3 "" H 4915 4210 60  0001 C CNN
 	1    4915 4210
 	-1   0    0    1   
@@ -576,15 +576,15 @@ Wire Wire Line
 	4515 4010 4615 4010
 Text GLabel 4515 4010 0    60   Input ~ 0
 COMPHF2_CLK_IN
-Text Notes 4075 1305 0    118  ~ 0
+Text Notes 5170 1080 0    118  ~ 0
 x20
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M25
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M25-pulself1out1
 U 1 1 5D250DF3
 P 7300 1965
-F 0 "M25" H 6973 1927 45  0000 R CNN
-F 1 "AUDIO-JACKERTHENVAR" H 7300 1965 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7330 2115 20  0001 C CNN
+F 0 "M25-pulself1out1" H 6973 1927 45  0000 R CNN
+F 1 "pulself1_out" H 7300 1965 45  0001 L BNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7330 2115 20  0001 C CNN
 F 3 "" H 7300 1965 60  0001 C CNN
 	1    7300 1965
 	-1   0    0    1   
@@ -607,12 +607,12 @@ Wire Wire Line
 Text GLabel 6900 1765 0    60   Input ~ 0
 PULSELF1_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M30
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M30-pulself2out1
 U 1 1 5D250E03
 P 8825 1975
-F 0 "M30" H 8498 1937 45  0000 R CNN
+F 0 "M30-pulself2out1" H 8498 1937 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 8825 1975 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 8855 2125 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8855 2125 20  0001 C CNN
 F 3 "" H 8825 1975 60  0001 C CNN
 	1    8825 1975
 	-1   0    0    1   
@@ -635,12 +635,12 @@ Wire Wire Line
 Text GLabel 8425 1775 0    60   Input ~ 0
 PULSELF2_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M36
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M36-complfout1
 U 1 1 5D250E13
 P 10510 1965
-F 0 "M36" H 10183 1927 45  0000 R CNN
+F 0 "M36-complfout1" H 10183 1927 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 10510 1965 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 10540 2115 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 10540 2115 20  0001 C CNN
 F 3 "" H 10510 1965 60  0001 C CNN
 	1    10510 1965
 	-1   0    0    1   
@@ -663,12 +663,12 @@ Wire Wire Line
 Text GLabel 10110 1765 0    60   Input ~ 0
 COMPLF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M26
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M26-pulsehf1out1
 U 1 1 5D252177
 P 7340 2735
-F 0 "M26" H 7013 2697 45  0000 R CNN
+F 0 "M26-pulsehf1out1" H 7013 2697 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 7340 2735 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7370 2885 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7370 2885 20  0001 C CNN
 F 3 "" H 7340 2735 60  0001 C CNN
 	1    7340 2735
 	-1   0    0    1   
@@ -691,12 +691,12 @@ Wire Wire Line
 Text GLabel 6940 2535 0    60   Input ~ 0
 PULSEHF1_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M32
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M32-pulsehf2out1
 U 1 1 5D252187
 P 8865 2745
-F 0 "M32" H 8538 2707 45  0000 R CNN
+F 0 "M32-pulsehf2out1" H 8538 2707 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 8865 2745 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 8895 2895 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8895 2895 20  0001 C CNN
 F 3 "" H 8865 2745 60  0001 C CNN
 	1    8865 2745
 	-1   0    0    1   
@@ -719,12 +719,12 @@ Wire Wire Line
 Text GLabel 8465 2545 0    60   Input ~ 0
 PULSEHF2_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M37
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M37-comphfout1
 U 1 1 5D252197
 P 10550 2735
-F 0 "M37" H 10223 2697 45  0000 R CNN
+F 0 "M37-comphfout1" H 10223 2697 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 10550 2735 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 10580 2885 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 10580 2885 20  0001 C CNN
 F 3 "" H 10550 2735 60  0001 C CNN
 	1    10550 2735
 	-1   0    0    1   
@@ -747,12 +747,12 @@ Wire Wire Line
 Text GLabel 10150 2535 0    60   Input ~ 0
 COMPHF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M27
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M27-filtlfout1
 U 1 1 5D253D49
 P 7355 3655
-F 0 "M27" H 7028 3617 45  0000 R CNN
+F 0 "M27-filtlfout1" H 7028 3617 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 7355 3655 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7385 3805 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7385 3805 20  0001 C CNN
 F 3 "" H 7355 3655 60  0001 C CNN
 	1    7355 3655
 	-1   0    0    1   
@@ -775,12 +775,12 @@ Wire Wire Line
 Text GLabel 6955 3455 0    60   Input ~ 0
 FILTLF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M33
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M33-filthfout1
 U 1 1 5D253D59
 P 8895 3600
-F 0 "M33" H 8568 3562 45  0000 R CNN
+F 0 "M33-filthfout1" H 8568 3562 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 8895 3600 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 8925 3750 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8925 3750 20  0001 C CNN
 F 3 "" H 8895 3600 60  0001 C CNN
 	1    8895 3600
 	-1   0    0    1   
@@ -803,12 +803,12 @@ Wire Wire Line
 Text GLabel 8495 3400 0    60   Input ~ 0
 FILTHF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M24
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M24-ourlfout1
 U 1 1 5D255F83
 P 7290 4570
-F 0 "M24" H 6963 4532 45  0000 R CNN
+F 0 "M24-ourlfout1" H 6963 4532 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 7290 4570 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7320 4720 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7320 4720 20  0001 C CNN
 F 3 "" H 7290 4570 60  0001 C CNN
 	1    7290 4570
 	-1   0    0    1   
@@ -831,12 +831,12 @@ Wire Wire Line
 Text GLabel 6890 4370 0    60   Input ~ 0
 OURLF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M31
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M31-ourhfout1
 U 1 1 5D255F93
 P 8830 4515
-F 0 "M31" H 8503 4477 45  0000 R CNN
+F 0 "M31-ourhfout1" H 8503 4477 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 8830 4515 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 8860 4665 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8860 4665 20  0001 C CNN
 F 3 "" H 8830 4515 60  0001 C CNN
 	1    8830 4515
 	-1   0    0    1   
@@ -859,12 +859,12 @@ Wire Wire Line
 Text GLabel 8430 4315 0    60   Input ~ 0
 OURHF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M22
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M22-pwmlfout1
 U 1 1 5D257DDC
 P 7240 5305
-F 0 "M22" H 6913 5267 45  0000 R CNN
+F 0 "M22-pwmlfout1" H 6913 5267 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 7240 5305 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7270 5455 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7270 5455 20  0001 C CNN
 F 3 "" H 7240 5305 60  0001 C CNN
 	1    7240 5305
 	-1   0    0    1   
@@ -887,12 +887,12 @@ Wire Wire Line
 Text GLabel 6840 5105 0    60   Input ~ 0
 PWMLF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M28
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M28-daclfout1
 U 1 1 5D257DEC
 P 8765 5315
-F 0 "M28" H 8438 5277 45  0000 R CNN
+F 0 "M28-daclfout1" H 8438 5277 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 8765 5315 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 8795 5465 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8795 5465 20  0001 C CNN
 F 3 "" H 8765 5315 60  0001 C CNN
 	1    8765 5315
 	-1   0    0    1   
@@ -915,12 +915,12 @@ Wire Wire Line
 Text GLabel 8365 5115 0    60   Input ~ 0
 DACLF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M34
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M34-complfclkout1
 U 1 1 5D257DFC
 P 10450 5305
-F 0 "M34" H 10123 5267 45  0000 R CNN
+F 0 "M34-complfclkout1" H 10123 5267 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 10450 5305 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 10480 5455 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 10480 5455 20  0001 C CNN
 F 3 "" H 10450 5305 60  0001 C CNN
 	1    10450 5305
 	-1   0    0    1   
@@ -943,12 +943,12 @@ Wire Wire Line
 Text GLabel 10050 5105 0    60   Input ~ 0
 COMPLFCLK_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M23
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M23-pwmhfout1
 U 1 1 5D257E0C
 P 7280 6075
-F 0 "M23" H 6953 6037 45  0000 R CNN
+F 0 "M23-pwmhfout1" H 6953 6037 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 7280 6075 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7310 6225 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7310 6225 20  0001 C CNN
 F 3 "" H 7280 6075 60  0001 C CNN
 	1    7280 6075
 	-1   0    0    1   
@@ -971,12 +971,12 @@ Wire Wire Line
 Text GLabel 6880 5875 0    60   Input ~ 0
 PWMHF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M29
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M29-pulsehf3out1
 U 1 1 5D257E1C
 P 8805 6085
-F 0 "M29" H 8478 6047 45  0000 R CNN
+F 0 "M29-pulsehf3out1" H 8478 6047 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 8805 6085 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 8835 6235 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8835 6235 20  0001 C CNN
 F 3 "" H 8805 6085 60  0001 C CNN
 	1    8805 6085
 	-1   0    0    1   
@@ -999,12 +999,12 @@ Wire Wire Line
 Text GLabel 8405 5885 0    60   Input ~ 0
 PULSEHF3_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-erthenvar M35
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M35-comphfclkout1
 U 1 1 5D257E2C
 P 10490 6075
-F 0 "M35" H 10163 6037 45  0000 R CNN
+F 0 "M35-comphfclkout1" H 10163 6037 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 10490 6075 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 10520 6225 20  0001 C CNN
+F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 10520 6225 20  0001 C CNN
 F 3 "" H 10490 6075 60  0001 C CNN
 	1    10490 6075
 	-1   0    0    1   
@@ -1062,11 +1062,11 @@ Text GLabel 2915 4940 0    60   Input ~ 0
 COMPHF_OUT
 Text Notes 2215 2755 0    118  ~ 0
 no_NORM
-Text Notes 3690 2750 0    118  ~ 0
+Text Notes 3630 2970 0    118  ~ 0
 no_NORM
 Text Notes 2075 4240 0    118  ~ 0
 no_NORM
-Text Notes 3690 4235 0    118  ~ 0
+Text Notes 3715 4350 0    118  ~ 0
 no_NORM
 Text Notes 425  1300 0    118  ~ 0
 no_NORM
@@ -1090,4 +1090,8 @@ Wire Wire Line
 	1350 4275 1390 4275
 Wire Wire Line
 	1320 6415 1415 6415
+Text Notes 1095 7080 0    118  ~ 0
+no_NORM
+Text Notes 2510 6995 0    118  ~ 0
+no_NORM
 $EndSCHEMATC

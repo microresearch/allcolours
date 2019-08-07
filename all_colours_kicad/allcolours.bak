@@ -810,7 +810,7 @@ U 1 1 5D355EF9
 P 2265 6735
 F 0 "U1" H 2265 6977 50  0000 C CNN
 F 1 "LM1117-3.3" H 2265 6886 50  0000 C CNN
-F 2 "" H 2265 6735 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:TO-252-2_Rectifier" H 2265 6735 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 2265 6735 50  0001 C CNN
 	1    2265 6735
 	1    0    0    -1  
@@ -1347,7 +1347,7 @@ U 1 1 5D5B27ED
 P 3835 6725
 F 0 "U5" H 3835 6967 50  0000 C CNN
 F 1 "uA7810" H 3835 6876 50  0000 C CNN
-F 2 "" H 3860 6575 50  0001 L CIN
+F 2 "TO_SOT_Packages_SMD:TO-252-2_Rectifier" H 3860 6575 50  0001 L CIN
 F 3 "http://www.ti.com/lit/ds/symlink/ua78.pdf" H 3835 6675 50  0001 C CNN
 	1    3835 6725
 	1    0    0    -1  
@@ -1830,7 +1830,7 @@ U 1 1 5D5D510E
 P 5235 6875
 F 0 "U6" H 5235 7117 50  0000 C CNN
 F 1 "LM1117-5.0" H 5235 7026 50  0000 C CNN
-F 2 "" H 5235 6875 50  0001 C CNN
+F 2 "TO_SOT_Packages_SMD:TO-252-2_Rectifier" H 5235 6875 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 5235 6875 50  0001 C CNN
 	1    5235 6875
 	1    0    0    -1  

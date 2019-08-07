@@ -309,7 +309,7 @@ GPIO in and out (3.3v): how many: 4ins(2 are interrupts), 5 pulse out, 1x4bitDAC
 
 stm32 as we can use worm code and stlink programmer...
 
-choose _==*> STM32F103C8T6 - see peaks, braids  - LQFP-48  72 MHz 5euros -> test board ordered
+choose _==*> STM32F103CBT6 - see peaks, braids  - LQFP-48  72 MHz 5euros -> test board ordered
 
 3 timers and one PWM... ok
 
