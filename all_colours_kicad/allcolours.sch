@@ -1346,7 +1346,7 @@ L Regulator_Linear:uA7810 U5
 U 1 1 5D5B27ED
 P 3835 6725
 F 0 "U5" H 3835 6967 50  0000 C CNN
-F 1 "uA7810" H 3835 6876 50  0000 C CNN
+F 1 "L78M10" H 3835 6876 50  0000 C CNN
 F 2 "TO_SOT_Packages_SMD:TO-252-2_Rectifier" H 3860 6575 50  0001 L CIN
 F 3 "http://www.ti.com/lit/ds/symlink/ua78.pdf" H 3835 6675 50  0001 C CNN
 	1    3835 6725
@@ -1491,7 +1491,7 @@ P 6220 7210
 AR Path="/5AD5ACBB/5D258E38" Ref="D?"  Part="1" 
 AR Path="/5D258E38" Ref="D1"  Part="1" 
 F 0 "D1" V 6266 7142 50  0000 R CNN
-F 1 "zen?" V 6175 7142 50  0000 R CNN
+F 1 "LM4040" V 6175 7575 50  0000 R CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" V 6220 7210 50  0001 C CNN
 F 3 "https://en.wikipedia.org/wiki/Zener_diode" V 6220 7210 50  0001 C CNN
 	1    6220 7210
@@ -2337,4 +2337,6 @@ Wire Wire Line
 Connection ~ 810  7110
 Wire Wire Line
 	810  7110 835  7110
+Text Notes 4610 880  0    118  ~ 0
+lose 100k to gnd on all comp1
 $EndSCHEMATC

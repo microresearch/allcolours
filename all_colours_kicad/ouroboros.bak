@@ -93,7 +93,7 @@ F 3 "" H 2300 2075 50  0001 C CNN
 	1    2300 2075
 	1    0    0    -1  
 $EndComp
-Text Notes 720  1755 0    118  ~ 0
+Text Notes 1310 1715 0    118  ~ 0
 HF\n
 $Comp
 L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q16
@@ -561,8 +561,6 @@ Wire Wire Line
 	6235 1880 6835 1880
 Wire Wire Line
 	6835 1880 6835 1640
-Wire Wire Line
-	6235 1740 6235 1745
 Wire Wire Line
 	6225 2210 6225 2335
 Wire Wire Line
@@ -1071,7 +1069,7 @@ Wire Wire Line
 	1975 4015 1995 4015
 Text Label 1975 3920 0    60   ~ 0
 lf_p3
-Text Notes 970  3795 0    118  ~ 0
+Text Notes 1385 3380 0    118  ~ 0
 LF\n
 $Comp
 L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q27
@@ -1380,9 +1378,6 @@ Wire Wire Line
 	3135 5765 3585 5765
 Connection ~ 3135 5575
 Connection ~ 6835 1640
-Connection ~ 6235 1745
-Wire Wire Line
-	6235 1745 6235 1880
 Text Notes 2185 7725 0    60   ~ 0
 maybe adjust 47K test!
 Text Notes 2250 6270 0    60   ~ 0
@@ -1409,4 +1404,6 @@ F 3 "" H 2000 7485 50  0000 C CNN
 	1    2000 7485
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	6235 1740 6235 1880
 $EndSCHEMATC

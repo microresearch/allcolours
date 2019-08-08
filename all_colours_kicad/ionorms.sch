@@ -887,34 +887,6 @@ Wire Wire Line
 Text GLabel 6840 5105 0    60   Input ~ 0
 PWMLF_OUT
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M28-daclfout1
-U 1 1 5D257DEC
-P 8765 5315
-F 0 "M28-daclfout1" H 8438 5277 45  0000 R CNN
-F 1 "AUDIO-JACKERTHENVAR" H 8765 5315 45  0001 L BNN
-F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8795 5465 20  0001 C CNN
-F 3 "" H 8765 5315 60  0001 C CNN
-	1    8765 5315
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR0218
-U 1 1 5D257DF3
-P 8365 5415
-F 0 "#PWR0218" H 8365 5165 50  0001 C CNN
-F 1 "GND" H 8365 5265 50  0000 C CNN
-F 2 "" H 8365 5415 50  0000 C CNN
-F 3 "" H 8365 5415 50  0000 C CNN
-	1    8365 5415
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	8365 5415 8465 5415
-Wire Wire Line
-	8365 5115 8465 5115
-Text GLabel 8365 5115 0    60   Input ~ 0
-DACLF_OUT
-$Comp
 L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M34-complfclkout1
 U 1 1 5D257DFC
 P 10450 5305
@@ -970,34 +942,6 @@ Wire Wire Line
 	6880 5875 6980 5875
 Text GLabel 6880 5875 0    60   Input ~ 0
 PWMHF_OUT
-$Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M29-pulsehf3out1
-U 1 1 5D257E1C
-P 8805 6085
-F 0 "M29-pulsehf3out1" H 8478 6047 45  0000 R CNN
-F 1 "AUDIO-JACKERTHENVAR" H 8805 6085 45  0001 L BNN
-F 2 "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 8835 6235 20  0001 C CNN
-F 3 "" H 8805 6085 60  0001 C CNN
-	1    8805 6085
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR0221
-U 1 1 5D257E23
-P 8405 6185
-F 0 "#PWR0221" H 8405 5935 50  0001 C CNN
-F 1 "GND" H 8405 6035 50  0000 C CNN
-F 2 "" H 8405 6185 50  0000 C CNN
-F 3 "" H 8405 6185 50  0000 C CNN
-	1    8405 6185
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	8405 6185 8505 6185
-Wire Wire Line
-	8405 5885 8505 5885
-Text GLabel 8405 5885 0    60   Input ~ 0
-PULSEHF3_OUT
 $Comp
 L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M35-comphfclkout1
 U 1 1 5D257E2C
