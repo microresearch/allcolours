@@ -54,9 +54,15 @@ what can always be selected: external bits are always ANDed in (pullup?)
 each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 
 1- pwm follows speed cv
-2- pwm follows DAC from SR (not same on LF as DAC bits) -> speed for DAC style updates is from speed cv 
--3- or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
-4- pwms follow clock pulse in for each
+
+2- pwm follows DAC from SR (not same on LF as DAC bits) -> speed for DAC style updates is from speed cv
+- ... or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
+-> these depend on SR mode
+
+3- pwms follow clock pulse in for each
+
+4- pwm is offset against the other (with speed as plus/minus offset) - if both have this mode then left one is set by speed CV
+
 
 * modes tech
 
