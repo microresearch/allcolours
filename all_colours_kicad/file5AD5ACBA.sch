@@ -372,9 +372,9 @@ Text GLabel 1185 6235 0    60   Input ~ 0
 AREF-10
 Text Notes 1075 3940 0    157  ~ 0
 PWM out lf 
-Text GLabel 4750 4780 2    79   Input ~ 0
+Text GLabel 4660 4775 2    79   Input ~ 0
 PWMHF_OUT
-Text GLabel 2080 4515 2    79   Input ~ 0
+Text GLabel 1970 4505 2    79   Input ~ 0
 PWMLF_OUT
 $Comp
 L power:+10V #PWR0150
@@ -1584,17 +1584,6 @@ Connection ~ 10300 5050
 Text Label 10490 5050 1    60   ~ 0
 modehf
 $Comp
-L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q23
-U 1 1 5DBA272D
-P 1695 4735
-F 0 "Q23" H 1886 4781 50  0000 L CNN
-F 1 "MMBT3904" H 1345 4585 50  0000 L CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 1895 4835 50  0001 C CNN
-F 3 "" H 1695 4735 50  0001 C CNN
-	1    1695 4735
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R13
 U 1 1 5DBA2734
 P 1345 4735
@@ -1610,7 +1599,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R16
 U 1 1 5DBA273B
 P 1795 4385
 F 0 "R16" H 2050 4340 50  0000 R CNN
-F 1 "10K" H 2035 4425 50  0000 R CNN
+F 1 "4K7" H 2035 4425 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 1795 4385 50  0001 C CNN
 F 3 "" H 1795 4385 50  0001 C CNN
 	1    1795 4385
@@ -1646,18 +1635,11 @@ F 3 "" H 1795 4235 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1205 4735 1245 4735
-Wire Wire Line
-	1795 4485 1795 4515
-Wire Wire Line
-	1795 4515 1840 4515
-Connection ~ 1795 4515
-Wire Wire Line
-	1795 4515 1795 4535
 $Comp
 L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q24
 U 1 1 5DBAFC24
 P 4370 5000
-F 0 "Q24" H 4561 5046 50  0000 L CNN
+F 0 "Q24" H 4235 5150 50  0000 L CNN
 F 1 "MMBT3904" H 4020 4850 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 4570 5100 50  0001 C CNN
 F 3 "" H 4370 5000 50  0001 C CNN
@@ -1680,7 +1662,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R18
 U 1 1 5DBAFC32
 P 4470 4650
 F 0 "R18" H 4660 4710 50  0000 R CNN
-F 1 "10K" H 4665 4645 50  0000 R CNN
+F 1 "4K7" H 4665 4645 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 4470 4650 50  0001 C CNN
 F 3 "" H 4470 4650 50  0001 C CNN
 	1    4470 4650
@@ -1716,13 +1698,6 @@ F 3 "" H 4470 4500 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3880 5000 3920 5000
-Wire Wire Line
-	4470 4750 4470 4780
-Wire Wire Line
-	4470 4780 4515 4780
-Connection ~ 4470 4780
-Wire Wire Line
-	4470 4780 4470 4800
 Text Label 10735 2190 0    60   ~ 0
 modelf
 Text Label 10730 2090 0    60   ~ 0
@@ -1945,29 +1920,25 @@ Wire Wire Line
 $Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R106
 U 1 1 5D8F3DD6
-P 4615 4780
-F 0 "R106" V 4419 4780 50  0000 C CNN
-F 1 "1K" V 4510 4780 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 4615 4780 50  0001 C CNN
-F 3 "" H 4615 4780 50  0001 C CNN
-	1    4615 4780
-	0    1    1    0   
+P 4600 4875
+F 0 "R106" V 4404 4875 50  0000 C CNN
+F 1 "3K3" V 4495 4875 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 4600 4875 50  0001 C CNN
+F 3 "" H 4600 4875 50  0001 C CNN
+	1    4600 4875
+	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	4715 4780 4750 4780
 $Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R86
 U 1 1 5D903335
-P 1940 4515
-F 0 "R86" V 1744 4515 50  0000 C CNN
-F 1 "1K" V 1835 4515 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 1940 4515 50  0001 C CNN
-F 3 "" H 1940 4515 50  0001 C CNN
-	1    1940 4515
-	0    1    1    0   
+P 1910 4605
+F 0 "R86" V 1714 4605 50  0000 C CNN
+F 1 "3K3" V 1805 4605 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 1910 4605 50  0001 C CNN
+F 3 "" H 1910 4605 50  0001 C CNN
+	1    1910 4605
+	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	2040 4515 2080 4515
 $Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R83
 U 1 1 5D913C1C
@@ -2080,4 +2051,59 @@ F 3 "" H 10715 4965 50  0001 C CNN
 	1    10715 4965
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	1795 4485 1795 4505
+$Comp
+L allcolours-rescue:Q_NPN_BEC-device-allcolours-rescue Q23
+U 1 1 5DBA272D
+P 1695 4735
+F 0 "Q23" H 1615 4900 50  0000 L CNN
+F 1 "MMBT3904" H 1345 4585 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 1895 4835 50  0001 C CNN
+F 3 "" H 1695 4735 50  0001 C CNN
+	1    1695 4735
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0114
+U 1 1 5D6A341F
+P 1910 4740
+F 0 "#PWR0114" H 1910 4490 50  0001 C CNN
+F 1 "GND" H 1915 4567 50  0000 C CNN
+F 2 "" H 1910 4740 50  0001 C CNN
+F 3 "" H 1910 4740 50  0001 C CNN
+	1    1910 4740
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1795 4505 1910 4505
+Connection ~ 1795 4505
+Wire Wire Line
+	1795 4505 1795 4535
+Wire Wire Line
+	1910 4505 1970 4505
+Connection ~ 1910 4505
+Wire Wire Line
+	1910 4705 1910 4740
+Wire Wire Line
+	4470 4750 4470 4775
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR0115
+U 1 1 5D6DF621
+P 4600 5010
+F 0 "#PWR0115" H 4600 4760 50  0001 C CNN
+F 1 "GND" H 4605 4837 50  0000 C CNN
+F 2 "" H 4600 5010 50  0001 C CNN
+F 3 "" H 4600 5010 50  0001 C CNN
+	1    4600 5010
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4470 4775 4600 4775
+Connection ~ 4470 4775
+Wire Wire Line
+	4470 4775 4470 4800
+Wire Wire Line
+	4600 4775 4660 4775
+Connection ~ 4600 4775
 $EndSCHEMATC
