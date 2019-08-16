@@ -655,17 +655,6 @@ F 3 "" H 2055 3455 50  0000 C CNN
 	1    2055 3455
 	1    0    0    -1  
 $EndComp
-$Comp
-L allcolours-rescue:+12V-power-allcolours-rescue #PWR0108
-U 1 1 5D34FBB7
-P 1635 3435
-F 0 "#PWR0108" H 1635 3285 50  0001 C CNN
-F 1 "+12V" H 1625 3565 50  0000 C CNN
-F 2 "" H 1635 3435 50  0000 C CNN
-F 3 "" H 1635 3435 50  0000 C CNN
-	1    1635 3435
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2565 6735 2865 6735
 $Comp
@@ -2497,4 +2486,15 @@ Wire Wire Line
 	4635 6875 4935 6875
 Wire Wire Line
 	1665 6735 1965 6735
+$Comp
+L allcolours-rescue:+12V-power-allcolours-rescue #PWR0108
+U 1 1 5D34FBB7
+P 1635 3435
+F 0 "#PWR0108" H 1635 3285 50  0001 C CNN
+F 1 "+12V" H 1625 3565 50  0000 C CNN
+F 2 "" H 1635 3435 50  0000 C CNN
+F 3 "" H 1635 3435 50  0000 C CNN
+	1    1635 3435
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

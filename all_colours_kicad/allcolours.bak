@@ -158,28 +158,6 @@ F 3 "" H 2265 7135 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:C-device-allcolours-rescue C12
-U 1 1 5968BE3D
-P 1865 6885
-F 0 "C12" H 1890 6985 50  0000 L CNN
-F 1 "100N" H 1890 6785 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 1903 6735 50  0001 C CNN
-F 3 "" H 1865 6885 50  0000 C CNN
-	1    1865 6885
-	0    1    1    0   
-$EndComp
-$Comp
-L allcolours-rescue:CP1_Small-device-allcolours-rescue C13
-U 1 1 5968BF2C
-P 1865 7185
-F 0 "C13" H 1875 7255 50  0000 L CNN
-F 1 "10u" H 1875 7105 50  0000 L CNN
-F 2 "SMD_Packages:SMD-1206_Pol" H 1865 7185 50  0001 C CNN
-F 3 "" H 1865 7185 50  0000 C CNN
-	1    1865 7185
-	0    -1   -1   0   
-$EndComp
-$Comp
 L allcolours-rescue:C-device-allcolours-rescue C15
 U 1 1 5968C026
 P 2715 6885
@@ -333,25 +311,10 @@ Wire Wire Line
 	2580 1095 2930 1095
 Connection ~ 2580 1395
 Wire Wire Line
-	1665 6735 1715 6735
-Wire Wire Line
 	1665 6735 1665 6685
 Wire Wire Line
 	2265 7035 2265 7085
-Wire Wire Line
-	1715 6735 1715 6885
-Connection ~ 1715 6735
-Wire Wire Line
-	1715 7185 1765 7185
-Connection ~ 1715 6885
-Wire Wire Line
-	2015 7185 1965 7185
-Wire Wire Line
-	2015 6885 2015 7085
-Wire Wire Line
-	2015 7085 2265 7085
 Connection ~ 2265 7085
-Connection ~ 2015 7085
 Wire Wire Line
 	2865 7085 2615 7085
 Wire Wire Line
@@ -392,11 +355,7 @@ Wire Wire Line
 Wire Wire Line
 	2580 1395 2680 1395
 Wire Wire Line
-	1715 6885 1715 7185
-Wire Wire Line
 	2265 7085 2265 7135
-Wire Wire Line
-	2015 7085 2015 7185
 Wire Wire Line
 	2865 6885 2865 7085
 Wire Wire Line
@@ -709,8 +668,6 @@ F 3 "" H 1635 3435 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	2565 6735 2865 6735
-Wire Wire Line
-	1715 6735 1965 6735
 $Comp
 L Regulator_Linear:LM1117-3.3 U1
 U 1 1 5D355EF9
@@ -2538,4 +2495,6 @@ Wire Wire Line
 	610  6295 635  6295
 Wire Wire Line
 	4635 6875 4935 6875
+Wire Wire Line
+	1665 6735 1965 6735
 $EndSCHEMATC
