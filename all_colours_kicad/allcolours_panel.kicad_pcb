@@ -144,7 +144,7 @@
     (pad "" thru_hole circle (at 0 0) (size 6.5 6.5) (drill 6.4) (layers *.Cu *.Mask))
   )
 
-  (module Mounting_Holes:MountingHole_6.4mm_M6 locked (layer Front) (tedit 5D546B3F) (tstamp 5D4CA1E3)
+  (module Mounting_Holes:MountingHole_6.4mm_M6 locked (layer Front) (tedit 5D56BBD4) (tstamp 5D4CA1E3)
     (at 198.07 55.31)
     (descr "Mounting Hole 6.4mm, no annular, M6")
     (tags "mounting hole 6.4mm no annular m6")
@@ -156,11 +156,11 @@
     )
     (fp_circle (center 0 0) (end 6.4 0) (layer Cmts.User) (width 0.15))
     (fp_circle (center 0 0) (end 6.65 0) (layer F.CrtYd) (width 0.05))
-    (pad "" thru_hole circle (at 0 -0.31) (size 6.5 6.5) (drill 6.4) (layers *.Cu *.Mask))
+    (pad "" thru_hole circle (at 0 1.69) (size 6.5 6.5) (drill 6.4) (layers *.Cu *.Mask))
   )
 
   (module Mounting_Holes:MountingHole_6.4mm_M6 locked (layer Front) (tedit 5D546B2A) (tstamp 5D4CA1DC)
-    (at 147.6 55)
+    (at 147.6 57)
     (descr "Mounting Hole 6.4mm, no annular, M6")
     (tags "mounting hole 6.4mm no annular m6")
     (fp_text reference REF** (at 0 -7.4) (layer F.SilkS)
