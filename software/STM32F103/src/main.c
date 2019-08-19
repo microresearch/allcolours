@@ -31,7 +31,7 @@ int main(void)
   /////////////////////// keep map of I/O for schematic:::
 
   /*
-  - LF: PWM out-tim3c1->PB4X, clock pin interrupt in->sayPB5-EXTI5X, pulse in->PB6X, 4xbit DAC out=PB9,10,11,12X, 2X pulse out=inverted=PB13,14X
+  - LF: PWM out-tim3c1->PB4X, clock pin interrupt in->sayPB5-EXTI5X, pulse in->PB10nowX, 4xbit DAC out=PB9,10,11,12X, 2X pulse out=inverted=PB13,14X
 
 
   - HF: PWM out-tim1c1->PA8X, clock pin interrupt in->PB7=EXTI7X, pulse in->PB8//can be interrupt tooX, 3 pulse out=inverted=PC13/14/15X

@@ -1742,10 +1742,8 @@ Text Label 9310 2790 2    60   ~ 0
 pulsehfclk_in
 Wire Wire Line
 	9310 2790 9365 2790
-Text Label 9295 2890 2    60   ~ 0
+Text Label 9315 3090 2    60   ~ 0
 pulsehf1_in
-Wire Wire Line
-	9295 2890 9365 2890
 Text Label 9335 1790 2    60   ~ 0
 pulsehf2_out
 Text Label 9340 1690 2    60   ~ 0
@@ -2108,4 +2106,6 @@ Wire Wire Line
 Connection ~ 4600 4775
 Wire Wire Line
 	4600 4975 4600 5010
+Wire Wire Line
+	9315 3090 9365 3090
 $EndSCHEMATC
