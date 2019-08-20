@@ -972,4 +972,6 @@ Text GLabel 8430 4315 0    60   Input ~ 0
 NOISEHF_OUT
 Text Notes 360  2075 0    118  ~ 0
 no_NORM
+Text Notes 240  3680 0    118  ~ 0
+no_NORM
 $EndSCHEMATC

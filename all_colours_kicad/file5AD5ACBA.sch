@@ -1797,8 +1797,6 @@ Wire Wire Line
 	9235 890  9235 990 
 Wire Wire Line
 	9235 990  9310 990 
-Text Notes 3090 3765 0    118  ~ 0
-pullups already?
 $Comp
 L allcolours-rescue:R_Small-device-allcolours-rescue R79
 U 1 1 5D734406
