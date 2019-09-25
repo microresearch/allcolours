@@ -391,6 +391,30 @@ https://github.com/rogerclarkmelbourne/Arduino_STM32
 
 http://www.diller-technologies.de/stm32_wide.html#interrupts_extern
 
+
+* 17/9
+
+- panel left will need full solder mask and circles for ... IN or OUT?
+  and circles need gold/mask or just soldermask - 5mm radius, 0.2mm thickness - and watch as
+  some footprints are reversed/mirrored
+
+* 23/9
+
+- basic PCB assembled test: no heat and all voltages seem fine
+- TODO: +test programming of STM+ and basic hardware
+
+programming works fine!
+
+TESTS/TODO: print jack layout, noise out, comps, filter with pwm, pulse in and out, finish programming, panels, xl for assembly quote 
+
+
+* TODO:
+
+- programming test, basic hardware tests (eg. white noise, comparators, etc)...
+- panel left will need full solder mask, right need all gold, circles, order panel
+
+we would need to cut panel circles out of right hand mask
+
 * notes
 
 - ignore other all_colours schematics in ERD!

@@ -449,7 +449,7 @@ Wire Wire Line
 	6915 1245 6920 1245
 Wire Wire Line
 	6565 1945 6765 1945
-Text Notes 7580 125  0    157  ~ 0
+Text Notes 7130 765  0    157  ~ 0
 comparator slow x2
 Wire Wire Line
 	3280 1295 3305 1295
