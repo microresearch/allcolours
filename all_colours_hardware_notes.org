@@ -408,6 +408,10 @@ programming works fine!
 
 TESTS/TODO: print jack layout, noise out, comps, filter with pwm, pulse in and out, finish programming, panels, xl for assembly quote 
 
+* 9/10
+
+- tested both noise outs - fine
+- panel finished but double check before ordering
 
 * TODO:
 

@@ -1,4 +1,4 @@
-update=Tue 20 Aug 2019 21:35:04 CEST
+update=Wed 09 Oct 2019 16:58:37 CEST
 version=1
 last_client=kicad
 [general]
@@ -9,16 +9,6 @@ NetIExt=net
 [eeschema]
 version=1
 LibDir=
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceAjustPassiveValues=0
-LabSize=60
-ERC_TestSimilarLabels=1
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -77,3 +67,13 @@ Type=0
 [pcbnew/Layer.B.Cu]
 Name=Back
 Type=0
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=60
+ERC_TestSimilarLabels=1
