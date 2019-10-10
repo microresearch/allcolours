@@ -12,13 +12,9 @@
   + LF timer loop/interrupt (which updates all CVs) =timer2
   + HF timer loop =timer3
 
-/// setup now is modeh cv gives us the HF PWM? test!
-
 ////////////////////////////////TODO////////////////////////////////////////
 
-- test basic PWMs into filter/scope - to add LF PWM/timer 3
-
-we still can't get PB4/TIM3 to work even though works ok without timer
+- test basic PWMs into filter/scope - to add LF PWM/timer 3 - DONE
 
 - test clock interrupts ins, pulse in and outs
 - test each ADC, pot/cv where necessary
@@ -148,7 +144,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1; // fastest gives 12 MHz our max for filter is 4 Mhz
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32;
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 0;
   TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -178,12 +174,13 @@ int main(void)
   GPIO_Init(GPIOB, &GPIO_InitStructure);
   //  GPIO_PinRemapConfig(GPIO_Remap_SWJ_NoJTRST, ENABLE );
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
-  GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, ENABLE);
+  //  GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, ENABLE);
+  GPIO_PinRemapConfig(GPIO_PartialRemap_TIM3, ENABLE); // THIS is what we needed!
   
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32; // ???? what should we have for LF?
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 64;
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 0;
   TIM_TimeBaseInit(TIM3, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -279,8 +276,8 @@ int main(void)
       
       speedl=(ADCBuffer[3]); // speedh for TIM1 testing
       accspeedl = accspeedl - (accspeedl >> 4) + speedl; // smoothing
-      speedl=(accspeedl>>4)+64; //12 bits
-      //speedl=1024;
+      speedl=(accspeedl>>4)+128; //12 bits
+      //      speedl=1024;
       TIM3->ARR = speedl;//period
       TIM3->CCR1 = speedl/2; // pulse  
       
