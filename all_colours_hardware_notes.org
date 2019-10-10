@@ -127,7 +127,9 @@ envelopes? - maybe leave as fingers only or one envelope in, in2, out
 
 /////
 
-- what is size in HP (for standalone we could use 4ms pod as 26, 32 or 60 HP - also frap tools)= *32HP=162.5mm* or 42HP?=213mm
+- what is size in HP (for standalone we could use 4ms pod as 26, 32 or 60 HP - also frap tools)= 32HP=162.5mm or 42HP?=213mm
+
+*20HP=101.4mm*
 
 (height 128.5)
 
@@ -411,16 +413,13 @@ TESTS/TODO: print jack layout, noise out, comps, filter with pwm, pulse in and o
 * 9/10
 
 - tested both noise outs - fine
-- panel finished but double check before ordering
+- panel finished - check basic hardware before ordering - size is 101.4x128.5
 
 * TODO:
 
-- programming test, basic hardware tests (eg. white noise, comparators, etc)...
-- panel left will need full solder mask, right need all gold, circles, order panel
-
-black on gold right side, circles for INPUTS! TODO!
-
-match holes panel/pcb AGAIN!!!
+- basic hardware tests (eg. white noiseDONE, comparators, filters)...
+- test all analogue pwm/pulses/ADC
+- programming modes and timers
 
 * notes
 
