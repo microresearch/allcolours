@@ -12,11 +12,10 @@
   + LF timer loop/interrupt (which updates all CVs) =timer2
   + HF timer loop =timer3
 
-/// setup now is modeh cv gives us the HF PWM? test!
-
 ////////////////////////////////TODO////////////////////////////////////////
 
-- test basic PWMs into filter/scope - to add LF PWM/timer 3
+- test basic PWMs into filter/scope - to add LF PWM/timer 3 - DONE
+
 - test clock interrupts ins, pulse in and outs
 - test each ADC, pot/cv where necessary
 
@@ -51,7 +50,8 @@ int main(void)
   __IO uint16_t ADCBuffer[] = {0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA };
   SystemInit();
 
-  uint32_t x,acc=0;
+  
+  uint32_t speedh,speedl, accspeedh=0, accspeedl=0;
 
   // we need to organise timers for 2x PWM for pins and 2x timers
 
@@ -63,7 +63,7 @@ int main(void)
   DMA_InitStructure.DMA_BufferSize = 4;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&ADCBuffer[0];
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&ADCBuffer;
   DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_Mode = DMA_Mode_Circular; //was so in WORM
@@ -107,11 +107,12 @@ int main(void)
   ADC_InitStructure.ADC_NbrOfChannel = 4; // unused in worm
   ADC_InitStructure.ADC_ScanConvMode = ENABLE;
   ADC_Init(ADC1, &ADC_InitStructure);
- 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 0, ADC_SampleTime_239Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_239Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_239Cycles5); 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 3, ADC_SampleTime_239Cycles5);
+
+  // this was fixed so makes sense now
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_239Cycles5); 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_239Cycles5);
 
   ADC_Cmd(ADC1, ENABLE);
   ADC_DMACmd(ADC1, ENABLE);
@@ -132,7 +133,7 @@ int main(void)
   
   TIM_DeInit(TIM1);
 
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
  
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -143,7 +144,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1; // fastest gives 12 MHz our max for filter is 4 Mhz
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32;
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 0;
   TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -153,7 +154,7 @@ int main(void)
   TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
+  TIM_OC_InitStructure.TIM_Pulse = 1; // pulse size
   TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
   TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
   TIM_Cmd(TIM1, ENABLE);
@@ -162,20 +163,24 @@ int main(void)
   // this is LF PWM on PB4 - timer 3 channel 1 -> this code needs to be tested!
 
   TIM_DeInit(TIM3);
-
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-
-  RCC_APB1PeriphClockCmd(RCC_APB2Periph_TIM3, ENABLE);
- 
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+  //   RCC_APB2PeriphClockCmd(PWMTIM3RCC | RCC_APB2Periph_AFIO, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP; // needed to be Out_PP for basic test
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  //  RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; AFIO->MAPR = AFIO_MAPR_SWJ_CFG_0; 
   GPIO_Init(GPIOB, &GPIO_InitStructure);
- 
+  //  GPIO_PinRemapConfig(GPIO_Remap_SWJ_NoJTRST, ENABLE );
+  GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
+  //  GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, ENABLE);
+  GPIO_PinRemapConfig(GPIO_PartialRemap_TIM3, ENABLE); // THIS is what we needed!
+  
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 1; // ???? what should we have for LF?
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32;
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // ???? what should we have for LF?
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 0;
   TIM_TimeBaseInit(TIM3, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -189,9 +194,10 @@ int main(void)
   TIM_OC1Init(TIM3, &TIM_OC_InitStructure); // T3C1 is pin PB4
   TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable); 
   TIM_Cmd(TIM3, ENABLE);
-  TIM_CtrlPWMOutputs(TIM3, ENABLE); // we needed this for timer1 to be added
-
-  // TIM3->CCR3=pulse size
+  TIM_CtrlPWMOutputs(TIM3, ENABLE); // we needed this for timer3 to be added
+  
+  // TIM3->CCR1=pulse size
+ 
   
   // 2 pin interrupts (falling edge)
   // test on pin 0 - port B - check where EXTI lines go in manual
@@ -259,14 +265,23 @@ int main(void)
       //      else      GPIOC->ODR = 0;
   //  GPIOC->ODR ^= GPIO_Pin_13;
   //  x++;
-  x=(ADCBuffer[0]);
 
-  acc = acc - (acc >> 4) + x; // smoothing
-  x=acc>>4;
-  TIM1->ARR = x;//period
-  TIM1->CCR1 = x/2; // pulse  
-      //      x++;
-  ///  if (x>2560) x=1280;
+      // TODO: smoothing smoother!
+      // ADC0(modeh),1(model),2(speedh),3(speedl)=PA0,1,2,3 X
+      speedh=(ADCBuffer[2]); // speedh for TIM1 testing
+      accspeedh = accspeedh - (accspeedh >> 4) + speedh; // smoothing
+      speedh=(accspeedh>>4)+64; //12 bits
+      TIM1->ARR = speedh;//period
+      TIM1->CCR1 = speedh/2; // pulse  
+      
+      speedl=(ADCBuffer[3]); // speedh for TIM1 testing
+      accspeedl = accspeedl - (accspeedl >> 4) + speedl; // smoothing
+      speedl=(accspeedl>>4)+128; //12 bits
+      //      speedl=1024;
+      TIM3->ARR = speedl;//period
+      TIM3->CCR1 = speedl/2; // pulse  
+      
+      //      GPIOB->ODR ^= (1<<4);//GPIO_Pin_4;
   delay(50000); 
     }
 }

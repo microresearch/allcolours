@@ -415,6 +415,11 @@ TESTS/TODO: print jack layout, noise out, comps, filter with pwm, pulse in and o
 - tested both noise outs - fine
 - panel finished - check basic hardware before ordering - size is 101.4x128.5
 
+* 10/10
+
+- testing so far: we need to re-adjust /adj/ resistors on all comparators...
+
+
 * TODO:
 
 - basic hardware tests (eg. white noiseDONE, comparators, filters)...
