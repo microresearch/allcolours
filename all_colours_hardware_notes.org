@@ -413,6 +413,11 @@ TESTS/TODO: print jack layout, noise out, comps, filter with pwm, pulse in and o
 - tested both noise outs - fine
 - panel finished but double check before ordering
 
+* 10/10
+
+- testing so far: we need to re-adjust /adj/ resistors on all comparators...
+
+
 * TODO:
 
 - programming test, basic hardware tests (eg. white noise, comparators, etc)...
