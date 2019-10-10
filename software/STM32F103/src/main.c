@@ -1,3 +1,29 @@
+/*
+
+- I/O map from new schematic:
+
+  - LF: PWM out-tim3c1->PB4X, clock pin interrupt in->sayPB5-EXTI5X, pulse in->PB6, 2X pulse out=inverted=PB13,14
+
+
+  - HF: PWM out-tim1c1->PA8X, clock pin interrupt in->PB7=EXTI7X, pulse in->PB10//can be interrupt tooX, 2 pulse out=inverted=PC13,14
+
+  + 4xcv adc - modeh CV, model cv, speedl cv, speedh cv = ADC0(modeh),1(model),2(speedh),3(speedl)=PA0,1,2,3 X
+
+  + LF timer loop/interrupt (which updates all CVs) =timer2
+  + HF timer loop =timer3
+
+/// setup now is modeh cv gives us the HF PWM? test!
+
+////////////////////////////////TODO////////////////////////////////////////
+
+- test basic PWMs into filter/scope - to add LF PWM/timer 3
+- test clock interrupts ins, pulse in and outs
+- test each ADC, pot/cv where necessary
+
+- timer loops and all modes... timer action is in stm32f10x_it.c
+
+*/
+
 #include "stm32f10x.h"
 
 void delay(unsigned long delay)
@@ -27,29 +53,10 @@ int main(void)
 
   uint32_t x,acc=0;
 
-  
-  /////////////////////// keep map of I/O for schematic:::
-
-  /*
-  - LF: PWM out-tim3c1->PB4X, clock pin interrupt in->sayPB5-EXTI5X, pulse in->PB10nowX, 2X pulse out=inverted=PB13,14X
-
-
-  - HF: PWM out-tim1c1->PA8X, clock pin interrupt in->PB7=EXTI7X, pulse in->PB8//can be interrupt tooX, 3 pulse out=inverted=PC13/14/15X
-
-+ 4xcv adc - modeh CV, model cv, speedl cv, speedh cv = ADC0,1,2,3=PA0,1,2,3 X
-
-+ LF timer loop/interrupt (which updates all CVs) =timer2
-+ HF timer loop =timer3
-
-  ////////////////////////
-  */
-  
   // we need to organise timers for 2x PWM for pins and 2x timers
 
   //there are 4 timers -> 2 int->2 and 3 // global interrupts test, 2 pwm->1 and 4
 
-  
-  // 4x analogue inputs -   DAC=PA0-PA7, PB0, PB1 (pref using DMA?) -> seems to work so far
   DMA_DeInit(DMA1_Channel1);
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
@@ -119,8 +126,10 @@ int main(void)
   
   // two PWM - fast (speed range- 2MHz->x) and slow (speed range???) on 2 pins
   // example for A0
-  // convert to timer1 -> T1C1= PA8    
+  // converted to timer1 -> T1C1= PA8    
 
+  // this is HF PWM on PA8 - timer 1 channel 1
+  
   TIM_DeInit(TIM1);
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
@@ -131,7 +140,7 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
  
-  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1; // fastest gives 12 MHz our max for filter is 4 Mhz
   TIM_TimeBase_InitStructure.TIM_Prescaler = 32;
@@ -145,10 +154,44 @@ int main(void)
   TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
   TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
-  TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T2C1E is pin A0!
+  TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
   TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
   TIM_Cmd(TIM1, ENABLE);
   TIM_CtrlPWMOutputs(TIM1, ENABLE); // we needed this for timer1 to be added
+  
+  // this is LF PWM on PB4 - timer 3 channel 1 -> this code needs to be tested!
+
+  TIM_DeInit(TIM3);
+
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+
+  RCC_APB1PeriphClockCmd(RCC_APB2Periph_TIM3, ENABLE);
+ 
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+ 
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //0
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 1; // ???? what should we have for LF?
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 32;
+  TIM_TimeBaseInit(TIM3, &TIM_TimeBase_InitStructure);
+ 
+  TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OC_InitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
+  TIM_OC_InitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+  TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
+  TIM_OC1Init(TIM3, &TIM_OC_InitStructure); // T3C1 is pin PB4
+  TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable); 
+  TIM_Cmd(TIM3, ENABLE);
+  TIM_CtrlPWMOutputs(TIM3, ENABLE); // we needed this for timer1 to be added
+
+  // TIM3->CCR3=pulse size
   
   // 2 pin interrupts (falling edge)
   // test on pin 0 - port B - check where EXTI lines go in manual
