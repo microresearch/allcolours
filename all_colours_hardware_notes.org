@@ -417,7 +417,32 @@ TESTS/TODO: print jack layout, noise out, comps, filter with pwm, pulse in and o
 
 * 10/10
 
-- testing so far: we need to re-adjust /adj/ resistors on all comparators...
+- testing so far: we need to re-adjust /adj/ resistors on all comparators -> what did we use (we used 1k for testing now)
+
+for noise we can use 10k-15k on positive, 1k-4k7 on negative.
+
+but will depend on levels, also for pwm (level is 0-10v)?
+
+- both PWMs now working fine/adjust range and dividers - filters working, check levels etc...
+- ends of ADC knobs for speed are clicky - smoothing or???
+
+* 14/10
+
+- top of comp -> + adj res is now 10k, and lower to GND is 4.7k, changed on schematic but not on PCB
+
+- we need to change the 4 incoming res to 100N caps by hand on PCB -> redo each precise location/recorded
+
+comphf1in/r27->c10 153.71, 119.99 X
+
+comphf_clkin/r44->c12 154.275, 79.95 
+
+complf1in/r26->c11 104.53, 72.68 X
+
+complf_clkin/r62->c13 102.3, 89.875 X
+
+->>>DONE
+
+- we need to change the 4932 comparator for a fast op amp with higher common mode input voltage, maybe also all op amps on 12v supply or?
 
 
 * TODO:
