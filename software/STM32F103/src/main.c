@@ -51,7 +51,7 @@ int main(void)
   SystemInit();
 
   
-  uint32_t speedh,speedl, accspeedh=0, accspeedl=0;
+  uint32_t speedh,speedl, accspeedh=0, accspeedl=0, counter=0;
 
   // we need to organise timers for 2x PWM for pins and 2x timers
 
@@ -156,6 +156,7 @@ int main(void)
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
   TIM_OC_InitStructure.TIM_Pulse = 1; // pulse size
   TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
+  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this!
   TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
   TIM_Cmd(TIM1, ENABLE);
   TIM_CtrlPWMOutputs(TIM1, ENABLE); // we needed this for timer1 to be added
@@ -192,6 +193,7 @@ int main(void)
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
   TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
   TIM_OC1Init(TIM3, &TIM_OC_InitStructure); // T3C1 is pin PB4
+  TIM_ARRPreloadConfig(TIM3, ENABLE); // we needed this!
   TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable); 
   TIM_Cmd(TIM3, ENABLE);
   TIM_CtrlPWMOutputs(TIM3, ENABLE); // we needed this for timer3 to be added
@@ -266,22 +268,35 @@ int main(void)
   //  GPIOC->ODR ^= GPIO_Pin_13;
   //  x++;
 
-      // TODO: smoothing smoother!
+      // TODO: smoothing smoother - but we have no float...
+      /* from WORM:
+	 value =(float)adc_buffer[SELX]/65536.0f; 
+	 smoothed_adc_value[2] += 0.1f * (value - smoothed_adc_value[2]);
+	 _selx=smoothed_adc_value[2];
+	 CONSTRAIN(_selx,0.0f,1.0f);
+       */
+
+      
       // ADC0(modeh),1(model),2(speedh),3(speedl)=PA0,1,2,3 X
       speedh=(ADCBuffer[2]); // speedh for TIM1 testing
-      accspeedh = accspeedh - (accspeedh >> 4) + speedh; // smoothing
-      speedh=(accspeedh>>4)+64; //12 bits
+      //accspeedh = accspeedh - (accspeedh >> 4) + speedh; // smoothing
+      //     speedh=(speedh>>4)+512; //12 bits = 4096 - clicks on any LARGE change WITHOUT preload
+      speedh=512+counter; // 256=280 KHz - 512 say is highest
+      counter+=2;
+      //      speedh=512;
+      if (counter>512) counter=0;
       TIM1->ARR = speedh;//period
       TIM1->CCR1 = speedh/2; // pulse  
       
       speedl=(ADCBuffer[3]); // speedh for TIM1 testing
-      accspeedl = accspeedl - (accspeedl >> 4) + speedl; // smoothing
-      speedl=(accspeedl>>4)+128; //12 bits
+      //      accspeedl = accspeedl - (accspeedl >> 4) + speedl; // smoothing
+      speedl=(speedl>>2)+256; //14 bits - modes also give different ranges - this range is good
+      //      speedl=256;
       //      speedl=1024;
       TIM3->ARR = speedl;//period
       TIM3->CCR1 = speedl/2; // pulse  
       
       //      GPIOB->ODR ^= (1<<4);//GPIO_Pin_4;
-  delay(50000); 
+      delay(10000); // how fast can we change the PWM
     }
 }
