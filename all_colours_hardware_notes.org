@@ -428,7 +428,7 @@ but will depend on levels, also for pwm (level is 0-10v)?
 
 * 14/10
 
-- top of comp -> + adj res is now 10k, and lower to GND is 4.7k, changed on schematic but not on PCB
+- top of comp -> + adj res is now 10k, and lower to GND is 4.7k, changed on schematic but not on PCB/now changed on PCB
 
 - we need to change the 4 incoming res to 100N caps by hand on PCB -> redo each precise location/recorded
 
@@ -443,6 +443,20 @@ complf_clkin/r62->c13 102.3, 89.875 X
 ->>>DONE
 
 - we need to change the 4932 comparator for a fast op amp with higher common mode input voltage, maybe also all op amps on 12v supply or?
+
+* 21/10
+
+- try replace 4932 with TLE2072 (mouser: 595-TLE2072IDR ) and see if bleedthrough
+- no impedance issues on comp inputs
+- TODO: recheck all comps and filter levels with scope, clicks were
+  not adc smoothing but changes - fixed to some degree with preload
+  for pwm values but we can also try smoothing, check pulse in/with
+  interrupts and pulse out, modes etc...
+
+PLAN!?
+
+
+
 
 
 * TODO:
