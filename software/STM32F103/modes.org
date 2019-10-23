@@ -4,6 +4,10 @@
 - modeL and modeH knobs seperate
 - max 64 modes= 4PWM x 16SR
 
+- we have pulse in/pulse inCLK/interrupt and 2x PULSE_OUTS! + PWM set by modes
+
+- pulses in and out are INVERTED! (so pulse in is normally pulled up to 1!)
+
 * SR modes - low and high
 
 - length of SR (16 bits, 32 bits, x bits), shrink and extend, howdo we get to length? -> pulses count length????, speed cv is length with pulses as speed
@@ -34,7 +38,7 @@ cv/speed in modes:
 
 *combine both with speed as divider of clock/pulse in clock/pulse modes*
 
-what can always be selected: external bits are always ANDed in (pullup?)
+what can always be selected: external bits are always ANDed in (pullup?) ???
 
 1- get bit in from pulse in, xor with last SR bit and shift out /output(length?)
 2- as above, bit leaks on pulse - cv only
@@ -46,7 +50,9 @@ what can always be selected: external bits are always ANDed in (pullup?)
 8- length from cv - pulse only
 9- recursion: clock in of SR is XOR or other logic with output but
 10- leaks with pulses (how often?)
-11- toggle circulation with CV somehow / threshold
+11- toggle circulation with pulse/or/CV cv->somehow / threshold
+
+- sr as pulses or as bits (HF only?)
 
 
 * pwm modes low and high
@@ -55,13 +61,13 @@ each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 
 1- pwm follows speed cv
 
-2- pwm follows DAC from SR (not same on LF as DAC bits) -> speed for DAC style updates is from speed cv
+2- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
 - ... or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
 -> these depend on SR mode
 
 3- pwms follow clock pulse in for each
 
-4- pwm is offset against the other (with speed as plus/minus offset) - if both have this mode then left one is set by speed CV
+4- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 
 
 * modes tech

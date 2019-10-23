@@ -201,7 +201,7 @@ int main(void)
   // TIM3->CCR1=pulse size
  
   
-  // 2 pin interrupts (falling edge)
+  // 2 pin interrupts (falling edge as inverted)
   // test on pin 0 - port B - check where EXTI lines go in manual
   
   /*  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
