@@ -290,7 +290,7 @@ int main(void)
       
       speedl=(ADCBuffer[3]); // speedh for TIM1 testing
       //      accspeedl = accspeedl - (accspeedl >> 4) + speedl; // smoothing
-      speedl=(speedl>>2)+256; //14 bits - modes also give different ranges - this range is good
+      speedl=(speedl>>2)+256; //14 bits - modes also give different ranges - this range is good - not enough modes for range so select widest... 
       //      speedl=256;
       //      speedl=1024;
       TIM3->ARR = speedl;//period

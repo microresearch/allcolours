@@ -4,7 +4,8 @@
 - modeL and modeH knobs seperate
 - max 64 modes= 4PWM x 16SR
 
-- we have pulse in/pulse inCLK/interrupt and 2x PULSE_OUTS! + PWM set by modes
+- we have pulse in->SR/pulse inCLK_>CLK/interrupt - or SR depends on mode - and 2x PULSE_OUTS (different taps)
+- + PWM is set by modes
 
 - pulses in and out are INVERTED! (so pulse in is normally pulled up to 1!)
 
@@ -17,12 +18,15 @@
 - entry into SR from pulse ins, or as LFSR (random)
 - entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
 - xors back in, no xors back in - and which xors? select by clock pulse?
-- sr as pulses or as bits (HF only?)
+- sr as pulses or as bits 
+- which bits form the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM) - wide only
 
-- which bits form the usual DAC out and the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM) - wide only
+- recursion: clock in of SR is XOR or other logic with output but would get stuck - maybe feedback output from other SR as clock for other but not both
 
+older version = recursions: SR is clocked by its own HIGH output or logic XOR/AND with clock in
 
-- recursion: clock in of SR is XOR or other logic with output but
+SR speed from own DAC out
+
 
 // HF SR: 32 stages max, LF: 16 or 24 max
 
@@ -32,11 +36,13 @@ SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
 
 --> can we divide into pulse_in modes/speed_in modes
 
-clock/pulse in modes:
+*** clock/pulse in modes:
 
-cv/speed in modes:
+- entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
 
-*combine both with speed as divider of clock/pulse in clock/pulse modes*
+*** cv/speed in modes:
+
+*combine both with speed as divider of clock/pulse in clock/pulse modes* -> where to do this in 16 modes?
 
 what can always be selected: external bits are always ANDed in (pullup?) ???
 
@@ -52,8 +58,12 @@ what can always be selected: external bits are always ANDed in (pullup?) ???
 10- leaks with pulses (how often?)
 11- toggle circulation with pulse/or/CV cv->somehow / threshold
 
-- sr as pulses or as bits (HF only?)
+- we can leave changes from one mode to the other (eg. length from CV set in pulse mode stays with CV as speed modes)
 
+*** other modes
+
+- SR is clocked by its own HIGH output or logic XOR/AND with clock in, 
+- SR speed from own DAC out
 
 * pwm modes low and high
 
@@ -61,11 +71,13 @@ each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 
 1- pwm follows speed cv
 
-2- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
+2- pwms follow clock pulse in for each
+
+3- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
 - ... or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
 -> these depend on SR mode
 
-3- pwms follow clock pulse in for each
+in latter case we use speed CV as offset for PWM
 
 4- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 
@@ -73,3 +85,91 @@ each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 * modes tech
 
 values in array of pointers to avoid any switch routines
+
+* older version from all_colours.c
+
+pulse ins can leak, switch bits, input bits, select xor bits, select lengths, xor pulse in/not clock with last bit of sr -> input for sr
+
+pulse outs all at different taps (to ins also)
+
+- always pulses out, DAC out and PWM out.
+
+Shift registers -> pulses out, DAC out, PWM out/DAC style (for each low and high side):
+
+?mode low/mode high? - *thus we need seperate mode knobs*!
+
+- length of SR (16 bits, 32 bits, x bits), shrink and extend, howdo we get to length? -> pulses count length, speed cv is length with pulses as speed
+- leaky on/off (leaks on clock pulse so use with CV speed)
+- speed/clocking of SR is from CV, or speed follows pulse in/clock
+- toggle lock loop on clock/pulse in (speed CV only modes) - or always include it with AND or XOR?
+- entry into SR from pulse ins, or as LFSR (random)
+- entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
+- xors back in, no xors back in - and which xors? select by clock pulse?
+- sr as pulses or as bits is ONLY a choice on HF side
+- which bits form the usual DAC out and the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM)
+- wild card of SR speed from DAC style SR output?
+
+// HF SR: 32 stages max, LF: 16 or 24 max
+
+HF SR in timed interrupt:
+
+HF SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits
+
+1- get bit in from pulse in, xor with last SR bit and shift out /output(length?)
+
+2- as above, bit leaks?
+3- as above, no xor, no leaks
+4- no xor, leaks
+5- as pulses or as bits out
+6- bits in from CV
+
+/////////////
+
+recursions: 
+
+SR is clocked by its own HIGH output or logic XOR/AND with clock in, SR usual feedback, SR speed from own DAC out
+
+
+////PWM update in main loop speed???
+
+PWMs low and high so more combinations:
+
+each follows: CV, update DAC(speed by CV or speed from clock), clock
+
+or can mix/combine/logical op one against the other
+
+- pwms follow each speed cv
+- pwml follows cv, other is DAC style from SR - and can combine each also say mix DAC and cv
+- pwmh follows cv, other is DAC style from SR
+- both pwmh and pwml follow DAC style
+- speed for DAC style updates is from speed cv for each or speed for DAC updates is from pulse in for each -> speed is same speed as DAC/shiftreg speed!
+- pwms follow each clock pulse in for each...
+
+
+* older from notes.org
+
+- CV in incoming bit or set of bits to shift and/or value for clock out, CV pulse in to lock/unlock, slew for clock out/cv in, extra as speed of shifting?
+
+- pulse in to shift... purpose of shifting ...
+- larger speed shifts for filter are important so maybe look at dividers and changing these with CV
+- knob mode for leak etc
+
+start to list modes
+
+1-> various shift register implementations in pulse/bit and speed as
+speed/skew CV/knob - OUT is pulse/bit and/or DAC out and OUT is 7490
+clock/PWM OUT from shift reg taps ...
+
+2-> various shift register implementations in as pulse/bit (from CV -
+threshold) and speed as speed/skew CV/knob - OUT is pulse/bit and/or
+DAC out and in CV controls 7490 clock/PWM OUT and is skewed by
+speed/skew CV/knob
+
+3-> various shift register implementations in pulse/bit and speed as
+speed/skew CV/knob - OUT is pulse/bit and/or DAC out and in pulse
+controls 7490 clock/PWM out
+
+other modes?
+
+we can xor and other ops CV and shift reg/pulse/DAC to 7490 CLOCK
+

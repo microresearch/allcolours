@@ -442,18 +442,21 @@ complf_clkin/r62->c13 102.3, 89.875 X
 
 ->>>DONE
 
-- we need to change the 4932 comparator for a fast op amp with higher common mode input voltage, maybe also all op amps on 12v supply or?
+- we need to change the 4392 comparator for a fast op amp with higher common mode input voltage, maybe also all op amps on 12v supply or?
 
 * 21/10
 
-- try replace 4932 with TLE2072 (mouser: 595-TLE2072IDR ) and see if bleedthrough
+- try replace 4392 with TLE2072 (mouser: 595-TLE2072IDR ) and see if bleedthrough /// 4392 on fast noise source is ok!
 - no impedance issues on comp inputs
-- TODO: recheck all comps and filter levels with scope, clicks were
+- TODO: recheck all noises, comps and filter levels with scope, clicks were
   not adc smoothing but changes - fixed to some degree with preload
   for pwm values but we can also try smoothing, check pulse in/with
-  interrupts and pulse out, modes etc...
+  interrupts and pulse out, check timer interrupts
 
-PLAN!?
+- study SR stuff and define precisely all modes, implement and test modes
+
+modes.org -> max 64 modes= 4PWM x 16SR
+
 
 
 
