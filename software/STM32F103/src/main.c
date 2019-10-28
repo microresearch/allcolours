@@ -2,15 +2,13 @@
 
 - I/O map from new schematic:
 
-  - LF: PWM out-tim3c1->PB4X, clock pin interrupt in->sayPB5-EXTI5X, pulse in->PB6, 2X pulse out=inverted=PB13,14
-
-
+  - LF: PWM out-tim3c1->PB4X, clock pin interrupt in->PB5-EXTI5X, pulse in->PB6, 2X pulse out=inverted=PB13,14
   - HF: PWM out-tim1c1->PA8X, clock pin interrupt in->PB7=EXTI7X, pulse in->PB10//can be interrupt tooX, 2 pulse out=inverted=PC13,14
 
   + 4xcv adc - modeh CV, model cv, speedl cv, speedh cv = ADC0(modeh),1(model),2(speedh),3(speedl)=PA0,1,2,3 X
 
-  + LF timer loop/interrupt (which updates all CVs) =timer2
-  + HF timer loop =timer3
+  + LF timer loop/interrupt (which updates all CVs) =timer4
+  + HF timer loop =timer2
 
 ////////////////////////////////TODO////////////////////////////////////////
 
@@ -23,7 +21,7 @@
 
 - one slower timer for update ADC -> modes and speeds, update PWM depending on mode
 - one faster timer for both LF and HF shift registers
-- interrupts for lf an hf shift reg and upates depending on mode
+- interrupts for lf an hf shift reg and updates depending on mode
 
 - nothing in main loop
 
@@ -209,14 +207,16 @@ int main(void)
   
   // 2 pin interrupts (falling edge as inverted)
   // test on pin 0 - port B - check where EXTI lines go in manual
-  
-  /*  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+
+  //LF:PB5-EXTI5X  HF:PB7=EXTI7X
+    
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
  
-  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource0);
+  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource7);
  
-  EXTI_InitStructure.EXTI_Line = EXTI_Line0;
+  EXTI_InitStructure.EXTI_Line = EXTI_Line7;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
@@ -224,21 +224,33 @@ int main(void)
  
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
  
-  NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel =   EXTI9_5_IRQn;/// EXTI5_IRQn doesn't exist
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
   NVIC_Init(&NVIC_InitStructure);
-  */
-  
-  // timer interrupts x2 fastest and slow
 
-  /*  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
  
-  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource5);
+ 
+  EXTI_InitStructure.EXTI_Line = EXTI_Line5;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+  
+  // timer interrupts x2 fastest and slow - TIMER2 is fast and TIMER3 is slow
+
+  // TIMER2 tested an working - but this will be FAST!
+
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 38;// peaks at 32/0 prescale with 730 KHz
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 0;
+  TIM_TimeBase_InitStructure.TIM_Period = 32;// peaks at 32/0 prescale with 730 KHz
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // with period 32 and prescaler 8 this makes for 120 KhZ
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
  
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
@@ -248,20 +260,57 @@ int main(void)
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;
   NVIC_Init(&NVIC_InitStructure);
- 
   TIM_Cmd(TIM2, ENABLE);
-  */  
+
+  // TIMER 4 - > working with same results as TIM2 -> 120KHz
   
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 32;
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; 
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBase_InitStructure);
+ 
+  TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
+ 
+  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;
+  NVIC_Init(&NVIC_InitStructure);
+  TIM_Cmd(TIM4, ENABLE);
 
+ 
+  // Configure pins as output push-pull -
 
-  // Configure pin as output push-pull (led)
-  //  GPIO_InitTypeDef GPIO_InitStructure;
+  // FOR pulse outs: LF: PB13,14 HF: PC13,14
+
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  
 
     while(1)
     {
@@ -286,11 +335,12 @@ int main(void)
       // ADC0(modeh),1(model),2(speedh),3(speedl)=PA0,1,2,3 X
       speedh=(ADCBuffer[2]); // speedh for TIM1 testing
       //accspeedh = accspeedh - (accspeedh >> 4) + speedh; // smoothing
-      //     speedh=(speedh>>4)+512; //12 bits = 4096 - clicks on any LARGE change WITHOUT preload
-      speedh=512+counter; // 256=280 KHz - 512 say is highest
-      counter+=2;
+      speedh=(speedh>>4)+256; //12 bits = 4096 - clicks on any LARGE change WITHOUT preload
+      //speedh=512+speedh; // 256=280 KHz - 256 is fine...
+      //      counter+=2;
       //      speedh=512;
-      if (counter>512) counter=0;
+      //      if (counter>512) counter=0;
+      //      speedh=256;
       TIM1->ARR = speedh;//period
       TIM1->CCR1 = speedh/2; // pulse  
       
@@ -301,8 +351,18 @@ int main(void)
       //      speedl=1024;
       TIM3->ARR = speedl;//period
       TIM3->CCR1 = speedl/2; // pulse  
+
+      // check pulse outs: LF: PB13,14 HF: PC13,14 - on and off for all of these:
+
+      /*
+      GPIOC->ODR ^= GPIO_Pin_13;
+      GPIOC->ODR ^= GPIO_Pin_14;
+      GPIOB->ODR ^= GPIO_Pin_13;
+      GPIOB->ODR ^= GPIO_Pin_14;
+      */
+
       
       //      GPIOB->ODR ^= (1<<4);//GPIO_Pin_4;
-      delay(10000); // how fast can we change the PWM
+      delay(1000); // for pulses we have 600 Hz for delay(10000), 128=41KHz, 32=150KHz in this loop
     }
 }

@@ -164,27 +164,53 @@ void SysTick_Handler(void)
   * @}
   */ 
 
- /*void TIM2_IRQHandler(void){
-  static uint32_t shift_register=0xff;
+void TIM2_IRQHandler(void){
     uint32_t bit;
 
-  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-
-    bit= ((shift_register >> 31) ^ (shift_register >> 29) ^ (shift_register >> 25) ^ (shift_register >> 24)) & 1u; // 32 is 31, 29, 25, 24
-    shift_register=shift_register<<1; // we are shifting left << so bit 31 is out last one
-    shift_register+=bit;         
-
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
   
-  //  GPIOC->ODR ^= GPIO_Pin_13;
+    //    GPIOC->ODR ^= GPIO_Pin_13;
+    //    GPIOC->ODR ^= GPIO_Pin_14;
 
     //    if (bit==1) GPIOC->ODR = GPIO_Pin_13; // pin 13 on C
     //    else GPIOC->ODR = 0;
 }
- */
 
-void EXTI0_IRQHandler(void){
-  EXTI_ClearITPendingBit(EXTI_Line0);
+void TIM4_IRQHandler(void){
+    uint32_t bit;
+
+    TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+  
+    GPIOC->ODR ^= GPIO_Pin_13;
+    GPIOC->ODR ^= GPIO_Pin_14;
+
+    //    if (bit==1) GPIOC->ODR = GPIO_Pin_13; // pin 13 on C
+    //    else GPIOC->ODR = 0;
+}
+
+
+ //void EXTI0_IRQHandler(void){
+void EXTI9_5_IRQHandler(void){ // both working now
+  //  EXTI_ClearITPendingBit(EXTI_Line5);
+
+  // to distinguish WORKING!
+  /*
+  uint32_t pending = EXTI->PR; 
+  if(pending & (1 << 5)) { // LF on B
+  GPIOB->ODR ^= GPIO_Pin_13;
+  GPIOB->ODR ^= GPIO_Pin_14;
+
+
+  EXTI->PR = 1 << 5; // clear pending flag, otherwise we'd get endless interrupts
+        // handle pin 5 here
+    }
+    if(pending & (1 << 7)) { // HF on C
   GPIOC->ODR ^= GPIO_Pin_13;
+  GPIOC->ODR ^= GPIO_Pin_14;
+  EXTI->PR = 1 << 7;
+        // handle pin 7 here
+    }
+  */
 }
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
