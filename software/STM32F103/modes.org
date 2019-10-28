@@ -62,8 +62,11 @@ what can always be selected: external bits are always ANDed in (pullup?) ???
 
 *** other modes
 
-- SR is clocked by its own HIGH output or logic XOR/AND with clock in, 
-- SR speed from own DAC out
+- SR is clocked by its own HIGH output or logic XOR/AND with clock in
+  -> doesn;t work - see above: maybe feedback output from other SR as
+  clock for other but not both
+
+- SR speed from own DAC out 
 
 * pwm modes low and high
 
@@ -77,7 +80,7 @@ each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 - ... or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
 -> these depend on SR mode
 
-in latter case we use speed CV as offset for PWM
+in 2 and 3 we use speed CV as offset for PWM, or as divider/multiplier maybe for 2
 
 4- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 

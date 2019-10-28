@@ -21,6 +21,12 @@
 
 - timer loops and all modes... timer action is in stm32f10x_it.c
 
+- one slower timer for update ADC -> modes and speeds, update PWM depending on mode
+- one faster timer for both LF and HF shift registers
+- interrupts for lf an hf shift reg and upates depending on mode
+
+- nothing in main loop
+
 */
 
 #include "stm32f10x.h"
