@@ -181,8 +181,8 @@ void TIM4_IRQHandler(void){
 
     TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
   
-    GPIOC->ODR ^= GPIO_Pin_13;
-    GPIOC->ODR ^= GPIO_Pin_14;
+    //    GPIOC->ODR ^= GPIO_Pin_13;
+    //    GPIOC->ODR ^= GPIO_Pin_14;
 
     //    if (bit==1) GPIOC->ODR = GPIO_Pin_13; // pin 13 on C
     //    else GPIOC->ODR = 0;
@@ -194,23 +194,23 @@ void EXTI9_5_IRQHandler(void){ // both working now
   //  EXTI_ClearITPendingBit(EXTI_Line5);
 
   // to distinguish WORKING!
-  /*
+  
   uint32_t pending = EXTI->PR; 
   if(pending & (1 << 5)) { // LF on B
-  GPIOB->ODR ^= GPIO_Pin_13;
-  GPIOB->ODR ^= GPIO_Pin_14;
+    //  GPIOB->ODR ^= GPIO_Pin_13;
+    //  GPIOB->ODR ^= GPIO_Pin_14;
 
 
-  EXTI->PR = 1 << 5; // clear pending flag, otherwise we'd get endless interrupts
+  EXTI->PR = 1 << 5; // clear pending flag, otherwise we'd get endless interrupts -!!!!!!!!!!!!!!!!!!!!!!!!!
         // handle pin 5 here
     }
     if(pending & (1 << 7)) { // HF on C
-  GPIOC->ODR ^= GPIO_Pin_13;
-  GPIOC->ODR ^= GPIO_Pin_14;
+      //  GPIOC->ODR ^= GPIO_Pin_13;
+      //  GPIOC->ODR ^= GPIO_Pin_14;
   EXTI->PR = 1 << 7;
         // handle pin 7 here
     }
-  */
+  
 }
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

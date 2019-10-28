@@ -14,10 +14,10 @@
 
 - test basic PWMs into filter/scope - to add LF PWM/timer 3 - DONE
 
-- test clock interrupts ins, pulse in and outs
-- test each ADC, pot/cv where necessary
+- test clock interrupts ins, pulse in and outs DONE
+- test each ADC, pot/cv where necessary 
 
-- timer loops and all modes... timer action is in stm32f10x_it.c
+- timer loops and all modes... timer action is in stm32f10x_it.c 
 
 - one slower timer for update ADC -> modes and speeds, update PWM depending on mode
 - one faster timer for both LF and HF shift registers
@@ -209,7 +209,7 @@ int main(void)
   // test on pin 0 - port B - check where EXTI lines go in manual
 
   //LF:PB5-EXTI5X  HF:PB7=EXTI7X
-    
+      
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -242,12 +242,13 @@ int main(void)
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
   
+  
   // timer interrupts x2 fastest and slow - TIMER2 is fast and TIMER3 is slow
 
   // TIMER2 tested an working - but this will be FAST!
-
+  
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32;// peaks at 32/0 prescale with 730 KHz
   TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // with period 32 and prescaler 8 this makes for 120 KhZ
@@ -309,7 +310,7 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+  
   
 
     while(1)
@@ -363,6 +364,6 @@ int main(void)
 
       
       //      GPIOB->ODR ^= (1<<4);//GPIO_Pin_4;
-      delay(1000); // for pulses we have 600 Hz for delay(10000), 128=41KHz, 32=150KHz in this loop
+      delay(10000); // for pulses we have 600 Hz for delay(10000), 128=41KHz, 32=150KHz in this loop
     }
 }

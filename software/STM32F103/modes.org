@@ -9,6 +9,17 @@
 
 - pulses in and out are INVERTED! (so pulse in is normally pulled up to 1!)
 
+* from SR summaries we have:
+
+- length of SR
+- type of feedback: new in, looped out, parity generator, xor or ors of these possibles, from other SR (could be interesting)
+- how this type of feedback is selected
+- how the SR is clocked: by clocked pulses which can be irregular, by some feedback across two SRs, by regular speed CV, by some combination of these
+
+- out as short pulses or as toggle 0/1
+
+but only 16 modes
+
 * SR modes - low and high
 
 - length of SR (16 bits, 32 bits, x bits), shrink and extend, howdo we get to length? -> pulses count length????, speed cv is length with pulses as speed
@@ -27,7 +38,6 @@ older version = recursions: SR is clocked by its own HIGH output or logic XOR/AN
 
 SR speed from own DAC out
 
-
 // HF SR: 32 stages max, LF: 16 or 24 max
 
 SR in timed interrupt:
@@ -36,11 +46,36 @@ SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
 
 --> can we divide into pulse_in modes/speed_in modes
 
-*** clock/pulse in modes:
+*** clock/pulse=SPEED modes (input bit)
 
-- entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
+1- entry into SR from CV (as threshold for bit or as ADC?)
+2- CV selects length of SR which will stay with us - bit in ORed with loop bit
+3- CV threshold determines if input bit ORed last bit
+4- CV threshold determines if input bit XORed last bit
+5- CV determines probability of inverting the cycling bit in - no ext. bit in - this is Turing Machine - cycle bit or invert bit
+6- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit or rungler: XOR out with input bit
 
-*** cv/speed in modes:
+*** cv/speed in modes - make use of pulses and input bit:
+
+1- pulse toggles loopback to OR with new input bit/or just accept new input bit (CGS)
+
+2- loopback ORed with input bit and pulses flip/leak bits INSIDE
+
+3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit)
+
+4- parity for loopback XOR is determined by pulsed bits in (how long do we keep these as so?)
+
+--- bits in AND with this one
+
+wiard1: pulse selects new data or loop into SR
+
+wiard2: pulse selects new data or inverted loop into SR
+
+electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR 
+
+- other SR swopovers
+
+*** cv/speed in modes/older
 
 *combine both with speed as divider of clock/pulse in clock/pulse modes* -> where to do this in 16 modes?
 

@@ -493,6 +493,10 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 
 - check 2x timer interrupts: we use TIM2 for HF and TIM4 or LF! DONE!
 
+- test that both mode CV knobs work ADC0 an ADC1 !-> yes!
+
+/////////////////
+
 - adc smoothing if we need // not necessary so far but might be for modes...
 
 - define clearly all modes
