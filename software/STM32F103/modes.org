@@ -53,27 +53,28 @@ SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
 3- CV threshold determines if input bit ORed last bit
 4- CV threshold determines if input bit XORed last bit
 5- CV determines probability of inverting the cycling bit in - no ext. bit in - this is Turing Machine - cycle bit or invert bit
-6- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit or rungler: XOR out with input bit
+6- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit 
+7- or rungler: XOR out with input bit
 
 *** cv/speed in modes - make use of pulses and input bit:
 
 1- pulse toggles loopback to OR with new input bit/or just accept new input bit (CGS)
 
-2- loopback ORed with input bit and pulses flip/leak bits INSIDE
+2- loopback ORed with input bit and pulses flip/leak bits INSIDE the SR (how we select these?)
 
 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit)
 
-4- parity for loopback XOR is determined by pulsed bits in (how long do we keep these as so?)
+4- parity for loopback XOR is determined by pulsed bits in (how long do we keep these as selected and how do we select bits)
 
---- bits in AND with this one
+5--- bits in AND with this one
 
-wiard1: pulse selects new data or loop into SR
+6- wiard1: pulse selects new data or loop old back into SR
 
-wiard2: pulse selects new data or inverted loop into SR
+7- wiard2: pulse selects new data or inverted loop old back into SR
 
-electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR 
+8- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR 
 
-- other SR swopovers
+9- other SR swopovers// feedbacks - or select as pulse out one mode???// double all modes for pulse out = 128 modes?
 
 *** cv/speed in modes/older
 
@@ -109,19 +110,19 @@ each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 
 1- pwm follows speed cv
 
-2- pwms follow clock pulse in for each
+2- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
+
+pulses per x microseconds // in 1KHz loop?
 
 3- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
-- ... or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
+- ... or speed for DAC updates is from clock pulse in depending on other mode, thus speed is same speed as DAC/shiftreg speed!
 -> these depend on SR mode
 
-in 2 and 3 we could use speed CV as offset for PWM, or as divider/multiplier maybe for 2
-
-- but we already use CV for speed of updates in some cases
-
+in 2 and 3 we could use speed CV as offset for PWM-> in pulse mode only
 
 4- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 
+// how often do we update this last one...
 
 * modes tech
 

@@ -25,7 +25,7 @@
 
 extern __IO uint16_t ADCBuffer[];
 
-uint32_t speedh, speedl, counterh=0, counterl=0;
+uint32_t speedh, speedl, counterh=0, speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
 uint16_t model, modeh;
 uint8_t modelpwm, modehpwm, modelsr, modehsr;
 
@@ -205,7 +205,14 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
     // clock pin interrupt in->PB7=EXTI7X, pulse in->PB10//can be interrupt tooX, 2 pulse out=inverted=PC13,14
 
     //->>>>>>>>>>>>>> 1- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
+    counterh++;
+        if (counterh>speedhh){
+      counterh=0;
 
+      // test raw speed of this - pin toggles at 160 KHz so double that
+      //      GPIOC->ODR ^= GPIO_Pin_13; 
+
+      
     bith = shift_registerh>>31; // bit which would be shifted out
     shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
     //    if PB5 is low (inverted) then bitxh=bith  | PB6=inverted
@@ -213,7 +220,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
     
     if( !(GPIOB->IDR & 0x0080)) shift_registerh+=bith | !(GPIOB->IDR & 0x0400); // PB7 and PB10
     else shift_registerh+= !(GPIOB->IDR & 0x0400);
-    // shift register bits output - inverted also on PC13 and 14;
+    // shift register bits output - inverted also on PC13 and 14; // for GPIOC we could also try dump whole thing onto ODR as I think nothing else is on there
     if (shift_registerh & 1u) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
     else GPIOC->BSRR = 0b0010000000000000;  // clear PC13 else write one
       // not sure what spacing we will use? say here bit 24 of this. spacing also depens on length  
@@ -222,17 +229,20 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 
     // test PWM from SR bits out -> but we want to use speed for speed of this interrupt so we can't use as offset here...
     // say 8 bits - what is spacing again?
-    uint8_t pwmbitsh=shift_registerh & 0xff; // just lowest 8 bits
-    uint16_t speedhh=pwmbitsh+512;//period
-    TIM1->ARR =speedhh;
-    TIM1->CCR1 = speedhh/2; // pulse  
-
+    uint16_t pwmbitsh=shift_registerh&0xff; // just lowest 8 bits - but could be more spaced out
+    uint16_t sph=pwmbitsh+512;//period
+    //    TIM1->ARR =sph;
+    //    TIM1->CCR1 = sph/2; // pulse  
+     
+          }
 }
 
-void TIM4_IRQHandler(void){ // select modes
+uint32_t lastspeedhh;
+
+void TIM4_IRQHandler(void){ // select modes, speed and if necessary handle PWM depending on mode 1KHz
     TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
     // read modes - do we need smoothing here?
-    // mode should be inverted maybe?
+    // mode should be inverted maybe? but we can just treat them as inverted
     
     model=ADCBuffer[1];
     modeh=ADCBuffer[0];
@@ -245,9 +255,11 @@ void TIM4_IRQHandler(void){ // select modes
 
     // read speeds
     speedh=(ADCBuffer[2]>>4)+256;
+    speedhh=ADCBuffer[2]>>6;     // test changing counter for LF and HF IRQ 
+    speedhh=((speedhh+lastspeedhh)/2); //smoothing necessary for higher speeds
+    lastspeedhh=speedhh;
+    
     speedl=(ADCBuffer[3]>>2)+256;
-
-    // test changing counter for LF and HF IRQ
     
     // and if mode is correct then deal with PWM here
     /*
@@ -261,17 +273,27 @@ void TIM4_IRQHandler(void){ // select modes
       TIM1->CCR1 = speedh/2; // pulse  
     }
     */
+
+// testing pulse count to mode - but pulsecount is wrong way round so...FIXED
+uint32_t stopped=hfpulsecount;
+if (stopped>32) stopped=32;
+uint32_t frompulse=(((ADCBuffer[2]>>8)+1)*(32-stopped))+256; // good if was dividing and multiplying maybe with lookup table
+
+hfpulsecount=0;
+TIM1->ARR = frompulse;//period
+TIM1->CCR1 = frompulse/2; // pulse  
+
 }
 
 
  //void EXTI0_IRQHandler(void){
-void EXTI9_5_IRQHandler(void){ // both working now
+void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falling edges...
   //  EXTI_ClearITPendingBit(EXTI_Line5);
 
   // to distinguish WORKING!
   
   uint32_t pending = EXTI->PR; 
-  if(pending & (1 << 5)) { // LF on B
+  if(pending & (1 << 5)) { // LF on 5 out on B
     //  GPIOB->ODR ^= GPIO_Pin_13;
     //  GPIOB->ODR ^= GPIO_Pin_14;
 
@@ -279,7 +301,8 @@ void EXTI9_5_IRQHandler(void){ // both working now
   EXTI->PR = 1 << 5; // clear pending flag, otherwise we'd get endless interrupts -!!!!!!!!!!!!!!!!!!!!!!!!!
         // handle pin 5 here
     }
-    if(pending & (1 << 7)) { // HF on C
+    if(pending & (1 << 7)) { // HF on 7/out on C
+   hfpulsecount++;
       //  GPIOC->ODR ^= GPIO_Pin_13;
       //  GPIOC->ODR ^= GPIO_Pin_14;
   EXTI->PR = 1 << 7;

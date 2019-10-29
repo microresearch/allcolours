@@ -6,7 +6,9 @@
 
 * for manual
 
-- start with Aurora Consurgens/rising dawn All Colours stuff (see notebook)
+AURORA CONSURGENS ALL COLOURS AC
+
+- start with Aurora Consurgens/rising dawn == All Colours stuff (see notebook - where???)
 - A suggested signal path high frequency noise channeled to the gatekeeper ... same for low frequency
 
 high and low, left and right, as above so below
@@ -485,7 +487,7 @@ filter outL: 1.6v peak - maybe more gain on these ?
 
 problem is that we are on the same interrupt for both clock pins in: void EXTI9_5_IRQHandler(void)
 
-[note if we want other pulse ins as interrupts these are on: PB6 and PB10 which are EXTI: 6 an EXTI: 10 I guess?
+[note if we want other pulse ins as interrupts these are on: PB6 and PB10 which are EXTI: 6 and EXTI: 10 I guess?
 
 so 10 (HF side) would be on different interrupt: EXTI15_10_IRQHandler
 
@@ -507,6 +509,8 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 
 - started on modes// tested simple pulse outs and simple SR codeDONE but
   need to doublecheck with test.c lap code to make sure
+
+- speed of updates/sr interruot means we can't use speed as offset, but maybe in pulses code!
 
 * TODO:
 
