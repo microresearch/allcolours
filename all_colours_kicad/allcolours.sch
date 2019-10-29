@@ -744,17 +744,6 @@ Wire Wire Line
 	2680 3380 2680 3415
 Wire Wire Line
 	835  6710 1335 6710
-$Comp
-L Device:Opamp_Dual_Generic U12
-U 3 1 5D4011E8
-P 10310 4105
-F 0 "U12" H 10310 4472 50  0000 C CNN
-F 1 "max4392" H 10310 4381 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-8-N" H 10310 4105 50  0001 C CNN
-F 3 "~" H 10310 4105 50  0001 C CNN
-	3    10310 4105
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2930 895  2930 1095
 Wire Wire Line
@@ -1011,17 +1000,6 @@ F 1 "max4392" H 3318 4190 50  0000 L CNN
 F 2 "SMD_Packages:SOIC-8-N" H 3360 4235 50  0001 C CNN
 F 3 "~" H 3360 4235 50  0001 C CNN
 	3    3360 4235
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:Opamp_Dual_Generic U12
-U 2 1 5D49B5C4
-P 6370 3300
-F 0 "U12" H 6328 3346 50  0000 L CNN
-F 1 "max4392" H 6328 3255 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 6370 3300 50  0001 C CNN
-F 3 "~" H 6370 3300 50  0001 C CNN
-	2    6370 3300
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1771,17 +1749,6 @@ F 3 "" H 3740 4275 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Device:Opamp_Dual_Generic U12
-U 1 1 5D5079B5
-P 9180 3260
-F 0 "U12" H 9180 3627 50  0000 C CNN
-F 1 "max4392" H 9180 3536 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-8-N" H 9180 3260 50  0001 C CNN
-F 3 "~" H 9180 3260 50  0001 C CNN
-	1    9180 3260
-	1    0    0    -1  
-$EndComp
-$Comp
 L allcolours-rescue:GND-power-allcolours-rescue #PWR012
 U 1 1 5D5079CA
 P 8835 3520
@@ -1943,17 +1910,15 @@ Wire Wire Line
 Connection ~ 810  7110
 Wire Wire Line
 	810  7110 835  7110
-Wire Wire Line
-	6215 1245 6615 1245
 $Comp
 L allcolours-rescue:R-device-allcolours-rescue R63
 U 1 1 5D5A081D
-P 6920 1395
-F 0 "R63" V 7000 1405 50  0000 C CNN
-F 1 "10K" V 6920 1395 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" V 6850 1395 50  0001 C CNN
-F 3 "" H 6920 1395 50  0000 C CNN
-	1    6920 1395
+P 6920 1435
+F 0 "R63" V 7000 1445 50  0000 C CNN
+F 1 "10K" V 6920 1435 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 6850 1435 50  0001 C CNN
+F 3 "" H 6920 1435 50  0000 C CNN
+	1    6920 1435
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
@@ -1964,12 +1929,12 @@ Connection ~ 7010 1445
 $Comp
 L power:GND #PWR025
 U 1 1 5D5A0CB1
-P 6920 1595
-F 0 "#PWR025" H 6920 1345 50  0001 C CNN
-F 1 "GND" H 6925 1422 50  0000 C CNN
-F 2 "" H 6920 1595 50  0001 C CNN
-F 3 "" H 6920 1595 50  0001 C CNN
-	1    6920 1595
+P 6920 1625
+F 0 "#PWR025" H 6920 1375 50  0001 C CNN
+F 1 "GND" H 6925 1452 50  0000 C CNN
+F 2 "" H 6920 1625 50  0001 C CNN
+F 3 "" H 6920 1625 50  0001 C CNN
+	1    6920 1625
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1994,10 +1959,6 @@ F 3 "" H 6920 845 50  0001 C CNN
 	1    6920 845 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6920 1545 6920 1595
-Wire Wire Line
-	6920 1185 6920 1245
 Wire Wire Line
 	6920 845  6920 885 
 Wire Wire Line
@@ -2451,16 +2412,14 @@ $EndComp
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C11
 U 1 1 5DA5DF2F
-P 6765 1245
-F 0 "C11" H 6530 1130 50  0000 L CNN
-F 1 "100N" H 6790 1145 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 6803 1095 50  0001 C CNN
-F 3 "" H 6765 1245 50  0000 C CNN
-	1    6765 1245
+P 6700 1245
+F 0 "C11" H 6465 1130 50  0000 L CNN
+F 1 "100N" H 6725 1145 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 6738 1095 50  0001 C CNN
+F 3 "" H 6700 1245 50  0000 C CNN
+	1    6700 1245
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	6915 1245 7165 1245
 $Comp
 L allcolours-rescue:C-device-allcolours-rescue C13
 U 1 1 5DA5E4ED
@@ -2496,4 +2455,50 @@ F 3 "" H 8480 3160 50  0000 C CNN
 $EndComp
 Text Notes 6650 3665 0    79   ~ 0
 change op amp
+$Comp
+L Amplifier_Operational:TL082 U4
+U 1 1 5DB931E9
+P 9180 3260
+F 0 "U4" H 9180 3627 50  0000 C CNN
+F 1 "TL082" H 9180 3536 50  0000 C CNN
+F 2 "SMD_Packages:SOIC-8-N" H 9180 3260 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 9180 3260 50  0001 C CNN
+	1    9180 3260
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U4
+U 2 1 5DB93341
+P 6370 3300
+F 0 "U4" H 6370 3667 50  0000 C CNN
+F 1 "TL082" H 6370 3576 50  0000 C CNN
+F 2 "SMD_Packages:SOIC-8-N" H 6370 3300 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6370 3300 50  0001 C CNN
+	2    6370 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U4
+U 3 1 5DB937AB
+P 10310 4105
+F 0 "U4" H 10268 4151 50  0000 L CNN
+F 1 "TL082" H 10268 4060 50  0000 L CNN
+F 2 "SMD_Packages:SOIC-8-N" H 10310 4105 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 10310 4105 50  0001 C CNN
+	3    10310 4105
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6850 1245 6920 1245
+Wire Wire Line
+	6920 1285 6920 1245
+Connection ~ 6920 1245
+Wire Wire Line
+	6920 1245 7165 1245
+Wire Wire Line
+	6920 1185 6920 1245
+Wire Wire Line
+	6215 1245 6550 1245
+Wire Wire Line
+	6920 1585 6920 1625
 $EndSCHEMATC
