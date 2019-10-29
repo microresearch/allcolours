@@ -459,7 +459,7 @@ modes.org -> max 64 modes= 4PWM x 16SR
 
 * 28/10
 
-- minimal bleedthrough with TLE2072 as U12 sub (rework on pcb an schematic)
+- minimal bleedthrough with TLE2072 as U12 sub (rework on pcb an schematic)-DONE
 
 doesn't bleed on pwm but signal in on C1ch 
 
@@ -500,6 +500,13 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 - adc smoothing if we need // not necessary so far but might be for modes...
 
 - define clearly all modes
+
+* 29/10
+
+- schematic reworked and some problems fixed so will need to re-order and test again
+
+- started on modes// tested simple pulse outs and simple SR codeDONE but
+  need to doublecheck with test.c lap code to make sure
 
 * TODO:
 

@@ -38,12 +38,12 @@ void delay(unsigned long delay)
   }
 }
 
+__IO uint16_t ADCBuffer[] = {0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA };
+
 
 int main(void)
 {
-  uint32_t shift_register=0xff;
-  uint32_t bit;
-
+  
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_TimeBaseInitTypeDef TIM_TimeBase_InitStructure;
   TIM_OCInitTypeDef TIM_OC_InitStructure;
@@ -51,11 +51,10 @@ int main(void)
   EXTI_InitTypeDef EXTI_InitStructure;
   ADC_InitTypeDef ADC_InitStructure;
   DMA_InitTypeDef DMA_InitStructure;
-  __IO uint16_t ADCBuffer[] = {0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA };
   SystemInit();
 
   
-  uint32_t speedh,speedl, accspeedh=0, accspeedl=0, counter=0;
+  //  uint32_t speedh,speedl, accspeedh=0, accspeedl=0, counter=0;
 
   // we need to organise timers for 2x PWM for pins and 2x timers
 
@@ -165,7 +164,7 @@ int main(void)
   TIM_Cmd(TIM1, ENABLE);
   TIM_CtrlPWMOutputs(TIM1, ENABLE); // we needed this for timer1 to be added
   
-  // this is LF PWM on PB4 - timer 3 channel 1 -> this code needs to be tested!
+  // this is LF PWM on PB4 - timer 3 channel 1 -> TESTED!
 
   TIM_DeInit(TIM3);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
@@ -243,14 +242,14 @@ int main(void)
   EXTI_Init(&EXTI_InitStructure);
   
   
-  // timer interrupts x2 fastest and slow - TIMER2 is fast and TIMER3 is slow
+  // timer interrupts x2 fastest and slow - TIMER2 is fast and TIMER4 is slow
 
-  // TIMER2 tested an working - but this will be FAST!
+  // TIMER2 tested and working - but this will be FAST!
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 32;// peaks at 32/0 prescale with 730 KHz
+  TIM_TimeBase_InitStructure.TIM_Period = 24;// peaks at 32/0 prescale with 730 KHz - 24 is fastest we can go
   TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // with period 32 and prescaler 8 this makes for 120 KhZ
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
  
@@ -263,13 +262,13 @@ int main(void)
   NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM2, ENABLE);
 
-  // TIMER 4 - > working with same results as TIM2 -> 120KHz
+  // TIMER 4 - > working with same results as TIM2 -> 120KHz -> we want say 1000 Hz for updates
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 32;
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; 
+  TIM_TimeBase_InitStructure.TIM_Period = 256;
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 256; // this is for 1 KHz 
   TIM_TimeBaseInit(TIM4, &TIM_TimeBase_InitStructure);
  
   TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
@@ -297,7 +296,6 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
-
   
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
@@ -311,59 +309,18 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
   
-  
+  // for additional pulse ins: PB6 and PB10
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
 
     while(1)
     {
-      // test with a 32 bit shift register structure
-      //bit= ((shift_register >> 31) ^ (shift_register >> 29) ^ (shift_register >> 25) ^ (shift_register >> 24)) & 1u; // 32 is 31, 29, 25, 24
-      //      shift_register=shift_register<<1; // we are shifting left << so bit 31 is out last one
-      //      shift_register+=bit;         
-      //      if (bit==1)      GPIOC->ODR = GPIO_Pin_13; // pin 13 on C - this one gives us 3.3 MHz with simple toggle -O3 compile
-      //      else      GPIOC->ODR = 0;
-  //  GPIOC->ODR ^= GPIO_Pin_13;
-  //  x++;
-
-      // TODO: smoothing smoother - but we have no float...
-      /* from WORM:
-	 value =(float)adc_buffer[SELX]/65536.0f; 
-	 smoothed_adc_value[2] += 0.1f * (value - smoothed_adc_value[2]);
-	 _selx=smoothed_adc_value[2];
-	 CONSTRAIN(_selx,0.0f,1.0f);
-       */
-
-      
-      // ADC0(modeh),1(model),2(speedh),3(speedl)=PA0,1,2,3 X
-      speedh=(ADCBuffer[2]); // speedh for TIM1 testing
-      //accspeedh = accspeedh - (accspeedh >> 4) + speedh; // smoothing
-      speedh=(speedh>>4)+256; //12 bits = 4096 - clicks on any LARGE change WITHOUT preload
-      //speedh=512+speedh; // 256=280 KHz - 256 is fine...
-      //      counter+=2;
-      //      speedh=512;
-      //      if (counter>512) counter=0;
-      //      speedh=256;
-      TIM1->ARR = speedh;//period
-      TIM1->CCR1 = speedh/2; // pulse  
-      
-      speedl=(ADCBuffer[3]); // speedh for TIM1 testing
-      //      accspeedl = accspeedl - (accspeedl >> 4) + speedl; // smoothing
-      speedl=(speedl>>2)+256; //14 bits - modes also give different ranges - this range is good - not enough modes for range so select widest... 
-      //      speedl=256;
-      //      speedl=1024;
-      TIM3->ARR = speedl;//period
-      TIM3->CCR1 = speedl/2; // pulse  
-
-      // check pulse outs: LF: PB13,14 HF: PC13,14 - on and off for all of these:
-
-      /*
-      GPIOC->ODR ^= GPIO_Pin_13;
-      GPIOC->ODR ^= GPIO_Pin_14;
-      GPIOB->ODR ^= GPIO_Pin_13;
-      GPIOB->ODR ^= GPIO_Pin_14;
-      */
-
-      
-      //      GPIOB->ODR ^= (1<<4);//GPIO_Pin_4;
-      delay(10000); // for pulses we have 600 Hz for delay(10000), 128=41KHz, 32=150KHz in this loop
     }
 }

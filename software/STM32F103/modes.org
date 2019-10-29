@@ -115,7 +115,10 @@ each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 - ... or speed for DAC updates is from clock pulse in, thus speed is same speed as DAC/shiftreg speed!
 -> these depend on SR mode
 
-in 2 and 3 we use speed CV as offset for PWM, or as divider/multiplier maybe for 2
+in 2 and 3 we could use speed CV as offset for PWM, or as divider/multiplier maybe for 2
+
+- but we already use CV for speed of updates in some cases
+
 
 4- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 

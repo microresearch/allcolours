@@ -23,6 +23,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 
+extern __IO uint16_t ADCBuffer[];
+
+uint32_t speedh, speedl, counterh=0, counterl=0;
+uint16_t model, modeh;
+uint8_t modelpwm, modehpwm, modelsr, modehsr;
+
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
   */
@@ -164,28 +170,97 @@ void SysTick_Handler(void)
   * @}
   */ 
 
-void TIM2_IRQHandler(void){
-    uint32_t bit;
+uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
+uint32_t bith;
+uint32_t shift_registerl=0xff; // 32 bit SR but we can change length just using output bit
+uint32_t bitl;
+uint8_t SRlengthh, SRlengthhl;
 
-    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of this should change!
+  // but as is for both LF an HF periods how do we handle this
+  // run as fast as possible and use a counter for each period
   
-    //    GPIOC->ODR ^= GPIO_Pin_13;
-    //    GPIOC->ODR ^= GPIO_Pin_14;
+  uint32_t bitxh, bitxl;
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-    //    if (bit==1) GPIOC->ODR = GPIO_Pin_13; // pin 13 on C
-    //    else GPIOC->ODR = 0;
+    // test simple SR mode here for output pulses on LF side-WORKING
+
+    //->>>>>>>>>>>>>> 1- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
+
+    bitl = shift_registerl>>31; // bit which would be shifted out
+    shift_registerl=shift_registerl<<1; // we are shifting left << so bit 31 is out last one
+    //    if PB5 is low (inverted) then bitxh=bith  | PB6=inverted
+    // but do we need to access PB5 through interrupt maybe? - but this seems to work
+    
+    if( !(GPIOB->IDR & 0x0020)) shift_registerl+=bitl | !(GPIOB->IDR & 0x0040);
+    else shift_registerl+= !(GPIOB->IDR & 0x0040);
+    // shift register bits output - inverted also on PB13 and 14;
+    if (shift_registerl & 1u) GPIOB->BRR = 0b0010000000000000;  // clear PB13 else write one
+    else GPIOB->BSRR = 0b0010000000000000;  // clear PB13 else write one
+      // not sure what spacing we will use? say here bit 24 of this. spacing also depens on length  
+    if (shift_registerl & (1<<24)) GPIOB->BRR = 0b0100000000000000;  // clear PB13 else write one BRR is clear, BSRR is set bit and leave alone others
+    else GPIOB->BSRR = 0b0100000000000000;  // clear PB13 else write one // clear PB14 else write one
+
+    // test simple SR mode here for output pulses on HF side
+    // clock pin interrupt in->PB7=EXTI7X, pulse in->PB10//can be interrupt tooX, 2 pulse out=inverted=PC13,14
+
+    //->>>>>>>>>>>>>> 1- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
+
+    bith = shift_registerh>>31; // bit which would be shifted out
+    shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
+    //    if PB5 is low (inverted) then bitxh=bith  | PB6=inverted
+    // but do we need to access PB5 through interrupt maybe? - but this seems to work
+    
+    if( !(GPIOB->IDR & 0x0080)) shift_registerh+=bith | !(GPIOB->IDR & 0x0400); // PB7 and PB10
+    else shift_registerh+= !(GPIOB->IDR & 0x0400);
+    // shift register bits output - inverted also on PC13 and 14;
+    if (shift_registerh & 1u) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+    else GPIOC->BSRR = 0b0010000000000000;  // clear PC13 else write one
+      // not sure what spacing we will use? say here bit 24 of this. spacing also depens on length  
+    if (shift_registerh & (1<<24)) GPIOC->BRR = 0b0100000000000000;  // clear PC13 else write one BRR is clear, BSRR is set bit and leave alone others
+    else GPIOC->BSRR = 0b0100000000000000;  // clear PC13 else write one // clear PC14 else write one
+
+    // test PWM from SR bits out -> but we want to use speed for speed of this interrupt so we can't use as offset here...
+    // say 8 bits - what is spacing again?
+    uint8_t pwmbitsh=shift_registerh & 0xff; // just lowest 8 bits
+    uint16_t speedhh=pwmbitsh+512;//period
+    TIM1->ARR =speedhh;
+    TIM1->CCR1 = speedhh/2; // pulse  
+
 }
 
-void TIM4_IRQHandler(void){
-    uint32_t bit;
-
+void TIM4_IRQHandler(void){ // select modes
     TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-  
-    //    GPIOC->ODR ^= GPIO_Pin_13;
-    //    GPIOC->ODR ^= GPIO_Pin_14;
+    // read modes - do we need smoothing here?
+    // mode should be inverted maybe?
+    
+    model=ADCBuffer[1];
+    modeh=ADCBuffer[0];
 
-    //    if (bit==1) GPIOC->ODR = GPIO_Pin_13; // pin 13 on C
-    //    else GPIOC->ODR = 0;
+    modelpwm=model>>14; // 2 bits remaining
+    modehpwm=modeh>>14; // 2 bits remaining
+
+    modelsr=(model>>10)%16; // 6 bits=64 and then 0-15 repeats
+    modehsr=(modeh>>10)%16; // 6 bits=64 and then 0-15 repeats
+
+    // read speeds
+    speedh=(ADCBuffer[2]>>4)+256;
+    speedl=(ADCBuffer[3]>>2)+256;
+
+    // test changing counter for LF and HF IRQ
+    
+    // and if mode is correct then deal with PWM here
+    /*
+    if (modelpwm==0) {
+      TIM3->ARR = speedl;//period
+      TIM3->CCR1 = speedl/2; // pulse  
+    }
+
+    if (modehpwm==0) {
+      TIM1->ARR = speedh;//period
+      TIM1->CCR1 = speedh/2; // pulse  
+    }
+    */
 }
 
 
