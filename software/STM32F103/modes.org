@@ -46,35 +46,41 @@ SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
 
 --> can we divide into pulse_in modes/speed_in modes
 
-*** clock/pulse=SPEED modes (input bit)
+*** clock/pulse=SPEED modes (input bit) - fewer of these
 
 1- entry into SR from CV (as threshold for bit or as ADC?)
 2- CV selects length of SR which will stay with us - bit in ORed with loop bit
 3- CV threshold determines if input bit ORed last bit
 4- CV threshold determines if input bit XORed last bit
-5- CV determines probability of inverting the cycling bit in - no ext. bit in - this is Turing Machine - cycle bit or invert bit
+???5- CV determines probability of inverting the cycling bit in - no ext. bit in - this is Turing Machine - cycle bit or invert bit
 6- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit 
 7- or rungler: XOR out with input bit
 
 *** cv/speed in modes - make use of pulses and input bit:
 
-1- pulse toggles loopback to OR with new input bit/or just accept new input bit (CGS)
+1- pulse toggles loopback to OR with new input bit/or just accept new input bit (CGS) -X
 
-2- loopback ORed with input bit and pulses flip/leak bits INSIDE the SR (how we select these?)
+2- XOR - X
 
-3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit)
+3- loopback ORed with input bit and pulses flip/leak bits INSIDE the SR (how we select these? with pulse and counter) -X
 
-4- parity for loopback XOR is determined by pulsed bits in (how long do we keep these as selected and how do we select bits)
+4- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit) -X
 
-5--- bits in AND with this one
+5- parity for loopback XOR is determined by pulsed bits in (how long
+do we keep these as selected and how do we select bits - in a queue
+and selected with pulses) -X
 
-6- wiard1: pulse selects new data or loop old back into SR
+6- wiard1: pulse selects new data or loop old back into SR -X
 
-7- wiard2: pulse selects new data or inverted loop old back into SR
+7- wiard2: pulse selects new data or inverted loop old back into SR -X
 
 8- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR 
 
-9- other SR swopovers// feedbacks - or select as pulse out one mode???// double all modes for pulse out = 128 modes?
+9- SR swopovers// feedbacks - 
+
+10 -or select as pulse out one mode eg mode 1 with pulses??? // or // double all modes for pulse out = 128 modes? - depends on resolution
+
+11+// other possible mode would be noise taps for noise out at different speeds...
 
 *** cv/speed in modes/older
 

@@ -508,9 +508,22 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 - schematic reworked and some problems fixed so will need to re-order and test again
 
 - started on modes// tested simple pulse outs and simple SR codeDONE but
-  need to doublecheck with test.c lap code to make sure
+  need to doublecheck with test.c lap code to make sureDONE
 
-- speed of updates/sr interruot means we can't use speed as offset, but maybe in pulses code!
+- speed of updates/sr interrupt means we can't use speed as offset, but maybe in pulses code!
+
+* 30/10
+
+// TODO: before we fill out all modes, deal with length and spacings - SRlengthh should not be <2
+// ----: also deal with how we space the out bits - now is just length/2-DONE
+
+// copy working length code from mode 0 to rest->DONE but we need to re-test all of them
+
+// test lf and hf together with latest mode code - CLOSE
+
+// thinking also whether clock/pulse should be toggle or other pulse as toggle?
+// as other pulse is not normed to anything - leave as clock as toggle DONE
+
 
 * TODO:
 
