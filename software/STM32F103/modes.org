@@ -53,8 +53,8 @@ SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
 3- CV threshold determines if input bit ORed last bit
 4- CV threshold determines if input bit XORed last bit
 ???5- CV determines probability of inverting the cycling bit in - no ext. bit in - this is Turing Machine - cycle bit or invert bit
-6- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit 
-7- or rungler: XOR out with input bit
+5- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit 
+6- or rungler: XOR out with input bit
 
 *** cv/speed in modes - make use of pulses and input bit:
 
@@ -74,13 +74,18 @@ and selected with pulses) -X
 
 7- wiard2: pulse selects new data or inverted loop old back into SR -X
 
-8- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR 
+8- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR -X
 
-9- SR swopovers// feedbacks - 
+[9- SR swopovers// feedbacks - somewhere above?]
 
-10 -or select as pulse out one mode eg mode 1 with pulses??? // or // double all modes for pulse out = 128 modes? - depends on resolution
+9 -or select as pulse out one mode eg mode 1 with pulses??? // or // double all modes for pulse out = 128 modes? - depends on resolution
+// or we could toggle pulse out here in this mode...
 
-11+// other possible mode would be noise taps for noise out at different speeds...
+10- noise taps for noise out at different speeds...-> array of noise taps
+
+see: eg. 	32-bit Galois LFSR with taps at 32, 30, 26, 25. Sequence length is 4294967295. 0 is a lock-up state.  -1 for our purposes
+
+https://docs.rs/lfsr/0.2.0/lfsr/galois/index.html and test these...
 
 *** cv/speed in modes/older
 

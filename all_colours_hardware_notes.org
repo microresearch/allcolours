@@ -524,6 +524,11 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 // thinking also whether clock/pulse should be toggle or other pulse as toggle?
 // as other pulse is not normed to anything - leave as clock as toggle DONE
 
+* 31/10
+
+- added LF code - in trhis TIM2 interrupt we need to watch how fast we can run it - otherwise it doesn't run - check all possibles!
+- case 7 - electronotes crossover seems to work so far
+
 
 * TODO:
 
