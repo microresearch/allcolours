@@ -48,6 +48,8 @@ SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
 
 *** clock/pulse=SPEED modes (input bit) - fewer of these
 
+options:L CGS, TM, wiard1/2, LFSR - lfsr would be nice on pulses
+
 1- entry into SR from CV (as threshold for bit or as ADC?)
 2- CV selects length of SR which will stay with us - bit in ORed with loop bit
 3- CV threshold determines if input bit ORed last bit
@@ -56,7 +58,7 @@ SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
 5- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit 
 6- or rungler: XOR out with input bit
 
-*** cv/speed in modes - make use of pulses and input bit:
+*** cv/speed in modes - make use of pulses and input bit: DONE
 
 1- pulse toggles loopback to OR with new input bit/or just accept new input bit (CGS) -X
 
@@ -78,14 +80,15 @@ and selected with pulses) -X
 
 [9- SR swopovers// feedbacks - somewhere above?]
 
-9 -or select as pulse out one mode eg mode 1 with pulses??? // or // double all modes for pulse out = 128 modes? - depends on resolution
+9 -or select as pulse out one mode eg mode 1 with pulses -X 
+// or // double all modes for pulse out = 128 modes? - depends on resolution
 // or we could toggle pulse out here in this mode...
 
-10- noise taps for noise out at different speeds...-> array of noise taps
+10- noise taps for noise out at different speeds...-> array of noise taps -X
 
 see: eg. 	32-bit Galois LFSR with taps at 32, 30, 26, 25. Sequence length is 4294967295. 0 is a lock-up state.  -1 for our purposes
 
-https://docs.rs/lfsr/0.2.0/lfsr/galois/index.html and test these...
+https://docs.rs/lfsr/0.2.0/lfsr/galois/index.html and test these//transformed for length... -> test.c DONE
 
 *** cv/speed in modes/older
 
@@ -119,21 +122,22 @@ what can always be selected: external bits are always ANDed in (pullup?) ???
 
 each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
 
-1- pwm follows speed cv
+0- pwm follows speed cv
 
-2- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
+1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
 
 pulses per x microseconds // in 1KHz loop?
 
-3- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
-- ... or speed for DAC updates is from clock pulse in depending on other mode, thus speed is same speed as DAC/shiftreg speed!
--> these depend on SR mode
+2- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
 
-in 2 and 3 we could use speed CV as offset for PWM-> in pulse mode only
+2/clock- pwm follows DAC from SR (not same on LF as DAC bits ?what
+this means?>)- ... or speed for DAC updates is from clock pulse in
+depending on other mode, thus speed is same speed as DAC/shiftreg
+speed!  -> these depend on SR mode -> speed CV as offset for PWM-> in
+pulse mode only
 
-4- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
-
-// how often do we update this last one...
+3- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
+// how often do we update this last one...????? and we need to record this somewhere (or is as PWM -> check?)
 
 * modes tech
 

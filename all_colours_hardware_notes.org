@@ -529,6 +529,14 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 - added LF code - in trhis TIM2 interrupt we need to watch how fast we can run it - otherwise it doesn't run - check all possibles!
 - case 7 - electronotes crossover seems to work so far
 
+* 1/11
+
+- all SR modes implemented on high side - to re-test one by one, copy over to low
+
+// questions of tap out for each
+
+- start on clocked modes and pwm modes...
+
 
 * TODO:
 
