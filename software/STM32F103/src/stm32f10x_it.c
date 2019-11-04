@@ -187,6 +187,8 @@ uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749
 // from: http://courses.cse.tamu.edu/walker/csce680/lfsr_table.pdf
 // and reworked for length in test.c
 
+// note that we can have 2 mirrored with [n, A, B, C] -> [n, n-C, n-B, n-A] - maybe for LF to hF!
+
 static uint8_t lfsr_taps[32][4] = {
         {30, 30, 30, 30},
         {29, 29, 29, 29},
@@ -268,6 +270,9 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	else GPIOB->BSRR = 0b0100000000000000;  // clear PB14 else write one // clear PB14 else write one
 	break;
 
+	//       case 9: // 9- noise only with varying taps depending on length - *for LF we can do mirroring!*
+
+	
     // /END of LF SR side/..................................................................................................................    
 	    }
     }
@@ -439,7 +444,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	break;
 
 
-      case 9: // 9- noise only with varying taps depending on length (we could OR in PB10 though)
+      case 9: // 9- noise only with varying taps depending on length (we could OR in PB10 though) - for LF we can do mirroring!
 	bith= ((shift_registerh >> (lfsr_taps[SRlengthh][0])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][1])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][2])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 	//	shift_registerh+= (bith <<shifterh); // PB7 and PB10
