@@ -77,6 +77,7 @@ static uint8_t lfsr_taps_mirrored[32][4] = { // TO TEST! seems to work so far!
         {31, 1, 5, 6},
 };
 
+
 //   {32, 30, 26, 25},     //Tap position for 32-bit LFSR
 // becomes 31x, 1, 5, 6
 
