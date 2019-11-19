@@ -1,8 +1,8 @@
 TARGET = allcolours
 FLASH = st-flash
 
-TOOLCHAIN = /root/ARM/gcc-arm-none-eabi-4_9-2015q2
-#TOOLCHAIN = /root/gcc-arm-none-eabi-7-2018-q2-update
+#TOOLCHAIN = /root/ARM/gcc-arm-none-eabi-4_9-2015q2
+TOOLCHAIN = /root/gcc-arm-none-eabi-7-2018-q2-update
 AS = $(TOOLCHAIN)/bin/arm-none-eabi-as
 LD = $(TOOLCHAIN)/bin/arm-none-eabi-ld
 CC = $(TOOLCHAIN)/bin/arm-none-eabi-gcc

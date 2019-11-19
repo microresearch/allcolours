@@ -29,14 +29,6 @@
 
 #include "stm32f10x.h"
 
-void delay(unsigned long delay)
-{
-  int x=0;
-  while(delay) {
-    delay--;
- asm("");
-  }
-}
 
 __IO uint16_t ADCBuffer[] = {0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA };
 

@@ -54,6 +54,15 @@ uint8_t modelpwm, modehpwm, modelsr, modehsr, hcount=0;
   * @retval None
   */
 
+void delay(unsigned long delay)
+{
+  int x=0;
+  while(delay) {
+    delay--;
+ asm("");
+  }
+}
+
 
 void NMI_Handler(void)
 {
@@ -269,11 +278,12 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
   uint8_t shifterl, shifterh;
 
   SRlengthl=31;  // TESTING!
-  SRlengthh=27;  // TESTING!
+  SRlengthh=31;  // TESTING!
 
-  modelsr=10; // TESTING!
-  modehsr=10; // TESTING!
+  modelsr=0; // TESTING!
+  modehsr=7; // TESTING!
 
+  //length is always -1 - so 32 = 31
   shifterh=31-SRlengthh;
   shifterl=31-SRlengthl;
   
@@ -288,7 +298,10 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 
     //        if( !(GPIOB->IDR & 0x0040)) GPIOB->ODR ^= GPIO_Pin_13;
 	
-    switch(modelsr){
+    switch(modelsr){ // use mirrored taps also!
+
+      // 	GPIOB->IDR & 0x0020 // GPIOB->IDR & 0x0040 = PB5 /toggle and PB6 /input bit
+
     case 0:
 	//->>>>>>>>>>>>>> 0- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
       
@@ -438,17 +451,20 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	break;
 
       case 7:
-	//->>>>>>>>>>>>>> 7- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR
+	//->>>>>>>>>>>>>> 7- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR - no input needed
 	// so to test we need to run first SR - we ignore its length for now
 	// but we need x bits of probability switches and x bits
+	// test on LAP! somehow...
+	// **** or we move this to pulsed mode and cv selects number of bits to 1!
 	bith = shift_registerh>>31; // bit which would be shifted out
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 
-	if (hcount>SRlengthh) hcount=0;
+	if (hcount>8) hcount=0;
+	if( !(GPIOB->IDR & 0x0080)) probh^=(1<<(31-hcount));
 	hcount++;
-	if( !(GPIOB->IDR & 0x0080)) probh^=(1<<hcount);
-	
-	if ((probh | shift_registerl) == looker[SRlengthh]) shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits?
+	if (((probh | shift_registerl) & looker[7] ) == looker[7]) shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter
+	//	shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter - testing simple swopover
+	// do we need to mask lower bits?
 	else shift_registerh += bith<<shifterh;
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
@@ -502,7 +518,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
     // say 8 bits - what is spacing again?
 
       //      if (modehpwm==2) {
-    //    uint16_t pwmbitsh=shift_registerh&0xff; // just lowest 8 bits - but could be more spaced out
+    //    uint16_t pwmbitsh=shift_registerh>>24; //  but could be more spaced out - **should be /is now upper bits as we work on length with these TO TEST!
     //    uint16_t sph=pwmbitsh+512;//period
     //    TIM1->ARR =sph;
     //    TIM1->CCR1 = sph/2; // pulse  
@@ -527,7 +543,7 @@ void TIM4_IRQHandler(void){ // select modes, speed and if necessary handle PWM d
     //    modehsr=(modeh>>10)%16; // 6 bits=64 and then 0-15 repeats
 
     // read speeds
-    speedh=(ADCBuffer[2]>>4)+256;
+    speedh=(ADCBuffer[2]>>4)+512; // adjust these base settings
     speedhh=ADCBuffer[2]>>6;     // test changing counter for LF and HF IRQ 
     speedhh=((speedhh+lastspeedhh)/2); //smoothing necessary for higher speeds
     lastspeedhh=speedhh;
@@ -538,7 +554,11 @@ void TIM4_IRQHandler(void){ // select modes, speed and if necessary handle PWM d
     lastspeedll=speedll;
     
     // and if mode is correct then deal with PWM here
+    // TESTING
+      TIM1->ARR = speedh;//period
+      TIM1->CCR1 = speedh/2; // pulse  
 
+    
     // 0- pwm follows speed cv
     
     /*
@@ -613,6 +633,8 @@ options:L CGS, TM, wiard1/2, LFSR - lfsr would be nice on pulses
 13- CV threshold determines if input bit XORed last bit CGS
 14- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit...
 15- as above with xor rungler: XOR out with input bit
+
+note also flipflop as clock divider
 
   */
 

@@ -205,7 +205,7 @@ circles/layers:
 
 - for analogue only: flipflops for shift register so we have access to
   all ins (which are also outs but guess simpler/unbuffered), delay
-  (switchable) on ouroboros - cap to gns
+  (switchable) on ouroboros - cap to gnd
 
 - question of bias for ouroboros...
 
@@ -430,6 +430,8 @@ but will depend on levels, also for pwm (level is 0-10v)?
 
 * 14/10
 
+PCB CHANGES:
+
 - top of comp -> + adj res is now 10k, and lower to GND is 4.7k, changed on schematic but not on PCB/now changed on PCB
 
 - we need to change the 4 incoming res to 100N caps by hand on PCB -> redo each precise location/recorded
@@ -445,6 +447,8 @@ complf_clkin/r62->c13 102.3, 89.875 X
 ->>>DONE
 
 - we need to change the 4392 comparator for a fast op amp with higher common mode input voltage, maybe also all op amps on 12v supply or?
+
+!changed back to TL082 except for fast noise op amp!
 
 * 21/10
 
@@ -495,7 +499,7 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 
 - check 2x timer interrupts: we use TIM2 for HF and TIM4 or LF! DONE!
 
-- test that both mode CV knobs work ADC0 an ADC1 !-> yes!
+- test that both mode CV knobs work ADC0 and ADC1 !-> yes!
 
 /////////////////
 
@@ -526,7 +530,7 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 
 * 31/10
 
-- added LF code - in trhis TIM2 interrupt we need to watch how fast we can run it - otherwise it doesn't run - check all possibles!
+- added LF code - in TIM2 interrupt we need to watch how fast we can run it - otherwise it doesn't run - check all possibles!
 - case 7 - electronotes crossover seems to work so far
 
 * 1/11
@@ -537,12 +541,19 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 
 - start on clocked modes and pwm modes...
 
+* 18/11  +
 
+- TODO: test power/bleed, clarify code, test modes, re-check/order PCB, re-test, check panel/print it
+
+power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
+
+- test mode/case 7/electronotes on lap (how to do this?)
+  
 * TODO:
 
-- basic hardware tests (eg. white noiseDONE, comparators, filters)...
-- test all analogue pwm/pulses/ADC
-- programming modes and timers
+- basic hardware tests (eg. white noiseDONE, comparators, filters)...DONE
+- test all analogue pwm/pulses/ADC-DONE
+- programming modes and timers-nearly
 
 * notes
 
