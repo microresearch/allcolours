@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6002)
-    (drawings 76)
+    (drawings 75)
     (tracks 0)
     (zones 0)
     (modules 47)
@@ -24338,7 +24338,6 @@
     (effects (font (size 7 6) (thickness 0.3048)))
   )
   (gr_line (start 223.4 170.14698) (end 122 170.17238) (angle 90) (layer Edge.Cuts) (width 0.02032))
-  (target plus (at 121.92254 41.656) (size 12.7) (width 0.02032) (layer Edge.Cuts))
   (gr_line (start 122 170.18) (end 122 41.656) (angle 90) (layer Edge.Cuts) (width 0.02032))
 
   (zone (net 0) (net_name "") (layer Front) (tstamp 5DA23B19) (hatch edge 0.508)

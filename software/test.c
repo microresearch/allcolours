@@ -232,7 +232,7 @@ void varshifter() // tested working
   *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
   
   *shift_register+= (bith <<(31-SRlengthh)); // PB7 and PB10
-
+  
   /* 
   bith = *shift_register>>31; // bit which would be shifted out
   *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
@@ -240,6 +240,49 @@ void varshifter() // tested working
   */
   print32bits(shift_register);
 }
+
+uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749568U, 4227858432U, 4261412864U, 4278190080U, 4286578688U, 4290772992U, 4292870144U, 4293918720U, 4294443008U, 4294705152U, 4294836224U, 4294901760U, 4294934528U, 4294950912U, 4294959104U, 4294963200U, 4294965248U, 4294966272U, 4294966784U, 4294967040U, 4294967168U, 4294967232U, 4294967264U, 4294967280U, 4294967288U, 4294967292U, 4294967294U, 4294967295U}; // we look up length in this from 0-31
+
+
+void varshifter_electronotes() // tested working
+{
+  uint32_t bith;
+  //uint32_t probh=0b11111111000000000000000000000000;
+  uint32_t probh=0b11111110000000000000000000000000;
+  uint32_t *shift_register = (uint8_t *)g_buf;
+  uint8_t SRlengthh=8;
+  //  printf("%u\n", probh);
+  //->>>>>>>>>>>>>> 7- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR - no input needed
+  // so to test we need to run first SR - we ignore its length for now
+  // but we need x bits of probability switches and x bits
+  // test on LAP! somehow...
+  bith = *shift_register>>31; // bit which would be shifted out
+  *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
+
+  if (((probh | (rand()%256)<<24) & looker[7] ) == looker[7]) *shift_register+=(rand()%2) <<(31-SRlengthh);  // this seems to work
+    //	shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter - testing simple swopover
+    // do we need to mask lower bits?
+    else *shift_register += bith <<(31-SRlengthh);
+
+  
+  /*
+    if (hcount>8) hcount=0;
+    if( !(GPIOB->IDR & 0x0080)) probh^=(1<<(31-hcount));
+    hcount++;
+    if (((probh | shift_registerl) & looker[7] ) == looker[7]) shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter
+    //	shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter - testing simple swopover
+    // do we need to mask lower bits?
+    else shift_registerh += bith<<shifterh;
+  */
+  
+  //  print32bits(shift_register);
+
+      if (bith==1)	printf("x");
+    else printf("0");
+
+
+}
+
 
 void varshifter_lfsr(uint8_t length) // tested working NOW!
 {
@@ -333,8 +376,9 @@ int main(void)
       //bat=shift256bit_32(bat^binmask32);
     //                for (n=0;n<32;n++){
       //      bat=lfsr32();
-      varshifter_lfsr(n);
-      
+	      //      varshifter_lfsr(n);
+	      varshifter_electronotes();
+	      
       //      if (bat==0) printf("1");
       //      else printf("0");
       //      }

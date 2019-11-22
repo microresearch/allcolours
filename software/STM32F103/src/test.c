@@ -42,5 +42,11 @@ uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749
   if ((x | y) == looker[3]) printf("YES\n");
   else   printf ("xORy %u \n", x | y);
 
+  y=1;
+
+  y^=1;
+
+  printf("XOR %d\n", y);
+  
   
 }

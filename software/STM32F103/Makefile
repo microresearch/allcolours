@@ -24,6 +24,7 @@ CFLAGS += -Wall
 CFLAGS += -fmessage-length=0
 CFLAGS += -ffunction-sections 
 CFLAGS += -fdata-sections
+CFLAGS += -fno-tree-loop-distribute-patterns
 
 LSCRIPT = ./ld/stm32.ld
 LFLAGS += -nostdlib

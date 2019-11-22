@@ -543,11 +543,11 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 
 * 18/11  +
 
-- TODO: test power/bleed, clarify code, test modes, re-check/order PCB, re-test, check panel/print it
+- TODO: test power/bleedDONE, clarify code, test modes, re-check/order PCB-DONE, re-test-check amp parts to alter, check panel/print itDONE
 
 power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 
-- test mode/case 7/electronotes on lap (how to do this?)
+- test mode/case 7/electronotes on lap TESTED/DONE!
   
 * TODO:
 
