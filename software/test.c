@@ -1,3 +1,4 @@
+
 #include "stdio.h"
 #include <stdint.h>
 #include "math.h"
@@ -5,7 +6,7 @@
 
 unsigned char bits[32], head; 
 
-static uint8_t lfsr_taps[32][4] = {
+/*static uint8_t lfsr_taps[32][4] = {
         {30, 30, 30, 30},
         {29, 29, 29, 29},
         {28, 28, 28, 28},
@@ -38,7 +39,46 @@ static uint8_t lfsr_taps[32][4] = {
         {31, 30, 27, 25},
         {31, 30, 29, 28},
         {31, 29, 25, 24},
-};
+	};*/
+
+static uint8_t lfsr_taps[32][4] = {
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {3, 2, 0, 0},
+        {4, 3, 2, 1},
+        {5, 4, 2, 1},
+        {6, 5, 4, 3},
+        {7, 5, 4, 3},
+        {8, 7, 5, 4},
+        {9, 8, 6, 5},
+        {10, 9, 8, 6},
+        {11, 10, 7, 5},
+        {12, 11, 9, 8},
+        {13, 12, 10, 8},
+        {14, 13, 12, 10},
+        {15, 13, 12, 10},
+        {16, 15, 14, 13},
+        {17, 16, 15, 12},
+        {18, 17, 16, 13},
+        {19, 18, 15, 13},
+        {20, 19, 18, 15},
+        {21, 18, 17, 16},
+        {22, 21, 19, 17},
+        {23, 22, 20, 19},
+        {24, 23, 22, 21},
+        {25, 24, 23, 19},
+        {26, 25, 24, 21},
+        {27, 26, 23, 21},
+        {28, 27, 26, 24},
+        {29, 28, 25, 23},
+        {30, 29, 28, 27},
+        {31, 29, 25, 24},
+  };
+
+
+
+
 
 // // note that we can have 2 mirrored with [n, A, B, C] -> [n, n-C, n-B, n-A] - maybe for LF to hF!
 
@@ -81,7 +121,6 @@ static uint8_t lfsr_taps_mirrored[32][4] = { // TO TEST! seems to work so far!
 //   {32, 30, 26, 25},     //Tap position for 32-bit LFSR
 // becomes 31x, 1, 5, 6
 
-
 static uint8_t lfsr_taps_older[32][4] = {
   {0, 0, 0, 0},
   {0, 0, 0, 0},
@@ -114,7 +153,7 @@ static uint8_t lfsr_taps_older[32][4] = {
   {29, 28, 27, 25},		//Tap position for 29-bit LFSR
   {30, 29, 26, 24},		//Tap position for 30-bit LFSR
   {31, 30, 29, 28},		//Tap position for 31-bit LFSR
-  {32, 30, 26, 25},     //Tap position for 32-bit LFSR
+  {32, 30, 26, 25},     //Tap position for 32-bit LFSR 32 is 31, 29, 25, 24
 };
 
 //In tables of m-sequence feedback sets, as presented below, neither the Fibonacci nor the Galois form is specified. This is because any given set will work with either implementation. If a given feedback set is used on both the Fibonacci and Galois forms, the sequence produced by one form will be the mirror image of the sequence produced by the other.
@@ -224,7 +263,7 @@ void varshifter() // tested working
 {
   uint32_t bith;
   uint32_t *shift_register = (uint8_t *)g_buf;
-  uint8_t SRlengthh=8;
+  uint8_t SRlengthh=4;
  
   bith = *shift_register>>31; // bit which would be shifted out - always 31 as at the end
   //  printf ("bith: %d\n",bith);
@@ -238,8 +277,30 @@ void varshifter() // tested working
   *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
   *shift_register+=bith;
   */
-  print32bits(shift_register);
+  //  print32bits(shift_register);
 }
+
+void varshifterb() // tested working - > so for shift reg on bottom
+{
+  uint32_t bith;
+  uint32_t *shift_register = (uint8_t *)g_buf;
+  uint8_t SRlengthh=4;
+ 
+  bith = (*shift_register>>SRlengthh) & 0x01; // bit which would be shifted out - always 31 as at the end
+  //  printf ("bith: %d\n",bith);
+
+  *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
+  
+  *shift_register+= bith; // PB7 and PB10
+  
+  /* 
+  bith = *shift_register>>31; // bit which would be shifted out
+  *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
+  *shift_register+=bith;
+  */
+  //  print32bits(shift_register);
+}
+
 
 uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749568U, 4227858432U, 4261412864U, 4278190080U, 4286578688U, 4290772992U, 4292870144U, 4293918720U, 4294443008U, 4294705152U, 4294836224U, 4294901760U, 4294934528U, 4294950912U, 4294959104U, 4294963200U, 4294965248U, 4294966272U, 4294966784U, 4294967040U, 4294967168U, 4294967232U, 4294967264U, 4294967280U, 4294967288U, 4294967292U, 4294967294U, 4294967295U}; // we look up length in this from 0-31
 
@@ -290,25 +351,32 @@ void varshifter_lfsr(uint8_t length) // tested working NOW!
   uint32_t *shift_register = (uint8_t *)g_buf;
   uint8_t SRlengthh=length; // always real length minus one
 
-  uint8_t shifter=31-SRlengthh; // always real length minus one
+  //  uint8_t shifter=3SRlengthh; // always real length minus one
  
   //  bith = *shift_register>>31; // bit which would be shifted out - always 31 as at the end
   //  printf ("bith: %d\n",bith);
   //  bith= ((*shift_register >> (lfsr_taps[SRlengthh][0]-1+shifter)) ^ (*shift_register >> (lfsr_taps[SRlengthh][1]-1+shifter)) ^ (*shift_register >> (lfsr_taps[SRlengthh][2]-1+shifter)) ^ (*shift_register >> (lfsr_taps[SRlengthh][3]-1+shifter))) & 1u; // 32 is 31, 29, 25, 24
   //    bith= ((*shift_register >> (lfsr_taps[SRlengthh][0])) ^ (*shift_register >> (lfsr_taps[SRlengthh][1])) ^ (*shift_register >> (lfsr_taps[SRlengthh][2])) ^ (*shift_register >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 
-      bith= ((*shift_register >> (lfsr_taps_mirrored[SRlengthh][0])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][1])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][2])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
+  //      bith= ((*shift_register >> (lfsr_taps_mirrored[SRlengthh][0])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][1])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][2])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 
+  //      bith= ((*shift_register >> (lfsr_taps_older[SRlengthh][0])) ^ (*shift_register >> (lfsr_taps_older[SRlengthh][1])) ^ (*shift_register >> (lfsr_taps_older[SRlengthh][2])) ^ (*shift_register >> (lfsr_taps_older[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
+
+      
   // // note that we can have 2 mirrored with [n, A, B, C] -> [n, n-C, n-B, n-A] - maybe for LF to hF!
 
-  
-  //    printf("        {%d, %d, %d, %d},\n", lfsr_taps_older[SRlengthh][0]-1+shifter, SRlengthh+1-lfsr_taps_older[SRlengthh][1]-1+shifter, SRlengthh+1-lfsr_taps_older[SRlengthh][2]-1+shifter, SRlengthh+1-lfsr_taps_older[SRlengthh][3]-1+shifter);
+  printf("        {%d, %d, %d, %d},\n", lfsr_taps[SRlengthh][0], SRlengthh-lfsr_taps[SRlengthh][3], SRlengthh-lfsr_taps[SRlengthh][2], SRlengthh-lfsr_taps[SRlengthh][1]);
 
+  //printf("        {%d, %d, %d, %d},\n", lfsr_taps_older[SRlengthh][0]-1, lfsr_taps_older[SRlengthh][1]-1, lfsr_taps_older[SRlengthh][2]-1, lfsr_taps_older[SRlengthh][3]-1);
+
+  
     //  printf("        {%d, %d, %d, %d},\n", lfsr_taps_older[SRlengthh][0]-1+shifter, lfsr_taps_older[SRlengthh][1]-1+shifter, lfsr_taps_older[SRlengthh][2]-1+shifter, lfsr_taps_older[SRlengthh][3]-1+shifter);
   
   *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
   
-  *shift_register+= (bith <<shifter); // PB7 and PB10
+  //  *shift_register+= (bith <<shifter); // PB7 and PB10
+
+  *shift_register+= bith;
 
   /* 
   bith = *shift_register>>31; // bit which would be shifted out
@@ -318,8 +386,8 @@ void varshifter_lfsr(uint8_t length) // tested working NOW!
   //    print32bits(shift_register);
   //    printf("BITH %d", bith);
   //    printf("\n");
-    if (bith==1)	printf("x");
-    else printf("0");
+  //    if (bith==1)	printf("x");
+  //    else printf("0");
   
 }
 
@@ -349,7 +417,7 @@ int main(void)
 {
     uint16_t start_state = 0xACE1u;  /* Any nonzero start state will work. */
     uint16_t lfsr = start_state;
-    uint16_t bit,count=0;                    /* Must be 16bit to allow bit<<15 later in the code */
+    uint16_t bit,x,y,count=0;                    /* Must be 16bit to allow bit<<15 later in the code */
     unsigned period = 0;
     unsigned char bat;
     unsigned char biit=0x05;
@@ -369,16 +437,20 @@ int main(void)
         ++period;
     } while (1);
     */
-    unsigned char n=8;
-            while(1){
+    unsigned char n=31;
+    //                while(1){
       //      if (count<32) n=n^1;
       //      else n=0;
       //bat=shift256bit_32(bat^binmask32);
-    //                for (n=0;n<32;n++){
+		  for (n=0;n<32;n++){
       //      bat=lfsr32();
-	      //      varshifter_lfsr(n);
-	      varshifter_electronotes();
-	      
+		  varshifter_lfsr(n);
+	      //	      varshifter_electronotes();
+    //    for (y=0;y<6400;y++){ 
+    //    for (x=0;x<64000;x++){ 
+    //    varshifter();
+    //    }
+    //    }
       //      if (bat==0) printf("1");
       //      else printf("0");
       //      }
@@ -388,7 +460,7 @@ int main(void)
       //      printbits();
       count++;
       //      printbits(&g_buf[0]);
-    }
+          }
     
     return 0;
 }

@@ -548,6 +548,16 @@ but both work ok as interrupts - sample code toggles pulse out on each side... D
 power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 
 - test mode/case 7/electronotes on lap TESTED/DONE!
+
+* 24/11+
+
+- to re-do all SR as lower bits = faster = (so change looker and SR taps also) and other codes/re-test each mode and tweak
+
+////////////
+
+- finish all modes with PWM
+- test which modes can do without pulses in (not clock, other)
+
   
 * TODO:
 

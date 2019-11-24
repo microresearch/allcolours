@@ -193,87 +193,88 @@ uint8_t shifterl=0, shifterh=0; // for lengths of SR
 
 
 
-uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749568U, 4227858432U, 4261412864U, 4278190080U, 4286578688U, 4290772992U, 4292870144U, 4293918720U, 4294443008U, 4294705152U, 4294836224U, 4294901760U, 4294934528U, 4294950912U, 4294959104U, 4294963200U, 4294965248U, 4294966272U, 4294966784U, 4294967040U, 4294967168U, 4294967232U, 4294967264U, 4294967280U, 4294967288U, 4294967292U, 4294967294U, 4294967295U}; // we look up length in this from 0-31
+//uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749568U, 4227858432U, 4261412864U, 4278190080U, 4286578688U, 4290772992U, 4292870144U, 4293918720U, 4294443008U, 4294705152U, 4294836224U, 4294901760U, 4294934528U, 4294950912U, 4294959104U, 4294963200U, 4294965248U, 4294966272U, 4294966784U, 4294967040U, 4294967168U, 4294967232U, 4294967264U, 4294967280U, 4294967288U, 4294967292U, 4294967294U, 4294967295U}; // we look up length in this from 0-31 - was looker = full house for top bits
+
+uint32_t looker[32]={1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 131071, 262143, 524287, 1048575, 2097151, 4194303, 8388607, 16777215, 33554431, 67108863, 134217727, 268435455, 536870911, 1073741823, 2147483647}; // now for lower bits
 
 // array for taps
 // eg. 32-bit Galois LFSR with taps at 32, 30, 26, 25. Sequence length is 4294967295. 0 is a lock-up state.  -- minus one here - 31, 29, 25, 24
 // bith= ((shift_registerh >> 31) ^ (shift_registerh >> 29) ^ (shift_registerh >> 25) ^ (shift_registerh >> 24)) & 1u; // 32 is 31, 29, 25, 24
 
 // from: http://courses.cse.tamu.edu/walker/csce680/lfsr_table.pdf
-// and reworked for length in test.c
+// and reworked for length in test.c -> not so if we revert to basic code...
 
 // note that we can have 2 mirrored with [n, A, B, C] -> [n, n-C, n-B, n-A] - maybe for LF to hF!
 
 static uint8_t lfsr_taps[32][4] = {
-        {30, 30, 30, 30},
-        {29, 29, 29, 29},
-        {28, 28, 28, 28},
-        {31, 30, 27, 27},
-        {31, 30, 29, 28},
-        {31, 30, 28, 27},
-        {31, 30, 29, 28},
-        {31, 29, 28, 27},
-        {31, 30, 28, 27},
-        {31, 30, 28, 27},
-        {31, 30, 29, 27},
-        {31, 30, 27, 25},
-        {31, 30, 28, 27},
-        {31, 30, 28, 26},
-        {31, 30, 29, 27},
-        {31, 29, 28, 26},
-        {31, 30, 29, 28},
-        {31, 30, 29, 26},
-        {31, 30, 29, 26},
-        {31, 30, 27, 25},
-        {31, 30, 29, 26},
-        {31, 28, 27, 26},
-        {31, 30, 28, 26},
-        {31, 30, 28, 27},
-        {31, 30, 29, 28},
-        {31, 30, 29, 25},
-        {31, 30, 29, 26},
-        {31, 30, 27, 25},
-        {31, 30, 29, 27},
-        {31, 30, 27, 25},
-        {31, 30, 29, 28},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {3, 2, 0, 0},
+        {4, 3, 2, 1},
+        {5, 4, 2, 1},
+        {6, 5, 4, 3},
+        {7, 5, 4, 3},
+        {8, 7, 5, 4},
+        {9, 8, 6, 5},
+        {10, 9, 8, 6},
+        {11, 10, 7, 5},
+        {12, 11, 9, 8},
+        {13, 12, 10, 8},
+        {14, 13, 12, 10},
+        {15, 13, 12, 10},
+        {16, 15, 14, 13},
+        {17, 16, 15, 12},
+        {18, 17, 16, 13},
+        {19, 18, 15, 13},
+        {20, 19, 18, 15},
+        {21, 18, 17, 16},
+        {22, 21, 19, 17},
+        {23, 22, 20, 19},
+        {24, 23, 22, 21},
+        {25, 24, 23, 19},
+        {26, 25, 24, 21},
+        {27, 26, 23, 21},
+        {28, 27, 26, 24},
+        {29, 28, 25, 23},
+        {30, 29, 28, 27},
         {31, 29, 25, 24},
-};
+  };
 
-static uint8_t lfsr_taps_mirrored[32][4] = { // TO TEST! seems to work so far!
-        {30, 31, 31, 31},
-        {29, 31, 31, 31},
-        {28, 31, 31, 31},
-        {31, 28, 31, 31},
-        {31, 27, 28, 29},
-        {31, 26, 28, 29},
-        {31, 25, 26, 27},
-        {31, 25, 26, 27},
-        {31, 23, 25, 26},
-        {31, 22, 24, 25},
-        {31, 21, 22, 24},
-        {31, 20, 23, 25},
-        {31, 19, 21, 22},
-        {31, 18, 20, 22},
-        {31, 17, 18, 20},
-        {31, 17, 18, 20},
-        {31, 15, 16, 17},
-        {31, 14, 15, 18},
-        {31, 13, 14, 17},
-        {31, 12, 15, 17},
-        {31, 11, 12, 15},
-        {31, 12, 13, 14},
-        {31, 9, 11, 13},
-        {31, 8, 10, 11},
-        {31, 7, 8, 9},
-        {31, 6, 7, 11},
-        {31, 5, 6, 9},
-        {31, 4, 7, 9},
-        {31, 3, 4, 6},
-        {31, 2, 5, 7},
-        {31, 1, 2, 3},
-        {31, 1, 5, 6},
-};
-
+static uint8_t lfsr_taps_mirrored[32][4] = {
+       {0, 0, 0, 0},
+        {0, 1, 1, 1},
+        {0, 2, 2, 2},
+        {3, 3, 3, 1},
+        {4, 3, 2, 1},
+        {5, 4, 3, 1},
+        {6, 3, 2, 1},
+        {7, 4, 3, 2},
+        {8, 4, 3, 1},
+        {9, 4, 3, 1},
+        {10, 4, 2, 1},
+        {11, 6, 4, 1},
+        {12, 4, 3, 1},
+        {13, 5, 3, 1},
+        {14, 4, 2, 1},
+        {15, 5, 3, 2},
+        {16, 3, 2, 1},
+        {17, 5, 2, 1},
+        {18, 5, 2, 1},
+        {19, 6, 4, 1},
+        {20, 5, 2, 1},
+        {21, 5, 4, 3},
+        {22, 5, 3, 1},
+        {23, 4, 3, 1},
+        {24, 3, 2, 1},
+        {25, 6, 2, 1},
+        {26, 5, 2, 1},
+        {27, 6, 4, 1},
+        {28, 4, 2, 1},
+        {29, 6, 4, 1},
+        {30, 3, 2, 1},
+        {31, 7, 6, 2},
+	 };
 
 
 void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of this should change!
@@ -299,6 +300,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 
     case 0:
 	//->>>>>>>>>>>>>> 0- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
+	// TO TEST - as can result in all 1s
       
 	bitl = shift_registerl>>31; // bit which would be shifted out - always 31 as at the end
 	shift_registerl=shift_registerl<<1; // we are shifting left << so bit 31 is out last one
@@ -335,6 +337,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	
       case 0:
 	//->>>>>>>>>>>>>> 0- pulse (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
+	// TO TEST - as can result in all 1s
 	bith = shift_registerh>>31; // bit which would be shifted out - always 31 as at the end
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
     
@@ -471,6 +474,8 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 
       case 8: // 8- the pulses one or we double up all modes to do the pulses thing!?!>AS mode 0 CGS here
 	//	->>>>>>>>>>>>>> 0- pulse (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
+	// TO TEST - as can result in all 1s
+
 	bith = shift_registerh>>31; // bit which would be shifted out - always 31 as at the end
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
     
@@ -626,6 +631,8 @@ pulse mode only
 
   */
 
+    /// !!!! can also add CV as probablity for TM flipping as in electronotes style probability or buchla 266 !!!!!!!!!!!!!!!!!!!!!
+    
     switch(modehsr){
     case 10:
       //10- entry into SR from CV (as threshold for bit or as ADC? ) - TM = no input bit // TESTED/
@@ -702,7 +709,7 @@ pulse mode only
       case 14:
 	//	14- use CV as speed divider// -> which one?  //note also flipflop as clock divider
 	// input bit ORed with loop bit... -> or xor will always end up as chain of 1s
-
+	// !!!!!!!!!!!!!!!!!!!!!!!TODO: we could also have tiny pulsre for numflips=0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// from3- pulse(1)//now on pb10 instead of clock/pulse inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit)
 
 	bith = shift_registerh>>31; // bit which would be shifted out
@@ -715,7 +722,7 @@ pulse mode only
 	// how do we chain these?
 
 	//	numflips=16; // say limit to 16
-	numflips=(ADCBuffer[2]>>12); //or 15-(ADCBuffer[2]>>12) if we wish it to go in the oppositre direction
+	numflips=(ADCBuffer[2]>>12); //or 15-(ADCBuffer[2]>>12) if we wish it to go in the opposite direction
 	new_state[0]=bith;
 	if (prev_state[0]==0 && new_state[0]==1) flipped[0]^=1;
 	prev_state[0]=new_state[0];	
