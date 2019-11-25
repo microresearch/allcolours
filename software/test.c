@@ -82,7 +82,7 @@ static uint8_t lfsr_taps[32][4] = {
 
 // // note that we can have 2 mirrored with [n, A, B, C] -> [n, n-C, n-B, n-A] - maybe for LF to hF!
 
-static uint8_t lfsr_taps_mirrored[32][4] = { // TO TEST! seems to work so far!
+/*static uint8_t lfsr_taps_mirrored[32][4] = { // TO TEST! seems to work so far!
         {30, 31, 31, 31},
         {29, 31, 31, 31},
         {28, 31, 31, 31},
@@ -115,7 +115,43 @@ static uint8_t lfsr_taps_mirrored[32][4] = { // TO TEST! seems to work so far!
         {31, 2, 5, 7},
         {31, 1, 2, 3},
         {31, 1, 5, 6},
-};
+	};*/
+
+static uint8_t lfsr_taps_mirrored[32][4] = {
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 1, 1, 1},
+        {3, 2, 2, 0},
+        {4, 2, 1, 0},
+        {5, 3, 2, 0},
+        {6, 2, 1, 0},
+        {7, 3, 2, 1},
+        {8, 3, 2, 0},
+        {9, 3, 2, 0},
+        {10, 3, 1, 0},
+        {11, 5, 3, 0},
+        {12, 3, 2, 0},
+        {13, 4, 2, 0},
+        {14, 3, 1, 0},
+        {15, 4, 2, 1},
+        {16, 2, 1, 0},
+        {17, 4, 1, 0},
+        {18, 4, 1, 0},
+        {19, 5, 3, 0},
+        {20, 4, 1, 0},
+        {21, 4, 3, 2},
+        {22, 4, 2, 0},
+        {23, 3, 2, 0},
+        {24, 2, 1, 0},
+        {25, 5, 1, 0},
+        {26, 4, 1, 0},
+        {27, 5, 3, 0},
+        {28, 3, 1, 0},
+        {29, 5, 3, 0},
+        {30, 2, 1, 0},
+        {31, 6, 5, 1},
+	 };
+
 
 
 //   {32, 30, 26, 25},     //Tap position for 32-bit LFSR
@@ -286,7 +322,7 @@ void varshifterb() // tested working - > so for shift reg on bottom
   uint32_t *shift_register = (uint8_t *)g_buf;
   uint8_t SRlengthh=4;
  
-  bith = (*shift_register>>SRlengthh) & 0x01; // bit which would be shifted out - always 31 as at the end
+  bith = (*shift_register>>SRlengthh) & 0x01; // bit which would be shifted out 
   //  printf ("bith: %d\n",bith);
 
   *shift_register=*shift_register<<1; // we are shifting left << so bit 31 is out last one
@@ -360,12 +396,14 @@ void varshifter_lfsr(uint8_t length) // tested working NOW!
 
   //      bith= ((*shift_register >> (lfsr_taps_mirrored[SRlengthh][0])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][1])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][2])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 
-  //      bith= ((*shift_register >> (lfsr_taps_older[SRlengthh][0])) ^ (*shift_register >> (lfsr_taps_older[SRlengthh][1])) ^ (*shift_register >> (lfsr_taps_older[SRlengthh][2])) ^ (*shift_register >> (lfsr_taps_older[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
+          bith= ((*shift_register >> (lfsr_taps_mirrored[SRlengthh][0])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][1])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][2])) ^ (*shift_register >> (lfsr_taps_mirrored[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 
       
   // // note that we can have 2 mirrored with [n, A, B, C] -> [n, n-C, n-B, n-A] - maybe for LF to hF!
 
-  printf("        {%d, %d, %d, %d},\n", lfsr_taps[SRlengthh][0], SRlengthh-lfsr_taps[SRlengthh][3], SRlengthh-lfsr_taps[SRlengthh][2], SRlengthh-lfsr_taps[SRlengthh][1]);
+  //mirrored=(length+1-(those+1))-1
+  
+  //  printf("        {%d, %d, %d, %d},\n", lfsr_taps[SRlengthh][0], (SRlengthh-lfsr_taps[SRlengthh][3])-1, (SRlengthh-lfsr_taps[SRlengthh][2])-1, (SRlengthh-lfsr_taps[SRlengthh][1])-1);
 
   //printf("        {%d, %d, %d, %d},\n", lfsr_taps_older[SRlengthh][0]-1, lfsr_taps_older[SRlengthh][1]-1, lfsr_taps_older[SRlengthh][2]-1, lfsr_taps_older[SRlengthh][3]-1);
 
@@ -386,8 +424,8 @@ void varshifter_lfsr(uint8_t length) // tested working NOW!
   //    print32bits(shift_register);
   //    printf("BITH %d", bith);
   //    printf("\n");
-  //    if (bith==1)	printf("x");
-  //    else printf("0");
+        if (bith==1)	printf("x");
+        else printf("0");
   
 }
 
@@ -442,15 +480,15 @@ int main(void)
       //      if (count<32) n=n^1;
       //      else n=0;
       //bat=shift256bit_32(bat^binmask32);
-		  for (n=0;n<32;n++){
+    		  for (n=4;n<32;n++){
       //      bat=lfsr32();
-		  varshifter_lfsr(n);
+		    //		  varshifter_lfsr(n);
 	      //	      varshifter_electronotes();
-    //    for (y=0;y<6400;y++){ 
-    //    for (x=0;x<64000;x++){ 
-    //    varshifter();
-    //    }
-    //    }
+            for (y=0;y<6400;y++){ 
+		    //        for (x=0;x<5000;x++){ 
+        varshifter_lfsr(n);
+	    }
+	//  }
       //      if (bat==0) printf("1");
       //      else printf("0");
       //      }
