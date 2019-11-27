@@ -5,7 +5,7 @@ extern __IO uint16_t ADCBuffer[];
 
 uint32_t speedh, speedl, counterh=0, speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
 uint16_t model, modeh;
-uint8_t modelpwm, modehpwm, modelsr=0, modehsr=14, hcount=0, countbitsh=0, coutbitsl=0; // testing for modes
+uint8_t modelpwm, modehpwm, modelsr=0, modehsr=9, hcount=0, countbitsh=0, coutbitsl=0; // testing for modes
 
 uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0};
 
