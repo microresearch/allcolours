@@ -281,7 +281,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
     case 0:
       //->>>>>>>>>>>>>> 0- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
       // TO TEST - as can result in all 1s - re-test with new codes for SR!
-      // MODDED//RETEST
+      // MODDED//RETEST = tested but can go to all 1s
       
       bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out -
       shift_registerl=shift_registerl<<1; // we are shifting left << so bit 31 is out last one
@@ -317,7 +317,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
       case 0:
 	//->>>>>>>>>>>>>> 0- pulse (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
 	// TO TEST - as can result in all 1s
-	// MODDED//RETEST
+	// MODDED//RETEST = tested but can go to all 1s
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
     
@@ -477,7 +477,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	break;
 
       case 9: // 9- noise only with varying taps depending on length (we could OR in PB10 though) - for LF we can do mirroring!
-      // MODDED//RETEST
+      // MODDED//RETEST = tested and works fine...
 
 	if (shift_registerh==0) shift_registerh=0xff;
 

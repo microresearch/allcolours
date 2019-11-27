@@ -558,6 +558,10 @@ power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 - finish all modes with PWM
 - test which modes can do without pulses in (not clock, other)
 
+* 27/11+
+
+- we need to fix levels (high freq noise now with 100k in feedback gives 5 VPP), fix range of comparators for this - so each is say 4.7k top and bottom to give 2.5v-7.5v with centre at 5v
+
   
 * TODO:
 
