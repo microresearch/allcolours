@@ -551,7 +551,7 @@ power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 
 * 24/11+
 
-- to re-do all SR as lower bits = faster = (so change looker and SR taps also) and other codes/re-test each mode and tweak
+- to re-do all SR as lower bits = faster = (so change looker and SR taps also) and other codes/re-test each mode and tweak DONE
 
 ////////////
 
@@ -560,8 +560,11 @@ power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 
 * 27/11+
 
-- we need to fix levels (high freq noise now with 100k in feedback gives 5 VPP), fix range of comparators for this - so each is say 4.7k top and bottom to give 2.5v-7.5v with centre at 5v
+- we need to fix levels (high freq noise now with 100k in feedback
+  gives 5 VPP), fix range of comparators for this - so each is say
+  4.7k top and bottom to give 2.5v-7.5v with centre at 5v
 
+- testing HF SR modes DONE
   
 * TODO:
 

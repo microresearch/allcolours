@@ -5,9 +5,14 @@ extern __IO uint16_t ADCBuffer[];
 
 uint32_t speedh, speedl, counterh=0, speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
 uint16_t model, modeh;
-uint8_t modelpwm, modehpwm, modelsr=0, modehsr=9, hcount=0, countbitsh=0, coutbitsl=0; // testing for modes
+uint8_t modelpwm, modehpwm, modelsr=0, modehsr=12, hcount=0, countbitsh=0, coutbitsl=0; // testing for modes
 
-uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0};
+uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl;
+
+uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
+uint32_t shift_registerl=0xff; // 32 bit SR but we can change length just using output bit
+uint8_t SRlengthh=31, SRlengthl=31, hstack[4]; // length minus 1;
+
 
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -37,7 +42,6 @@ uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0};
 
 void delay(unsigned long delay)
 {
-  int x=0;
   while(delay) {
     delay--;
  asm("");
@@ -162,17 +166,6 @@ void SysTick_Handler(void)
   * @}
   */ 
 
-uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
-uint32_t bith;
-uint32_t shift_registerl=0xff; // 32 bit SR but we can change length just using output bit
-uint32_t bitl, probh, probl;
-uint8_t SRlengthh=31, SRlengthl=31, hstack[4]; // length minus 1;
-uint8_t shifterl=0, shifterh=0; // for lengths of SR
-
-
-
-//uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749568U, 4227858432U, 4261412864U, 4278190080U, 4286578688U, 4290772992U, 4292870144U, 4293918720U, 4294443008U, 4294705152U, 4294836224U, 4294901760U, 4294934528U, 4294950912U, 4294959104U, 4294963200U, 4294965248U, 4294966272U, 4294966784U, 4294967040U, 4294967168U, 4294967232U, 4294967264U, 4294967280U, 4294967288U, 4294967292U, 4294967294U, 4294967295U}; // we look up length in this from 0-31 - was looker = full house for top bits
-
 uint32_t looker[32]={1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 131071, 262143, 524287, 1048575, 2097151, 4194303, 8388607, 16777215, 33554431, 67108863, 134217727, 268435455, 536870911, 1073741823, 2147483647}; // now for lower bits
 
 // array for taps
@@ -258,7 +251,8 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
   // but as is for both LF an HF periods how do we handle this
   // run as fast as possible and use a counter for each period
   
-  //  uint32_t bitxh, bitxl;
+  uint8_t bith, bitl;
+
   
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
@@ -278,7 +272,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 
       // 	GPIOB->IDR & 0x0020 // GPIOB->IDR & 0x0040 = PB5 /toggle and PB6 /input bit
 
-    case 0:
+    case 0: // tested
       //->>>>>>>>>>>>>> 0- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
       // TO TEST - as can result in all 1s - re-test with new codes for SR!
       // MODDED//RETEST = tested but can go to all 1s
@@ -319,7 +313,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	// TO TEST - as can result in all 1s
 	// MODDED//RETEST = tested but can go to all 1s
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
-	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
+	shift_registerh=shift_registerh<<1; // we are shifting left
     
 	if( !(GPIOB->IDR & 0x0080)) shift_registerh+= (bith | !(GPIOB->IDR & 0x0400)); // PB7 and PB10
 	else shift_registerh+= (!(GPIOB->IDR & 0x0400));
@@ -331,160 +325,171 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
     else GPIOC->BSRR = 0b0100000000000000;  
     break;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////TODO
-      case 1:
+      case 1: // mod - tested
 	//->>>>>>>>>>>>>> 1- pulse (PB5) toggles loopback to XOR with new input bit (PB6) /or just accept new input bit (CGS)
-	bith = shift_registerh>>31; // bit which would be shifted out
-      shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
     //    if PB5 is low (inverted) then bitxh=bith  | PB6=inverted
     // but do we need to access PB5 through interrupt maybe? - but this seems to work
     
-	if( !(GPIOB->IDR & 0x0080)) shift_registerh+= ((bith ^ !(GPIOB->IDR & 0x0400))<<shifterh); // PB7 and PB10
-	else shift_registerh+= (!(GPIOB->IDR & 0x0400))<<shifterh;
+	if( !(GPIOB->IDR & 0x0080)) shift_registerh+= ((bith ^ !(GPIOB->IDR & 0x0400))); // PB7 and PB10
+	else shift_registerh+= (!(GPIOB->IDR & 0x0400));
 
       // shift register bits output - inverted also on PC13 and 14; // for GPIOC we could also try dump whole thing onto ODR as I think nothing else is on there
     if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
     else GPIOC->BSRR = 0b0010000000000000; 
-    if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+    if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
     else GPIOC->BSRR = 0b0100000000000000; 
     break;
     
-      case 2:
+      case 2: // mod - still bit odd...
 	//->>>>>>>>>>>>>> 2- loopback ORed with input bit and pulses flip/leak bits INSIDE the SR (how we select these?)
 	// we could select these with a counter or ...
-	if (hcount>SRlengthh) hcount=0;
 	hcount++;
-	bith = shift_registerh>>31; // bit which would be shifted out
+	if (hcount>SRlengthh) hcount=0;
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	shift_registerh+=(bith | !(GPIOB->IDR & 0x0400))<<shifterh; // PB10
+	shift_registerh+=(bith | !(GPIOB->IDR & 0x0400)); // PB10
 	// if we have pulse and hcount then flip that bit inside SR... rest all the same...
 	if( !(GPIOB->IDR & 0x0080)) shift_registerh ^= (1<<hcount);
 
       // shift register bits output - inverted also on PC13 and 14; // for GPIOC we could also try dump whole thing onto ODR as I think nothing else is on there
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
+	//	GPIOC->BSRR = 0b0100000000000000; // this is a zero 
+	
 	break;
     
-      case 3:
+      case 3: // mod - tested
 	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit)
-	bith = shift_registerh>>31; // bit which would be shifted out
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	if( !(GPIOB->IDR & 0x0080)) shift_registerh += (!bith)<<shifterh;
-	else shift_registerh += bith<<shifterh;
+	if( !(GPIOB->IDR & 0x0080)) shift_registerh += (!bith);
+	else shift_registerh += bith;
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-      case 4:
+      case 4: // mod - tested
 	//->>>>>>>>>>>>>> 4- parity for loopback XOR is determined by pulsed bits in (how long do we keep these as selected and how do we select bits)
 	// say select bits again with pulse and queue 
-	if (hcount>SRlengthh) hcount=0;
 	hcount++;
+	if (hcount>SRlengthh) hcount=0;
 	if( !(GPIOB->IDR & 0x0080)) {
 	  hstack[3]=hstack[2];
 	  hstack[2]=hstack[1];
 	  hstack[1]=hstack[0];
-	  hstack[0]=hcount+shifterh; // bump it on to the hstack
+	  hstack[0]=hcount+1; // bump it on to the hstack
 	}	  
 
 	bith= ((shift_registerh >> hstack[0]) ^ (shift_registerh >> hstack[1]) ^ (shift_registerh >> hstack[2]) ^ (shift_registerh >> hstack[3])) & 1u; // 32 is 31, 29, 25, 24
-	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
+	shift_registerh=shift_registerh<<1; // we are shifting left 
 	//	shift_registerh+=bith; // alone bith can go to silence         
-	shift_registerh+=(bith | !(GPIOB->IDR & 0x0400))<<shifterh; // PB10
+	shift_registerh+=(bith | !(GPIOB->IDR & 0x0400)); // PB10
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-      case 5:
+      case 5: // modded - tested
 	//->>>>>>>>>>>>>> 5- wiard1: pulse selects new data or loop old back into SR
-	bith = shift_registerh>>31; // bit which would be shifted out
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	if( !(GPIOB->IDR & 0x0080)) shift_registerh += 	(!(GPIOB->IDR & 0x0400))<<shifterh; // PB10
-	else shift_registerh += bith<<shifterh;
+	if( !(GPIOB->IDR & 0x0080)) shift_registerh += 	(!(GPIOB->IDR & 0x0400)); // PB10
+	else shift_registerh += bith;
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-      case 6:
+      case 6: // modded - tested
 	//->>>>>>>>>>>>>> 6- wiard2: pulse selects new data or inverted loop old back into SR
-	bith = shift_registerh>>31; // bit which would be shifted out
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	if( !(GPIOB->IDR & 0x0080)) shift_registerh += 	(!(GPIOB->IDR & 0x0400))<<shifterh; // PB10
-	else shift_registerh += (!bith)<<shifterh;
+	if( !(GPIOB->IDR & 0x0080)) shift_registerh += 	(!(GPIOB->IDR & 0x0400)); // PB10
+	else shift_registerh += (!bith);
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-      case 7:
+      case 7: //mod - tested  but  maybe check again
 	//->>>>>>>>>>>>>> 7- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR - no input needed
 	// so to test we need to run first SR - we ignore its length for now
 	// but we need x bits of probability switches and x bits
 	// test on LAP! somehow...TESTED
 	// !note: swop l and h when port to low!
-	bith = shift_registerh>>31; // bit which would be shifted out
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 	
 	if (hcount>7) hcount=0;
-	if( !(GPIOB->IDR & 0x0080)) probh^=(1<<(31-hcount));
+	if( !(GPIOB->IDR & 0x0080)) probh^=(1<<hcount);
 	hcount++;
 	// question might be if shiftregisterl is shorter than this... -> could adapt above for its length
-	if (((probh | shift_registerl) & looker[7] ) == looker[7]) shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter
-	//	shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter - testing simple swopover
+	if (((probh | shift_registerl) & looker[7] ) == looker[7]) shift_registerh+=(shift_registerl>>SRlengthl) & 0x01; // new bits enter from shiftregleft
+	//	shift_registerh+=((shift_registerl>>31)<<1); // new bits enter - testing simple swopover
 	// do we need to mask lower bits?
-	else shift_registerh += bith<<shifterh;
+	else shift_registerh += bith;
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-      case 8: // 8- the pulses one or we double up all modes to do the pulses thing!?!>AS mode 0 CGS here
+      case 8: //mod - tested
+	// 8- the pulses one or we double up all modes to do the pulses thing!?!>AS mode 0 CGS here
 	//	->>>>>>>>>>>>>> 0- pulse (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
 	// TO TEST - as can result in all 1s
 
-	bith = shift_registerh>>31; // bit which would be shifted out - always 31 as at the end
+	//	bith = shift_registerh>>31; // bit which would be shifted out - always 31 as at the end
+		bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
     
-	if( !(GPIOB->IDR & 0x0080)) shift_registerh+= ((bith | !(GPIOB->IDR & 0x0400))<<shifterh); // PB7 and PB10
-	else shift_registerh+= (!(GPIOB->IDR & 0x0400))<<shifterh;
+	if( !(GPIOB->IDR & 0x0080)) shift_registerh+= ((bith | !(GPIOB->IDR & 0x0400))); // PB7 and PB10
+	else shift_registerh+= (!(GPIOB->IDR & 0x0400));
 
 	// todo as pulses but what length?
 	if (bith) {
 	  GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
-	  delay(64); // 10uS
+	  delay(64); // 64=10uS - short = lower voltage...
 	  GPIOC->BSRR = 0b0010000000000000;  
 	}
 	  
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) {
+	if (shift_registerh & (1<<(SRlengthh/2))) {
 	  GPIOC->BRR = 0b0100000000000000;  
-	  delay(64); // 10uS
+	  delay(64); // 64=10uS
 	  GPIOC->BSRR = 0b0100000000000000;  
-	}
+	  }
+	//	GPIOC->BSRR = 0b0100000000000000;  
 	break;
 
-      case 9: // 9- noise only with varying taps depending on length (we could OR in PB10 though) - for LF we can do mirroring!
-      // MODDED//RETEST = tested and works fine...
+      case 9: // tested - mod so we can use PB7 to select input <OR> or not
+	// 9- noise only with varying taps depending on length (we could OR in PB10 though) - for LF we can do mirroring!
+	// MODDED//RETEST = tested and works fine...
 
 	if (shift_registerh==0) shift_registerh=0xff;
-
 	bith= ((shift_registerh >> (lfsr_taps[SRlengthh][0])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][1])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][2])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 	//	shift_registerh+= (bith <<shifterh); // PB7 and PB10
-	shift_registerh+= (bith | !(GPIOB->IDR & 0x0400)); // PB7 and PB10
+	if( !(GPIOB->IDR & 0x0080))	shift_registerh+= (bith | !(GPIOB->IDR & 0x0400)); // PB7 and PB10
+	else shift_registerh+= (bith);
 	//	GPIOC->ODR=shift_registerh;  // testing this, also is a close tap-> and no works with varying lengths
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
@@ -576,7 +581,9 @@ TIM1->CCR1 = frompulse/2; // pulse
  //void EXTI0_IRQHandler(void){
 void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falling edges...
 
-	uint8_t x, numflips;
+  uint8_t x, numflips;
+  uint8_t bith, origbith, bitl;
+
 
   // in each mode case we also do PWM:
   /*
@@ -615,86 +622,89 @@ pulse mode only
     /// !!!! can also add CV as probablity for TM flipping as in electronotes style probability or buchla 266 !!!!!!!!!!!!!!!!!!!!!
     
     switch(modehsr){
-    case 10:
+    case 10: //mod - tested
       //10- entry into SR from CV (as threshold for bit or as ADC? ) - TM = no input bit // TESTED/
       // our cv is ADCBuffer[2]>>8 for 8 bits and select counting bit
       countbitsh++;
       if (countbitsh>7) countbitsh=0;
-      
-      bith = shift_registerh>>31; // bit which would be shifted out
+      //bith = shift_registerh>>31; // bit which would be shifted out
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+
       shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 
-      if((ADCBuffer[2]>>(8+countbitsh))&1) shift_registerh += (!bith)<<shifterh; // or we could & with input bit - TO TEST!
-	else shift_registerh += bith<<shifterh;
+      if((ADCBuffer[2]>>(8+countbitsh))&1) shift_registerh += (!bith); // or we could & with input bit - TO TEST!
+	else shift_registerh += bith;
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-    case 11:
+    case 11: ///mod - tested
       //11- CV selects length of SR which will stay with us .. -> LFSR here
       // max len is 31, min len is say 4 - so that's 5 bits
       //length is always -1 - so 32 = 31
       SRlengthh=31-(ADCBuffer[2]>>11);
       if (SRlengthh<4) SRlengthh=4;
+      //      SRlengthh=8;
       if (shift_registerh==0) shift_registerh=0xff;
       bith= ((shift_registerh >> (lfsr_taps[SRlengthh][0])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][1])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][2])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 	//	shift_registerh+= (bith <<shifterh); // PB7 and PB10
-	shift_registerh+= ((bith | !(GPIOB->IDR & 0x0400))<<shifterh); // PB7 and PB10
+	shift_registerh+= ((bith | !(GPIOB->IDR & 0x0400))); // PB7 and PB10
 	//	GPIOC->ODR=shift_registerh;  // testing this, also is a close tap-> and no works with varying lengths
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000;  
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000;  
 	break;
 	
-    case 12:
+    case 12: ///mod - works but might need some tweakings!
       //12- CV threshold determines if input bit ORed (or could be XOR) last bit CGS -> this results in ON/OFF 
       // try others: this one works from: 	//->>>>>>>>>>>>>> 5- wiard1: pulse selects new data or loop old back into SR
-	bith = shift_registerh>>31; // bit which would be shifted out
+      //	bith = shift_registerh>>31; // bit which would be shifted out
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	if (ADCBuffer[2]>32768) shift_registerh += 	(!(GPIOB->IDR & 0x0400))<<shifterh; // PB10
-	else shift_registerh += bith<<shifterh;
+	if (ADCBuffer[2]>32768) shift_registerh += 	(!(GPIOB->IDR & 0x0400)); // PB10
+	else shift_registerh += bith;
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-      case 13:
+    case 13: // mod - seems working
 	//13- electronotes: CV selects which bits to set to 1 = chance of change
-	bith = shift_registerh>>31; // bit which would be shifted out
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	
-	probh=ADCBuffer[2]<<16; // top 8 bits are shifted to the top
-
+	probh=ADCBuffer[2]>>8; // shift to lowest 8 bits now
 	// question might be if shiftregisterl is shorter than this... -> could adapt above for its length
-	if (((probh | shift_registerl) & looker[7] ) == looker[7]) shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter
+	if (((probh | shift_registerl) & looker[7] ) == looker[7]) shift_registerh+=(shift_registerl>>SRlengthl) & 0x01; // new bits enter from shiftregleft
 	//	shift_registerh+=((shift_registerl>>31)<<shifterh); // new bits enter - testing simple swopover
 	// do we need to mask lower bits? no as we AND with looker[7]
-	else shift_registerh += bith<<shifterh;
+	else shift_registerh += bith;
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
-	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
 
-      case 14:
+    case 14: // = mod working 
 	//	14- use CV as speed divider// -> which one?  //note also flipflop as clock divider
-	// input bit ORed with loop bit... -> or xor will always end up as chain of 1s
-	// !!!!!!!!!!!!!!!!!!!!!!!TODO: we could also have tiny pulsre for numflips=0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// from3- pulse(1)//now on pb10 instead of clock/pulse inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit)
 
-	bith = shift_registerh>>31; // bit which would be shifted out
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+	origbith=bith;
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	if( !(GPIOB->IDR & 0x0400)) shift_registerh += (!bith)<<shifterh;
-	else shift_registerh += bith<<shifterh;
+	if( !(GPIOB->IDR & 0x0400)) shift_registerh += (!bith);
+	else shift_registerh += bith;
 
 	// flip flop: rising edge - if last was 0 and now is 1 then we trigger flip 1-0 or 0-1
 	// so we need prev state, new state and bit to flip...
@@ -713,24 +723,48 @@ pulse mode only
 	}
 	if (numflips>0)	bith=flipped[numflips-1];
 	
-
 	// out the bit
 
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000;
-
-	///////?????????  what we do for this bit - original bith or???
-
-	//	if (shift_registerh & (1<<(31-(SRlengthh/2)))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
-	//	else GPIOC->BSRR = 0b0100000000000000; 
+	if (origbith) GPIOC->BRR = 0b0100000000000000;  // 	/////// this bit - original bith 
+	else GPIOC->BSRR = 0b0100000000000000;
 	break;
 	
-
-      case 15:
+    case 15: // tested
 	//15- as 14//speed divider with xor rungler: XOR out with input bit
+	//	bith = shift_registerh>>31; // bit which would be shifted out
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+	origbith=bith;
+	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
+	//	if( !(GPIOB->IDR & 0x0400)) shift_registerh += (!bith);
+	//	else shift_registerh += bith;
+	shift_registerh += (bith) ^ (!(GPIOB->IDR & 0x0400));
+	// flip flop: rising edge - if last was 0 and now is 1 then we trigger flip 1-0 or 0-1
+	// so we need prev state, new state and bit to flip...
+	// how do we chain these?
+
+	//	numflips=16; // say limit to 16
+	numflips=(ADCBuffer[2]>>12); //or 15-(ADCBuffer[2]>>12) if we wish it to go in the opposite direction
+	new_state[0]=bith;
+	if (prev_state[0]==0 && new_state[0]==1) flipped[0]^=1;
+	prev_state[0]=new_state[0];	
+
+	for (x=1;x<numflips;x++){ 
+	new_state[x]=flipped[x-1];
+	if (prev_state[x]==0 && new_state[x]==1) flipped[x]^=1;
+	prev_state[x]=new_state[x];
+	}
+	if (numflips>0)	bith=flipped[numflips-1];
+	
+	// out the bit
+
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000;
+	if (origbith) GPIOC->BRR = 0b0100000000000000;  // 	/////// this bit - original bith 
+	else GPIOC->BSRR = 0b0100000000000000;
 	break;
 
-	
 	//////////////////////////->>>>>>>>>>>>>>>>>	
 	/// end of HF modes
     }
