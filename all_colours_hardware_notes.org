@@ -199,7 +199,7 @@ circles/layers:
 5-filter (paths in?) 
 
 - test 7490 as bandpass again with noise source
-- question of mhz for pwm -> test
+- question of mhz for pwm -> test 
 
 - *place low pass on output in case pwm comes through*
 
@@ -565,7 +565,15 @@ power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
   4.7k top and bottom to give 2.5v-7.5v with centre at 5v
 
 - testing HF SR modes DONE
+
+* 9/12+
+
+- change pulse outs to 1k from 10v to transistor TODO!
   
+- TODO: re-test all modes, amplitude tests
+
+- question of SR/modes speed [on/off in pwm mode is 120 KHz max on x200 - do we need this to be faster?]
+
 * TODO:
 
 - basic hardware tests (eg. white noiseDONE, comparators, filters)...DONE

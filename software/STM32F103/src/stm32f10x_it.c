@@ -3,15 +3,15 @@
 
 extern __IO uint16_t ADCBuffer[];
 
-uint32_t speedh, speedl, counterh=0, speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
-uint16_t model, modeh;
-uint8_t modelpwm, modehpwm, modelsr=0, modehsr=12, hcount=0, countbitsh=0, coutbitsl=0; // testing for modes
+volatile uint32_t speedh, speedl, counterh=0, speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
+volatile uint32_t model, modeh;
+volatile uint32_t modelpwm, modehpwm, modelsr=0, modehsr=0, hcount=0, countbitsh=0, coutbitsl=0, bithh=0; // testing for modes
 
-uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl;
+volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl;
 
-uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
-uint32_t shift_registerl=0xff; // 32 bit SR but we can change length just using output bit
-uint8_t SRlengthh=31, SRlengthl=31, hstack[4]; // length minus 1;
+volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
+volatile uint32_t shift_registerl=0xff; // 32 bit SR but we can change length just using output bit
+volatile uint32_t SRlengthh=31, SRlengthl=31, hstack[4]; // length minus 1;
 
 
 
@@ -300,7 +300,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
     ////////////////////////////////////////////->>>    /// high side
     
     counterh++;
-        if (counterh>speedhh){
+    if (counterh>speedhh){
       counterh=0;
 
       // test raw speed of this - pin toggles at 160 KHz so double that
@@ -312,17 +312,21 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	//->>>>>>>>>>>>>> 0- pulse (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
 	// TO TEST - as can result in all 1s
 	// MODDED//RETEST = tested but can go to all 1s
-	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+		bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	shift_registerh=shift_registerh<<1; // we are shifting left
     
 	if( !(GPIOB->IDR & 0x0080)) shift_registerh+= (bith | !(GPIOB->IDR & 0x0400)); // PB7 and PB10
 	else shift_registerh+= (!(GPIOB->IDR & 0x0400));
 
       // shift register bits output - inverted also on PC13 and 14; // for GPIOC we could also try dump whole thing onto ODR as I think nothing else is on there - but this changes with length
+	
     if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
     else GPIOC->BSRR = 0b0010000000000000;  
     if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
-    else GPIOC->BSRR = 0b0100000000000000;  
+    else GPIOC->BSRR = 0b0100000000000000; 
+    /*      bithh^=1;
+      if (bithh) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; */
     break;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////TODO
       case 1: // mod - tested
@@ -532,12 +536,12 @@ void TIM4_IRQHandler(void){ // select modes, speed and if necessary handle PWM d
     //    modehsr=(modeh>>10)%16; // 6 bits=64 and then 0-15 repeats
 
     // read speeds
-    speedh=(ADCBuffer[2]>>4)+512; // adjust these base settings
+    speedh=(ADCBuffer[2]>>4)+312; // adjust these base settings
     speedhh=ADCBuffer[2]>>6;     // test changing counter for LF and HF IRQ 
     speedhh=((speedhh+lastspeedhh)/2); //smoothing necessary for higher speeds
     lastspeedhh=speedhh;
     
-    speedl=(ADCBuffer[3]>>2)+256;
+    speedl=(ADCBuffer[3]>>4)+256;
     speedll=ADCBuffer[3]>>6;     // test changing counter for LF and HF IRQ 
     speedll=((speedll+lastspeedll)/2); //smoothing necessary for higher speeds
     lastspeedll=speedll;
@@ -549,8 +553,9 @@ void TIM4_IRQHandler(void){ // select modes, speed and if necessary handle PWM d
 
     
     // 0- pwm follows speed cv
+      modehpwm=0; // TESTY!
+      modelpwm=0; // TESTY! 
     
-    /*
     if (modelpwm==0) {
       TIM3->ARR = speedl;//period
       TIM3->CCR1 = speedl/2; // pulse  
@@ -560,8 +565,7 @@ void TIM4_IRQHandler(void){ // select modes, speed and if necessary handle PWM d
       TIM1->ARR = speedh;//period
       TIM1->CCR1 = speedh/2; // pulse  
     }
-    */
-
+   
     // testing pulse count to PWM mode - but pulsecount is wrong way round so...FIXED
 
     // 1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
@@ -665,7 +669,7 @@ pulse mode only
       //12- CV threshold determines if input bit ORed (or could be XOR) last bit CGS -> this results in ON/OFF 
       // try others: this one works from: 	//->>>>>>>>>>>>>> 5- wiard1: pulse selects new data or loop old back into SR
       //	bith = shift_registerh>>31; // bit which would be shifted out
-      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+           bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 
 	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 	if (ADCBuffer[2]>32768) shift_registerh += 	(!(GPIOB->IDR & 0x0400)); // PB10
@@ -675,7 +679,7 @@ pulse mode only
 	else GPIOC->BSRR = 0b0010000000000000; 
 	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
-	break;
+      break;
 
     case 13: // mod - seems working
 	//13- electronotes: CV selects which bits to set to 1 = chance of change

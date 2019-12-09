@@ -18,7 +18,7 @@ ASFLAGS += -fmessage-length=0
 
 CFLAGS += -mcpu=cortex-m3
 CFLAGS += -mthumb
-CFLAGS += -g
+#CFLAGS += -g
 CFLAGS += -O3
 CFLAGS += -Wall
 CFLAGS += -fmessage-length=0
