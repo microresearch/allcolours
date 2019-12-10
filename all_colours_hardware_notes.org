@@ -568,7 +568,7 @@ power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 
 * 9/12+
 
-- change pulse outs to 1k from 10v to transistor TODO!
+- change pulse outs to 1k from 10v to transistor TODO/DONE
   
 - TODO: re-test all modes, amplitude tests
 

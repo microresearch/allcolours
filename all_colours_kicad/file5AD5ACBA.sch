@@ -54,7 +54,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R10
 U 1 1 5B6A6444
 P 1675 840
 F 0 "R10" H 1895 740 50  0000 R CNN
-F 1 "10K" H 1870 820 50  0000 R CNN
+F 1 "1K" H 1870 820 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 1675 840 50  0001 C CNN
 F 3 "" H 1675 840 50  0001 C CNN
 	1    1675 840 
@@ -716,7 +716,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R74
 U 1 1 5D7EE290
 P 3020 900
 F 0 "R74" H 3285 820 50  0000 R CNN
-F 1 "10K" H 3270 900 50  0000 R CNN
+F 1 "1K" H 3270 900 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 3020 900 50  0001 C CNN
 F 3 "" H 3020 900 50  0001 C CNN
 	1    3020 900 
@@ -790,7 +790,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R82
 U 1 1 5D7FBE8C
 P 4405 885
 F 0 "R82" H 4715 825 50  0000 R CNN
-F 1 "10K" H 4660 920 50  0000 R CNN
+F 1 "1K" H 4660 920 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 4405 885 50  0001 C CNN
 F 3 "" H 4405 885 50  0001 C CNN
 	1    4405 885 
@@ -864,7 +864,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R89
 U 1 1 5D80A92E
 P 5750 930
 F 0 "R89" H 5950 870 50  0000 R CNN
-F 1 "10K" H 5945 985 50  0000 R CNN
+F 1 "1K" H 5945 985 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 5750 930 50  0001 C CNN
 F 3 "" H 5750 930 50  0001 C CNN
 	1    5750 930 
