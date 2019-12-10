@@ -241,7 +241,7 @@ int main(void)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 28;// peaks at 32/0 prescale with 730 KHz - 20/6 is fastest we can go
+  TIM_TimeBase_InitStructure.TIM_Period = 32;// peaks at 32/0 prescale with 730 KHz - 20/6 is fastest we can go
   TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // with period 32 and prescaler 8 this makes for 120 KhZ
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
  

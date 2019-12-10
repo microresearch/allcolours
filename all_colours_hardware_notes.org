@@ -574,6 +574,8 @@ power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 
 - question of SR/modes speed [on/off in pwm mode is 120 KHz max on x200 - do we need this to be faster?]
 
+can't get much faster - new model on modes 0 in both gives us less instructions...
+
 * TODO:
 
 - basic hardware tests (eg. white noiseDONE, comparators, filters)...DONE
