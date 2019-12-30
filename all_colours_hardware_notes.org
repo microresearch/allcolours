@@ -580,9 +580,7 @@ can't get much faster - new model on modes 0 in both gives us less instructions.
 
 - changes on schematic and PCB: r61 to 24k, r102->24k, r12->100k, r19 to 240k TO TEST... how much 12,19 will vary with noise sources?
 
-- xls BOM format for pcbcart:
-
-
+- xls BOM format for pcbcart in progress, double check before quote
 
 - software updates 
 
