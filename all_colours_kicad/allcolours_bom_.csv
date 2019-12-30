@@ -1,0 +1,53 @@
+Manufacturer,Manufacturer Part Number,References,Quantity Per PCB,Value,Footprint,"SMD, BGA, LCC, OR TH",Top/Bottom,Points,Total Points,Comment
+,,C2 C3 C7 C8 C9 C10 C11 C12 C13 C15 C16 C17 C21 C22 C26 C28 C29 C30 C31 C32 C33 C34 C36 C37 C38 C40 C42 C43 C44 C45 C46 C47 C57 C66,34,100N,C_0805,,,,,
+,,C6,1,10p,C_0805,,,,,
+
+,,C5 C14 C20 C25 C39 C54 C55 C56 C63,9,10u,SMD-1206_Pol,,,,,
+
+,,C41 C59 C60 C64,4,18p,C_0805,,,,,
+,,C27 C58 C61 C62,4,1nF,C_0805,,,,,
+,,C1 C4,2,47u,SMD-1206_Pol,,,,,
+,,D2 D3 D4 D5 D14 D15,6,1N5819,D_SOD-123,,,,,
+,,D1,1,LM4040,SOT-23,,,,,
+,,L2,1,INDUCTOR,L_0805,,,,,
+,,Q2 Q4 Q7 Q9 Q10 Q11 Q12 Q13 Q23 Q24,10,MMBT3904,SOT-23,,,,,
+,,Q1 Q3 Q5 Q6,4,Q_NPN_BEC,SOT-23,,,,,
+,,R12 R17 R32 R33 R34 R35 R38 R73 R81 R88 R93,11,100K,R_0805,,,,,
+,,R5 R6 R7 R8 R9 R13 R15 R20 R22 R23 R24 R25 R29 R37 R42 R46 R47 R49 R56 R59 R60 R63 R65 R67 R69 R70 R71 R72 R75 R77 R80 R84 R87 R90,34,10K,R_0805,,,,,
+,,R2,1,150K,R_0805,,,,,
+TEST,,R10 R14 R21 R43 R68 R74 R76 R78 R82 R83 R89 R92 R100 R103 R105 R108,16,1K,R_0805,,,,,
+,,R50 R51 R52 R53 R54 R55 R85 R94 R96 R97,10,200K,R_0805,,,,,
+,,R19,1,240K,R_0805,,,,,
+,,R61 R102,2,24K,R_0805,,,,,
+,,R11 R79 R91 R104 R107,5,33k,R_0805,,,,,
+,,R86 R106,2,3K3,R_0805,,,,,
+,,R31,1,470R,R_0805,,,,,
+,,R1 R3,2,47K,R_0805,,,,,
+,,R4 R16 R18 R28 R30 R36 R40 R45 R48 R57 R58 R64 R66 R101,14,4K7,R_0805,,,,,
+,,R39 R95 R98 R99,4,66.5K,R_0805,,,,,
+,,U5,1,L78M10,TO-252-2_Rectifier,,,,,
+,,U1,1,LM1117-3.3,TO-252-2_Rectifier,,,,,
+,,U6,1,LM1117-5.0,TO-252-2_Rectifier,,,,,
+,,U8,1,MAX7490,QSOP-16_3.9x4.9mm_Pitch0.635mm,,,,,
+,,U7 U17,2,MCP6002,SOIC-8-N,,,,,
+,,U16,1,STM32F103CBTx,LQFP-48_7x7mm_Pitch0.5mm,,,,,
+,,U3 U4 U9 U11 U18 U19,6,TL082,SOIC-8-N,,,,,
+,,U2,1,max4392,SOIC-8-N,,,,,
+,,U10,1,maxim_7400,SOIC-8-N,,,,,
+,,Y2,1,8 MHz,Crystal_SMD_HC49-SD,,,,,
+,,speedhf1 speedlf1,2,10K,Potentiometer_Alps-RK09,,,,,
+
+
+
+
+
+Component Groups:,35
+Component Count:,197
+Fitted Components:,197
+Number of PCBs:,1
+Total components:,197
+Schematic Version:,
+Schematic Date:,
+BoM Date:,Mon 30 Dec 2019 15:14:04 CET
+Schematic Source:,/root/projects/ERD_MODULES/all_colours/all_colours_kicad/allcolours.sch
+KiCad Version:,Eeschema 5.0.2+dfsg1-1

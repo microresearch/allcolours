@@ -568,13 +568,23 @@ power is: 120mA at +12V, 30mA at -12V, 0mA at 5v
 
 * 9/12+
 
-- change pulse outs to 1k from 10v to transistor TODO/DONE
+- change pulse outs to 1k from 10v to transistor TODO/DONE on schematic
   
-- TODO: re-test all modes, amplitude tests
+- TODO: re-test all modes, amplitude tests with new R12, R19 (mark)
 
 - question of SR/modes speed [on/off in pwm mode is 120 KHz max on x200 - do we need this to be faster?]
 
 can't get much faster - new model on modes 0 in both gives us less instructions...
+
+* 30/12
+
+- changes on schematic and PCB: r61 to 24k, r102->24k, r12->100k, r19 to 240k TO TEST... how much 12,19 will vary with noise sources?
+
+- xls BOM format for pcbcart:
+
+
+
+- software updates 
 
 * TODO:
 

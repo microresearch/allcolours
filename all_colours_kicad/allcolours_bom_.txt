@@ -1,0 +1,61 @@
+References	Quantity Per PCB	Description	Footprint	Part	Value	Datasheet
+C2 C3 C7 C8 C9 C10 C11 C12 C13 C15 C16 C17 C22 C26 C29 C30 C31 C32 C33 C34 C36 C37 C38 C40 C42 C43 C44 C45 C46 C47 C57 C66	32		C_0805	C-device-allcolours-rescue	100N	
+C21 C28	2		C_0805	C_Small-device-allcolours-rescue	100nF	
+C54	1	Polarized capacitor, small US symbol	SMD-1206_Pol	CP1_Small	10UF	~
+C6	1		C_0805	C-device-allcolours-rescue	10p	
+C5 C14 C20 C25 C39 C55 C56 C63	8		SMD-1206_Pol	CP1_Small-device-allcolours-rescue	10u	
+C41 C59 C60 C64	4		C_0805	C-device-allcolours-rescue	18p	
+C27 C58 C61 C62	4		C_0805	C_Small-device-allcolours-rescue	1nF	
+C1 C4	2		SMD-1206_Pol	CP1_Small-device-allcolours-rescue	47u	
+D3 D5	2		D_SOD-123	D_Zener_Small-device-allcolours-rescue	5819	
+D2 D4	2		D_SOD-123	D_Zener_Small-device-allcolours-rescue	BAT85/1n5819	
+D14 D15	2	Diode	D_SOD-123	D	D	~
+D1	1		SOT-23	D_Zener_Small-device-allcolours-rescue	LM4040	https://en.wikipedia.org/wiki/Zener_diode
+L2	1	Capacitor symbol for simulation only	L_0805	INDUCTOR	INDUCTOR	~
+Q2 Q4 Q7 Q9 Q10 Q11 Q12 Q13 Q23 Q24	10		SOT-23	Q_NPN_BEC-device-allcolours-rescue	MMBT3904	
+Q1 Q3 Q5 Q6	4		SOT-23	Q_NPN_BEC-device-allcolours-rescue	Q_NPN_BEC	
+R12 R32 R33 R34 R35	5		R_0805	R-device-allcolours-rescue	100K	
+R17 R38 R73 R81 R88 R93	6		R_0805	R_Small-device-allcolours-rescue	100K	
+R9 R13 R15 R22 R67 R72 R75 R80 R84 R87 R90	11		R_0805	R_Small-device-allcolours-rescue	10K	
+R5 R6 R7 R8 R20 R23 R24 R25 R29 R37 R42 R46 R47 R49 R56 R59 R60 R63 R65 R69 R70 R71 R77	23		R_0805	R-device-allcolours-rescue	10K	
+R2	1		R_0805	R-device-allcolours-rescue	150K	
+R10 R74 R82 R83 R89 R92 R105 R108	8		R_0805	R_Small-device-allcolours-rescue	1K	
+R14 R21 R43 R68 R76 R78 R100 R103	8		R_0805	R-device-allcolours-rescue	1K	
+R50 R51 R52 R53 R54 R55	6		R_0805	R-device-allcolours-rescue	200K	
+R85 R94 R96 R97	4		R_0805	R_Small-device-allcolours-rescue	200K	
+R19	1		R_0805	R-device-allcolours-rescue	240K	
+R61 R102	2		R_0805	R-device-allcolours-rescue	24K	
+R79 R91 R104 R107	4		R_0805	R_Small-device-allcolours-rescue	33K	
+R11	1		R_0805	R-device-allcolours-rescue	33k	
+R86 R106	2		R_0805	R_Small-device-allcolours-rescue	3K3	
+R31	1		R_0805	R_Small-device-allcolours-rescue	470R	
+R1 R3	2		R_0805	R-device-allcolours-rescue	47K	
+R4 R28 R30 R36 R40 R45 R48 R57 R58 R64 R66 R101	12		R_0805	R-device-allcolours-rescue	4K7	
+R16 R18	2		R_0805	R_Small-device-allcolours-rescue	4K7	
+R39 R95 R98 R99	4		R_0805	R_Small-device-allcolours-rescue	66.5K	
+RV1-comphf1 RV2-complf1 RV3-comphf2 RV4-complf2 speedhf1 speedlf1	6	Potentiometer	Potentiometer_Alps-RK09	R_POT	10K	~
+U5	1	Positive 1A 35V Linear Regulator, Fixed Output 5V, TO-220/TO-263	TO-252-2_Rectifier	uA7810	L78M10	http://www.ti.com/lit/ds/symlink/ua78.pdf
+U1	1	800mA Low-Dropout Linear Regulator, 1.8V fixed output, TO-220/TO-252/TO-263/SOT-223	TO-252-2_Rectifier	LM1117-3.3	LM1117-3.3	http://www.ti.com/lit/ds/symlink/lm1117.pdf
+U6	1	800mA Low-Dropout Linear Regulator, 1.8V fixed output, TO-220/TO-252/TO-263/SOT-223	TO-252-2_Rectifier	LM1117-3.3	LM1117-5.0	http://www.ti.com/lit/ds/symlink/lm1117.pdf
+U8	1		QSOP-16_3.9x4.9mm_Pitch0.635mm	MAX7490-MAX7490	MAX7490	DOCUMENTATION
+U7 U17	2		SOIC-8-N	MCP6002-xSN-linear-allcolours-rescue	MCP6002	http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf
+U16	1	ARM Cortex-M3 MCU, 64KB flash, 20KB RAM, 72MHz, 2-3.6V, 37 GPIO, LQFP-48	LQFP-48_7x7mm_Pitch0.5mm	STM32F103CBTx	STM32F103CBTx	http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/CD00161566.pdf
+U3 U4 U9 U11 U18 U19	6	Dual Operational Amplifiers, DIP-8/SOIC-8/TSSOP-8/VSSOP-8	SOIC-8-N	TL082	TL082	http://www.ti.com/lit/ds/symlink/tl081.pdf
+U2	1	Dual operational amplifier	SOIC-8-N	Opamp_Dual_Generic	max4392	
+U10	1		SOIC-8-N	maxim_7400-all_colours	maxim_7400	
+Y2	1	Two pin crystal	Crystal_SMD_HC49-SD	Crystal	8 MHz	~
+
+
+
+
+
+Component Groups:	45
+Component Count:	201
+Fitted Components:	201
+Number of PCBs:	1
+Total components:	201
+Schematic Version:	
+Schematic Date:	
+BoM Date:	Mon 30 Dec 2019 14:11:58 CET
+Schematic Source:	/root/projects/ERD_MODULES/all_colours/all_colours_kicad/allcolours.sch
+KiCad Version:	Eeschema 5.0.2+dfsg1-1
