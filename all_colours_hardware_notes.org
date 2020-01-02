@@ -484,7 +484,7 @@ compHC: 5v
 compLA: 7v
 compHA: 8v
 filter outH: 2v
-filter outL: 1.6v peak - maybe more gain on these ?
+filter outL: 1.6v peak - maybe more gain on these ? - input we halve on way in from diffaudio which is the 2 compsLA and HA 
 
 - check pulse outs: DONE all working
 - check interrupt ins and regular pulse ins
@@ -580,7 +580,7 @@ can't get much faster - new model on modes 0 in both gives us less instructions.
 
 - changes on schematic and PCB: r61 to 24k, r102->24k, r12->100k, r19 to 240k TO TEST... how much 12,19 will vary with noise sources?
 
-- xls BOM format for pcbcart in progress, double check before quote
+- xls BOM format for pcbcart in progress/close to finished, double check before quote, check all new values also to finish
 
 - software updates 
 
