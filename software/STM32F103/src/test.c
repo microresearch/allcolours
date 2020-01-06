@@ -23,6 +23,13 @@ void main(void){
 
   //    printf("nmaxi %u\n", x);
 
+  //shift_registerh= (shift_registerh<<1) + (bith | !(GPIOB->IDR & 0x0400)); // PB10
+
+  x=0;
+  y=0x0444;
+  
+  printf("(bith | !(GPIOB->IDR & 0x0400)) %d\n", (x | !(y & 0x0400)));
+  
     // print basic looker
 
   for (z=1;z<32;z++){
