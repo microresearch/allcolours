@@ -509,6 +509,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 
       //      if (modehpwm==2) {
     //    uint32_t pwmbitsh=shift_registerh>>24; //  but could be more spaced out - **should be /is now upper bits as we work on length with these TO TEST!
+      // try different spacings - array for spacings
     //    uint32_t sph=pwmbitsh+512;//period
     //    TIM1->ARR =sph;
     //    TIM1->CCR1 = sph/2; // pulse  
