@@ -588,7 +588,7 @@ r12=100k, r19=470k for noise sources
 
 - software updates 
 
-- one sr as clock for the other - but hard to implement across different interrupts or... ? - maybe keep for next SR module
+- *one sr as clock for the other - but hard to implement across different interrupts or... ? - maybe keep for next SR module*
 
 * 6/1/2020
 
@@ -636,6 +636,19 @@ or how to do this without prescalar and period? or at least a lower prescalar? b
 - *we need to test PWM DAC spacings and also this log option!*
 
 // recheck schematic/all and rematch up parts to check is all there (print both)... check diodes=checked and caps=checked orientDONE -> nearly ready for quote...
+
+* 8/1
+
+list of TODOs for software and hardware before we do quote:
+
+- test PWM range with 1v steps
+- test SR timing as log and if we can go higher on prescalar/period with longer speedhh etc.
+- can we work in 128 modes with split of linear/exp and how to do this fast (can we handle 128 modes?)
+- do we have PWM DAC follow LOG array
+- test PWM DAC spacings (how could these also be variable in one mode perhaps?)
+- do all modes make sense - what alternative modes there could be which take advantage of internal access to each SR bit?
+
+(eg. differing taps, shifting taps arrays)...
 
 * TODO:
 
