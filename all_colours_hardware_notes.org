@@ -641,14 +641,63 @@ or how to do this without prescalar and period? or at least a lower prescalar? b
 
 list of TODOs for software and hardware before we do quote:
 
-- test PWM range with 1v steps
+- test PWM range with 1v steps - DONE and FIXED!
+
 - test SR timing as log and if we can go higher on prescalar/period with longer speedhh etc.
-- can we work in 128 modes with split of linear/exp and how to do this fast (can we handle 128 modes?)
-- do we have PWM DAC follow LOG array
-- test PWM DAC spacings (how could these also be variable in one mode perhaps?)
+
+we can't go higher so can't really do a 1v log there - *so we need to decide what kind of range we have here* 
+
+but maybe it should be logarithmic so more detailed at upper end... tho. this will involve repeats -> question of range is the one but *LOG IT*
+
+- can we work in 128 modes with split of linear/exp and how to do this
+  fast (can we handle 128 modes?) = test slippage, also would be more
+  than 128 but maybe limit to selected modes...
+
+so test slippage first: we can only really have 64 modes
+
+- do we have PWM DAC follow LOG array? should be... test say mode 0 with DAC - DONE but gurgling results ->
+
+maybe use less bits, spacings (but these will have to be dependent on size so we end up with lots of arrays, anyways)..
+
+PWM sounds better withOUT LOG option and wide range which makes it gurgly, or what can we use to effect range?
+
+////
+
+- test PWM DAC spacings (how could these also be variable in one mode perhaps - in pulse mode?)
+
 - do all modes make sense - what alternative modes there could be which take advantage of internal access to each SR bit?
 
-(eg. differing taps, shifting taps arrays)...
+(eg. differing taps, shifting taps arrays) - maybe we can have differing sets of modes for each side to get over constraints
+
+for PWM modes we can maybe combine 0 and 1 (in case there are no clock pulses in)
+
+which gives us extra PWM mode
+
+0- pwm follows speed cv
+1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
+2- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
+2/clock- pwm follows DAC from SR (not same on LF as DAC bits ?what
+this means?>)- ... or speed for DAC updates is from clock pulse in
+depending on other mode, thus speed is same speed as DAC/shiftreg
+speed!  -> these depend on SR mode -> speed CV as offset for PWM-> in
+pulse mode only
+3- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
+// how often do we update this last one...????? and we need to record this somewhere (or is as PWM -> check?)
+
+analyse modes - what sounds the same, what new we can add
+
+also what we can keep for next one - eg. arrays of spacings, one sr as clock for other (would need to be as function pointer maybe - try this out)
+
+* 9/1
+
+- re-testing earlier comparator vs. newest and now stick with newer as less offset issues DONE
+
+- TODO: fix on modes, any mode differences across each and alt taps stuff
+
+* TRACKLIST
+
+387: internal patching and single DUSG as modulation source 
+394: internal patching, static (no twiddling)
 
 * TODO:
 
