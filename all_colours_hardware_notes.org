@@ -669,30 +669,47 @@ PWM sounds better withOUT LOG option and wide range which makes it gurgly, or wh
 
 (eg. differing taps, shifting taps arrays) - maybe we can have differing sets of modes for each side to get over constraints
 
-for PWM modes we can maybe combine 0 and 1 (in case there are no clock pulses in)
+*for PWM modes we can maybe combine 0 and 1 (in case there are no clock pulses in)* -> TODO and TEST how...
 
 which gives us extra PWM mode
 
-0- pwm follows speed cv
-1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
-2- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
+0- pwm follows speed cv former1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
+
+1- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
 2/clock- pwm follows DAC from SR (not same on LF as DAC bits ?what
 this means?>)- ... or speed for DAC updates is from clock pulse in
 depending on other mode, thus speed is same speed as DAC/shiftreg
 speed!  -> these depend on SR mode -> speed CV as offset for PWM-> in
 pulse mode only
+
+*2- pwm follows DAC with speed CV or pulses controlling spacing depending on pulse/sr mode (or controlling range/=bits of DAC maybe in pulse modes case!)*
+
 3- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 // how often do we update this last one...????? and we need to record this somewhere (or is as PWM -> check?)
 
 analyse modes - what sounds the same, what new we can add
 
-also what we can keep for next one - eg. arrays of spacings, one sr as clock for other (would need to be as function pointer maybe - try this out)
+*also what we can keep for next one - eg. shifting the arrays of taps, arrays of spacings, one sr as clock for other (would need to be as function pointer maybe - try this out)*
 
 * 9/1
 
 - re-testing earlier comparator vs. newest and now stick with newer as less offset issues DONE
 
-- TODO: fix on modes, any mode differences across each and alt taps stuff
+- TODO: fix on and test modes, any mode differences across each and alt taps stuff:
+
+//
+
+arrays for spacings depending on size
+
+shifting the arrays of taps (4 taps in each one, limited to length) -> shift and wraparound 
+
+* for quote
+
+board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
+
+all_colours_1911 already ordered
+
+allcolours_in_progress.xls
 
 * TRACKLIST
 

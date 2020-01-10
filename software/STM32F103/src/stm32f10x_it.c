@@ -516,7 +516,11 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000;  
 	break;
-    // /END of HF SR side/..................................................................................................................    
+
+	// additional mod if we can fit in
+	//	shifting the arrays of taps (4 taps in each one, limited to length) -> shift and wraparound
+
+	// /END of HF SR side/..................................................................................................................    
       }
 
       // place in each case so then we don't need an IF for this!
