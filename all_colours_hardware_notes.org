@@ -4,7 +4,7 @@
 - the gate is a gatekeeper
 - self switching is the latch which is memory, positive feedback
 
-* for manual
+* for manual/website
 
 AURORA CONSURGENS ALL COLOURS AC
 
@@ -13,7 +13,21 @@ AURORA CONSURGENS ALL COLOURS AC
 
 high and low, left and right, as above so below
 
+- panels as a series of snakes/dragons from Ripley (collect these here alongisde other sources)
 
+dragons also descending in harley 2407 - mouths in the basin/fountain
+
+twin dragons also from 2407 manuscript sig page
+
+** basic description (not for manual)
+
+ouroboric noise at all frequencies
+
+segments, quarters hung drawn and quartered...
+
+walk ins from newer SR description
+
+constructed for self-patching - this should always be undertaken in ouroboric fashion, feedbacking between the four segments...
 
 * 3/7
 
@@ -653,7 +667,7 @@ but maybe it should be logarithmic so more detailed at upper end... tho. this wi
   fast (can we handle 128 modes?) = test slippage, also would be more
   than 128 but maybe limit to selected modes...
 
-so test slippage first: we can only really have 64 modes
+so test slippage first: *we can only really have 64 modes*
 
 - do we have PWM DAC follow LOG array? should be... test say mode 0 with DAC - DONE but gurgling results ->
 
@@ -688,7 +702,7 @@ analyse modes - what sounds the same, what new we can add
 
 * 9/1
 
-- re-testing earlier comparator vs. newest and now stick with newer as less offset issues DONE
+- re-testing earlier comparator vs. newest and now stick with newer as less offset issues DONE-NO!
 
 - TODO: fix on and test modes, any mode differences across each and alt taps stuff:
 
@@ -697,6 +711,14 @@ analyse modes - what sounds the same, what new we can add
 arrays for spacings depending on size
 
 shifting the arrays of taps (4 taps in each one, limited to length) -> shift and wraparound 
+
+* 13/1
+
+- we will revert to earlier comparator for better sound maybe.. (100k
+  in on gnd is needed) and rest as old, but with one side comp gnded
+  and we will need to select values - TODO, re-order PCB... extra parts and extra caps for +- power...
+
+- C7 needs to be 1uF tantalum! 25V
 
 * for quote
 
@@ -710,6 +732,9 @@ allcolours_in_progress.xls
 
 387: internal patching and single DUSG as modulation source 
 394: internal patching, static (no twiddling)
+435: internal patching, single DUSG, some smooth slow changes
+439: internal patching, single DUSG, some smooth slow changes
+
 
 * TODO:
 
