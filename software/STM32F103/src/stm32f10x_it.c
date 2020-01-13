@@ -517,7 +517,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	else GPIOC->BSRR = 0b0100000000000000;  
 	break;
 
-	// additional mod if we can fit in
+	// additional mode if we can fit in
 	//	shifting the arrays of taps (4 taps in each one, limited to length) -> shift and wraparound
 
 	// /END of HF SR side/..................................................................................................................    
@@ -525,6 +525,8 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 
       // place in each case so then we don't need an IF for this!
       //      2- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
+
+      //- maybe two DAC modes now
       
     // test PWM from SR bits out -> but no speed offset is possible
     // say 8 bits - what is spacing again?
@@ -625,16 +627,10 @@ void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falli
   uint8_t bith, origbith, bitl;
 
 
-  // in each modes case - this is in each one...
+  // in each modes case - this is in each one... - maybe two DAC modes now
   /*
       //      if (modehpwm==2) {
-2/clock- pwm follows DAC from SR (not same on LF as DAC bits ?what
-this means?>)- ... or speed for DAC updates is from clock pulse in
-depending on other mode, thus speed is same speed as DAC/shiftreg
-speed!  -> these depend on SR mode -> speed CV as offset for PWM-> in
-pulse mode only
-
-- in this case we could also make spacings variable
+2/clock- pwm follows DAC from SR 
 
   */
   

@@ -675,14 +675,9 @@ which gives us extra PWM mode
 
 0- pwm follows speed cv former1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
 
-1- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
-2/clock- pwm follows DAC from SR (not same on LF as DAC bits ?what
-this means?>)- ... or speed for DAC updates is from clock pulse in
-depending on other mode, thus speed is same speed as DAC/shiftreg
-speed!  -> these depend on SR mode -> speed CV as offset for PWM-> in
-pulse mode only
+1- pwm follows DAC from SR 
 
-*2- pwm follows DAC with speed CV or pulses controlling spacing depending on pulse/sr mode (or controlling range/=bits of DAC maybe in pulse modes case!)*
+2- pwm follows DAC - different range or spacings (2 options as we use pulse/cv already for SR)
 
 3- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 // how often do we update this last one...????? and we need to record this somewhere (or is as PWM -> check?)
