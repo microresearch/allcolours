@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>/root/projects/ERD_MODULES/all_colours/all_colours_kicad/allcolours.sch</source>
-    <date>Mon 30 Dec 2019 15:14:04 CET</date>
+    <date>Tue 07 Jan 2020 22:19:02 CET</date>
     <tool>Eeschema 5.0.2+dfsg1-1</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -59,7 +59,7 @@
   </design>
   <components>
     <comp ref="C4">
-      <value>47u</value>
+      <value>10U</value>
       <footprint>SMD_Packages:SMD-1206_Pol</footprint>
       <libsource lib="allcolours-rescue" part="CP1_Small-device-allcolours-rescue" description=""/>
       <sheetpath names="/" tstamps="/"/>
@@ -87,7 +87,7 @@
       <tstamp>5967A047</tstamp>
     </comp>
     <comp ref="C1">
-      <value>47u</value>
+      <value>10U</value>
       <footprint>SMD_Packages:SMD-1206_Pol</footprint>
       <libsource lib="allcolours-rescue" part="CP1_Small-device-allcolours-rescue" description=""/>
       <sheetpath names="/" tstamps="/"/>
@@ -150,14 +150,14 @@
       <tstamp>596A1808</tstamp>
     </comp>
     <comp ref="Q1">
-      <value>Q_NPN_BEC</value>
+      <value>MMBT3904</value>
       <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
       <libsource lib="allcolours-rescue" part="Q_NPN_BEC-device-allcolours-rescue" description=""/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>5BB1D990</tstamp>
     </comp>
     <comp ref="Q5">
-      <value>Q_NPN_BEC</value>
+      <value>MMBT3904</value>
       <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
       <libsource lib="allcolours-rescue" part="Q_NPN_BEC-device-allcolours-rescue" description=""/>
       <sheetpath names="/" tstamps="/"/>
@@ -186,21 +186,21 @@
       <tstamp>5C0C6ED7</tstamp>
     </comp>
     <comp ref="R19">
-      <value>240K</value>
+      <value>470K</value>
       <footprint>Resistors_SMD:R_0805</footprint>
       <libsource lib="allcolours-rescue" part="R-device-allcolours-rescue" description=""/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>5D206A6D</tstamp>
     </comp>
     <comp ref="Q3">
-      <value>Q_NPN_BEC</value>
+      <value>MMBT3904</value>
       <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
       <libsource lib="allcolours-rescue" part="Q_NPN_BEC-device-allcolours-rescue" description=""/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>5D34D49F</tstamp>
     </comp>
     <comp ref="Q6">
-      <value>Q_NPN_BEC</value>
+      <value>MMBT3904</value>
       <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
       <libsource lib="allcolours-rescue" part="Q_NPN_BEC-device-allcolours-rescue" description=""/>
       <sheetpath names="/" tstamps="/"/>
@@ -1330,7 +1330,7 @@
       <tstamp>5B705C4E</tstamp>
     </comp>
     <comp ref="R61">
-      <value>24K</value>
+      <value>27K</value>
       <footprint>Resistors_SMD:R_0805</footprint>
       <libsource lib="allcolours-rescue" part="R-device-allcolours-rescue" description=""/>
       <sheetpath names="/Sheet5B6C330B/" tstamps="/5B6C330C/"/>
@@ -1486,7 +1486,7 @@
       <tstamp>5D5F2975</tstamp>
     </comp>
     <comp ref="R102">
-      <value>24K</value>
+      <value>10K</value>
       <footprint>Resistors_SMD:R_0805</footprint>
       <libsource lib="allcolours-rescue" part="R-device-allcolours-rescue" description=""/>
       <sheetpath names="/Sheet5B6C330B/" tstamps="/5B6C330C/"/>

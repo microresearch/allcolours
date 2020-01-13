@@ -720,6 +720,11 @@ shifting the arrays of taps (4 taps in each one, limited to length) -> shift and
 
 - C7 needs to be 1uF tantalum! 25V
 
+  - new diodes are 1N4148: Diodes - General Purpose, Power, Switching SURFACE MOUNT FAST SWITCHING DIODE  
+
+1N4148W-7-F  Diodes Incorporated SOD-123 
+
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
