@@ -714,6 +714,8 @@ shifting the arrays of taps (4 taps in each one, limited to length) -> shift and
 
 * 13/1
 
+hardware changes:
+
 - we will revert to earlier comparator for better sound maybe.. (100k
   in on gnd is needed) and rest as old, but with one side comp gnded
   and we will need to select values - TODO, re-order PCB... extra parts and extra caps for +- power...
@@ -725,6 +727,8 @@ shifting the arrays of taps (4 taps in each one, limited to length) -> shift and
 1N4148W-7-F  Diodes Incorporated SOD-123 
 
 - changed c7, changed comparator, changed 12v on pulse and pwm outs and added divider for pulse outs, added two protection diodes for 7400/7490
+
+- added 1K in on both filter clocks.
 
 * 14/1
 

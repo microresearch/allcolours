@@ -748,9 +748,7 @@ Wire Wire Line
 Connection ~ 3720 4425
 Wire Wire Line
 	3720 4425 3720 4405
-Wire Wire Line
-	3720 4425 4135 4425
-Text GLabel 4075 2360 2    60   Input ~ 0
+Text GLabel 4415 2360 2    60   Input ~ 0
 CLK_INH
 Text GLabel 4135 4425 2    60   Input ~ 0
 CLK_INL
@@ -1218,4 +1216,36 @@ Wire Wire Line
 Wire Wire Line
 	6590 1595 6590 1680
 Connection ~ 6590 1595
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5E20068D
+P 4225 2360
+AR Path="/5E20068D" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5E20068D" Ref="R109"  Part="1" 
+F 0 "R109" V 4305 2360 50  0000 C CNN
+F 1 "1K" V 4225 2360 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 4155 2360 50  0001 C CNN
+F 3 "" H 4225 2360 50  0000 C CNN
+	1    4225 2360
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3720 4425 3770 4425
+Wire Wire Line
+	4070 4425 4135 4425
+Wire Wire Line
+	4375 2360 4415 2360
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R?
+U 1 1 5E22BA0F
+P 3920 4425
+AR Path="/5E22BA0F" Ref="R?"  Part="1" 
+AR Path="/5B6C330C/5E22BA0F" Ref="R78"  Part="1" 
+F 0 "R78" V 4000 4425 50  0000 C CNN
+F 1 "1K" V 3920 4425 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 3850 4425 50  0001 C CNN
+F 3 "" H 3920 4425 50  0000 C CNN
+	1    3920 4425
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
