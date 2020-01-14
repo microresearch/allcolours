@@ -2637,6 +2637,6 @@ Wire Wire Line
 	8130 3160 8330 3160
 Wire Wire Line
 	8130 3485 8130 3520
-Text Notes 6340 4320 0    60   ~ 0
-3v-9v range\n(10k up and down would be 4-8)\n
+Text Notes 4450 4555 0    79   ~ 0
+3v-9v range as is - we want closer to GND and say up to 5v!\nso say 15k top and 0k/10R bottom but keep bottom\n
 $EndSCHEMATC

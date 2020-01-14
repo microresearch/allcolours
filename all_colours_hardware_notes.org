@@ -702,7 +702,7 @@ analyse modes - what sounds the same, what new we can add
 
 * 9/1
 
-- re-testing earlier comparator vs. newest and now stick with newer as less offset issues DONE-NO!
+- re-testing earlier comparator vs. newest and now stick with newer as less offset issues DONE-NO!see below
 
 - TODO: fix on and test modes, any mode differences across each and alt taps stuff:
 
@@ -720,11 +720,22 @@ shifting the arrays of taps (4 taps in each one, limited to length) -> shift and
 
 - C7 needs to be 1uF tantalum! 25V
 
-  - new diodes are 1N4148: Diodes - General Purpose, Power, Switching SURFACE MOUNT FAST SWITCHING DIODE  
+- new diodes are 1N4148: Diodes - General Purpose, Power, Switching SURFACE MOUNT FAST SWITCHING DIODE  
 
 1N4148W-7-F  Diodes Incorporated SOD-123 
 
 - changed c7, changed comparator, changed 12v on pulse and pwm outs and added divider for pulse outs, added two protection diodes for 7400/7490
+
+* 14/1
+
+- summarise software TODO:
+
+1- review all modes and maybe squeeze in new mode with shifted tap arrays (test this anyways), also more modes for internal SR access *like what?*
+2- what is the range for SR timing - it should also be logarithnmic but not 1v/oct
+3- PWM DAC spacings and maybe extra mode
+4- for PWM how do we combine clock and knob in one...(clock is multiplier of knob?) but PWM is log array
+5- so extra pwm mode with DAC spacings or say different range
+6- implement all modes and test
 
 * for quote
 
