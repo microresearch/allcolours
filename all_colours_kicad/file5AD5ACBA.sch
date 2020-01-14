@@ -2093,62 +2093,10 @@ F 3 "" H 4470 4500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:R_Small-device-allcolours-rescue R?
-U 1 1 5E21230F
-P 5745 3950
-F 0 "R?" V 5575 4080 50  0000 C CNN
-F 1 "1K" V 5640 3950 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 5745 3950 50  0001 C CNN
-F 3 "" H 5745 3950 50  0001 C CNN
-	1    5745 3950
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
-U 1 1 5E212316
-P 5745 4085
-F 0 "#PWR?" H 5745 3835 50  0001 C CNN
-F 1 "GND" H 5750 3912 50  0000 C CNN
-F 2 "" H 5745 4085 50  0001 C CNN
-F 3 "" H 5745 4085 50  0001 C CNN
-	1    5745 4085
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5745 4050 5745 4085
-Wire Wire Line
-	5745 3815 5745 3850
-Wire Wire Line
-	6020 3805 6020 3840
-Wire Wire Line
-	6020 4040 6020 4075
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
-U 1 1 5E230D4A
-P 6020 4075
-F 0 "#PWR?" H 6020 3825 50  0001 C CNN
-F 1 "GND" H 6025 3902 50  0000 C CNN
-F 2 "" H 6020 4075 50  0001 C CNN
-F 3 "" H 6020 4075 50  0001 C CNN
-	1    6020 4075
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours-rescue:R_Small-device-allcolours-rescue R?
-U 1 1 5E230D43
-P 6020 3940
-F 0 "R?" V 5850 4070 50  0000 C CNN
-F 1 "1K" V 5915 3940 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 6020 3940 50  0001 C CNN
-F 3 "" H 6020 3940 50  0001 C CNN
-	1    6020 3940
-	-1   0    0    1   
-$EndComp
-$Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR019
 U 1 1 5E2930F7
 P 1810 1210
-F 0 "#PWR?" H 1810 960 50  0001 C CNN
+F 0 "#PWR019" H 1810 960 50  0001 C CNN
 F 1 "GND" H 1815 1037 50  0000 C CNN
 F 2 "" H 1810 1210 50  0001 C CNN
 F 3 "" H 1810 1210 50  0001 C CNN
@@ -2163,10 +2111,10 @@ Connection ~ 1810 970
 Wire Wire Line
 	1810 1170 1810 1210
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR023
 U 1 1 5E2D2B1C
 P 4550 1250
-F 0 "#PWR?" H 4550 1000 50  0001 C CNN
+F 0 "#PWR023" H 4550 1000 50  0001 C CNN
 F 1 "GND" H 4555 1077 50  0000 C CNN
 F 2 "" H 4550 1250 50  0001 C CNN
 F 3 "" H 4550 1250 50  0001 C CNN
@@ -2181,10 +2129,10 @@ Connection ~ 4550 1015
 Wire Wire Line
 	4550 1215 4550 1250
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR026
 U 1 1 5E3037BB
 P 5860 1295
-F 0 "#PWR?" H 5860 1045 50  0001 C CNN
+F 0 "#PWR026" H 5860 1045 50  0001 C CNN
 F 1 "GND" H 5865 1122 50  0000 C CNN
 F 2 "" H 5860 1295 50  0001 C CNN
 F 3 "" H 5860 1295 50  0001 C CNN
@@ -2199,10 +2147,10 @@ Connection ~ 5860 1060
 Wire Wire Line
 	5860 1260 5860 1295
 $Comp
-L allcolours-rescue:GND-power-allcolours-rescue #PWR?
+L allcolours-rescue:GND-power-allcolours-rescue #PWR021
 U 1 1 5E334B2E
 P 3165 1270
-F 0 "#PWR?" H 3165 1020 50  0001 C CNN
+F 0 "#PWR021" H 3165 1020 50  0001 C CNN
 F 1 "GND" H 3170 1097 50  0000 C CNN
 F 2 "" H 3165 1270 50  0001 C CNN
 F 3 "" H 3165 1270 50  0001 C CNN

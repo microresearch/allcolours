@@ -761,8 +761,6 @@ Wire Wire Line
 Wire Wire Line
 	6215 2145 6500 2145
 Connection ~ 6500 1595
-Wire Wire Line
-	6500 1595 6565 1595
 Text GLabel 5265 1695 0    60   Input ~ 0
 DIFFAUDOUT
 $Comp
@@ -1163,4 +1161,61 @@ Text Notes 5305 3605 0    79   ~ 0
 was 10K = 24k too high so reverted\n
 Text Notes 6605 4850 0    118  ~ 0
 was 10K\n
+Text Notes 6345 2495 0    79   ~ 0
+add input diode protection
+$Comp
+L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D11
+U 1 1 5E20645A
+P 6590 1780
+F 0 "D11" V 6544 1848 50  0000 L CNN
+F 1 "1N5819" V 6525 1590 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" V 6590 1780 50  0001 C CNN
+F 3 "" V 6590 1780 50  0001 C CNN
+	1    6590 1780
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:GND-power-allcolours-rescue #PWR032
+U 1 1 5E206461
+P 6590 1930
+F 0 "#PWR032" H 6590 1680 50  0001 C CNN
+F 1 "GND" H 6590 1780 50  0000 C CNN
+F 2 "" H 6590 1930 50  0000 C CNN
+F 3 "" H 6590 1930 50  0000 C CNN
+	1    6590 1930
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6590 1930 6590 1880
+$Comp
+L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D10
+U 1 1 5E20B975
+P 6590 1455
+F 0 "D10" V 6544 1523 50  0000 L CNN
+F 1 "1N5819" V 6475 1530 50  0000 L CNN
+F 2 "Diodes_SMD:D_SOD-123" V 6590 1455 50  0001 C CNN
+F 3 "" V 6590 1455 50  0001 C CNN
+	1    6590 1455
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours-rescue:+5V-power-allcolours-rescue #PWR028
+U 1 1 5E20B97C
+P 6590 1305
+F 0 "#PWR028" H 6590 1155 50  0001 C CNN
+F 1 "+5V" H 6690 1355 50  0000 C CNN
+F 2 "" H 6590 1305 50  0001 C CNN
+F 3 "" H 6590 1305 50  0001 C CNN
+	1    6590 1305
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6590 1355 6590 1305
+Wire Wire Line
+	6590 1595 6590 1555
+Wire Wire Line
+	6500 1595 6590 1595
+Wire Wire Line
+	6590 1595 6590 1680
+Connection ~ 6590 1595
 $EndSCHEMATC
