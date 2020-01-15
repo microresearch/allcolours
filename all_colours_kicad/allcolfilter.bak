@@ -699,7 +699,7 @@ $Comp
 L allcolours-rescue:D_Zener_Small-device-allcolours-rescue D3
 U 1 1 5D3DBDD3
 P 3720 4555
-F 0 "D3" V 3674 4623 50  0000 L CNN
+F 0 "D3" V 3790 4665 50  0000 L CNN
 F 1 "1N5819" V 3645 4345 50  0000 L CNN
 F 2 "Diodes_SMD:D_SOD-123" V 3720 4555 50  0001 C CNN
 F 3 "" V 3720 4555 50  0001 C CNN

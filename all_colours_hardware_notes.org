@@ -730,6 +730,8 @@ hardware changes:
 
 - added 1K in on both filter clocks.
 
+[not ein prevoosu version lower shouild be 20k and upper 10k?)
+
 * 14/1
 
 - summarise software TODO:
