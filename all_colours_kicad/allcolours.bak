@@ -2638,5 +2638,5 @@ Wire Wire Line
 Wire Wire Line
 	8130 3485 8130 3520
 Text Notes 4475 4645 0    79   ~ 0
-changed so is around 5v and close to 0v\n
+should be around 2v so recalculate\n
 $EndSCHEMATC

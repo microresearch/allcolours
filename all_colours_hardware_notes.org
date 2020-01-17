@@ -745,17 +745,25 @@ hardware changes:
 
 * 15/1
 
-- checked and doublechecked, added vias, 
+- checked and doublechecked, added vias
 
-- thinking to norm noiself_out to pulself1_in1 and noisehf_out to pulsehf1_in1 but we need to test this -> test with all modes but why not?
+- thinking to norm noiself_out to pulself1_in1 and noisehf_out to pulsehf1_in1 but we need to test this -> *test with all modes*
 
-do we have DAC in mode (for PWM out) - would be in pulse modes
+do we have DAC in mode (for PWM out) - would be in pulse modes IN PROCESS
 
 - and also maybe we can get rid of pull downs on pulse in transistors: R79, R91, R104, R107 -> leave these for optional pull down 1M
 
-TEST THIS! otherwise all ready to go - but perhaps finish and test software until we order...
+TEST THIS! otherwise all ready to go - but perhaps finish and test software until we order... TESTED!
 
 to order pcbcart: board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
+
+* 17/1
+
+- norming works and all seems ok
+- levels checked on older comparator: offset is maybe 300mV, Vpp is 8.5v (but without divider) - with divider is 4.5v
+- changed lower divider of comps above to 47k - TESTED so around 2v positive
+- any other tests/changes? - test noise as pulse in on all modes...
+
 
 * for quote
 

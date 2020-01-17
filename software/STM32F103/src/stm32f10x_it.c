@@ -317,7 +317,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	//	else shift_registerh+= (!(GPIOB->IDR & 0x0400));
 
 	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400)); // switched round // 0x0080 is clock bit in!
-	else shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400));
+	else shift_registerh = (shift_registerh<<1) + (bith | (!(GPIOB->IDR & 0x0400))); // wsa same here
 	
       // shift register bits output - inverted also on PC13 and 14; // for GPIOC we could also try dump whole thing onto ODR as I think nothing else is on there - but this changes with length
 	
@@ -710,7 +710,7 @@ void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falli
 
       // TO: how to get CV in (8 bits say) as we use bottom bits/or spacings for CV out/PWM 
       // mask and shift for 8 bits
-      // shift_registerh &= ~MASK: 
+      // shift_registerh &= ~MASK; // store mask as the INVERTED one! 
       // shift_registerh +=(ADCBuffer[2]>>8)<<SHIFT;
       // and for top 8 bits of 32? - depending on length we would have different masks and different bit options
       // so arrays of masks and bit options

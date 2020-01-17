@@ -792,7 +792,7 @@ L allcolours-rescue:R-device-allcolours-rescue R36
 U 1 1 5D4541FF
 P 6860 2140
 F 0 "R36" V 6900 1935 50  0000 C CNN
-F 1 "15K" V 6860 2140 50  0000 C CNN
+F 1 "47K" V 6860 2140 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 6790 2140 50  0001 C CNN
 F 3 "" H 6860 2140 50  0000 C CNN
 	1    6860 2140
@@ -883,7 +883,7 @@ L allcolours-rescue:R-device-allcolours-rescue R28
 U 1 1 5D48502C
 P 5765 4095
 F 0 "R28" V 6035 4100 50  0000 C CNN
-F 1 "15K" V 5765 4095 50  0000 C CNN
+F 1 "47K" V 5765 4095 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 5695 4095 50  0001 C CNN
 F 3 "" H 5765 4095 50  0000 C CNN
 	1    5765 4095
@@ -1495,7 +1495,7 @@ L allcolours-rescue:R-device-allcolours-rescue R64
 U 1 1 5D45AF69
 P 9455 2105
 F 0 "R64" V 9740 2145 50  0000 C CNN
-F 1 "15K" V 9455 2105 50  0000 C CNN
+F 1 "47K" V 9455 2105 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 9385 2105 50  0001 C CNN
 F 3 "" H 9455 2105 50  0000 C CNN
 	1    9455 2105
@@ -1684,7 +1684,7 @@ L allcolours-rescue:R-device-allcolours-rescue R45
 U 1 1 5D5079FF
 P 8575 4055
 F 0 "R45" V 8815 4045 50  0000 C CNN
-F 1 "15K" V 8575 4055 50  0000 C CNN
+F 1 "47K" V 8575 4055 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 8505 4055 50  0001 C CNN
 F 3 "" H 8575 4055 50  0000 C CNN
 	1    8575 4055
@@ -2638,5 +2638,5 @@ Wire Wire Line
 Wire Wire Line
 	8130 3485 8130 3520
 Text Notes 4475 4645 0    79   ~ 0
-changed so is around 5v and close to 0v\n
+should be around 2v so recalculate\n
 $EndSCHEMATC
