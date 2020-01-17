@@ -970,8 +970,14 @@ Text GLabel 6890 4370 0    60   Input ~ 0
 NOISELF_OUT
 Text GLabel 8430 4315 0    60   Input ~ 0
 NOISEHF_OUT
-Text Notes 360  2075 0    118  ~ 0
-no_NORM
-Text Notes 240  3680 0    118  ~ 0
-no_NORM
+Text Notes -2595 3070 0    118  ~ 0
+norms for pulse ins added for noise
+Text GLabel 1395 2035 0    60   Input ~ 0
+NOISELF_OUT
+Wire Wire Line
+	1395 2035 1430 2035
+Text GLabel 1340 3580 0    60   Input ~ 0
+NOISEHF_OUT
+Wire Wire Line
+	1340 3580 1400 3580
 $EndSCHEMATC

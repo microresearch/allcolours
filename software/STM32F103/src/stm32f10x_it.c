@@ -316,7 +316,7 @@ void TIM2_IRQHandler(void){ // handle LF and HF SR for selected modes - speed of
 	//	if( !(GPIOB->IDR & 0x0080)) shift_registerh+= (bith | !(GPIOB->IDR & 0x0400)); // PB7 and PB10
 	//	else shift_registerh+= (!(GPIOB->IDR & 0x0400));
 
-	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400)); // switched round
+	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400)); // switched round // 0x0080 is clock bit in!
 	else shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400));
 	
       // shift register bits output - inverted also on PC13 and 14; // for GPIOC we could also try dump whole thing onto ODR as I think nothing else is on there - but this changes with length
@@ -664,6 +664,7 @@ void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falli
     case 10: //mod - tested
       //10- entry into SR from CV (as threshold for bit or as ADC? ) - TM = no input bit // TESTED/
       // our cv is ADCBuffer[2]>>8 for 8 bits and select counting bit
+      // ----- leave
       countbitsh++;
       if (countbitsh>7) countbitsh=0;
       //bith = shift_registerh>>31; // bit which would be shifted out
@@ -705,7 +706,16 @@ void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falli
       //12- CV threshold determines if input bit ORed (or could be XOR) last bit CGS -> this results in ON/OFF 
       // try others: this one works from: 	//->>>>>>>>>>>>>> 5- wiard1: pulse selects new data or loop old back into SR
       //	bith = shift_registerh>>31; // bit which would be shifted out
-           bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+      // maybe REPLACE TESTING!
+
+      // TO: how to get CV in (8 bits say) as we use bottom bits/or spacings for CV out/PWM 
+      // mask and shift for 8 bits
+      // shift_registerh &= ~MASK: 
+      // shift_registerh +=(ADCBuffer[2]>>8)<<SHIFT;
+      // and for top 8 bits of 32? - depending on length we would have different masks and different bit options
+      // so arrays of masks and bit options
+      
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 
 	   //	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
 	if (ADCBuffer[2]>32768) shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400)); // PB10

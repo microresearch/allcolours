@@ -1728,7 +1728,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R79
 U 1 1 5D734406
 P 1435 3305
 F 0 "R79" V 1239 3305 50  0000 C CNN
-F 1 "33K" V 1330 3305 50  0000 C CNN
+F 1 "1M" V 1330 3305 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 1435 3305 50  0001 C CNN
 F 3 "" H 1435 3305 50  0001 C CNN
 	1    1435 3305
@@ -1752,7 +1752,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R91
 U 1 1 5D741D88
 P 2910 3230
 F 0 "R91" V 2714 3230 50  0000 C CNN
-F 1 "33K" V 2805 3230 50  0000 C CNN
+F 1 "1M" V 2805 3230 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 2910 3230 50  0001 C CNN
 F 3 "" H 2910 3230 50  0001 C CNN
 	1    2910 3230
@@ -1786,7 +1786,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R104
 U 1 1 5D7BAF03
 P 4340 3220
 F 0 "R104" V 4160 3315 50  0000 C CNN
-F 1 "33K" V 4235 3220 50  0000 C CNN
+F 1 "1M" V 4235 3220 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 4340 3220 50  0001 C CNN
 F 3 "" H 4340 3220 50  0001 C CNN
 	1    4340 3220
@@ -1810,7 +1810,7 @@ L allcolours-rescue:R_Small-device-allcolours-rescue R107
 U 1 1 5D7C9266
 P 5770 3175
 F 0 "R107" V 5595 3270 50  0000 C CNN
-F 1 "33K" V 5665 3175 50  0000 C CNN
+F 1 "1M" V 5665 3175 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 5770 3175 50  0001 C CNN
 F 3 "" H 5770 3175 50  0001 C CNN
 	1    5770 3175
@@ -2164,4 +2164,6 @@ Wire Wire Line
 Connection ~ 3165 1030
 Wire Wire Line
 	3165 1230 3165 1270
+Text Notes -905 3400 0    79   ~ 0
+Leave as optional 1M pull downs
 $EndSCHEMATC

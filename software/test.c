@@ -425,7 +425,7 @@ void varshifter_lfsr(uint8_t length) // tested working NOW!
   //    printf("BITH %d", bith);
   //    printf("\n");
         if (bith==1)	printf("x");
-        else printf("0");
+           else printf("0");
   
 }
 
@@ -459,8 +459,11 @@ int main(void)
     unsigned period = 0;
     unsigned char bat;
     unsigned char biit=0x05;
-
-  
+    x=0b1111111111111111;
+    
+    x &= ~0xff;
+    printf("%d\n", x);
+    
     //    if (!(biit & 0x20)) printf("BIT\n");
     
     /*       do
@@ -476,11 +479,11 @@ int main(void)
     } while (1);
     */
     unsigned char n=31;
-    //                while(1){
+    //                   while(1){
       //      if (count<32) n=n^1;
       //      else n=0;
       //bat=shift256bit_32(bat^binmask32);
-    		  for (n=4;n<32;n++){
+    /*    		  for (n=4;n<32;n++){
       //      bat=lfsr32();
 		    //		  varshifter_lfsr(n);
 	      //	      varshifter_electronotes();
@@ -498,7 +501,7 @@ int main(void)
       //      printbits();
       count++;
       //      printbits(&g_buf[0]);
-          }
-    
+      }*/
+		  //		   }
     return 0;
 }

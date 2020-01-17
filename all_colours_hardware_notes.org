@@ -743,6 +743,20 @@ hardware changes:
 5- so extra pwm mode with DAC spacings or say different range
 6- implement all modes and test
 
+* 15/1
+
+- checked and doublechecked, added vias, 
+
+- thinking to norm noiself_out to pulself1_in1 and noisehf_out to pulsehf1_in1 but we need to test this -> test with all modes but why not?
+
+do we have DAC in mode (for PWM out) - would be in pulse modes
+
+- and also maybe we can get rid of pull downs on pulse in transistors: R79, R91, R104, R107 -> leave these for optional pull down 1M
+
+TEST THIS! otherwise all ready to go - but perhaps finish and test software until we order...
+
+to order pcbcart: board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
