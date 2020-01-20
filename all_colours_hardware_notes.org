@@ -737,7 +737,7 @@ hardware changes:
 - summarise software TODO:
 
 1- review all modes and maybe squeeze in new mode with shifted tap arrays (test this anyways), also more modes for internal SR access *like what?*
-2- what is the range for SR timing - it should also be logarithnmic but not 1v/oct
+2- what is the range for SR timing - it should also be logarithmic but not 1v/oct
 3- PWM DAC spacings and maybe extra mode
 4- for PWM how do we combine clock and knob in one...(clock is multiplier of knob?) but PWM is log array
 5- so extra pwm mode with DAC spacings or say different range
@@ -749,7 +749,7 @@ hardware changes:
 
 - thinking to norm noiself_out to pulself1_in1 and noisehf_out to pulsehf1_in1 but we need to test this -> *test with all modes*
 
-do we have DAC in mode (for PWM out) - would be in pulse modes IN PROCESS
+- do we have DAC in mode (for PWM out) - would be in pulse modes IN PROCESS
 
 - and also maybe we can get rid of pull downs on pulse in transistors: R79, R91, R104, R107 -> leave these for optional pull down 1M
 
@@ -757,12 +757,32 @@ TEST THIS! otherwise all ready to go - but perhaps finish and test software unti
 
 to order pcbcart: board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
 
-* 17/1
+* 17/1 __+++
 
 - norming works and all seems ok
 - levels checked on older comparator: offset is maybe 300mV, Vpp is 8.5v (but without divider) - with divider is 4.5v
 - changed lower divider of comps above to 47k - TESTED so around 2v positive
+
 - any other tests/changes? - test noise as pulse in on all modes...
+- re-check SR logic of shifts
+- new ADC/DAC mode to test
+- any additional or experimental modes
+
+//NEW
+
+- *maybe norm pulseouts to diff audio in  instead of comparator so is full signal flow - try this idea out for different modes*
+
+- *maybe ADC/PWM out should be upper bits as we shift in at the lowest* - how is this for other designs?
+
+OUTS (but they have no DAC in):
+TM: first 8 bits where pulse comes in
+electronotes: wide spacing. lowest bits where shift in happens seems most popular
+wiard: full 8 bits
+others: top bit which is shifted out 
+
+*TEST both options and spacings*
+
+- *fix 	//13- electronotes: CV selects which bits to set to 1 = chance of change -> with lookup array -> TO TEST*
 
 
 * for quote
@@ -780,14 +800,15 @@ allcolours_in_progress.xls
 435: internal patching, single DUSG, some smooth slow changes
 439: internal patching, single DUSG, some smooth slow changes
 
+* future module - name? Heaven's Gate, Walker, Stalker
 
-* TODO:
+- note that Turing machine 8 bit DAC uses DAC0800
 
-- basic hardware tests (eg. white noiseDONE, comparators, filters)...DONE
-- test all analogue pwm/pulses/ADC-DONE
-- programming modes and timers-nearly
+https://www.mouser.co.uk/ProductDetail/Texas-Instruments/DAC0800LCMX-NOPB?qs=sGAEpiMZZMswix2y39yldayO4Q5Ro0gFlJGu%2Fs3rDME%3D
 
-* notes
+- from above
+
+* older notes
 
 - ignore other all_colours schematics in ERD!
 - copy and add to git so can change schematic - DONE
@@ -809,7 +830,7 @@ monoflop=monostable multivibrator?
   - shift register in feedback path? ATMEGA
   - further elaboration with hand/finger/capacitive sensing mandala? - changing high freq clock with hand/fingers?
 
-* key 
+* older key 
 
 sockets from left into pins 
 
@@ -835,10 +856,3 @@ YNO yusynth noise out
 74I 7400 in
 G   GND
 
-* atmega software
-
-length of SR 16-32? - 16=65,535
-
-- pwm out for maxim 100x, pulses out from SR, SR and CV to pwm, primitive DAC out, modes
-- CV in for SR, pulse in for lock and random leakage, knob for modes, slew knlob and cv in
-- SR code and leakage, lock/unlock

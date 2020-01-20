@@ -459,10 +459,56 @@ int main(void)
     unsigned period = 0;
     unsigned char bat;
     unsigned char biit=0x05;
-    x=0b1111111111111111;
+    //    x=0b1111111111101111;
+    uint32_t bits=0b11111111000000000000000000000000, bitzz, adc, res, mask[32];
+    uint32_t emptybits=0b00000000000000000000000000000000;
+    //    x &= ~0xff;
+    y=0;
+
+    // TO: how to get CV in (8 bits say) as we use bottom bits/or spacings for CV out/PWM 
+    // mask and shift for 8 bits
+    // shift_registerh &= MASK[SRlengthh]; // store mask as the INVERTED one eg. ~(Oxff) for bottom 8 bits - bottom/lower is where SR is for lower lengths
+    // shift_registerh +=(ADCBuffer[2]>>(8+SHIFTED[SRlengthh]))<<SHIFT[SRlengthh];
+    // just 8 bits always so:
+    // shift_registerh +=(ADCBuffer[2]>>8)<<SHIFT[SRlengthh]; // starts at 0 for first 8 then goes up to 24 I think
+    uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}; 
     
-    x &= ~0xff;
-    printf("%d\n", x);
+    // and for top 8 bits of 32? - depending on length we would have different masks and different bit options
+    //
+    // what do we do with input bit? - OR it in!
+    // for 8 bits or less is a bit odd as we just output our bits... maybe also increase SHIFTED to reflect this - so 3 arrays: masks, where, howmany bits
+    // *maybe ADC/PWM out should be upper bits as we shift in at the lowest - so then we would shift in DAC on lowest bits*
+    // also question of how often we shift in 8 bits or they will cover themselves - shift in every 8 cycles?
+
+    // SO: shift in bits on lowest, shift out on upper.
+    // shift in on upper, shift out on lower (as is now) - try this one first.
+
+    // top 8 bits masked of 32: as length decreases we shift that mask right until we get to 8 bits
+    // we can also space those out for higher orders... but then we need to access individual bits of ADC
+
+    
+    for (x=32;x>7;x--){
+      // this seems to test and work out
+      bitzz=~(bits>>y);
+      //adc=255<<SHIFT[x-1];
+      //      printf("x: %d bits: %u\n",x, bitzz);
+      //      printf("%u, ", bitzz);
+      mask[x-1]=bitzz;
+      //      emptybits=0;
+      //      emptybits&=bitzz;
+      //      emptybits+=adc;
+      //      res=adc+bitzz;
+      //      print32bits(&emptybits);
+      //      print32bits(&res);
+      y++;
+    }
+
+    for (x=7;x<32;x++){
+      printf("%u, ", mask[x]);
+    }
+    
+    // shift_registerh & (1<<(SRlengthh/2)
+    //    if (x & (1<<4))    printf("%d\n", y);
     
     //    if (!(biit & 0x20)) printf("BIT\n");
     
