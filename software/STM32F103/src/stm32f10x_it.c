@@ -3,7 +3,7 @@
 
 extern __IO uint16_t ADCBuffer[];
 
-volatile uint32_t speedh, speedl, counterh=0, speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
+volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
 volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=0, hcount=0, countbitsh=0, coutbitsl=0, bithh=0; // testing for modes
 
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, testy;
@@ -159,7 +159,7 @@ uint32_t looker[32]={1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191,
 
 // for mode 13-electronotes = probh is not linear as we are interested in the number of bits set and not their position
 // there are 8 positions which is 3 bits or we can make 16...
-uint32_t electroprob[8]={0, 1, 3, 7, 15, 31, 63, 127, 255};
+uint32_t electroprob[8]={0, 3, 7, 15, 31, 63, 127, 255};
 
 uint32_t MASK[32]={4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294966785, 4294966275, 4294965255, 4294963215, 4294959135, 4294950975, 4294934655, 4294902015, 4294836735, 4294706175, 4294445055, 4293922815, 4292878335, 4290789375, 4286611455, 4278255615, 4261543935, 4228120575, 4161273855, 4027580415, 3760193535, 3225419775, 2155872255, 16777215};
 
@@ -673,6 +673,7 @@ void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falli
     case 10: //mod - tested
       //10- entry into SR from CV (as threshold for bit or as ADC? ) - TM = no input bit // TESTED/
       // our cv is ADCBuffer[2]>>8 for 8 bits and select counting bit
+      // no pulse bit?
       // ----- leave
       countbitsh++;
       if (countbitsh>7) countbitsh=0;
@@ -731,16 +732,26 @@ void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falli
       // SO: shift in bits on lowest, shift out on upper.
       // shift in on upper, shift out on lower (as is now) - try this one first.
 
+      // we do nothing though with pulse in - should maybe or it in
+      
       // top 8 bits masked of 32: as length decreases we shift that mask right until we get to 8 bits
       
       bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+      shift_registerh=(shift_registerh<<1) + (bith |  (!(GPIOB->IDR & 0x0400))); // cycle around and OR in pulse bit! TESTY!
 
-	   //	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
+      // every 8 cycles
+      if (counter12h == 9){
+	counter12h=0;
+	shift_registerh &= MASK[SRlengthh]; // store mask as the INVERTED one eg. ~(Oxff) for bottom 8 bits - bottom/lower is where SR is for lower lengths
+	shift_registerh +=(ADCBuffer[2]>>8)<<(SHIFT[SRlengthh]); 
+      }
+      counter12h++;
+      
       /*	if (ADCBuffer[2]>32768) shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400)); // PB10
 	else shift_registerh = (shift_registerh<<1) + bith;
       */
-	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
-	else GPIOC->BSRR = 0b0010000000000000; 
+      	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      	else GPIOC->BSRR = 0b0010000000000000; 
 	if (shift_registerh & (1<<(SRlengthh/2))) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000; 
       break;
@@ -750,7 +761,7 @@ void EXTI9_5_IRQHandler(void){ // both working now - LF and HF pulse in on falli
 	//	bith = shift_registerh>>31; // bit which would be shifted out
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	//	shift_registerh=shift_registerh<<1; // we are shifting left << so bit 31 is out last one
-	probh=ADCBuffer[2]>>15; // 3 bits now for electroprob array
+	probh=ADCBuffer[2]>>13; // 3 bits now for electroprob array
 	probh=electroprob[probh];
 	
 	// so maybe do as array of 0b00000001 0b00000011 etc... TODO/TESTY!

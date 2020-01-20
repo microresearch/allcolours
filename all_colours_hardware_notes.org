@@ -730,7 +730,7 @@ hardware changes:
 
 - added 1K in on both filter clocks.
 
-[not ein prevoosu version lower shouild be 20k and upper 10k?)
+[note in previous version lower should be 20k and upper 10k?)
 
 * 14/1
 
@@ -772,6 +772,8 @@ to order pcbcart: board is Board Size (width) 	101.2 mm 	Board Size (height) 	10
 
 - *maybe norm pulseouts to diff audio in  instead of comparator so is full signal flow - try this idea out for different modes*
 
+
+
 - *maybe ADC/PWM out should be upper bits as we shift in at the lowest* - how is this for other designs?
 
 OUTS (but they have no DAC in):
@@ -782,7 +784,9 @@ others: top bit which is shifted out
 
 *TEST both options and spacings*
 
-- *fix 	//13- electronotes: CV selects which bits to set to 1 = chance of change -> with lookup array -> TO TEST*
+- mode where we invert speed of SR against PWM so does not track each other
+
+- fixed 	//13- electronotes: CV selects which bits to set to 1 = chance of change -> with lookup array -> TESTED/DONE
 
 
 * for quote
@@ -799,6 +803,9 @@ allcolours_in_progress.xls
 394: internal patching, static (no twiddling)
 435: internal patching, single DUSG, some smooth slow changes
 439: internal patching, single DUSG, some smooth slow changes
+451: dual DUSG with changes across all, small changes
+453: same 2 modulations
+454: as above
 
 * future module - name? Heaven's Gate, Walker, Stalker
 
