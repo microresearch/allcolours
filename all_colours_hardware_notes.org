@@ -679,19 +679,19 @@ PWM sounds better withOUT LOG option and wide range which makes it gurgly, or wh
 
 - test PWM DAC spacings (how could these also be variable in one mode perhaps - in pulse mode?)
 
-- do all modes make sense - what alternative modes there could be which take advantage of internal access to each SR bit?
+- do all modes make sense - what alternative modes there could be which take advantage of internal access to each SR bit?:::
 
-(eg. differing taps, shifting taps arrays) - maybe we can have differing sets of modes for each side to get over constraints
+//- CV as chance of a bit leaking or spreading either side, what could
+be malfunctioning logic with CV as chance on bits, swap and msk bits
+across two SRs,
 
-*for PWM modes we can maybe combine 0 and 1 (in case there are no clock pulses in)* -> TODO and TEST how...
+(also. differing taps, shifting taps arrays) - *maybe we can have differing sets of modes for each side to get over constraints*
 
-which gives us extra PWM mode
+0- pwm follows speed cv 
 
-0- pwm follows speed cv former1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
+1- former1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier of this - how to do for LOG scale 
 
-1- pwm follows DAC from SR 
-
-2- pwm follows DAC - different range or spacings (2 options as we use pulse/cv already for SR)
+1- pwm follows DAC from SR + pwm follows DAC - different range or spacings maybe in pulse modes - can have different PWM modes paired with pulse/cv modes?
 
 3- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 // how often do we update this last one...????? and we need to record this somewhere (or is as PWM -> check?)
@@ -705,10 +705,6 @@ analyse modes - what sounds the same, what new we can add
 - re-testing earlier comparator vs. newest and now stick with newer as less offset issues DONE-NO!see below
 
 - TODO: fix on and test modes, any mode differences across each and alt taps stuff:
-
-//
-
-arrays for spacings depending on size
 
 shifting the arrays of taps (4 taps in each one, limited to length) -> shift and wraparound 
 
@@ -732,16 +728,25 @@ hardware changes:
 
 [note in previous version lower should be 20k and upper 10k?)
 
-* 14/1
+* 14/1 TODO: 
 
 - summarise software TODO:
 
 1- review all modes and maybe squeeze in new mode with shifted tap arrays (test this anyways), also more modes for internal SR access *like what?*
+
+list these, test these, note that we can have different modes for each side and different pwm/dac modes also depending on modes
+
+potentially we could have ADC/DAC mode (now mode 12) which also sets the spacing of the taps, shifts these taps in real time...
+
+add in as many modes as we can imagine and then trim down, also alt PWM modes...
+
 2- what is the range for SR timing - it should also be logarithmic but not 1v/oct
 3- PWM DAC spacings and maybe extra mode
-4- for PWM how do we combine clock and knob in one...(clock is multiplier of knob?) but PWM is log array
-5- so extra pwm mode with DAC spacings or say different range
-6- implement all modes and test
+4- for PWM how do we combine clock and knob in one...(clock is multiplier of knob?) but PWM is log array = we combine in mode 1 now = not as a single mode
+5- so extra pwm mode with DAC spacings - also different ranges
+5.5- for pwm and SR modes:  either 4x sections of 16 or 16 sections of 4??? latter is easier... try both
+6- implement all modes and test - see notes below also for fixes
+7- clean up comments and ordering of modes so that for example change of length is BANG in the quarters/middle of CV
 
 * 15/1
 
@@ -749,7 +754,7 @@ hardware changes:
 
 - thinking to norm noiself_out to pulself1_in1 and noisehf_out to pulsehf1_in1 but we need to test this -> *test with all modes*
 
-- do we have DAC in mode (for PWM out) - would be in pulse modes IN PROCESS
+- do we have ADC in mode (for PWM out) - would be in pulse modes IN PROCESS mode 12...
 
 - and also maybe we can get rid of pull downs on pulse in transistors: R79, R91, R104, R107 -> leave these for optional pull down 1M
 
@@ -763,18 +768,16 @@ to order pcbcart: board is Board Size (width) 	101.2 mm 	Board Size (height) 	10
 - levels checked on older comparator: offset is maybe 300mV, Vpp is 8.5v (but without divider) - with divider is 4.5v
 - changed lower divider of comps above to 47k - TESTED so around 2v positive
 
-- any other tests/changes? - test noise as pulse in on all modes...
+- any other tests/changes? - test noise as pulse in on ALL modes...
 - re-check SR logic of shifts
 - new ADC/DAC mode to test
 - any additional or experimental modes
 
 //NEW
 
-- *maybe norm pulseouts to diff audio in  instead of comparator so is full signal flow - try this idea out for different modes*
+- maybe norm pulseouts to diff audio in  instead of comparator so is full signal flow - try this idea out for different modes-> *STICK WITH NORMS AS IS*
 
-
-
-- *maybe ADC/PWM out should be upper bits as we shift in at the lowest* - how is this for other designs?
+- *Upper or lower bits for DAC out?* - how is this for other designs? mostly on lower bits
 
 OUTS (but they have no DAC in):
 TM: first 8 bits where pulse comes in
@@ -782,16 +785,46 @@ electronotes: wide spacing. lowest bits where shift in happens seems most popula
 wiard: full 8 bits
 others: top bit which is shifted out 
 
+- ADC in on mode 12 is at upper bits now...
+
+how does spacing for DAC out work?
+
+8 bits from different positions towards lower end...
+
+DACOUT= ((shift_registerh>>pos[SRlengthh][0])&0x01) + ((shift_registerh>>pos[SRlengthh][1])&0x02) + ((shift_registerh>>pos[SRlengthh][2])&0x04) // etc 
+
+pos[32][8]={
+
+
+just need to calculate 8 bit arrays for positions based on length - basic positions table <<1 each time...
+
 *TEST both options and spacings*
 
-- mode where we invert speed of SR against PWM so does not track each other
+- mode where we invert speed of SR against PWM so does not track each other // where this could be
 
-- fixed 	//13- electronotes: CV selects which bits to set to 1 = chance of change -> with lookup array -> TESTED/DONE
+- fixed mode 13- electronotes: CV selects which bits to set to 1 = chance of change -> with lookup array -> TESTED/DONE
+
+- question of entry of extra pulse bits in modes 10+
+
+* 21/1
+
+software:
+- clean up codeDONE
+///
+- positions table for DACOUT spacings
+
+- SR counter/timing range/array?
+- combine clock and knob for mode 1 of PWM - PWM/DAC range
+- new modes eg. shifting the array of taps (by CV or by pulse? try both), from TM - TM with probability CV (or probability from other SR!) combined with variable length
+
++ mode where we invert speed of SR against PWM so does not track each other // where this could be
 
 
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
+
+order new prototype TODO
 
 all_colours_1911 already ordered
 
@@ -813,7 +846,12 @@ allcolours_in_progress.xls
 
 https://www.mouser.co.uk/ProductDetail/Texas-Instruments/DAC0800LCMX-NOPB?qs=sGAEpiMZZMswix2y39yldayO4Q5Ro0gFlJGu%2Fs3rDME%3D
 
-- from above
+- from TM - TM with probability CV (or probability from other SR!) combined with variable length
+
+- from above:
+
+also what we can keep for next one - eg. shifting the arrays of taps, arrays of spacings, one sr as clock for other (would need to be as function pointer maybe - try this out)
+
 
 * older notes
 

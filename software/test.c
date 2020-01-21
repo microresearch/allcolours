@@ -486,7 +486,76 @@ int main(void)
     // top 8 bits masked of 32: as length decreases we shift that mask right until we get to 8 bits
     // we can also space those out for higher orders... but then we need to access individual bits of ADC
 
+    // test the logic of:
+    //    if (((probh | shift_registerl) & 0xff )
+    //    uint32_t probh=0b000000000000000000000011111110;
+    //    uint32_t shift_registerl=0b00000000000000000000000000000000;
+    //    if (((probh | shift_registerl) & 0xff) == 0xff) printf("TEST: if (((probh | shift_registerl) & 0xff )\n");
+
+    /*
+      8 bits from different positions towards lower end...
+      for lengths <9 we don't do this calculation
+
+      DACOUT= ((shift_registerh & 0x01) + ((shift_registerh>>pos[SRlengthh][1])&0x02) + ((shift_registerh>>pos[SRlengthh][2])&0x04) // etc 
+
+      pos[32][8]={
+      {1,2,3,4,5,6,7,8}, // ignore first 9 lengths then start to space out
+      etc///
+      }
+      just need to calculate 8 bit arrays for positions based on length - basic positions table <<1 each time...
+
+      eg. from electronotes p.246 low to high 6 bits out of 24 >> a,c,f,g,h,i = 25=1, 27=3, 30=6, 34=10, 39=15, 45=21 (spacing=2, 3, 4, 5, 6)
+
+      so for our 8 bits for full 32 bits we could have bits 0, 1, 3, 6, 10, 15, 21, 28 -> this translates as:
+      subtract: 
+      0, 1, 2, 3, 4, 5, 6, 7
+
+in reverse tho for 9->31
+
+      
+
+
+      pos[32][8]={
+      {1,2,3,4,5,6,7,8}, // ignore first 8 lengths then start to space out
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {0, 0, 0, 0, 0, 0, 0, 1},//10 bits = length 9
+      {0, 0, 0, 0, 0, 1, 1, 2},//11
+      {0, 0, 0, 0, 1, 1, 2, 3},//12
+      {0, 0, 0, 0, 1, 1, 2, 4},//13
+      {0, 0, 0, 1, 1, 2, 3, 5},//14
+      {0, 0, 0, 1, 1, 2, 4, 6},//15
+      {0, 0, 0, 1, 2, 3, 5, 7},//16
+      {0, 0, 1, 2, 3, 4, 6, 8},//17
+      {0, 0, 1, 2, 3, 5, 7, 9},//18
+      {0, 0, 1, 2, 3, 5, 7, 10},//19
+      {0, 0, 1, 2, 3, 5, 8, 11},//20
+      {0, 0, 1, 2, 3, 6, 9, 12},//21
+      {0, 0, 1, 2, 4, 7, 10, 13},//22
+      {0, 0, 1, 2, 4, 7, 10, 14},//23
+      {0, 0, 1, 2, 5, 8, 11, 15},//24
+      {0, 0, 1, 3, 6, 9, 12, 16},//25
+      {0, 0, 1, 3, 6, 9, 13, 17},//26
+      {0, 0, 1, 3, 6, 10, 14, 18},//27
+      {0, 0, 1, 3, 6, 10, 14, 19},//28
+      {0, 0, 1, 3, 6, 10, 15, 20},// 29
+      {0, 0, 1, 3, 6, 10, 15, 21},// 30
+      {0, 0, 1, 3, 6, 10, 15, 21},// 31
+      {0, 0, 1, 3, 6, 10, 15, 21} // for 32 bits = length=31
+      }
+
+
+      // down to 9
+
+    */
+
     
+    /*
     for (x=32;x>7;x--){
       // this seems to test and work out
       bitzz=~(bits>>y);
@@ -505,7 +574,7 @@ int main(void)
 
     for (x=7;x<32;x++){
       printf("%u, ", mask[x]);
-    }
+      }*/
     
     // shift_registerh & (1<<(SRlengthh/2)
     //    if (x & (1<<4))    printf("%d\n", y);

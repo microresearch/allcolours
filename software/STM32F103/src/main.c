@@ -10,7 +10,7 @@
   + LF timer loop/interrupt (which updates all CVs) =timer4
   + HF timer loop =timer2
 
-////////////////////////////////TODO////////////////////////////////////////
+////////////////////////////////DONE////////////////////////////////////////
 
 - test basic PWMs into filter/scope - to add LF PWM/timer 3 - DONE
 
@@ -29,9 +29,7 @@
 
 #include "stm32f10x.h"
 
-
 __IO uint16_t ADCBuffer[] = {0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA, 0xAAAA };
-
 
 int main(void)
 {
@@ -45,13 +43,8 @@ int main(void)
   DMA_InitTypeDef DMA_InitStructure;
   SystemInit();
 
+  // DMA for ADC
   
-  //  uint32_t speedh,speedl, accspeedh=0, accspeedl=0, counter=0;
-
-  // we need to organise timers for 2x PWM for pins and 2x timers
-
-  //there are 4 timers -> 2 int->2 and 3 // global interrupts test, 2 pwm->1 and 4
-
   DMA_DeInit(DMA1_Channel1);
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
@@ -95,7 +88,7 @@ int main(void)
   GPIO_Init(GPIOA, &GPIO_InitStructure); // in PA4
 
   ADC_DeInit(ADC1);
-  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE; // in worm was disable
+  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE; // in worm was disable but works now
   ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Left; // in peaks and in worm is left
   ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
   ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
@@ -118,12 +111,13 @@ int main(void)
   while(ADC_GetCalibrationStatus(ADC1));
  
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+
   
+  //there are 4 timers -> 2 int->2 and 3 // global interrupts test, 2 pwm->1 and 4
   
   // two PWM - fast (speed range- 2MHz->x) and slow (speed range???) on 2 pins
   // example for A0
   // converted to timer1 -> T1C1= PA8    
-
   // this is HF PWM on PA8 - timer 1 channel 1
   
   TIM_DeInit(TIM1);
@@ -194,8 +188,7 @@ int main(void)
   TIM_CtrlPWMOutputs(TIM3, ENABLE); // we needed this for timer3 to be added
   
   // TIM3->CCR1=pulse size
- 
-  
+   
   // 2 pin interrupts (falling edge as inverted)
   // test on pin 0 - port B - check where EXTI lines go in manual
 
@@ -232,8 +225,7 @@ int main(void)
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
-  
-  
+    
   // timer interrupts x2 fastest and slow - TIMER2 is fast and TIMER4 is slow
 
   // TIMER2 tested and working - but this will be FAST!
@@ -271,10 +263,8 @@ int main(void)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;
   NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM4, ENABLE);
-
  
   // Configure pins as output push-pull -
-
   // FOR pulse outs: LF: PB13,14 HF: PC13,14
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
@@ -310,7 +300,6 @@ int main(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
-
 
     while(1)
     {
