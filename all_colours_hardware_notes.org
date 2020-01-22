@@ -810,15 +810,30 @@ just need to calculate 8 bit arrays for positions based on length - basic positi
 
 software:
 - clean up codeDONE
+- positions table for DACOUT spacingsDONE/TO_TEST
+
+*Note that spacings could be say in HF code side only (as is NOT a low pass)...*
+
+- SR counter/timing range/array? speedhhDONE/TO_TEST
+- combine clock and knob for mode 1 of PWM - PWM/DAC rangeDONE/TO_TEST
 ///
-- positions table for DACOUT spacings
 
-- SR counter/timing range/array?
-- combine clock and knob for mode 1 of PWM - PWM/DAC range
-- new modes eg. shifting the array of taps (by CV or by pulse? try both), from TM - TM with probability CV (or probability from other SR!) combined with variable length
+- new modes: to code and test:
 
-+ mode where we invert speed of SR against PWM so does not track each other // where this could be
++ shifting the array of taps (by CV or by pulse? try both), HOW both works? DONEforfirstsetTEST-mode23
 
+CV shifts one selected by pulse 32=5 bits (%length), clock pulse shifts one selected by pulse 
+
++ from TM - TM with probability CV (using random bits from other SR!) // combined with variable length -> pulse mode
+
++ mode where we invert speed of SR against PWM so does not track each
+  other // where this could be? - or we have pwm mode which inverts
+  this... and get rid of following pwm mode was mode 3 (or mode 3 does
+  that kind of thing anyways)
+
++ we can insert pulses into SR at points determined by CV or by pulses in - DONEforfirstsetTEST-mode24
+
++ we can make SR loops within SR at certain points/sizes determined by CV or pulses in - DONEforfirstsetTEST-mode24
 
 * for quote
 
