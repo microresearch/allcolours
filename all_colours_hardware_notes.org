@@ -685,13 +685,13 @@ PWM sounds better withOUT LOG option and wide range which makes it gurgly, or wh
 be malfunctioning logic with CV as chance on bits, swap and msk bits
 across two SRs,
 
-(also. differing taps, shifting taps arrays) - *maybe we can have differing sets of modes for each side to get over constraints*
+(also. differing taps, shifting taps arrays) - *maybe we can have differing sets of modes for each side to get over constraints - eg. on lf side we have close taps*
 
 0- pwm follows speed cv 
 
-1- former1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier of this - how to do for LOG scale 
+1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier of this - how to do for LOG scale 
 
-1- pwm follows DAC from SR + pwm follows DAC - different range or spacings maybe in pulse modes - can have different PWM modes paired with pulse/cv modes?
+2- pwm follows DAC from SR + pwm follows DAC - different range or spacings maybe in pulse modes - can have different PWM modes paired with pulse/cv modes?
 
 3- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
 // how often do we update this last one...????? and we need to record this somewhere (or is as PWM -> check?)
@@ -834,6 +834,18 @@ CV shifts one selected by pulse 32=5 bits (%length), clock pulse shifts one sele
 + we can insert pulses into SR at points determined by CV or by pulses in - DONEforfirstsetTEST-mode24
 
 + we can make SR loops within SR at certain points/sizes determined by CV or pulses in - DONEforfirstsetTEST-mode24
+
+* 24/1
+
+- maybe ditch clock/pwm mode and following mode to just have CV/DAC modes doubled up by SR CV (speed/cv) working in opposite direction...
+
+(do this outside modes for adc)
+
+so 1-pwm from vc, 2-pwm from dac and next two are inverted
+
+* 28/1
+
+- PCB ordered: all_colours_28012020.zip
 
 * for quote
 

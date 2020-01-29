@@ -9,7 +9,7 @@ List of PWM modes:
 */
 
 extern __IO uint16_t ADCBuffer[];
-volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0, hfpulsecount, lfpulsecount;
+volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
 volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=0, hcount=0, countbitsh=0, coutbitsl=0, bithh=0; // testing for modes
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, testy;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
@@ -564,26 +564,39 @@ void TIM4_IRQHandler(void){
   //speedhh=((speedhh+lastspeedhh)/2); //smoothing necessary for higher speeds
   //lastspeedhh=speedhh;
   speedhh=logforSR[ADCBuffer[2]>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother?
-      
+  
   speedl=(ADCBuffer[3]>>4)+256;
-  speedll=(ADCBuffer[3]>>6);     // test changing counter for LF and HF IRQ 
-  speedll=((speedll+lastspeedll)/2); //smoothing necessary for higher speeds
-  lastspeedll=speedll;
-    
+  //  speedll=(ADCBuffer[3]>>6);     // test changing counter for LF and HF IRQ 
+  //  speedll=((speedll+lastspeedll)/2); //smoothing necessary for higher speeds
+  //  lastspeedll=speedll;
+  speedll=logforSR[ADCBuffer[3]>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother?
+  
   // 0- pwm follows speed cv
   modehpwm=0; // TESTY!
   modelpwm=0; // TESTY! 
-      
+
+  // TESTY!
+
+  if (modehpwm==0 || modehpwm==2) {
+    TIM1->ARR = speedh;//period
+    TIM1->CCR1 = speedh/2; // pulse  
+  }
+
+  if (modehpwm==2) {
+    // invert the speedhh;
+    speedhh=1024-speedhh; // or recalculate from log?
+  }
+  
+  
   if (modelpwm==0) {
     TIM3->ARR = speedl;//period
     TIM3->CCR1 = speedl/2; // pulse  
   }
 
-  if (modehpwm==0) {
-    TIM1->ARR = speedh;//period
-    TIM1->CCR1 = speedh/2; // pulse  
-  }
 
+  
+  /* - now we don't use these modes, just cv and DAC and inverted timings/cv for SR - TO TEST!
+  
   // 1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
     
    
@@ -596,9 +609,11 @@ void TIM4_IRQHandler(void){
      TIM1->ARR = frompulse;//period
      TIM1->CCR1 = frompulse/2; // pulse  
 
-
   // 3- PWM is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
   // do we need to record this somewhere (or is as readable PWM -> check?)
+  */
+
+
 }
 
 void EXTI9_5_IRQHandler(void){
@@ -606,18 +621,25 @@ void EXTI9_5_IRQHandler(void){
 
   uint8_t x, numflips;
   uint8_t bith, origbith, bitl;
-  uint32_t pending = EXTI->PR;
+  uint32_t pending = EXTI->PR, cvalue;
 
   // --------------------LF pulse modes
   if(pending & (1 << 5)) { // LF on 5 out on B
     EXTI->PR = 1 << 5; // clear pending flag, otherwise we'd get endless interrupts -!!!!!!!!!!!!!!!!!!!!!!!!!        // handle pin 5 here
-    lfpulsecount++;
+    //    lfpulsecount++;
     }
 
   // --------------------HF Pulse modes 
   if(pending & (1 << 7)) { // HF on 7/out on C
     EXTI->PR = 1 << 7;        // handle pin 7 here
-    hfpulsecount++;
+    //    hfpulsecount++;
+
+    // TESTY = our mode inversion
+    if (modehpwm==1)
+      cvalue=ADCBuffer[2];
+    else cvalue=65536-ADCBuffer[2];
+
+    
     
     switch(modehsr){
     case 10:
@@ -740,7 +762,7 @@ void EXTI9_5_IRQHandler(void){
     
   //TODO:  in each modes case - this is in each one... 
   /*
-        if (modehpwm==2) {
+        if (modehpwm==1 || modehpwm==3) {
 	//  2/pwm follows DAC from SR 
 	*/
         
