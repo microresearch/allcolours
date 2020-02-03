@@ -768,7 +768,6 @@ to order pcbcart: board is Board Size (width) 	101.2 mm 	Board Size (height) 	10
 - levels checked on older comparator: offset is maybe 300mV, Vpp is 8.5v (but without divider) - with divider is 4.5v
 - changed lower divider of comps above to 47k - TESTED so around 2v positive
 
-- any other tests/changes? - test noise as pulse in on ALL modes...
 - re-check SR logic of shifts
 - new ADC/DAC mode to test
 - any additional or experimental modes
@@ -785,7 +784,7 @@ electronotes: wide spacing. lowest bits where shift in happens seems most popula
 wiard: full 8 bits
 others: top bit which is shifted out 
 
-- ADC in on mode 12 is at upper bits now...
+- ADC in on mode 12 is at upper bits now... *TEST*
 
 how does spacing for DAC out work?
 
@@ -810,17 +809,17 @@ just need to calculate 8 bit arrays for positions based on length - basic positi
 
 software:
 - clean up codeDONE
-- positions table for DACOUT spacingsDONE/TO_TEST
+- positions table for DACOUT spacings *DONE/TO_TEST*
 
 *Note that spacings could be say in HF code side only (as is NOT a low pass)...*
 
-- SR counter/timing range/array? speedhhDONE/TO_TEST
-- combine clock and knob for mode 1 of PWM - PWM/DAC rangeDONE/TO_TEST
+- SR counter/timing range/array? speedhh *DONE/TO_TEST*
+- combine clock and knob for mode 1 of PWM - PWM/DAC range *DONE/TO_TEST*
 ///
 
 - new modes: to code and test:
 
-+ shifting the array of taps (by CV or by pulse? try both), HOW both works? DONEforfirstsetTEST-mode23
++ shifting the array of taps (by CV or by pulse? try both), HOW both works? *DONEforfirstsetTEST-mode23*
 
 CV shifts one selected by pulse 32=5 bits (%length), clock pulse shifts one selected by pulse 
 
@@ -829,11 +828,11 @@ CV shifts one selected by pulse 32=5 bits (%length), clock pulse shifts one sele
 + mode where we invert speed of SR against PWM so does not track each
   other // where this could be? - or we have pwm mode which inverts
   this... and get rid of following pwm mode was mode 3 (or mode 3 does
-  that kind of thing anyways)
+  that kind of thing anyways) = *finish and TEST!*
 
-+ we can insert pulses into SR at points determined by CV or by pulses in - DONEforfirstsetTEST-mode24
++ we can insert pulses into SR at points determined by CV or by pulses in - *DONEforfirstsetTEST-mode24*
 
-+ we can make SR loops within SR at certain points/sizes determined by CV or pulses in - DONEforfirstsetTEST-mode24
++ we can make SR loops within SR at certain points/sizes determined by CV or pulses in - *DONEforfirstsetTEST-mode24*
 
 * 24/1
 
@@ -841,11 +840,34 @@ CV shifts one selected by pulse 32=5 bits (%length), clock pulse shifts one sele
 
 (do this outside modes for adc)
 
-so 1-pwm from vc, 2-pwm from dac and next two are inverted
+so 1-pwm from vc, 2-pwm from dac and next two are inverted *TEST*
 
 * 28/1
 
 - PCB ordered: all_colours_28012020.zip
+
+* 29/1
+
+TODO: 
+
+- test all changes and new PWM mode work
+
+---> do we use ADC/CV for offset in PWM DAC mode or - else inversion makes no sense ? otherwise we have 1 extra mode to deal with (3)
+
+- test lengthbitl and lengthbith changes
+- any other speedups
+- re-check all the log arrays and logic
+- test and finalise modes, which new modes to use?
+- port all mdoes to LF and re-test all for speed
+
+extra mode TODO:
++ from TM - TM with probability CV (using random bits from other SR!) // combined with variable length -> pulse mode *DONE-toTEST*
+
++ new mode with independent LFSR clocking regular SR (only in CV as speed)
+
+*also added in length via incoming bit - this could also be used in modes which don't use the extra bit TEST*
+
+
 
 * for quote
 
