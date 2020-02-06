@@ -5,6 +5,7 @@
 #include "stdlib.h"
 
 unsigned char bits[32], head; 
+uint32_t *shift_register;
 
 /*static uint8_t lfsr_taps[32][4] = {
         {30, 30, 30, 30},
@@ -246,8 +247,8 @@ unsigned char hi_mask=0x80, hi_index=7; //was 31 -7 gives us 64 bits
     // a shift will change one bit and
     // alter the labels of all of them
 
-uint8_t g_buf[4]={0xaa,0xaa,0xaa,0xaa};
-//uint8_t g_buf[4]={0xff,0xff,0xff,0xff}; 
+//uint8_t g_buf[4]={0xaa,0xaa,0xaa,0xaa};
+uint8_t g_buf[4]={0x0,0x0,0xff,0xff}; 
 
 uint8_t shift256bit_32(uint8_t carry_in)
 {
@@ -320,7 +321,7 @@ void varshifterb() // tested working - > so for shift reg on bottom
 {
   uint32_t bith;
   uint32_t *shift_register = (uint8_t *)g_buf;
-  uint8_t SRlengthh=4;
+  uint8_t SRlengthh=31;
  
   bith = (*shift_register>>SRlengthh) & 0x01; // bit which would be shifted out 
   //  printf ("bith: %d\n",bith);
@@ -462,6 +463,8 @@ int main(void)
     //    x=0b1111111111101111;
     uint32_t bits=0b11111111000000000000000000000000, bitzz, adc, res, mask[32];
     uint32_t emptybits=0b00000000000000000000000000000000;
+    shift_register = (uint8_t *)g_buf;
+
     //    x &= ~0xff;
     y=0;
 
@@ -593,7 +596,22 @@ in reverse tho for 9->31
         ++period;
     } while (1);
     */
+
+    // how to simulate 2 shift registers  meeting and crossing
+
+    // run sr left, run sr right
+    // merge or logic
+    // print
+
     unsigned char n=31;
+    print32bits(shift_register);
+
+    for (y=0;y<32;y++){
+      varshifterb();
+      print32bits(shift_register);
+    }
+      
+
     //                   while(1){
       //      if (count<32) n=n^1;
       //      else n=0;

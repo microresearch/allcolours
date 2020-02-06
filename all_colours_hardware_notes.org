@@ -863,7 +863,7 @@ TODO:
 extra mode TODO:
 + from TM - TM with probability CV (using random bits from other SR!) // combined with variable length -> pulse mode *DONE-toTEST*
 
-+ new mode with independent LFSR clocking regular SR (only in CV as speed)
++ new mode with independent LFSR clocking regular SR (only in CV as speed) *TO TEST!*
 
 *also added in length via incoming bit - this could also be used in modes which don't use the extra bit TEST*
 
