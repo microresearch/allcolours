@@ -814,7 +814,8 @@ software:
 *Note that spacings could be say in HF code side only (as is NOT a low pass)...*
 
 - SR counter/timing range/array? speedhh *DONE/TO_TEST*
-- combine clock and knob for mode 1 of PWM - PWM/DAC range *DONE/TO_TEST*
+- combine clock and knob for mode 1 of PWM-discarded
+- PWM/DAC range - *DONE/TO_TEST*
 ///
 
 - new modes: to code and test:
