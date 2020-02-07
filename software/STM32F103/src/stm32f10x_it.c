@@ -9,7 +9,7 @@ List of PWM modes:
 0-CV 
 1-DAC
 2-CV - SR CV/speed inverted
-3-DAC - SR CV/speed inverted
+3-? could be follower or some range for DAC
 
 */
 
@@ -478,7 +478,7 @@ void TIM2_IRQHandler(void){
 	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
 	else GPIOC->BSRR = 0b0100000000000000;  
 	break;
-
+	//////////////////////////////////////////////////////////////////
 	// experimental modes to be tested! 
       case 23: // experimental modes 23+ here and 32+ in pulses
 	// shifting the array of LFSR taps = ghost_tapsH on the high side
@@ -527,6 +527,7 @@ void TIM2_IRQHandler(void){
 	// where to put that bit? XOR it with first bit
 	if ( (shift_registerh & 0x01) ^ tmp) shift_registerh |= 0x01;// set the first bit
 	else shift_registerh &= ~(0x01); // clear the first bit
+	
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000; 
 	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  
@@ -553,7 +554,27 @@ void TIM2_IRQHandler(void){
 	  else GPIOC->BSRR = 0b0100000000000000;
 	}
 	break;
+	
+      case 27:
+	// if we have a bit then change that bit from LFSR side... (could also be OR or other relation)
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 
+	if (hcount>SRlengthh) hcount=0;
+	if( !(GPIOB->IDR & 0x0080)) { // get the LF bit and put it in
+	  if (shift_registerl & (1<<hcount)) shift_registerh |= (1<<hcount);
+	  else shift_registerh &= ~(1<<hcount);
+	}
+	hcount++;
+	// do the usual SR following mode 3 - TM
+	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + bith;
+	else shift_registerh = (shift_registerh<<1) + (!bith);
+	
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000;  
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	else GPIOC->BSRR = 0b0100000000000000;
+	break;
+	
 	
 	}
       // /END of HF SR side/..................................................................................................................    
@@ -690,7 +711,7 @@ void EXTI9_5_IRQHandler(void){
       //->>>>>>>>>>>>>> CV selects length of SR which will stay with us .. -> LFSR here
       SRlengthh=31-(cvalue>>11);
       if (SRlengthh<4) SRlengthh=4;
-      lengthbith=(1<<SRlengthh/2);
+      lengthbith=(1<<(SRlengthh/2));
       if (shift_registerh==0) shift_registerh=0xff;
       bith= ((shift_registerh >> (lfsr_taps[SRlengthh][0])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][1])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][2])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
       shift_registerh = (shift_registerh<<1) + ((bith | !(GPIOB->IDR & 0x0400))); // PB7 and PB10
@@ -806,7 +827,7 @@ void EXTI9_5_IRQHandler(void){
       if (hcount>32) hcount=4;
       if (GPIOB->IDR & 0x0400) {
 	SRlengthh=hcount;
-	lengthbith=(1<<SRlengthh/2);
+	lengthbith=(1<<(SRlengthh/2));
       }
 	
       // usual out
@@ -822,7 +843,7 @@ void EXTI9_5_IRQHandler(void){
 
       SRlengthh=31-(cvalue>>11);
       if (SRlengthh<4) SRlengthh=4;
-      lengthbith=(1<<SRlengthh/2);
+      lengthbith=(1<<(SRlengthh/2));
 
       if (hcount>7) hcount=0;
       if( !(GPIOB->IDR & 0x0400)) probh^=(1<<hcount);

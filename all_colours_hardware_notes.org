@@ -875,6 +875,12 @@ extra mode TODO:
   range somehow, also the speedhh in that loop could be slower at one
   end (loggy this). should DAC be loggy or straight?
 
+- what extra mode could be - different range for DAC or follower/offset mode as before? and how we could do range thing otherwise?
+
+//- how to implement and test dual/crossover SR modes - for next SR model? *TODO*//
+
+- extra mode - bits swop LF to HF *TO_TEST*
+
 
 * for quote
 
