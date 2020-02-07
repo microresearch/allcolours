@@ -307,7 +307,7 @@ void TIM2_IRQHandler(void){
 
       // test raw speed of this - pin toggles at 160 KHz
       //      GPIOC->ODR ^= GPIO_Pin_13;
-      
+	
       switch(modehsr){	
       case 0:
 	//->>>>>>>>>>>>>> 0- pulse clock in (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
@@ -316,7 +316,7 @@ void TIM2_IRQHandler(void){
 
 	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + (!(GPIOB->IDR & 0x0400)); // 0x0080 is clock bit in!
 	else shift_registerh = (shift_registerh<<1) + (bith | (!(GPIOB->IDR & 0x0400))); 
-	
+
 	// shift register bits output - inverted on PC13 and 14;
 	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000;  
@@ -330,14 +330,15 @@ void TIM2_IRQHandler(void){
 	  // pwmbitsh = (shift_registerh&0xFF); // just the lower 8 bits - no spacings
 	  if (SRlengthh>7){ // real length >9
 	    pwmbitsh = ((shift_registerh & 0x01) + ((shift_registerh>>pos[SRlengthh][1])&0x02) + ((shift_registerh>>pos[SRlengthh][2])&0x04) + ((shift_registerh>>pos[SRlengthh][3])&0x08) + ((shift_registerh>>pos[SRlengthh][4])&0x10) + ((shift_registerh>>pos[SRlengthh][5])&0x20) + ((shift_registerh>>pos[SRlengthh][6])&0x40) + ((shift_registerh>>pos[SRlengthh][7])&0x80));
-		      }
-	  else {
-		pwmbitsh = (shift_registerh&0xFF); // just the lower 8 bits - no spacings
+	  }
+	    else {
+	    pwmbitsh = (shift_registerh&0xFF); // just the lower 8 bits - no spacings
 	  }
 	  
-	  uint32_t sph=312+pwmbitsh; // TODO: range and possible spacings  !!any offset with CV? !!
-	  TIM1->ARR =sph;
-	  TIM1->CCR1 = sph/2; // pulse width 
+	    //	  uint32_t sph=512+(pwmbitsh*40); // TODO: range and possible spacings  !!any offset with CV - probably not as complicates matters? !! maybeuse log
+	    uint32_t sph=logger[pwmbitsh*4];//+logger[ADCBuffer[2]>>6];
+	    TIM1->ARR =sph;
+	    TIM1->CCR1 = sph/2; // pulse width 
 	  }
 	
 	//	if (testy==1)	bithh^=1; // this was speed test TESTY
@@ -593,10 +594,10 @@ void TIM4_IRQHandler(void){
   // read speeds
   //    speedh=(ADCBuffer[2]>>4)+312; // not logarithmic
   speedh=logger[ADCBuffer[2]>>6]; // 1024  = 10 bits -> could be less logger to make smoother?
-  //speedhh=(ADCBuffer[2]>>6);     // not log
-  //speedhh=((speedhh+lastspeedhh)/2); //smoothing necessary for higher speeds
+  //  speedhh=(ADCBuffer[2]>>6);     // not log
+  //  speedhh=((speedhh+lastspeedhh)/2); //smoothing necessary for higher speeds
   //lastspeedhh=speedhh;
-  speedhh=logforSR[ADCBuffer[2]>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother?
+  speedhh=logforSR[ADCBuffer[2]>>6]*4; // 1024 option = 10 bits log ->  could be less logger to make smoother? - could also be a lot slower at one end
   
   speedl=(ADCBuffer[3]>>4)+256;
   //  speedll=(ADCBuffer[3]>>6);     // test changing counter for LF and HF IRQ 
@@ -605,7 +606,7 @@ void TIM4_IRQHandler(void){
   speedll=logforSR[ADCBuffer[3]>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother?
   
   // 0- pwm follows speed cv
-  modehpwm=0; // TESTY!
+  modehpwm=1; // TESTY!
   modelpwm=0; // TESTY! 
 
   // TESTY!

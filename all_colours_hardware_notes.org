@@ -868,6 +868,12 @@ extra mode TODO:
 
 *also added in length via incoming bit - this could also be used in modes which don't use the extra bit TEST*
 
+* 7/2 +
+
+- testing first of DAC/PWM modes -> we don't add offset from speedCV
+  as this complexifies things, but it could be nice to fiddle with
+  range somehow, also the speedhh in that loop could be slower at one
+  end (loggy this). should DAC be loggy or straight?
 
 
 * for quote
