@@ -872,15 +872,23 @@ extra mode TODO:
 
 - testing first of DAC/PWM modes -> we don't add offset from speedCV
   as this complexifies things, but it could be nice to fiddle with
-  range somehow, also the speedhh in that loop could be slower at one
-  end (loggy this). should DAC be loggy or straight?
+  range somehow, 
+
+- speedhh in that loop in generak could be slower at one end (loggy this). *generate and test this*
+
+- but should DAC be loggy or straight?
 
 - what extra mode could be - different range for DAC or follower/offset mode as before? and how we could do range thing otherwise?
 
-//- how to implement and test dual/crossover SR modes - for next SR model? *TODO*//
+- 4th PWM mode could use bith/pulseout as gate to change the PWM (CV->PWM) *To implement and test...*
+
+or could be regular+dac out mode
+
+//- how to implement and test dual/crossover SR modes - for next SR model? *TODO* //
 
 - extra mode - bits swop LF to HF *TO_TEST*
 
+- that we don't necessarily need same sets of modes on each side so we can have lots of extra modes
 
 * for quote
 
