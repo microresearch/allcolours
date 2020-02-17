@@ -874,21 +874,39 @@ extra mode TODO:
   as this complexifies things, but it could be nice to fiddle with
   range somehow, 
 
-- speedhh in that loop in generak could be slower at one end (loggy this). *generate and test this*
+- speedhh in that loop in general could be slower at one end (loggy this). logger: 2^14 -> *tested and seems a good range*
 
-- but should DAC be loggy or straight?
+- but should DAC be loggy or straight? *loggy*
 
 - what extra mode could be - different range for DAC or follower/offset mode as before? and how we could do range thing otherwise?
 
-- 4th PWM mode could use bith/pulseout as gate to change the PWM (CV->PWM) *To implement and test...*
+- 4th PWM mode could use bith/pulseout as gate to change the PWM (CV->PWM) *To implement and test...* - testing and change is not great
 
-or could be regular+dac out mode
+options for mode 3: 
+
+-different range for DAC -maybe
+-follower/offset mode -maybe
+-gate mode - maybe
+-offset+DAC mode noX
 
 //- how to implement and test dual/crossover SR modes - for next SR model? *TODO* //
 
 - extra mode - bits swop LF to HF *TO_TEST*
 
 - that we don't necessarily need same sets of modes on each side so we can have lots of extra modes
+
+* 17/2+
+
+TODO:
+
+- test new modes
+
+extra modes which pulse SR using clock or input bits: only advance if
+we have a bit but still output, only output if we have a bit etc... so
+that we can gate on and off -> in both sets of pulse/speed modes!
+  
+- finalise basic modes/test across both low and high side and test speed of these all together
+- finalise PWM/DAC modes and test how both work together
 
 * for quote
 
