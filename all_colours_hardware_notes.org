@@ -905,7 +905,12 @@ extra modes which pulse SR using clock or input bits: only advance if
 we have a bit but still output, only output if we have a bit etc... so
 that we can gate on and off -> in both sets of pulse/speed modes!
 
+TESTED above in speed modes only... TODO: implement and test in pulse modes
+
 extra modes use pulse or input bit as length controller
+
+extra modes can also choose to ouput a pulse only if there is bith (modes for fast side only)
+
   
 - finalise basic modes/test across both low and high side and test speed of these all together
 - finalise PWM/DAC modes and test how both work together

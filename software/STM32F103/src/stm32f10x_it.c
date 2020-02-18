@@ -15,7 +15,7 @@ List of PWM modes:
 
 extern __IO uint16_t ADCBuffer[];
 volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
-volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=32, hcount=0, lcount=0, bithh=0; // testing for modes
+volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=27, hcount=0, lcount=0, bithh=0; // testing for modes
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, testy;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff; 
@@ -566,7 +566,7 @@ void TIM2_IRQHandler(void){
 	break;
 	
       case 27:
-	// if we have a bit then change/swop that bit from LFSR side... (could also be OR or other relation) - TESTED/WORKING! *RE-TEST as changed*
+	// if we have a bit then change/swop that bit from LFSR side... (could also be OR or other relation) - TESTED/WORKING! changed/TESTED
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 
 	if (hcount>SRlengthl) hcount=0;
@@ -597,13 +597,13 @@ void TIM2_IRQHandler(void){
 	  
 	  extra modes use pulse or input bit as length controller
 	  
-	  extra modes can also choose to ouput a pulse on;y if there is bith (mdoes for fast side only)
+	  extra modes can also choose to ouput a pulse only if there is bith (modes for fast side only)
 	  
 	*/
 
       case 28:
 	// Independent LFSR clocking regular SR (only in CV as speed) - as mode 26 but now we use 0x0080 bit also to see if we shift things...
-	// no use of input bit...
+	// no use of input bit... - TESTED/WORKING!
 	if (shift_registerx==0) shift_registerx=0xff; // catch it!
 	//	bith= ((shift_registerh >> (lfsr_taps[SRlengthh][0])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][1])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][2])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
 	bith= ((shift_registerx >> 31) ^ (shift_registerx >> 29) ^ (shift_registerx >> 25) ^ (shift_registerx >> 24)) & 1u; // 32 is 31, 29, 25, 24
@@ -625,6 +625,7 @@ void TIM2_IRQHandler(void){
 
       case 29:
 	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+	// - TESTED/WORKING!
 	if (!(GPIOB->IDR & 0x0080)){
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
 	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
@@ -639,6 +640,7 @@ void TIM2_IRQHandler(void){
 
       case 30:
 	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+	// - TESTED/WORKING!
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
 	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
 	else shift_registerh = (shift_registerh<<1) + (!bith);
@@ -653,6 +655,7 @@ void TIM2_IRQHandler(void){
 
       case 31:
 	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+	// - TESTED/WORKING!
 	if (!(GPIOB->IDR & 0x0080)){
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
 	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
