@@ -587,18 +587,12 @@ void TIM2_IRQHandler(void){
 	break;
 
 	/*
-///////////// TODO
           extra modes which pulse SR using clock or input bits: only advance if
 	  we have a bit but still output, only output if we have a bit etc, advance but only output if we have a bit: so 3 options:
 
 	  if we have a bit: advance/output // advance/out anyways if or not // advance anyways, output if
 
-	  that we can gate on and off -> in both sets of pulse/speed modes!
-	  
-	  extra modes use pulse or input bit as length controller
-	  
-	  extra modes can also choose to ouput a pulse only if there is bith (modes for fast side only)
-	  
+	  that we can gate on and off -> in both sets of pulse/speed modes!	  
 	*/
 
       case 28:
@@ -667,6 +661,52 @@ void TIM2_IRQHandler(void){
 	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  
 	else GPIOC->BSRR = 0b0100000000000000;
        	break;
+
+	/*
+
+///////////// TODO
+	  
+	  extra modes use pulse or input bit as length of SR controller: see mode 42 below
+	  
+	  [extra modes can also choose to output a pulse if there is bith (modes for fast side only) - this is in mode 8 above so maybe leave there for now - variable pulse width below in pulse modes]
+
+	  extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse ->32:::below
+
+	*/
+
+      case 32:
+	// extra mode in which (both) pulse on is triggered by bitH but gated off by input bit or pulse - but do we need like a toggle?????
+	//-BASE it on::: >>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
+	
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
+	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + bith;
+	else shift_registerh = (shift_registerh<<1) + (!bith);
+
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else if (!(GPIOB->IDR & 0x0400)) GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  
+	else if (!(GPIOB->IDR & 0x0400)) GPIOC->BSRR = 0b0100000000000000; 
+	break;
+
+      case 33:
+	// extra modes use pulse or input bit as length of SR controller: see mode 42 below
+	/// length thing	
+	hcount++;
+      if (hcount>32) hcount=4;
+      if (!(GPIOB->IDR & 0x0400)) {
+	SRlengthh=hcount;
+	lengthbith=(1<<(SRlengthh/2));
+	}
+      // as mode 3::::
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
+	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + bith;
+	else shift_registerh = (shift_registerh<<1) + (!bith);
+
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  
+	else GPIOC->BSRR = 0b0100000000000000; 
+	break;
 	
 	}
       // /END of HF SR side/..................................................................................................................    
@@ -780,7 +820,7 @@ void EXTI9_5_IRQHandler(void){
     //    hfpulsecount++;
 
     // TESTY = our mode inversion
-    if (modehpwm==2 || modehpwm==3) cvalue=65536-ADCBuffer[2];  // or modehpwm>1???TESTY!
+    if (modehpwm==2) cvalue=65536-ADCBuffer[2];  // or modehpwm>1???TESTY!
     else cvalue=ADCBuffer[2];
     
     switch(modehsr){
@@ -900,12 +940,11 @@ void EXTI9_5_IRQHandler(void){
       else GPIOC->BSRR = 0b0100000000000000;
       break;
       //////////////////////////->>>>>>>>>>>>>>>>>	
-
-      // experimental modes to be tested! 
+      // experimental modes some tested!
     case 42:
       // + from TM - TM with probability CV (using random bits from other SR!) // combined with variable length -> pulse mode - TESTED/WORKING!
       // probability of cycle bit or invert bit 
-      // also add in length via incoming bit - this could also be used in modes which don't use the extra bit
+      // also add in length via incoming bit - this could also be used in modes which don't use the extra bit eg. 10 and 13... and in CV modes
       
       bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
       probh=cvalue>>13; // 3 bits now for electroprob array
@@ -914,10 +953,10 @@ void EXTI9_5_IRQHandler(void){
       if (((probh | shift_registerl) & 0xff ) == 0xff) shift_registerh = (shift_registerh<<1) + bith;
       else shift_registerh = (shift_registerh<<1) + (!bith);
 
-      // deal with length = TESTY!
+      // deal with length
            hcount++;
       if (hcount>32) hcount=4;
-      if (GPIOB->IDR & 0x0400) {
+      if (!(GPIOB->IDR & 0x0400)) {
 	SRlengthh=hcount;
 	lengthbith=(1<<(SRlengthh/2));
 	}
@@ -949,7 +988,114 @@ void EXTI9_5_IRQHandler(void){
       if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000; 
       else GPIOC->BSRR = 0b0100000000000000;  
       break;
+
+      // experimental modes to be tested!       
+	/* TESTING:
+
+	  modes 10 and 13 don't use input bit 0x0400 so we can use this for= case 10 as test case:
+
+          extra modes which pulse SR using clock or input bits: only advance if
+	  we have a bit but still output, only output if we have a bit etc, advance but only output if we have a bit: so 3 options:
+
+	  if we have a bit: advance/output // advance/out anyways if or not // advance anyways, output if
+
+	  that we can gate on and off -> in both sets of pulse/speed modes!	  
+
+	*/
       
+    case 44:
+      // as mode 10
+      //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit = 1st option of above...
+      if (!(GPIOB->IDR & 0x0400)){
+	hcount++;
+	if (hcount>7) hcount=0;
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
+	if((cvalue>>(8+hcount))&1) shift_registerh = (shift_registerh<<1) + (!bith); // or we could & with input bit - TO TEST!
+	else shift_registerh = (shift_registerh<<1) + bith;
+
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000; 
+	else GPIOC->BSRR = 0b0100000000000000;
+      }
+	break;
+
+    case 45:
+      //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit = 3rd option of above...
+ 	hcount++;
+	if (hcount>7) hcount=0;
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
+	if((cvalue>>(8+hcount))&1) shift_registerh = (shift_registerh<<1) + (!bith); // or we could & with input bit - TO TEST!
+	else shift_registerh = (shift_registerh<<1) + bith;
+
+	if (!(GPIOB->IDR & 0x0400)){
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000; 
+	else GPIOC->BSRR = 0b0100000000000000;
+      }
+	break;
+
+    case 46:
+      //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit = 2nd option of above...
+	if (!(GPIOB->IDR & 0x0400)){
+ 	hcount++;
+	if (hcount>7) hcount=0;
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
+	if((cvalue>>(8+hcount))&1) shift_registerh = (shift_registerh<<1) + (!bith); // or we could & with input bit - TO TEST!
+	else shift_registerh = (shift_registerh<<1) + bith;
+	}
+	
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000; 
+	else GPIOC->BSRR = 0b0100000000000000;
+	break;
+
+	/* TODO:
+	__+++	  extra modes use pulse or input bit as length of SR controller as in mode 42 above
+	  
+	  extra modes can also choose to output a pulse only if there is bith (modes for fast side only) - this is in mode 8 and *we could use CV to set length of pulse (say up to 128)* = mode 47 below
+
+	  extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse - 48 below
+	*/
+
+    case 47:
+      // *we could use CV to set length of pulse (say up to 128 which is 7 bits >> 9)*
+      //->>>>>>>>>>>>>> as mode 14=speed divider with XOR rungler: XOR out with input bit
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
+      shift_registerh = (shift_registerh<<1) + ((bith) ^ (!(GPIOB->IDR & 0x0400)));
+      
+	if (bith) {
+	  GPIOC->BRR = 0b0010000000000000; 
+	  delay(cvalue>>9); // 64=10uS - short = lower voltage...
+	  GPIOC->BSRR = 0b0010000000000000;  
+	}
+	  
+	if (shift_registerh & lengthbith) {
+	  GPIOC->BRR = 0b0100000000000000;  
+	  delay(cvalue>>9); // 64=10uS
+	  GPIOC->BSRR = 0b0100000000000000;  
+	  }
+      break;
+
+    case 48:
+      //      	  extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse
+      // use mode 13 as example here:::
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+      probh=cvalue>>13; // 3 bits now for electroprob array
+      probh=electroprob[probh];
+
+      if (((probh | shift_registerl) & 0xff ) == 0xff) shift_registerh = (shift_registerh<<1) + ((shift_registerl>>SRlengthl) & 0x01); // new bits enter from shiftregleft - 0xff was looker[7]
+      else shift_registerh = (shift_registerh<<1) + bith;
+
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else if (!(GPIOB->IDR & 0x0400)) GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else if (!(GPIOB->IDR & 0x0400)) GPIOC->BSRR = 0b0100000000000000; 
+      break;
+	
 
     }       /// end of HF modes
     
