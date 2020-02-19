@@ -1007,10 +1007,10 @@ void EXTI9_5_IRQHandler(void){
       else GPIOC->BSRR = 0b0100000000000000;  
       break;
 
-      // experimental modes
+      // more experimental modes
 	/* 
 
-	  modes 10 and 13 don't use input bit 0x0400 so we can use this for= case 10 as test case:
+	  modes 10 and 13 don't use input bit 0x0400 so we can use this for= case 10 as test case// try with 13:
 
           extra modes which pulse SR using clock or input bits: only advance if - *more maybe on LF side these ones*
 	  we have a bit but still output, only output if we have a bit etc, advance but only output if we have a bit: so 3 options:
@@ -1084,7 +1084,7 @@ void EXTI9_5_IRQHandler(void){
     case 47:
       // *we could use CV to set length of pulse (say up to 128 which is 7 bits >> 9)*
       //->>>>>>>>>>>>>> as mode 14=speed divider with XOR rungler: XOR out with input bit
-      	// - TESTED/WORKING!
+      	// - TESTED/WORKING! - not so exciting ....
       bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
       shift_registerh = (shift_registerh<<1) + ((bith) ^ (!(GPIOB->IDR & 0x0400)));
       
@@ -1137,6 +1137,62 @@ void EXTI9_5_IRQHandler(void){
       if (shift_registerh & lengthbith) GPIOC->BSRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
       else if (!(GPIOB->IDR & 0x0400)) GPIOC->BRR = 0b0100000000000000; 
       break;
+
+      /// TO TEST: mode 13 with the 3 timing options
+    case 50:
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+      // we do not use bit IN!
+      if (!(GPIOB->IDR & 0x0400)){
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+      probh=cvalue>>13; // 3 bits now for electroprob array
+      probh=electroprob[probh];
+
+      if (((probh | shift_registerl) & 0xff ) == 0xff) shift_registerh = (shift_registerh<<1) + ((shift_registerl>>SRlengthl) & 0x01); // new bits enter from shiftregleft - 0xff was looker[7]
+      else shift_registerh = (shift_registerh<<1) + bith;
+
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+      }
+      break;
+
+    case 51:
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+      // we do not use bit IN!
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+      probh=cvalue>>13; // 3 bits now for electroprob array
+      probh=electroprob[probh];
+
+      if (((probh | shift_registerl) & 0xff ) == 0xff) shift_registerh = (shift_registerh<<1) + ((shift_registerl>>SRlengthl) & 0x01); // new bits enter from shiftregleft - 0xff was looker[7]
+      else shift_registerh = (shift_registerh<<1) + bith;
+
+      if (!(GPIOB->IDR & 0x0400)){
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	else GPIOC->BSRR = 0b0100000000000000; 
+      }
+      break;
+
+    case 52:
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+      // we do not use bit IN!
+      if (!(GPIOB->IDR & 0x0400)){
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
+      probh=cvalue>>13; // 3 bits now for electroprob array
+      probh=electroprob[probh];
+
+      if (((probh | shift_registerl) & 0xff ) == 0xff) shift_registerh = (shift_registerh<<1) + ((shift_registerl>>SRlengthl) & 0x01); // new bits enter from shiftregleft - 0xff was looker[7]
+      else shift_registerh = (shift_registerh<<1) + bith;
+      }
+      
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+      break;
+
       
 
     }       /// end of HF modes
