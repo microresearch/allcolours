@@ -15,7 +15,7 @@ List of PWM modes:
 
 extern __IO uint16_t ADCBuffer[];
 volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
-volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=49, hcount=0, lcount=0, bithh=0; // testing for modes
+volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=53, hcount=0, lcount=0, bithh=0; // testing for modes
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, testy;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff; 
@@ -545,6 +545,8 @@ void TIM2_IRQHandler(void){
 
       case 26:
 	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+	// can use input bit as length of either SR
+	// also can still use in clocking side of things
 	// no use of input bit...
 	if (shift_registerx==0) shift_registerx=0xff; // catch it!
 	//	bith= ((shift_registerh >> (lfsr_taps[SRlengthh][0])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][1])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][2])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
@@ -825,6 +827,7 @@ void EXTI9_5_IRQHandler(void){
   uint8_t x, numflips;
   uint8_t bith, origbith=0, bitl;
   uint32_t pending = EXTI->PR, cvalue;
+  uint32_t tmp;
 
   // --------------------LF pulse modes
   if(pending & (1 << 5)) { // LF on 5 out on B
@@ -1192,6 +1195,28 @@ void EXTI9_5_IRQHandler(void){
       if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
       else GPIOC->BSRR = 0b0100000000000000; 
       break;
+
+    case 53:
+	// - after case 25 - SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits
+      // not much effect so try loop back in  bith to spot
+      // kind of works but could use some work - works well with pulses of noise in as fades out...
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
+	// do the loop back in
+	hcount=(cvalue>>12); // 4 bits
+	//	tmp = (shift_registerh>>hcount) & 0x01;
+	// where to put that bit? XOR it with first bit
+	//	if ( (shift_registerh & 0x01) ^ tmp) shift_registerh |= 0x01;// set the first bit - xor only no OR works
+	//	else shift_registerh &= ~(0x01); // clear the first bit
+
+	shift_registerh = (shift_registerh<<1) + (bith<<hcount);
+
+	shift_registerh ^= (!(GPIOB->IDR & 0x0400));
+	
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  
+	else GPIOC->BSRR = 0b0100000000000000; 
+	break;
 
       
 

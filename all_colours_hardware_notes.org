@@ -913,7 +913,7 @@ TESTED above in speed modes only... TODO: implement and test in pulse modesTESTI
 
 extra modes use pulse or input bit as length controller
 
-extra modes can also choose to ouput a pulse only if there is bith (modes for fast side only)
+extra modes can also choose to output a pulse only if there is bith (modes for fast side only)
 
 extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse
   
@@ -929,6 +929,23 @@ on high side=variable pulse side and short pulses (inversion of gating)
 
 - finalise basic modes/test across both low and high side and test speed of these all together
 - finalise PWM/DAC modes and test how both work together
+
+* 24/2+
+
+- test extra modes 50-53-TESTED... and also implement test:
+
+      from case 26:
+	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+	// can use input bit as length of either of the SR
+	// also can still use in clocking side of things
+	// no use of input bit...
+
+also we can use input bit as OR (in all modes with no input bit used)
+
+- also extra mode where we use pulse to gate if we add in the input so
+  can have like pulse noise in, or straight pulsing or gating of noise
+  or another signal out (maybe this on LF side).
+
 
 * for quote
 
