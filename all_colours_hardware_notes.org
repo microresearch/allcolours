@@ -940,15 +940,21 @@ on high side=variable pulse side and short pulses (inversion of gating)
 	// also can still use in clocking side of things
 	// no use of input bit...
 
+TESTED
+
 also we can use input bit as OR (in all modes with no input bit used)
 
 - also extra mode where we use pulse to gate if we add in the input so
   can have like pulse noise in, or straight pulsing or gating of noise
-  or another signal out (maybe this on LF side). use it as a toggled gate/tap
+  or another signal out (maybe this on LF side). use it as a toggled gate/tap TESTES
 
-- we can make a grid of uses of: CV, input clock pulse, clock pulse, // and parameters such as gating, length etc. (= maybe as manual or just to classify or for new SR module)
+* 26/2+
 
-- also for this one or for new SR -> one SR clocks the other, gates the other, sets length of the other etc.
+- we can also use independent LFSR to clock own LFSR
+
+- we can make a grid of uses of: CV, input clock pulse, clock pulse, SR type // and parameters such as gating, length etc. (= maybe as manual or just to classify or for new SR module)
+
+- also for this one or for new SR module -> one SR clocks the other, gates the other, sets length of the other etc.
 
 * for quote
 
