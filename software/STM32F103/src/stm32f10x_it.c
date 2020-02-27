@@ -15,7 +15,7 @@ List of PWM modes:
 
 extern __IO uint16_t ADCBuffer[];
 volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
-volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=56, hcount=0, lcount=0; // testing for modes
+volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=55, hcount=0, lcount=0; // testing for modes
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, toggleh, togglel;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff; 
@@ -1328,7 +1328,7 @@ void EXTI9_5_IRQHandler(void){
       // do the loop back in
       hcount=(cvalue>>11); // 5 bits - or: hcount=(cvalue>>11)%(SRlengthh+1);
 
-      shift_registerh = (shift_registerh<<1) + (bith<<hcount); // this should also mean a shift << if hcount bit is a 1 !
+      shift_registerh = (shift_registerh<<1) + (bith<<hcount); 
 	
       shift_registerh ^= (!(GPIOB->IDR & 0x0400));
       
@@ -1339,6 +1339,22 @@ void EXTI9_5_IRQHandler(void){
 	break;
 
     case 55:
+      // another loop variation, bith and loopback XORed (or other logic eg. OR) back in to first bit:
+      //       - TESTED/working
+      
+      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
+      hcount=(cvalue>>11); // 5 bits - or: hcount=(cvalue>>11)%(SRlengthh+1);
+
+      shift_registerh = (shift_registerh<<1) + (bith|((shift_registerh>>hcount)^0x01));
+      shift_registerh ^= (!(GPIOB->IDR & 0x0400)); // if we wish
+      
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  
+      else GPIOC->BSRR = 0b0100000000000000; 
+      break;
+	
+    case 56:
       // Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
       // can use CV as length of either SR = here is regularSR
       //       - TESTED/working
@@ -1363,7 +1379,7 @@ void EXTI9_5_IRQHandler(void){
 	}
 	break;
 
-    case 56:
+    case 57:
       // Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
       // can use CV as length of either SR = here is SRx
       //       - TESTED/working but not so satisfying for cvalue use

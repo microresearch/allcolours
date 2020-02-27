@@ -950,11 +950,21 @@ also we can use input bit as OR (in all modes with no input bit used)
 
 * 26/2+
 
-- we can also use independent LFSR to clock own LFSR
+- we can also use independent LFSR to clock own LFSR-DONE/tested!
 
-- we can make a grid of uses of: CV, input clock pulse, clock pulse, SR type // and parameters such as gating, length etc. (= maybe as manual or just to classify or for new SR module)
+- we can make a grid of uses of: CV, input clock pulse, clock pulse,
+  SR type // and parameters such as gating, length etc. (= maybe as
+  manual or just to classify or for new SR module)
 
 - also for this one or for new SR module -> one SR clocks the other, gates the other, sets length of the other etc.
+
+* 27/+
+
+- check CMOS cookbook - eg. pulse in (CV mode only) divides down output SR ? how?
+
+- refine looped SR so is logic XX on incoming bitTESTED/WORKING
+
+- how we could double pulses for filter clock?
 
 * for quote
 
