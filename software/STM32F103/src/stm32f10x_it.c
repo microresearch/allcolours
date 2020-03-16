@@ -15,7 +15,7 @@ List of PWM modes:
 
 extern __IO uint16_t ADCBuffer[];
 volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
-volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=55, hcount=0, lcount=0; // testing for modes
+volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=58, hcount=0, lcount=0; // testing for modes
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, toggleh, togglel;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff; 
@@ -929,7 +929,7 @@ void TIM4_IRQHandler(void){
 void EXTI9_5_IRQHandler(void){
   // LF and HF pulse in on falling edges
 
-  uint8_t x, numflips;
+  uint8_t x, numflips, shifter;
   uint8_t bith, origbith=0, bitl;
   uint32_t pending = EXTI->PR, cvalue;
   uint32_t tmp, SRlengthx=31;
@@ -1404,6 +1404,21 @@ void EXTI9_5_IRQHandler(void){
 	}
 	break;
 
+    case 58: // change the shifting amount - sort of works but not a great range
+      shifter=(cvalue>>11)+1;
+      // TM here
+      bith = (shift_registerh>>(SRlengthh-(shifter-1))); // bit which would be shifted out  
+      if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<shifter) + bith;
+      else shift_registerh = (shift_registerh<<shifter) + (~bith);
+
+      
+
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000;  
+      if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000; 
+      else GPIOC->BSRR = 0b0100000000000000;  
+      break;
+      
 	
       
 

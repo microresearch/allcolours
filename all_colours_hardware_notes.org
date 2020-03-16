@@ -946,7 +946,7 @@ also we can use input bit as OR (in all modes with no input bit used)
 
 - also extra mode where we use pulse to gate if we add in the input so
   can have like pulse noise in, or straight pulsing or gating of noise
-  or another signal out (maybe this on LF side). use it as a toggled gate/tap TESTES
+  or another signal out (maybe this on LF side). use it as a toggled gate/tap TESTED
 
 * 26/2+
 
@@ -964,7 +964,11 @@ also we can use input bit as OR (in all modes with no input bit used)
 
 - refine looped SR so is logic XX on incoming bitTESTED/WORKING
 
-- how we could double pulses for filter clock?
+- +how we could double pulses for filter clock?+
+
+* 16/3+
+
+- vary with CV the number of bits we shift!? TODO/TEST!
 
 * for quote
 
