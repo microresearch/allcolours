@@ -15,7 +15,7 @@ List of PWM modes:
 
 extern __IO uint16_t ADCBuffer[];
 volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
-volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=58, hcount=0, lcount=0; // testing for modes
+volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=41, hcount=0, lcount=0; // testing for modes
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, toggleh, togglel;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff; 
@@ -831,6 +831,51 @@ void TIM2_IRQHandler(void){
 	  }
 	break;
 
+      case 40:
+	// pulse in means a divide/flip flop
+	// TESTED/WORKING but is only that divide on one bit..FIXED TESTED
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
+	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
+	else shift_registerh = (shift_registerh<<1) + (!bith);
+	
+	new_state[0]=bith;
+	if (prev_state[0]==0 && new_state[0]==1) flipped[0]^=1;
+	prev_state[0]=new_state[0];	
+
+	if (shift_registerh & lengthbith) new_state[1]=1;
+	else new_state[1]=0;
+	if (prev_state[1]==1 && new_state[1]==1) flipped[1]^=1;
+	prev_state[1]=new_state[1];	
+	
+	if (!(GPIOB->IDR & 0x0080)) {
+	  bith=flipped[0];
+	  tmp=flipped[1];
+	}
+	else tmp=new_state[1];
+	
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (tmp) GPIOC->BRR = 0b0100000000000000;  
+	else GPIOC->BSRR = 0b0100000000000000; 
+	break;
+
+      case 41:
+	// pulse in means double a step..
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
+	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
+	else shift_registerh = (shift_registerh<<1) + (!bith);
+
+	if (!(GPIOB->IDR & 0x0080)) {
+	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
+	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
+	else shift_registerh = (shift_registerh<<1) + (!bith);
+	}
+	
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000;  
+	else GPIOC->BSRR = 0b0100000000000000; 
+	break;
 
 	
       }
@@ -1404,10 +1449,11 @@ void EXTI9_5_IRQHandler(void){
 	}
 	break;
 
-    case 58: // change the shifting amount - sort of works but not a great range
-      shifter=(cvalue>>11)+1;
+    case 58: // change the shifting amount - sort of works but not a great range and we need to take care of length
+      shifter=(cvalue>>11)%(SRlengthh+1);
+      if (shifter==0) shifter=1;
       // TM here
-      bith = (shift_registerh>>(SRlengthh-(shifter-1))); // bit which would be shifted out  
+      bith = (shift_registerh>>(SRlengthh-(shifter-1))) & (shifter); // bits which would be shifted out  // 1 for length of 31
       if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<shifter) + bith;
       else shift_registerh = (shift_registerh<<shifter) + (~bith);
 
