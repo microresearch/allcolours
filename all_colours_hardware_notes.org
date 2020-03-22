@@ -968,7 +968,11 @@ also we can use input bit as OR (in all modes with no input bit used)
 
 * 16/3+
 
-- vary with CV the number of bits we shift!? TODO/TEST!
+- vary with CV the number of bits we shift!? TODO/TEST!TESTED fine
+
+* 22/3+
+
+- new hardware tested all fine - maybe re-check all levels! TODO! - 
 
 * for quote
 

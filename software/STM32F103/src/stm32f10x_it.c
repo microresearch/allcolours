@@ -1457,17 +1457,11 @@ void EXTI9_5_IRQHandler(void){
       if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<shifter) + bith;
       else shift_registerh = (shift_registerh<<shifter) + (~bith);
 
-      
-
       if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
       else GPIOC->BSRR = 0b0010000000000000;  
       if (shift_registerh & lengthbith) GPIOC->BRR = 0b0100000000000000; 
       else GPIOC->BSRR = 0b0100000000000000;  
       break;
-      
-	
-      
-
     }       /// end of HF modes
     
   //TODO:  in each modes case - this is in each one... 
