@@ -974,6 +974,22 @@ also we can use input bit as OR (in all modes with no input bit used)
 
 - new hardware tested all fine - maybe re-check all levels! TODO! - 
 
+* 26/3+
+
+- re-checking modes/listening/ we need 16 modes... 8 each cv/pulse?
+
+recommended:
+
+- CV side HF: 3, 4, 7, 9, 23, 25, 26, 28, 29, 34, 35, 36, 41
+- LF: 30or31, 32, 33, 35, 37, 39, 40
+
+- pulse side HF: 10, 11, 12, 13, 43, 45 or 46, 52 or 53
+- LF: 14, 15, 44, 48
+
+reserve others for futureSR module!
+
+list what these ones are...
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 

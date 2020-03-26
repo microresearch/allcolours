@@ -15,7 +15,7 @@ List of PWM modes:
 
 extern __IO uint16_t ADCBuffer[];
 volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
-volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=41, hcount=0, lcount=0; // testing for modes
+volatile uint32_t modelpwm, modehpwm, modelsr=0, lastmodelsr=0, modehsr=58, hcount=0, lcount=0; // testing for modes
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, probh, probl, toggleh, togglel;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff; 
@@ -385,7 +385,7 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000; 
 	break;
     
-      case 3: 
+      case 3: //* 
 	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
 	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + bith;
@@ -443,6 +443,7 @@ void TIM2_IRQHandler(void){
 
       case 7:
 	//->>>>>>>>>>>>>> 7- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR - no input needed Q of lengths?
+	// no use of in bit
 	// !note: swop l and h when port to low!
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 	if (hcount>7) hcount=0;
@@ -569,7 +570,7 @@ void TIM2_IRQHandler(void){
 	}
 	break;
 	
-      case 27:
+      case 27: //too complex?
 	// if we have a bit then change/swop that bit from LFSR side... (could also be OR or other relation) - TESTED/WORKING! changed/TESTED
 	bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
 
@@ -701,7 +702,7 @@ void TIM2_IRQHandler(void){
 	/// length thing	
 	// - TESTED/WORKING!
 	hcount++;
-      if (hcount>32) hcount=4;
+      if (hcount>31) hcount=4;
       if (!(GPIOB->IDR & 0x0080)) {
 	SRlengthh=hcount;
 	lengthbith=(1<<(SRlengthh/2));
@@ -724,7 +725,7 @@ void TIM2_IRQHandler(void){
 	// can use input bit as length of either SR = here is regularSR
 	// works well
 	hcount++;
-	if (hcount>32) hcount=4;
+	if (hcount>31) hcount=4;
 	if (!(GPIOB->IDR & 0x0080)) {
 	  SRlengthh=hcount;
 	  lengthbith=(1<<(SRlengthh/2));
@@ -752,7 +753,7 @@ void TIM2_IRQHandler(void){
 	// can use input bit as length of either SR = here is shift_regx
 	// works ok not so interesting as 35
 	hcount++;
-	if (hcount>32) hcount=4;
+	if (hcount>31) hcount=4;
 	if (!(GPIOB->IDR & 0x0080)) {
 	  SRlengthx=hcount;
 	}
@@ -1025,7 +1026,7 @@ void EXTI9_5_IRQHandler(void){
       else GPIOC->BSRR = 0b0100000000000000;  
       break;
 	
-    case 12:
+    case 12: // works fine with cv in
       //->>>>>>>>>>>>>> NEW mode TESTY: entry of ADC in from CV into upper bits?
       bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
 
@@ -1060,11 +1061,11 @@ void EXTI9_5_IRQHandler(void){
       else GPIOC->BSRR = 0b0100000000000000; 
       break;
 
-    case 14: // could replace mode or one of these
+    case 14: // could replace mode or one of these ???
       //->>>>>>>>>>>>>> uses CV as speed/flipflop/clock divider
       // pulse in inverts the cycling bit in a la Turing Machine - cycle bit or invert bit = thus we do use input bit
       bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
-      origbith=bith;
+      //      origbith=bith;
       if (GPIOB->IDR & 0x0400) shift_registerh =  (shift_registerh<<1) + bith;
       else shift_registerh = (shift_registerh<<1) + (!bith);
 
@@ -1083,14 +1084,18 @@ void EXTI9_5_IRQHandler(void){
 
       if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
       else GPIOC->BSRR = 0b0010000000000000;
-      if (origbith) GPIOC->BRR = 0b0100000000000000;  // original bith 
+      //      if (origbith) GPIOC->BRR = 0b0100000000000000;  // original bith 
+      //      else GPIOC->BSRR = 0b0100000000000000;
+      if (shift_registerh & lengthbith) {
+	if (bith)	GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
       else GPIOC->BSRR = 0b0100000000000000;
+      }
       break;
 	
     case 15:
       //->>>>>>>>>>>>>> as mode 14=speed divider with XOR rungler: XOR out with input bit
       bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out
-      origbith=bith;
+      //      origbith=bith;
       shift_registerh = (shift_registerh<<1) + ((bith) ^ (!(GPIOB->IDR & 0x0400)));
 
       numflips=(cvalue>>12); //or 15-(cvalue>>12) if we wish it to go in the opposite direction
@@ -1107,31 +1112,36 @@ void EXTI9_5_IRQHandler(void){
       
       if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
       else GPIOC->BSRR = 0b0010000000000000;
-      if (origbith) GPIOC->BRR = 0b0100000000000000;  // original bith 
-      else GPIOC->BSRR = 0b0100000000000000;
+      if (shift_registerh & lengthbith) {
+	if (bith)	GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+	else GPIOC->BSRR = 0b0100000000000000;
+      }
+      //      if (origbith) GPIOC->BRR = 0b0100000000000000;  // original bith 
+      //      else GPIOC->BSRR = 0b0100000000000000;
       break;
+      //.....///
       //////////////////////////->>>>>>>>>>>>>>>>>	
       // experimental modes some tested!
     case 42:
       // + from TM - TM with probability CV (using random bits from other SR!) // combined with variable length -> pulse mode - TESTED/WORKING!
       // probability of cycle bit or invert bit 
       // also add in length via incoming bit - this could also be used in modes which don't use the extra bit eg. 10 and 13... and in CV modes
-      
+      // goes to zero on max prob?
       bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out -
       probh=cvalue>>13; // 3 bits now for electroprob array
       probh=electroprob[probh];
-
+      shift_registerh = (shift_registerh<<1) + bith;
       if (((probh | shift_registerl) & 0xff ) == 0xff) shift_registerh = (shift_registerh<<1) + bith;
       else shift_registerh = (shift_registerh<<1) + (!bith);
 
       // deal with length
-           hcount++;
-      if (hcount>32) hcount=4;
+      hcount++;
+      if (hcount>31) hcount=4;
       if (!(GPIOB->IDR & 0x0400)) {
 	SRlengthh=hcount;
 	lengthbith=(1<<(SRlengthh/2));
 	}
-	
+      	
       // usual out
       if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
       else GPIOC->BSRR = 0b0010000000000000;
