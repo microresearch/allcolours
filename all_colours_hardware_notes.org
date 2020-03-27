@@ -978,17 +978,217 @@ also we can use input bit as OR (in all modes with no input bit used)
 
 - re-checking modes/listening/ we need 16 modes... 8 each cv/pulse?
 
-recommended:
+*THESE are CV modes*
 
-- CV side HF: 3, 4, 7, 9, 23, 25, 26, 28, 29, 34, 35, 36, 41
-- LF: 30or31, 32, 33, 35, 37, 39, 40
+- CV side HF: 3, 4, 7, 9, +4 from: 23, (25), 26or28, 29, 34, 35or36, (41)
+- LF: 0or1, 9, 30or31, 32or33, 35, 37, 39, 40
 
-- pulse side HF: 10, 11, 12, 13, 43, 45 or 46, 52 or 53
-- LF: 14, 15, 44, 48
+       //->>>>>>>>>>>>>> 0- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
 
-reserve others for futureSR module!
+       LF**//->>>>>>>>>>>>>> 1- pulse (PB5) toggles loopback to XOR with new input bit (PB6) /or just accept new input bit (CGS)
 
-list what these ones are...
+       //->>>>>>>>>>>>>> 2- loopback ORed with input bit and pulses flip/leak bits INSIDE the SR selected with counter and pulse
+
+       HF**//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
+
+       HF**//->>>>>>>>>>>>>> 4- parity for loopback XOR is determined by pulsed bits in -> select bits with pulse and queue 
+
+       //->>>>>>>>>>>>>> 5- wiard1: pulse selects new data or loop old back into SR
+
+       //->>>>>>>>>>>>>> 6- wiard2: pulse selects new data or inverted loop old back into SR
+
+       HF**//->>>>>>>>>>>>>> 7- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR - no input needed Q of lengths?
+
+       //->>>>>>>>>>>>>> 8- SHORT PULSES OUT as mode 0: pulse (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
+
+	LFandHF**// 9- LFSR noise only with varying taps depending on length with new bit ORed in depending on pulse - for LF we can do mirroring!
+
+      HF**case 23: // experimental modes 23+ here and 32+ in pulses - TESTED/WORKING!
+	// shifting the array of LFSR taps = ghost_tapsH on the high side
+	// clock pulse shifts one selected by pulse 
+
+      case 24:
+	// Insert pulses into SR at points determined by CV or by pulses in - very similar to mode 2 above - TESTED/WORKING!
+
+      HF**case 25:
+	// SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits - TESTED/WORKING!
+
+      HF**case 26:
+	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+	// can use input bit as length of either SR
+	// also can still use in clocking side of things
+	// no use of input bit...
+
+      case 27: //too complex?
+	// if we have a bit then change/swop that bit from LFSR side... (could also be OR or other relation) - TESTED/WORKING! changed/TESTED
+
+	/*
+          extra modes which pulse SR using clock or input bits: only advance if
+	  we have a bit but still output, only output if we have a bit etc, advance but only output if we have a bit: so 3 options:
+
+	  if we have a bit: advance/output // advance/out anyways if or not // advance anyways, output if
+
+	  that we can gate on and off -> in both sets of pulse/speed modes!	  
+	*/
+
+      HF**case 28:
+	// Independent LFSR clocking regular SR (only in CV as speed) - as mode 26 but now we use 0x0080 bit also to see if we shift things...
+	// no use of input bit... - TESTED/WORKING!
+
+      HF**case 29:
+	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+
+      LF**case 30:
+	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+
+      case 31:
+	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+
+      LF**case 32:
+	// extra mode in which (both) pulse on is triggered by bitH but gated off by input bit or pulse - but do we need like a toggle?????
+	//-BASE it on::: >>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
+
+      case 33: // and invert the above
+	// extra mode in which (both) pulse on is triggered by bitH but gated off by input bit or pulse - but do we need like a toggle?????
+	//-BASE it on::: >>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
+	
+      HF**case 34:
+	// extra modes use pulse or input bit as length of SR controller: see mode 42 below
+	/// length thing	
+	
+      LF**case 35:
+	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+	// can use input bit as length of either SR = here is regularSR
+
+      case 36:
+	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+	// can use input bit as length of either SR = here is shift_regx
+
+      LF**case 37:
+	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+	// with input bit or'ed in
+
+      case 38:
+	// follows case 3 TM but we TESTY - use 0x0080 to toggle any output = gating
+	//->>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit
+
+      LF**case 39:
+	// as above but LFSR?
+
+      LF**case 40:
+	// pulse in means a divide/flip flop
+
+      HF**case 41:
+	// pulse in means double a step..
+
+*//// THESE ones are PULSE MODES:*
+
+- pulse side HF: 10, 11, 12, 13,  43, 45 or 46, 52, 53
+- LF: 14, 15, 44, 48, 10, 11, 12, 13
+
+    **BOTHcase 10:
+      //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit 
+
+    **BOTHcase 11: // MAYBE put this in middle of CV select mode for easy access TODO
+      //->>>>>>>>>>>>>> CV selects length of SR which will stay with us .. -> LFSR here
+	
+    **BOTHcase 12: // works fine with cv in
+      //->>>>>>>>>>>>>> NEW mode TESTY: entry of ADC in from CV into upper bits?
+
+    **BOTHcase 13:
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+
+    LF**case 14: // could replace mode or one of these ???
+      //->>>>>>>>>>>>>> uses CV as speed/flipflop/clock divider
+	
+    LF**case 15:
+      //->>>>>>>>>>>>>> as mode 14=speed divider with XOR rungler: XOR out with input bit
+
+      // experimental modes some tested!
+    case 42:
+      // + from TM - TM with probability CV (using random bits from other SR!) // combined with variable length -> pulse mode - TESTED/WORKING!
+
+    HF**case 43:
+      // as above but other way round with CV for length and incoming bits for probability of TM
+
+      // more experimental modes
+	/* 
+
+	  modes 10 and 13 don't use input bit 0x0400 so we can use this for= case 10 as test case// try with 13:
+
+          extra modes which pulse SR using clock or input bits: only advance if - *more maybe on LF side these ones*
+	  we have a bit but still output, only output if we have a bit etc, advance but only output if we have a bit: so 3 options:
+
+	  if we have a bit: advance/output // advance/out anyways if or not // advance anyways, output if
+
+	  that we can gate on and off -> in both sets of pulse/speed modes!	  
+
+	*/
+      
+   LF**case 44:
+      // as mode 10 
+      //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit = 1st option of above... - *more maybe on LF side these ones*
+
+    HF**case 45:
+      //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit = 3rd option of above...
+
+    case 46:
+      //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit = 2nd option of above...
+
+    case 47:
+      // *we could use CV to set length of pulse (say up to 128 which is 7 bits >> 9)*
+      //->>>>>>>>>>>>>> as mode 14=speed divider with XOR rungler: XOR out with input bit
+      	// - TESTED/WORKING! - not so exciting ....
+
+    LF**case 48:
+      //      	  extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse
+      // use mode 13 as example here:::
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+
+    case 49:
+      // and we can have the inversion of 48
+      //      	  extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse
+      // use mode 13 as example here:::
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+
+      /// TO TEST: mode 13 with the 3 timing options
+    case 50:
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+
+    case 51:
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+
+    HF**case 52:
+      //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
+
+      /////////////new /exp      
+    HF**case 53:
+      // - after case 25 - SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits
+
+    case 54:
+      // - after case 25 - SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits
+      // shift only on that bit
+
+    case 55:
+      // another loop variation, bith and loopback XORed (or other logic eg. OR) back in to first bit:
+      //       - TESTED/working
+	
+    case 56:
+      // Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+      // can use CV as length of either SR = here is regularSR
+
+    case 57:
+      // Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+      // can use CV as length of either SR = here is SRx
+
+    case 58: // change the shifting amount - sort of works but not a great range and we need to take care of length
+
+* 27/3+
+
+- still question of slowest speeds of DAC PWM SR mode -> slower on LF side or?
+
+note:: *2- pwm follows DAC from SR + pwm follows DAC - different range or spacings maybe in pulse modes - can have different PWM modes paired with pulse/cv modes?*
+
 
 * for quote
 
