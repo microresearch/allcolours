@@ -1189,6 +1189,9 @@ also we can use input bit as OR (in all modes with no input bit used)
 
 note:: *2- pwm follows DAC from SR + pwm follows DAC - different range or spacings maybe in pulse modes - can have different PWM modes paired with pulse/cv modes?*
 
+* 28/3+
+
+- now thinking to have no DAC mode so just the 2 pwm modes inverted, so we have 32 modes on each side
 
 * for quote
 
