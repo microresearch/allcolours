@@ -981,6 +981,12 @@ also we can use input bit as OR (in all modes with no input bit used)
 *THESE are CV modes*
 
 - CV side HF: 3, 4, 7, 9, +4 from: 23, (25), 26or28, 29, 34, 35or36, (41)
+
+*but now we want to have 16 each:*
+
+*CV_HF: 0, 1, 2, 3, 4, 7, 9, 23, 25, 26, 28, 29, 34, 35, 36, 41*
+*CV_LF: 0, 1, 2, 3, 4, 7, 9, 23, 30, 32, 33, 34, 35, 37, 39, 40*
+
 - LF: 0or1, 9, 30or31, 32or33, 35, 37, 39, 40
 
        //->>>>>>>>>>>>>> 0- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
@@ -1082,6 +1088,11 @@ also we can use input bit as OR (in all modes with no input bit used)
 	// pulse in means double a step..
 
 *//// THESE ones are PULSE MODES:*
+
+*but now we want to have 16 each:*
+
+*PULSE_HF: 10, 11, 12, 13, 14, 15, 43, 44, 45, 48, 50, 52, 53, 56, 57, 58*
+*PULSE_LF: 10, 11, 12, 13, 14, 15, 43, 44, 45, 48, 50, 52, 53, 56, 57, 58*
 
 - pulse side HF: 10, 11, 12, 13,  43, 45 or 46, 52, 53
 - LF: 14, 15, 44, 48, 10, 11, 12, 13
@@ -1191,7 +1202,7 @@ note:: *2- pwm follows DAC from SR + pwm follows DAC - different range or spacin
 
 * 28/3+
 
-- now thinking to have no DAC mode so just the 2 pwm modes inverted, so we have 32 modes on each side
+- now thinking to have no DAC mode so just the 2 pwm modes inverted, so we have 32 modes on each side -so 16 cv, and 16 pulse
 
 * for quote
 
