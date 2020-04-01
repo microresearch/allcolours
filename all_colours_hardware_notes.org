@@ -1210,8 +1210,24 @@ note:: *2- pwm follows DAC from SR + pwm follows DAC - different range or spacin
 
 - if we can go faster in main.c? max is 40 in   TIM_TimeBase_InitStructure.TIM_Period = 40;
 
+- re-checked all levels VPP:
+
+PWMH: 4.4
+PWML: 4.4
+noiseL: 4
+noiseH: 6
+compLC: 4.5
+compHC: 4.5
+compLA: 4.4
+compHA: 4.4
+filter outH: 5v
+filter outL: 5v
+
 ////
-- maybe compare switch with function call approach
+- maybe compare switch with function call approach -> how to automate this?
+
+with func call approach in func_it.c we can come down to period 38 but this needs to be tested thoroughly
+
 ////
 
 - note for MANUAL - that we can untie comparatored noise from filter diff in by plugging blank/nowhere cable into diff - then we an use comp just for normed SR in say
