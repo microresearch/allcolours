@@ -1204,6 +1204,18 @@ note:: *2- pwm follows DAC from SR + pwm follows DAC - different range or spacin
 
 - now thinking to have no DAC mode so just the 2 pwm modes inverted, so we have 32 modes on each side -so 16 cv, and 16 pulse
 
+* 1/4/2020+
+
+- implemented high side of modes. TODO: port required modes over to left side, test individually and  test all with speeds...
+
+- if we can go faster in main.c? max is 40 in   TIM_TimeBase_InitStructure.TIM_Period = 40;
+
+////
+- maybe compare switch with function call approach
+////
+
+- note for MANUAL - that we can untie comparatored noise from filter diff in by plugging blank/nowhere cable into diff - then we an use comp just for normed SR in say
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
