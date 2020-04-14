@@ -1758,7 +1758,7 @@ void EXTI9_5_IRQHandler(void){
     EXTI->PR = 1 << 5; // clear pending flag, otherwise we'd get endless interrupts -!!!!!!!!!!!!!!!!!!!!!!!!!        // handle pin 5 here
 
     if (modelsr>15){
-      LF_INT_modes[modelsr]();
+            LF_INT_modes[modelsr]();
     }
   }
 

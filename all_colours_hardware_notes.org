@@ -1228,9 +1228,24 @@ filter outL: 5v
 
 with func call approach in func_it.c we can come down to period 38 but this needs to be tested thoroughly
 
+* 2/4 
+
+- tested func call and is not fast/ crashes on interrupt to back to other which is stable at 50 Period. trying a few speedups here...
+
+48 now
+
+- maybe also identify which modes are slowest
+- we need to decide if we change SR lengths across the whole thing?
+
 ////
 
 - note for MANUAL - that we can untie comparatored noise from filter diff in by plugging blank/nowhere cable into diff - then we an use comp just for normed SR in say
+
+* 14/4
+
+- ongoing testing - speed dropped to 50
+- we don't change length for all functions but just in certain functions... static tho as needs to run across some...
+- re-test each SR mode after this - we leave arrays as they are...
 
 * for quote
 
