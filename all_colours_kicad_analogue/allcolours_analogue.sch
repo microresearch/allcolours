@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 10
+Sheet 1 11
 Title ""
 Date ""
 Rev ""
@@ -393,4 +393,10 @@ F1 "eurorack_power.sch" 60
 $EndSheet
 Text Notes 6725 3225 0    157  ~ 0
 check all transistor pins
+$Sheet
+S 8075 3950 2175 450 
+U 5E97CA7E
+F0 "flipflop" 60
+F1 "flipflopagain.sch" 60
+$EndSheet
 $EndSCHEMATC

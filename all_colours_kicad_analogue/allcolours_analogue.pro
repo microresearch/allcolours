@@ -1,4 +1,4 @@
-update=Wed 05 Dec 2018 17:40:10 CET
+update=Wed 08 Apr 2020 11:57:27 CEST
 version=1
 last_client=kicad
 [general]
@@ -9,16 +9,6 @@ NetIExt=net
 [eeschema]
 version=1
 LibDir=/root/kicad-library/
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceAjustPassiveValues=0
-LabSize=60
-ERC_TestSimilarLabels=1
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -67,3 +57,13 @@ SolderMaskClearance=0
 SolderMaskMinWidth=0
 SolderPasteClearance=0
 SolderPasteRatio=-0
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=60
+ERC_TestSimilarLabels=1

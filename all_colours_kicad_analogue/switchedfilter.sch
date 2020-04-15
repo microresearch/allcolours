@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 6 10
+Sheet 6 11
 Title ""
 Date ""
 Rev ""
@@ -422,7 +422,7 @@ L Device:R_Small R54
 U 1 1 5BC9CB30
 P 3250 2300
 F 0 "R54" H 3191 2254 50  0000 R CNN
-F 1 "50K" H 3191 2345 50  0000 R CNN
+F 1 "10K" H 3191 2345 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805" H 3250 2300 50  0001 C CNN
 F 3 "~" H 3250 2300 50  0001 C CNN
 	1    3250 2300
@@ -1509,4 +1509,33 @@ Text Notes 2850 2325 0    60   ~ 0
 damping
 Text Notes 5850 1600 0    79   ~ 0
 on outside circle - different in out points
+$Comp
+L Device:R_Small R?
+U 1 1 5E94F507
+P 2475 3550
+F 0 "R?" H 2416 3504 50  0000 R CNN
+F 1 "10K" H 2416 3595 50  0000 R CNN
+F 2 "Resistors_SMD:R_0805" H 2475 3550 50  0001 C CNN
+F 3 "~" H 2475 3550 50  0001 C CNN
+	1    2475 3550
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5E94F730
+P 2475 3700
+F 0 "#PWR?" H 2475 3450 50  0001 C CNN
+F 1 "GND" H 2425 3875 50  0000 C CNN
+F 2 "" H 2475 3700 50  0001 C CNN
+F 3 "" H 2475 3700 50  0001 C CNN
+	1    2475 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2475 3400 2475 3450
+Connection ~ 2475 3400
+Wire Wire Line
+	2475 3650 2475 3700
+Text Notes 1675 3425 0    60   ~ 0
+damping added
 $EndSCHEMATC

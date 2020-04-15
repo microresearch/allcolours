@@ -1,0 +1,2385 @@
+EESchema Schematic File Version 4
+LIBS:allcolours_analogue-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 11 11
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L 4xxx:4013 U?
+U 1 1 5E97CC51
+P 2775 1175
+AR Path="/5C0A69D0/5E97CC51" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E97CC51" Ref="U2"  Part="1" 
+F 0 "U2" H 2775 1653 50  0000 C CNN
+F 1 "4013" H 2775 1562 50  0000 C CNN
+F 2 "" H 2775 1175 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2775 1175 50  0001 C CNN
+	1    2775 1175
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E97CC58
+P 2775 1525
+AR Path="/5BAC374C/5E97CC58" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E97CC58" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E97CC58" Ref="#PWR08"  Part="1" 
+F 0 "#PWR08" H 2775 1275 50  0001 C CNN
+F 1 "GND" H 2775 1375 50  0000 C CNN
+F 2 "" H 2775 1525 50  0000 C CNN
+F 3 "" H 2775 1525 50  0000 C CNN
+	1    2775 1525
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E97CC5E
+P 3250 1075
+AR Path="/5C0A69D0/5E97CC5E" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E97CC5E" Ref="R14"  Part="1" 
+F 0 "R14" H 3309 1121 50  0000 L CNN
+F 1 "1K" H 3309 1030 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3250 1075 50  0001 C CNN
+F 3 "~" H 3250 1075 50  0001 C CNN
+	1    3250 1075
+	0    1    1    0   
+$EndComp
+$Comp
+L 4xxx:4013 U?
+U 3 1 5E97CC65
+P 8725 2650
+AR Path="/5C0A69D0/5E97CC65" Ref="U?"  Part="3" 
+AR Path="/5E97CA7E/5E97CC65" Ref="U9"  Part="3" 
+F 0 "U9" H 8955 2696 50  0000 L CNN
+F 1 "4013" H 8955 2605 50  0000 L CNN
+F 2 "" H 8725 2650 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 8725 2650 50  0001 C CNN
+	3    8725 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E97CC72
+P 8725 3100
+AR Path="/5BAC374C/5E97CC72" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E97CC72" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E97CC72" Ref="#PWR042"  Part="1" 
+F 0 "#PWR042" H 8725 2850 50  0001 C CNN
+F 1 "GND" H 8725 2950 50  0000 C CNN
+F 2 "" H 8725 3100 50  0000 C CNN
+F 3 "" H 8725 3100 50  0000 C CNN
+	1    8725 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5E97CC78
+P 1075 975
+AR Path="/5C0A69D0/5E97CC78" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5E97CC78" Ref="J2"  Part="1" 
+F 0 "J2" V 948 1055 50  0000 L CNN
+F 1 "touch" V 1039 1055 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1075 975 50  0001 C CNN
+F 3 "" H 1075 975 50  0001 C CNN
+	1    1075 975 
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3075 1075 3150 1075
+Wire Wire Line
+	3075 1275 3250 1275
+Wire Wire Line
+	3250 1275 3250 825 
+Wire Wire Line
+	2300 825  2300 1075
+Wire Wire Line
+	2300 1075 2475 1075
+Wire Wire Line
+	2300 825  3250 825 
+Wire Wire Line
+	2775 1475 2775 1500
+Wire Wire Line
+	2450 875  2450 1500
+Connection ~ 2775 1500
+Wire Wire Line
+	2775 1500 2775 1525
+Wire Wire Line
+	2450 875  2775 875 
+Wire Wire Line
+	8725 2200 8725 2250
+Wire Wire Line
+	8725 3050 8725 3100
+Wire Wire Line
+	2200 1175 2475 1175
+Wire Wire Line
+	1275 975  1300 975 
+Wire Wire Line
+	2450 1500 2775 1500
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E97CC8F
+P 8675 1850
+AR Path="/5BAC374C/5E97CC8F" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E97CC8F" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E97CC8F" Ref="#PWR038"  Part="1" 
+F 0 "#PWR038" H 8675 1600 50  0001 C CNN
+F 1 "GND" H 8675 1700 50  0000 C CNN
+F 2 "" H 8675 1850 50  0000 C CNN
+F 3 "" H 8675 1850 50  0000 C CNN
+	1    8675 1850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E97CC95
+P 1300 825
+AR Path="/5C0A69D0/5E97CC95" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E97CC95" Ref="R2"  Part="1" 
+F 0 "R2" H 1359 871 50  0000 L CNN
+F 1 "1M" H 1359 780 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 1300 825 50  0001 C CNN
+F 3 "~" H 1300 825 50  0001 C CNN
+	1    1300 825 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 675  1300 725 
+Wire Wire Line
+	1300 925  1300 975 
+Connection ~ 1300 975 
+Wire Wire Line
+	1300 975  1325 975 
+Wire Wire Line
+	8675 750  8675 800 
+Wire Wire Line
+	8675 1800 8675 1850
+Wire Wire Line
+	2200 975  2200 1175
+$Comp
+L 4xxx:40106 U?
+U 1 1 5E97CCA5
+P 1625 975
+AR Path="/5C0A69D0/5E97CCA5" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E97CCA5" Ref="U1"  Part="1" 
+F 0 "U1" H 1625 1292 50  0000 C CNN
+F 1 "40106" H 1625 1201 50  0000 C CNN
+F 2 "" H 1625 975 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1625 975 50  0001 C CNN
+	1    1625 975 
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5E97CCAC
+P 1300 675
+AR Path="/5BAC374C/5E97CCAC" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E97CCAC" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E97CCAC" Ref="#PWR02"  Part="1" 
+F 0 "#PWR02" H 1300 525 50  0001 C CNN
+F 1 "+12V" H 1300 815 50  0000 C CNN
+F 2 "" H 1300 675 50  0000 C CNN
+F 3 "" H 1300 675 50  0000 C CNN
+	1    1300 675 
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:40106 U?
+U 7 1 5E97CCB8
+P 8675 1300
+AR Path="/5C0A69D0/5E97CCB8" Ref="U?"  Part="7" 
+AR Path="/5E97CA7E/5E97CCB8" Ref="U7"  Part="7" 
+F 0 "U7" H 8905 1346 50  0000 L CNN
+F 1 "40106" H 8905 1255 50  0000 L CNN
+F 2 "" H 8675 1300 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 8675 1300 50  0001 C CNN
+	7    8675 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U5
+U 1 1 5E97D77A
+P 3550 1375
+F 0 "U5" H 3550 1203 50  0000 C CNN
+F 1 "4066" H 3550 1112 50  0000 C CNN
+F 2 "" H 3550 1375 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3550 1375 50  0001 C CNN
+	1    3550 1375
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3350 1075 3550 1075
+$Comp
+L Device:R_Small R?
+U 1 1 5E97DD93
+P 2100 975
+AR Path="/5C0A69D0/5E97DD93" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E97DD93" Ref="R8"  Part="1" 
+F 0 "R8" H 2159 1021 50  0000 L CNN
+F 1 "1K" H 2159 930 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2100 975 50  0001 C CNN
+F 3 "~" H 2100 975 50  0001 C CNN
+	1    2100 975 
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2000 975  1925 975 
+$Comp
+L 4xxx:4066 U11
+U 5 1 5E97D8A1
+P 8000 5650
+F 0 "U11" H 8230 5696 50  0000 L CNN
+F 1 "4066" H 8230 5605 50  0000 L CNN
+F 2 "" H 8000 5650 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 8000 5650 50  0001 C CNN
+	5    8000 5650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR045
+U 1 1 5E97E9D9
+P 8000 5075
+F 0 "#PWR045" H 8000 4925 50  0001 C CNN
+F 1 "+9V" H 8015 5248 50  0000 C CNN
+F 2 "" H 8000 5075 50  0001 C CNN
+F 3 "" H 8000 5075 50  0001 C CNN
+	1    8000 5075
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-9V #PWR046
+U 1 1 5E97EA6C
+P 8000 6250
+F 0 "#PWR046" H 8000 6125 50  0001 C CNN
+F 1 "-9V" H 8015 6423 50  0000 C CNN
+F 2 "" H 8000 6250 50  0001 C CNN
+F 3 "" H 8000 6250 50  0001 C CNN
+	1    8000 6250
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8000 5075 8000 5150
+Wire Wire Line
+	8000 6150 8000 6250
+$Comp
+L 4xxx:4013 U?
+U 2 1 5E97F9D7
+P 2750 2400
+AR Path="/5C0A69D0/5E97F9D7" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E97F9D7" Ref="U2"  Part="2" 
+F 0 "U2" H 2750 2878 50  0000 C CNN
+F 1 "4013" H 2750 2787 50  0000 C CNN
+F 2 "" H 2750 2400 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2750 2400 50  0001 C CNN
+	2    2750 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E97F9DE
+P 2750 2750
+AR Path="/5BAC374C/5E97F9DE" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E97F9DE" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E97F9DE" Ref="#PWR07"  Part="1" 
+F 0 "#PWR07" H 2750 2500 50  0001 C CNN
+F 1 "GND" H 2750 2600 50  0000 C CNN
+F 2 "" H 2750 2750 50  0000 C CNN
+F 3 "" H 2750 2750 50  0000 C CNN
+	1    2750 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E97F9E4
+P 3225 2300
+AR Path="/5C0A69D0/5E97F9E4" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E97F9E4" Ref="R13"  Part="1" 
+F 0 "R13" H 3284 2346 50  0000 L CNN
+F 1 "1K" H 3284 2255 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3225 2300 50  0001 C CNN
+F 3 "~" H 3225 2300 50  0001 C CNN
+	1    3225 2300
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5E97F9EB
+P 1050 2200
+AR Path="/5C0A69D0/5E97F9EB" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5E97F9EB" Ref="J1"  Part="1" 
+F 0 "J1" V 923 2280 50  0000 L CNN
+F 1 "touch" V 1014 2280 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1050 2200 50  0001 C CNN
+F 3 "" H 1050 2200 50  0001 C CNN
+	1    1050 2200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3050 2300 3125 2300
+Wire Wire Line
+	3050 2500 3225 2500
+Wire Wire Line
+	3225 2500 3225 2050
+Wire Wire Line
+	2275 2050 2275 2300
+Wire Wire Line
+	2275 2300 2450 2300
+Wire Wire Line
+	2275 2050 3225 2050
+Wire Wire Line
+	2750 2700 2750 2725
+Wire Wire Line
+	2425 2100 2425 2725
+Connection ~ 2750 2725
+Wire Wire Line
+	2750 2725 2750 2750
+Wire Wire Line
+	2425 2100 2750 2100
+Wire Wire Line
+	2175 2400 2450 2400
+Wire Wire Line
+	1250 2200 1275 2200
+Wire Wire Line
+	2425 2725 2750 2725
+$Comp
+L Device:R_Small R?
+U 1 1 5E97FA00
+P 1275 2050
+AR Path="/5C0A69D0/5E97FA00" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E97FA00" Ref="R1"  Part="1" 
+F 0 "R1" H 1334 2096 50  0000 L CNN
+F 1 "1M" H 1334 2005 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 1275 2050 50  0001 C CNN
+F 3 "~" H 1275 2050 50  0001 C CNN
+	1    1275 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1275 1900 1275 1950
+Wire Wire Line
+	1275 2150 1275 2200
+Connection ~ 1275 2200
+Wire Wire Line
+	1275 2200 1300 2200
+Wire Wire Line
+	2175 2200 2175 2400
+$Comp
+L 4xxx:40106 U?
+U 2 1 5E97FA0C
+P 1600 2200
+AR Path="/5C0A69D0/5E97FA0C" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E97FA0C" Ref="U1"  Part="2" 
+F 0 "U1" H 1600 2517 50  0000 C CNN
+F 1 "40106" H 1600 2426 50  0000 C CNN
+F 2 "" H 1600 2200 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1600 2200 50  0001 C CNN
+	2    1600 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5E97FA13
+P 1275 1900
+AR Path="/5BAC374C/5E97FA13" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E97FA13" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E97FA13" Ref="#PWR01"  Part="1" 
+F 0 "#PWR01" H 1275 1750 50  0001 C CNN
+F 1 "+12V" H 1275 2040 50  0000 C CNN
+F 2 "" H 1275 1900 50  0000 C CNN
+F 3 "" H 1275 1900 50  0000 C CNN
+	1    1275 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U5
+U 2 1 5E97FA19
+P 3525 2600
+F 0 "U5" H 3525 2428 50  0000 C CNN
+F 1 "4066" H 3525 2337 50  0000 C CNN
+F 2 "" H 3525 2600 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3525 2600 50  0001 C CNN
+	2    3525 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3325 2300 3525 2300
+$Comp
+L Device:R_Small R?
+U 1 1 5E97FA21
+P 2075 2200
+AR Path="/5C0A69D0/5E97FA21" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E97FA21" Ref="R7"  Part="1" 
+F 0 "R7" H 2134 2246 50  0000 L CNN
+F 1 "1K" H 2134 2155 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2075 2200 50  0001 C CNN
+F 3 "~" H 2075 2200 50  0001 C CNN
+	1    2075 2200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1975 2200 1900 2200
+$Comp
+L 4xxx:4013 U?
+U 1 1 5E9805F2
+P 2800 3600
+AR Path="/5C0A69D0/5E9805F2" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E9805F2" Ref="U3"  Part="1" 
+F 0 "U3" H 2800 4078 50  0000 C CNN
+F 1 "4013" H 2800 3987 50  0000 C CNN
+F 2 "" H 2800 3600 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2800 3600 50  0001 C CNN
+	1    2800 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E9805F9
+P 2800 3950
+AR Path="/5BAC374C/5E9805F9" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E9805F9" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E9805F9" Ref="#PWR09"  Part="1" 
+F 0 "#PWR09" H 2800 3700 50  0001 C CNN
+F 1 "GND" H 2800 3800 50  0000 C CNN
+F 2 "" H 2800 3950 50  0000 C CNN
+F 3 "" H 2800 3950 50  0000 C CNN
+	1    2800 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E9805FF
+P 3275 3500
+AR Path="/5C0A69D0/5E9805FF" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E9805FF" Ref="R15"  Part="1" 
+F 0 "R15" H 3334 3546 50  0000 L CNN
+F 1 "1K" H 3334 3455 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3275 3500 50  0001 C CNN
+F 3 "~" H 3275 3500 50  0001 C CNN
+	1    3275 3500
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5E980606
+P 1100 3400
+AR Path="/5C0A69D0/5E980606" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5E980606" Ref="J3"  Part="1" 
+F 0 "J3" V 973 3480 50  0000 L CNN
+F 1 "touch" V 1064 3480 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1100 3400 50  0001 C CNN
+F 3 "" H 1100 3400 50  0001 C CNN
+	1    1100 3400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3100 3500 3175 3500
+Wire Wire Line
+	3100 3700 3275 3700
+Wire Wire Line
+	3275 3700 3275 3250
+Wire Wire Line
+	2325 3250 2325 3500
+Wire Wire Line
+	2325 3500 2500 3500
+Wire Wire Line
+	2325 3250 3275 3250
+Wire Wire Line
+	2800 3900 2800 3925
+Wire Wire Line
+	2475 3300 2475 3925
+Connection ~ 2800 3925
+Wire Wire Line
+	2800 3925 2800 3950
+Wire Wire Line
+	2475 3300 2800 3300
+Wire Wire Line
+	2225 3600 2500 3600
+Wire Wire Line
+	1300 3400 1325 3400
+Wire Wire Line
+	2475 3925 2800 3925
+$Comp
+L Device:R_Small R?
+U 1 1 5E98061B
+P 1325 3250
+AR Path="/5C0A69D0/5E98061B" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E98061B" Ref="R3"  Part="1" 
+F 0 "R3" H 1384 3296 50  0000 L CNN
+F 1 "1M" H 1384 3205 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 1325 3250 50  0001 C CNN
+F 3 "~" H 1325 3250 50  0001 C CNN
+	1    1325 3250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1325 3100 1325 3150
+Wire Wire Line
+	1325 3350 1325 3400
+Connection ~ 1325 3400
+Wire Wire Line
+	1325 3400 1350 3400
+Wire Wire Line
+	2225 3400 2225 3600
+$Comp
+L 4xxx:40106 U?
+U 3 1 5E980627
+P 1650 3400
+AR Path="/5C0A69D0/5E980627" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E980627" Ref="U1"  Part="3" 
+F 0 "U1" H 1650 3717 50  0000 C CNN
+F 1 "40106" H 1650 3626 50  0000 C CNN
+F 2 "" H 1650 3400 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1650 3400 50  0001 C CNN
+	3    1650 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5E98062E
+P 1325 3100
+AR Path="/5BAC374C/5E98062E" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E98062E" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E98062E" Ref="#PWR03"  Part="1" 
+F 0 "#PWR03" H 1325 2950 50  0001 C CNN
+F 1 "+12V" H 1325 3240 50  0000 C CNN
+F 2 "" H 1325 3100 50  0000 C CNN
+F 3 "" H 1325 3100 50  0000 C CNN
+	1    1325 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U5
+U 3 1 5E980634
+P 3575 3800
+F 0 "U5" H 3575 3628 50  0000 C CNN
+F 1 "4066" H 3575 3537 50  0000 C CNN
+F 2 "" H 3575 3800 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3575 3800 50  0001 C CNN
+	3    3575 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3375 3500 3575 3500
+$Comp
+L Device:R_Small R?
+U 1 1 5E98063C
+P 2125 3400
+AR Path="/5C0A69D0/5E98063C" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E98063C" Ref="R9"  Part="1" 
+F 0 "R9" H 2184 3446 50  0000 L CNN
+F 1 "1K" H 2184 3355 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2125 3400 50  0001 C CNN
+F 3 "~" H 2125 3400 50  0001 C CNN
+	1    2125 3400
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2025 3400 1950 3400
+$Comp
+L 4xxx:4013 U?
+U 2 1 5E981A14
+P 2800 4775
+AR Path="/5C0A69D0/5E981A14" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E981A14" Ref="U3"  Part="2" 
+F 0 "U3" H 2800 5253 50  0000 C CNN
+F 1 "4013" H 2800 5162 50  0000 C CNN
+F 2 "" H 2800 4775 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2800 4775 50  0001 C CNN
+	2    2800 4775
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E981A1B
+P 2800 5125
+AR Path="/5BAC374C/5E981A1B" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E981A1B" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E981A1B" Ref="#PWR010"  Part="1" 
+F 0 "#PWR010" H 2800 4875 50  0001 C CNN
+F 1 "GND" H 2800 4975 50  0000 C CNN
+F 2 "" H 2800 5125 50  0000 C CNN
+F 3 "" H 2800 5125 50  0000 C CNN
+	1    2800 5125
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E981A21
+P 3275 4675
+AR Path="/5C0A69D0/5E981A21" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E981A21" Ref="R16"  Part="1" 
+F 0 "R16" H 3334 4721 50  0000 L CNN
+F 1 "1K" H 3334 4630 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3275 4675 50  0001 C CNN
+F 3 "~" H 3275 4675 50  0001 C CNN
+	1    3275 4675
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5E981A28
+P 1100 4575
+AR Path="/5C0A69D0/5E981A28" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5E981A28" Ref="J4"  Part="1" 
+F 0 "J4" V 973 4655 50  0000 L CNN
+F 1 "touch" V 1064 4655 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1100 4575 50  0001 C CNN
+F 3 "" H 1100 4575 50  0001 C CNN
+	1    1100 4575
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3100 4675 3175 4675
+Wire Wire Line
+	3100 4875 3275 4875
+Wire Wire Line
+	3275 4875 3275 4425
+Wire Wire Line
+	2325 4425 2325 4675
+Wire Wire Line
+	2325 4675 2500 4675
+Wire Wire Line
+	2325 4425 3275 4425
+Wire Wire Line
+	2800 5075 2800 5100
+Wire Wire Line
+	2475 4475 2475 5100
+Connection ~ 2800 5100
+Wire Wire Line
+	2800 5100 2800 5125
+Wire Wire Line
+	2475 4475 2800 4475
+Wire Wire Line
+	2225 4775 2500 4775
+Wire Wire Line
+	1300 4575 1325 4575
+Wire Wire Line
+	2475 5100 2800 5100
+$Comp
+L Device:R_Small R?
+U 1 1 5E981A3D
+P 1325 4425
+AR Path="/5C0A69D0/5E981A3D" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E981A3D" Ref="R4"  Part="1" 
+F 0 "R4" H 1384 4471 50  0000 L CNN
+F 1 "1M" H 1384 4380 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 1325 4425 50  0001 C CNN
+F 3 "~" H 1325 4425 50  0001 C CNN
+	1    1325 4425
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1325 4275 1325 4325
+Wire Wire Line
+	1325 4525 1325 4575
+Connection ~ 1325 4575
+Wire Wire Line
+	1325 4575 1350 4575
+Wire Wire Line
+	2225 4575 2225 4775
+$Comp
+L 4xxx:40106 U?
+U 4 1 5E981A49
+P 1650 4575
+AR Path="/5C0A69D0/5E981A49" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E981A49" Ref="U1"  Part="4" 
+F 0 "U1" H 1650 4892 50  0000 C CNN
+F 1 "40106" H 1650 4801 50  0000 C CNN
+F 2 "" H 1650 4575 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1650 4575 50  0001 C CNN
+	4    1650 4575
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5E981A50
+P 1325 4275
+AR Path="/5BAC374C/5E981A50" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E981A50" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E981A50" Ref="#PWR04"  Part="1" 
+F 0 "#PWR04" H 1325 4125 50  0001 C CNN
+F 1 "+12V" H 1325 4415 50  0000 C CNN
+F 2 "" H 1325 4275 50  0000 C CNN
+F 3 "" H 1325 4275 50  0000 C CNN
+	1    1325 4275
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U5
+U 4 1 5E981A56
+P 3575 4975
+F 0 "U5" H 3575 4803 50  0000 C CNN
+F 1 "4066" H 3575 4712 50  0000 C CNN
+F 2 "" H 3575 4975 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3575 4975 50  0001 C CNN
+	4    3575 4975
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3375 4675 3575 4675
+$Comp
+L Device:R_Small R?
+U 1 1 5E981A5E
+P 2125 4575
+AR Path="/5C0A69D0/5E981A5E" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E981A5E" Ref="R10"  Part="1" 
+F 0 "R10" H 2184 4621 50  0000 L CNN
+F 1 "1K" H 2184 4530 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2125 4575 50  0001 C CNN
+F 3 "~" H 2125 4575 50  0001 C CNN
+	1    2125 4575
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2025 4575 1950 4575
+$Comp
+L 4xxx:4013 U?
+U 1 1 5E983B16
+P 2825 5925
+AR Path="/5C0A69D0/5E983B16" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E983B16" Ref="U4"  Part="1" 
+F 0 "U4" H 2825 6403 50  0000 C CNN
+F 1 "4013" H 2825 6312 50  0000 C CNN
+F 2 "" H 2825 5925 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2825 5925 50  0001 C CNN
+	1    2825 5925
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E983B1D
+P 2825 6275
+AR Path="/5BAC374C/5E983B1D" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E983B1D" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E983B1D" Ref="#PWR011"  Part="1" 
+F 0 "#PWR011" H 2825 6025 50  0001 C CNN
+F 1 "GND" H 2825 6125 50  0000 C CNN
+F 2 "" H 2825 6275 50  0000 C CNN
+F 3 "" H 2825 6275 50  0000 C CNN
+	1    2825 6275
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E983B23
+P 3300 5825
+AR Path="/5C0A69D0/5E983B23" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E983B23" Ref="R17"  Part="1" 
+F 0 "R17" H 3359 5871 50  0000 L CNN
+F 1 "1K" H 3359 5780 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3300 5825 50  0001 C CNN
+F 3 "~" H 3300 5825 50  0001 C CNN
+	1    3300 5825
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5E983B2A
+P 1125 5725
+AR Path="/5C0A69D0/5E983B2A" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5E983B2A" Ref="J5"  Part="1" 
+F 0 "J5" V 998 5805 50  0000 L CNN
+F 1 "touch" V 1089 5805 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1125 5725 50  0001 C CNN
+F 3 "" H 1125 5725 50  0001 C CNN
+	1    1125 5725
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3125 5825 3200 5825
+Wire Wire Line
+	3125 6025 3300 6025
+Wire Wire Line
+	3300 6025 3300 5575
+Wire Wire Line
+	2350 5575 2350 5825
+Wire Wire Line
+	2350 5825 2525 5825
+Wire Wire Line
+	2350 5575 3300 5575
+Wire Wire Line
+	2825 6225 2825 6250
+Wire Wire Line
+	2500 5625 2500 6250
+Connection ~ 2825 6250
+Wire Wire Line
+	2825 6250 2825 6275
+Wire Wire Line
+	2500 5625 2825 5625
+Wire Wire Line
+	2250 5925 2525 5925
+Wire Wire Line
+	1325 5725 1350 5725
+Wire Wire Line
+	2500 6250 2825 6250
+$Comp
+L Device:R_Small R?
+U 1 1 5E983B3F
+P 1350 5575
+AR Path="/5C0A69D0/5E983B3F" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E983B3F" Ref="R5"  Part="1" 
+F 0 "R5" H 1409 5621 50  0000 L CNN
+F 1 "1M" H 1409 5530 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 1350 5575 50  0001 C CNN
+F 3 "~" H 1350 5575 50  0001 C CNN
+	1    1350 5575
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 5425 1350 5475
+Wire Wire Line
+	1350 5675 1350 5725
+Connection ~ 1350 5725
+Wire Wire Line
+	1350 5725 1375 5725
+Wire Wire Line
+	2250 5725 2250 5925
+$Comp
+L 4xxx:40106 U?
+U 5 1 5E983B4B
+P 1675 5725
+AR Path="/5C0A69D0/5E983B4B" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E983B4B" Ref="U1"  Part="5" 
+F 0 "U1" H 1675 6042 50  0000 C CNN
+F 1 "40106" H 1675 5951 50  0000 C CNN
+F 2 "" H 1675 5725 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1675 5725 50  0001 C CNN
+	5    1675 5725
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5E983B52
+P 1350 5425
+AR Path="/5BAC374C/5E983B52" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E983B52" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E983B52" Ref="#PWR05"  Part="1" 
+F 0 "#PWR05" H 1350 5275 50  0001 C CNN
+F 1 "+12V" H 1350 5565 50  0000 C CNN
+F 2 "" H 1350 5425 50  0000 C CNN
+F 3 "" H 1350 5425 50  0000 C CNN
+	1    1350 5425
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U6
+U 1 1 5E983B58
+P 3600 6125
+F 0 "U6" H 3600 5953 50  0000 C CNN
+F 1 "4066" H 3600 5862 50  0000 C CNN
+F 2 "" H 3600 6125 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3600 6125 50  0001 C CNN
+	1    3600 6125
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3400 5825 3600 5825
+$Comp
+L Device:R_Small R?
+U 1 1 5E983B60
+P 2150 5725
+AR Path="/5C0A69D0/5E983B60" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E983B60" Ref="R11"  Part="1" 
+F 0 "R11" H 2209 5771 50  0000 L CNN
+F 1 "1K" H 2209 5680 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2150 5725 50  0001 C CNN
+F 3 "~" H 2150 5725 50  0001 C CNN
+	1    2150 5725
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2050 5725 1975 5725
+$Comp
+L 4xxx:4013 U?
+U 2 1 5E9875ED
+P 2825 7100
+AR Path="/5C0A69D0/5E9875ED" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E9875ED" Ref="U4"  Part="2" 
+F 0 "U4" H 2825 7578 50  0000 C CNN
+F 1 "4013" H 2825 7487 50  0000 C CNN
+F 2 "" H 2825 7100 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2825 7100 50  0001 C CNN
+	2    2825 7100
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E9875F4
+P 2825 7450
+AR Path="/5BAC374C/5E9875F4" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E9875F4" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E9875F4" Ref="#PWR012"  Part="1" 
+F 0 "#PWR012" H 2825 7200 50  0001 C CNN
+F 1 "GND" H 2825 7300 50  0000 C CNN
+F 2 "" H 2825 7450 50  0000 C CNN
+F 3 "" H 2825 7450 50  0000 C CNN
+	1    2825 7450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E9875FA
+P 3300 7000
+AR Path="/5C0A69D0/5E9875FA" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E9875FA" Ref="R18"  Part="1" 
+F 0 "R18" H 3359 7046 50  0000 L CNN
+F 1 "1K" H 3359 6955 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3300 7000 50  0001 C CNN
+F 3 "~" H 3300 7000 50  0001 C CNN
+	1    3300 7000
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5E987601
+P 1125 6900
+AR Path="/5C0A69D0/5E987601" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5E987601" Ref="J6"  Part="1" 
+F 0 "J6" V 998 6980 50  0000 L CNN
+F 1 "touch" V 1089 6980 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1125 6900 50  0001 C CNN
+F 3 "" H 1125 6900 50  0001 C CNN
+	1    1125 6900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3125 7000 3200 7000
+Wire Wire Line
+	3125 7200 3300 7200
+Wire Wire Line
+	3300 7200 3300 6750
+Wire Wire Line
+	2350 6750 2350 7000
+Wire Wire Line
+	2350 7000 2525 7000
+Wire Wire Line
+	2350 6750 3300 6750
+Wire Wire Line
+	2825 7400 2825 7425
+Wire Wire Line
+	2500 6800 2500 7425
+Connection ~ 2825 7425
+Wire Wire Line
+	2825 7425 2825 7450
+Wire Wire Line
+	2500 6800 2825 6800
+Wire Wire Line
+	2250 7100 2525 7100
+Wire Wire Line
+	1325 6900 1350 6900
+Wire Wire Line
+	2500 7425 2825 7425
+$Comp
+L Device:R_Small R?
+U 1 1 5E987616
+P 1350 6750
+AR Path="/5C0A69D0/5E987616" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E987616" Ref="R6"  Part="1" 
+F 0 "R6" H 1409 6796 50  0000 L CNN
+F 1 "1M" H 1409 6705 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 1350 6750 50  0001 C CNN
+F 3 "~" H 1350 6750 50  0001 C CNN
+	1    1350 6750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 6600 1350 6650
+Wire Wire Line
+	1350 6850 1350 6900
+Connection ~ 1350 6900
+Wire Wire Line
+	1350 6900 1375 6900
+Wire Wire Line
+	2250 6900 2250 7100
+$Comp
+L 4xxx:40106 U?
+U 6 1 5E987622
+P 1675 6900
+AR Path="/5C0A69D0/5E987622" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5E987622" Ref="U1"  Part="6" 
+F 0 "U1" H 1675 7217 50  0000 C CNN
+F 1 "40106" H 1675 7126 50  0000 C CNN
+F 2 "" H 1675 6900 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1675 6900 50  0001 C CNN
+	6    1675 6900
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5E987629
+P 1350 6600
+AR Path="/5BAC374C/5E987629" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E987629" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E987629" Ref="#PWR06"  Part="1" 
+F 0 "#PWR06" H 1350 6450 50  0001 C CNN
+F 1 "+12V" H 1350 6740 50  0000 C CNN
+F 2 "" H 1350 6600 50  0000 C CNN
+F 3 "" H 1350 6600 50  0000 C CNN
+	1    1350 6600
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U6
+U 2 1 5E98762F
+P 3600 7300
+F 0 "U6" H 3600 7128 50  0000 C CNN
+F 1 "4066" H 3600 7037 50  0000 C CNN
+F 2 "" H 3600 7300 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3600 7300 50  0001 C CNN
+	2    3600 7300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3400 7000 3600 7000
+$Comp
+L Device:R_Small R?
+U 1 1 5E987637
+P 2150 6900
+AR Path="/5C0A69D0/5E987637" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E987637" Ref="R12"  Part="1" 
+F 0 "R12" H 2209 6946 50  0000 L CNN
+F 1 "1K" H 2209 6855 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2150 6900 50  0001 C CNN
+F 3 "~" H 2150 6900 50  0001 C CNN
+	1    2150 6900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2050 6900 1975 6900
+$Comp
+L power:+9V #PWR037
+U 1 1 5E998279
+P 8675 750
+F 0 "#PWR037" H 8675 600 50  0001 C CNN
+F 1 "+9V" H 8690 923 50  0000 C CNN
+F 2 "" H 8675 750 50  0001 C CNN
+F 3 "" H 8675 750 50  0001 C CNN
+	1    8675 750 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR041
+U 1 1 5E9983BF
+P 8725 2200
+F 0 "#PWR041" H 8725 2050 50  0001 C CNN
+F 1 "+9V" H 8740 2373 50  0000 C CNN
+F 2 "" H 8725 2200 50  0001 C CNN
+F 3 "" H 8725 2200 50  0001 C CNN
+	1    8725 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4013 U?
+U 3 1 5E998566
+P 9400 2650
+AR Path="/5C0A69D0/5E998566" Ref="U?"  Part="3" 
+AR Path="/5E97CA7E/5E998566" Ref="U8"  Part="3" 
+F 0 "U8" H 9630 2696 50  0000 L CNN
+F 1 "4013" H 9630 2605 50  0000 L CNN
+F 2 "" H 9400 2650 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 9400 2650 50  0001 C CNN
+	3    9400 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E99856D
+P 9400 3100
+AR Path="/5BAC374C/5E99856D" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E99856D" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E99856D" Ref="#PWR040"  Part="1" 
+F 0 "#PWR040" H 9400 2850 50  0001 C CNN
+F 1 "GND" H 9400 2950 50  0000 C CNN
+F 2 "" H 9400 3100 50  0000 C CNN
+F 3 "" H 9400 3100 50  0000 C CNN
+	1    9400 3100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9400 2200 9400 2250
+Wire Wire Line
+	9400 3050 9400 3100
+$Comp
+L power:+9V #PWR039
+U 1 1 5E998575
+P 9400 2200
+F 0 "#PWR039" H 9400 2050 50  0001 C CNN
+F 1 "+9V" H 9415 2373 50  0000 C CNN
+F 2 "" H 9400 2200 50  0001 C CNN
+F 3 "" H 9400 2200 50  0001 C CNN
+	1    9400 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4013 U?
+U 3 1 5E99C6CD
+P 9400 3950
+AR Path="/5C0A69D0/5E99C6CD" Ref="U?"  Part="3" 
+AR Path="/5E97CA7E/5E99C6CD" Ref="U10"  Part="3" 
+F 0 "U10" H 9630 3996 50  0000 L CNN
+F 1 "4013" H 9630 3905 50  0000 L CNN
+F 2 "" H 9400 3950 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 9400 3950 50  0001 C CNN
+	3    9400 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5E99C6D4
+P 9400 4400
+AR Path="/5BAC374C/5E99C6D4" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5E99C6D4" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5E99C6D4" Ref="#PWR044"  Part="1" 
+F 0 "#PWR044" H 9400 4150 50  0001 C CNN
+F 1 "GND" H 9400 4250 50  0000 C CNN
+F 2 "" H 9400 4400 50  0000 C CNN
+F 3 "" H 9400 4400 50  0000 C CNN
+	1    9400 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9400 3500 9400 3550
+Wire Wire Line
+	9400 4350 9400 4400
+$Comp
+L power:+9V #PWR043
+U 1 1 5E99C6DC
+P 9400 3500
+F 0 "#PWR043" H 9400 3350 50  0001 C CNN
+F 1 "+9V" H 9415 3673 50  0000 C CNN
+F 2 "" H 9400 3500 50  0001 C CNN
+F 3 "" H 9400 3500 50  0001 C CNN
+	1    9400 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U11
+U 5 1 5E9A4C6F
+P 9750 5675
+F 0 "U11" H 9980 5721 50  0000 L CNN
+F 1 "4066" H 9980 5630 50  0000 L CNN
+F 2 "" H 9750 5675 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 9750 5675 50  0001 C CNN
+	5    9750 5675
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR047
+U 1 1 5E9A4C76
+P 9750 5100
+F 0 "#PWR047" H 9750 4950 50  0001 C CNN
+F 1 "+9V" H 9765 5273 50  0000 C CNN
+F 2 "" H 9750 5100 50  0001 C CNN
+F 3 "" H 9750 5100 50  0001 C CNN
+	1    9750 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-9V #PWR048
+U 1 1 5E9A4C7C
+P 9750 6275
+F 0 "#PWR048" H 9750 6150 50  0001 C CNN
+F 1 "-9V" H 9765 6448 50  0000 C CNN
+F 2 "" H 9750 6275 50  0001 C CNN
+F 3 "" H 9750 6275 50  0001 C CNN
+	1    9750 6275
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9750 5100 9750 5175
+Wire Wire Line
+	9750 6175 9750 6275
+$Comp
+L 4xxx:4013 U?
+U 1 1 5EA023B7
+P 5725 1200
+AR Path="/5C0A69D0/5EA023B7" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA023B7" Ref="U8"  Part="1" 
+F 0 "U8" H 5725 1678 50  0000 C CNN
+F 1 "4013" H 5725 1587 50  0000 C CNN
+F 2 "" H 5725 1200 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 5725 1200 50  0001 C CNN
+	1    5725 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA023BE
+P 5725 1550
+AR Path="/5BAC374C/5EA023BE" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA023BE" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA023BE" Ref="#PWR020"  Part="1" 
+F 0 "#PWR020" H 5725 1300 50  0001 C CNN
+F 1 "GND" H 5725 1400 50  0000 C CNN
+F 2 "" H 5725 1550 50  0000 C CNN
+F 3 "" H 5725 1550 50  0000 C CNN
+	1    5725 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EA023C4
+P 6200 1100
+AR Path="/5C0A69D0/5EA023C4" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA023C4" Ref="R32"  Part="1" 
+F 0 "R32" H 6259 1146 50  0000 L CNN
+F 1 "1K" H 6259 1055 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6200 1100 50  0001 C CNN
+F 3 "~" H 6200 1100 50  0001 C CNN
+	1    6200 1100
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EA023CB
+P 4025 1000
+AR Path="/5C0A69D0/5EA023CB" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EA023CB" Ref="J8"  Part="1" 
+F 0 "J8" V 3898 1080 50  0000 L CNN
+F 1 "touch" V 3989 1080 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4025 1000 50  0001 C CNN
+F 3 "" H 4025 1000 50  0001 C CNN
+	1    4025 1000
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6025 1100 6100 1100
+Wire Wire Line
+	6025 1300 6200 1300
+Wire Wire Line
+	6200 1300 6200 850 
+Wire Wire Line
+	5250 850  5250 1100
+Wire Wire Line
+	5250 1100 5425 1100
+Wire Wire Line
+	5250 850  6200 850 
+Wire Wire Line
+	5725 1500 5725 1525
+Wire Wire Line
+	5400 900  5400 1525
+Connection ~ 5725 1525
+Wire Wire Line
+	5725 1525 5725 1550
+Wire Wire Line
+	5400 900  5725 900 
+Wire Wire Line
+	5150 1200 5425 1200
+Wire Wire Line
+	4225 1000 4250 1000
+Wire Wire Line
+	5400 1525 5725 1525
+$Comp
+L Device:R_Small R?
+U 1 1 5EA023E0
+P 4250 850
+AR Path="/5C0A69D0/5EA023E0" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA023E0" Ref="R20"  Part="1" 
+F 0 "R20" H 4309 896 50  0000 L CNN
+F 1 "1M" H 4309 805 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 4250 850 50  0001 C CNN
+F 3 "~" H 4250 850 50  0001 C CNN
+	1    4250 850 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4250 700  4250 750 
+Wire Wire Line
+	4250 950  4250 1000
+Connection ~ 4250 1000
+Wire Wire Line
+	4250 1000 4275 1000
+Wire Wire Line
+	5150 1000 5150 1200
+$Comp
+L 4xxx:40106 U?
+U 1 1 5EA023EC
+P 4575 1000
+AR Path="/5C0A69D0/5EA023EC" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA023EC" Ref="U7"  Part="1" 
+F 0 "U7" H 4575 1317 50  0000 C CNN
+F 1 "40106" H 4575 1226 50  0000 C CNN
+F 2 "" H 4575 1000 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4575 1000 50  0001 C CNN
+	1    4575 1000
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5EA023F3
+P 4250 700
+AR Path="/5BAC374C/5EA023F3" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA023F3" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA023F3" Ref="#PWR014"  Part="1" 
+F 0 "#PWR014" H 4250 550 50  0001 C CNN
+F 1 "+12V" H 4250 840 50  0000 C CNN
+F 2 "" H 4250 700 50  0000 C CNN
+F 3 "" H 4250 700 50  0000 C CNN
+	1    4250 700 
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U6
+U 3 1 5EA023F9
+P 6500 1400
+F 0 "U6" H 6500 1228 50  0000 C CNN
+F 1 "4066" H 6500 1137 50  0000 C CNN
+F 2 "" H 6500 1400 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 6500 1400 50  0001 C CNN
+	3    6500 1400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6300 1100 6500 1100
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02401
+P 5050 1000
+AR Path="/5C0A69D0/5EA02401" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02401" Ref="R26"  Part="1" 
+F 0 "R26" H 5109 1046 50  0000 L CNN
+F 1 "1K" H 5109 955 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 5050 1000 50  0001 C CNN
+F 3 "~" H 5050 1000 50  0001 C CNN
+	1    5050 1000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4950 1000 4875 1000
+$Comp
+L 4xxx:4013 U?
+U 2 1 5EA02409
+P 5700 2425
+AR Path="/5C0A69D0/5EA02409" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA02409" Ref="U8"  Part="2" 
+F 0 "U8" H 5700 2903 50  0000 C CNN
+F 1 "4013" H 5700 2812 50  0000 C CNN
+F 2 "" H 5700 2425 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 5700 2425 50  0001 C CNN
+	2    5700 2425
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA02410
+P 5700 2775
+AR Path="/5BAC374C/5EA02410" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA02410" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA02410" Ref="#PWR019"  Part="1" 
+F 0 "#PWR019" H 5700 2525 50  0001 C CNN
+F 1 "GND" H 5700 2625 50  0000 C CNN
+F 2 "" H 5700 2775 50  0000 C CNN
+F 3 "" H 5700 2775 50  0000 C CNN
+	1    5700 2775
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02416
+P 6175 2325
+AR Path="/5C0A69D0/5EA02416" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02416" Ref="R31"  Part="1" 
+F 0 "R31" H 6234 2371 50  0000 L CNN
+F 1 "1K" H 6234 2280 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6175 2325 50  0001 C CNN
+F 3 "~" H 6175 2325 50  0001 C CNN
+	1    6175 2325
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EA0241D
+P 4000 2225
+AR Path="/5C0A69D0/5EA0241D" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EA0241D" Ref="J7"  Part="1" 
+F 0 "J7" V 3873 2305 50  0000 L CNN
+F 1 "touch" V 3964 2305 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4000 2225 50  0001 C CNN
+F 3 "" H 4000 2225 50  0001 C CNN
+	1    4000 2225
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6000 2325 6075 2325
+Wire Wire Line
+	6000 2525 6175 2525
+Wire Wire Line
+	6175 2525 6175 2075
+Wire Wire Line
+	5225 2075 5225 2325
+Wire Wire Line
+	5225 2325 5400 2325
+Wire Wire Line
+	5225 2075 6175 2075
+Wire Wire Line
+	5700 2725 5700 2750
+Wire Wire Line
+	5375 2125 5375 2750
+Connection ~ 5700 2750
+Wire Wire Line
+	5700 2750 5700 2775
+Wire Wire Line
+	5375 2125 5700 2125
+Wire Wire Line
+	5125 2425 5400 2425
+Wire Wire Line
+	4200 2225 4225 2225
+Wire Wire Line
+	5375 2750 5700 2750
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02432
+P 4225 2075
+AR Path="/5C0A69D0/5EA02432" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02432" Ref="R19"  Part="1" 
+F 0 "R19" H 4284 2121 50  0000 L CNN
+F 1 "1M" H 4284 2030 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 4225 2075 50  0001 C CNN
+F 3 "~" H 4225 2075 50  0001 C CNN
+	1    4225 2075
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4225 1925 4225 1975
+Wire Wire Line
+	4225 2175 4225 2225
+Connection ~ 4225 2225
+Wire Wire Line
+	4225 2225 4250 2225
+Wire Wire Line
+	5125 2225 5125 2425
+$Comp
+L 4xxx:40106 U?
+U 2 1 5EA0243E
+P 4550 2225
+AR Path="/5C0A69D0/5EA0243E" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA0243E" Ref="U7"  Part="2" 
+F 0 "U7" H 4550 2542 50  0000 C CNN
+F 1 "40106" H 4550 2451 50  0000 C CNN
+F 2 "" H 4550 2225 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4550 2225 50  0001 C CNN
+	2    4550 2225
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5EA02445
+P 4225 1925
+AR Path="/5BAC374C/5EA02445" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA02445" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA02445" Ref="#PWR013"  Part="1" 
+F 0 "#PWR013" H 4225 1775 50  0001 C CNN
+F 1 "+12V" H 4225 2065 50  0000 C CNN
+F 2 "" H 4225 1925 50  0000 C CNN
+F 3 "" H 4225 1925 50  0000 C CNN
+	1    4225 1925
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U6
+U 4 1 5EA0244B
+P 6475 2625
+F 0 "U6" H 6475 2453 50  0000 C CNN
+F 1 "4066" H 6475 2362 50  0000 C CNN
+F 2 "" H 6475 2625 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 6475 2625 50  0001 C CNN
+	4    6475 2625
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6275 2325 6475 2325
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02453
+P 5025 2225
+AR Path="/5C0A69D0/5EA02453" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02453" Ref="R25"  Part="1" 
+F 0 "R25" H 5084 2271 50  0000 L CNN
+F 1 "1K" H 5084 2180 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 5025 2225 50  0001 C CNN
+F 3 "~" H 5025 2225 50  0001 C CNN
+	1    5025 2225
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4925 2225 4850 2225
+$Comp
+L 4xxx:4013 U?
+U 1 1 5EA0245B
+P 5750 3625
+AR Path="/5C0A69D0/5EA0245B" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA0245B" Ref="U9"  Part="1" 
+F 0 "U9" H 5750 4103 50  0000 C CNN
+F 1 "4013" H 5750 4012 50  0000 C CNN
+F 2 "" H 5750 3625 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 5750 3625 50  0001 C CNN
+	1    5750 3625
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA02462
+P 5750 3975
+AR Path="/5BAC374C/5EA02462" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA02462" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA02462" Ref="#PWR021"  Part="1" 
+F 0 "#PWR021" H 5750 3725 50  0001 C CNN
+F 1 "GND" H 5750 3825 50  0000 C CNN
+F 2 "" H 5750 3975 50  0000 C CNN
+F 3 "" H 5750 3975 50  0000 C CNN
+	1    5750 3975
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02468
+P 6225 3525
+AR Path="/5C0A69D0/5EA02468" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02468" Ref="R33"  Part="1" 
+F 0 "R33" H 6284 3571 50  0000 L CNN
+F 1 "1K" H 6284 3480 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6225 3525 50  0001 C CNN
+F 3 "~" H 6225 3525 50  0001 C CNN
+	1    6225 3525
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EA0246F
+P 4050 3425
+AR Path="/5C0A69D0/5EA0246F" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EA0246F" Ref="J9"  Part="1" 
+F 0 "J9" V 3923 3505 50  0000 L CNN
+F 1 "touch" V 4014 3505 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4050 3425 50  0001 C CNN
+F 3 "" H 4050 3425 50  0001 C CNN
+	1    4050 3425
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6050 3525 6125 3525
+Wire Wire Line
+	6050 3725 6225 3725
+Wire Wire Line
+	6225 3725 6225 3275
+Wire Wire Line
+	5275 3275 5275 3525
+Wire Wire Line
+	5275 3525 5450 3525
+Wire Wire Line
+	5275 3275 6225 3275
+Wire Wire Line
+	5750 3925 5750 3950
+Wire Wire Line
+	5425 3325 5425 3950
+Connection ~ 5750 3950
+Wire Wire Line
+	5750 3950 5750 3975
+Wire Wire Line
+	5425 3325 5750 3325
+Wire Wire Line
+	5175 3625 5450 3625
+Wire Wire Line
+	4250 3425 4275 3425
+Wire Wire Line
+	5425 3950 5750 3950
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02484
+P 4275 3275
+AR Path="/5C0A69D0/5EA02484" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02484" Ref="R21"  Part="1" 
+F 0 "R21" H 4334 3321 50  0000 L CNN
+F 1 "1M" H 4334 3230 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 4275 3275 50  0001 C CNN
+F 3 "~" H 4275 3275 50  0001 C CNN
+	1    4275 3275
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4275 3125 4275 3175
+Wire Wire Line
+	4275 3375 4275 3425
+Connection ~ 4275 3425
+Wire Wire Line
+	4275 3425 4300 3425
+Wire Wire Line
+	5175 3425 5175 3625
+$Comp
+L 4xxx:40106 U?
+U 3 1 5EA02490
+P 4600 3425
+AR Path="/5C0A69D0/5EA02490" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA02490" Ref="U7"  Part="3" 
+F 0 "U7" H 4600 3742 50  0000 C CNN
+F 1 "40106" H 4600 3651 50  0000 C CNN
+F 2 "" H 4600 3425 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4600 3425 50  0001 C CNN
+	3    4600 3425
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5EA02497
+P 4275 3125
+AR Path="/5BAC374C/5EA02497" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA02497" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA02497" Ref="#PWR015"  Part="1" 
+F 0 "#PWR015" H 4275 2975 50  0001 C CNN
+F 1 "+12V" H 4275 3265 50  0000 C CNN
+F 2 "" H 4275 3125 50  0000 C CNN
+F 3 "" H 4275 3125 50  0000 C CNN
+	1    4275 3125
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U11
+U 1 1 5EA0249D
+P 6525 3825
+F 0 "U11" H 6525 3653 50  0000 C CNN
+F 1 "4066" H 6525 3562 50  0000 C CNN
+F 2 "" H 6525 3825 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 6525 3825 50  0001 C CNN
+	1    6525 3825
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6325 3525 6525 3525
+$Comp
+L Device:R_Small R?
+U 1 1 5EA024A5
+P 5075 3425
+AR Path="/5C0A69D0/5EA024A5" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA024A5" Ref="R27"  Part="1" 
+F 0 "R27" H 5134 3471 50  0000 L CNN
+F 1 "1K" H 5134 3380 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 5075 3425 50  0001 C CNN
+F 3 "~" H 5075 3425 50  0001 C CNN
+	1    5075 3425
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4975 3425 4900 3425
+$Comp
+L 4xxx:4013 U?
+U 2 1 5EA024AD
+P 5750 4800
+AR Path="/5C0A69D0/5EA024AD" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA024AD" Ref="U9"  Part="2" 
+F 0 "U9" H 5750 5278 50  0000 C CNN
+F 1 "4013" H 5750 5187 50  0000 C CNN
+F 2 "" H 5750 4800 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 5750 4800 50  0001 C CNN
+	2    5750 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA024B4
+P 5750 5150
+AR Path="/5BAC374C/5EA024B4" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA024B4" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA024B4" Ref="#PWR022"  Part="1" 
+F 0 "#PWR022" H 5750 4900 50  0001 C CNN
+F 1 "GND" H 5750 5000 50  0000 C CNN
+F 2 "" H 5750 5150 50  0000 C CNN
+F 3 "" H 5750 5150 50  0000 C CNN
+	1    5750 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EA024BA
+P 6225 4700
+AR Path="/5C0A69D0/5EA024BA" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA024BA" Ref="R34"  Part="1" 
+F 0 "R34" H 6284 4746 50  0000 L CNN
+F 1 "1K" H 6284 4655 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6225 4700 50  0001 C CNN
+F 3 "~" H 6225 4700 50  0001 C CNN
+	1    6225 4700
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EA024C1
+P 4050 4600
+AR Path="/5C0A69D0/5EA024C1" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EA024C1" Ref="J10"  Part="1" 
+F 0 "J10" V 3923 4680 50  0000 L CNN
+F 1 "touch" V 4014 4680 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4050 4600 50  0001 C CNN
+F 3 "" H 4050 4600 50  0001 C CNN
+	1    4050 4600
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6050 4700 6125 4700
+Wire Wire Line
+	6050 4900 6225 4900
+Wire Wire Line
+	6225 4900 6225 4450
+Wire Wire Line
+	5275 4450 5275 4700
+Wire Wire Line
+	5275 4700 5450 4700
+Wire Wire Line
+	5275 4450 6225 4450
+Wire Wire Line
+	5750 5100 5750 5125
+Wire Wire Line
+	5425 4500 5425 5125
+Connection ~ 5750 5125
+Wire Wire Line
+	5750 5125 5750 5150
+Wire Wire Line
+	5425 4500 5750 4500
+Wire Wire Line
+	5175 4800 5450 4800
+Wire Wire Line
+	4250 4600 4275 4600
+Wire Wire Line
+	5425 5125 5750 5125
+$Comp
+L Device:R_Small R?
+U 1 1 5EA024D6
+P 4275 4450
+AR Path="/5C0A69D0/5EA024D6" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA024D6" Ref="R22"  Part="1" 
+F 0 "R22" H 4334 4496 50  0000 L CNN
+F 1 "1M" H 4334 4405 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 4275 4450 50  0001 C CNN
+F 3 "~" H 4275 4450 50  0001 C CNN
+	1    4275 4450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4275 4300 4275 4350
+Wire Wire Line
+	4275 4550 4275 4600
+Connection ~ 4275 4600
+Wire Wire Line
+	4275 4600 4300 4600
+Wire Wire Line
+	5175 4600 5175 4800
+$Comp
+L 4xxx:40106 U?
+U 4 1 5EA024E2
+P 4600 4600
+AR Path="/5C0A69D0/5EA024E2" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA024E2" Ref="U7"  Part="4" 
+F 0 "U7" H 4600 4917 50  0000 C CNN
+F 1 "40106" H 4600 4826 50  0000 C CNN
+F 2 "" H 4600 4600 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4600 4600 50  0001 C CNN
+	4    4600 4600
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5EA024E9
+P 4275 4300
+AR Path="/5BAC374C/5EA024E9" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA024E9" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA024E9" Ref="#PWR016"  Part="1" 
+F 0 "#PWR016" H 4275 4150 50  0001 C CNN
+F 1 "+12V" H 4275 4440 50  0000 C CNN
+F 2 "" H 4275 4300 50  0000 C CNN
+F 3 "" H 4275 4300 50  0000 C CNN
+	1    4275 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U11
+U 2 1 5EA024EF
+P 6525 5000
+F 0 "U11" H 6525 4828 50  0000 C CNN
+F 1 "4066" H 6525 4737 50  0000 C CNN
+F 2 "" H 6525 5000 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 6525 5000 50  0001 C CNN
+	2    6525 5000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6325 4700 6525 4700
+$Comp
+L Device:R_Small R?
+U 1 1 5EA024F7
+P 5075 4600
+AR Path="/5C0A69D0/5EA024F7" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA024F7" Ref="R28"  Part="1" 
+F 0 "R28" H 5134 4646 50  0000 L CNN
+F 1 "1K" H 5134 4555 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 5075 4600 50  0001 C CNN
+F 3 "~" H 5075 4600 50  0001 C CNN
+	1    5075 4600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4975 4600 4900 4600
+$Comp
+L 4xxx:4013 U?
+U 1 1 5EA024FF
+P 5775 5950
+AR Path="/5C0A69D0/5EA024FF" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA024FF" Ref="U10"  Part="1" 
+F 0 "U10" H 5775 6428 50  0000 C CNN
+F 1 "4013" H 5775 6337 50  0000 C CNN
+F 2 "" H 5775 5950 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 5775 5950 50  0001 C CNN
+	1    5775 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA02506
+P 5775 6300
+AR Path="/5BAC374C/5EA02506" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA02506" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA02506" Ref="#PWR023"  Part="1" 
+F 0 "#PWR023" H 5775 6050 50  0001 C CNN
+F 1 "GND" H 5775 6150 50  0000 C CNN
+F 2 "" H 5775 6300 50  0000 C CNN
+F 3 "" H 5775 6300 50  0000 C CNN
+	1    5775 6300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EA0250C
+P 6250 5850
+AR Path="/5C0A69D0/5EA0250C" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA0250C" Ref="R35"  Part="1" 
+F 0 "R35" H 6309 5896 50  0000 L CNN
+F 1 "1K" H 6309 5805 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6250 5850 50  0001 C CNN
+F 3 "~" H 6250 5850 50  0001 C CNN
+	1    6250 5850
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EA02513
+P 4075 5750
+AR Path="/5C0A69D0/5EA02513" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EA02513" Ref="J11"  Part="1" 
+F 0 "J11" V 3948 5830 50  0000 L CNN
+F 1 "touch" V 4039 5830 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4075 5750 50  0001 C CNN
+F 3 "" H 4075 5750 50  0001 C CNN
+	1    4075 5750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6075 5850 6150 5850
+Wire Wire Line
+	6075 6050 6250 6050
+Wire Wire Line
+	6250 6050 6250 5600
+Wire Wire Line
+	5300 5600 5300 5850
+Wire Wire Line
+	5300 5850 5475 5850
+Wire Wire Line
+	5300 5600 6250 5600
+Wire Wire Line
+	5775 6250 5775 6275
+Wire Wire Line
+	5450 5650 5450 6275
+Connection ~ 5775 6275
+Wire Wire Line
+	5775 6275 5775 6300
+Wire Wire Line
+	5450 5650 5775 5650
+Wire Wire Line
+	5200 5950 5475 5950
+Wire Wire Line
+	4275 5750 4300 5750
+Wire Wire Line
+	5450 6275 5775 6275
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02528
+P 4300 5600
+AR Path="/5C0A69D0/5EA02528" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02528" Ref="R23"  Part="1" 
+F 0 "R23" H 4359 5646 50  0000 L CNN
+F 1 "1M" H 4359 5555 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 4300 5600 50  0001 C CNN
+F 3 "~" H 4300 5600 50  0001 C CNN
+	1    4300 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 5450 4300 5500
+Wire Wire Line
+	4300 5700 4300 5750
+Connection ~ 4300 5750
+Wire Wire Line
+	4300 5750 4325 5750
+Wire Wire Line
+	5200 5750 5200 5950
+$Comp
+L 4xxx:40106 U?
+U 5 1 5EA02534
+P 4625 5750
+AR Path="/5C0A69D0/5EA02534" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA02534" Ref="U7"  Part="5" 
+F 0 "U7" H 4625 6067 50  0000 C CNN
+F 1 "40106" H 4625 5976 50  0000 C CNN
+F 2 "" H 4625 5750 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4625 5750 50  0001 C CNN
+	5    4625 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5EA0253B
+P 4300 5450
+AR Path="/5BAC374C/5EA0253B" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA0253B" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA0253B" Ref="#PWR017"  Part="1" 
+F 0 "#PWR017" H 4300 5300 50  0001 C CNN
+F 1 "+12V" H 4300 5590 50  0000 C CNN
+F 2 "" H 4300 5450 50  0000 C CNN
+F 3 "" H 4300 5450 50  0000 C CNN
+	1    4300 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U11
+U 3 1 5EA02541
+P 6550 6150
+F 0 "U11" H 6550 5978 50  0000 C CNN
+F 1 "4066" H 6550 5887 50  0000 C CNN
+F 2 "" H 6550 6150 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 6550 6150 50  0001 C CNN
+	3    6550 6150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6350 5850 6550 5850
+$Comp
+L Device:R_Small R?
+U 1 1 5EA02549
+P 5100 5750
+AR Path="/5C0A69D0/5EA02549" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA02549" Ref="R29"  Part="1" 
+F 0 "R29" H 5159 5796 50  0000 L CNN
+F 1 "1K" H 5159 5705 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 5100 5750 50  0001 C CNN
+F 3 "~" H 5100 5750 50  0001 C CNN
+	1    5100 5750
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5000 5750 4925 5750
+$Comp
+L 4xxx:4013 U?
+U 2 1 5EA02551
+P 5775 7125
+AR Path="/5C0A69D0/5EA02551" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA02551" Ref="U10"  Part="2" 
+F 0 "U10" H 5775 7603 50  0000 C CNN
+F 1 "4013" H 5775 7512 50  0000 C CNN
+F 2 "" H 5775 7125 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 5775 7125 50  0001 C CNN
+	2    5775 7125
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA02558
+P 5775 7475
+AR Path="/5BAC374C/5EA02558" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA02558" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA02558" Ref="#PWR024"  Part="1" 
+F 0 "#PWR024" H 5775 7225 50  0001 C CNN
+F 1 "GND" H 5775 7325 50  0000 C CNN
+F 2 "" H 5775 7475 50  0000 C CNN
+F 3 "" H 5775 7475 50  0000 C CNN
+	1    5775 7475
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EA0255E
+P 6250 7025
+AR Path="/5C0A69D0/5EA0255E" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA0255E" Ref="R36"  Part="1" 
+F 0 "R36" H 6309 7071 50  0000 L CNN
+F 1 "1K" H 6309 6980 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6250 7025 50  0001 C CNN
+F 3 "~" H 6250 7025 50  0001 C CNN
+	1    6250 7025
+	0    1    1    0   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EA02565
+P 4075 6925
+AR Path="/5C0A69D0/5EA02565" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EA02565" Ref="J12"  Part="1" 
+F 0 "J12" V 3948 7005 50  0000 L CNN
+F 1 "touch" V 4039 7005 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4075 6925 50  0001 C CNN
+F 3 "" H 4075 6925 50  0001 C CNN
+	1    4075 6925
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6075 7025 6150 7025
+Wire Wire Line
+	6075 7225 6250 7225
+Wire Wire Line
+	6250 7225 6250 6775
+Wire Wire Line
+	5300 6775 5300 7025
+Wire Wire Line
+	5300 7025 5475 7025
+Wire Wire Line
+	5300 6775 6250 6775
+Wire Wire Line
+	5775 7425 5775 7450
+Wire Wire Line
+	5450 6825 5450 7450
+Connection ~ 5775 7450
+Wire Wire Line
+	5775 7450 5775 7475
+Wire Wire Line
+	5450 6825 5775 6825
+Wire Wire Line
+	5200 7125 5475 7125
+Wire Wire Line
+	4275 6925 4300 6925
+Wire Wire Line
+	5450 7450 5775 7450
+$Comp
+L Device:R_Small R?
+U 1 1 5EA0257A
+P 4300 6775
+AR Path="/5C0A69D0/5EA0257A" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA0257A" Ref="R24"  Part="1" 
+F 0 "R24" H 4359 6821 50  0000 L CNN
+F 1 "1M" H 4359 6730 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 4300 6775 50  0001 C CNN
+F 3 "~" H 4300 6775 50  0001 C CNN
+	1    4300 6775
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 6625 4300 6675
+Wire Wire Line
+	4300 6875 4300 6925
+Connection ~ 4300 6925
+Wire Wire Line
+	4300 6925 4325 6925
+Wire Wire Line
+	5200 6925 5200 7125
+$Comp
+L 4xxx:40106 U?
+U 6 1 5EA02586
+P 4625 6925
+AR Path="/5C0A69D0/5EA02586" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EA02586" Ref="U7"  Part="6" 
+F 0 "U7" H 4625 7242 50  0000 C CNN
+F 1 "40106" H 4625 7151 50  0000 C CNN
+F 2 "" H 4625 6925 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4625 6925 50  0001 C CNN
+	6    4625 6925
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5EA0258D
+P 4300 6625
+AR Path="/5BAC374C/5EA0258D" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA0258D" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA0258D" Ref="#PWR018"  Part="1" 
+F 0 "#PWR018" H 4300 6475 50  0001 C CNN
+F 1 "+12V" H 4300 6765 50  0000 C CNN
+F 2 "" H 4300 6625 50  0000 C CNN
+F 3 "" H 4300 6625 50  0000 C CNN
+	1    4300 6625
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U11
+U 4 1 5EA02593
+P 6550 7325
+F 0 "U11" H 6550 7153 50  0000 C CNN
+F 1 "4066" H 6550 7062 50  0000 C CNN
+F 2 "" H 6550 7325 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 6550 7325 50  0001 C CNN
+	4    6550 7325
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6350 7025 6550 7025
+$Comp
+L Device:R_Small R?
+U 1 1 5EA0259B
+P 5100 6925
+AR Path="/5C0A69D0/5EA0259B" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EA0259B" Ref="R30"  Part="1" 
+F 0 "R30" H 5159 6971 50  0000 L CNN
+F 1 "1K" H 5159 6880 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 5100 6925 50  0001 C CNN
+F 3 "~" H 5100 6925 50  0001 C CNN
+	1    5100 6925
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5000 6925 4925 6925
+$Comp
+L 4xxx:4013 U?
+U 3 1 5EA0FF65
+P 8050 2650
+AR Path="/5C0A69D0/5EA0FF65" Ref="U?"  Part="3" 
+AR Path="/5E97CA7E/5EA0FF65" Ref="U3"  Part="3" 
+F 0 "U3" H 8280 2696 50  0000 L CNN
+F 1 "4013" H 8280 2605 50  0000 L CNN
+F 2 "" H 8050 2650 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 8050 2650 50  0001 C CNN
+	3    8050 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA0FF6C
+P 8050 3100
+AR Path="/5BAC374C/5EA0FF6C" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA0FF6C" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA0FF6C" Ref="#PWR030"  Part="1" 
+F 0 "#PWR030" H 8050 2850 50  0001 C CNN
+F 1 "GND" H 8050 2950 50  0000 C CNN
+F 2 "" H 8050 3100 50  0000 C CNN
+F 3 "" H 8050 3100 50  0000 C CNN
+	1    8050 3100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 2200 8050 2250
+Wire Wire Line
+	8050 3050 8050 3100
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA0FF74
+P 8050 1825
+AR Path="/5BAC374C/5EA0FF74" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA0FF74" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA0FF74" Ref="#PWR026"  Part="1" 
+F 0 "#PWR026" H 8050 1575 50  0001 C CNN
+F 1 "GND" H 8050 1675 50  0000 C CNN
+F 2 "" H 8050 1825 50  0000 C CNN
+F 3 "" H 8050 1825 50  0000 C CNN
+	1    8050 1825
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 725  8050 775 
+Wire Wire Line
+	8050 1775 8050 1825
+$Comp
+L 4xxx:40106 U?
+U 7 1 5EA0FF7C
+P 8050 1275
+AR Path="/5C0A69D0/5EA0FF7C" Ref="U?"  Part="7" 
+AR Path="/5E97CA7E/5EA0FF7C" Ref="U1"  Part="7" 
+F 0 "U1" H 8280 1321 50  0000 L CNN
+F 1 "40106" H 8280 1230 50  0000 L CNN
+F 2 "" H 8050 1275 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 8050 1275 50  0001 C CNN
+	7    8050 1275
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U5
+U 5 1 5EA0FF83
+P 8525 5650
+F 0 "U5" H 8755 5696 50  0000 L CNN
+F 1 "4066" H 8755 5605 50  0000 L CNN
+F 2 "" H 8525 5650 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 8525 5650 50  0001 C CNN
+	5    8525 5650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR033
+U 1 1 5EA0FF8A
+P 8525 5075
+F 0 "#PWR033" H 8525 4925 50  0001 C CNN
+F 1 "+9V" H 8540 5248 50  0000 C CNN
+F 2 "" H 8525 5075 50  0001 C CNN
+F 3 "" H 8525 5075 50  0001 C CNN
+	1    8525 5075
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-9V #PWR034
+U 1 1 5EA0FF90
+P 8525 6250
+F 0 "#PWR034" H 8525 6125 50  0001 C CNN
+F 1 "-9V" H 8540 6423 50  0000 C CNN
+F 2 "" H 8525 6250 50  0001 C CNN
+F 3 "" H 8525 6250 50  0001 C CNN
+	1    8525 6250
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8525 5075 8525 5150
+Wire Wire Line
+	8525 6150 8525 6250
+$Comp
+L power:+9V #PWR025
+U 1 1 5EA0FF98
+P 8050 725
+F 0 "#PWR025" H 8050 575 50  0001 C CNN
+F 1 "+9V" H 8065 898 50  0000 C CNN
+F 2 "" H 8050 725 50  0001 C CNN
+F 3 "" H 8050 725 50  0001 C CNN
+	1    8050 725 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR029
+U 1 1 5EA0FF9E
+P 8050 2200
+F 0 "#PWR029" H 8050 2050 50  0001 C CNN
+F 1 "+9V" H 8065 2373 50  0000 C CNN
+F 2 "" H 8050 2200 50  0001 C CNN
+F 3 "" H 8050 2200 50  0001 C CNN
+	1    8050 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4013 U?
+U 3 1 5EA0FFA4
+P 8025 3975
+AR Path="/5C0A69D0/5EA0FFA4" Ref="U?"  Part="3" 
+AR Path="/5E97CA7E/5EA0FFA4" Ref="U2"  Part="3" 
+F 0 "U2" H 8255 4021 50  0000 L CNN
+F 1 "4013" H 8255 3930 50  0000 L CNN
+F 2 "" H 8025 3975 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 8025 3975 50  0001 C CNN
+	3    8025 3975
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA0FFAB
+P 8025 4425
+AR Path="/5BAC374C/5EA0FFAB" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA0FFAB" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA0FFAB" Ref="#PWR028"  Part="1" 
+F 0 "#PWR028" H 8025 4175 50  0001 C CNN
+F 1 "GND" H 8025 4275 50  0000 C CNN
+F 2 "" H 8025 4425 50  0000 C CNN
+F 3 "" H 8025 4425 50  0000 C CNN
+	1    8025 4425
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8025 3525 8025 3575
+Wire Wire Line
+	8025 4375 8025 4425
+$Comp
+L power:+9V #PWR027
+U 1 1 5EA0FFB3
+P 8025 3525
+F 0 "#PWR027" H 8025 3375 50  0001 C CNN
+F 1 "+9V" H 8040 3698 50  0000 C CNN
+F 2 "" H 8025 3525 50  0001 C CNN
+F 3 "" H 8025 3525 50  0001 C CNN
+	1    8025 3525
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4013 U?
+U 3 1 5EA0FFB9
+P 8750 3975
+AR Path="/5C0A69D0/5EA0FFB9" Ref="U?"  Part="3" 
+AR Path="/5E97CA7E/5EA0FFB9" Ref="U4"  Part="3" 
+F 0 "U4" H 8980 4021 50  0000 L CNN
+F 1 "4013" H 8980 3930 50  0000 L CNN
+F 2 "" H 8750 3975 50  0001 C CNN
+F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 8750 3975 50  0001 C CNN
+	3    8750 3975
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:GND-power #PWR?
+U 1 1 5EA0FFC0
+P 8750 4425
+AR Path="/5BAC374C/5EA0FFC0" Ref="#PWR?"  Part="1" 
+AR Path="/5C0A69D0/5EA0FFC0" Ref="#PWR?"  Part="1" 
+AR Path="/5E97CA7E/5EA0FFC0" Ref="#PWR032"  Part="1" 
+F 0 "#PWR032" H 8750 4175 50  0001 C CNN
+F 1 "GND" H 8750 4275 50  0000 C CNN
+F 2 "" H 8750 4425 50  0000 C CNN
+F 3 "" H 8750 4425 50  0000 C CNN
+	1    8750 4425
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8750 3525 8750 3575
+Wire Wire Line
+	8750 4375 8750 4425
+$Comp
+L power:+9V #PWR031
+U 1 1 5EA0FFC8
+P 8750 3525
+F 0 "#PWR031" H 8750 3375 50  0001 C CNN
+F 1 "+9V" H 8765 3698 50  0000 C CNN
+F 2 "" H 8750 3525 50  0001 C CNN
+F 3 "" H 8750 3525 50  0001 C CNN
+	1    8750 3525
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4066 U6
+U 5 1 5EA0FFCE
+P 9125 5650
+F 0 "U6" H 9355 5696 50  0000 L CNN
+F 1 "4066" H 9355 5605 50  0000 L CNN
+F 2 "" H 9125 5650 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 9125 5650 50  0001 C CNN
+	5    9125 5650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR035
+U 1 1 5EA0FFD5
+P 9125 5075
+F 0 "#PWR035" H 9125 4925 50  0001 C CNN
+F 1 "+9V" H 9140 5248 50  0000 C CNN
+F 2 "" H 9125 5075 50  0001 C CNN
+F 3 "" H 9125 5075 50  0001 C CNN
+	1    9125 5075
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-9V #PWR036
+U 1 1 5EA0FFDB
+P 9125 6250
+F 0 "#PWR036" H 9125 6125 50  0001 C CNN
+F 1 "-9V" H 9140 6423 50  0000 C CNN
+F 2 "" H 9125 6250 50  0001 C CNN
+F 3 "" H 9125 6250 50  0001 C CNN
+	1    9125 6250
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9125 5075 9125 5150
+Wire Wire Line
+	9125 6150 9125 6250
+$EndSCHEMATC
