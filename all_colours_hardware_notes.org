@@ -1204,6 +1204,49 @@ note:: *2- pwm follows DAC from SR + pwm follows DAC - different range or spacin
 
 - now thinking to have no DAC mode so just the 2 pwm modes inverted, so we have 32 modes on each side -so 16 cv, and 16 pulse
 
+* 1/4/2020+
+
+- implemented high side of modes. TODO: port required modes over to left side, test individually and  test all with speeds...
+
+- if we can go faster in main.c? max is 40 in   TIM_TimeBase_InitStructure.TIM_Period = 40;
+
+- re-checked all levels VPP:
+
+PWMH: 4.4
+PWML: 4.4
+noiseL: 4
+noiseH: 6
+compLC: 4.5
+compHC: 4.5
+compLA: 4.4
+compHA: 4.4
+filter outH: 5v
+filter outL: 5v
+
+////
+- maybe compare switch with function call approach -> how to automate this?
+
+with func call approach in func_it.c we can come down to period 38 but this needs to be tested thoroughly
+
+* 2/4 
+
+- tested func call and is not fast/ crashes on interrupt to back to other which is stable at 50 Period. trying a few speedups here...
+
+48 now
+
+- maybe also identify which modes are slowest
+- we need to decide if we change SR lengths across the whole thing?
+
+////
+
+- note for MANUAL - that we can untie comparatored noise from filter diff in by plugging blank/nowhere cable into diff - then we an use comp just for normed SR in say
+
+* 14/4
+
+- ongoing testing - speed dropped to 50
+- we don't change length for all functions but just in certain functions... static tho as needs to run across some...
+- re-test each SR mode after this - we leave arrays as they are...
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
