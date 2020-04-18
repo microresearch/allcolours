@@ -47,7 +47,8 @@ STSRC += ./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c
 STSRC += ./lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c
 
 SRC += ./src/main.c
-SRC += ./src/stm32f10x_it.c
+#SRC += ./src/stm32f10x_it.c
+SRC += ./src/stm32f10x_it_DAC.c
 SRC += $(CMSISSRC)
 SRC += $(STSRC)
 

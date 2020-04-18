@@ -170,7 +170,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32; // ???? what should we have for LF?
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 0;
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 1; // we lowered the lowest frequency for the LF side
   TIM_TimeBaseInit(TIM3, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;

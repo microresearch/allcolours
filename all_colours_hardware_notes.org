@@ -1247,6 +1247,11 @@ with func call approach in func_it.c we can come down to period 38 but this need
 - we don't change length for all functions but just in certain functions... static tho as needs to run across some...
 - re-test each SR mode after this - we leave arrays as they are...
 
+* 18/4
+
+- we lowered PWM on LF side so starts slower - divider now of 1
+- new version with mode 0 (right side) as DAC - to test out
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
