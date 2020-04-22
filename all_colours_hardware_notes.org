@@ -1252,6 +1252,18 @@ with func call approach in func_it.c we can come down to period 38 but this need
 - we lowered PWM on LF side so starts slower - divider now of 1
 - new version with mode 0 (right side) as DAC - to test out
 
+* 21/4
+
+- keeping with DAC mode but might need slowing down - can't have different timings tho as we still have SR pulsings...
+
+testing 16 bit loggen for SR, can also be 15 bits
+
+DAc should now not be LOG - so we need to change this...
+
+- more ADC and bit inputs maybe in modes working with DAC - so we have maybe all modes in the switch and no if...
+
+eg. case 18 we had ADC in -> now we copy and play with new versions here for ADC/DAC modes
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 

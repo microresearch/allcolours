@@ -98,11 +98,47 @@ void SysTick_Handler(void)
 // there are 8 positions which is 3 bits or we can make 16?
 static uint32_t electroprob[8]={0, 3, 7, 15, 31, 63, 127, 255};
 
+static uint32_t bits[8]={1, 2, 4, 8, 16, 32, 64, 128};
+
 static uint32_t MASK[32]={4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294967040, 4294966785, 4294966275, 4294965255, 4294963215, 4294959135, 4294950975, 4294934655, 4294902015, 4294836735, 4294706175, 4294445055, 4293922815, 4292878335, 4290789375, 4286611455, 4278255615, 4261543935, 4228120575, 4161273855, 4027580415, 3760193535, 3225419775, 2155872255, 16777215};
 
 static uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}; 
 
 // log_gen:     print("%s," % int(1+(((starter*xyz)-312)/32))),
+
+static uint32_t      pos[32][8]={ // for DAC PWM out wider spacings
+      {1,2,3,4,5,6,7,8}, // ignore first 8 lengths then start to space out
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {0, 0, 0, 0, 0, 0, 0, 1},//10 bits = length 9
+      {0, 0, 0, 0, 0, 1, 1, 2},//11
+      {0, 0, 0, 0, 1, 1, 2, 3},//12
+      {0, 0, 0, 0, 1, 1, 2, 4},//13
+      {0, 0, 0, 1, 1, 2, 3, 5},//14
+      {0, 0, 0, 1, 1, 2, 4, 6},//15
+      {0, 0, 0, 1, 2, 3, 5, 7},//16
+      {0, 0, 1, 2, 3, 4, 6, 8},//17
+      {0, 0, 1, 2, 3, 5, 7, 9},//18
+      {0, 0, 1, 2, 3, 5, 7, 10},//19
+      {0, 0, 1, 2, 3, 5, 8, 11},//20
+      {0, 0, 1, 2, 3, 6, 9, 12},//21
+      {0, 0, 1, 2, 4, 7, 10, 13},//22
+      {0, 0, 1, 2, 4, 7, 10, 14},//23
+      {0, 0, 1, 2, 5, 8, 11, 15},//24
+      {0, 0, 1, 3, 6, 9, 12, 16},//25
+      {0, 0, 1, 3, 6, 9, 13, 17},//26
+      {0, 0, 1, 3, 6, 10, 14, 18},//27
+      {0, 0, 1, 3, 6, 10, 14, 19},//28
+      {0, 0, 1, 3, 6, 10, 15, 20},// 29
+      {0, 0, 1, 3, 6, 10, 15, 21},// 30
+      {0, 0, 1, 3, 6, 10, 15, 21},// 31
+      {0, 0, 1, 3, 6, 10, 15, 21} // for 32 bits = length=31
+};
 
 static uint16_t loggerdac[256]={312, 316, 320, 324, 329, 333, 338, 343, 347, 352, 357, 362, 367, 372, 377, 382, 387, 392, 398, 403, 409, 414, 420, 425, 431, 437, 443, 449, 455, 462, 468, 474, 481, 487, 494, 501, 507, 514, 521, 528, 536, 543, 550, 558, 566, 573, 581, 589, 597, 605, 613, 622, 630, 639, 648, 656, 665, 674, 684, 693, 702, 712, 722, 732, 742, 752, 762, 772, 783, 794, 804, 815, 826, 838, 849, 861, 872, 884, 896, 909, 921, 934, 946, 959, 972, 986, 999, 1013, 1026, 1040, 1055, 1069, 1084, 1098, 1113, 1129, 1144, 1160, 1175, 1191, 1208, 1224, 1241, 1258, 1275, 1292, 1310, 1328, 1346, 1364, 1383, 1402, 1421, 1440, 1460, 1480, 1500, 1520, 1541, 1562, 1583, 1605, 1627, 1649, 1671, 1694, 1717, 1741, 1764, 1788, 1813, 1838, 1863, 1888, 1914, 1940, 1966, 1993, 2020, 2048, 2076, 2104, 2133, 2162, 2191, 2221, 2251, 2282, 2313, 2345, 2377, 2409, 2442, 2475, 2509, 2543, 2578, 2613, 2649, 2685, 2721, 2759, 2796, 2834, 2873, 2912, 2952, 2992, 3033, 3074, 3116, 3158, 3202, 3245, 3289, 3334, 3380, 3426, 3472, 3520, 3568, 3616, 3666, 3716, 3766, 3818, 3870, 3923, 3976, 4030, 4085, 4141, 4197, 4254, 4312, 4371, 4431, 4491, 4552, 4615, 4677, 4741, 4806, 4871, 4938, 5005, 5073, 5142, 5213, 5284, 5356, 5429, 5503, 5578, 5654, 5731, 5809, 5888, 5968, 6050, 6132, 6216, 6300, 6386, 6473, 6562, 6651, 6742, 6834, 6927, 7021, 7117, 7214, 7312, 7412, 7513, 7615, 7719, 7824, 7931, 8039, 8149, 8260, 8372, 8486, 8602, 8719, 8838, 8959, 9081, 9205, 9330, 9457, 9586, 9717, 9750};
 
@@ -112,6 +148,7 @@ static uint16_t logger[1024]={312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 
 
 static uint16_t logforSR[1024]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 31, 31, 31, 32, 32, 32, 33, 33, 33, 34, 34, 34, 35, 35, 35, 36, 36, 36, 37, 37, 37, 38, 38, 39, 39, 39, 40, 40, 40, 41, 41, 42, 42, 43, 43, 43, 44, 44, 45, 45, 46, 46, 46, 47, 47, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 57, 58, 58, 59, 59, 60, 60, 61, 62, 62, 63, 63, 64, 65, 65, 66, 67, 67, 68, 69, 69, 70, 71, 71, 72, 73, 73, 74, 75, 76, 76, 77, 78, 79, 79, 80, 81, 82, 82, 83, 84, 85, 86, 87, 87, 88, 89, 90, 91, 92, 93, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 117, 118, 119, 120, 121, 122, 124, 125, 126, 127, 128, 130, 131, 132, 133, 135, 136, 137, 139, 140, 141, 143, 144, 145, 147, 148, 150, 151, 153, 154, 155, 157, 158, 160, 162, 163, 165, 166, 168, 169, 171, 173, 174, 176, 178, 179, 181, 183, 185, 186, 188, 190, 192, 194, 196, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 224, 226, 228, 230, 232, 235, 237, 239, 241, 244, 246, 248, 251, 253, 256, 258, 260, 263, 265, 268, 271, 273, 276, 278, 281, 284, 287, 289, 292, 295, 298, 301, 303, 306, 309, 312, 315, 318, 321, 324, 327, 331, 334, 337, 340, 343, 347, 350, 353, 357, 360, 364, 367, 371, 374, 378, 381, 385, 389, 392, 396, 400, 404, 408, 412, 415, 419, 423, 428, 432, 436, 440, 444, 448, 453, 457, 461, 466, 470, 475, 479, 484, 488, 493, 498, 503, 507, 512, 517, 522, 527, 532, 537, 542, 548, 553, 558, 563, 569, 574, 580, 585, 591, 596, 602, 608, 614, 620, 625, 631, 637, 644, 650, 656, 662, 669, 675, 681, 688, 694, 701, 708, 715, 721, 728, 735, 742, 749, 756, 764, 771, 778, 786, 793, 801, 809, 816, 824, 832, 840, 848, 856, 864, 872, 881, 889, 898, 906, 915, 924, 932, 941, 950, 959, 968, 978, 987, 996, 1006, 1016, 1025, 1035, 1045, 1055, 1065, 1075, 1085, 1096, 1106, 1117, 1127, 1138, 1149, 1160, 1171, 1182, 1194, 1205, 1216, 1228, 1240, 1252, 1264, 1276, 1288, 1300, 1312, 1325, 1338, 1350, 1363, 1376, 1389, 1403, 1416, 1430, 1443, 1457, 1471, 1485, 1499, 1513, 1528, 1542, 1557, 1572, 1587, 1602, 1617, 1633, 1648, 1664, 1680, 1696, 1712, 1729, 1745, 1762, 1778, 1795, 1813, 1830, 1847, 1865, 1883, 1901, 1919, 1937, 1956, 1974, 1993, 2012, 2031, 2051, 2070, 2090, 2110, 2130, 2150, 2171, 2192, 2212, 2234, 2255, 2276, 2298, 2320, 2342, 2364, 2387, 2410, 2433, 2456, 2479, 2503, 2527, 2551, 2575, 2600, 2625, 2650, 2675, 2700, 2726, 2752, 2778, 2805, 2832, 2859, 2886, 2914, 2941, 2969, 2998, 3026, 3055, 3084, 3114, 3143, 3173, 3204, 3234, 3265, 3296, 3328, 3359, 3391, 3424, 3456, 3489, 3522, 3556, 3590, 3624, 3659, 3694, 3729, 3764, 3800, 3837, 3873, 3910, 3947, 3985, 4023, 4061, 4100, 4139, 4179, 4218, 4259, 4299, 4340, 4382, 4423, 4466, 4508, 4551, 4595, 4638, 4683, 4727, 4772, 4818, 4864, 4910, 4957, 5004, 5052, 5100, 5149, 5198, 5247, 5297, 5348, 5399, 5450, 5502, 5555, 5608, 5661, 5715, 5770, 5825, 5880, 5936, 5993, 6050, 6108, 6166, 6225, 6284, 6344, 6404, 6465, 6527, 6589, 6652, 6715, 6779, 6844, 6909, 6975, 7042, 7109, 7177, 7245, 7314, 7384, 7454, 7525, 7597, 7669, 7743, 7816, 7891, 7966, 8042, 8119, 8196, 8274, 8353, 8433, 8513, 8594, 8676, 8759, 8842, 8927, 9012, 9098, 9184, 9272, 9360, 9450, 9540, 9631, 9722, 9815, 9909, 10003, 10098, 10195, 10292, 10390, 10489, 10589, 10690, 10792, 10895, 10999, 11103, 11209, 11316, 11424, 11533, 11643, 11754, 11866, 11979, 12093, 12208, 12325, 12442, 12561, 12681, 12801, 12923, 13047, 13171, 13297, 13423, 13551, 13680, 13811, 13942, 14075, 14210, 14345, 14482, 14620, 14759, 14900, 15042, 15185, 15330, 15476, 15624, 15772, 15923, 16075, 16228, 16383};
 
+static uint16_t slower_logforSR[1024]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 15, 16, 16, 16, 16, 16, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 26, 26, 26, 27, 27, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 31, 31, 31, 32, 32, 32, 33, 33, 34, 34, 34, 35, 35, 35, 36, 36, 37, 37, 38, 38, 38, 39, 39, 40, 40, 41, 41, 42, 42, 42, 43, 43, 44, 44, 45, 45, 46, 46, 47, 48, 48, 49, 49, 50, 50, 51, 51, 52, 53, 53, 54, 54, 55, 56, 56, 57, 57, 58, 59, 59, 60, 61, 61, 62, 63, 63, 64, 65, 66, 66, 67, 68, 69, 69, 70, 71, 72, 72, 73, 74, 75, 76, 77, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 87, 88, 89, 90, 91, 92, 93, 94, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 107, 108, 109, 110, 111, 113, 114, 115, 116, 118, 119, 120, 122, 123, 124, 126, 127, 129, 130, 131, 133, 134, 136, 137, 139, 140, 142, 143, 145, 147, 148, 150, 151, 153, 155, 157, 158, 160, 162, 164, 165, 167, 169, 171, 173, 175, 177, 178, 180, 182, 184, 186, 189, 191, 193, 195, 197, 199, 201, 203, 206, 208, 210, 213, 215, 217, 220, 222, 224, 227, 229, 232, 235, 237, 240, 242, 245, 248, 250, 253, 256, 259, 262, 264, 267, 270, 273, 276, 279, 282, 285, 288, 292, 295, 298, 301, 305, 308, 311, 315, 318, 322, 325, 329, 332, 336, 340, 343, 347, 351, 355, 359, 363, 367, 371, 375, 379, 383, 387, 391, 396, 400, 404, 409, 413, 418, 422, 427, 432, 436, 441, 446, 451, 456, 461, 466, 471, 476, 481, 486, 492, 497, 503, 508, 514, 519, 525, 531, 536, 542, 548, 554, 560, 566, 573, 579, 585, 592, 598, 605, 611, 618, 625, 631, 638, 645, 652, 660, 667, 674, 681, 689, 696, 704, 712, 719, 727, 735, 743, 751, 760, 768, 776, 785, 793, 802, 811, 820, 829, 838, 847, 856, 865, 875, 884, 894, 904, 914, 924, 934, 944, 954, 965, 975, 986, 996, 1007, 1018, 1029, 1041, 1052, 1064, 1075, 1087, 1099, 1111, 1123, 1135, 1148, 1160, 1173, 1185, 1198, 1212, 1225, 1238, 1252, 1265, 1279, 1293, 1307, 1321, 1336, 1350, 1365, 1380, 1395, 1410, 1426, 1441, 1457, 1473, 1489, 1505, 1522, 1538, 1555, 1572, 1589, 1606, 1624, 1642, 1660, 1678, 1696, 1715, 1733, 1752, 1771, 1791, 1810, 1830, 1850, 1870, 1890, 1911, 1932, 1953, 1974, 1996, 2018, 2040, 2062, 2084, 2107, 2130, 2153, 2177, 2200, 2224, 2249, 2273, 2298, 2323, 2348, 2374, 2400, 2426, 2453, 2479, 2506, 2534, 2561, 2589, 2618, 2646, 2675, 2704, 2734, 2763, 2794, 2824, 2855, 2886, 2917, 2949, 2981, 3014, 3047, 3080, 3114, 3148, 3182, 3217, 3252, 3287, 3323, 3359, 3396, 3433, 3470, 3508, 3546, 3585, 3624, 3664, 3704, 3744, 3785, 3826, 3868, 3910, 3953, 3996, 4039, 4083, 4128, 4173, 4218, 4264, 4311, 4358, 4405, 4454, 4502, 4551, 4601, 4651, 4702, 4753, 4805, 4857, 4910, 4964, 5018, 5072, 5128, 5184, 5240, 5297, 5355, 5413, 5472, 5532, 5592, 5653, 5715, 5777, 5840, 5904, 5968, 6034, 6099, 6166, 6233, 6301, 6370, 6439, 6509, 6580, 6652, 6725, 6798, 6872, 6947, 7023, 7099, 7177, 7255, 7334, 7414, 7495, 7576, 7659, 7743, 7827, 7912, 7999, 8086, 8174, 8263, 8353, 8444, 8536, 8629, 8723, 8818, 8915, 9012, 9110, 9209, 9310, 9411, 9514, 9618, 9722, 9828, 9935, 10044, 10153, 10264, 10376, 10489, 10603, 10719, 10836, 10954, 11073, 11194, 11316, 11439, 11564, 11690, 11818, 11946, 12077, 12208, 12341, 12476, 12612, 12749, 12888, 13029, 13171, 13315, 13460, 13606, 13755, 13905, 14056, 14210, 14364, 14521, 14679, 14839, 15001, 15165, 15330, 15497, 15666, 15837, 16009, 16184, 16360, 16539, 16719, 16901, 17085, 17272, 17460, 17650, 17843, 18037, 18234, 18433, 18634, 18837, 19042, 19250, 19459, 19672, 19886, 20103, 20322, 20543, 20767, 20994, 21223, 21454, 21688, 21924, 22163, 22405, 22649, 22896, 23145, 23398, 23653, 23911, 24171, 24435, 24701, 24970, 25243, 25518, 25796, 26077, 26361, 26649, 26939, 27233, 27530, 27830, 28133, 28440, 28750, 29063, 29380, 29700, 30024, 30351, 30682, 31017, 31355, 31696, 32042, 32391, 32744, 33101, 33462, 33827, 34196, 34568, 34945, 35326, 35711, 36100, 36494, 36892, 37294, 37700, 38111, 38527, 38947, 39371, 39800, 40234, 40673, 41116, 41564, 42017, 42475, 42938, 43406, 43880, 44358, 44841, 45330, 45824, 46324, 46829, 47339, 47855, 48377, 48904, 49437, 49976, 50521, 51072, 51628, 52191, 52760, 53335, 53916, 54504, 55098, 55699, 56306, 56920, 57540, 58167, 58801, 59442, 60090, 60745, 61407, 62077, 62753, 63437, 64129, 64828, 65535};
 
 // array for taps
 // eg. 32-bit Galois LFSR with taps at 32, 30, 26, 25. Sequence length is 4294967295. 0 is a lock-up state.  -- minus one here - 31, 29, 25, 24
@@ -928,7 +965,6 @@ void TIM2_IRQHandler(void){
 	  TIM1->ARR =sph;
 	  TIM1->CCR1 = sph/2; // pulse width
 	}	
-
 	break;
 
       case 10: // was 28
@@ -958,7 +994,6 @@ void TIM2_IRQHandler(void){
 	  TIM1->ARR =sph;
 	  TIM1->CCR1 = sph/2; // pulse width
 	}	
-
 	break;
 
       case 11: // was 29
@@ -1087,7 +1122,7 @@ void TIM2_IRQHandler(void){
 
 	break;
 
-      case 15: // was 41
+	/*      case 15: // was 41
 	// pulse in means double a step..
 	bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out 
 	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
@@ -1110,8 +1145,52 @@ void TIM2_IRQHandler(void){
 	  TIM1->ARR =sph;
 	  TIM1->CCR1 = sph/2; // pulse width
 	}	
+	break;	*/
 
-	break;	
+	// more experimental modes some of which relate mostly to DAC output
+	// use simple model of SR here to figure out...
+	
+      case 15: // test all replace 15 TESTY!
+	// pulse in means we shift the logic operator
+	if( !(GPIOB->IDR & 0x0080)) {
+	hcount++;
+	if (hcount>3) hcount=0;
+	}
+	
+	bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out 
+
+	// logic ops
+	
+	if (hcount==0) shift_registerh= (shift_registerh<<1) + !(bith | !(GPIOB->IDR & 0x0400));
+	else if (hcount==1) shift_registerh= (shift_registerh<<1) + (bith ^ !(GPIOB->IDR & 0x0400));
+	else if (hcount==2) shift_registerh= (shift_registerh<<1) + !(bith ^ !(GPIOB->IDR & 0x0400));
+	else shift_registerh= (shift_registerh<<1) + (bith & !(GPIOB->IDR & 0x0400));
+	
+	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	else GPIOC->BSRR = 0b0010000000000000; 
+	if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  
+	else GPIOC->BSRR = 0b0100000000000000;
+	
+	if (modehpwm==0) {   
+	  //	  pwmbitsh= (shift_registerh&0xFF); // just the lower 8 bits - no spacings - on low side we just have this tight spacing
+	  //sph=loggerdac[pwmbitsh];//+logger[ADCBuffer[2]>>6]; // question of log or not and to have wider range
+	  sph=312+(shift_registerh&0x1FFF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  // bits have even value
+	  
+	  
+	  //	  sph=312+((shift_registerh&0xFF)<<8);
+	  // older bits code is maybe too slow...
+
+	  //sph = ((shift_registerh & 0x01) + ((shift_registerh>>pos[SRlengthh][1])&0x02) + ((shift_registerh>>pos[SRlengthh][2])&0x04) + ((shift_registerh>>pos[SRlengthh][3])&0x08) + ((shift_registerh>>pos[SRlengthh][4])&0x10) + ((shift_registerh>>pos[SRlengthh][5])&0x20) + ((shift_registerh>>pos[SRlengthh][6])&0x40) + ((shift_registerh>>pos[SRlengthh][7])&0x80));
+	  //	 sph=312+(sph<<8);
+	  
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+	break;
+
+	
+
       }
       // /END of HF SR side/..................................................................................................................    
     }
@@ -1130,8 +1209,10 @@ void TIM4_IRQHandler(void){
 
   modehpwm=modeh>>15; // 1 bits remaining
   modehsr=31-(modeh>>10)%32; // 32 modes
+  modehsr=18; // TESTING!
+  modehpwm=0;
   speedh=logger[ADCBuffer[2]>>6]; // 1024  = 10 bits -> could be less logger to make smoother?
-  speedhh=logforSR[ADCBuffer[2]>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother? - could also be a lot slower at one end
+  speedhh=slower_logforSR[ADCBuffer[2]>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother? - could also be a lot slower at one end - TESTY even slower
 
   modelpwm=model>>15; // 1 bits remaining
   modelsr=31-(model>>10)%32; // 32 modes
@@ -1219,7 +1300,7 @@ void EXTI9_5_IRQHandler(void){
       if (counter12l == 9){       // every 8 cycles
 	counter12l=0;
 	shift_registerl &= MASK[31]; // MASK is the INVERTED one eg. ~(Oxff) for bottom 8 bits - bottom/lower is where SR is for lower lengths
-	shift_registerl +=(ADCBuffer[3]>>8)<<(SHIFT[31]); 
+	shift_registerl +=(ADCBuffer[3]>>8)<<(SHIFT[31]);  // tested and this makes sense on test.c
       }
       counter12l++;
 
@@ -1655,33 +1736,135 @@ void EXTI9_5_IRQHandler(void){
 
       break;
       
-    case 18: // was 12 - works fine with cv in
-      //->>>>>>>>>>>>>> NEW mode TESTY: entry of ADC in from CV into upper bits?
+      /*
+	case 18: // was 12 - works fine with cv in  TEST CASE FOR new ADC/DAC modes...
       bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
 
       if (counter12h == 9){       // every 8 cycles
 	counter12h=0;
 	shift_registerh &= MASK[31]; // MASK is the INVERTED one eg. ~(Oxff) for bottom 8 bits - bottom/lower is where SR is for lower lengths
-	shift_registerh +=(ADCBuffer[2]>>8)<<(SHIFT[31]); 
+	shift_registerh +=(ADCBuffer[2]>>8)<<(SHIFT[31]);  // tested and this makes sense on test.c
       }
       counter12h++;
-
-      shift_registerh=(shift_registerh<<1) + (bith |  (!(GPIOB->IDR & 0x0400))); // cycle around and OR in pulse bit! TESTY!
-
+      
+      shift_registerh=(shift_registerh<<1) + (bith |  (!(GPIOB->IDR & 0x0400))); // cycle around and OR in pulse bit! TESTY! - or no recycle
+      
+      shift_registerh=(shift_registerh<<1) + (bith);
       if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
       else GPIOC->BSRR = 0b0010000000000000; 
       if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
       else GPIOC->BSRR = 0b0100000000000000; 
 	
 	if (modehpwm==0) {   
-	  pwmbitsh= (shift_registerh&0xFF); // just the lower 8 bits - no spacings - on low side we just have this tight spacing
-	  sph=loggerdac[pwmbitsh];//+logger[ADCBuffer[2]>>6]; // question of log or not and to have wider range
+	  //	  pwmbitsh= (shift_registerh&0xFF); // just the lower 8 bits - no spacings - on low side we just have this tight spacing
+	  //	  sph=loggerdac[pwmbitsh];//+logger[ADCBuffer[2]>>6]; // question of log or not and to have wider range
+	  sph=312+(shift_registerh&0x1FFF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
 	  TIM1->ARR =sph;
 	  TIM1->CCR1 = sph/2; // pulse width
 	}	
-
       break;
+      */
 
+      /* 	case 18: // - TEST CASE FOR new ADC/DAC modes...
+	  //this version works fine and we could also use 0x0400 to choose recycle or not
+      //->>>>>>>>>>>>>> NEW mode TESTY: entry of ADC in from CV into upper bits?
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+
+      // TESTY - put 4 bits in at 4 points and take out at 4 points 
+      if (counter12h == 9){       // every 8 cycles
+	counter12h=0;
+	//	shift_registerh &= MASK[31]; // MASK is the INVERTED one eg. ~(Oxff) for bottom 8 bits - bottom/lower is where SR is for lower lengths
+	//	shift_registerh +=(ADCBuffer[2]>>8)<<(SHIFT[31]);  // tested and this makes sense on test.c
+	shift_registerh +=(ADCBuffer[2]>>8);  // tested and this makes sense on test.c
+	//	shift_registerh &=(ADCBuffer[2]>>8);
+      }
+      counter12h++;
+      
+      //      shift_registerh=(shift_registerh<<1) + (bith |  (!(GPIOB->IDR & 0x0400))); // cycle around and OR in pulse bit! TESTY! - or no recycle
+      if (GPIOB->IDR & 0x0400) shift_registerh =  (shift_registerh<<1) + bith;
+      else shift_registerh=(shift_registerh<<1);
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0) {   
+	  //	  pwmbitsh= (shift_registerh&0xFF); // just the lower 8 bits - no spacings - on low side we just have this tight spacing
+	  //	  sph=loggerdac[pwmbitsh];//+logger[ADCBuffer[2]>>6]; // question of log or not and to have wider range
+	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+      */
+
+      /*     
+    case 18: // - TEST CASE FOR new ADC/DAC modes...
+      // shift in bits one by one use probh as storage
+
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+      counter12h++;
+      if (counter12h == 8){       // every 8 cycles
+	counter12h=0;
+	// store the full bit or take successive bits
+	probh=(ADCBuffer[2]>>8); // probh is 8 bits
+	}
+      
+      //      shift_registerh=(shift_registerh<<1) + (bith |  (!(GPIOB->IDR & 0x0400))); // cycle around and OR in pulse bit! TESTY! - or no recycle
+      //      if (GPIOB->IDR & 0x0400) shift_registerh =  (shift_registerh<<1) + bith;
+      //      else shift_registerh=(shift_registerh<<1);
+
+      // shift that new bit in (or this could depend on 0x400 for recycles
+      if (GPIOB->IDR & 0x0400) shift_registerh =  (shift_registerh<<1) + bith;
+      else shift_registerh=(shift_registerh<<1) + ((probh&bits[counter12h])>>counter12h);
+
+      
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0) {   
+	  //	  pwmbitsh= (shift_registerh&0xFF); // just the lower 8 bits - no spacings - on low side we just have this tight spacing
+	  //	  sph=loggerdac[pwmbitsh];//+logger[ADCBuffer[2]>>6]; // question of log or not and to have wider range
+	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+      */
+      
+    case 18: // TEST CASE FOR new ADC/DAC modes...
+      // put say 4 or 8 bits in at intervals - no recycle so far - works so far!
+      // and DAC out is at later intervals
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+
+      // try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
+      shift_registerh &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+      // put the 4 bits in
+      probh=(ADCBuffer[2]>>12); // 4 bits
+      shift_registerh += ( (probh&0x01) + ((probh&0x02)<<7) + ((probh&0x04)<<14) + ((probh&0x08)<<21)); // would be 0 8-1 16-2 24-3
+      
+      shift_registerh=(shift_registerh<<1);// + bith;
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0) {   
+	  // no extract those 4 bits from the last slots bits 32, 24, 16 and 8, shift these and then << say 4 bits
+	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
+	  sph+=312;
+	  
+	  //	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  //	  sph=1024;
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+      
+      
+      
     case 19: // was 13
       //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
       // we do not use bit IN!
