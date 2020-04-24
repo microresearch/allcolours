@@ -1833,7 +1833,17 @@ void EXTI9_5_IRQHandler(void){
 	}	
       break;
       */
+
+      // tests/to try for this kind of ADC input BELOW:
+      //
+      // [** cycle the SR]
+      // [** OR or XOR incoming bits with cycling SR]
+      // [or/xor with incoming bit]      
+      // [change number of bits in out or in and out - flexible or we use 4 6 or 8 bit options]
+      //
+      // NOTE: check what use we make of incoming bit - as can also be used to gate input or output maybe
       
+      /*      
     case 18: // TEST CASE FOR new ADC/DAC modes...
       // put say 4 or 8 bits in at intervals - no recycle so far - works so far!
       // and DAC out is at later intervals
@@ -1844,7 +1854,8 @@ void EXTI9_5_IRQHandler(void){
       // put the 4 bits in
       probh=(ADCBuffer[2]>>12); // 4 bits
       shift_registerh += ( (probh&0x01) + ((probh&0x02)<<7) + ((probh&0x04)<<14) + ((probh&0x08)<<21)); // would be 0 8-1 16-2 24-3
-      
+
+
       shift_registerh=(shift_registerh<<1);// + bith;
       if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
       else GPIOC->BSRR = 0b0010000000000000; 
@@ -1853,7 +1864,185 @@ void EXTI9_5_IRQHandler(void){
 	
 	if (modehpwm==0) {   
 	  // no extract those 4 bits from the last slots bits 32, 24, 16 and 8, shift these and then << say 4 bits
-	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
+	  //	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
+	  sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<4; // this one from test.c tested...
+
+	  sph+=312;
+	  
+	  //	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  //	  sph=1024;
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+      */
+
+      /*
+    case 18: // TEST CASE FOR new ADC/DAC modes...
+      // put say 4 or 8 bits in at intervals
+      // ** cycle the SR
+      // and DAC out is at later intervals
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+
+      // try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
+      shift_registerh &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+      // put the 4 bits in
+      probh=(ADCBuffer[2]>>12); // 4 bits
+      shift_registerh += ( ((probh&0x01)^bith) + ((probh&0x02)<<7) + ((probh&0x04)<<14) + ((probh&0x08)<<21)); // would be 0 8-1 16-2 24-3
+
+      shift_registerh=(shift_registerh<<1);// + bith; // can be with or without extra incoming bit
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0) {   
+	  // no extract those 4 bits from the last slots bits 32, 24, 16 and 8, shift these and then << say 4 bits
+	  //	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
+	  sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<5; // this one from test.c tested...
+
+	  sph+=312;
+	  
+	  //	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  //	  sph=1024;
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+      */
+
+      /*    case 18: // TEST CASE FOR new ADC/DAC modes...
+      // put say 4 or 8 bits in at intervals
+      // ** SR with incoming bit
+      // and DAC out is at later intervals
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+
+      // try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
+      shift_registerh &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+      // put the 4 bits in
+      probh=(ADCBuffer[2]>>12); // 4 bits
+      shift_registerh += ( ((probh&0x01)^(!(GPIOB->IDR & 0x0400))) + ((probh&0x02)<<7) + ((probh&0x04)<<14) + ((probh&0x08)<<21)); // would be 0 8-1 16-2 24-3
+
+      shift_registerh=(shift_registerh<<1);// + bith; // can be with or without extra incoming bit
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0) {   
+	  // no extract those 4 bits from the last slots bits 32, 24, 16 and 8, shift these and then << say 4 bits
+	  //	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
+	  sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<5; // this one from test.c tested...
+
+	  sph+=312;
+	  
+	  //	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  //	  sph=1024;
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+      */
+
+      /*
+    case 18: // TEST CASE FOR new ADC/DAC modes...
+      // put say 4 or 8 bits in at intervals
+      // ** OR or XOR incoming bits with cycling SR 
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+
+      // try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
+      //      shift_registerh &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+      // put the 4 bits in
+      probh=(ADCBuffer[2]>>12); // 4 bits
+      if (!(GPIOB->IDR & 0x0400)) shift_registerh ^= ( ((probh&0x01)) + ((probh&0x02)<<7) + ((probh&0x04)<<14) + ((probh&0x08)<<21)); // would be 0 8-1 16-2 24-3
+
+      shift_registerh=(shift_registerh<<1) + bith; // can be with or without extra incoming bit
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0 ) {   
+	  // no extract those 4 bits from the last slots bits 32, 24, 16 and 8, shift these and then << say 4 bits
+	  //	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
+	  sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<5; // this one from test.c tested...
+
+	  sph+=312;
+	  
+	  //	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  //	  sph=1024;
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+      */
+
+      /*
+    case 18: // TEST CASE FOR new ADC/DAC modes...      
+      // let's try for 8 bits
+      // check logic of this one after 3 bit shifts in test.c -> tested with one mistake fixed
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+
+      // try for 8 bits in at 3 bits intervals
+      shift_registerh &= 0b11101110111011101110111011101110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+      // put the 8 bits in
+      probh=(ADCBuffer[2]>>8); // 8 bits
+      shift_registerh += (  ((probh&0x01)) + ((probh&0x02)<<3) + ((probh&0x04)<<6) + ((probh&0x08)<<9) + ((probh&0x10)<<12) + ((probh&0x20)<<15) + ((probh&0x40)<<18) + ((probh&0x80)<<21) );
+
+      shift_registerh=(shift_registerh<<1);// + bith; // can be with or without extra incoming bit
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0 ) {   
+	  // get the 8 bits out
+	  sph= (((shift_registerh&(1<<3))>>3) + ((shift_registerh&(1<<7))>>6) + ((shift_registerh&(1<<11))>>9) + ((shift_registerh&(1<<15))>>12) + ((shift_registerh&(1<<19))>>15) +((shift_registerh&(1<<23))>>18) +((shift_registerh&(1<<27))>>21) +((shift_registerh&(1<<31))>>24) ); // this one from test.c tested...
+
+	  sph+=312;
+	  
+	  //	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
+	  //	  sph=1024;
+	  TIM1->ARR =sph;
+	  TIM1->CCR1 = sph/2; // pulse width
+	}	
+      break;
+*/
+      
+      // shift delay - so where we are inputing and outputting to (array of ins and outs say but how do we select these?)
+      // what arrays can we use - 4 bits only 
+
+    case 18: // TEST CASE FOR new ADC/DAC modes...
+      // try and use incoming bit to shift 4 bits in hstack
+	hcount++;
+	if (hcount>31) hcount=0;
+	if( !(GPIOB->IDR & 0x0400)) {
+	  hstack[3]=hstack[2];
+	  hstack[2]=hstack[1];
+	  hstack[1]=hstack[0];
+	  hstack[0]=hcount+1; // bump it on to the hstack
+	}	  
+      
+      bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
+
+      // try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
+      shift_registerh &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+      // put the 4 bits in
+      probh=(ADCBuffer[2]>>12); // 4 bits
+      shift_registerh += ( ((probh&0x01)<< hstack[0]) + ((probh&0x02)<<hstack[1]) + ((probh&0x04)<<hstack[2]) + ((probh&0x08)<<hstack[3])); // would be 0 8-1 16-2 24-3
+
+
+      shift_registerh=(shift_registerh<<1);// + bith;
+      if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+      else GPIOC->BSRR = 0b0010000000000000; 
+      if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
+      else GPIOC->BSRR = 0b0100000000000000; 
+	
+	if (modehpwm==0) {   
+	  // no extract those 4 bits from the last slots bits 32, 24, 16 and 8, shift these and then << say 4 bits
+	  //	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
+	  sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<4; // this one from test.c tested...
+
 	  sph+=312;
 	  
 	  //	  sph=312+(shift_registerh&0x01FF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
@@ -1863,7 +2052,8 @@ void EXTI9_5_IRQHandler(void){
 	}	
       break;
       
-      
+      // [different feedback paths selected by bit in - this is just non-blanking and XOR or?]
+      ///////////////////////////
       
     case 19: // was 13
       //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
