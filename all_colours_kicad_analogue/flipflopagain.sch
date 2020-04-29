@@ -33,8 +33,8 @@ U 1 1 5E97CC58
 P 2775 1525
 AR Path="/5BAC374C/5E97CC58" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E97CC58" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E97CC58" Ref="#PWR08"  Part="1" 
-F 0 "#PWR08" H 2775 1275 50  0001 C CNN
+AR Path="/5E97CA7E/5E97CC58" Ref="#PWR0112"  Part="1" 
+F 0 "#PWR0112" H 2775 1275 50  0001 C CNN
 F 1 "GND" H 2775 1375 50  0000 C CNN
 F 2 "" H 2775 1525 50  0000 C CNN
 F 3 "" H 2775 1525 50  0000 C CNN
@@ -73,26 +73,13 @@ U 1 1 5E97CC72
 P 8725 3100
 AR Path="/5BAC374C/5E97CC72" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E97CC72" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E97CC72" Ref="#PWR042"  Part="1" 
-F 0 "#PWR042" H 8725 2850 50  0001 C CNN
+AR Path="/5E97CA7E/5E97CC72" Ref="#PWR0164"  Part="1" 
+F 0 "#PWR0164" H 8725 2850 50  0001 C CNN
 F 1 "GND" H 8725 2950 50  0000 C CNN
 F 2 "" H 8725 3100 50  0000 C CNN
 F 3 "" H 8725 3100 50  0000 C CNN
 	1    8725 3100
 	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5E97CC78
-P 1075 975
-AR Path="/5C0A69D0/5E97CC78" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5E97CC78" Ref="J2"  Part="1" 
-F 0 "J2" V 948 1055 50  0000 L CNN
-F 1 "touch" V 1039 1055 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1075 975 50  0001 C CNN
-F 3 "" H 1075 975 50  0001 C CNN
-	1    1075 975 
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3075 1075 3150 1075
@@ -131,8 +118,8 @@ U 1 1 5E97CC8F
 P 8675 1850
 AR Path="/5BAC374C/5E97CC8F" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E97CC8F" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E97CC8F" Ref="#PWR038"  Part="1" 
-F 0 "#PWR038" H 8675 1600 50  0001 C CNN
+AR Path="/5E97CA7E/5E97CC8F" Ref="#PWR0165"  Part="1" 
+F 0 "#PWR0165" H 8675 1600 50  0001 C CNN
 F 1 "GND" H 8675 1700 50  0000 C CNN
 F 2 "" H 8675 1850 50  0000 C CNN
 F 3 "" H 8675 1850 50  0000 C CNN
@@ -184,8 +171,8 @@ U 1 1 5E97CCAC
 P 1300 675
 AR Path="/5BAC374C/5E97CCAC" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E97CCAC" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E97CCAC" Ref="#PWR02"  Part="1" 
-F 0 "#PWR02" H 1300 525 50  0001 C CNN
+AR Path="/5E97CA7E/5E97CCAC" Ref="#PWR0166"  Part="1" 
+F 0 "#PWR0166" H 1300 525 50  0001 C CNN
 F 1 "+12V" H 1300 815 50  0000 C CNN
 F 2 "" H 1300 675 50  0000 C CNN
 F 3 "" H 1300 675 50  0000 C CNN
@@ -245,10 +232,10 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 8000 5650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+9V #PWR045
+L power:+9V #PWR0167
 U 1 1 5E97E9D9
 P 8000 5075
-F 0 "#PWR045" H 8000 4925 50  0001 C CNN
+F 0 "#PWR0167" H 8000 4925 50  0001 C CNN
 F 1 "+9V" H 8015 5248 50  0000 C CNN
 F 2 "" H 8000 5075 50  0001 C CNN
 F 3 "" H 8000 5075 50  0001 C CNN
@@ -256,10 +243,10 @@ F 3 "" H 8000 5075 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:-9V #PWR046
+L power:-9V #PWR0168
 U 1 1 5E97EA6C
 P 8000 6250
-F 0 "#PWR046" H 8000 6125 50  0001 C CNN
+F 0 "#PWR0168" H 8000 6125 50  0001 C CNN
 F 1 "-9V" H 8015 6423 50  0000 C CNN
 F 2 "" H 8000 6250 50  0001 C CNN
 F 3 "" H 8000 6250 50  0001 C CNN
@@ -289,8 +276,8 @@ U 1 1 5E97F9DE
 P 2750 2750
 AR Path="/5BAC374C/5E97F9DE" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E97F9DE" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E97F9DE" Ref="#PWR07"  Part="1" 
-F 0 "#PWR07" H 2750 2500 50  0001 C CNN
+AR Path="/5E97CA7E/5E97F9DE" Ref="#PWR0169"  Part="1" 
+F 0 "#PWR0169" H 2750 2500 50  0001 C CNN
 F 1 "GND" H 2750 2600 50  0000 C CNN
 F 2 "" H 2750 2750 50  0000 C CNN
 F 3 "" H 2750 2750 50  0000 C CNN
@@ -309,19 +296,6 @@ F 2 "Resistors_SMD:R_0805" H 3225 2300 50  0001 C CNN
 F 3 "~" H 3225 2300 50  0001 C CNN
 	1    3225 2300
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5E97F9EB
-P 1050 2200
-AR Path="/5C0A69D0/5E97F9EB" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5E97F9EB" Ref="J1"  Part="1" 
-F 0 "J1" V 923 2280 50  0000 L CNN
-F 1 "touch" V 1014 2280 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1050 2200 50  0001 C CNN
-F 3 "" H 1050 2200 50  0001 C CNN
-	1    1050 2200
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3050 2300 3125 2300
@@ -350,19 +324,6 @@ Wire Wire Line
 	1250 2200 1275 2200
 Wire Wire Line
 	2425 2725 2750 2725
-$Comp
-L Device:R_Small R?
-U 1 1 5E97FA00
-P 1275 2050
-AR Path="/5C0A69D0/5E97FA00" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E97FA00" Ref="R1"  Part="1" 
-F 0 "R1" H 1334 2096 50  0000 L CNN
-F 1 "1M" H 1334 2005 50  0000 L CNN
-F 2 "Resistors_SMD:R_0805" H 1275 2050 50  0001 C CNN
-F 3 "~" H 1275 2050 50  0001 C CNN
-	1    1275 2050
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1275 1900 1275 1950
 Wire Wire Line
@@ -391,8 +352,8 @@ U 1 1 5E97FA13
 P 1275 1900
 AR Path="/5BAC374C/5E97FA13" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E97FA13" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E97FA13" Ref="#PWR01"  Part="1" 
-F 0 "#PWR01" H 1275 1750 50  0001 C CNN
+AR Path="/5E97CA7E/5E97FA13" Ref="#PWR0170"  Part="1" 
+F 0 "#PWR0170" H 1275 1750 50  0001 C CNN
 F 1 "+12V" H 1275 2040 50  0000 C CNN
 F 2 "" H 1275 1900 50  0000 C CNN
 F 3 "" H 1275 1900 50  0000 C CNN
@@ -446,8 +407,8 @@ U 1 1 5E9805F9
 P 2800 3950
 AR Path="/5BAC374C/5E9805F9" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E9805F9" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E9805F9" Ref="#PWR09"  Part="1" 
-F 0 "#PWR09" H 2800 3700 50  0001 C CNN
+AR Path="/5E97CA7E/5E9805F9" Ref="#PWR0171"  Part="1" 
+F 0 "#PWR0171" H 2800 3700 50  0001 C CNN
 F 1 "GND" H 2800 3800 50  0000 C CNN
 F 2 "" H 2800 3950 50  0000 C CNN
 F 3 "" H 2800 3950 50  0000 C CNN
@@ -466,19 +427,6 @@ F 2 "Resistors_SMD:R_0805" H 3275 3500 50  0001 C CNN
 F 3 "~" H 3275 3500 50  0001 C CNN
 	1    3275 3500
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5E980606
-P 1100 3400
-AR Path="/5C0A69D0/5E980606" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5E980606" Ref="J3"  Part="1" 
-F 0 "J3" V 973 3480 50  0000 L CNN
-F 1 "touch" V 1064 3480 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1100 3400 50  0001 C CNN
-F 3 "" H 1100 3400 50  0001 C CNN
-	1    1100 3400
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3100 3500 3175 3500
@@ -548,8 +496,8 @@ U 1 1 5E98062E
 P 1325 3100
 AR Path="/5BAC374C/5E98062E" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E98062E" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E98062E" Ref="#PWR03"  Part="1" 
-F 0 "#PWR03" H 1325 2950 50  0001 C CNN
+AR Path="/5E97CA7E/5E98062E" Ref="#PWR0172"  Part="1" 
+F 0 "#PWR0172" H 1325 2950 50  0001 C CNN
 F 1 "+12V" H 1325 3240 50  0000 C CNN
 F 2 "" H 1325 3100 50  0000 C CNN
 F 3 "" H 1325 3100 50  0000 C CNN
@@ -603,8 +551,8 @@ U 1 1 5E981A1B
 P 2800 5125
 AR Path="/5BAC374C/5E981A1B" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E981A1B" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E981A1B" Ref="#PWR010"  Part="1" 
-F 0 "#PWR010" H 2800 4875 50  0001 C CNN
+AR Path="/5E97CA7E/5E981A1B" Ref="#PWR0173"  Part="1" 
+F 0 "#PWR0173" H 2800 4875 50  0001 C CNN
 F 1 "GND" H 2800 4975 50  0000 C CNN
 F 2 "" H 2800 5125 50  0000 C CNN
 F 3 "" H 2800 5125 50  0000 C CNN
@@ -623,19 +571,6 @@ F 2 "Resistors_SMD:R_0805" H 3275 4675 50  0001 C CNN
 F 3 "~" H 3275 4675 50  0001 C CNN
 	1    3275 4675
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5E981A28
-P 1100 4575
-AR Path="/5C0A69D0/5E981A28" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5E981A28" Ref="J4"  Part="1" 
-F 0 "J4" V 973 4655 50  0000 L CNN
-F 1 "touch" V 1064 4655 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1100 4575 50  0001 C CNN
-F 3 "" H 1100 4575 50  0001 C CNN
-	1    1100 4575
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3100 4675 3175 4675
@@ -705,8 +640,8 @@ U 1 1 5E981A50
 P 1325 4275
 AR Path="/5BAC374C/5E981A50" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E981A50" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E981A50" Ref="#PWR04"  Part="1" 
-F 0 "#PWR04" H 1325 4125 50  0001 C CNN
+AR Path="/5E97CA7E/5E981A50" Ref="#PWR0174"  Part="1" 
+F 0 "#PWR0174" H 1325 4125 50  0001 C CNN
 F 1 "+12V" H 1325 4415 50  0000 C CNN
 F 2 "" H 1325 4275 50  0000 C CNN
 F 3 "" H 1325 4275 50  0000 C CNN
@@ -726,19 +661,6 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3575 4975 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3375 4675 3575 4675
-$Comp
-L Device:R_Small R?
-U 1 1 5E981A5E
-P 2125 4575
-AR Path="/5C0A69D0/5E981A5E" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E981A5E" Ref="R10"  Part="1" 
-F 0 "R10" H 2184 4621 50  0000 L CNN
-F 1 "1K" H 2184 4530 50  0000 L CNN
-F 2 "Resistors_SMD:R_0805" H 2125 4575 50  0001 C CNN
-F 3 "~" H 2125 4575 50  0001 C CNN
-	1    2125 4575
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	2025 4575 1950 4575
 $Comp
@@ -760,8 +682,8 @@ U 1 1 5E983B1D
 P 2825 6275
 AR Path="/5BAC374C/5E983B1D" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E983B1D" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E983B1D" Ref="#PWR011"  Part="1" 
-F 0 "#PWR011" H 2825 6025 50  0001 C CNN
+AR Path="/5E97CA7E/5E983B1D" Ref="#PWR0175"  Part="1" 
+F 0 "#PWR0175" H 2825 6025 50  0001 C CNN
 F 1 "GND" H 2825 6125 50  0000 C CNN
 F 2 "" H 2825 6275 50  0000 C CNN
 F 3 "" H 2825 6275 50  0000 C CNN
@@ -780,19 +702,6 @@ F 2 "Resistors_SMD:R_0805" H 3300 5825 50  0001 C CNN
 F 3 "~" H 3300 5825 50  0001 C CNN
 	1    3300 5825
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5E983B2A
-P 1125 5725
-AR Path="/5C0A69D0/5E983B2A" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5E983B2A" Ref="J5"  Part="1" 
-F 0 "J5" V 998 5805 50  0000 L CNN
-F 1 "touch" V 1089 5805 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1125 5725 50  0001 C CNN
-F 3 "" H 1125 5725 50  0001 C CNN
-	1    1125 5725
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3125 5825 3200 5825
@@ -862,8 +771,8 @@ U 1 1 5E983B52
 P 1350 5425
 AR Path="/5BAC374C/5E983B52" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E983B52" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E983B52" Ref="#PWR05"  Part="1" 
-F 0 "#PWR05" H 1350 5275 50  0001 C CNN
+AR Path="/5E97CA7E/5E983B52" Ref="#PWR0176"  Part="1" 
+F 0 "#PWR0176" H 1350 5275 50  0001 C CNN
 F 1 "+12V" H 1350 5565 50  0000 C CNN
 F 2 "" H 1350 5425 50  0000 C CNN
 F 3 "" H 1350 5425 50  0000 C CNN
@@ -883,19 +792,6 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3600 6125 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3400 5825 3600 5825
-$Comp
-L Device:R_Small R?
-U 1 1 5E983B60
-P 2150 5725
-AR Path="/5C0A69D0/5E983B60" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E983B60" Ref="R11"  Part="1" 
-F 0 "R11" H 2209 5771 50  0000 L CNN
-F 1 "1K" H 2209 5680 50  0000 L CNN
-F 2 "Resistors_SMD:R_0805" H 2150 5725 50  0001 C CNN
-F 3 "~" H 2150 5725 50  0001 C CNN
-	1    2150 5725
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	2050 5725 1975 5725
 $Comp
@@ -917,8 +813,8 @@ U 1 1 5E9875F4
 P 2825 7450
 AR Path="/5BAC374C/5E9875F4" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E9875F4" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E9875F4" Ref="#PWR012"  Part="1" 
-F 0 "#PWR012" H 2825 7200 50  0001 C CNN
+AR Path="/5E97CA7E/5E9875F4" Ref="#PWR0177"  Part="1" 
+F 0 "#PWR0177" H 2825 7200 50  0001 C CNN
 F 1 "GND" H 2825 7300 50  0000 C CNN
 F 2 "" H 2825 7450 50  0000 C CNN
 F 3 "" H 2825 7450 50  0000 C CNN
@@ -937,19 +833,6 @@ F 2 "Resistors_SMD:R_0805" H 3300 7000 50  0001 C CNN
 F 3 "~" H 3300 7000 50  0001 C CNN
 	1    3300 7000
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5E987601
-P 1125 6900
-AR Path="/5C0A69D0/5E987601" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5E987601" Ref="J6"  Part="1" 
-F 0 "J6" V 998 6980 50  0000 L CNN
-F 1 "touch" V 1089 6980 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1125 6900 50  0001 C CNN
-F 3 "" H 1125 6900 50  0001 C CNN
-	1    1125 6900
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3125 7000 3200 7000
@@ -1019,8 +902,8 @@ U 1 1 5E987629
 P 1350 6600
 AR Path="/5BAC374C/5E987629" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E987629" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E987629" Ref="#PWR06"  Part="1" 
-F 0 "#PWR06" H 1350 6450 50  0001 C CNN
+AR Path="/5E97CA7E/5E987629" Ref="#PWR0202"  Part="1" 
+F 0 "#PWR0202" H 1350 6450 50  0001 C CNN
 F 1 "+12V" H 1350 6740 50  0000 C CNN
 F 2 "" H 1350 6600 50  0000 C CNN
 F 3 "" H 1350 6600 50  0000 C CNN
@@ -1040,26 +923,13 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3600 7300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3400 7000 3600 7000
-$Comp
-L Device:R_Small R?
-U 1 1 5E987637
-P 2150 6900
-AR Path="/5C0A69D0/5E987637" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E987637" Ref="R12"  Part="1" 
-F 0 "R12" H 2209 6946 50  0000 L CNN
-F 1 "1K" H 2209 6855 50  0000 L CNN
-F 2 "Resistors_SMD:R_0805" H 2150 6900 50  0001 C CNN
-F 3 "~" H 2150 6900 50  0001 C CNN
-	1    2150 6900
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	2050 6900 1975 6900
 $Comp
-L power:+9V #PWR037
+L power:+9V #PWR0203
 U 1 1 5E998279
 P 8675 750
-F 0 "#PWR037" H 8675 600 50  0001 C CNN
+F 0 "#PWR0203" H 8675 600 50  0001 C CNN
 F 1 "+9V" H 8690 923 50  0000 C CNN
 F 2 "" H 8675 750 50  0001 C CNN
 F 3 "" H 8675 750 50  0001 C CNN
@@ -1067,10 +937,10 @@ F 3 "" H 8675 750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+9V #PWR041
+L power:+9V #PWR0204
 U 1 1 5E9983BF
 P 8725 2200
-F 0 "#PWR041" H 8725 2050 50  0001 C CNN
+F 0 "#PWR0204" H 8725 2050 50  0001 C CNN
 F 1 "+9V" H 8740 2373 50  0000 C CNN
 F 2 "" H 8725 2200 50  0001 C CNN
 F 3 "" H 8725 2200 50  0001 C CNN
@@ -1096,8 +966,8 @@ U 1 1 5E99856D
 P 9400 3100
 AR Path="/5BAC374C/5E99856D" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E99856D" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E99856D" Ref="#PWR040"  Part="1" 
-F 0 "#PWR040" H 9400 2850 50  0001 C CNN
+AR Path="/5E97CA7E/5E99856D" Ref="#PWR0205"  Part="1" 
+F 0 "#PWR0205" H 9400 2850 50  0001 C CNN
 F 1 "GND" H 9400 2950 50  0000 C CNN
 F 2 "" H 9400 3100 50  0000 C CNN
 F 3 "" H 9400 3100 50  0000 C CNN
@@ -1109,10 +979,10 @@ Wire Wire Line
 Wire Wire Line
 	9400 3050 9400 3100
 $Comp
-L power:+9V #PWR039
+L power:+9V #PWR0206
 U 1 1 5E998575
 P 9400 2200
-F 0 "#PWR039" H 9400 2050 50  0001 C CNN
+F 0 "#PWR0206" H 9400 2050 50  0001 C CNN
 F 1 "+9V" H 9415 2373 50  0000 C CNN
 F 2 "" H 9400 2200 50  0001 C CNN
 F 3 "" H 9400 2200 50  0001 C CNN
@@ -1138,8 +1008,8 @@ U 1 1 5E99C6D4
 P 9400 4400
 AR Path="/5BAC374C/5E99C6D4" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5E99C6D4" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5E99C6D4" Ref="#PWR044"  Part="1" 
-F 0 "#PWR044" H 9400 4150 50  0001 C CNN
+AR Path="/5E97CA7E/5E99C6D4" Ref="#PWR0207"  Part="1" 
+F 0 "#PWR0207" H 9400 4150 50  0001 C CNN
 F 1 "GND" H 9400 4250 50  0000 C CNN
 F 2 "" H 9400 4400 50  0000 C CNN
 F 3 "" H 9400 4400 50  0000 C CNN
@@ -1151,10 +1021,10 @@ Wire Wire Line
 Wire Wire Line
 	9400 4350 9400 4400
 $Comp
-L power:+9V #PWR043
+L power:+9V #PWR0208
 U 1 1 5E99C6DC
 P 9400 3500
-F 0 "#PWR043" H 9400 3350 50  0001 C CNN
+F 0 "#PWR0208" H 9400 3350 50  0001 C CNN
 F 1 "+9V" H 9415 3673 50  0000 C CNN
 F 2 "" H 9400 3500 50  0001 C CNN
 F 3 "" H 9400 3500 50  0001 C CNN
@@ -1173,10 +1043,10 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 9750 5675 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+9V #PWR047
+L power:+9V #PWR0209
 U 1 1 5E9A4C76
 P 9750 5100
-F 0 "#PWR047" H 9750 4950 50  0001 C CNN
+F 0 "#PWR0209" H 9750 4950 50  0001 C CNN
 F 1 "+9V" H 9765 5273 50  0000 C CNN
 F 2 "" H 9750 5100 50  0001 C CNN
 F 3 "" H 9750 5100 50  0001 C CNN
@@ -1184,10 +1054,10 @@ F 3 "" H 9750 5100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:-9V #PWR048
+L power:-9V #PWR0210
 U 1 1 5E9A4C7C
 P 9750 6275
-F 0 "#PWR048" H 9750 6150 50  0001 C CNN
+F 0 "#PWR0210" H 9750 6150 50  0001 C CNN
 F 1 "-9V" H 9765 6448 50  0000 C CNN
 F 2 "" H 9750 6275 50  0001 C CNN
 F 3 "" H 9750 6275 50  0001 C CNN
@@ -1217,8 +1087,8 @@ U 1 1 5EA023BE
 P 5725 1550
 AR Path="/5BAC374C/5EA023BE" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA023BE" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA023BE" Ref="#PWR020"  Part="1" 
-F 0 "#PWR020" H 5725 1300 50  0001 C CNN
+AR Path="/5E97CA7E/5EA023BE" Ref="#PWR0211"  Part="1" 
+F 0 "#PWR0211" H 5725 1300 50  0001 C CNN
 F 1 "GND" H 5725 1400 50  0000 C CNN
 F 2 "" H 5725 1550 50  0000 C CNN
 F 3 "" H 5725 1550 50  0000 C CNN
@@ -1237,19 +1107,6 @@ F 2 "Resistors_SMD:R_0805" H 6200 1100 50  0001 C CNN
 F 3 "~" H 6200 1100 50  0001 C CNN
 	1    6200 1100
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5EA023CB
-P 4025 1000
-AR Path="/5C0A69D0/5EA023CB" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5EA023CB" Ref="J8"  Part="1" 
-F 0 "J8" V 3898 1080 50  0000 L CNN
-F 1 "touch" V 3989 1080 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4025 1000 50  0001 C CNN
-F 3 "" H 4025 1000 50  0001 C CNN
-	1    4025 1000
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	6025 1100 6100 1100
@@ -1319,8 +1176,8 @@ U 1 1 5EA023F3
 P 4250 700
 AR Path="/5BAC374C/5EA023F3" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA023F3" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA023F3" Ref="#PWR014"  Part="1" 
-F 0 "#PWR014" H 4250 550 50  0001 C CNN
+AR Path="/5E97CA7E/5EA023F3" Ref="#PWR0212"  Part="1" 
+F 0 "#PWR0212" H 4250 550 50  0001 C CNN
 F 1 "+12V" H 4250 840 50  0000 C CNN
 F 2 "" H 4250 700 50  0000 C CNN
 F 3 "" H 4250 700 50  0000 C CNN
@@ -1374,8 +1231,8 @@ U 1 1 5EA02410
 P 5700 2775
 AR Path="/5BAC374C/5EA02410" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA02410" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA02410" Ref="#PWR019"  Part="1" 
-F 0 "#PWR019" H 5700 2525 50  0001 C CNN
+AR Path="/5E97CA7E/5EA02410" Ref="#PWR0213"  Part="1" 
+F 0 "#PWR0213" H 5700 2525 50  0001 C CNN
 F 1 "GND" H 5700 2625 50  0000 C CNN
 F 2 "" H 5700 2775 50  0000 C CNN
 F 3 "" H 5700 2775 50  0000 C CNN
@@ -1394,19 +1251,6 @@ F 2 "Resistors_SMD:R_0805" H 6175 2325 50  0001 C CNN
 F 3 "~" H 6175 2325 50  0001 C CNN
 	1    6175 2325
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5EA0241D
-P 4000 2225
-AR Path="/5C0A69D0/5EA0241D" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5EA0241D" Ref="J7"  Part="1" 
-F 0 "J7" V 3873 2305 50  0000 L CNN
-F 1 "touch" V 3964 2305 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4000 2225 50  0001 C CNN
-F 3 "" H 4000 2225 50  0001 C CNN
-	1    4000 2225
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	6000 2325 6075 2325
@@ -1476,8 +1320,8 @@ U 1 1 5EA02445
 P 4225 1925
 AR Path="/5BAC374C/5EA02445" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA02445" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA02445" Ref="#PWR013"  Part="1" 
-F 0 "#PWR013" H 4225 1775 50  0001 C CNN
+AR Path="/5E97CA7E/5EA02445" Ref="#PWR0214"  Part="1" 
+F 0 "#PWR0214" H 4225 1775 50  0001 C CNN
 F 1 "+12V" H 4225 2065 50  0000 C CNN
 F 2 "" H 4225 1925 50  0000 C CNN
 F 3 "" H 4225 1925 50  0000 C CNN
@@ -1531,8 +1375,8 @@ U 1 1 5EA02462
 P 5750 3975
 AR Path="/5BAC374C/5EA02462" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA02462" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA02462" Ref="#PWR021"  Part="1" 
-F 0 "#PWR021" H 5750 3725 50  0001 C CNN
+AR Path="/5E97CA7E/5EA02462" Ref="#PWR0215"  Part="1" 
+F 0 "#PWR0215" H 5750 3725 50  0001 C CNN
 F 1 "GND" H 5750 3825 50  0000 C CNN
 F 2 "" H 5750 3975 50  0000 C CNN
 F 3 "" H 5750 3975 50  0000 C CNN
@@ -1551,19 +1395,6 @@ F 2 "Resistors_SMD:R_0805" H 6225 3525 50  0001 C CNN
 F 3 "~" H 6225 3525 50  0001 C CNN
 	1    6225 3525
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5EA0246F
-P 4050 3425
-AR Path="/5C0A69D0/5EA0246F" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5EA0246F" Ref="J9"  Part="1" 
-F 0 "J9" V 3923 3505 50  0000 L CNN
-F 1 "touch" V 4014 3505 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4050 3425 50  0001 C CNN
-F 3 "" H 4050 3425 50  0001 C CNN
-	1    4050 3425
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	6050 3525 6125 3525
@@ -1633,8 +1464,8 @@ U 1 1 5EA02497
 P 4275 3125
 AR Path="/5BAC374C/5EA02497" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA02497" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA02497" Ref="#PWR015"  Part="1" 
-F 0 "#PWR015" H 4275 2975 50  0001 C CNN
+AR Path="/5E97CA7E/5EA02497" Ref="#PWR0216"  Part="1" 
+F 0 "#PWR0216" H 4275 2975 50  0001 C CNN
 F 1 "+12V" H 4275 3265 50  0000 C CNN
 F 2 "" H 4275 3125 50  0000 C CNN
 F 3 "" H 4275 3125 50  0000 C CNN
@@ -1688,8 +1519,8 @@ U 1 1 5EA024B4
 P 5750 5150
 AR Path="/5BAC374C/5EA024B4" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA024B4" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA024B4" Ref="#PWR022"  Part="1" 
-F 0 "#PWR022" H 5750 4900 50  0001 C CNN
+AR Path="/5E97CA7E/5EA024B4" Ref="#PWR0217"  Part="1" 
+F 0 "#PWR0217" H 5750 4900 50  0001 C CNN
 F 1 "GND" H 5750 5000 50  0000 C CNN
 F 2 "" H 5750 5150 50  0000 C CNN
 F 3 "" H 5750 5150 50  0000 C CNN
@@ -1708,19 +1539,6 @@ F 2 "Resistors_SMD:R_0805" H 6225 4700 50  0001 C CNN
 F 3 "~" H 6225 4700 50  0001 C CNN
 	1    6225 4700
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5EA024C1
-P 4050 4600
-AR Path="/5C0A69D0/5EA024C1" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5EA024C1" Ref="J10"  Part="1" 
-F 0 "J10" V 3923 4680 50  0000 L CNN
-F 1 "touch" V 4014 4680 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4050 4600 50  0001 C CNN
-F 3 "" H 4050 4600 50  0001 C CNN
-	1    4050 4600
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	6050 4700 6125 4700
@@ -1790,8 +1608,8 @@ U 1 1 5EA024E9
 P 4275 4300
 AR Path="/5BAC374C/5EA024E9" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA024E9" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA024E9" Ref="#PWR016"  Part="1" 
-F 0 "#PWR016" H 4275 4150 50  0001 C CNN
+AR Path="/5E97CA7E/5EA024E9" Ref="#PWR0218"  Part="1" 
+F 0 "#PWR0218" H 4275 4150 50  0001 C CNN
 F 1 "+12V" H 4275 4440 50  0000 C CNN
 F 2 "" H 4275 4300 50  0000 C CNN
 F 3 "" H 4275 4300 50  0000 C CNN
@@ -1845,8 +1663,8 @@ U 1 1 5EA02506
 P 5775 6300
 AR Path="/5BAC374C/5EA02506" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA02506" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA02506" Ref="#PWR023"  Part="1" 
-F 0 "#PWR023" H 5775 6050 50  0001 C CNN
+AR Path="/5E97CA7E/5EA02506" Ref="#PWR0219"  Part="1" 
+F 0 "#PWR0219" H 5775 6050 50  0001 C CNN
 F 1 "GND" H 5775 6150 50  0000 C CNN
 F 2 "" H 5775 6300 50  0000 C CNN
 F 3 "" H 5775 6300 50  0000 C CNN
@@ -1865,19 +1683,6 @@ F 2 "Resistors_SMD:R_0805" H 6250 5850 50  0001 C CNN
 F 3 "~" H 6250 5850 50  0001 C CNN
 	1    6250 5850
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5EA02513
-P 4075 5750
-AR Path="/5C0A69D0/5EA02513" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5EA02513" Ref="J11"  Part="1" 
-F 0 "J11" V 3948 5830 50  0000 L CNN
-F 1 "touch" V 4039 5830 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4075 5750 50  0001 C CNN
-F 3 "" H 4075 5750 50  0001 C CNN
-	1    4075 5750
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	6075 5850 6150 5850
@@ -1947,8 +1752,8 @@ U 1 1 5EA0253B
 P 4300 5450
 AR Path="/5BAC374C/5EA0253B" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA0253B" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA0253B" Ref="#PWR017"  Part="1" 
-F 0 "#PWR017" H 4300 5300 50  0001 C CNN
+AR Path="/5E97CA7E/5EA0253B" Ref="#PWR0220"  Part="1" 
+F 0 "#PWR0220" H 4300 5300 50  0001 C CNN
 F 1 "+12V" H 4300 5590 50  0000 C CNN
 F 2 "" H 4300 5450 50  0000 C CNN
 F 3 "" H 4300 5450 50  0000 C CNN
@@ -2002,8 +1807,8 @@ U 1 1 5EA02558
 P 5775 7475
 AR Path="/5BAC374C/5EA02558" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA02558" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA02558" Ref="#PWR024"  Part="1" 
-F 0 "#PWR024" H 5775 7225 50  0001 C CNN
+AR Path="/5E97CA7E/5EA02558" Ref="#PWR0221"  Part="1" 
+F 0 "#PWR0221" H 5775 7225 50  0001 C CNN
 F 1 "GND" H 5775 7325 50  0000 C CNN
 F 2 "" H 5775 7475 50  0000 C CNN
 F 3 "" H 5775 7475 50  0000 C CNN
@@ -2022,19 +1827,6 @@ F 2 "Resistors_SMD:R_0805" H 6250 7025 50  0001 C CNN
 F 3 "~" H 6250 7025 50  0001 C CNN
 	1    6250 7025
 	0    1    1    0   
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
-U 1 1 5EA02565
-P 4075 6925
-AR Path="/5C0A69D0/5EA02565" Ref="J?"  Part="1" 
-AR Path="/5E97CA7E/5EA02565" Ref="J12"  Part="1" 
-F 0 "J12" V 3948 7005 50  0000 L CNN
-F 1 "touch" V 4039 7005 50  0000 L CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4075 6925 50  0001 C CNN
-F 3 "" H 4075 6925 50  0001 C CNN
-	1    4075 6925
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	6075 7025 6150 7025
@@ -2104,8 +1896,8 @@ U 1 1 5EA0258D
 P 4300 6625
 AR Path="/5BAC374C/5EA0258D" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA0258D" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA0258D" Ref="#PWR018"  Part="1" 
-F 0 "#PWR018" H 4300 6475 50  0001 C CNN
+AR Path="/5E97CA7E/5EA0258D" Ref="#PWR0222"  Part="1" 
+F 0 "#PWR0222" H 4300 6475 50  0001 C CNN
 F 1 "+12V" H 4300 6765 50  0000 C CNN
 F 2 "" H 4300 6625 50  0000 C CNN
 F 3 "" H 4300 6625 50  0000 C CNN
@@ -2159,8 +1951,8 @@ U 1 1 5EA0FF6C
 P 8050 3100
 AR Path="/5BAC374C/5EA0FF6C" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA0FF6C" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA0FF6C" Ref="#PWR030"  Part="1" 
-F 0 "#PWR030" H 8050 2850 50  0001 C CNN
+AR Path="/5E97CA7E/5EA0FF6C" Ref="#PWR0223"  Part="1" 
+F 0 "#PWR0223" H 8050 2850 50  0001 C CNN
 F 1 "GND" H 8050 2950 50  0000 C CNN
 F 2 "" H 8050 3100 50  0000 C CNN
 F 3 "" H 8050 3100 50  0000 C CNN
@@ -2214,10 +2006,10 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 8525 5650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+9V #PWR033
+L power:+9V #PWR0224
 U 1 1 5EA0FF8A
 P 8525 5075
-F 0 "#PWR033" H 8525 4925 50  0001 C CNN
+F 0 "#PWR0224" H 8525 4925 50  0001 C CNN
 F 1 "+9V" H 8540 5248 50  0000 C CNN
 F 2 "" H 8525 5075 50  0001 C CNN
 F 3 "" H 8525 5075 50  0001 C CNN
@@ -2225,10 +2017,10 @@ F 3 "" H 8525 5075 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:-9V #PWR034
+L power:-9V #PWR0225
 U 1 1 5EA0FF90
 P 8525 6250
-F 0 "#PWR034" H 8525 6125 50  0001 C CNN
+F 0 "#PWR0225" H 8525 6125 50  0001 C CNN
 F 1 "-9V" H 8540 6423 50  0000 C CNN
 F 2 "" H 8525 6250 50  0001 C CNN
 F 3 "" H 8525 6250 50  0001 C CNN
@@ -2240,10 +2032,10 @@ Wire Wire Line
 Wire Wire Line
 	8525 6150 8525 6250
 $Comp
-L power:+9V #PWR025
+L power:+9V #PWR0226
 U 1 1 5EA0FF98
 P 8050 725
-F 0 "#PWR025" H 8050 575 50  0001 C CNN
+F 0 "#PWR0226" H 8050 575 50  0001 C CNN
 F 1 "+9V" H 8065 898 50  0000 C CNN
 F 2 "" H 8050 725 50  0001 C CNN
 F 3 "" H 8050 725 50  0001 C CNN
@@ -2251,10 +2043,10 @@ F 3 "" H 8050 725 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+9V #PWR029
+L power:+9V #PWR0227
 U 1 1 5EA0FF9E
 P 8050 2200
-F 0 "#PWR029" H 8050 2050 50  0001 C CNN
+F 0 "#PWR0227" H 8050 2050 50  0001 C CNN
 F 1 "+9V" H 8065 2373 50  0000 C CNN
 F 2 "" H 8050 2200 50  0001 C CNN
 F 3 "" H 8050 2200 50  0001 C CNN
@@ -2280,8 +2072,8 @@ U 1 1 5EA0FFAB
 P 8025 4425
 AR Path="/5BAC374C/5EA0FFAB" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA0FFAB" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA0FFAB" Ref="#PWR028"  Part="1" 
-F 0 "#PWR028" H 8025 4175 50  0001 C CNN
+AR Path="/5E97CA7E/5EA0FFAB" Ref="#PWR0228"  Part="1" 
+F 0 "#PWR0228" H 8025 4175 50  0001 C CNN
 F 1 "GND" H 8025 4275 50  0000 C CNN
 F 2 "" H 8025 4425 50  0000 C CNN
 F 3 "" H 8025 4425 50  0000 C CNN
@@ -2293,10 +2085,10 @@ Wire Wire Line
 Wire Wire Line
 	8025 4375 8025 4425
 $Comp
-L power:+9V #PWR027
+L power:+9V #PWR0229
 U 1 1 5EA0FFB3
 P 8025 3525
-F 0 "#PWR027" H 8025 3375 50  0001 C CNN
+F 0 "#PWR0229" H 8025 3375 50  0001 C CNN
 F 1 "+9V" H 8040 3698 50  0000 C CNN
 F 2 "" H 8025 3525 50  0001 C CNN
 F 3 "" H 8025 3525 50  0001 C CNN
@@ -2322,8 +2114,8 @@ U 1 1 5EA0FFC0
 P 8750 4425
 AR Path="/5BAC374C/5EA0FFC0" Ref="#PWR?"  Part="1" 
 AR Path="/5C0A69D0/5EA0FFC0" Ref="#PWR?"  Part="1" 
-AR Path="/5E97CA7E/5EA0FFC0" Ref="#PWR032"  Part="1" 
-F 0 "#PWR032" H 8750 4175 50  0001 C CNN
+AR Path="/5E97CA7E/5EA0FFC0" Ref="#PWR0230"  Part="1" 
+F 0 "#PWR0230" H 8750 4175 50  0001 C CNN
 F 1 "GND" H 8750 4275 50  0000 C CNN
 F 2 "" H 8750 4425 50  0000 C CNN
 F 3 "" H 8750 4425 50  0000 C CNN
@@ -2335,10 +2127,10 @@ Wire Wire Line
 Wire Wire Line
 	8750 4375 8750 4425
 $Comp
-L power:+9V #PWR031
+L power:+9V #PWR0231
 U 1 1 5EA0FFC8
 P 8750 3525
-F 0 "#PWR031" H 8750 3375 50  0001 C CNN
+F 0 "#PWR0231" H 8750 3375 50  0001 C CNN
 F 1 "+9V" H 8765 3698 50  0000 C CNN
 F 2 "" H 8750 3525 50  0001 C CNN
 F 3 "" H 8750 3525 50  0001 C CNN
@@ -2357,10 +2149,10 @@ F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 9125 5650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+9V #PWR035
+L power:+9V #PWR0232
 U 1 1 5EA0FFD5
 P 9125 5075
-F 0 "#PWR035" H 9125 4925 50  0001 C CNN
+F 0 "#PWR0232" H 9125 4925 50  0001 C CNN
 F 1 "+9V" H 9140 5248 50  0000 C CNN
 F 2 "" H 9125 5075 50  0001 C CNN
 F 3 "" H 9125 5075 50  0001 C CNN
@@ -2368,10 +2160,10 @@ F 3 "" H 9125 5075 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:-9V #PWR036
+L power:-9V #PWR0233
 U 1 1 5EA0FFDB
 P 9125 6250
-F 0 "#PWR036" H 9125 6125 50  0001 C CNN
+F 0 "#PWR0233" H 9125 6125 50  0001 C CNN
 F 1 "-9V" H 9140 6423 50  0000 C CNN
 F 2 "" H 9125 6250 50  0001 C CNN
 F 3 "" H 9125 6250 50  0001 C CNN
@@ -2382,4 +2174,212 @@ Wire Wire Line
 	9125 5075 9125 5150
 Wire Wire Line
 	9125 6150 9125 6250
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB12F7F
+P 1075 975
+AR Path="/5C0A69D0/5EB12F7F" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB12F7F" Ref="J27"  Part="1" 
+F 0 "J27" V 948 1055 50  0000 L CNN
+F 1 "touch" V 1039 1055 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1075 975 50  0001 C CNN
+F 3 "" H 1075 975 50  0001 C CNN
+	1    1075 975 
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB132A7
+P 1050 2200
+AR Path="/5C0A69D0/5EB132A7" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB132A7" Ref="J26"  Part="1" 
+F 0 "J26" V 923 2280 50  0000 L CNN
+F 1 "touch" V 1014 2280 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1050 2200 50  0001 C CNN
+F 3 "" H 1050 2200 50  0001 C CNN
+	1    1050 2200
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB136D1
+P 1100 3400
+AR Path="/5C0A69D0/5EB136D1" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB136D1" Ref="J30"  Part="1" 
+F 0 "J30" V 973 3480 50  0000 L CNN
+F 1 "touch" V 1064 3480 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1100 3400 50  0001 C CNN
+F 3 "" H 1100 3400 50  0001 C CNN
+	1    1100 3400
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB138DF
+P 1100 4575
+AR Path="/5C0A69D0/5EB138DF" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB138DF" Ref="J31"  Part="1" 
+F 0 "J31" V 973 4655 50  0000 L CNN
+F 1 "touch" V 1064 4655 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1100 4575 50  0001 C CNN
+F 3 "" H 1100 4575 50  0001 C CNN
+	1    1100 4575
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB139EB
+P 1125 5725
+AR Path="/5C0A69D0/5EB139EB" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB139EB" Ref="J34"  Part="1" 
+F 0 "J34" V 998 5805 50  0000 L CNN
+F 1 "touch" V 1089 5805 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1125 5725 50  0001 C CNN
+F 3 "" H 1125 5725 50  0001 C CNN
+	1    1125 5725
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB13F6E
+P 1125 6900
+AR Path="/5C0A69D0/5EB13F6E" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB13F6E" Ref="J35"  Part="1" 
+F 0 "J35" V 998 6980 50  0000 L CNN
+F 1 "touch" V 1089 6980 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1125 6900 50  0001 C CNN
+F 3 "" H 1125 6900 50  0001 C CNN
+	1    1125 6900
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB1407A
+P 4075 6925
+AR Path="/5C0A69D0/5EB1407A" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB1407A" Ref="J72"  Part="1" 
+F 0 "J72" V 3948 7005 50  0000 L CNN
+F 1 "touch" V 4039 7005 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4075 6925 50  0001 C CNN
+F 3 "" H 4075 6925 50  0001 C CNN
+	1    4075 6925
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB141B6
+P 4075 5750
+AR Path="/5C0A69D0/5EB141B6" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB141B6" Ref="J71"  Part="1" 
+F 0 "J71" V 3948 5830 50  0000 L CNN
+F 1 "touch" V 4039 5830 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4075 5750 50  0001 C CNN
+F 3 "" H 4075 5750 50  0001 C CNN
+	1    4075 5750
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB14334
+P 4050 4600
+AR Path="/5C0A69D0/5EB14334" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB14334" Ref="J63"  Part="1" 
+F 0 "J63" V 3923 4680 50  0000 L CNN
+F 1 "touch" V 4014 4680 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4050 4600 50  0001 C CNN
+F 3 "" H 4050 4600 50  0001 C CNN
+	1    4050 4600
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB14E2D
+P 4050 3425
+AR Path="/5C0A69D0/5EB14E2D" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB14E2D" Ref="J62"  Part="1" 
+F 0 "J62" V 3923 3505 50  0000 L CNN
+F 1 "touch" V 4014 3505 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4050 3425 50  0001 C CNN
+F 3 "" H 4050 3425 50  0001 C CNN
+	1    4050 3425
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB14F5B
+P 4000 2225
+AR Path="/5C0A69D0/5EB14F5B" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB14F5B" Ref="J59"  Part="1" 
+F 0 "J59" V 3873 2305 50  0000 L CNN
+F 1 "touch" V 3964 2305 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4000 2225 50  0001 C CNN
+F 3 "" H 4000 2225 50  0001 C CNN
+	1    4000 2225
+	-1   0    0    1   
+$EndComp
+$Comp
+L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J?
+U 1 1 5EB15079
+P 4025 1000
+AR Path="/5C0A69D0/5EB15079" Ref="J?"  Part="1" 
+AR Path="/5E97CA7E/5EB15079" Ref="J60"  Part="1" 
+F 0 "J60" V 3898 1080 50  0000 L CNN
+F 1 "touch" V 3989 1080 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 4025 1000 50  0001 C CNN
+F 3 "" H 4025 1000 50  0001 C CNN
+	1    4025 1000
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E97FA00
+P 1275 2050
+AR Path="/5C0A69D0/5E97FA00" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E97FA00" Ref="R1"  Part="1" 
+F 0 "R1" H 1334 2096 50  0000 L CNN
+F 1 "1M" H 1334 2005 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 1275 2050 50  0001 C CNN
+F 3 "~" H 1275 2050 50  0001 C CNN
+	1    1275 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E981A5E
+P 2125 4575
+AR Path="/5C0A69D0/5E981A5E" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E981A5E" Ref="R10"  Part="1" 
+F 0 "R10" H 2184 4621 50  0000 L CNN
+F 1 "1K" H 2184 4530 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2125 4575 50  0001 C CNN
+F 3 "~" H 2125 4575 50  0001 C CNN
+	1    2125 4575
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E983B60
+P 2150 5725
+AR Path="/5C0A69D0/5E983B60" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E983B60" Ref="R11"  Part="1" 
+F 0 "R11" H 2209 5771 50  0000 L CNN
+F 1 "1K" H 2209 5680 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2150 5725 50  0001 C CNN
+F 3 "~" H 2150 5725 50  0001 C CNN
+	1    2150 5725
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5E987637
+P 2150 6900
+AR Path="/5C0A69D0/5E987637" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5E987637" Ref="R12"  Part="1" 
+F 0 "R12" H 2209 6946 50  0000 L CNN
+F 1 "1K" H 2209 6855 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 2150 6900 50  0001 C CNN
+F 3 "~" H 2150 6900 50  0001 C CNN
+	1    2150 6900
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
