@@ -57,10 +57,10 @@ $EndSheet
 Text Notes 1725 4225 0    118  ~ 0
 filter\n
 $Comp
-L Amplifier_Operational:TL071 U1
+L Amplifier_Operational:TL071 U20
 U 1 1 5BD701E6
 P 5425 4200
-F 0 "U1" H 5766 4246 50  0000 L CNN
+F 0 "U20" H 5766 4246 50  0000 L CNN
 F 1 "TL071" H 5766 4155 50  0000 L CNN
 F 2 "SMD_Packages:SOIC-8-N" H 5475 4250 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5575 4350 50  0001 C CNN

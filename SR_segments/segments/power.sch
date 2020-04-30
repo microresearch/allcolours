@@ -1,0 +1,334 @@
+EESchema Schematic File Version 4
+LIBS:segments-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 4
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text Notes 1925 900  0    60   ~ 0
+euro_conn
+Wire Wire Line
+	1800 1175 1800 1225
+$Comp
+L power:-12V #PWR031
+U 1 1 5C3AA4A4
+P 1215 1660
+F 0 "#PWR031" H 1215 1760 50  0001 C CNN
+F 1 "-12V" H 1230 1833 50  0000 C CNN
+F 2 "" H 1215 1660 50  0001 C CNN
+F 3 "" H 1215 1660 50  0001 C CNN
+	1    1215 1660
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2300 1425 2345 1425
+Wire Wire Line
+	1675 1375 1675 1425
+Wire Wire Line
+	1675 1425 1750 1425
+Wire Wire Line
+	1580 1425 1675 1425
+Connection ~ 1675 1425
+Wire Wire Line
+	1295 1115 1295 1175
+$Comp
+L Device:D D3
+U 1 1 5C3AA4C8
+P 1365 1625
+F 0 "D3" H 1365 1409 50  0000 C CNN
+F 1 "D" H 1365 1500 50  0000 C CNN
+F 2 "Diodes_ThroughHole:D_DO-35_SOD27_P10.16mm_Horizontal" H 1365 1625 50  0001 C CNN
+F 3 "~" H 1365 1625 50  0001 C CNN
+	1    1365 1625
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1215 1625 1215 1660
+Wire Wire Line
+	1595 1175 1675 1175
+Wire Wire Line
+	1515 1625 1580 1625
+$Comp
+L Connector_Generic:Conn_02x05_Odd_Even J1
+U 1 1 5C3B711B
+P 2000 1425
+F 0 "J1" H 2050 1842 50  0000 C CNN
+F 1 "Conn_02x05_Odd_Even" H 2050 1751 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 2000 1425 50  0001 C CNN
+F 3 "~" H 2000 1425 50  0001 C CNN
+	1    2000 1425
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR033
+U 1 1 5C3B7442
+P 2500 1425
+F 0 "#PWR033" H 2500 1175 50  0001 C CNN
+F 1 "GND" H 2505 1252 50  0000 C CNN
+F 2 "" H 2500 1425 50  0001 C CNN
+F 3 "" H 2500 1425 50  0001 C CNN
+	1    2500 1425
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR032
+U 1 1 5C3B74A9
+P 1295 1115
+F 0 "#PWR032" H 1295 965 50  0001 C CNN
+F 1 "+12V" H 1310 1288 50  0000 C CNN
+F 2 "" H 1295 1115 50  0001 C CNN
+F 3 "" H 1295 1115 50  0001 C CNN
+	1    1295 1115
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:D D4
+U 1 1 5C3AA4BD
+P 1445 1175
+F 0 "D4" H 1445 1391 50  0000 C CNN
+F 1 "D" H 1445 1300 50  0000 C CNN
+F 2 "Diodes_THT:D_DO-35_SOD27_P10.16mm_Horizontal" H 1445 1175 50  0001 C CNN
+F 3 "~" H 1445 1175 50  0001 C CNN
+	1    1445 1175
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:CP_Small C10
+U 1 1 5C3B7C2F
+P 1675 1275
+F 0 "C10" H 1763 1321 50  0000 L CNN
+F 1 "10uF" H 1425 1250 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 1675 1275 50  0001 C CNN
+F 3 "~" H 1675 1275 50  0001 C CNN
+	1    1675 1275
+	1    0    0    -1  
+$EndComp
+Connection ~ 1675 1175
+$Comp
+L Device:CP_Small C9
+U 1 1 5C3B7CD7
+P 1580 1525
+F 0 "C9" H 1668 1571 50  0000 L CNN
+F 1 "10uF" H 1300 1550 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 1580 1525 50  0001 C CNN
+F 3 "~" H 1580 1525 50  0001 C CNN
+	1    1580 1525
+	1    0    0    -1  
+$EndComp
+Connection ~ 1580 1625
+Wire Wire Line
+	1580 1625 1760 1625
+Wire Wire Line
+	2305 1175 2305 1225
+Wire Wire Line
+	2305 1225 2300 1225
+Wire Wire Line
+	1675 1175 1800 1175
+Connection ~ 1800 1175
+Wire Wire Line
+	1800 1175 2305 1175
+Wire Wire Line
+	2300 1625 2300 1725
+Wire Wire Line
+	2300 1725 1760 1725
+Wire Wire Line
+	1760 1725 1760 1625
+Connection ~ 1760 1625
+Wire Wire Line
+	1760 1625 1800 1625
+Wire Wire Line
+	2300 1525 2345 1525
+Wire Wire Line
+	2345 1525 2345 1425
+Connection ~ 2345 1425
+Wire Wire Line
+	2345 1425 2500 1425
+Wire Wire Line
+	1800 1525 1750 1525
+Wire Wire Line
+	1750 1525 1750 1425
+Connection ~ 1750 1425
+Wire Wire Line
+	1750 1425 1800 1425
+Wire Wire Line
+	2295 1325 2300 1325
+Wire Wire Line
+	2345 1325 2345 1425
+Connection ~ 2300 1325
+Wire Wire Line
+	2300 1325 2345 1325
+Wire Wire Line
+	1800 1325 1750 1325
+Wire Wire Line
+	1750 1325 1750 1425
+$Comp
+L Regulator_Linear:LM1117-3.3 U?
+U 1 1 5E8A9184
+P 3550 1200
+F 0 "U?" H 3550 1442 50  0000 C CNN
+F 1 "LM1117-3.3" H 3550 1351 50  0000 C CNN
+F 2 "" H 3550 1200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 3550 1200 50  0001 C CNN
+	1    3550 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:LM1117-5.0 U?
+U 1 1 5E8A92C0
+P 1875 2275
+F 0 "U?" H 1875 2517 50  0000 C CNN
+F 1 "LM1117-5.0" H 1875 2426 50  0000 C CNN
+F 2 "" H 1875 2275 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 1875 2275 50  0001 C CNN
+	1    1875 2275
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5E8A967D
+P 1875 2625
+F 0 "#PWR?" H 1875 2375 50  0001 C CNN
+F 1 "GND" H 1880 2452 50  0000 C CNN
+F 2 "" H 1875 2625 50  0001 C CNN
+F 3 "" H 1875 2625 50  0001 C CNN
+	1    1875 2625
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5E8A9698
+P 2300 2525
+F 0 "#PWR?" H 2300 2275 50  0001 C CNN
+F 1 "GND" H 2305 2352 50  0000 C CNN
+F 2 "" H 2300 2525 50  0001 C CNN
+F 3 "" H 2300 2525 50  0001 C CNN
+	1    2300 2525
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP_Small C?
+U 1 1 5E8A9739
+P 2300 2375
+F 0 "C?" H 2388 2421 50  0000 L CNN
+F 1 "10uF" H 2020 2400 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 2300 2375 50  0001 C CNN
+F 3 "~" H 2300 2375 50  0001 C CNN
+	1    2300 2375
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5E8A97D7
+P 2575 2375
+F 0 "C?" H 2667 2421 50  0000 L CNN
+F 1 "100nF" H 2667 2330 50  0000 L CNN
+F 2 "" H 2575 2375 50  0001 C CNN
+F 3 "~" H 2575 2375 50  0001 C CNN
+	1    2575 2375
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5E8A989C
+P 1425 2275
+F 0 "#PWR?" H 1425 2125 50  0001 C CNN
+F 1 "+12V" H 1440 2448 50  0000 C CNN
+F 2 "" H 1425 2275 50  0001 C CNN
+F 3 "" H 1425 2275 50  0001 C CNN
+	1    1425 2275
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1425 2275 1575 2275
+Wire Wire Line
+	1875 2575 1875 2625
+Wire Wire Line
+	2175 2275 2300 2275
+Wire Wire Line
+	2300 2275 2575 2275
+Connection ~ 2300 2275
+Wire Wire Line
+	2575 2475 2300 2475
+Wire Wire Line
+	2300 2475 2300 2525
+Connection ~ 2300 2475
+Wire Wire Line
+	2575 2275 2825 2275
+Connection ~ 2575 2275
+$Comp
+L power:GND #PWR?
+U 1 1 5E8ABD94
+P 3975 1450
+F 0 "#PWR?" H 3975 1200 50  0001 C CNN
+F 1 "GND" H 3980 1277 50  0000 C CNN
+F 2 "" H 3975 1450 50  0001 C CNN
+F 3 "" H 3975 1450 50  0001 C CNN
+	1    3975 1450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP_Small C?
+U 1 1 5E8ABD9A
+P 3975 1300
+F 0 "C?" H 4063 1346 50  0000 L CNN
+F 1 "10uF" H 3695 1325 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 3975 1300 50  0001 C CNN
+F 3 "~" H 3975 1300 50  0001 C CNN
+	1    3975 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5E8ABDA1
+P 4250 1300
+F 0 "C?" H 4342 1346 50  0000 L CNN
+F 1 "100nF" H 4342 1255 50  0000 L CNN
+F 2 "" H 4250 1300 50  0001 C CNN
+F 3 "~" H 4250 1300 50  0001 C CNN
+	1    4250 1300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3850 1200 3975 1200
+Wire Wire Line
+	3975 1200 4250 1200
+Connection ~ 3975 1200
+Wire Wire Line
+	4250 1400 3975 1400
+Wire Wire Line
+	3975 1400 3975 1450
+Connection ~ 3975 1400
+Wire Wire Line
+	4250 1200 4500 1200
+Connection ~ 4250 1200
+Wire Wire Line
+	3175 1200 3250 1200
+$Comp
+L power:GND #PWR?
+U 1 1 5E8ACBA5
+P 3550 1575
+F 0 "#PWR?" H 3550 1325 50  0001 C CNN
+F 1 "GND" H 3555 1402 50  0000 C CNN
+F 2 "" H 3550 1575 50  0001 C CNN
+F 3 "" H 3550 1575 50  0001 C CNN
+	1    3550 1575
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 1500 3550 1575
+Text GLabel 2825 2275 2    50   Input ~ 0
+5volts
+Text GLabel 4500 1200 2    50   Input ~ 0
+3.3volts
+Text GLabel 3175 1200 0    50   Input ~ 0
+5volts
+$EndSCHEMATC
