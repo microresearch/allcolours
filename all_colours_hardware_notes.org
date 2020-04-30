@@ -1264,6 +1264,23 @@ DAC should now not be LOG - so we need to change this...
 
 eg. case 18 we had ADC in -> now we copy and play with new versions here for ADC/DAC modes
 
+* 25/4
+
+- added new modes for DAC side but now we need to do large integration and rework all DAC/log stuff - maybe some modes have different ranges
+
+* 29/4
+
+- re-working log stuff: remember to add in new modes for DAC and we can also change range of DAC in some cases if we like
+- working first on lf side
+
+- there are 10 DAC mode now - so 9 new modes... how do we distribute these - maybe need even more DAC modes in this case
+
+- *test each pulse mode with straight DAC to see which make sense to keep!*
+
+- for LF side let's keep a low DAC, maybe change this on HF side
+
+- *should also be inverted or we're stuck at the high end!*
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
