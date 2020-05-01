@@ -1281,6 +1281,13 @@ eg. case 18 we had ADC in -> now we copy and play with new versions here for ADC
 
 - *should also be inverted or we're stuck at the high end!*
 
+* 1/5
+
+- working through and fixed inversion on 32-47 LF DAC modes
+- that there could also be a few DAC modes where we process the SR faster than the DAC (how to measure this slow down?)
+
+- TODO: fix 48-63 HF test DAC modes on pulse side and re-investigate the new pulse DAC modes with the change of inversion FIX
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
