@@ -1277,16 +1277,23 @@ eg. case 18 we had ADC in -> now we copy and play with new versions here for ADC
 
 - *test each pulse mode with straight DAC to see which make sense to keep!*
 
-- for LF side let's keep a low DAC, maybe change this on HF side
-
 - *should also be inverted or we're stuck at the high end!*
 
 * 1/5
 
 - working through and fixed inversion on 32-47 LF DAC modes
-- that there could also be a few DAC modes where we process the SR faster than the DAC (how to measure this slow down?)
-
 - TODO: fix 48-63 HF test DAC modes on pulse side and re-investigate the new pulse DAC modes with the change of inversion FIX
+
+FIXED - now all modes should be there - 
+
++that there could also be a few DAC modes where we process the SR faster than the DAC (say DAC is 4x slower in some cases) -> this on speed/sv side only+
+
+*Test each and every mode AGAIN!*
+
+*in some cases change DAC range*
+
+*TEST, PLAY?RECORD and then clean up code*
+
 
 * for quote
 
