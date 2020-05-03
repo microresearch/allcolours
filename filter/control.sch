@@ -507,7 +507,7 @@ L Device:R_Small R46
 U 1 1 5ED9B4C8
 P 8700 1600
 F 0 "R46" V 8504 1600 50  0000 C CNN
-F 1 "47K" V 8595 1600 50  0000 C CNN
+F 1 "470K" V 8595 1600 50  0000 C CNN
 F 2 "" H 8700 1600 50  0001 C CNN
 F 3 "~" H 8700 1600 50  0001 C CNN
 	1    8700 1600
@@ -518,7 +518,7 @@ L Device:R_Small R47
 U 1 1 5ED9B4CF
 P 8850 1700
 F 0 "R47" H 8791 1654 50  0000 R CNN
-F 1 "1K" H 8791 1745 50  0000 R CNN
+F 1 "4K7" H 8791 1745 50  0000 R CNN
 F 2 "" H 8850 1700 50  0001 C CNN
 F 3 "~" H 8850 1700 50  0001 C CNN
 	1    8850 1700
@@ -547,11 +547,11 @@ Wire Wire Line
 Wire Wire Line
 	8600 1600 8450 1600
 Text GLabel 8450 1600 0    50   Input ~ 0
-R1
+RR1
 Wire Wire Line
 	9500 1500 9600 1500
 Text GLabel 9850 1500 2    50   Input ~ 0
-RR1
+R1
 Wire Wire Line
 	9250 3050 9250 3175
 Text GLabel 9250 3175 0    50   Input ~ 0
@@ -665,17 +665,6 @@ F 2 "" H 1750 3900 50  0001 C CNN
 F 3 "" H 1750 3900 50  0001 C CNN
 	1    1750 3900
 	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J15
-U 1 1 5EDA4B11
-P 1475 4350
-F 0 "J15" H 1395 4125 50  0000 C CNN
-F 1 "touch" H 1395 4216 50  0000 C CNN
-F 2 "" H 1475 4350 50  0001 C CNN
-F 3 "" H 1475 4350 50  0001 C CNN
-	1    1475 4350
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	1675 3900 1750 3900
@@ -831,17 +820,6 @@ F 3 "" H 1775 6175 50  0001 C CNN
 	1    1775 6175
 	1    0    0    -1  
 $EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J16
-U 1 1 5EDAC529
-P 1500 6625
-F 0 "J16" H 1420 6400 50  0000 C CNN
-F 1 "touch" H 1420 6491 50  0000 C CNN
-F 2 "" H 1500 6625 50  0001 C CNN
-F 3 "" H 1500 6625 50  0001 C CNN
-	1    1500 6625
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
 	1700 6175 1775 6175
 Wire Wire Line
@@ -995,17 +973,6 @@ F 2 "" H 4750 3900 50  0001 C CNN
 F 3 "" H 4750 3900 50  0001 C CNN
 	1    4750 3900
 	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J17
-U 1 1 5EDADD93
-P 4475 4350
-F 0 "J17" H 4395 4125 50  0000 C CNN
-F 1 "touch" H 4395 4216 50  0000 C CNN
-F 2 "" H 4475 4350 50  0001 C CNN
-F 3 "" H 4475 4350 50  0001 C CNN
-	1    4475 4350
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	4675 3900 4750 3900
@@ -1161,17 +1128,6 @@ F 3 "" H 4875 6125 50  0001 C CNN
 	1    4875 6125
 	1    0    0    -1  
 $EndComp
-$Comp
-L allcolours_analogue-rescue:Conn_01x01-Connector-allcolours-rescue J18
-U 1 1 5EDB0060
-P 4600 6575
-F 0 "J18" H 4520 6350 50  0000 C CNN
-F 1 "touch" H 4520 6441 50  0000 C CNN
-F 2 "" H 4600 6575 50  0001 C CNN
-F 3 "" H 4600 6575 50  0001 C CNN
-	1    4600 6575
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
 	4800 6125 4875 6125
 Wire Wire Line
@@ -1213,7 +1169,7 @@ F 3 "~" H 7625 1100 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text GLabel 7450 1100 0    50   Input ~ 0
-R1
+RR1
 $Comp
 L power:-12V #PWR083
 U 1 1 5EDB8648
@@ -1281,9 +1237,54 @@ $EndComp
 Wire Wire Line
 	8450 1200 8525 1200
 Wire Wire Line
-	8725 1200 8850 1200
+	8725 1200 8800 1200
 Wire Wire Line
 	8850 1200 8850 1400
 Wire Wire Line
 	9800 1500 9850 1500
+$Comp
+L Device:R_Small R?
+U 1 1 5F0002D7
+P 8950 875
+F 0 "R?" H 8891 829 50  0000 R CNN
+F 1 "4K7" H 8891 920 50  0000 R CNN
+F 2 "" H 8950 875 50  0001 C CNN
+F 3 "~" H 8950 875 50  0001 C CNN
+	1    8950 875 
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F0002DE
+P 8950 1025
+F 0 "#PWR?" H 8950 775 50  0001 C CNN
+F 1 "GND" H 8955 852 50  0000 C CNN
+F 2 "" H 8950 1025 50  0001 C CNN
+F 3 "" H 8950 1025 50  0001 C CNN
+	1    8950 1025
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8950 975  8950 1025
+Wire Wire Line
+	8800 1200 8800 775 
+Wire Wire Line
+	8800 775  8950 775 
+Connection ~ 8800 1200
+Wire Wire Line
+	8800 1200 8850 1200
+Text Notes 3525 4850 0    79   ~ 16
+or use ifm/sprott +/- control>>>>?
+Text GLabel 1675 4350 0    79   Input ~ 0
+CON1
+Text GLabel 4675 4350 0    79   Input ~ 0
+CON3
+Text GLabel 1725 6625 0    79   Input ~ 0
+CON2
+Text GLabel 4800 6575 0    79   Input ~ 0
+CON4
+Text Notes 850  3400 0    118  ~ 0
+cv pots?
+Text Notes 1075 5025 0    118  ~ 0
+norms?
 $EndSCHEMATC
