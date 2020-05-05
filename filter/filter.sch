@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 4
+Sheet 1 5
 Title ""
 Date ""
 Rev ""
@@ -31,5 +31,11 @@ S 675  2200 1475 425
 U 5ED966D6
 F0 "control" 79
 F1 "control.sch" 79
+$EndSheet
+$Sheet
+S 675  3000 1500 400 
+U 5EC7DA76
+F0 "sprott_control" 79
+F1 "sprottcontrol.sch" 79
 $EndSheet
 $EndSCHEMATC
