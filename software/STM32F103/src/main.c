@@ -133,7 +133,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1; // fastest gives 12 MHz our max for filter is 4 Mhz
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 0;
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 1; // was 0 but use 1 for overclock!
   TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -170,7 +170,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32; // ???? what should we have for LF?
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 1; // we lowered the lowest frequency for the LF side
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 1; // was 0 but use 1 for overclock
   TIM_TimeBaseInit(TIM3, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -233,7 +233,7 @@ int main(void)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 50;// peaks at 32/0 prescale with 730 KHz - 20/6 is fastest we can go 50 seems fastest with full modes
+  TIM_TimeBase_InitStructure.TIM_Period = 56;// peaks at 32/0 prescale with 730 KHz - 20/6 is fastest we can go 50 seems fastest with full modes
   // 48 with it.c - for func_it -> crashes even past 60???
   TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // with period 32 and prescaler 8 this makes for 120 KhZ
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);

@@ -1279,7 +1279,7 @@ eg. case 18 we had ADC in -> now we copy and play with new versions here for ADC
 
 - *should also be inverted or we're stuck at the high end!*
 
-* 1/5
+* 1/5 // 4/5
 
 - working through and fixed inversion on 32-47 LF DAC modes
 - TODO: fix 48-63 HF test DAC modes on pulse side and re-investigate the new pulse DAC modes with the change of inversion FIX
@@ -1290,9 +1290,56 @@ FIXED - now all modes should be there -
 
 *Test each and every mode AGAIN!*
 
-*in some cases change DAC range*
+// in process - changed mode 39 so that we can trigger PWM out!
+
+*in some cases maybe change DAC range*
 
 *TEST, PLAY?RECORD and then clean up code*
+
+* 5/5 // 12/5
+
+- testing out interpolation in mode 47 seems to work ok but do we want this?
+- try equal weighting DAC? also seems to work?
+
+- TIM3 for LF pre-scalar as 0 or 1?
+
+- test current with overclock to 128 MHz???
+
+- +more amplitude on output of filters - HF- R102 (try 18K) was 10k, LF- R61 (try 33k) was 27k+
+
++revert these to 10K as we made other changes - could be say 12k both+
+
+- LF as 10k and HF now as 10k
+
+- recap on adjustable resistors to *leave OFF BOM*: noise high: R19 noise low: R12
+
+- finalize DAC policy = *mix it up, equal weightings, OR just interpolate, OR interpolate only in speed mode...*
+
+- *we need to add 10uF for 7490_IN_LOW (both)*
+- *also remove diodes on IN LOW too, remove c40 or keep as jumpered 10R*
+- *for 2 upper PWM comps we have now 15k upper and 1k lower for divider*
+
+- dividers for TIM1 and TIM3 changed for overclock...
+
+- added even slower SR array
+
+- maybe second (lower one which is: on LF, on HF) pulse out should be divided down for some variation - try on 47! DONE both sides
+
+and go back to not-so-slow SR speed array DONE - tested, but we need to decide if we want all modes to have same divider or *YES*
+
+- top of each filter range is kind of arbitrary ????
+
+new array for LF much lower...
+
+measure current now???
+
+[former: power is: 120mA at +12V, 30mA at -12V, 0mA at 5v] - recheck now is more like 145/150 so not so much difference...
+
+now is 170mA at +12V, 30mA at =12)
+
+** 15/5/2020
+
+- we need smoothing on DACs for speeds
 
 
 * for quote
