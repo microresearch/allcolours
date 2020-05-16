@@ -64,7 +64,7 @@ int main(void)
  
   DMA_Cmd(DMA1_Channel1, ENABLE);
   
-  RCC_ADCCLKConfig(RCC_PCLK2_Div6);
+  RCC_ADCCLKConfig(RCC_PCLK2_Div8); //was Div6 - 8 is slowest
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_ADC1, ENABLE);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
@@ -253,7 +253,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 256;
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 256; // this is for 1 KHz 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 2; // 256 is for 1 KHz - 16 now as we smooth our ADC - is there slower ADC?
   TIM_TimeBaseInit(TIM4, &TIM_TimeBase_InitStructure);
  
   TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
