@@ -1798,7 +1798,7 @@ void TIM2_IRQHandler(void){
 	//	else GPIOC->BSRR = 0b0010000000000000; 
 	// testing for divide down
 
-	new_stath=bith;
+	new_stath=(shift_registerh & (1<<15))>>15; // so that is not just a simple divide down
 	if (prev_stath==0 && new_stath==1) flipdh^=1;
 	prev_stath=new_stath;	
 	if (flipdh) GPIOC->BRR = 0b0010000000000000;  
@@ -1834,8 +1834,9 @@ void TIM4_IRQHandler(void){
   temp=(((ADCBuffer[0]>>10)+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
   modehsr=63-(temp); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
-  //  modehsr=47; // TESTING all modes on H side 47 is exp mode for now 
-
+  modehsr=47; // TESTING all modes on H side 47 is exp mode for now 
+  //  if (modehsr==16) modehsr=69; // tEtst
+  
   // 0-15 is pwmX
   // 16-31 is pulseX
   // 32-47 is pwm/DAC - maybe add mode which only updates pwm on pulse instead of say
@@ -1851,7 +1852,7 @@ void TIM4_IRQHandler(void){
   speedh=logger[temp>>6]; // 1024  = 10 bits -> could be less logger to make smoother?
   speedhh=slower_logforSR[temp>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother? - could also be a lot slower at one end - TESTY even slower
 
-  temp=(((ADCBuffer[1]>>10)+lastmodel)/2); //smoothing necessary for higher speeds
+  temp=(((ADCBuffer[1]>>10)+lastmodel)/2); //smoothing necessary for higher speeds - TEST!
   lastmodel=temp;
   modelsr=63-(temp); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
   //  modelsr=68; // TESTING!

@@ -1340,7 +1340,7 @@ now is 170mA at +12V, 30mA at =12)
 ** 15/5/2020
 
 - we need smoothing on DACs for speeds
-- added smoothing also for modes and seems about right now
+- added smoothing also for modes and seems about right now - +TO TEST!+ - tested OK!
 
 * for quote
 
