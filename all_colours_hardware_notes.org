@@ -270,7 +270,7 @@ IN - could reduce base resistor (47k) but seems to work ok with buffered signals
 
 - different smd transistors tested for noise generators and re-check BEC layout etc...
 
-* 29/1 from touch: analogue/breakup tests
+* 29/1 2019 from touch: analogue/breakup tests
 
 - only so many fingers, so use more flipflopped paths as a way of patching
 - audio in/out path should not use fingers
@@ -1339,8 +1339,12 @@ now is 170mA at +12V, 30mA at =12)
 
 ** 15/5/2020
 
-- we need smoothing on DACs for speeds
+- we need smoothing on DACs for speeds DONE
 - added smoothing also for modes and seems about right now - +TO TEST!+ - tested OK!
+
+** 22/5/2020
+
+- teting interpolation - fixed overflow but need to test on HARDWARE
 
 * for quote
 

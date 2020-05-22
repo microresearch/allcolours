@@ -1,25 +1,12 @@
 #include "stm32f10x_it.h"
 #include <stdlib.h>
-/* SR/PWM modes in interrupts...
+/* 
+
+These are the SR/PWM modes in interrupts...
 
 List of Shift Register modes = CV and pulse driven:
 
 List of PWM modes now:
-
-0-CV 
-1-CV - SR CV/speed inverted
-
-TODO: 
-
-- selected low and high, CV and pulse modes
-
-*CV_HF: 0, 1, 2, 3, 4, 7, 9, 23, 25, 26, 28, 29, 34, 35, 36, 41*
-*CV_LF: 0, 1, 2, 3, 4, 7, 9, 23, 30, 32, 33, 34, 35, 37, 39, 40*
-
-*PULSE_HF: 10, 11, 12, 13, 14, 15, 43, 44, 45, 48, 50, 52, 53, 56, 57, 58*
-*PULSE_LF: 10, 11, 12, 13, 14, 15, 43, 44, 45, 47, 51, 52, 53, 56, 57, 58*
-
-- function pointer/array speed test with main.c -> test below
 
 */
 
@@ -38,7 +25,7 @@ volatile uint32_t hstack[4], lstack[4]; // length minus 1;
 volatile uint32_t model, modeh; 
 volatile uint32_t bith=0, bitl=0;
 volatile uint32_t lastspeedhh, lastspeedll, lastmodeh, lastmodel;
-volatile uint32_t targeth=10240000, interh=1, whereh=0;
+volatile uint32_t targeth=10240000, interh=1, whereh=0; // for interpol
 
 // for new smoothings
 uint32_t ll=0, totl=0, smoothl[SMOOTHINGS];
@@ -317,7 +304,7 @@ void TIM2_IRQHandler(void){
 
   // handle LF and HF SR for selected modes and also handle PWM which follows SR (mode 2)
   uint32_t tmp;
-  static uint32_t spl=312, sph=312;
+  uint32_t spl=312, sph=312;
   static uint32_t SRlengthx=31, SRlengthl=31, lengthbitl=(1<<15), SRlengthh=31, lengthbith=(1<<15);
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
@@ -349,18 +336,18 @@ void TIM2_IRQHandler(void){
     // increase whereh
     whereh+=interh;
     tmp=(whereh>>16);
+    if (tmp>=(targeth>>16)) goinguph=2;
     TIM1->ARR =tmp;
     TIM1->CCR1 =tmp/2; // pulse width
-    if (whereh>=targeth) goinguph=2;
   }
 
   if (goinguph==0){
     // decrease whereh
     whereh-=interh;
     tmp=(whereh>>16);
+    if (tmp<=(targeth>>16)) goinguph=2;
     TIM1->ARR =tmp;
     TIM1->CCR1 =tmp/2; // pulse width
-    if (whereh<=targeth) goinguph=2;
   }
   
   //  TIM1->ARR =sph;
@@ -1837,9 +1824,9 @@ void TIM2_IRQHandler(void){
 
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;
+
 	// TESTING for interpolate
-	
-	targeth=(8503-(shift_registerh&0x1FFF))<<16;
+		targeth=(8503-(shift_registerh&0x1FFF))<<16;
 	//	targeth=(4407-(shift_registerh&0x0FFF))<<16;
 	if (whereh>=targeth) {
 	  goinguph=0; // decrease
