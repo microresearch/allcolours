@@ -1193,17 +1193,6 @@ NOISEHF_OUT
 Wire Wire Line
 	3625 3700 3675 3700
 $Comp
-L allcolours-rescue:C-device-allcolours-rescue C40
-U 1 1 5D2AC391
-P 7305 5630
-F 0 "C40" H 7330 5730 50  0000 L CNN
-F 1 "100N" H 7330 5530 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 7343 5480 50  0001 C CNN
-F 3 "" H 7305 5630 50  0000 C CNN
-	1    7305 5630
-	0    1    1    0   
-$EndComp
-$Comp
 L Amplifier_Operational:TL082 U11
 U 3 1 5D3A0346
 P 10480 2160
@@ -1484,7 +1473,7 @@ L allcolours-rescue:R-device-allcolours-rescue R66
 U 1 1 5D45AF62
 P 9755 2115
 F 0 "R66" V 9625 2140 50  0000 C CNN
-F 1 "100R" V 9755 2115 50  0000 C CNN
+F 1 "1K" V 9755 2115 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 9685 2115 50  0001 C CNN
 F 3 "" H 9755 2115 50  0000 C CNN
 	1    9755 2115
@@ -1495,7 +1484,7 @@ L allcolours-rescue:R-device-allcolours-rescue R64
 U 1 1 5D45AF69
 P 9455 2105
 F 0 "R64" V 9740 2145 50  0000 C CNN
-F 1 "47K" V 9455 2105 50  0000 C CNN
+F 1 "15K" V 9455 2105 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 9385 2105 50  0001 C CNN
 F 3 "" H 9455 2105 50  0000 C CNN
 	1    9455 2105
@@ -1673,7 +1662,7 @@ L allcolours-rescue:R-device-allcolours-rescue R57
 U 1 1 5D5079F8
 P 8875 4065
 F 0 "R57" V 8740 4090 50  0000 C CNN
-F 1 "100R" V 8875 4065 50  0000 C CNN
+F 1 "1K" V 8875 4065 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 8805 4065 50  0001 C CNN
 F 3 "" H 8875 4065 50  0000 C CNN
 	1    8875 4065
@@ -1684,7 +1673,7 @@ L allcolours-rescue:R-device-allcolours-rescue R45
 U 1 1 5D5079FF
 P 8575 4055
 F 0 "R45" V 8815 4045 50  0000 C CNN
-F 1 "47K" V 8575 4055 50  0000 C CNN
+F 1 "15K" V 8575 4055 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 8505 4055 50  0001 C CNN
 F 3 "" H 8575 4055 50  0000 C CNN
 	1    8575 4055
@@ -2639,4 +2628,15 @@ Wire Wire Line
 	8130 3485 8130 3520
 Text Notes 4475 4645 0    79   ~ 0
 should be around 2v so recalculate\n
+$Comp
+L allcolours-rescue:R-device-allcolours-rescue R110
+U 1 1 5EBF9EED
+P 7305 5630
+F 0 "R110" V 7385 5630 50  0000 C CNN
+F 1 "10R" V 7305 5630 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 7235 5630 50  0001 C CNN
+F 3 "" H 7305 5630 50  0000 C CNN
+	1    7305 5630
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
