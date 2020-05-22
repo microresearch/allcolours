@@ -2818,4 +2818,32 @@ Wire Wire Line
 Wire Wire Line
 	3600 6000 3600 6025
 Connection ~ 3600 6000
+$Comp
+L Device:R_Small R71
+U 1 1 5EB3E9B4
+P 1225 1425
+F 0 "R71" V 1029 1425 50  0000 C CNN
+F 1 "22K=opt" V 1125 1350 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 1225 1425 50  0001 C CNN
+F 3 "~" H 1225 1425 50  0001 C CNN
+	1    1225 1425
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0132
+U 1 1 5EB3F094
+P 1225 1550
+F 0 "#PWR0132" H 1225 1300 50  0001 C CNN
+F 1 "GND" H 1230 1377 50  0000 C CNN
+F 2 "" H 1225 1550 50  0001 C CNN
+F 3 "" H 1225 1550 50  0001 C CNN
+	1    1225 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1225 1275 1225 1325
+Wire Wire Line
+	1225 1525 1225 1550
+Text Notes -1250 750  0    79   ~ 0
+Put damping under voltage control! -> extra LM13700 etc... TODO!
 $EndSCHEMATC
