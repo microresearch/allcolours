@@ -29,7 +29,7 @@ extern __IO uint16_t ADCBuffer[];
 volatile uint32_t speedh, speedl, counterh=0, counter12h=0, counter12l=0,speedhh, speedll, counterl=0; // hfpulsecount, lfpulsecount;
 volatile uint32_t modelsr=0, modehsr=0, hcount=0, lcount=0; 
 volatile uint8_t new_state[32], prev_state[32]={0}, flipped[32]={0}, new_statel[32], prev_statel[32]={0}, flippedl[32]={0}, probh, probl, togglel;
-volatile uint8_t new_stath, prev_stath=0, flipdh=0, new_statl, prev_statl=0, flipdl=0;
+volatile uint8_t new_stath, prev_stath=0, flipdh=0, new_statl, prev_statl=0, flipdl=0, goinguph=1;
 volatile uint32_t shift_registerh=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff; 
 volatile uint32_t shift_registerx=0xff;
@@ -38,6 +38,7 @@ volatile uint32_t hstack[4], lstack[4]; // length minus 1;
 volatile uint32_t model, modeh; 
 volatile uint32_t bith=0, bitl=0;
 volatile uint32_t lastspeedhh, lastspeedll, lastmodeh, lastmodel;
+volatile uint32_t targeth=10240000, interh=1, whereh=0;
 
 // for new smoothings
 uint32_t ll=0, totl=0, smoothl[SMOOTHINGS];
@@ -318,7 +319,6 @@ void TIM2_IRQHandler(void){
   uint32_t tmp;
   static uint32_t spl=312, sph=312;
   static uint32_t SRlengthx=31, SRlengthl=31, lengthbitl=(1<<15), SRlengthh=31, lengthbith=(1<<15);
-  static uint32_t targeth=10240000, interh=1, whereh=10240000;
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
   
@@ -341,6 +341,28 @@ void TIM2_IRQHandler(void){
   }
   */
 
+  // test NEW interpol on high side
+
+  // interh=1<<16;
+  //  whereh=312<<16;
+  if (goinguph==1){ // 
+    // increase whereh
+    whereh+=interh;
+    tmp=(whereh>>16);
+    TIM1->ARR =tmp;
+    TIM1->CCR1 =tmp/2; // pulse width
+    if (whereh>=targeth) goinguph=2;
+  }
+
+  if (goinguph==0){
+    // decrease whereh
+    whereh-=interh;
+    tmp=(whereh>>16);
+    TIM1->ARR =tmp;
+    TIM1->CCR1 =tmp/2; // pulse width
+    if (whereh<=targeth) goinguph=2;
+  }
+  
   //  TIM1->ARR =sph;
   //  TIM1->CCR1 = sph/2; // pulse width
 
@@ -1084,10 +1106,20 @@ void TIM2_IRQHandler(void){
 	//	else bith=1;
 	
 	// shift register bits output - inverted on PC13 and 14;
-	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
+	/*	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one
 	else GPIOC->BSRR = 0b0010000000000000;  
 	if (shift_registerh & (1<<15)) GPIOC->BRR = 0b0100000000000000;  // clear PC14 else write one BRR is clear, BSRR is set bit and leave alone others
-	else GPIOC->BSRR = 0b0100000000000000;
+	else GPIOC->BSRR = 0b0100000000000000;*/
+
+	// divide down
+	new_stath=(shift_registerh & (1<<15))>>15; // so that is not just a simple divide down
+	if (prev_stath==0 && new_stath==1) flipdh^=1;
+	prev_stath=new_stath;	
+	if (flipdh) GPIOC->BRR = 0b0010000000000000;  
+	else GPIOC->BSRR = 0b0010000000000000;
+
+	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
+	else GPIOC->BSRR = 0b0100000000000000;	
 	break;
 
       case 1: 
@@ -1797,7 +1829,6 @@ void TIM2_IRQHandler(void){
 	//	if (bith) GPIOC->BRR = 0b0010000000000000;  // clear PC13 else write one - this is lower one
 	//	else GPIOC->BSRR = 0b0010000000000000; 
 	// testing for divide down
-
 	new_stath=(shift_registerh & (1<<15))>>15; // so that is not just a simple divide down
 	if (prev_stath==0 && new_stath==1) flipdh^=1;
 	prev_stath=new_stath;	
@@ -1808,17 +1839,26 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;
 	// TESTING for interpolate
 	
-	//	targeth=(8503-(shift_registerh&0x1FFF))<<16;
-	//	interh=(abs(whereh-targeth))/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	targeth=(8503-(shift_registerh&0x1FFF))<<16;
+	//	targeth=(4407-(shift_registerh&0x0FFF))<<16;
+	if (whereh>=targeth) {
+	  goinguph=0; // decrease
+	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goinguph=1; // increase
+	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	
 	// To test equal weightings: so each bit is the same value - count number of bits - say for 16 bits
 	//	tmp=bitsz[shift_registerh&0xff]+bitsz[(shift_registerh>>8)&0xff]+bitsz[(shift_registerh>>16)&0xff]+bitsz[(shift_registerh>>24)&0xff]; // now 32 bits
 	//	tmp*=288; // was 576 for 16 bits now 576/2=288
 	//	sph=9464-tmp;
-	sph=1335-(shift_registerh&0x03FF); // or we can use different ranges - calculate these:
-		//	0x0FFF = 4095+312=4407, 0x07FF 2047+312=2359, 0x03FF 1023+312=1335, 0x01FF 511+312=823, 0x00FF 255+312=567
-	TIM1->ARR =sph;
-	TIM1->CCR1 = sph/2; // pulse width
+	//	sph=1335-(shift_registerh&0x03FF); // or we can use different ranges - calculate these:
+	// 8191+312=8503
+	//	0x0FFF = 4095+312=4407, 0x07FF 2047+312=2359, 0x03FF 1023+312=1335, 0x01FF 511+312=823, 0x00FF 255+312=567
+	//	TIM1->ARR =sph;
+	//	TIM1->CCR1 = sph/2; // pulse width
 		break;       
       }
       // /END of HF SR side/..................................................................................................................    
@@ -1833,7 +1873,7 @@ void TIM4_IRQHandler(void){
   
   temp=(((ADCBuffer[0]>>10)+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
-  modehsr=63-(temp); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
+  //  modehsr=63-(temp); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
   modehsr=47; // TESTING all modes on H side 47 is exp mode for now 
   //  if (modehsr==16) modehsr=69; // tEtst
   
