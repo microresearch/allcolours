@@ -1344,7 +1344,10 @@ now is 170mA at +12V, 30mA at =12)
 
 ** 22/5/2020
 
-- teting interpolation - fixed overflow but need to test on HARDWARE
+- testing interpolation - fixed overflow but need to test on HARDWARE
+- fixed and working on hardware but needed to reduce speed of interrupt in main.c
+- maybe 12k or 15k on HF filter (testing now with 15k)
+
 
 * for quote
 
