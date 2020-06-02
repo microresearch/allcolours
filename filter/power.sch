@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 5
+Sheet 3 4
 Title ""
 Date ""
 Rev ""
@@ -116,11 +116,11 @@ L Device:D D3
 U 1 1 5C3AA4BD
 P 2820 2325
 F 0 "D3" H 2820 2541 50  0000 C CNN
-F 1 "D" H 2820 2450 50  0000 C CNN
+F 1 "1N5158" H 2820 2450 50  0000 C CNN
 F 2 "Diodes_SMD:D_SOD-123" H 2820 2325 50  0001 C CNN
 F 3 "~" H 2820 2325 50  0001 C CNN
 	1    2820 2325
-	-1   0    0    1   
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	2670 2265 2670 2325
@@ -134,11 +134,11 @@ L Device:D D2
 U 1 1 5C3AA4C8
 P 2740 2775
 F 0 "D2" H 2740 2559 50  0000 C CNN
-F 1 "D" H 2740 2650 50  0000 C CNN
+F 1 "1N5158" H 2740 2650 50  0000 C CNN
 F 2 "Diodes_SMD:D_SOD-123" H 2740 2775 50  0001 C CNN
 F 3 "~" H 2740 2775 50  0001 C CNN
 	1    2740 2775
-	1    0    0    -1  
+	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	2955 2775 3175 2775
