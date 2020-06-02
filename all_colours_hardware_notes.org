@@ -1327,7 +1327,7 @@ FIXED - now all modes should be there -
 
 and go back to not-so-slow SR speed array DONE - tested, but we need to decide if we want all modes to have same divider or *YES*
 
-- top of each filter range is kind of arbitrary ????
+- top of each filter range is kind of arbitrary - seems C8 on HF, LF we don't know
 
 new array for LF much lower...
 
@@ -1348,6 +1348,14 @@ now is 170mA at +12V, 30mA at =12)
 - fixed and working on hardware but needed to reduce speed of interrupt in main.c
 - maybe 12k or 15k on HF filter (testing now with 15k)
 
+** 2/6/2020
+
+- implementing divide down on HF side - question of modes such as 20,21 to test which already do divide downs, watch for lengthbith! // to test
+
+- TODO: DAC modes:
+
+ interpol 32-47 (CV) - DONE, TESTED but we can have different ranges for some...
+ spacings 48-63 (pulse) - note that some of these have special DAC out modes already
 
 * for quote
 
