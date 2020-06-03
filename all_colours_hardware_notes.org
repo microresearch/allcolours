@@ -1337,25 +1337,33 @@ measure current now???
 
 now is 170mA at +12V, 30mA at =12)
 
-** 15/5/2020
+* 15/5/2020
 
 - we need smoothing on DACs for speeds DONE
 - added smoothing also for modes and seems about right now - +TO TEST!+ - tested OK!
 
-** 22/5/2020
+* 22/5/2020
 
 - testing interpolation - fixed overflow but need to test on HARDWARE
 - fixed and working on hardware but needed to reduce speed of interrupt in main.c
 - maybe 12k or 15k on HF filter (testing now with 15k)
 
-** 2/6/2020
+* 2/6/2020++
 
 - implementing divide down on HF side - question of modes such as 20,21 to test which already do divide downs, watch for lengthbith! // to test
 
 - TODO: DAC modes:
 
  interpol 32-47 (CV) - DONE, TESTED but we can have different ranges for some...
- spacings 48-63 (pulse) - note that some of these have special DAC out modes already
+
+ spacings 48-63 (pulse) - DONE/TO_TEST note that some of these have special DAC out modes already (which - these are 58-63 on HF side) TESTED
+
+- test all pulses OUT and dividers on HF side - DONE
+
+- fixed pulse divider on mode 20 and 21 -  *do this also for low side when we check that*
+- fixed lengthbith so makes sense now -   *do this also for low side when we check that*
+
+- finish divide down on LF side and test all, interpol and spacings for LF side
 
 * for quote
 
