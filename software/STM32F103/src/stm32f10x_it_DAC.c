@@ -276,7 +276,6 @@ static uint8_t ghost_tapsL[32][4] = {
 void TIM2_IRQHandler(void){
 
   uint32_t tmp;
-  uint32_t spl=312;// sph=312;
   static uint32_t SRlengthx=31, SRlengthl=31, lengthbitl=15, SRlengthh=31, lengthbith=15;
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
@@ -301,10 +300,8 @@ void TIM2_IRQHandler(void){
   }
   }
 
-  // test NEW interpol on low side
-  /*
-  // interh=1<<16;
-  //  whereh=312<<16;
+  // INTERPOLATE for low side modes 32->47
+  if (modelsr>31 && modelsr<48){
   if (goingupl==1){ // 
     // increase wherel
     wherel+=interl;
@@ -322,13 +319,15 @@ void TIM2_IRQHandler(void){
     TIM3->ARR =tmp;
     TIM3->CCR1 =tmp/2; // pulse width
   }
-  */
-  
+  }
   
   ////////////////////////////////////////////->>>    /// low side
   //*CV_LF: 0, 1, 2, 3, 4, 7, 9, 23, 30, 32, 33, 34, 35, 37, 39, 40*
  
   counterl++;
+  if (modelsr==15) { // speed is say 16 bits
+    speedll= shift_registerh&0xfff;
+  }
   if (counterl>speedll){
     counterl=0;
   
@@ -652,37 +651,27 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	  }
 	break;
 
-    case 15: // was 40
-	// pulse in means a divide/flip flop
-	// TESTED/WORKING but is only that divide on one bit..FIXED TESTED
-	bitl = (shift_registerl>>31) & 0x01; // bit which would be shifted out 
-	if (GPIOB->IDR & 0x0040) shift_registerl = (shift_registerl<<1) + bitl;
-	else shift_registerl = (shift_registerl<<1) + (!bitl);
-	
-	new_statel[0]=bitl;
-	if (prev_statel[0]==0 && new_statel[0]==1) flippedl[0]^=1;
-	prev_statel[0]=new_statel[0];	
+     case 15: // new experimental mode where other SR DAC controls speed
+      //->>>>>>>>>>>>>> CV selects length of SR which will stay with us .. -> LFSR here
+      SRlengthl=31-(ADCBuffer[3]>>11);
+      if (SRlengthl<4) SRlengthl=4;
+      lengthbitl=(SRlengthl/2);
+      
+      if (shift_registerl==0) shift_registerl=0xff;
+      bitl= ((shift_registerl >> (lfsr_taps_mirrored[SRlengthl][0])) ^ (shift_registerl >> (lfsr_taps_mirrored[SRlengthl][1])) ^ (shift_registerl >> (lfsr_taps_mirrored[SRlengthl][2])) ^ (shift_registerl >> (lfsr_taps_mirrored[SRlengthl][3]))) & 1u; // 32 is 31, 29, 25, 24
 
-	if (shift_registerl & (1<<15)) new_statel[1]=1;
-	else new_statel[1]=0;
-	if (prev_statel[1]==1 && new_statel[1]==1) flippedl[1]^=1;
-	prev_statel[1]=new_statel[1];	
-	
-	if (!(GPIOB->IDR & 0x0020)) {
-	  bitl=flippedl[0];
-	  tmp=flippedl[1];
-	}
-	else tmp=new_statel[1];
+      if ( !(GPIOB->IDR & 0x0020)) shift_registerl = (shift_registerl<<1) + ((bitl | !(GPIOB->IDR & 0x0040)));
+      else shift_registerl = (shift_registerl<<1) + ((bitl ^ !(GPIOB->IDR & 0x0040))); 
 
-	// for divide down
-	new_statl=tmp; // so that is not just a simple divide down
+      // for divide down
+	new_statl=(shift_registerl & (1<<lengthbitl))>>lengthbitl; // so that is not just a simple divide down
 	if (prev_statl==0 && new_statl==1) flipdl^=1;
 	prev_statl=new_statl;	
 	if (flipdl) GPIOB->BRR = 0b0010000000000000;  
 	else GPIOB->BSRR = 0b0010000000000000;
-	if (tmp) GPIOB->BRR = 0b0100000000000000;   // this is top one!
+	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
-	break;
+	break;      
 
 	////////////////////////
 	/// DAC modes LF side
@@ -704,9 +693,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 	
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // for low we have 500-16000
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
       break;
 	
     case 33: 
@@ -725,9 +721,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
  
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
     
     case 34: 
@@ -750,9 +753,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
     
     case 35: //* 
@@ -770,9 +780,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 36: 
@@ -798,9 +815,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 37: // was 7
@@ -809,10 +833,11 @@ void TIM2_IRQHandler(void){
 	// !note: swop l and h when port to low!
 	bitl = (shift_registerl>>31) & 0x01; // bit which would be shifted out -
 	if (lcount>7) lcount=0;
-	if( !(GPIOB->IDR & 0x0020)) probl^=(1<<lcount);
+	if( !(GPIOB->IDR & 0x0020)) probl|=(1<<lcount);
+	else probl&= ~(1<<lcount); // clear the bit
 	lcount++;
 	if (((probl | shift_registerh) & 0xff ) == 0xff) shift_registerl = (shift_registerl<<1) + ((shift_registerh>>31) & 0x01); // fixed for swop
-	else shift_registerl = (shift_registerl<<1) + bitl;
+	else shift_registerl= (shift_registerl<<1) + bitl;// ^ !(GPIOB->IDR & 0x0040)); // TESTY - to OR in new bit or not?
 
 	// for divide down
 	new_statl=(shift_registerl & (1<<15))>>15; // so that is not just a simple divide down
@@ -823,16 +848,23 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 	
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 38: // was 9
 	// 9- LFSR noise only with varying taps depending on length with new bit ORed in depending on pulse - for LF we can do mirroring!
 	if (shift_registerl==0) shift_registerl=0xff; // catch it!
 	bitl= ((shift_registerl >> (lfsr_taps_mirrored[31][0])) ^ (shift_registerl >> (lfsr_taps_mirrored[31][1])) ^ (shift_registerl >> (lfsr_taps_mirrored[31][2])) ^ (shift_registerl >> (lfsr_taps_mirrored[31][3]))) & 1u; // 32 is 31, 29, 25, 24
-	if (GPIOB->IDR & 0x0020) shift_registerl = (shift_registerl<<1) + bitl;
+	if (!(GPIOB->IDR & 0x0020)) shift_registerl = (shift_registerl<<1) + bitl;
 	else shift_registerl = (shift_registerl<<1) + (bitl | !(GPIOB->IDR & 0x0040)); 
 
 	// for divide down
@@ -844,9 +876,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 	
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 39: //was 23 -  experimental modes 23+ here and 32+ in pulses - TESTED/WORKING!
@@ -876,9 +915,16 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	  }
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 40: // was 30
@@ -900,9 +946,16 @@ void TIM2_IRQHandler(void){
 
 	}
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
 	    case 41: // was 32
@@ -923,9 +976,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 	
     case 42: // was 33 - and invert the above
@@ -946,9 +1006,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 	
     case 43: // was 34
@@ -975,9 +1042,16 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 	
     case 44: // was 35
@@ -1011,9 +1085,16 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	}
 	
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 45: // was 37
@@ -1040,9 +1121,16 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	}
 	
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 46: // was 39
@@ -1065,9 +1153,16 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	  }
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	TIM3->ARR =spl;
-	TIM3->CCR1 = spl/2; // pulse width
+	// interpol
+	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	if (wherel>=targetl) {
+	  goingupl=0; // decrease
+	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}	  
+	else {
+	  goingupl=1; // increase
+	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	break;
 
     case 47: // test all replace 15 TESTY!
@@ -1105,18 +1200,7 @@ void TIM2_IRQHandler(void){
 	  goingupl=1; // increase
 	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}
-	
-	// testing equal weightings
-	//	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
-	//	tmp*=576; 
-	//	spl=9464-tmp;
-	
-	//	spl=312+(shift_registerl&0x1FFF); // 0x0fff = 4095 which is 10 bits 0x7fff is 32767 which is 15 bits
-	//	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-	//	TIM3->ARR =spl;
-	//	TIM3->CCR1 = spl/2; // pulse width
 	break;
-	
 	// /END of LF SR side/..................................................................................................................    
     }
     //  }
@@ -1127,7 +1211,12 @@ void TIM2_IRQHandler(void){
 //  if (modehsr<32){
 
   counterh++;
-    if (counterh>speedhh){
+
+  if (modehsr==15) { // speed is say 16 bits
+    speedhh= shift_registerl&0xfff;
+  }
+
+  if (counterh>speedhh){
       counterh=0;
 
       // *CV_HF: 0, 1, 2, 3, 4, 7, 9, 23, 25, 26, 28, 29, 34, 35, 36, 41*
@@ -1397,33 +1486,7 @@ void TIM2_IRQHandler(void){
 	}
 	break;
 	
-      case 12: // was 34
-	// extra modes use pulse or input bit as length of SR controller: see mode 42 below
-	/// length thing	
-	// - TESTED/WORKING!
-	hcount++;
-      if (hcount>31) hcount=4;
-      if (!(GPIOB->IDR & 0x0080)) {
-	SRlengthh=hcount;
-	lengthbith=(SRlengthh/2);
-	}
-      // as mode 3::::
-      bith = (shift_registerh>>SRlengthh) & 0x01; // bit which would be shifted out 
-	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
-	else shift_registerh = (shift_registerh<<1) + (!bith);
-
-	// divide down
-	new_stath=(shift_registerh & (1<<lengthbith))>>lengthbith; // so that is not just a simple divide down
-	if (prev_stath==0 && new_stath==1) flipdh^=1;
-	prev_stath=new_stath;	
-	if (flipdh) GPIOC->BRR = 0b0010000000000000;  
-	else GPIOC->BSRR = 0b0010000000000000;
-
-	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
-	else GPIOC->BSRR = 0b0100000000000000;	
-	break;
-
-      case 13: // was 35
+      case 12: // was 35
 	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
 	// can use input bit as length of either SR = here is regularSR
 	// works well
@@ -1456,7 +1519,7 @@ void TIM2_IRQHandler(void){
 	}
 	break;
 
-      case 14: // was 36
+      case 13: // was 36
 	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
 	// can use input bit as length of either SR = here is shift_regx
 	// works ok not so interesting as 35
@@ -1488,7 +1551,7 @@ void TIM2_IRQHandler(void){
 	  }
 	break;
 	
-      case 15: // test all replace 15 TESTY!
+      case 14: // test all replace 15 TESTY!
 	// pulse in means we shift the logic operator
 	if( !(GPIOB->IDR & 0x0080)) {
 	hcount++;
@@ -1512,6 +1575,29 @@ void TIM2_IRQHandler(void){
 
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
+	break;
+
+	    case 15: // speed controlled by other SR so we free up PULSE and CV - here CV-> length and pulse/toggles
+      //->>>>>>>>>>>>>> CV selects length of SR which will NOT stay with us .. -> LFSR here
+      SRlengthh=31-(ADCBuffer[2]>>11);
+      if (SRlengthh<4) SRlengthh=4;
+      lengthbith=(SRlengthh/2);
+      if (shift_registerh==0) shift_registerh=0xff;
+      bith= ((shift_registerh >> (lfsr_taps[SRlengthh][0])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][1])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][2])) ^ (shift_registerh >> (lfsr_taps[SRlengthh][3]))) & 1u; // 32 is 31, 29, 25, 24
+
+      if ( !(GPIOB->IDR & 0x0080)) shift_registerh = (shift_registerh<<1) + ((bith | !(GPIOB->IDR & 0x0400)));
+      else shift_registerh = (shift_registerh<<1) + ((bith ^ !(GPIOB->IDR & 0x0400))); 
+      
+	// divide down
+	new_stath=(shift_registerh & (1<<lengthbith))>>lengthbith; // so that is not just a simple divide down
+	if (prev_stath==0 && new_stath==1) flipdh^=1;
+	prev_stath=new_stath;	
+	if (flipdh) GPIOC->BRR = 0b0010000000000000;  
+	else GPIOC->BSRR = 0b0010000000000000;
+
+	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
+	else GPIOC->BSRR = 0b0100000000000000;	
+	// attend to DAC? - DAC should be from CV - depends where we place this...
 	break;
 	
 	///////////////////
@@ -1710,7 +1796,7 @@ void TIM2_IRQHandler(void){
 	// 9- LFSR noise only with varying taps depending on length with new bit ORed in depending on pulse - for LF we can do mirroring!
 	if (shift_registerh==0) shift_registerh=0xff; // catch it!
 	bith= ((shift_registerh >> (lfsr_taps[31][0])) ^ (shift_registerh >> (lfsr_taps[31][1])) ^ (shift_registerh >> (lfsr_taps[31][2])) ^ (shift_registerh >> (lfsr_taps[31][3]))) & 1u; // 32 is 31, 29, 25, 24
-	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + bith;
+	if (!(GPIOB->IDR & 0x0080)) shift_registerh = (shift_registerh<<1) + bith;
 	else shift_registerh = (shift_registerh<<1) + (bith | !(GPIOB->IDR & 0x0400)); 
 
 	// divide down
@@ -2056,7 +2142,7 @@ void TIM2_IRQHandler(void){
 	
       case 47: // test all replace 15 TESTY!
 	// pulse in means we shift the logic operator
-	if( !(GPIOB->IDR & 0x0080)) {
+	if ( !(GPIOB->IDR & 0x0080)) {
 	hcount++;
 	if (hcount>3) hcount=0;
 	}
@@ -2101,12 +2187,12 @@ void TIM4_IRQHandler(void){
   temp=(((ADCBuffer[0]>>10)+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
   modehsr=63-(temp); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
-  //  modehsr=0; // TESTING all modes on H side 47 is exp mode for now 
+  //modehsr=15; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
   // 32-47 is pwm/DAC - maybe add mode which only updates pwm on pulse instead of say
-  // 48 to 63 is pulse/DAC
+  // 48 to 63 is pulse/DAC with 58-63 as special DAC outs
 
   toth=toth-smoothh[hh];
   smoothh[hh]=ADCBuffer[2];
@@ -2120,8 +2206,8 @@ void TIM4_IRQHandler(void){
   
   temp=(((ADCBuffer[1]>>10)+lastmodel)/2); //smoothing necessary for higher speeds - TEST!
   lastmodel=temp;
-  //  modelsr=63-(temp); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
-  modelsr=47; // TESTING!
+    modelsr=63-(temp); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
+  //  modelsr=0; // TESTING!
   
   totl=totl-smoothl[ll];
   smoothl[ll]=ADCBuffer[3];
@@ -2230,7 +2316,7 @@ void EXTI9_5_IRQHandler(void){
       probl=ADCBuffer[3]>>13; // 3 bits now for electroprob array
       probl=electroprob[probl];
 
-      if (((probl | shift_registerl) & 0xff ) == 0xff) shift_registerl = (shift_registerl<<1) + ((shift_registerl>>31) & 0x01); // new bits enter from shiftregleft - 0xff was looker[7]
+      if (((probl | shift_registerh) & 0xff ) == 0xff) shift_registerl = (shift_registerl<<1) + ((shift_registerh>>31) & 0x01); // new bits enter from shiftregleft - 0xff was looker[7] // fixed
       else shift_registerl = (shift_registerl<<1) + bitl;
 
 	// for divide down
@@ -2369,11 +2455,9 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOB->BSRR = 0b0010000000000000;
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
-
       }
 	break;
-      
-      
+
     case 25: // was 47 - maybe replace
       // *we could use CV to set length of pulse (say up to 128 which is 7 bits >> 9)*
       //->>>>>>>>>>>>>> as mode 14=speed divider with XOR rungler: XOR out with input bit
@@ -2398,7 +2482,7 @@ void EXTI9_5_IRQHandler(void){
 	  GPIOB->BSRR = 0b0100000000000000;  
 	  }
 	break;
-
+      
     case 26: // was 51
       //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
       // TESTED/WORKING!
@@ -2546,7 +2630,7 @@ void EXTI9_5_IRQHandler(void){
       break;
 
       /////
-      //// LF DAC modes
+      //// LF DAC modes - equal weights
       ///.......
       
     case 48: // was 10
@@ -2567,10 +2651,14 @@ void EXTI9_5_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
-      break;
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	//	tmp=8;
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
+	TIM3->ARR =spl;
+	TIM3->CCR1 = spl/2; // pulse width
+	break;
       
     case 49: // was 12 - works fine with cv in - was 8 - extra DAC modes
       //->>>>>>>>>>>>>> NEW mode TESTY: entry of ADC in from CV into upper bits?
@@ -2594,11 +2682,13 @@ void EXTI9_5_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
 
-
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
-      break;
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
+	TIM3->ARR =spl;
+	TIM3->CCR1 = spl/2; // pulse width
+	break;
       
     case 50: // was 43
       // as above but other way round with CV for length and incoming bits for probability of TM
@@ -2624,10 +2714,13 @@ void EXTI9_5_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
-      break;
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
+	TIM3->ARR =spl;
+	TIM3->CCR1 = spl/2; // pulse width
+	break;
 	      
     case 51: // was 44
       // as mode 10 
@@ -2652,10 +2745,13 @@ void EXTI9_5_IRQHandler(void){
       }
       // PWM could be inside }
 
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
-      break;
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
+	TIM3->ARR =spl;
+	TIM3->CCR1 = spl/2; // pulse width
+	break;
 
     case 52: // was 45
       //->>>>>>>>>>>>>> entry into SR from CV - TM = no input bit = 3rd option of above...
@@ -2678,7 +2774,10 @@ void EXTI9_5_IRQHandler(void){
       }
       // PWM could be inside }
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
 	TIM3->ARR =spl;
 	TIM3->CCR1 = spl/2; // pulse width
 	break;
@@ -2707,11 +2806,14 @@ void EXTI9_5_IRQHandler(void){
 	  GPIOB->BSRR = 0b0100000000000000;  
 	  }
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
 	TIM3->ARR =spl;
 	TIM3->CCR1 = spl/2; // pulse width
 	break;
-
+	
     case 54: // was 51
       //->>>>>>>>>>>>>> Electronotes: CV selects which bits to set to 1 = chance of change
       // TESTED/WORKING!
@@ -2734,9 +2836,12 @@ void EXTI9_5_IRQHandler(void){
       }
       // PWM could be inside }
 
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
+	TIM3->ARR =spl;
+	TIM3->CCR1 = spl/2; // pulse width
       break;
 
     case 55: // was 53
@@ -2759,7 +2864,10 @@ void EXTI9_5_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-	spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
 	TIM3->ARR =spl;
 	TIM3->CCR1 = spl/2; // pulse width
 	break;
@@ -2774,7 +2882,8 @@ void EXTI9_5_IRQHandler(void){
 	counter12l=0;
 	//	shift_registerl &= MASK[31]; // MASK is the INVERTED one eg. ~(Oxff) for bottom 8 bits - bottom/lower is where SR is for lower lengths
 	//	shift_registerl +=(ADCBuffer[3]>>8)<<(SHIFT[31]);  // tested and this makes sense on test.c
-	shift_registerl +=(ADCBuffer[3]>>8);  // tested and this makes sense on test.c
+	shift_registerl +=((ADCBuffer[3]>>8));  // tested and this makes sense on test.c
+	//	shift_registerl +=1;
 	//	shift_registerl &=(ADCBuffer[3]>>8);
       }
       counter12l++;
@@ -2791,11 +2900,14 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOB->BSRR = 0b0010000000000000;
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
- 	
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
-      break;
+
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
+	TIM3->ARR =spl;
+	TIM3->CCR1 = spl/2; // pulse width
+	break;
 
     case 57: // - TEST CASE FOR new ADC/DAC modes...
       // shift in bits one by one use probl as storage
@@ -2821,9 +2933,12 @@ void EXTI9_5_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
  
-      spl=8503-(shift_registerl&0x1FFF); // or we can use different ranges
-      TIM3->ARR =spl;
-      TIM3->CCR1 = spl/2; // pulse width
+	// testing equal weightings
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	tmp*=312; 
+	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
+	TIM3->ARR =spl;
+	TIM3->CCR1 = spl/2; // pulse width
       break;
      
     case 58: // TEST CASE FOR new ADC/DAC modes...
@@ -3030,7 +3145,7 @@ void EXTI9_5_IRQHandler(void){
     
     switch(modehsr){
     case 16: // was 11 - leave in middle// MAYBE put this in middle of CV select mode for easy access TODO
-      //->>>>>>>>>>>>>> CV selects length of SR which will stay with us .. -> LFSR here
+      //->>>>>>>>>>>>>> CV selects length of SR which will NOT stay with us .. -> LFSR here
       SRlengthh=31-(ADCBuffer[2]>>11);
       if (SRlengthh<4) SRlengthh=4;
       lengthbith=(SRlengthh/2);

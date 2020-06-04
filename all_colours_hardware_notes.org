@@ -1360,10 +1360,29 @@ now is 170mA at +12V, 30mA at =12)
 
 - test all pulses OUT and dividers on HF side - DONE
 
-- fixed pulse divider on mode 20 and 21 -  *do this also for low side when we check that*
-- fixed lengthbith so makes sense now -   *do this also for low side when we check that*
 
-- finish divide down on LF side and test all, interpol and spacings for LF side
+- fixed pulse divider on mode 20 and 21 - do this also for low side when we check thatDONE
+- fixed lengthbith so makes sense now -   do this also for low side when we check thatDONE
+
+- finish divide down on LF side and test allDONE
+
+- interpol and spacings for LF side and test all
+
+- changed mode 38 on both sides
+
+* 4/2/2020
+
+- finished all DAC modes on both sides - to test all in practice
+
+- on low side we also have different ranges???
+
+- new exp. mode -> so we take DAC from other SR and use this as speed! frees up CV and PULSE... mode 65 - but where shall we put this on each side - to replace?
+
+lose 25 on LF side - as this just repeats and then we can place as mode 31 but we need to add as CV mode DONE
+
+and on HF side what to replace? but we want as 15 so is part of CV
+
+or as mode 1 so we can find it!
 
 * for quote
 
