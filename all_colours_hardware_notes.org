@@ -1384,6 +1384,32 @@ and on HF side what to replace? but we want as 15 so is part of CV
 
 or as mode 1 so we can find it!
 
+* 5/2/2020
+
+- we changed interpol in mode 32 so is every x bits - do this for all or keep different programs?
+
+(to do this also for unweighted DAC modes 48->58 - test in 48 -> revert back to no timing here as is smoother
+
+- speed control by DAC is now as mode 0 and placed inside speed loop on both sides_ TEST if IN or OUT!?
+- fixed smoothing which was missing mode 0
+
+- program different DACs across DAC modes - so some with different ranges and some with speeds
+
+// so we have on each side: 
+
+0-15 -CV NO DAC
+16-31 -pulse NO DAC
+
+//DACS:
+32-48 -CV and DAC -> interpol options (how many bits to wait if any, mode 32 is now only one with waiting) and different ranges in either case
+
+49-57 -pulse and unweighted DAC - different ranges, 8, 16 or 32 bits, weighted DAC in some cases
+
+58-63 -pulse and other DACS
+
+- test HF mode 38 as DAc mode which has same speed trick as 0 - this could be as mode 32 now
+
+
 * for quote
 
 board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
