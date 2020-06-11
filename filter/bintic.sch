@@ -1104,7 +1104,7 @@ F 1 "Q_PNP_BEC" H 2316 4905 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 2325 5050 50  0001 C CNN
 F 3 "~" H 2125 4950 50  0001 C CNN
 	1    2125 4950
-	1    0    0    -1  
+	1    0    0    1   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
