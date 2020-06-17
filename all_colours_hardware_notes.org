@@ -1401,14 +1401,11 @@ or as mode 1 so we can find it!
 16-31 -pulse NO DAC
 
 //DACS:
-32-48 -CV and DAC -> interpol options (how many bits to wait if any, mode 32 is now only one with waiting) and different ranges in either case
+32-48 -CV and DAC -> interpol options (how many bits to wait if any, all modes now have basic waiting) and different ranges in either case
 
-49-57 -pulse and unweighted DAC - different ranges, 8, 16 or 32 bits, weighted DAC in some cases
+49-57 -pulse and unweighted DAC - different ranges, 8, 16 or 32 bits, weighted DAC in some cases 
 
 58-63 -pulse and other DACS
-
-- test HF mode 38 as DAc mode which has same speed trick as 0 - this could be as mode 32 now
-
 
 * for quote
 

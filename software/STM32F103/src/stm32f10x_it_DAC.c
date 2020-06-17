@@ -697,7 +697,7 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 	
-		// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
 	if (intl>13){
 	  intl=0;
@@ -730,15 +730,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
  
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
     
@@ -762,15 +767,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
     
@@ -789,15 +799,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -824,15 +839,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -857,15 +877,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 	
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -885,15 +910,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;
 	
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -924,15 +954,20 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	  }
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -955,15 +990,20 @@ void TIM2_IRQHandler(void){
 
 	}
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -985,15 +1025,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 	
@@ -1015,15 +1060,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 	
@@ -1051,15 +1101,20 @@ void TIM2_IRQHandler(void){
 	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOB->BSRR = 0b0100000000000000;	
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 	
@@ -1094,15 +1149,20 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	}
 	
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1130,15 +1190,20 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	}
 	
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1162,15 +1227,20 @@ void TIM2_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
 	  }
 
-	// interpol
-	targetl=(4407-(shift_registerl&0x0FFF))<<16; // 4095+312 - 7ff = 2047+312= 2359
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	intl++;
+	if (intl>13){
+	  intl=0;
+	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
+	// or 0x1fff for 13 bits = 312+8191=8503
 	if (wherel>=targetl) {
 	  goingupl=0; // decrease
-	  interl=(wherel-targetl)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(wherel-targetl)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goingupl=1; // increase
-	  interl=(targetl-wherel)/(speedll+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interl=(targetl-wherel)/(13*(speedll+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1673,16 +1743,24 @@ void TIM2_IRQHandler(void){
 
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
     
@@ -1708,15 +1786,24 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
     
@@ -1736,15 +1823,24 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1771,15 +1867,24 @@ void TIM2_IRQHandler(void){
 
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1804,15 +1909,24 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1833,15 +1947,24 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
 	
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1885,15 +2008,24 @@ void TIM2_IRQHandler(void){
 	  {
 	  prev_state[0]=1;
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	}
 	break;
@@ -1920,15 +2052,24 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1959,15 +2100,24 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	}
 	
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -1996,15 +2146,24 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	}
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -2027,15 +2186,24 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	}
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 	
@@ -2064,15 +2232,24 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -2108,15 +2285,24 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	}
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 
@@ -2152,15 +2338,24 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	  }
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;
 	
@@ -2186,15 +2381,24 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;
 
-	// INTERPOL TEST
-	targeth=(4407-(shift_registerh&0x0FFF))<<16;
-	if (whereh>=targeth) {
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
+	inth++;
+	if (inth>11){ // 10 bits now
+	  inth=0;
+	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	  // or 0x3ff for 10 bits = 312+1023 = 1335 
+	  // or 0x7ff for 11 bits = 312+2047= 2359
+	  // or 0xfff for 12 bits = 312+4095 = 4407
+ 	  // or 0x1fff for 13 bits = 312+8191=8503
+
+	  if (whereh>=targeth) {
 	  goinguph=0; // decrease
-	  interh=(whereh-targeth)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(whereh-targeth)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
 	}	  
 	else {
 	  goinguph=1; // increase
-	  interh=(targeth-whereh)/(speedhh+1); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
+	}
 	}
 	break;       
       }
