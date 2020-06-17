@@ -4,14 +4,17 @@
 #include <sys/unistd.h>
 #include "stm32f4xx.h"
 #include "stm32f4xx_dac.h"
+#include "stm32f4xx_gpio.h"
+#include "stm32f4xx_adc.h"
+#include "stm32f4xx_dma.h"
+#include "stm32f4xx_rcc.h"
 
+#include "adc.h"
 /*
 
 Testing on STM32F446 NUCLEO
 
 For new touch module/own touch things: 
-
-
 
 - read from say 12x ADC and output signals on DAC - which will be multiplexed
 - so we need input ADC and eventually toggle input pins for rec/play with, output address and enable for 4051  
@@ -35,6 +38,9 @@ void TIM2_IRQHandler(void) {
    
   TIM2->SR = 0x0; // reset the status register
   }*/
+
+/* DMA buffer for ADC  & copy */
+__IO uint16_t adc_buffer[5];
 
 
 void io_config2 (void) {
@@ -70,7 +76,47 @@ int main(void)
 {
     unsigned int i, adcr, j, k;
     i = adcr = j = k = 0;
+    // ADC - now just 5 channels - skip pin 4 as we use this for the DAC ???
+    ADC1_Init((uint16_t *)adc_buffer);
 
+    // output pins for addressing = x3 + 2 for enables is 5 total
+    // say: PB8, 9, 10, 13, 14
+
+    GPIO_InitTypeDef GPIO_InitStructure;
+    
+  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+    
+    // and maybe add timer for updating all in interrupt
+    
     io_config2 ();
     //DAC_Cmd( DAC_Channel_2, ENABLE);
     DAC_Cmd( DAC_Channel_1, ENABLE);
