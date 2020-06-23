@@ -42,6 +42,12 @@ void TIM2_IRQHandler(void) {
 /* DMA buffer for ADC  & copy */
 __IO uint16_t adc_buffer[5];
 
+#define delay()						 do {	\
+    register unsigned int ix;					\
+    for (ix = 0; ix < 10000; ++ix)				\
+      __asm__ __volatile__ ("nop\n\t":::"memory");		\
+  } while (0)
+
 
 void io_config2 (void) {
 
@@ -84,31 +90,31 @@ int main(void)
 
     GPIO_InitTypeDef GPIO_InitStructure;
     
-  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_APB2PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -120,12 +126,22 @@ int main(void)
     io_config2 ();
     //DAC_Cmd( DAC_Channel_2, ENABLE);
     DAC_Cmd( DAC_Channel_1, ENABLE);
-    DAC_SetChannel1Data(DAC_Align_12b_R, 4095); /* 1000/4096 * 3V3 == 0V8 */
 
-      j = DAC_GetDataOutputValue (DAC_Channel_1);
+    // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
+    
 
     while(1) {
-
+    GPIOB->ODR = 0b0000000100000000;  //13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
+    // Y1 is S1 on 4051 high which is 11 on 4051 which is pin PB8
+      k++;
+      if (k>4095) k=0;
+    DAC_SetChannel1Data(DAC_Align_12b_R, k); /* 1000/4096 * 3V3 == 0V8 */
+    j = DAC_GetDataOutputValue (DAC_Channel_1);
+    delay();
+    GPIOB->ODR = 0b0000000000000000;  //13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
+    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-k); /* 1000/4096 * 3V3 == 0V8 */
+    j = DAC_GetDataOutputValue (DAC_Channel_1);
+    delay();
     }
 }
 
