@@ -40,4 +40,6 @@ U 5EF10D95
 F0 "toggle" 79
 F1 "toggle.sch" 79
 $EndSheet
+Text Notes 4210 1215 0    79   ~ 16
+- re-design for SMD as own generic panels that can port to euro
 $EndSCHEMATC

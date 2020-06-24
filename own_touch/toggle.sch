@@ -15,526 +15,31 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L 4xxx:4013 U?
-U 1 1 5E97CC51
-P 2775 1175
-AR Path="/5C0A69D0/5E97CC51" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E97CC51" Ref="U?"  Part="1" 
-AR Path="/5E97CC51" Ref="U?"  Part="1" 
-AR Path="/5EF10D95/5E97CC51" Ref="U12"  Part="1" 
-F 0 "U12" H 2775 1653 50  0000 C CNN
-F 1 "4013" H 2775 1562 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 2775 1175 50  0001 C CNN
-F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2775 1175 50  0001 C CNN
-	1    2775 1175
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5E97CC5E
-P 3250 1075
-AR Path="/5C0A69D0/5E97CC5E" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E97CC5E" Ref="R?"  Part="1" 
-AR Path="/5E97CC5E" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E97CC5E" Ref="R58"  Part="1" 
-F 0 "R58" H 3309 1121 50  0000 L CNN
-F 1 "1K" H 3309 1030 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 3250 1075 50  0001 C CNN
-F 3 "~" H 3250 1075 50  0001 C CNN
-	1    3250 1075
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3075 1075 3150 1075
-Wire Wire Line
-	3075 1275 3250 1275
-Wire Wire Line
-	3250 1275 3250 825 
-Wire Wire Line
-	2300 825  2300 1075
-Wire Wire Line
-	2300 1075 2475 1075
-Wire Wire Line
-	2300 825  3250 825 
-Wire Wire Line
-	2775 1475 2775 1500
-Wire Wire Line
-	2450 875  2450 1500
-Connection ~ 2775 1500
-Wire Wire Line
-	2775 1500 2775 1525
-Wire Wire Line
-	2450 875  2775 875 
-Wire Wire Line
-	2200 1175 2475 1175
-Wire Wire Line
-	2450 1500 2775 1500
-$Comp
-L Device:R_Small R?
-U 1 1 5E97CC95
-P 1300 825
-AR Path="/5C0A69D0/5E97CC95" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E97CC95" Ref="R?"  Part="1" 
-AR Path="/5E97CC95" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E97CC95" Ref="R50"  Part="1" 
-F 0 "R50" H 1359 871 50  0000 L CNN
-F 1 "1M" H 1359 780 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1300 825 50  0001 C CNN
-F 3 "~" H 1300 825 50  0001 C CNN
-	1    1300 825 
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1300 675  1300 725 
-Wire Wire Line
-	1300 925  1300 975 
-Wire Wire Line
-	1300 975  1325 975 
-Wire Wire Line
-	2200 975  2200 1175
-$Comp
-L 4xxx:40106 U?
-U 1 1 5E97CCA5
-P 1625 975
-AR Path="/5C0A69D0/5E97CCA5" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E97CCA5" Ref="U?"  Part="1" 
-AR Path="/5E97CCA5" Ref="U?"  Part="1" 
-AR Path="/5EF10D95/5E97CCA5" Ref="U10"  Part="1" 
-F 0 "U10" H 1625 1292 50  0000 C CNN
-F 1 "40106" H 1625 1201 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1625 975 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1625 975 50  0001 C CNN
-	1    1625 975 
-	1    0    0    -1  
-$EndComp
-$Comp
-L 4xxx:4066 U15
-U 1 1 5E97D77A
-P 3550 1375
-F 0 "U15" H 3550 1203 50  0000 C CNN
-F 1 "4066" H 3550 1112 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 3550 1375 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3550 1375 50  0001 C CNN
-	1    3550 1375
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3350 1075 3550 1075
-$Comp
-L Device:R_Small R?
-U 1 1 5E97DD93
-P 2100 975
-AR Path="/5C0A69D0/5E97DD93" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E97DD93" Ref="R?"  Part="1" 
-AR Path="/5E97DD93" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E97DD93" Ref="R54"  Part="1" 
-F 0 "R54" H 2159 1021 50  0000 L CNN
-F 1 "1K" H 2159 930 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2100 975 50  0001 C CNN
-F 3 "~" H 2100 975 50  0001 C CNN
-	1    2100 975 
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	2000 975  1925 975 
-$Comp
-L 4xxx:4013 U?
-U 2 1 5E97F9D7
-P 2750 2400
-AR Path="/5C0A69D0/5E97F9D7" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E97F9D7" Ref="U?"  Part="2" 
-AR Path="/5E97F9D7" Ref="U?"  Part="2" 
-AR Path="/5EF10D95/5E97F9D7" Ref="U12"  Part="2" 
-F 0 "U12" H 2750 2878 50  0000 C CNN
-F 1 "4013" H 2750 2787 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 2750 2400 50  0001 C CNN
-F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2750 2400 50  0001 C CNN
-	2    2750 2400
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5E97F9E4
-P 3225 2300
-AR Path="/5C0A69D0/5E97F9E4" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E97F9E4" Ref="R?"  Part="1" 
-AR Path="/5E97F9E4" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E97F9E4" Ref="R57"  Part="1" 
-F 0 "R57" H 3284 2346 50  0000 L CNN
-F 1 "1K" H 3284 2255 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 3225 2300 50  0001 C CNN
-F 3 "~" H 3225 2300 50  0001 C CNN
-	1    3225 2300
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3050 2300 3125 2300
-Wire Wire Line
-	3050 2500 3225 2500
-Wire Wire Line
-	3225 2500 3225 2050
-Wire Wire Line
-	2275 2050 2275 2300
-Wire Wire Line
-	2275 2300 2450 2300
-Wire Wire Line
-	2275 2050 3225 2050
-Wire Wire Line
-	2750 2700 2750 2725
-Wire Wire Line
-	2425 2100 2425 2725
-Connection ~ 2750 2725
-Wire Wire Line
-	2750 2725 2750 2750
-Wire Wire Line
-	2425 2100 2750 2100
-Wire Wire Line
-	2175 2400 2450 2400
-Wire Wire Line
-	2425 2725 2750 2725
-$Comp
-L Device:R_Small R?
-U 1 1 5E97FA00
-P 1275 2050
-AR Path="/5C0A69D0/5E97FA00" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E97FA00" Ref="R?"  Part="1" 
-AR Path="/5E97FA00" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E97FA00" Ref="R49"  Part="1" 
-F 0 "R49" H 1334 2096 50  0000 L CNN
-F 1 "1M" H 1334 2005 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1275 2050 50  0001 C CNN
-F 3 "~" H 1275 2050 50  0001 C CNN
-	1    1275 2050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1275 1900 1275 1950
-Wire Wire Line
-	1275 2150 1275 2200
-Connection ~ 1275 2200
-Wire Wire Line
-	1275 2200 1300 2200
-Wire Wire Line
-	2175 2200 2175 2400
-$Comp
-L 4xxx:40106 U?
-U 2 1 5E97FA0C
-P 1600 2200
-AR Path="/5C0A69D0/5E97FA0C" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E97FA0C" Ref="U?"  Part="2" 
-AR Path="/5E97FA0C" Ref="U?"  Part="2" 
-AR Path="/5EF10D95/5E97FA0C" Ref="U10"  Part="2" 
-F 0 "U10" H 1600 2517 50  0000 C CNN
-F 1 "40106" H 1600 2426 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1600 2200 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1600 2200 50  0001 C CNN
-	2    1600 2200
-	1    0    0    -1  
-$EndComp
-$Comp
 L 4xxx:4066 U15
 U 2 1 5E97FA19
-P 3525 2600
-F 0 "U15" H 3525 2428 50  0000 C CNN
-F 1 "4066" H 3525 2337 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 3525 2600 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3525 2600 50  0001 C CNN
-	2    3525 2600
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3325 2300 3525 2300
-$Comp
-L Device:R_Small R?
-U 1 1 5E97FA21
-P 2075 2200
-AR Path="/5C0A69D0/5E97FA21" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E97FA21" Ref="R?"  Part="1" 
-AR Path="/5E97FA21" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E97FA21" Ref="R53"  Part="1" 
-F 0 "R53" H 2134 2246 50  0000 L CNN
-F 1 "1K" H 2134 2155 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2075 2200 50  0001 C CNN
-F 3 "~" H 2075 2200 50  0001 C CNN
-	1    2075 2200
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	1975 2200 1900 2200
-$Comp
-L 4xxx:4013 U?
-U 1 1 5E9805F2
-P 2800 3600
-AR Path="/5C0A69D0/5E9805F2" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E9805F2" Ref="U?"  Part="1" 
-AR Path="/5E9805F2" Ref="U?"  Part="1" 
-AR Path="/5EF10D95/5E9805F2" Ref="U13"  Part="1" 
-F 0 "U13" H 2800 4078 50  0000 C CNN
-F 1 "4013" H 2800 3987 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 2800 3600 50  0001 C CNN
-F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2800 3600 50  0001 C CNN
-	1    2800 3600
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5E9805FF
-P 3275 3500
-AR Path="/5C0A69D0/5E9805FF" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E9805FF" Ref="R?"  Part="1" 
-AR Path="/5E9805FF" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E9805FF" Ref="R59"  Part="1" 
-F 0 "R59" H 3334 3546 50  0000 L CNN
-F 1 "1K" H 3334 3455 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 3275 3500 50  0001 C CNN
-F 3 "~" H 3275 3500 50  0001 C CNN
-	1    3275 3500
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3100 3500 3175 3500
-Wire Wire Line
-	3100 3700 3275 3700
-Wire Wire Line
-	3275 3700 3275 3250
-Wire Wire Line
-	2325 3250 2325 3500
-Wire Wire Line
-	2325 3500 2500 3500
-Wire Wire Line
-	2325 3250 3275 3250
-Wire Wire Line
-	2800 3900 2800 3925
-Wire Wire Line
-	2475 3300 2475 3925
-Connection ~ 2800 3925
-Wire Wire Line
-	2800 3925 2800 3950
-Wire Wire Line
-	2475 3300 2800 3300
-Wire Wire Line
-	2225 3600 2500 3600
-Wire Wire Line
-	2475 3925 2800 3925
-$Comp
-L Device:R_Small R?
-U 1 1 5E98061B
-P 1325 3250
-AR Path="/5C0A69D0/5E98061B" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E98061B" Ref="R?"  Part="1" 
-AR Path="/5E98061B" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E98061B" Ref="R51"  Part="1" 
-F 0 "R51" H 1384 3296 50  0000 L CNN
-F 1 "1M" H 1384 3205 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1325 3250 50  0001 C CNN
-F 3 "~" H 1325 3250 50  0001 C CNN
-	1    1325 3250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1325 3100 1325 3150
-Wire Wire Line
-	1325 3350 1325 3400
-Connection ~ 1325 3400
-Wire Wire Line
-	1325 3400 1350 3400
-Wire Wire Line
-	2225 3400 2225 3600
-$Comp
-L 4xxx:40106 U?
-U 3 1 5E980627
-P 1650 3400
-AR Path="/5C0A69D0/5E980627" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E980627" Ref="U?"  Part="3" 
-AR Path="/5E980627" Ref="U?"  Part="3" 
-AR Path="/5EF10D95/5E980627" Ref="U10"  Part="3" 
-F 0 "U10" H 1650 3717 50  0000 C CNN
-F 1 "40106" H 1650 3626 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1650 3400 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1650 3400 50  0001 C CNN
-	3    1650 3400
+P 5255 3520
+F 0 "U15" H 5255 3348 50  0000 C CNN
+F 1 "4066" H 5255 3257 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 5255 3520 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 5255 3520 50  0001 C CNN
+	2    5255 3520
 	1    0    0    -1  
 $EndComp
 $Comp
 L 4xxx:4066 U15
 U 3 1 5E980634
-P 3575 3800
-F 0 "U15" H 3575 3628 50  0000 C CNN
-F 1 "4066" H 3575 3537 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 3575 3800 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3575 3800 50  0001 C CNN
-	3    3575 3800
+P 5215 5050
+F 0 "U15" H 5215 4878 50  0000 C CNN
+F 1 "4066" H 5215 4787 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 5215 5050 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 5215 5050 50  0001 C CNN
+	3    5215 5050
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3375 3500 3575 3500
-$Comp
-L Device:R_Small R?
-U 1 1 5E98063C
-P 2125 3400
-AR Path="/5C0A69D0/5E98063C" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E98063C" Ref="R?"  Part="1" 
-AR Path="/5E98063C" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E98063C" Ref="R55"  Part="1" 
-F 0 "R55" H 2184 3446 50  0000 L CNN
-F 1 "1K" H 2184 3355 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2125 3400 50  0001 C CNN
-F 3 "~" H 2125 3400 50  0001 C CNN
-	1    2125 3400
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	2025 3400 1950 3400
-$Comp
-L 4xxx:4013 U?
-U 2 1 5E981A14
-P 2800 4775
-AR Path="/5C0A69D0/5E981A14" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E981A14" Ref="U?"  Part="2" 
-AR Path="/5E981A14" Ref="U?"  Part="2" 
-AR Path="/5EF10D95/5E981A14" Ref="U13"  Part="2" 
-F 0 "U13" H 2800 5253 50  0000 C CNN
-F 1 "4013" H 2800 5162 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 2800 4775 50  0001 C CNN
-F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 2800 4775 50  0001 C CNN
-	2    2800 4775
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5E981A21
-P 3275 4675
-AR Path="/5C0A69D0/5E981A21" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E981A21" Ref="R?"  Part="1" 
-AR Path="/5E981A21" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E981A21" Ref="R60"  Part="1" 
-F 0 "R60" H 3334 4721 50  0000 L CNN
-F 1 "1K" H 3334 4630 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 3275 4675 50  0001 C CNN
-F 3 "~" H 3275 4675 50  0001 C CNN
-	1    3275 4675
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3100 4675 3175 4675
-Wire Wire Line
-	3100 4875 3275 4875
-Wire Wire Line
-	3275 4875 3275 4425
-Wire Wire Line
-	2325 4425 2325 4675
-Wire Wire Line
-	2325 4675 2500 4675
-Wire Wire Line
-	2325 4425 3275 4425
-Wire Wire Line
-	2800 5075 2800 5100
-Wire Wire Line
-	2475 4475 2475 5100
-Connection ~ 2800 5100
-Wire Wire Line
-	2800 5100 2800 5125
-Wire Wire Line
-	2475 4475 2800 4475
-Wire Wire Line
-	2225 4775 2500 4775
-Wire Wire Line
-	2475 5100 2800 5100
-$Comp
-L Device:R_Small R?
-U 1 1 5E981A3D
-P 1325 4425
-AR Path="/5C0A69D0/5E981A3D" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E981A3D" Ref="R?"  Part="1" 
-AR Path="/5E981A3D" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E981A3D" Ref="R52"  Part="1" 
-F 0 "R52" H 1384 4471 50  0000 L CNN
-F 1 "1M" H 1384 4380 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1325 4425 50  0001 C CNN
-F 3 "~" H 1325 4425 50  0001 C CNN
-	1    1325 4425
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1325 4275 1325 4325
-Wire Wire Line
-	1325 4525 1325 4575
-Wire Wire Line
-	1325 4575 1350 4575
-Wire Wire Line
-	2225 4575 2225 4775
-$Comp
-L 4xxx:40106 U?
-U 4 1 5E981A49
-P 1650 4575
-AR Path="/5C0A69D0/5E981A49" Ref="U?"  Part="1" 
-AR Path="/5E97CA7E/5E981A49" Ref="U?"  Part="4" 
-AR Path="/5E981A49" Ref="U?"  Part="4" 
-AR Path="/5EF10D95/5E981A49" Ref="U10"  Part="4" 
-F 0 "U10" H 1650 4892 50  0000 C CNN
-F 1 "40106" H 1650 4801 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1650 4575 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1650 4575 50  0001 C CNN
-	4    1650 4575
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3375 4675 3575 4675
-$Comp
-L Device:R_Small R?
-U 1 1 5E981A5E
-P 2125 4575
-AR Path="/5C0A69D0/5E981A5E" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5E981A5E" Ref="R?"  Part="1" 
-AR Path="/5E981A5E" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5E981A5E" Ref="R56"  Part="1" 
-F 0 "R56" H 2184 4621 50  0000 L CNN
-F 1 "1K" H 2184 4530 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2125 4575 50  0001 C CNN
-F 3 "~" H 2125 4575 50  0001 C CNN
-	1    2125 4575
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	2025 4575 1950 4575
-$Comp
-L 4xxx:4013 U?
-U 3 1 5EA0FF65
-P 7400 2675
-AR Path="/5C0A69D0/5EA0FF65" Ref="U?"  Part="3" 
-AR Path="/5E97CA7E/5EA0FF65" Ref="U?"  Part="3" 
-AR Path="/5EA0FF65" Ref="U?"  Part="3" 
-AR Path="/5EF10D95/5EA0FF65" Ref="U13"  Part="3" 
-F 0 "U13" H 7630 2721 50  0000 L CNN
-F 1 "4013" H 7630 2630 50  0000 L CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 7400 2675 50  0001 C CNN
-F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 7400 2675 50  0001 C CNN
-	3    7400 2675
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7400 2225 7400 2275
-Wire Wire Line
-	7400 3075 7400 3125
 Wire Wire Line
 	6795 685  6795 735 
 Wire Wire Line
 	6795 1735 6795 1785
-$Comp
-L 4xxx:40106 U?
-U 7 1 5EA0FF7C
-P 6795 1235
-AR Path="/5C0A69D0/5EA0FF7C" Ref="U?"  Part="7" 
-AR Path="/5E97CA7E/5EA0FF7C" Ref="U?"  Part="7" 
-AR Path="/5EA0FF7C" Ref="U?"  Part="7" 
-AR Path="/5EF10D95/5EA0FF7C" Ref="U10"  Part="7" 
-F 0 "U10" H 7025 1281 50  0000 L CNN
-F 1 "40106" H 7025 1190 50  0000 L CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 6795 1235 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 6795 1235 50  0001 C CNN
-	7    6795 1235
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:+9V #PWR080
 U 1 1 5EA0FF98
@@ -546,330 +51,131 @@ F 3 "" H 6795 685 50  0001 C CNN
 	1    6795 685 
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:+9V #PWR084
-U 1 1 5EA0FF9E
-P 7400 2225
-F 0 "#PWR084" H 7400 2075 50  0001 C CNN
-F 1 "+9V" H 7415 2398 50  0000 C CNN
-F 2 "" H 7400 2225 50  0001 C CNN
-F 3 "" H 7400 2225 50  0001 C CNN
-	1    7400 2225
-	1    0    0    -1  
-$EndComp
-$Comp
-L 4xxx:4013 U?
-U 3 1 5EA0FFA4
-P 6810 2670
-AR Path="/5C0A69D0/5EA0FFA4" Ref="U?"  Part="3" 
-AR Path="/5E97CA7E/5EA0FFA4" Ref="U?"  Part="3" 
-AR Path="/5EA0FFA4" Ref="U?"  Part="3" 
-AR Path="/5EF10D95/5EA0FFA4" Ref="U12"  Part="3" 
-F 0 "U12" H 7040 2716 50  0000 L CNN
-F 1 "4013" H 7040 2625 50  0000 L CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 6810 2670 50  0001 C CNN
-F 3 "http://www.onsemi.com/pub/Collateral/MC14013B-D.PDF" H 6810 2670 50  0001 C CNN
-	3    6810 2670
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	6810 2220 6810 2270
+	5080 1965 5080 2140
 Wire Wire Line
-	6810 3070 6810 3120
-$Comp
-L power:+9V #PWR082
-U 1 1 5EA0FFB3
-P 6810 2220
-F 0 "#PWR082" H 6810 2070 50  0001 C CNN
-F 1 "+9V" H 6825 2393 50  0000 C CNN
-F 2 "" H 6810 2220 50  0001 C CNN
-F 3 "" H 6810 2220 50  0001 C CNN
-	1    6810 2220
-	1    0    0    -1  
-$EndComp
+	5680 1965 5680 2115
 Wire Wire Line
-	3250 1375 3250 1550
+	4955 3520 4955 3720
 Wire Wire Line
-	3850 1375 3850 1525
+	5555 3520 5555 3720
 Wire Wire Line
-	3225 2600 3225 2800
+	4915 5050 4915 5200
 Wire Wire Line
-	3825 2600 3825 2800
+	5515 5050 5515 5175
 Wire Wire Line
-	3275 3800 3275 3950
-Wire Wire Line
-	3875 3800 3875 3925
-Wire Wire Line
-	3275 4975 3275 5100
-$Comp
-L power:+9V #PWR069
-U 1 1 5E9BBFF3
-P 1325 4275
-F 0 "#PWR069" H 1325 4125 50  0001 C CNN
-F 1 "+9V" H 1340 4448 50  0000 C CNN
-F 2 "" H 1325 4275 50  0001 C CNN
-F 3 "" H 1325 4275 50  0001 C CNN
-	1    1325 4275
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+9V #PWR066
-U 1 1 5E9BF25B
-P 1275 1900
-F 0 "#PWR066" H 1275 1750 50  0001 C CNN
-F 1 "+9V" H 1290 2073 50  0000 C CNN
-F 2 "" H 1275 1900 50  0001 C CNN
-F 3 "" H 1275 1900 50  0001 C CNN
-	1    1275 1900
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+9V #PWR068
-U 1 1 5E9BF330
-P 1325 3100
-F 0 "#PWR068" H 1325 2950 50  0001 C CNN
-F 1 "+9V" H 1340 3273 50  0000 C CNN
-F 2 "" H 1325 3100 50  0001 C CNN
-F 3 "" H 1325 3100 50  0001 C CNN
-	1    1325 3100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+9V #PWR067
-U 1 1 5E9BF996
-P 1300 675
-F 0 "#PWR067" H 1300 525 50  0001 C CNN
-F 1 "+9V" H 1315 848 50  0000 C CNN
-F 2 "" H 1300 675 50  0001 C CNN
-F 3 "" H 1300 675 50  0001 C CNN
-	1    1300 675 
-	1    0    0    -1  
-$EndComp
+	4970 6495 4970 6620
 $Comp
 L Regulator_Linear:LM7809_TO220 U11
 U 1 1 5E9C054C
-P 2045 6325
-F 0 "U11" H 2045 6567 50  0000 C CNN
-F 1 "LM7809_TO220" H 2045 6476 50  0000 C CNN
-F 2 "TO_SOT_Packages_THT:TO-220_Vertical" H 2045 6550 50  0001 C CIN
-F 3 "http://www.fairchildsemi.com/ds/LM/LM7805.pdf" H 2045 6275 50  0001 C CNN
-	1    2045 6325
+P 9380 970
+F 0 "U11" H 9380 1212 50  0000 C CNN
+F 1 "LM7809_TO220" H 9380 1121 50  0000 C CNN
+F 2 "TO_SOT_Packages_THT:TO-220_Vertical" H 9380 1195 50  0001 C CIN
+F 3 "http://www.fairchildsemi.com/ds/LM/LM7805.pdf" H 9380 920 50  0001 C CNN
+	1    9380 970 
 	1    0    0    -1  
 $EndComp
 $Comp
 L Regulator_Linear:LM7909_TO220 U14
 U 1 1 5E9C079C
-P 2945 6300
-F 0 "U14" H 2945 6058 50  0000 C CNN
-F 1 "LM7909_TO220" H 2945 6149 50  0000 C CNN
-F 2 "TO_SOT_Packages_THT:TO-220_Vertical" H 2945 6100 50  0001 C CIN
-F 3 "http://www.fairchildsemi.com/ds/LM/LM7905.pdf" H 2945 6300 50  0001 C CNN
-	1    2945 6300
+P 10280 945
+F 0 "U14" H 10280 703 50  0000 C CNN
+F 1 "LM7909_TO220" H 10280 794 50  0000 C CNN
+F 2 "TO_SOT_Packages_THT:TO-220_Vertical" H 10280 745 50  0001 C CIN
+F 3 "http://www.fairchildsemi.com/ds/LM/LM7905.pdf" H 10280 945 50  0001 C CNN
+	1    10280 945 
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+9V #PWR072
 U 1 1 5EA276F7
-P 2420 6325
-F 0 "#PWR072" H 2420 6175 50  0001 C CNN
-F 1 "+9V" H 2435 6498 50  0000 C CNN
-F 2 "" H 2420 6325 50  0001 C CNN
-F 3 "" H 2420 6325 50  0001 C CNN
-	1    2420 6325
+P 9755 970
+F 0 "#PWR072" H 9755 820 50  0001 C CNN
+F 1 "+9V" H 9770 1143 50  0000 C CNN
+F 2 "" H 9755 970 50  0001 C CNN
+F 3 "" H 9755 970 50  0001 C CNN
+	1    9755 970 
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:-9V #PWR073
 U 1 1 5EA277D4
-P 2645 6350
-F 0 "#PWR073" H 2645 6225 50  0001 C CNN
-F 1 "-9V" H 2660 6523 50  0000 C CNN
-F 2 "" H 2645 6350 50  0001 C CNN
-F 3 "" H 2645 6350 50  0001 C CNN
-	1    2645 6350
+P 9980 995
+F 0 "#PWR073" H 9980 870 50  0001 C CNN
+F 1 "-9V" H 9995 1168 50  0000 C CNN
+F 2 "" H 9980 995 50  0001 C CNN
+F 3 "" H 9980 995 50  0001 C CNN
+	1    9980 995 
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:-12V #PWR079
 U 1 1 5EA27DB7
-P 3245 6350
-F 0 "#PWR079" H 3245 6450 50  0001 C CNN
-F 1 "-12V" H 3260 6523 50  0000 C CNN
-F 2 "" H 3245 6350 50  0001 C CNN
-F 3 "" H 3245 6350 50  0001 C CNN
-	1    3245 6350
+P 10580 995
+F 0 "#PWR079" H 10580 1095 50  0001 C CNN
+F 1 "-12V" H 10595 1168 50  0000 C CNN
+F 2 "" H 10580 995 50  0001 C CNN
+F 3 "" H 10580 995 50  0001 C CNN
+	1    10580 995 
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+12V #PWR070
 U 1 1 5EA27E94
-P 1645 6325
-F 0 "#PWR070" H 1645 6175 50  0001 C CNN
-F 1 "+12V" H 1660 6498 50  0000 C CNN
-F 2 "" H 1645 6325 50  0001 C CNN
-F 3 "" H 1645 6325 50  0001 C CNN
-	1    1645 6325
+P 8980 970
+F 0 "#PWR070" H 8980 820 50  0001 C CNN
+F 1 "+12V" H 8995 1143 50  0000 C CNN
+F 2 "" H 8980 970 50  0001 C CNN
+F 3 "" H 8980 970 50  0001 C CNN
+	1    8980 970 
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1645 6325 1745 6325
+	8980 970  9080 970 
 Wire Wire Line
-	2345 6325 2420 6325
+	9680 970  9755 970 
 Wire Wire Line
-	2045 6625 2045 6675
+	9380 1270 9380 1320
 Wire Wire Line
-	2645 6300 2645 6350
+	9980 945  9980 995 
 Wire Wire Line
-	3245 6300 3245 6350
+	10580 945  10580 995 
 Wire Wire Line
-	2945 6600 2945 6675
-$Comp
-L Device:C_Small C25
-U 1 1 5EBCD0B3
-P 7570 1215
-F 0 "C25" H 7662 1261 50  0000 L CNN
-F 1 "100nF" H 7662 1170 50  0000 L CNN
-F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 7570 1215 50  0001 C CNN
-F 3 "~" H 7570 1215 50  0001 C CNN
-	1    7570 1215
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+9V #PWR086
-U 1 1 5EBFF2C9
-P 7570 1065
-F 0 "#PWR086" H 7570 915 50  0001 C CNN
-F 1 "+9V" H 7585 1238 50  0000 C CNN
-F 2 "" H 7570 1065 50  0001 C CNN
-F 3 "" H 7570 1065 50  0001 C CNN
-	1    7570 1065
-	1    0    0    -1  
-$EndComp
+	10280 1245 10280 1320
 Wire Wire Line
-	7570 1065 7570 1115
-Wire Wire Line
-	7570 1315 7570 1365
-$Comp
-L Device:C_Small C26
-U 1 1 5EC2E6BC
-P 7990 2615
-F 0 "C26" H 8082 2661 50  0000 L CNN
-F 1 "100nF" H 8082 2570 50  0000 L CNN
-F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 7990 2615 50  0001 C CNN
-F 3 "~" H 7990 2615 50  0001 C CNN
-	1    7990 2615
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+9V #PWR088
-U 1 1 5EC2E6C9
-P 7990 2465
-F 0 "#PWR088" H 7990 2315 50  0001 C CNN
-F 1 "+9V" H 8005 2638 50  0000 C CNN
-F 2 "" H 7990 2465 50  0001 C CNN
-F 3 "" H 7990 2465 50  0001 C CNN
-	1    7990 2465
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7990 2465 7990 2515
-Wire Wire Line
-	7990 2715 7990 2765
-Wire Wire Line
-	750  975  1300 975 
-Connection ~ 1300 975 
-Wire Wire Line
-	1100 2200 1275 2200
-Wire Wire Line
-	825  4575 1325 4575
-Connection ~ 1325 4575
-Wire Wire Line
-	750  1075 1100 1075
-Wire Wire Line
-	1100 1075 1100 2200
-Wire Wire Line
-	750  1175 975  1175
-Wire Wire Line
-	975  1175 975  3400
-Wire Wire Line
-	975  3400 1325 3400
-Wire Wire Line
-	3875 4975 3875 5100
+	5570 6495 5570 6620
 $Comp
 L 4xxx:4066 U15
 U 4 1 5E981A56
-P 3575 4975
-F 0 "U15" H 3575 4803 50  0000 C CNN
-F 1 "4066" H 3575 4712 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 3575 4975 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3575 4975 50  0001 C CNN
-	4    3575 4975
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR075
-U 1 1 5F305D2C
-P 2775 1525
-F 0 "#PWR075" H 2775 1275 50  0001 C CNN
-F 1 "GND" H 2780 1352 50  0000 C CNN
-F 2 "" H 2775 1525 50  0001 C CNN
-F 3 "" H 2775 1525 50  0001 C CNN
-	1    2775 1525
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR074
-U 1 1 5F30638E
-P 2750 2750
-F 0 "#PWR074" H 2750 2500 50  0001 C CNN
-F 1 "GND" H 2755 2577 50  0000 C CNN
-F 2 "" H 2750 2750 50  0001 C CNN
-F 3 "" H 2750 2750 50  0001 C CNN
-	1    2750 2750
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR076
-U 1 1 5F306580
-P 2800 3950
-F 0 "#PWR076" H 2800 3700 50  0001 C CNN
-F 1 "GND" H 2805 3777 50  0000 C CNN
-F 2 "" H 2800 3950 50  0001 C CNN
-F 3 "" H 2800 3950 50  0001 C CNN
-	1    2800 3950
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR077
-U 1 1 5F306D5B
-P 2800 5125
-F 0 "#PWR077" H 2800 4875 50  0001 C CNN
-F 1 "GND" H 2805 4952 50  0000 C CNN
-F 2 "" H 2800 5125 50  0001 C CNN
-F 3 "" H 2800 5125 50  0001 C CNN
-	1    2800 5125
+P 5270 6495
+F 0 "U15" H 5270 6323 50  0000 C CNN
+F 1 "4066" H 5270 6232 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 5270 6495 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 5270 6495 50  0001 C CNN
+	4    5270 6495
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR071
 U 1 1 5F34370B
-P 2045 6675
-F 0 "#PWR071" H 2045 6425 50  0001 C CNN
-F 1 "GND" H 2050 6502 50  0000 C CNN
-F 2 "" H 2045 6675 50  0001 C CNN
-F 3 "" H 2045 6675 50  0001 C CNN
-	1    2045 6675
+P 9380 1320
+F 0 "#PWR071" H 9380 1070 50  0001 C CNN
+F 1 "GND" H 9385 1147 50  0000 C CNN
+F 2 "" H 9380 1320 50  0001 C CNN
+F 3 "" H 9380 1320 50  0001 C CNN
+	1    9380 1320
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR078
 U 1 1 5F3437D6
-P 2945 6675
-F 0 "#PWR078" H 2945 6425 50  0001 C CNN
-F 1 "GND" H 2950 6502 50  0000 C CNN
-F 2 "" H 2945 6675 50  0001 C CNN
-F 3 "" H 2945 6675 50  0001 C CNN
-	1    2945 6675
+P 10280 1320
+F 0 "#PWR078" H 10280 1070 50  0001 C CNN
+F 1 "GND" H 10285 1147 50  0000 C CNN
+F 2 "" H 10280 1320 50  0001 C CNN
+F 3 "" H 10280 1320 50  0001 C CNN
+	1    10280 1320
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -881,50 +187,6 @@ F 1 "GND" H 6800 1612 50  0000 C CNN
 F 2 "" H 6795 1785 50  0001 C CNN
 F 3 "" H 6795 1785 50  0001 C CNN
 	1    6795 1785
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR087
-U 1 1 5F34C485
-P 7570 1365
-F 0 "#PWR087" H 7570 1115 50  0001 C CNN
-F 1 "GND" H 7575 1192 50  0000 C CNN
-F 2 "" H 7570 1365 50  0001 C CNN
-F 3 "" H 7570 1365 50  0001 C CNN
-	1    7570 1365
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR089
-U 1 1 5F34C510
-P 7990 2765
-F 0 "#PWR089" H 7990 2515 50  0001 C CNN
-F 1 "GND" H 7995 2592 50  0000 C CNN
-F 2 "" H 7990 2765 50  0001 C CNN
-F 3 "" H 7990 2765 50  0001 C CNN
-	1    7990 2765
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR085
-U 1 1 5F34C55B
-P 7400 3125
-F 0 "#PWR085" H 7400 2875 50  0001 C CNN
-F 1 "GND" H 7405 2952 50  0000 C CNN
-F 2 "" H 7400 3125 50  0001 C CNN
-F 3 "" H 7400 3125 50  0001 C CNN
-	1    7400 3125
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR083
-U 1 1 5F34C606
-P 6810 3120
-F 0 "#PWR083" H 6810 2870 50  0001 C CNN
-F 1 "GND" H 6815 2947 50  0000 C CNN
-F 2 "" H 6810 3120 50  0001 C CNN
-F 3 "" H 6810 3120 50  0001 C CNN
-	1    6810 3120
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -950,43 +212,6 @@ F 3 "" H 8935 2045 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C_Small C27
-U 1 1 5F35E08B
-P 8320 2600
-F 0 "C27" H 8412 2646 50  0000 L CNN
-F 1 "100nF" H 8412 2555 50  0000 L CNN
-F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 8320 2600 50  0001 C CNN
-F 3 "~" H 8320 2600 50  0001 C CNN
-	1    8320 2600
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+9V #PWR090
-U 1 1 5F35E092
-P 8320 2450
-F 0 "#PWR090" H 8320 2300 50  0001 C CNN
-F 1 "+9V" H 8335 2623 50  0000 C CNN
-F 2 "" H 8320 2450 50  0001 C CNN
-F 3 "" H 8320 2450 50  0001 C CNN
-	1    8320 2450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8320 2450 8320 2500
-Wire Wire Line
-	8320 2700 8320 2750
-$Comp
-L power:GND #PWR091
-U 1 1 5F35E09A
-P 8320 2750
-F 0 "#PWR091" H 8320 2500 50  0001 C CNN
-F 1 "GND" H 8325 2577 50  0000 C CNN
-F 2 "" H 8320 2750 50  0001 C CNN
-F 3 "" H 8320 2750 50  0001 C CNN
-	1    8320 2750
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:-9V #PWR093
 U 1 1 5F36257B
 P 8935 3120
@@ -999,106 +224,828 @@ F 3 "" H 8935 3120 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	8935 3080 8935 3120
-$Comp
-L Device:C_Small C28
-U 1 1 5F36CFE6
-P 9570 2575
-F 0 "C28" H 9662 2621 50  0000 L CNN
-F 1 "100nF" H 9662 2530 50  0000 L CNN
-F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 9570 2575 50  0001 C CNN
-F 3 "~" H 9570 2575 50  0001 C CNN
-	1    9570 2575
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+9V #PWR094
-U 1 1 5F36CFED
-P 9570 2425
-F 0 "#PWR094" H 9570 2275 50  0001 C CNN
-F 1 "+9V" H 9585 2598 50  0000 C CNN
-F 2 "" H 9570 2425 50  0001 C CNN
-F 3 "" H 9570 2425 50  0001 C CNN
-	1    9570 2425
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9570 2425 9570 2475
-Wire Wire Line
-	9570 2675 9570 2725
-$Comp
-L power:GND #PWR095
-U 1 1 5F36CFF5
-P 9570 2725
-F 0 "#PWR095" H 9570 2475 50  0001 C CNN
-F 1 "GND" H 9575 2552 50  0000 C CNN
-F 2 "" H 9570 2725 50  0001 C CNN
-F 3 "" H 9570 2725 50  0001 C CNN
-	1    9570 2725
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C29
-U 1 1 5F36CFFB
-P 9900 2560
-F 0 "C29" H 9992 2606 50  0000 L CNN
-F 1 "100nF" H 9992 2515 50  0000 L CNN
-F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 9900 2560 50  0001 C CNN
-F 3 "~" H 9900 2560 50  0001 C CNN
-	1    9900 2560
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9900 2660 9900 2710
-$Comp
-L power:GND #PWR096
-U 1 1 5F36D00A
-P 9900 2710
-F 0 "#PWR096" H 9900 2460 50  0001 C CNN
-F 1 "GND" H 9905 2537 50  0000 C CNN
-F 2 "" H 9900 2710 50  0001 C CNN
-F 3 "" H 9900 2710 50  0001 C CNN
-	1    9900 2710
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:-9V #PWR097
-U 1 1 5F37032A
-P 10030 2265
-F 0 "#PWR097" H 10030 2140 50  0001 C CNN
-F 1 "-9V" H 10045 2438 50  0000 C CNN
-F 2 "" H 10030 2265 50  0001 C CNN
-F 3 "" H 10030 2265 50  0001 C CNN
-	1    10030 2265
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	9900 2265 10030 2265
-Wire Wire Line
-	9900 2265 9900 2460
 Wire Wire Line
 	8935 2045 8935 2080
-Text GLabel 750  975  0    79   Input ~ 0
-TG1
-Text GLabel 750  1075 0    79   Input ~ 0
-TG2
-Text GLabel 750  1175 0    79   Input ~ 0
-TG3
-Text GLabel 825  4575 0    79   Input ~ 0
-TG4
-Text GLabel 3250 1550 0    79   Input ~ 0
-IN1
-Text GLabel 3850 1525 2    79   Input ~ 0
+Text GLabel 5080 2140 0    79   Input ~ 0
 OUT1
-Text GLabel 3225 2800 0    79   Input ~ 0
-IN2
-Text GLabel 3825 2800 2    79   Input ~ 0
+Text GLabel 5680 2115 2    79   Input ~ 0
+OUTT1
+Text GLabel 4955 3720 0    79   Input ~ 0
 OUT2
-Text GLabel 3875 3925 2    79   Input ~ 0
+Text GLabel 5555 3720 2    79   Input ~ 0
+OUTT2
+Text GLabel 5515 5175 2    79   Input ~ 0
+OUTT3
+Text GLabel 4915 5200 0    79   Input ~ 0
 OUT3
-Text GLabel 3275 3950 0    79   Input ~ 0
-IN3
-Text GLabel 3875 5100 2    79   Input ~ 0
+Text GLabel 5570 6620 2    79   Input ~ 0
+OUTT4
+Text GLabel 4970 6620 0    79   Input ~ 0
 OUT4
-Text GLabel 3275 5100 0    79   Input ~ 0
-IN4
+$Comp
+L 4xxx:4066 U15
+U 1 1 5E97D77A
+P 5380 1965
+F 0 "U15" H 5380 1793 50  0000 C CNN
+F 1 "4066" H 5380 1702 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 5380 1965 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 5380 1965 50  0001 C CNN
+	1    5380 1965
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF4550C
+P 1275 1470
+AR Path="/5C0A69D0/5EF4550C" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF4550C" Ref="R?"  Part="1" 
+AR Path="/5EF4550C" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF4550C" Ref="R49"  Part="1" 
+AR Path="/5EBFD180/5EF4550C" Ref="R?"  Part="1" 
+F 0 "R49" H 1334 1516 50  0000 L CNN
+F 1 "1M" H 1334 1425 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1275 1470 50  0001 C CNN
+F 3 "~" H 1275 1470 50  0001 C CNN
+	1    1275 1470
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1275 1320 1275 1370
+Wire Wire Line
+	1275 1570 1275 1620
+Wire Wire Line
+	1275 1620 1300 1620
+$Comp
+L 4xxx:40106 U?
+U 1 1 5EF45516
+P 1600 1620
+AR Path="/5C0A69D0/5EF45516" Ref="U?"  Part="1" 
+AR Path="/5E97CA7E/5EF45516" Ref="U?"  Part="1" 
+AR Path="/5EF45516" Ref="U?"  Part="1" 
+AR Path="/5EF10D95/5EF45516" Ref="U12"  Part="1" 
+AR Path="/5EBFD180/5EF45516" Ref="U?"  Part="1" 
+F 0 "U12" H 1600 1937 50  0000 C CNN
+F 1 "40106" H 1600 1846 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1600 1620 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1600 1620 50  0001 C CNN
+	1    1600 1620
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF4551D
+P 2075 1620
+AR Path="/5C0A69D0/5EF4551D" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF4551D" Ref="R?"  Part="1" 
+AR Path="/5EF4551D" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF4551D" Ref="R53"  Part="1" 
+AR Path="/5EBFD180/5EF4551D" Ref="R?"  Part="1" 
+F 0 "R53" H 2134 1666 50  0000 L CNN
+F 1 "1K" H 2134 1575 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2075 1620 50  0001 C CNN
+F 3 "~" H 2075 1620 50  0001 C CNN
+	1    2075 1620
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1975 1620 1900 1620
+Wire Wire Line
+	2175 1620 2215 1620
+Wire Wire Line
+	1275 1620 1175 1620
+Connection ~ 1275 1620
+Text GLabel 1175 1620 0    79   Input ~ 0
+TG1
+Text GLabel 2215 1620 2    79   Input ~ 0
+D11
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5EF4552A
+P 1275 1320
+AR Path="/5EBFD180/5EF4552A" Ref="#PWR?"  Part="1" 
+AR Path="/5EF10D95/5EF4552A" Ref="#PWR066"  Part="1" 
+F 0 "#PWR066" H 1275 1170 50  0001 C CNN
+F 1 "+3.3V" H 1290 1493 50  0000 C CNN
+F 2 "" H 1275 1320 50  0001 C CNN
+F 3 "" H 1275 1320 50  0001 C CNN
+	1    1275 1320
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF45530
+P 1300 2100
+AR Path="/5C0A69D0/5EF45530" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF45530" Ref="R?"  Part="1" 
+AR Path="/5EF45530" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF45530" Ref="R51"  Part="1" 
+AR Path="/5EBFD180/5EF45530" Ref="R?"  Part="1" 
+F 0 "R51" H 1359 2146 50  0000 L CNN
+F 1 "1M" H 1359 2055 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1300 2100 50  0001 C CNN
+F 3 "~" H 1300 2100 50  0001 C CNN
+	1    1300 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 1950 1300 2000
+Wire Wire Line
+	1300 2200 1300 2250
+Wire Wire Line
+	1300 2250 1325 2250
+$Comp
+L Device:R_Small R?
+U 1 1 5EF4553A
+P 2100 2250
+AR Path="/5C0A69D0/5EF4553A" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF4553A" Ref="R?"  Part="1" 
+AR Path="/5EF4553A" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF4553A" Ref="R55"  Part="1" 
+AR Path="/5EBFD180/5EF4553A" Ref="R?"  Part="1" 
+F 0 "R55" H 2159 2296 50  0000 L CNN
+F 1 "1K" H 2159 2205 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2100 2250 50  0001 C CNN
+F 3 "~" H 2100 2250 50  0001 C CNN
+	1    2100 2250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2000 2250 1925 2250
+Wire Wire Line
+	2200 2250 2240 2250
+Wire Wire Line
+	1300 2250 1200 2250
+Connection ~ 1300 2250
+Text GLabel 1200 2250 0    79   Input ~ 0
+TG2
+Text GLabel 2240 2250 2    79   Input ~ 0
+D12
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5EF45547
+P 1300 1950
+AR Path="/5EBFD180/5EF45547" Ref="#PWR?"  Part="1" 
+AR Path="/5EF10D95/5EF45547" Ref="#PWR068"  Part="1" 
+F 0 "#PWR068" H 1300 1800 50  0001 C CNN
+F 1 "+3.3V" H 1315 2123 50  0000 C CNN
+F 2 "" H 1300 1950 50  0001 C CNN
+F 3 "" H 1300 1950 50  0001 C CNN
+	1    1300 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF4554D
+P 1275 2725
+AR Path="/5C0A69D0/5EF4554D" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF4554D" Ref="R?"  Part="1" 
+AR Path="/5EF4554D" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF4554D" Ref="R50"  Part="1" 
+AR Path="/5EBFD180/5EF4554D" Ref="R?"  Part="1" 
+F 0 "R50" H 1334 2771 50  0000 L CNN
+F 1 "1M" H 1334 2680 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1275 2725 50  0001 C CNN
+F 3 "~" H 1275 2725 50  0001 C CNN
+	1    1275 2725
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1275 2575 1275 2625
+Wire Wire Line
+	1275 2825 1275 2875
+Wire Wire Line
+	1275 2875 1300 2875
+$Comp
+L Device:R_Small R?
+U 1 1 5EF45557
+P 2075 2875
+AR Path="/5C0A69D0/5EF45557" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF45557" Ref="R?"  Part="1" 
+AR Path="/5EF45557" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF45557" Ref="R54"  Part="1" 
+AR Path="/5EBFD180/5EF45557" Ref="R?"  Part="1" 
+F 0 "R54" H 2134 2921 50  0000 L CNN
+F 1 "1K" H 2134 2830 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2075 2875 50  0001 C CNN
+F 3 "~" H 2075 2875 50  0001 C CNN
+	1    2075 2875
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1975 2875 1900 2875
+Wire Wire Line
+	2175 2875 2215 2875
+Wire Wire Line
+	1275 2875 1175 2875
+Connection ~ 1275 2875
+Text GLabel 1175 2875 0    79   Input ~ 0
+TG3
+Text GLabel 2215 2875 2    79   Input ~ 0
+D13
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5EF45564
+P 1275 2575
+AR Path="/5EBFD180/5EF45564" Ref="#PWR?"  Part="1" 
+AR Path="/5EF10D95/5EF45564" Ref="#PWR067"  Part="1" 
+F 0 "#PWR067" H 1275 2425 50  0001 C CNN
+F 1 "+3.3V" H 1290 2748 50  0000 C CNN
+F 2 "" H 1275 2575 50  0001 C CNN
+F 3 "" H 1275 2575 50  0001 C CNN
+	1    1275 2575
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF4556A
+P 1300 3355
+AR Path="/5C0A69D0/5EF4556A" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF4556A" Ref="R?"  Part="1" 
+AR Path="/5EF4556A" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF4556A" Ref="R52"  Part="1" 
+AR Path="/5EBFD180/5EF4556A" Ref="R?"  Part="1" 
+F 0 "R52" H 1359 3401 50  0000 L CNN
+F 1 "1M" H 1359 3310 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1300 3355 50  0001 C CNN
+F 3 "~" H 1300 3355 50  0001 C CNN
+	1    1300 3355
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 3205 1300 3255
+Wire Wire Line
+	1300 3455 1300 3505
+Wire Wire Line
+	1300 3505 1325 3505
+$Comp
+L Device:R_Small R?
+U 1 1 5EF45574
+P 2100 3505
+AR Path="/5C0A69D0/5EF45574" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF45574" Ref="R?"  Part="1" 
+AR Path="/5EF45574" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF45574" Ref="R56"  Part="1" 
+AR Path="/5EBFD180/5EF45574" Ref="R?"  Part="1" 
+F 0 "R56" H 2159 3551 50  0000 L CNN
+F 1 "1K" H 2159 3460 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2100 3505 50  0001 C CNN
+F 3 "~" H 2100 3505 50  0001 C CNN
+	1    2100 3505
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2000 3505 1925 3505
+Wire Wire Line
+	2200 3505 2240 3505
+Wire Wire Line
+	1300 3505 1200 3505
+Connection ~ 1300 3505
+Text GLabel 1200 3505 0    79   Input ~ 0
+TG4
+Text GLabel 2240 3505 2    79   Input ~ 0
+D14
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5EF45581
+P 1300 3205
+AR Path="/5EBFD180/5EF45581" Ref="#PWR?"  Part="1" 
+AR Path="/5EF10D95/5EF45581" Ref="#PWR069"  Part="1" 
+F 0 "#PWR069" H 1300 3055 50  0001 C CNN
+F 1 "+3.3V" H 1315 3378 50  0000 C CNN
+F 2 "" H 1300 3205 50  0001 C CNN
+F 3 "" H 1300 3205 50  0001 C CNN
+	1    1300 3205
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:40106 U?
+U 2 1 5EF4558B
+P 1625 2250
+AR Path="/5EBFD180/5EF4558B" Ref="U?"  Part="2" 
+AR Path="/5EF10D95/5EF4558B" Ref="U12"  Part="2" 
+F 0 "U12" H 1625 2567 50  0000 C CNN
+F 1 "40106" H 1625 2476 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1625 2250 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1625 2250 50  0001 C CNN
+	2    1625 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:40106 U?
+U 4 1 5EF45592
+P 1625 3505
+AR Path="/5EBFD180/5EF45592" Ref="U?"  Part="4" 
+AR Path="/5EF10D95/5EF45592" Ref="U12"  Part="4" 
+F 0 "U12" H 1625 3822 50  0000 C CNN
+F 1 "40106" H 1625 3731 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1625 3505 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1625 3505 50  0001 C CNN
+	4    1625 3505
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:40106 U?
+U 3 1 5EF45599
+P 1600 2875
+AR Path="/5EBFD180/5EF45599" Ref="U?"  Part="3" 
+AR Path="/5EF10D95/5EF45599" Ref="U12"  Part="3" 
+F 0 "U12" H 1600 3192 50  0000 C CNN
+F 1 "40106" H 1600 3101 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 1600 2875 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 1600 2875 50  0001 C CNN
+	3    1600 2875
+	1    0    0    -1  
+$EndComp
+Text Notes 1265 990  0    79   ~ 0
+now digital for toggles - tested\n
+$Comp
+L Transistor_BJT:2N3904 Q8
+U 1 1 5EF8FED5
+P 4775 1735
+F 0 "Q8" H 4966 1781 50  0000 L CNN
+F 1 "2N3904" H 4966 1690 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-92_Inline_Wide" H 4975 1660 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 4775 1735 50  0001 L CNN
+	1    4775 1735
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR085
+U 1 1 5EF902DB
+P 4875 1965
+F 0 "#PWR085" H 4875 1715 50  0001 C CNN
+F 1 "GND" H 4880 1792 50  0000 C CNN
+F 2 "" H 4875 1965 50  0001 C CNN
+F 3 "" H 4875 1965 50  0001 C CNN
+	1    4875 1965
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR084
+U 1 1 5EF90316
+P 4875 1260
+F 0 "#PWR084" H 4875 1110 50  0001 C CNN
+F 1 "+9V" H 4890 1433 50  0000 C CNN
+F 2 "" H 4875 1260 50  0001 C CNN
+F 3 "" H 4875 1260 50  0001 C CNN
+	1    4875 1260
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF90381
+P 4875 1395
+AR Path="/5C0A69D0/5EF90381" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF90381" Ref="R?"  Part="1" 
+AR Path="/5EF90381" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF90381" Ref="R68"  Part="1" 
+AR Path="/5EBFD180/5EF90381" Ref="R?"  Part="1" 
+F 0 "R68" H 4934 1441 50  0000 L CNN
+F 1 "10K" H 4934 1350 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4875 1395 50  0001 C CNN
+F 3 "~" H 4875 1395 50  0001 C CNN
+	1    4875 1395
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF9066D
+P 4430 1735
+AR Path="/5C0A69D0/5EF9066D" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF9066D" Ref="R?"  Part="1" 
+AR Path="/5EF9066D" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF9066D" Ref="R60"  Part="1" 
+AR Path="/5EBFD180/5EF9066D" Ref="R?"  Part="1" 
+F 0 "R60" H 4489 1781 50  0000 L CNN
+F 1 "10K" H 4489 1690 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4430 1735 50  0001 C CNN
+F 3 "~" H 4430 1735 50  0001 C CNN
+	1    4430 1735
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4875 1495 4875 1515
+Wire Wire Line
+	4875 1260 4875 1295
+Wire Wire Line
+	4530 1735 4575 1735
+Wire Wire Line
+	4330 1735 4270 1735
+Text GLabel 4270 1735 0    50   Input ~ 0
+TGG1
+Wire Wire Line
+	4875 1935 4875 1965
+$Comp
+L Transistor_BJT:2N3904 Q7
+U 1 1 5EF98CBA
+P 4735 3310
+F 0 "Q7" H 4926 3356 50  0000 L CNN
+F 1 "2N3904" H 4926 3265 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-92_Inline_Wide" H 4935 3235 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 4735 3310 50  0001 L CNN
+	1    4735 3310
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR083
+U 1 1 5EF98CC1
+P 4835 3540
+F 0 "#PWR083" H 4835 3290 50  0001 C CNN
+F 1 "GND" H 4840 3367 50  0000 C CNN
+F 2 "" H 4835 3540 50  0001 C CNN
+F 3 "" H 4835 3540 50  0001 C CNN
+	1    4835 3540
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR082
+U 1 1 5EF98CC7
+P 4835 2835
+F 0 "#PWR082" H 4835 2685 50  0001 C CNN
+F 1 "+9V" H 4850 3008 50  0000 C CNN
+F 2 "" H 4835 2835 50  0001 C CNN
+F 3 "" H 4835 2835 50  0001 C CNN
+	1    4835 2835
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF98CCD
+P 4835 2970
+AR Path="/5C0A69D0/5EF98CCD" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF98CCD" Ref="R?"  Part="1" 
+AR Path="/5EF98CCD" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF98CCD" Ref="R67"  Part="1" 
+AR Path="/5EBFD180/5EF98CCD" Ref="R?"  Part="1" 
+F 0 "R67" H 4894 3016 50  0000 L CNN
+F 1 "10K" H 4894 2925 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4835 2970 50  0001 C CNN
+F 3 "~" H 4835 2970 50  0001 C CNN
+	1    4835 2970
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EF98CD4
+P 4390 3310
+AR Path="/5C0A69D0/5EF98CD4" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EF98CD4" Ref="R?"  Part="1" 
+AR Path="/5EF98CD4" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EF98CD4" Ref="R59"  Part="1" 
+AR Path="/5EBFD180/5EF98CD4" Ref="R?"  Part="1" 
+F 0 "R59" H 4449 3356 50  0000 L CNN
+F 1 "10K" H 4449 3265 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4390 3310 50  0001 C CNN
+F 3 "~" H 4390 3310 50  0001 C CNN
+	1    4390 3310
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4835 3070 4835 3095
+Wire Wire Line
+	4835 2835 4835 2870
+Wire Wire Line
+	4490 3310 4535 3310
+Wire Wire Line
+	4290 3310 4230 3310
+Text GLabel 4230 3310 0    50   Input ~ 0
+TGG2
+Wire Wire Line
+	4835 3510 4835 3540
+Wire Wire Line
+	4875 1515 5380 1515
+Wire Wire Line
+	5380 1515 5380 1665
+Connection ~ 4875 1515
+Wire Wire Line
+	4875 1515 4875 1535
+Wire Wire Line
+	4835 3095 5255 3095
+Wire Wire Line
+	5255 3095 5255 3220
+Connection ~ 4835 3095
+Wire Wire Line
+	4835 3095 4835 3110
+$Comp
+L Transistor_BJT:2N3904 Q6
+U 1 1 5EFADFC7
+P 4720 4775
+F 0 "Q6" H 4911 4821 50  0000 L CNN
+F 1 "2N3904" H 4911 4730 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-92_Inline_Wide" H 4920 4700 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 4720 4775 50  0001 L CNN
+	1    4720 4775
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR077
+U 1 1 5EFADFCE
+P 4820 5005
+F 0 "#PWR077" H 4820 4755 50  0001 C CNN
+F 1 "GND" H 4825 4832 50  0000 C CNN
+F 2 "" H 4820 5005 50  0001 C CNN
+F 3 "" H 4820 5005 50  0001 C CNN
+	1    4820 5005
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR076
+U 1 1 5EFADFD4
+P 4820 4300
+F 0 "#PWR076" H 4820 4150 50  0001 C CNN
+F 1 "+9V" H 4835 4473 50  0000 C CNN
+F 2 "" H 4820 4300 50  0001 C CNN
+F 3 "" H 4820 4300 50  0001 C CNN
+	1    4820 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EFADFDA
+P 4820 4435
+AR Path="/5C0A69D0/5EFADFDA" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EFADFDA" Ref="R?"  Part="1" 
+AR Path="/5EFADFDA" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EFADFDA" Ref="R66"  Part="1" 
+AR Path="/5EBFD180/5EFADFDA" Ref="R?"  Part="1" 
+F 0 "R66" H 4879 4481 50  0000 L CNN
+F 1 "10K" H 4879 4390 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4820 4435 50  0001 C CNN
+F 3 "~" H 4820 4435 50  0001 C CNN
+	1    4820 4435
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EFADFE1
+P 4375 4775
+AR Path="/5C0A69D0/5EFADFE1" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EFADFE1" Ref="R?"  Part="1" 
+AR Path="/5EFADFE1" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EFADFE1" Ref="R58"  Part="1" 
+AR Path="/5EBFD180/5EFADFE1" Ref="R?"  Part="1" 
+F 0 "R58" H 4434 4821 50  0000 L CNN
+F 1 "10K" H 4434 4730 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4375 4775 50  0001 C CNN
+F 3 "~" H 4375 4775 50  0001 C CNN
+	1    4375 4775
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4820 4535 4820 4550
+Wire Wire Line
+	4820 4300 4820 4335
+Wire Wire Line
+	4475 4775 4520 4775
+Wire Wire Line
+	4275 4775 4215 4775
+Text GLabel 4215 4775 0    50   Input ~ 0
+TGG3
+Wire Wire Line
+	4820 4975 4820 5005
+Wire Wire Line
+	4820 4550 5215 4550
+Wire Wire Line
+	5215 4550 5215 4750
+Connection ~ 4820 4550
+Wire Wire Line
+	4820 4550 4820 4575
+$Comp
+L Transistor_BJT:2N3904 Q5
+U 1 1 5EFB1345
+P 4705 6140
+F 0 "Q5" H 4896 6186 50  0000 L CNN
+F 1 "2N3904" H 4896 6095 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-92_Inline_Wide" H 4905 6065 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 4705 6140 50  0001 L CNN
+	1    4705 6140
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR075
+U 1 1 5EFB134C
+P 4805 6370
+F 0 "#PWR075" H 4805 6120 50  0001 C CNN
+F 1 "GND" H 4810 6197 50  0000 C CNN
+F 2 "" H 4805 6370 50  0001 C CNN
+F 3 "" H 4805 6370 50  0001 C CNN
+	1    4805 6370
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR074
+U 1 1 5EFB1352
+P 4805 5665
+F 0 "#PWR074" H 4805 5515 50  0001 C CNN
+F 1 "+9V" H 4820 5838 50  0000 C CNN
+F 2 "" H 4805 5665 50  0001 C CNN
+F 3 "" H 4805 5665 50  0001 C CNN
+	1    4805 5665
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EFB1358
+P 4805 5800
+AR Path="/5C0A69D0/5EFB1358" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EFB1358" Ref="R?"  Part="1" 
+AR Path="/5EFB1358" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EFB1358" Ref="R65"  Part="1" 
+AR Path="/5EBFD180/5EFB1358" Ref="R?"  Part="1" 
+F 0 "R65" H 4864 5846 50  0000 L CNN
+F 1 "10K" H 4864 5755 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4805 5800 50  0001 C CNN
+F 3 "~" H 4805 5800 50  0001 C CNN
+	1    4805 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5EFB135F
+P 4360 6140
+AR Path="/5C0A69D0/5EFB135F" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/5EFB135F" Ref="R?"  Part="1" 
+AR Path="/5EFB135F" Ref="R?"  Part="1" 
+AR Path="/5EF10D95/5EFB135F" Ref="R57"  Part="1" 
+AR Path="/5EBFD180/5EFB135F" Ref="R?"  Part="1" 
+F 0 "R57" H 4419 6186 50  0000 L CNN
+F 1 "10K" H 4419 6095 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4360 6140 50  0001 C CNN
+F 3 "~" H 4360 6140 50  0001 C CNN
+	1    4360 6140
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4805 5900 4805 5925
+Wire Wire Line
+	4805 5665 4805 5700
+Wire Wire Line
+	4460 6140 4505 6140
+Wire Wire Line
+	4260 6140 4200 6140
+Text GLabel 4200 6140 0    50   Input ~ 0
+TGG4
+Wire Wire Line
+	4805 6340 4805 6370
+Wire Wire Line
+	4805 5925 5270 5925
+Wire Wire Line
+	5270 5925 5270 6195
+Connection ~ 4805 5925
+Wire Wire Line
+	4805 5925 4805 5940
+$Comp
+L 4xxx:40106 U12
+U 7 1 5EFD4662
+P 6795 1235
+F 0 "U12" H 7025 1281 50  0000 L CNN
+F 1 "40106" H 7025 1190 50  0000 L CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 6795 1235 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 6795 1235 50  0001 C CNN
+	7    6795 1235
+	1    0    0    -1  
+$EndComp
+Text Notes 4950 935  0    79   ~ 0
+test!
+$Comp
+L Connector_Generic:Conn_01x04 J10
+U 1 1 5EF3A980
+P 1245 4175
+F 0 "J10" H 1325 4167 50  0000 L CNN
+F 1 "Conn_01x04" H 1325 4076 50  0000 L CNN
+F 2 "" H 1245 4175 50  0001 C CNN
+F 3 "~" H 1245 4175 50  0001 C CNN
+	1    1245 4175
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x04 J11
+U 1 1 5EF3AA7A
+P 2420 4160
+F 0 "J11" H 2500 4152 50  0000 L CNN
+F 1 "Conn_01x04" H 2500 4061 50  0000 L CNN
+F 2 "" H 2420 4160 50  0001 C CNN
+F 3 "~" H 2420 4160 50  0001 C CNN
+	1    2420 4160
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x04 J12
+U 1 1 5EF3AB20
+P 6585 2755
+F 0 "J12" H 6665 2747 50  0000 L CNN
+F 1 "Conn_01x04" H 6665 2656 50  0000 L CNN
+F 2 "" H 6585 2755 50  0001 C CNN
+F 3 "~" H 6585 2755 50  0001 C CNN
+	1    6585 2755
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x04 J13
+U 1 1 5EF3AC50
+P 6600 3315
+F 0 "J13" H 6680 3307 50  0000 L CNN
+F 1 "Conn_01x04" H 6680 3216 50  0000 L CNN
+F 2 "" H 6600 3315 50  0001 C CNN
+F 3 "~" H 6600 3315 50  0001 C CNN
+	1    6600 3315
+	1    0    0    -1  
+$EndComp
+Text GLabel 1005 4075 0    39   Input ~ 0
+TG1
+Text GLabel 1005 4175 0    39   Input ~ 0
+TG2
+Text GLabel 1005 4275 0    39   Input ~ 0
+TG3
+Wire Wire Line
+	1005 4075 1045 4075
+Wire Wire Line
+	1005 4175 1045 4175
+Wire Wire Line
+	1005 4275 1045 4275
+Text GLabel 1005 4375 0    39   Input ~ 0
+TG4
+Wire Wire Line
+	1005 4375 1045 4375
+Text GLabel 6345 2655 0    39   Input ~ 0
+TGG1
+Text GLabel 6345 2755 0    39   Input ~ 0
+TGG2
+Text GLabel 6345 2855 0    39   Input ~ 0
+TGG3
+Wire Wire Line
+	6345 2655 6385 2655
+Wire Wire Line
+	6345 2755 6385 2755
+Wire Wire Line
+	6345 2855 6385 2855
+Text GLabel 6345 2955 0    39   Input ~ 0
+TGG4
+Wire Wire Line
+	6345 2955 6385 2955
+Text GLabel 2125 4060 0    39   Input ~ 0
+D11
+Wire Wire Line
+	2125 4060 2220 4060
+Text GLabel 2125 4160 0    39   Input ~ 0
+D12
+Wire Wire Line
+	2125 4160 2220 4160
+Text GLabel 2125 4260 0    39   Input ~ 0
+D13
+Text GLabel 2125 4360 0    39   Input ~ 0
+D14
+Wire Wire Line
+	2125 4360 2220 4360
+Wire Wire Line
+	2125 4260 2220 4260
+Wire Wire Line
+	6400 3215 6290 3215
+Text GLabel 6290 3215 0    50   Input ~ 0
+OUTT1
+Text GLabel 6300 3315 0    50   Input ~ 0
+OUTT2
+Wire Wire Line
+	6300 3315 6400 3315
+Wire Wire Line
+	6400 3415 6290 3415
+Text GLabel 6290 3415 0    50   Input ~ 0
+OUTT3
+Text GLabel 6300 3515 0    50   Input ~ 0
+OUTT4
+Wire Wire Line
+	6300 3515 6400 3515
+Text Notes 4635 2315 0    50   ~ 0
+from 13700
+Text Notes 5315 200  0    79   ~ 0
+add bypass caps by hand
+$Comp
+L Connector_Generic:Conn_01x04 J14
+U 1 1 5F37C317
+P 7790 3315
+F 0 "J14" H 7870 3307 50  0000 L CNN
+F 1 "Conn_01x04" H 7870 3216 50  0000 L CNN
+F 2 "" H 7790 3315 50  0001 C CNN
+F 3 "~" H 7790 3315 50  0001 C CNN
+	1    7790 3315
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7590 3215 7480 3215
+Text GLabel 7480 3215 0    50   Input ~ 0
+OUTT1
+Text GLabel 7490 3315 0    50   Input ~ 0
+OUTT2
+Wire Wire Line
+	7490 3315 7590 3315
+Wire Wire Line
+	7590 3415 7480 3415
+Text GLabel 7480 3415 0    50   Input ~ 0
+OUTT3
+Text GLabel 7490 3515 0    50   Input ~ 0
+OUTT4
+Wire Wire Line
+	7490 3515 7590 3515
+Text Notes 6395 3745 0    79   ~ 0
+For panel and circuits
 $EndSCHEMATC
