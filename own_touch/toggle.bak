@@ -906,47 +906,47 @@ F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 6795 1235 50  0001
 	1    0    0    -1  
 $EndComp
 Text Notes 4950 935  0    79   ~ 0
-test!
+tested!
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J10
 U 1 1 5EF3A980
 P 1245 4175
-F 0 "J?" H 1325 4167 50  0000 L CNN
+F 0 "J10" H 1325 4167 50  0000 L CNN
 F 1 "Conn_01x04" H 1325 4076 50  0000 L CNN
-F 2 "" H 1245 4175 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 1245 4175 50  0001 C CNN
 F 3 "~" H 1245 4175 50  0001 C CNN
 	1    1245 4175
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J11
 U 1 1 5EF3AA7A
 P 2420 4160
-F 0 "J?" H 2500 4152 50  0000 L CNN
+F 0 "J11" H 2500 4152 50  0000 L CNN
 F 1 "Conn_01x04" H 2500 4061 50  0000 L CNN
-F 2 "" H 2420 4160 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 2420 4160 50  0001 C CNN
 F 3 "~" H 2420 4160 50  0001 C CNN
 	1    2420 4160
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J12
 U 1 1 5EF3AB20
 P 6585 2755
-F 0 "J?" H 6665 2747 50  0000 L CNN
+F 0 "J12" H 6665 2747 50  0000 L CNN
 F 1 "Conn_01x04" H 6665 2656 50  0000 L CNN
-F 2 "" H 6585 2755 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 6585 2755 50  0001 C CNN
 F 3 "~" H 6585 2755 50  0001 C CNN
 	1    6585 2755
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J13
 U 1 1 5EF3AC50
 P 6600 3315
-F 0 "J?" H 6680 3307 50  0000 L CNN
+F 0 "J13" H 6680 3307 50  0000 L CNN
 F 1 "Conn_01x04" H 6680 3216 50  0000 L CNN
-F 2 "" H 6600 3315 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 6600 3315 50  0001 C CNN
 F 3 "~" H 6600 3315 50  0001 C CNN
 	1    6600 3315
 	1    0    0    -1  
@@ -1020,12 +1020,12 @@ from 13700
 Text Notes 5315 200  0    79   ~ 0
 add bypass caps by hand
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J14
 U 1 1 5F37C317
 P 7790 3315
-F 0 "J?" H 7870 3307 50  0000 L CNN
+F 0 "J14" H 7870 3307 50  0000 L CNN
 F 1 "Conn_01x04" H 7870 3216 50  0000 L CNN
-F 2 "" H 7790 3315 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 7790 3315 50  0001 C CNN
 F 3 "~" H 7790 3315 50  0001 C CNN
 	1    7790 3315
 	1    0    0    -1  

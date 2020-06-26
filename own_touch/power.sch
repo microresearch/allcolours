@@ -164,17 +164,6 @@ Wire Wire Line
 Text Notes 1390 2250 0    79   ~ 0
 3.3v power for STM!
 $Comp
-L power:+9V #PWR0101
-U 1 1 5F714501
-P 1635 2590
-F 0 "#PWR0101" H 1635 2440 50  0001 C CNN
-F 1 "+9V" H 1650 2763 50  0000 C CNN
-F 2 "" H 1635 2590 50  0001 C CNN
-F 3 "" H 1635 2590 50  0001 C CNN
-	1    1635 2590
-	1    0    0    -1  
-$EndComp
-$Comp
 L Regulator_Linear:LM1117-3.3 U16
 U 1 1 5F7145BF
 P 2040 2590
@@ -235,11 +224,6 @@ Wire Wire Line
 	2380 2590 2435 2590
 Connection ~ 2380 2590
 Wire Wire Line
-	1630 2590 1635 2590
-Connection ~ 1635 2590
-Wire Wire Line
-	1635 2590 1685 2590
-Wire Wire Line
 	1685 2590 1740 2590
 Connection ~ 1685 2590
 Wire Wire Line
@@ -283,7 +267,7 @@ U 1 1 5EF34CB4
 P 3280 2610
 F 0 "J1" H 3360 2602 50  0000 L CNN
 F 1 "Conn_01x04" H 3360 2511 50  0000 L CNN
-F 2 "" H 3280 2610 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 3280 2610 50  0001 C CNN
 F 3 "~" H 3280 2610 50  0001 C CNN
 	1    3280 2610
 	1    0    0    -1  
@@ -318,4 +302,17 @@ Wire Wire Line
 	3080 2810 3025 2810
 Wire Wire Line
 	3040 2510 3080 2510
+Wire Wire Line
+	1630 2590 1685 2590
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR0101
+U 1 1 5EFC40D4
+P 1630 2590
+F 0 "#PWR0101" H 1630 2440 50  0001 C CNN
+F 1 "+12V" H 1630 2715 50  0000 C CNN
+F 2 "" H 1630 2590 50  0000 C CNN
+F 3 "" H 1630 2590 50  0000 C CNN
+	1    1630 2590
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

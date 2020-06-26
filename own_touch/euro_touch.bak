@@ -90,11 +90,11 @@ Text GLabel 845  2140 0    50   Input ~ 0
 SEL2
 Text GLabel 840  2240 0    50   Input ~ 0
 SEL3
-Text GLabel 905  1040 0    50   Input ~ 0
+Text GLabel 910  1240 0    50   Input ~ 0
 DAC1
 Text GLabel 910  1140 0    50   Input ~ 0
 DAC2
-Text GLabel 910  1240 0    50   Input ~ 0
+Text GLabel 905  1040 0    50   Input ~ 0
 DAC3
 Text GLabel 905  1340 0    50   Input ~ 0
 DAC4
@@ -2913,67 +2913,67 @@ Wire Wire Line
 Wire Wire Line
 	8155 5390 8705 5390
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J3
 U 1 1 5EFE2A6D
 P 3185 7255
-F 0 "J?" H 3265 7247 50  0000 L CNN
+F 0 "J3" H 3265 7247 50  0000 L CNN
 F 1 "Conn_01x04" H 3265 7156 50  0000 L CNN
-F 2 "" H 3185 7255 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 3185 7255 50  0001 C CNN
 F 3 "~" H 3185 7255 50  0001 C CNN
 	1    3185 7255
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J9
 U 1 1 5F0451B1
 P 9620 5965
-F 0 "J?" H 9700 5957 50  0000 L CNN
+F 0 "J9" H 9700 5957 50  0000 L CNN
 F 1 "Conn_01x04" H 9700 5866 50  0000 L CNN
-F 2 "" H 9620 5965 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 9620 5965 50  0001 C CNN
 F 3 "~" H 9620 5965 50  0001 C CNN
 	1    9620 5965
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x05 J?
+L Connector_Generic:Conn_01x05 J5
 U 1 1 5F05E126
 P 4480 6440
-F 0 "J?" H 4560 6482 50  0000 L CNN
+F 0 "J5" H 4560 6482 50  0000 L CNN
 F 1 "Conn_01x05" H 4560 6391 50  0000 L CNN
-F 2 "" H 4480 6440 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm" H 4480 6440 50  0001 C CNN
 F 3 "~" H 4480 6440 50  0001 C CNN
 	1    4480 6440
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x05 J?
+L Connector_Generic:Conn_01x05 J6
 U 1 1 5F05E39E
 P 6310 6385
-F 0 "J?" H 6390 6427 50  0000 L CNN
+F 0 "J6" H 6390 6427 50  0000 L CNN
 F 1 "Conn_01x05" H 6390 6336 50  0000 L CNN
-F 2 "" H 6310 6385 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm" H 6310 6385 50  0001 C CNN
 F 3 "~" H 6310 6385 50  0001 C CNN
 	1    6310 6385
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x05 J?
+L Connector_Generic:Conn_01x05 J4
 U 1 1 5F05E502
 P 4460 7155
-F 0 "J?" H 4540 7197 50  0000 L CNN
+F 0 "J4" H 4540 7197 50  0000 L CNN
 F 1 "Conn_01x05" H 4540 7106 50  0000 L CNN
-F 2 "" H 4460 7155 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm" H 4460 7155 50  0001 C CNN
 F 3 "~" H 4460 7155 50  0001 C CNN
 	1    4460 7155
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_01x05 J?
+L Connector_Generic:Conn_01x05 J7
 U 1 1 5F05E68A
 P 6310 7095
-F 0 "J?" H 6390 7137 50  0000 L CNN
+F 0 "J7" H 6390 7137 50  0000 L CNN
 F 1 "Conn_01x05" H 6390 7046 50  0000 L CNN
-F 2 "" H 6310 7095 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm" H 6310 7095 50  0001 C CNN
 F 3 "~" H 6310 7095 50  0001 C CNN
 	1    6310 7095
 	1    0    0    -1  
@@ -3091,12 +3091,12 @@ Wire Wire Line
 Wire Wire Line
 	4165 7355 4260 7355
 $Comp
-L Connector_Generic:Conn_01x05 J?
+L Connector_Generic:Conn_01x05 J2
 U 1 1 5F24F491
 P 2540 2275
-F 0 "J?" H 2620 2317 50  0000 L CNN
+F 0 "J2" H 2620 2317 50  0000 L CNN
 F 1 "Conn_01x05" H 2620 2226 50  0000 L CNN
-F 2 "" H 2540 2275 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm" H 2540 2275 50  0001 C CNN
 F 3 "~" H 2540 2275 50  0001 C CNN
 	1    2540 2275
 	1    0    0    -1  
@@ -3122,12 +3122,12 @@ DAC
 Wire Wire Line
 	2245 2475 2340 2475
 $Comp
-L Connector_Generic:Conn_01x04 J?
+L Connector_Generic:Conn_01x04 J8
 U 1 1 5F3597E6
 P 8710 5955
-F 0 "J?" H 8790 5947 50  0000 L CNN
+F 0 "J8" H 8790 5947 50  0000 L CNN
 F 1 "Conn_01x04" H 8790 5856 50  0000 L CNN
-F 2 "" H 8710 5955 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 8710 5955 50  0001 C CNN
 F 3 "~" H 8710 5955 50  0001 C CNN
 	1    8710 5955
 	1    0    0    -1  
@@ -3150,4 +3150,6 @@ Text GLabel 8415 6155 0    50   Input ~ 0
 IN4
 Text Notes 8285 6330 0    79   ~ 0
 for panel and for circuit
+Text Notes -265 840  0    50   ~ 0
+swapped DAC1 and DAC3 for layout
 $EndSCHEMATC
