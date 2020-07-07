@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 3
+Sheet 1 4
 Title ""
 Date ""
 Rev ""
@@ -2420,4 +2420,16 @@ Wire Wire Line
 	9250 2575 9850 2575
 Text Label 9850 2575 0    50   ~ 0
 voltage_in
+$Sheet
+S 8125 4025 1575 250 
+U 5E9336F6
+F0 "IO" 118
+F1 "inout.sch" 118
+$EndSheet
+$Sheet
+S 8125 4600 1875 375 
+U 5E933887
+F0 "micro" 118
+F1 "micro.sch" 118
+$EndSheet
 $EndSCHEMATC

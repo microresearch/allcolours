@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 7
+Sheet 1 8
 Title ""
 Date ""
 Rev ""
@@ -47,11 +47,17 @@ F0 "mixetc" 79
 F1 "mixetc.sch" 79
 $EndSheet
 $Sheet
-S 2820 1385 1710 330 
+S 2710 1320 1710 330 
 U 5EED4BC5
 F0 "IOjacks" 79
 F1 "IOjacks.sch" 79
 $EndSheet
 Text Notes 790  4980 0    79   ~ 0
 For euro thinking now of 4x4 grid of connections with global freeze, rec and play.\n\nNotes: that frozen levels are saved to a stack and can be popped off the stack, various over-rides...
+$Sheet
+S 2805 2890 1780 470 
+U 5F0CAD2E
+F0 "freeze" 79
+F1 "freeze.sch" 79
+$EndSheet
 $EndSCHEMATC
