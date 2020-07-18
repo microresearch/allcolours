@@ -1334,7 +1334,7 @@ $Comp
 L Device:R_Small R59
 U 1 1 5EB5A9BF
 P 4085 4815
-F 0 "R59" V 4060 4840 50  0000 C CNN
+F 0 "R59" V 3998 4822 50  0000 C CNN
 F 1 "12K" V 4185 4740 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 4085 4815 50  0001 C CNN
 F 3 "~" H 4085 4815 50  0001 C CNN
@@ -2497,4 +2497,18 @@ Wire Wire Line
 Connection ~ 4745 4540
 Wire Wire Line
 	4745 4540 4785 4540
+Text Notes 9120 2064 0    50   ~ 0
+not working on proto - soldering?
+Text Notes 1486 220  0    118  ~ 0
+TODO: reverse pots and add lower resistor so 13700 does not shut off - simulate
+Text Notes 8988 6050 0    79   ~ 0
+damping
+Text Notes 5742 7094 0    79   ~ 0
+feedback
+Text Notes 2264 3950 0    79   ~ 0
+1st\n
+Text Notes 2406 6200 0    79   ~ 0
+2nd
+Text Notes 4798 3934 0    79   ~ 0
+3rd - to check!
 $EndSCHEMATC

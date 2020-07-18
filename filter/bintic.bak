@@ -1104,7 +1104,7 @@ F 1 "Q_PNP_BEC" H 2316 4905 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:SOT-23" H 2325 5050 50  0001 C CNN
 F 3 "~" H 2125 4950 50  0001 C CNN
 	1    2125 4950
-	1    0    0    -1  
+	1    0    0    1   
 $EndComp
 $Comp
 L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
@@ -1355,32 +1355,8 @@ Wire Wire Line
 	3450 6225 3450 6325
 Wire Wire Line
 	3050 6525 3050 6575
-$Comp
-L Device:R_Small R19
-U 1 1 5EBCDF0E
-P 3450 6675
-F 0 "R19" V 3254 6675 50  0000 C CNN
-F 1 "1K" V 3345 6675 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 3450 6675 50  0001 C CNN
-F 3 "~" H 3450 6675 50  0001 C CNN
-	1    3450 6675
-	-1   0    0    1   
-$EndComp
-$Comp
-L power:GND #PWR052
-U 1 1 5EBCDFAC
-P 3450 6825
-F 0 "#PWR052" H 3450 6575 50  0001 C CNN
-F 1 "GND" H 3455 6652 50  0000 C CNN
-F 2 "" H 3450 6825 50  0001 C CNN
-F 3 "" H 3450 6825 50  0001 C CNN
-	1    3450 6825
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	3450 6525 3450 6550
-Wire Wire Line
-	3450 6775 3450 6825
 $Comp
 L power:+12V #PWR048
 U 1 1 5EBE2DF2
@@ -1405,9 +1381,6 @@ F 3 "~" V 3800 6550 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3450 6550 3700 6550
-Connection ~ 3450 6550
-Wire Wire Line
-	3450 6550 3450 6575
 Wire Wire Line
 	3900 6550 4000 6550
 $Comp
@@ -2344,4 +2317,8 @@ Wire Wire Line
 	10525 2275 10525 2300
 Wire Wire Line
 	9450 715  9450 750 
+Text Notes 3288 6738 0    50   ~ 0
+removed 1k\n to gnd
+Text Notes 1254 1896 0    50   ~ 0
+lower in res?
 $EndSCHEMATC
