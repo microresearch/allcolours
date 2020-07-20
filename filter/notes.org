@@ -1,0 +1,11 @@
+* TOAD filter
+
+- swop round potsDONE
+- need amp after each LM13700 stage apart from feedback on
+- adding resistor to keep 13700 open (except in damping which can go to zero)
+
+- resistors in feedback might change
+
+design and prototype - note from 2k=1.6v (1k into op amp as lower of divider) to 100k = 50mV
+
+- simulated as working for control/LM13700 to TEST!

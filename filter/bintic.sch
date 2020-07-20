@@ -330,17 +330,6 @@ F 3 "~" H 9575 2125 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:R_Small R2
-U 1 1 5BC9CB30
-P 1700 1375
-F 0 "R2" H 1641 1329 50  0000 R CNN
-F 1 "10K" H 1641 1420 50  0000 R CNN
-F 2 "Resistors_SMD:R_0805" H 1700 1375 50  0001 C CNN
-F 3 "~" H 1700 1375 50  0001 C CNN
-	1    1700 1375
-	-1   0    0    1   
-$EndComp
-$Comp
 L power:-12V #PWR035
 U 1 1 5BC9CFCE
 P 9450 1675
@@ -940,8 +929,6 @@ Wire Wire Line
 Connection ~ 9150 1950
 Wire Wire Line
 	1700 1750 1725 1750
-Wire Wire Line
-	1700 1475 1700 1550
 Wire Wire Line
 	3300 2475 3300 2675
 Connection ~ 3300 2675
@@ -1748,8 +1735,6 @@ Wire Wire Line
 	1075 1275 1225 1275
 Connection ~ 1225 1275
 Wire Wire Line
-	1225 1275 1700 1275
-Wire Wire Line
 	1450 1750 1450 1600
 Connection ~ 1450 1750
 Wire Wire Line
@@ -2153,7 +2138,7 @@ L Device:R_Small R71
 U 1 1 5EB3E9B4
 P 1225 1425
 F 0 "R71" V 1029 1425 50  0000 C CNN
-F 1 "22K=opt" V 1125 1350 50  0000 C CNN
+F 1 "22K" V 1125 1350 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 1225 1425 50  0001 C CNN
 F 3 "~" H 1225 1425 50  0001 C CNN
 	1    1225 1425
@@ -2321,4 +2306,10 @@ Text Notes 3288 6738 0    50   ~ 0
 removed 1k\n to gnd
 Text Notes 1254 1896 0    50   ~ 0
 lower in res?
+Wire Wire Line
+	1700 1275 1700 1550
+Wire Wire Line
+	1225 1275 1700 1275
+Text Notes 1150 1200 0    50   ~ 0
+removed 10k in damping
 $EndSCHEMATC

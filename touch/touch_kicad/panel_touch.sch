@@ -15,5 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Notes 940  1240 0    79   ~ 0
-Own touch panel notes:\n- AtoB - connect with fingers (drop other connection), finger voltage(divider) into VCA/or LM13700 floating resistance for AtoB\n- Freeze/unfreeze that voltage/VCA \n
+\n
+Text Notes 1400 4795 0    118  ~ 0
+For panel we have 5 sets of:\n\n       C- feedback out from jack\n       |\nA---VCA---B [B is also mix from B pad]\n       |\n       0-adc voltage for A->B VCA\n       |\n       o-freeze\n       |\n       O-adc voltage for insert\n       |\n       o-freeze\n\n\n\n\nPlus rec,play, push and pop!\n\nTouch pads are A, B, C(out) 2x voltage sun/mooncrescent for VCA and for voltage insert, and two freezes.
 $EndSCHEMATC

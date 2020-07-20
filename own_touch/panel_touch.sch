@@ -17,7 +17,7 @@ $EndDescr
 Text Notes 940  1240 0    79   ~ 0
 Own touch panel notes:\n- AtoB - connect with fingers (drop other connection), finger voltage(divider) into VCA/or LM13700 floating resistance for AtoB\n- Freeze/unfreeze that voltage/VCA \n
 Text Notes 1770 3005 0    79   ~ 0
-    C- feedback out conn    x4 aLLL\n    o-lock\nA-----B\n    0-adc\n    |\n    o-freeze\n    |\n    O-DAC\n    |\n    o-freeze\n\n\n
+    C- feedback out conn    x4 aLLL\n    o-lock\nA-----B\n    0-adc\n    |\n    o-freeze\n    |\n    O-adc\n    |\n    o-freeze\n\n\n
 Text Notes 7055 1900 0    79   ~ 0
 touch panel also has outs but we don't need them here\nADC also goes straight there with dividers on panel\n
 Text Notes 3255 715  0    79   ~ 0

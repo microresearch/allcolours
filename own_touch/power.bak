@@ -17,7 +17,7 @@ $EndDescr
 Text Notes 1950 1060 0    60   ~ 0
 euro_conn
 $Comp
-L allcolours_analogue-rescue:CONN_02X05-allcolours-rescue P1
+L touch-rescue:CONN_02X05-allcolours-rescue-allcolours_analogue-rescue P1
 U 1 1 5C3AA485
 P 2150 1410
 F 0 "P1" H 2150 1710 50  0000 C CNN
@@ -28,7 +28,7 @@ F 3 "" H 2150 210 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR02
+L touch-rescue:+12V-power-allcolours_analogue-rescue #PWR02
 U 1 1 5C3AA48C
 P 1395 1100
 F 0 "#PWR02" H 1395 950 50  0001 C CNN
@@ -39,7 +39,7 @@ F 3 "" H 1395 1100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR03
+L touch-rescue:GND-power-allcolours_analogue-rescue #PWR03
 U 1 1 5C3AA492
 P 2600 1410
 F 0 "#PWR03" H 2600 1160 50  0001 C CNN
@@ -74,7 +74,7 @@ $EndComp
 Wire Wire Line
 	2400 1410 2600 1410
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C1
+L touch-rescue:CP1_Small-device-allcolours_analogue-rescue C1
 U 1 1 5C3AA4AB
 P 1325 1285
 F 0 "C1" H 1335 1355 50  0000 L CNN
@@ -85,7 +85,7 @@ F 3 "" H 1325 1285 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C2
+L touch-rescue:CP1_Small-device-allcolours_analogue-rescue C2
 U 1 1 5C3AA4B4
 P 1775 1635
 F 0 "C2" H 1785 1705 50  0000 L CNN
@@ -175,7 +175,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/lm1117.pdf" H 2040 2590 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR0102
+L touch-rescue:GND-power-allcolours_analogue-rescue #PWR0102
 U 1 1 5F714687
 P 2040 2950
 F 0 "#PWR0102" H 2040 2700 50  0001 C CNN
@@ -186,7 +186,7 @@ F 3 "" H 2040 2950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C30
+L touch-rescue:CP1_Small-device-allcolours_analogue-rescue C30
 U 1 1 5F71469E
 P 1685 2690
 F 0 "C30" H 1695 2760 50  0000 L CNN
@@ -197,7 +197,7 @@ F 3 "" H 1685 2690 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C31
+L touch-rescue:CP1_Small-device-allcolours_analogue-rescue C31
 U 1 1 5F714819
 P 2380 2690
 F 0 "C31" H 2390 2760 50  0000 L CNN
@@ -251,7 +251,7 @@ F 3 "" H 3040 2510 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR032
+L touch-rescue:GND-power-allcolours_analogue-rescue #PWR032
 U 1 1 5EF34B64
 P 2825 2610
 F 0 "#PWR032" H 2825 2360 50  0001 C CNN
@@ -273,7 +273,7 @@ F 3 "~" H 3280 2610 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR042
+L touch-rescue:GND-power-allcolours_analogue-rescue #PWR042
 U 1 1 5EF34DEF
 P 3025 2810
 F 0 "#PWR042" H 3025 2560 50  0001 C CNN
@@ -305,7 +305,7 @@ Wire Wire Line
 Wire Wire Line
 	1630 2590 1685 2590
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0101
+L touch-rescue:+12V-power-allcolours_analogue-rescue #PWR0101
 U 1 1 5EFC40D4
 P 1630 2590
 F 0 "#PWR0101" H 1630 2440 50  0001 C CNN
