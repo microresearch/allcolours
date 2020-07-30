@@ -13,6 +13,8 @@
 #include "adc.h"
 /*
 
+New note - now we will use onboard DAC as we only use 12x ADC
+
 Testing on STM32F446 NUCLEO
 
 For new touch module/own touch things: 
