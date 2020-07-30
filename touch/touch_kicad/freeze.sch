@@ -633,29 +633,29 @@ $EndComp
 $Comp
 L 4xxx:40106 U14
 U 5 1 5F118B21
-P 4065 4960
-F 0 "U14" H 4065 5277 50  0000 C CNN
-F 1 "40106" H 4065 5186 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 4065 4960 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4065 4960 50  0001 C CNN
-	5    4065 4960
+P 4545 4930
+F 0 "U14" H 4545 5247 50  0000 C CNN
+F 1 "40106" H 4545 5156 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 4545 4930 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4545 4930 50  0001 C CNN
+	5    4545 4930
 	1    0    0    -1  
 $EndComp
 $Comp
 L 4xxx:40106 U13
 U 5 1 5F118B28
-P 2395 4980
-F 0 "U13" H 2395 5297 50  0000 C CNN
-F 1 "40106" H 2395 5206 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 2395 4980 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2395 4980 50  0001 C CNN
-	5    2395 4980
+P 2260 4935
+F 0 "U13" H 2260 5252 50  0000 C CNN
+F 1 "40106" H 2260 5161 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_LongPads" H 2260 4935 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2260 4935 50  0001 C CNN
+	5    2260 4935
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5F118B2F
-P 2070 4830
+P 1935 4785
 AR Path="/5C0A69D0/5F118B2F" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F118B2F" Ref="R?"  Part="1" 
 AR Path="/5F118B2F" Ref="R?"  Part="1" 
@@ -663,23 +663,23 @@ AR Path="/5EF10D95/5F118B2F" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F118B2F" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F118B2F" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118B2F" Ref="R33"  Part="1" 
-F 0 "R33" H 2129 4876 50  0000 L CNN
-F 1 "1M" H 2129 4785 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2070 4830 50  0001 C CNN
-F 3 "~" H 2070 4830 50  0001 C CNN
-	1    2070 4830
+F 0 "R33" H 1994 4831 50  0000 L CNN
+F 1 "1M" H 1994 4740 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 1935 4785 50  0001 C CNN
+F 3 "~" H 1935 4785 50  0001 C CNN
+	1    1935 4785
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2070 4680 2070 4730
+	1935 4635 1935 4685
 Wire Wire Line
-	2070 4930 2070 4980
+	1935 4885 1935 4935
 Wire Wire Line
-	2070 4980 2095 4980
+	1935 4935 1960 4935
 $Comp
 L Device:R_Small R?
 U 1 1 5F118B39
-P 2870 4980
+P 2735 4935
 AR Path="/5C0A69D0/5F118B39" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F118B39" Ref="R?"  Part="1" 
 AR Path="/5F118B39" Ref="R?"  Part="1" 
@@ -687,39 +687,39 @@ AR Path="/5EF10D95/5F118B39" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F118B39" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F118B39" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118B39" Ref="R39"  Part="1" 
-F 0 "R39" H 2929 5026 50  0000 L CNN
-F 1 "1K" H 2929 4935 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2870 4980 50  0001 C CNN
-F 3 "~" H 2870 4980 50  0001 C CNN
-	1    2870 4980
+F 0 "R39" H 2794 4981 50  0000 L CNN
+F 1 "1K" H 2794 4890 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2735 4935 50  0001 C CNN
+F 3 "~" H 2735 4935 50  0001 C CNN
+	1    2735 4935
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2770 4980 2695 4980
+	2635 4935 2560 4935
 Wire Wire Line
-	2970 4980 3010 4980
+	2835 4935 2875 4935
 Wire Wire Line
-	2070 4980 1970 4980
-Connection ~ 2070 4980
-Text GLabel 1970 4980 0    79   Input ~ 0
-R1
-Text GLabel 3010 4980 2    79   Input ~ 0
+	1935 4935 1835 4935
+Connection ~ 1935 4935
+Text GLabel 1835 4935 0    79   Input ~ 0
+Frec
+Text GLabel 2875 4935 2    79   Input ~ 0
 rec
 $Comp
 L power:+3.3V #PWR075
 U 1 1 5F118B46
-P 2070 4680
-F 0 "#PWR075" H 2070 4530 50  0001 C CNN
-F 1 "+3.3V" H 2085 4853 50  0000 C CNN
-F 2 "" H 2070 4680 50  0001 C CNN
-F 3 "" H 2070 4680 50  0001 C CNN
-	1    2070 4680
+P 1935 4635
+F 0 "#PWR075" H 1935 4485 50  0001 C CNN
+F 1 "+3.3V" H 1950 4808 50  0000 C CNN
+F 2 "" H 1935 4635 50  0001 C CNN
+F 3 "" H 1935 4635 50  0001 C CNN
+	1    1935 4635
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5F118B4C
-P 3740 4810
+P 4220 4780
 AR Path="/5C0A69D0/5F118B4C" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F118B4C" Ref="R?"  Part="1" 
 AR Path="/5F118B4C" Ref="R?"  Part="1" 
@@ -727,23 +727,23 @@ AR Path="/5EF10D95/5F118B4C" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F118B4C" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F118B4C" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118B4C" Ref="R45"  Part="1" 
-F 0 "R45" H 3799 4856 50  0000 L CNN
-F 1 "1M" H 3799 4765 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 3740 4810 50  0001 C CNN
-F 3 "~" H 3740 4810 50  0001 C CNN
-	1    3740 4810
+F 0 "R45" H 4279 4826 50  0000 L CNN
+F 1 "1M" H 4279 4735 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4220 4780 50  0001 C CNN
+F 3 "~" H 4220 4780 50  0001 C CNN
+	1    4220 4780
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3740 4660 3740 4710
+	4220 4630 4220 4680
 Wire Wire Line
-	3740 4910 3740 4960
+	4220 4880 4220 4930
 Wire Wire Line
-	3740 4960 3765 4960
+	4220 4930 4245 4930
 $Comp
 L Device:R_Small R?
 U 1 1 5F118B56
-P 4540 4960
+P 5020 4930
 AR Path="/5C0A69D0/5F118B56" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F118B56" Ref="R?"  Part="1" 
 AR Path="/5F118B56" Ref="R?"  Part="1" 
@@ -751,33 +751,33 @@ AR Path="/5EF10D95/5F118B56" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F118B56" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F118B56" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118B56" Ref="R51"  Part="1" 
-F 0 "R51" H 4599 5006 50  0000 L CNN
-F 1 "1K" H 4599 4915 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4540 4960 50  0001 C CNN
-F 3 "~" H 4540 4960 50  0001 C CNN
-	1    4540 4960
+F 0 "R51" H 5079 4976 50  0000 L CNN
+F 1 "1K" H 5079 4885 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 5020 4930 50  0001 C CNN
+F 3 "~" H 5020 4930 50  0001 C CNN
+	1    5020 4930
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	4440 4960 4365 4960
+	4920 4930 4845 4930
 Wire Wire Line
-	4640 4960 4680 4960
+	5120 4930 5160 4930
 Wire Wire Line
-	3740 4960 3640 4960
-Connection ~ 3740 4960
-Text GLabel 3640 4960 0    79   Input ~ 0
-R2
-Text GLabel 4680 4960 2    79   Input ~ 0
+	4220 4930 4120 4930
+Connection ~ 4220 4930
+Text GLabel 4120 4930 0    79   Input ~ 0
+Fplay
+Text GLabel 5160 4930 2    79   Input ~ 0
 play
 $Comp
 L power:+3.3V #PWR081
 U 1 1 5F118B63
-P 3740 4660
-F 0 "#PWR081" H 3740 4510 50  0001 C CNN
-F 1 "+3.3V" H 3755 4833 50  0000 C CNN
-F 2 "" H 3740 4660 50  0001 C CNN
-F 3 "" H 3740 4660 50  0001 C CNN
-	1    3740 4660
+P 4220 4630
+F 0 "#PWR081" H 4220 4480 50  0001 C CNN
+F 1 "+3.3V" H 4235 4803 50  0000 C CNN
+F 2 "" H 4220 4630 50  0001 C CNN
+F 3 "" H 4220 4630 50  0001 C CNN
+	1    4220 4630
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1203,7 +1203,7 @@ $EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5F2C3CA6
-P 2075 5610
+P 2240 5590
 AR Path="/5C0A69D0/5F2C3CA6" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F2C3CA6" Ref="R?"  Part="1" 
 AR Path="/5F2C3CA6" Ref="R?"  Part="1" 
@@ -1211,23 +1211,23 @@ AR Path="/5EF10D95/5F2C3CA6" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F2C3CA6" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F2C3CA6" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F2C3CA6" Ref="R34"  Part="1" 
-F 0 "R34" H 2134 5656 50  0000 L CNN
-F 1 "1M" H 2134 5565 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2075 5610 50  0001 C CNN
-F 3 "~" H 2075 5610 50  0001 C CNN
-	1    2075 5610
+F 0 "R34" H 2299 5636 50  0000 L CNN
+F 1 "1M" H 2299 5545 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2240 5590 50  0001 C CNN
+F 3 "~" H 2240 5590 50  0001 C CNN
+	1    2240 5590
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2075 5460 2075 5510
+	2240 5440 2240 5490
 Wire Wire Line
-	2075 5710 2075 5760
+	2240 5690 2240 5740
 Wire Wire Line
-	2075 5760 2100 5760
+	2240 5740 2265 5740
 $Comp
 L Device:R_Small R?
 U 1 1 5F2C3CB0
-P 2875 5760
+P 3040 5740
 AR Path="/5C0A69D0/5F2C3CB0" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F2C3CB0" Ref="R?"  Part="1" 
 AR Path="/5F2C3CB0" Ref="R?"  Part="1" 
@@ -1235,39 +1235,39 @@ AR Path="/5EF10D95/5F2C3CB0" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F2C3CB0" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F2C3CB0" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F2C3CB0" Ref="R40"  Part="1" 
-F 0 "R40" H 2934 5806 50  0000 L CNN
-F 1 "1K" H 2934 5715 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 2875 5760 50  0001 C CNN
-F 3 "~" H 2875 5760 50  0001 C CNN
-	1    2875 5760
+F 0 "R40" H 3099 5786 50  0000 L CNN
+F 1 "1K" H 3099 5695 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 3040 5740 50  0001 C CNN
+F 3 "~" H 3040 5740 50  0001 C CNN
+	1    3040 5740
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2775 5760 2705 5760
+	2940 5740 2870 5740
 Wire Wire Line
-	2975 5760 3015 5760
+	3140 5740 3180 5740
 Wire Wire Line
-	2075 5760 1975 5760
-Connection ~ 2075 5760
-Text GLabel 1975 5760 0    79   Input ~ 0
-R1
-Text GLabel 3015 5760 2    79   Input ~ 0
+	2240 5740 2140 5740
+Connection ~ 2240 5740
+Text GLabel 2140 5740 0    79   Input ~ 0
+Fpush
+Text GLabel 3180 5740 2    79   Input ~ 0
 push
 $Comp
 L power:+3.3V #PWR076
 U 1 1 5F2C3CBD
-P 2075 5460
-F 0 "#PWR076" H 2075 5310 50  0001 C CNN
-F 1 "+3.3V" H 2090 5633 50  0000 C CNN
-F 2 "" H 2075 5460 50  0001 C CNN
-F 3 "" H 2075 5460 50  0001 C CNN
-	1    2075 5460
+P 2240 5440
+F 0 "#PWR076" H 2240 5290 50  0001 C CNN
+F 1 "+3.3V" H 2255 5613 50  0000 C CNN
+F 2 "" H 2240 5440 50  0001 C CNN
+F 3 "" H 2240 5440 50  0001 C CNN
+	1    2240 5440
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5F2C3CC3
-P 3745 5590
+P 4225 5560
 AR Path="/5C0A69D0/5F2C3CC3" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F2C3CC3" Ref="R?"  Part="1" 
 AR Path="/5F2C3CC3" Ref="R?"  Part="1" 
@@ -1275,23 +1275,23 @@ AR Path="/5EF10D95/5F2C3CC3" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F2C3CC3" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F2C3CC3" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F2C3CC3" Ref="R46"  Part="1" 
-F 0 "R46" H 3804 5636 50  0000 L CNN
-F 1 "1M" H 3804 5545 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 3745 5590 50  0001 C CNN
-F 3 "~" H 3745 5590 50  0001 C CNN
-	1    3745 5590
+F 0 "R46" H 4284 5606 50  0000 L CNN
+F 1 "1M" H 4284 5515 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4225 5560 50  0001 C CNN
+F 3 "~" H 4225 5560 50  0001 C CNN
+	1    4225 5560
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3745 5440 3745 5490
+	4225 5410 4225 5460
 Wire Wire Line
-	3745 5690 3745 5740
+	4225 5660 4225 5710
 Wire Wire Line
-	3745 5740 3770 5740
+	4225 5710 4250 5710
 $Comp
 L Device:R_Small R?
 U 1 1 5F2C3CCD
-P 4545 5740
+P 5025 5710
 AR Path="/5C0A69D0/5F2C3CCD" Ref="R?"  Part="1" 
 AR Path="/5E97CA7E/5F2C3CCD" Ref="R?"  Part="1" 
 AR Path="/5F2C3CCD" Ref="R?"  Part="1" 
@@ -1299,58 +1299,58 @@ AR Path="/5EF10D95/5F2C3CCD" Ref="R?"  Part="1"
 AR Path="/5EBFD180/5F2C3CCD" Ref="R?"  Part="1" 
 AR Path="/5F0C4BC3/5F2C3CCD" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F2C3CCD" Ref="R52"  Part="1" 
-F 0 "R52" H 4604 5786 50  0000 L CNN
-F 1 "1K" H 4604 5695 50  0000 L CNN
-F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 4545 5740 50  0001 C CNN
-F 3 "~" H 4545 5740 50  0001 C CNN
-	1    4545 5740
+F 0 "R52" H 5084 5756 50  0000 L CNN
+F 1 "1K" H 5084 5665 50  0000 L CNN
+F 2 "Resistors_ThroughHole:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 5025 5710 50  0001 C CNN
+F 3 "~" H 5025 5710 50  0001 C CNN
+	1    5025 5710
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	4445 5740 4370 5740
+	4925 5710 4850 5710
 Wire Wire Line
-	4645 5740 4685 5740
+	5125 5710 5165 5710
 Wire Wire Line
-	3745 5740 3645 5740
-Connection ~ 3745 5740
-Text GLabel 3645 5740 0    79   Input ~ 0
-R2
-Text GLabel 4685 5740 2    79   Input ~ 0
+	4225 5710 4125 5710
+Connection ~ 4225 5710
+Text GLabel 4125 5710 0    79   Input ~ 0
+Fpop
+Text GLabel 5165 5710 2    79   Input ~ 0
 pop
 $Comp
 L power:+3.3V #PWR082
 U 1 1 5F2C3CDA
-P 3745 5440
-F 0 "#PWR082" H 3745 5290 50  0001 C CNN
-F 1 "+3.3V" H 3760 5613 50  0000 C CNN
-F 2 "" H 3745 5440 50  0001 C CNN
-F 3 "" H 3745 5440 50  0001 C CNN
-	1    3745 5440
+P 4225 5410
+F 0 "#PWR082" H 4225 5260 50  0001 C CNN
+F 1 "+3.3V" H 4240 5583 50  0000 C CNN
+F 2 "" H 4225 5410 50  0001 C CNN
+F 3 "" H 4225 5410 50  0001 C CNN
+	1    4225 5410
 	1    0    0    -1  
 $EndComp
 $Comp
 L 4xxx:40106 U13
 U 6 1 5F2C8FE2
-P 2405 5760
-F 0 "U13" H 2405 6077 50  0000 C CNN
-F 1 "40106" H 2405 5986 50  0000 C CNN
-F 2 "" H 2405 5760 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2405 5760 50  0001 C CNN
-	6    2405 5760
+P 2570 5740
+F 0 "U13" H 2570 6057 50  0000 C CNN
+F 1 "40106" H 2570 5966 50  0000 C CNN
+F 2 "" H 2570 5740 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2570 5740 50  0001 C CNN
+	6    2570 5740
 	1    0    0    -1  
 $EndComp
-Connection ~ 2705 5760
+Connection ~ 2870 5740
 Wire Wire Line
-	2705 5760 2700 5760
+	2870 5740 2865 5740
 $Comp
 L 4xxx:40106 U14
 U 6 1 5F2C927C
-P 4070 5740
-F 0 "U14" H 4070 6057 50  0000 C CNN
-F 1 "40106" H 4070 5966 50  0000 C CNN
-F 2 "" H 4070 5740 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4070 5740 50  0001 C CNN
-	6    4070 5740
+P 4550 5710
+F 0 "U14" H 4550 6027 50  0000 C CNN
+F 1 "40106" H 4550 5936 50  0000 C CNN
+F 2 "" H 4550 5710 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4550 5710 50  0001 C CNN
+	6    4550 5710
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

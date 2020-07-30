@@ -677,8 +677,6 @@ F 3 "" H 5705 3145 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5705 3145 5745 3145
-Wire Wire Line
 	5730 3345 5730 3645
 Wire Wire Line
 	5730 3645 5940 3645
@@ -701,7 +699,7 @@ Wire Wire Line
 Wire Wire Line
 	6690 3045 6690 2965
 Text Label 6690 2965 0    79   ~ 0
-c3
+c5
 Wire Wire Line
 	6370 3950 6690 3950
 Connection ~ 6370 3950
@@ -780,11 +778,11 @@ Connection ~ 7855 3270
 Wire Wire Line
 	7855 3470 7855 3500
 Text GLabel 7590 3270 0    50   Input ~ 0
-IN3
+IN5
 Wire Wire Line
 	8720 3470 8720 3525
 Text Label 8720 3525 0    50   ~ 0
-c3
+c5
 Wire Wire Line
 	8070 3470 8120 3470
 $Comp
@@ -834,11 +832,9 @@ Connection ~ 9355 3725
 Wire Wire Line
 	9355 3725 9355 3860
 Text GLabel 9355 3270 2    50   Input ~ 0
-OUT3TOMIX
+OUT5TOMIX
 Wire Wire Line
 	7590 3270 7625 3270
-Text Label 5480 3345 2    79   ~ 0
-o3
 $Comp
 L Device:Q_PNP_BEC Q?
 U 1 1 5F4BED7B
@@ -920,8 +916,6 @@ F 3 "" H 5675 4450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5675 4450 5700 4450
-Wire Wire Line
 	5700 4650 5700 4950
 Wire Wire Line
 	5700 4950 5910 4950
@@ -944,7 +938,7 @@ Wire Wire Line
 Wire Wire Line
 	6660 4350 6660 4270
 Text Label 6660 4270 0    79   ~ 0
-c4
+c6
 Wire Wire Line
 	6340 5255 6660 5255
 Connection ~ 6340 5255
@@ -1023,11 +1017,11 @@ Connection ~ 7825 4575
 Wire Wire Line
 	7825 4775 7825 4805
 Text GLabel 7560 4575 0    50   Input ~ 0
-IN4
+IN6
 Wire Wire Line
 	8690 4775 8690 4830
 Text Label 8690 4830 0    50   ~ 0
-c4
+c6
 Wire Wire Line
 	8040 4775 8090 4775
 $Comp
@@ -1077,11 +1071,9 @@ Connection ~ 9325 5030
 Wire Wire Line
 	9325 5030 9325 5165
 Text GLabel 9325 4575 2    50   Input ~ 0
-OUT4TOMIX
+OUT6TOMIX
 Wire Wire Line
 	7560 4575 7595 4575
-Text Label 5450 4650 2    79   ~ 0
-o4
 Wire Wire Line
 	8720 3370 8745 3370
 Wire Wire Line
@@ -1121,8 +1113,6 @@ Wire Wire Line
 Wire Wire Line
 	6350 3245 6390 3245
 Wire Wire Line
-	5710 3345 5745 3345
-Wire Wire Line
 	5680 4650 5700 4650
 Wire Wire Line
 	6320 4550 6340 4550
@@ -1137,12 +1127,6 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6100 3445 50  0001 C CNN
 	1    6050 3245
 	1    0    0    -1  
 $EndComp
-Connection ~ 5745 3345
-Wire Wire Line
-	5745 3345 5750 3345
-Connection ~ 5745 3145
-Wire Wire Line
-	5745 3145 5750 3145
 $Comp
 L Amplifier_Operational:TL074 U18
 U 2 1 5F4C2EEE
@@ -1154,13 +1138,207 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6070 4750 50  0001 C CNN
 	2    6020 4550
 	1    0    0    -1  
 $EndComp
-Connection ~ 5700 4450
-Wire Wire Line
-	5700 4450 5720 4450
 Connection ~ 5700 4650
 Wire Wire Line
 	5700 4650 5720 4650
 Connection ~ 6340 4550
 Wire Wire Line
 	6340 4550 6360 4550
+Wire Wire Line
+	5705 3145 5750 3145
+Wire Wire Line
+	5675 4450 5720 4450
+Wire Wire Line
+	5710 3345 5750 3345
+$Comp
+L Amplifier_Operational:TL074 U?
+U 5 1 5F3087EB
+P 4510 4125
+AR Path="/5EBFD180/5F3087EB" Ref="U?"  Part="5" 
+AR Path="/5F419513/5F3087EB" Ref="U16"  Part="5" 
+F 0 "U16" H 4468 4171 50  0000 L CNN
+F 1 "TL074" H 4468 4080 50  0000 L CNN
+F 2 "" H 4460 4225 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 4560 4325 50  0001 C CNN
+	5    4510 4125
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F3087F2
+P 4410 3785
+AR Path="/5EBFD180/5F3087F2" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F3087F2" Ref="#PWR0111"  Part="1" 
+F 0 "#PWR0111" H 4410 3635 50  0001 C CNN
+F 1 "+12V" H 4425 3958 50  0000 C CNN
+F 2 "" H 4410 3785 50  0001 C CNN
+F 3 "" H 4410 3785 50  0001 C CNN
+	1    4410 3785
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5F3087F8
+P 4410 4475
+AR Path="/5EBFD180/5F3087F8" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F3087F8" Ref="#PWR0112"  Part="1" 
+F 0 "#PWR0112" H 4410 4575 50  0001 C CNN
+F 1 "-12V" H 4425 4648 50  0000 C CNN
+F 2 "" H 4410 4475 50  0001 C CNN
+F 3 "" H 4410 4475 50  0001 C CNN
+	1    4410 4475
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4410 4425 4410 4475
+Wire Wire Line
+	4410 3785 4410 3825
+$Comp
+L Amplifier_Operational:TL074 U?
+U 5 1 5F308800
+P 4830 4100
+AR Path="/5EBFD180/5F308800" Ref="U?"  Part="5" 
+AR Path="/5F419513/5F308800" Ref="U18"  Part="5" 
+F 0 "U18" H 4788 4146 50  0000 L CNN
+F 1 "TL074" H 4788 4055 50  0000 L CNN
+F 2 "" H 4780 4200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 4880 4300 50  0001 C CNN
+	5    4830 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F308807
+P 4730 3760
+AR Path="/5EBFD180/5F308807" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F308807" Ref="#PWR0113"  Part="1" 
+F 0 "#PWR0113" H 4730 3610 50  0001 C CNN
+F 1 "+12V" H 4745 3933 50  0000 C CNN
+F 2 "" H 4730 3760 50  0001 C CNN
+F 3 "" H 4730 3760 50  0001 C CNN
+	1    4730 3760
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5F30880D
+P 4730 4450
+AR Path="/5EBFD180/5F30880D" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F30880D" Ref="#PWR0114"  Part="1" 
+F 0 "#PWR0114" H 4730 4550 50  0001 C CNN
+F 1 "-12V" H 4745 4623 50  0000 C CNN
+F 2 "" H 4730 4450 50  0001 C CNN
+F 3 "" H 4730 4450 50  0001 C CNN
+	1    4730 4450
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4730 4400 4730 4450
+Wire Wire Line
+	4730 3760 4730 3800
+$Comp
+L Amplifier_Operational:LM13700 U?
+U 5 1 5F39185D
+P 4975 2330
+AR Path="/5EBFD180/5F39185D" Ref="U?"  Part="5" 
+AR Path="/5F419513/5F39185D" Ref="U19"  Part="5" 
+F 0 "U19" H 4933 2376 50  0000 L CNN
+F 1 "LM13700" H 4933 2285 50  0000 L CNN
+F 2 "" H 4675 2355 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 4675 2355 50  0001 C CNN
+	5    4975 2330
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5F391864
+P 4875 2675
+AR Path="/5EBFD180/5F391864" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F391864" Ref="#PWR0117"  Part="1" 
+F 0 "#PWR0117" H 4875 2775 50  0001 C CNN
+F 1 "-12V" H 4890 2848 50  0000 C CNN
+F 2 "" H 4875 2675 50  0001 C CNN
+F 3 "" H 4875 2675 50  0001 C CNN
+	1    4875 2675
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F39186A
+P 4875 1995
+AR Path="/5EBFD180/5F39186A" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F39186A" Ref="#PWR0118"  Part="1" 
+F 0 "#PWR0118" H 4875 1845 50  0001 C CNN
+F 1 "+12V" H 4890 2168 50  0000 C CNN
+F 2 "" H 4875 1995 50  0001 C CNN
+F 3 "" H 4875 1995 50  0001 C CNN
+	1    4875 1995
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4875 1995 4875 2030
+Wire Wire Line
+	4875 2630 4875 2675
+Text Notes 4075 1575 0    79   ~ 16
++decouple caps
+$Comp
+L Amplifier_Operational:LM13700 U?
+U 2 1 5F391873
+P 3800 2485
+AR Path="/5EBFD180/5F391873" Ref="U?"  Part="2" 
+AR Path="/5F419513/5F391873" Ref="U19"  Part="2" 
+F 0 "U19" H 3700 2833 50  0000 C CNN
+F 1 "LM13700" H 3700 2742 50  0000 C CNN
+F 2 "" H 3500 2510 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 3500 2510 50  0001 C CNN
+	2    3800 2485
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:LM13700 U?
+U 4 1 5F39187A
+P 4555 2495
+AR Path="/5EBFD180/5F39187A" Ref="U?"  Part="4" 
+AR Path="/5F419513/5F39187A" Ref="U19"  Part="4" 
+F 0 "U19" H 4455 2843 50  0000 C CNN
+F 1 "LM13700" H 4455 2752 50  0000 C CNN
+F 2 "" H 4255 2520 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 4255 2520 50  0001 C CNN
+	4    4555 2495
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F391881
+P 3500 2520
+AR Path="/5EBFD180/5F391881" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F391881" Ref="#PWR0119"  Part="1" 
+F 0 "#PWR0119" H 3500 2270 50  0001 C CNN
+F 1 "GND" H 3505 2347 50  0000 C CNN
+F 2 "" H 3500 2520 50  0001 C CNN
+F 3 "" H 3500 2520 50  0001 C CNN
+	1    3500 2520
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F391887
+P 4255 2535
+AR Path="/5EBFD180/5F391887" Ref="#PWR?"  Part="1" 
+AR Path="/5F419513/5F391887" Ref="#PWR0120"  Part="1" 
+F 0 "#PWR0120" H 4255 2285 50  0001 C CNN
+F 1 "GND" H 4260 2362 50  0000 C CNN
+F 2 "" H 4255 2535 50  0001 C CNN
+F 3 "" H 4255 2535 50  0001 C CNN
+	1    4255 2535
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4255 2495 4255 2535
+Wire Wire Line
+	3500 2485 3500 2520
+Text GLabel 5480 3345 0    50   Input ~ 0
+o5
+Text GLabel 5450 4650 0    50   Input ~ 0
+o5
 $EndSCHEMATC

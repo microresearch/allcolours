@@ -14,7 +14,7 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Notes 1925 900  0    60   ~ 0
+Text Notes 1830 920  0    60   ~ 0
 euro_conn
 Wire Wire Line
 	1800 1175 1800 1225
@@ -42,10 +42,8 @@ F 1 "D" H 1365 1500 50  0000 C CNN
 F 2 "Diodes_ThroughHole:D_DO-35_SOD27_P10.16mm_Horizontal" H 1365 1625 50  0001 C CNN
 F 3 "~" H 1365 1625 50  0001 C CNN
 	1    1365 1625
-	1    0    0    -1  
+	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	1215 1625 1215 1660
 $Comp
 L Connector_Generic:Conn_02x05_Odd_Even J1
 U 1 1 5C3B711B
@@ -88,7 +86,7 @@ F 1 "D" H 1445 1300 50  0000 C CNN
 F 2 "Diodes_THT:D_DO-35_SOD27_P10.16mm_Horizontal" H 1445 1175 50  0001 C CNN
 F 3 "~" H 1445 1175 50  0001 C CNN
 	1    1445 1175
-	-1   0    0    1   
+	1    0    0    -1  
 $EndComp
 $Comp
 L Device:CP_Small C2
@@ -320,9 +318,6 @@ Wire Wire Line
 	1515 1625 1760 1625
 Connection ~ 1295 1175
 Wire Wire Line
-	1215 1600 1215 1625
-Connection ~ 1215 1625
-Wire Wire Line
 	1215 1400 1275 1400
 Wire Wire Line
 	1275 1400 1275 1410
@@ -433,4 +428,9 @@ $EndComp
 Connection ~ 4545 2145
 Wire Wire Line
 	4545 2145 4605 2145
+Wire Wire Line
+	1215 1600 1215 1625
+Connection ~ 1215 1625
+Wire Wire Line
+	1215 1625 1215 1660
 $EndSCHEMATC

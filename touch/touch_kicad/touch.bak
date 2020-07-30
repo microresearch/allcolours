@@ -23,7 +23,7 @@ F0 "power" 118
 F1 "euro_power.sch" 118
 $EndSheet
 $Sheet
-S 805  3315 1740 410 
+S 745  3560 1740 410 
 U 5EBFD180
 F0 "euro_touch" 118
 F1 "euro_touch.sch" 118
@@ -63,7 +63,7 @@ Text Notes 895  6375 0    118  ~ 0
 Text Notes 6085 4805 0    118  ~ 24
        C- feedback out from jack\n       |\nA---VCA---B [B is also mix from B pad]\n       |\n       0-adc voltage for A->B VCA\n       |\n       o-freeze\n       |\n       O-adc voltage for insert\n       |\n       o-freeze\n\n\n
 $Sheet
-S 2965 3385 1760 480 
+S 2855 3530 1760 480 
 U 5F419513
 F0 "euro_touch2" 79
 F1 "euro_touch2.sch" 79
