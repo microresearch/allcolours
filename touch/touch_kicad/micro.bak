@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 9
+Sheet 5 8
 Title ""
 Date ""
 Rev ""
@@ -15,27 +15,11 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Wire Wire Line
-	3770 4495 3865 4495
-Text Label 3865 4495 0    50   ~ 0
-MOSI
-Wire Wire Line
-	3770 4295 3865 4295
-Text Label 3865 4295 0    50   ~ 0
-SCK
-Wire Wire Line
-	3770 3795 3845 3795
-Text Label 3845 3795 0    50   ~ 0
-CS
-Wire Wire Line
-	2370 5095 2255 5095
-Wire Wire Line
 	2370 5195 2250 5195
 Wire Wire Line
 	2370 5295 2245 5295
 Wire Wire Line
 	2370 5395 2240 5395
-Text GLabel 2255 5095 0    50   Input ~ 0
-EN_LOW2
 Text GLabel 2250 5195 0    50   Input ~ 0
 SEL1
 Text GLabel 2245 5295 0    50   Input ~ 0
@@ -48,7 +32,7 @@ U 1 1 5F0570D5
 P 3070 3795
 F 0 "U11" H 3055 3635 50  0000 C CNN
 F 1 "STM32F446RETx" H 3025 2770 50  0000 C CNN
-F 2 "Package_QFP:LQFP-64_10x10mm_P0.5mm" H 2470 2095 50  0001 R CNN
+F 2 "Housings_QFP:LQFP-64_10x10mm_Pitch0.5mm" H 2470 2095 50  0001 R CNN
 F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00141306.pdf" H 3070 3795 50  0001 C CNN
 	1    3070 3795
 	1    0    0    -1  
@@ -59,7 +43,7 @@ U 1 1 5F057E89
 P 2330 2795
 F 0 "C32" H 2115 2900 50  0000 L CNN
 F 1 "4.7uF" H 1905 2815 50  0000 L CNN
-F 2 "" H 2330 2795 50  0001 C CNN
+F 2 "Capacitors_Tantalum_SMD:CP_Tantalum_Case-A_EIA-3216-18_Reflow" H 2330 2795 50  0001 C CNN
 F 3 "~" H 2330 2795 50  0001 C CNN
 	1    2330 2795
 	1    0    0    -1  
@@ -90,7 +74,7 @@ Wire Wire Line
 Connection ~ 3170 2095
 Connection ~ 3270 2095
 Text Notes 1135 1150 0    118  ~ 0
-STM32F446 with MCP4921 DAC - prog interface, all ADC ins, \nselx2 and address for 4051, digital freeze ins and others.\n\nNOW with onboard DAC maybe and less ADC and toggles (x12 needed)
+NOW with onboard DAC and less ADC and toggles (x12 needed)
 $Comp
 L power:+3.3VA #PWR065
 U 1 1 5F059A28
@@ -151,7 +135,7 @@ U 1 1 5F05D79A
 P 2150 3440
 F 0 "Y1" V 2260 3405 50  0000 R CNN
 F 1 "8MHz" V 2145 3420 50  0000 R CNN
-F 2 "" H 2150 3440 50  0001 C CNN
+F 2 "Crystals:Crystal_SMD_HC49-SD" H 2150 3440 50  0001 C CNN
 F 3 "~" H 2150 3440 50  0001 C CNN
 	1    2150 3440
 	0    -1   -1   0   
@@ -162,7 +146,7 @@ U 1 1 5F05D93C
 P 1770 3395
 F 0 "C29" H 1862 3441 50  0000 L CNN
 F 1 "18pF" H 1862 3350 50  0000 L CNN
-F 2 "" H 1770 3395 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 1770 3395 50  0001 C CNN
 F 3 "~" H 1770 3395 50  0001 C CNN
 	1    1770 3395
 	1    0    0    -1  
@@ -173,7 +157,7 @@ U 1 1 5F05DA50
 P 1970 3705
 F 0 "C30" H 2062 3751 50  0000 L CNN
 F 1 "18pF" H 2062 3660 50  0000 L CNN
-F 2 "" H 1970 3705 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 1970 3705 50  0001 C CNN
 F 3 "~" H 1970 3705 50  0001 C CNN
 	1    1970 3705
 	1    0    0    -1  
@@ -228,7 +212,7 @@ U 1 1 5F061066
 P 2295 2395
 F 0 "C31" H 2185 2465 50  0000 L CNN
 F 1 "100nF" H 1965 2410 50  0000 L CNN
-F 2 "" H 2295 2395 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2295 2395 50  0001 C CNN
 F 3 "~" H 2295 2395 50  0001 C CNN
 	1    2295 2395
 	1    0    0    -1  
@@ -254,7 +238,7 @@ U 1 1 5F062E38
 P 4210 1990
 F 0 "C34" H 4100 2060 50  0000 L CNN
 F 1 "100nF" H 3880 2005 50  0000 L CNN
-F 2 "" H 4210 1990 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 4210 1990 50  0001 C CNN
 F 3 "~" H 4210 1990 50  0001 C CNN
 	1    4210 1990
 	1    0    0    -1  
@@ -265,7 +249,7 @@ U 1 1 5F062F30
 P 4365 1990
 F 0 "C35" H 4255 2060 50  0000 L CNN
 F 1 "100nF" H 4035 2005 50  0000 L CNN
-F 2 "" H 4365 1990 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 4365 1990 50  0001 C CNN
 F 3 "~" H 4365 1990 50  0001 C CNN
 	1    4365 1990
 	1    0    0    -1  
@@ -276,7 +260,7 @@ U 1 1 5F062FE8
 P 4510 1990
 F 0 "C36" H 4400 2060 50  0000 L CNN
 F 1 "100nF" H 4180 2005 50  0000 L CNN
-F 2 "" H 4510 1990 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 4510 1990 50  0001 C CNN
 F 3 "~" H 4510 1990 50  0001 C CNN
 	1    4510 1990
 	1    0    0    -1  
@@ -287,7 +271,7 @@ U 1 1 5F063158
 P 4655 1990
 F 0 "C37" H 4545 2060 50  0000 L CNN
 F 1 "100nF" H 4325 2005 50  0000 L CNN
-F 2 "" H 4655 1990 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 4655 1990 50  0001 C CNN
 F 3 "~" H 4655 1990 50  0001 C CNN
 	1    4655 1990
 	1    0    0    -1  
@@ -298,7 +282,7 @@ U 1 1 5F0631CA
 P 4805 1990
 F 0 "C38" H 4695 2060 50  0000 L CNN
 F 1 "100nF" H 4475 2005 50  0000 L CNN
-F 2 "" H 4805 1990 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 4805 1990 50  0001 C CNN
 F 3 "~" H 4805 1990 50  0001 C CNN
 	1    4805 1990
 	1    0    0    -1  
@@ -309,7 +293,7 @@ U 1 1 5F0632A4
 P 3685 1765
 F 0 "C33" H 3575 1835 50  0000 L CNN
 F 1 "100nF" H 3355 1780 50  0000 L CNN
-F 2 "" H 3685 1765 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 3685 1765 50  0001 C CNN
 F 3 "~" H 3685 1765 50  0001 C CNN
 	1    3685 1765
 	1    0    0    -1  
@@ -454,14 +438,6 @@ Wire Wire Line
 Text Label 3850 3695 0    50   ~ 0
 SWCLK
 Wire Wire Line
-	2370 3895 2250 3895
-Text Label 2250 3895 2    50   ~ 0
-ADC10
-Text Label 2250 3995 2    50   ~ 0
-ADC11
-Wire Wire Line
-	2250 3995 2370 3995
-Wire Wire Line
 	3770 2295 3895 2295
 Wire Wire Line
 	3770 2395 3895 2395
@@ -469,22 +445,6 @@ Wire Wire Line
 	3770 2495 3895 2495
 Wire Wire Line
 	3770 2595 3895 2595
-Text Label 3895 2295 0    50   ~ 0
-ADC0
-Text Label 3895 2395 0    50   ~ 0
-ADC1
-Text Label 3895 2495 0    50   ~ 0
-ADC2
-Text Label 3895 2595 0    50   ~ 0
-ADC3
-Text Label 2295 4095 2    50   ~ 0
-ADC4
-Text Label 3890 2795 0    50   ~ 0
-ADC5
-Text Label 3890 2895 0    50   ~ 0
-ADC6
-Text Label 3890 2995 0    50   ~ 0
-ADC7
 Wire Wire Line
 	3890 2695 3770 2695
 Wire Wire Line
@@ -493,14 +453,6 @@ Wire Wire Line
 	3890 2895 3770 2895
 Wire Wire Line
 	3890 2995 3770 2995
-Wire Wire Line
-	3770 3995 3845 3995
-Text Label 3845 3995 0    50   ~ 0
-ADC8
-Text Label 3845 4095 0    50   ~ 0
-ADC9
-Wire Wire Line
-	3770 4095 3845 4095
 Text GLabel 2255 4995 0    50   Input ~ 0
 EN_LOW1
 Wire Wire Line
@@ -551,24 +503,28 @@ Text GLabel 3875 5395 2    50   Input ~ 0
 FR7
 Wire Wire Line
 	2370 4295 2255 4295
-Wire Wire Line
-	2370 4395 2255 4395
-Wire Wire Line
-	2370 4495 2255 4495
-Wire Wire Line
-	2370 4595 2255 4595
-Wire Wire Line
-	2370 4695 2255 4695
 Text GLabel 2255 4295 0    50   Input ~ 0
 FR8
-Text GLabel 2255 4395 0    50   Input ~ 0
-FR9
-Text GLabel 2255 4495 0    50   Input ~ 0
-FR10
-Text GLabel 2255 4595 0    50   Input ~ 0
-FR11
-Text GLabel 2255 4695 0    50   Input ~ 0
-FR12
+Text GLabel 3890 2695 2    50   Input ~ 0
+DAC
+Text GLabel 3895 2295 2    50   Input ~ 0
+ADC0
+Text GLabel 3895 2395 2    50   Input ~ 0
+ADC1
+Text GLabel 3895 2495 2    50   Input ~ 0
+ADC2
+Text GLabel 3895 2595 2    50   Input ~ 0
+ADC3
+Text GLabel 3890 2795 2    50   Input ~ 0
+ADC5
+Text GLabel 3890 2895 2    50   Input ~ 0
+ADC6
+Text GLabel 3890 2995 2    50   Input ~ 0
+ADC7
+Text Notes 650  4205 0    50   ~ 0
+adc4 not really so but makes easier\n
+Text GLabel 2250 3895 0    35   Input ~ 0
+ADC4
 Wire Wire Line
-	2295 4095 2370 4095
+	2370 3895 2250 3895
 $EndSCHEMATC
