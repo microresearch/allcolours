@@ -2354,7 +2354,7 @@ U 1 1 5F52EE32
 P 2190 830
 F 0 "U12" H 2190 1197 50  0000 C CNN
 F 1 "TL074" H 2190 1106 50  0000 C CNN
-F 2 "" H 2140 930 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 2140 930 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2240 1030 50  0001 C CNN
 	1    2190 830 
 	1    0    0    -1  
@@ -2392,7 +2392,7 @@ U 5 1 5F582152
 P -890 4260
 F 0 "U12" H -932 4306 50  0000 L CNN
 F 1 "TL074" H -932 4215 50  0000 L CNN
-F 2 "" H -940 4360 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H -940 4360 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H -840 4460 50  0001 C CNN
 	5    -890 4260
 	1    0    0    -1  
@@ -2550,7 +2550,7 @@ U 2 1 5F5CCF1C
 P 2160 2170
 F 0 "U12" H 2160 2537 50  0000 C CNN
 F 1 "TL074" H 2160 2446 50  0000 C CNN
-F 2 "" H 2110 2270 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 2110 2270 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2210 2370 50  0001 C CNN
 	2    2160 2170
 	1    0    0    -1  
@@ -2694,7 +2694,7 @@ U 3 1 5F65BAD5
 P 4585 985
 F 0 "U12" H 4585 1352 50  0000 C CNN
 F 1 "TL074" H 4585 1261 50  0000 C CNN
-F 2 "" H 4535 1085 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 4535 1085 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 4635 1185 50  0001 C CNN
 	3    4585 985 
 	1    0    0    -1  
@@ -2827,7 +2827,7 @@ U 4 1 5F6F481F
 P 4520 2110
 F 0 "U12" H 4520 2477 50  0000 C CNN
 F 1 "TL074" H 4520 2386 50  0000 C CNN
-F 2 "" H 4470 2210 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 4470 2210 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 4570 2310 50  0001 C CNN
 	4    4520 2110
 	1    0    0    -1  

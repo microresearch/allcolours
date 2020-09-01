@@ -2303,7 +2303,7 @@ Wire Wire Line
 Wire Wire Line
 	9450 715  9450 750 
 Text Notes 3288 6738 0    50   ~ 0
-removed 1k\n to gnd
+removed 1k\n to gnd?
 Text Notes 1254 1896 0    50   ~ 0
 lower in res?
 Wire Wire Line
