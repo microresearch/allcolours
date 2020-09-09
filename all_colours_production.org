@@ -1,0 +1,86 @@
+* TODO for production
+
+- finals software: re-acquaint with modes
+- +check proto+ - all checked out fine but decide on filter resistors
+- BOM and quote/production - check on imac which version we have
+
+
+* production notes
+
+board is Board Size (width) 	101.2 mm 	Board Size (height) 	106.2 mm 
+
+ordered new prototype - testing 9/9/2020
+
+all_colours_pcb30062020
+
+match up new bom with allcolours_in_progress.xls
+
+leave off resistors: noise high: R19 noise low: R12
+
+* code/etc check parts
+
+** 5/6/2020
+
+- we changed interpol in mode 32 so is every x bits - do this for all or keep different programs?
+
+(to do this also for unweighted DAC modes 48->58 - test in 48 -> revert back to no timing here as is smoother
+
+- speed control by DAC is now as mode 0 and placed inside speed loop on both sides_ TEST if IN or OUT!?
+- fixed smoothing which was missing mode 0
+
+- program different DACs across DAC modes - so some with different ranges and some with speeds
+
+// so we have on each side: 
+
+0-15 -CV NO DAC
+16-31 -pulse NO DAC
+
+//DACS:
+32-48 -CV and DAC -> interpol options (how many bits to wait if any, all modes now have basic waiting) and different ranges in either case
+
+49-57 -pulse and unweighted DAC - different ranges, 8, 16 or 32 bits, weighted DAC in some cases 
+
+58-63 -pulse and other DACS
+
+
+* latest pcb measurements and notes 9/9/2020
+
+PWMH: 4.4
+PWML: 4.4
+noiseL: 4
+noiseH: 6 
+compLC: 4.6
+compHC: 4.6
+compLA: 4.4
+compHA: 4.4
+filter outH: 7 - *R102 to 6.8k gives us now 5v*
+filter outL: 5 - *R61*  but can go up to 7 too - maybe leave both at 10k or compromise to 8.2k
+
+pulse outH: 5.6
+pulse outL: 5.8
+
+(Adjust noise for 5Vpp -> R19l and R12h)
+
+- all hardware tested and working fine...
+
+* list of previous voltages
+
+1/4/2020
+
+PWMH: 4.4
+PWML: 4.4
+noiseL: 4
+noiseH: 6
+compLC: 4.5
+compHC: 4.5
+compLA: 4.4
+compHA: 4.4
+filter outH: 5v
+filter outL: 5v
+
+
+
+* what should voltages be Vpp
+
+
+
