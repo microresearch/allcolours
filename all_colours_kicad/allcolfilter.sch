@@ -209,7 +209,7 @@ P 6255 4790
 AR Path="/5B705C5C" Ref="R?"  Part="1" 
 AR Path="/5B6C330C/5B705C5C" Ref="R61"  Part="1" 
 F 0 "R61" V 6335 4790 50  0000 C CNN
-F 1 "27K" V 6255 4790 50  0000 C CNN
+F 1 "10K" V 6255 4790 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" V 6185 4790 50  0001 C CNN
 F 3 "" H 6255 4790 50  0000 C CNN
 	1    6255 4790
@@ -1159,8 +1159,6 @@ Text Notes 5305 3605 0    79   ~ 0
 was 10K = 24k too high so reverted\n
 Text Notes 6605 4850 0    118  ~ 0
 was 10K\n
-Text Notes 6345 2495 0    79   ~ 0
-add input diode protection
 Wire Wire Line
 	6500 1595 6590 1595
 $Comp

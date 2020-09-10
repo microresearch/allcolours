@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /root/projects/ERD_MODULES/all_colours/all_colours_kicad/allcolours.sch)
-    (date "Thu 14 May 2020 22:10:43 CEST")
+    (date "Wed 09 Sep 2020 20:50:39 CEST")
     (tool "Eeschema 5.0.2+dfsg1-1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -1181,7 +1181,7 @@
       (sheetpath (names /Sheet5B6C330B/) (tstamps /5B6C330C/))
       (tstamp 5B705C4E))
     (comp (ref R61)
-      (value 27K)
+      (value 10K)
       (footprint Resistors_SMD:R_0805)
       (libsource (lib allcolours-rescue) (part R-device-allcolours-rescue) (description ""))
       (sheetpath (names /Sheet5B6C330B/) (tstamps /5B6C330C/))
