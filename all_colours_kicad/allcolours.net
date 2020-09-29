@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /root/projects/ERD_MODULES/all_colours/all_colours_kicad/allcolours.sch)
-    (date "Wed 09 Sep 2020 20:50:39 CEST")
+    (date "Mon 28 Sep 2020 13:04:35 CEST")
     (tool "Eeschema 5.0.2+dfsg1-1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block

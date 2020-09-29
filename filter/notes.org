@@ -1,7 +1,7 @@
 * TOAD filter
 
 - swop round potsDONE
-- need amp after each LM13700 stage apart from feedback on
+- need amp after each LM13700 stage apart from feedback on ???
 - adding resistor to keep 13700 open (except in damping which can go to zero)
 
 - resistors in feedback might change
