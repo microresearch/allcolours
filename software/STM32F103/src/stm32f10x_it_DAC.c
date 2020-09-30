@@ -1304,7 +1304,7 @@ void TIM2_IRQHandler(void){
 
       case 0: // speed controlled by other SR so we free up PULSE and CV - here CV-> length and pulse/toggles
       //->>>>>>>>>>>>>> CV selects length of SR  -> LFSR here
-	speedhh= shift_registerl&0xfff;
+	speedhh= shift_registerl&0xfff; //4095 or more bits as speed goes as slow as: 131071 so could be 0xffff for 16 bits
 
       SRlengthh=31-(ADCBuffer[2]>>11);
       if (SRlengthh<4) SRlengthh=4;
