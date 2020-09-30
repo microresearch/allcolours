@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 4
+Sheet 1 5
 Title ""
 Date ""
 Rev ""
@@ -20,8 +20,8 @@ $Comp
 L Amplifier_Operational:TL084 U1
 U 1 1 5E7D2009
 P 2600 2075
-F 0 "U1" H 2600 2442 50  0000 C CNN
-F 1 "TL084" H 2600 2351 50  0000 C CNN
+F 0 "U1" H 2570 2080 50  0000 C CNN
+F 1 "TL084" H 2680 2240 50  0000 C CNN
 F 2 "" H 2550 2175 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 2650 2275 50  0001 C CNN
 	1    2600 2075
@@ -31,7 +31,7 @@ $Comp
 L Amplifier_Operational:TL084 U1
 U 2 1 5E7D2251
 P 2600 2500
-F 0 "U1" H 2850 2375 50  0000 C CNN
+F 0 "U1" H 2565 2510 50  0000 C CNN
 F 1 "TL084" H 2725 2675 50  0000 C CNN
 F 2 "" H 2550 2600 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 2650 2700 50  0001 C CNN
@@ -42,8 +42,8 @@ $Comp
 L Amplifier_Operational:TL084 U1
 U 3 1 5E7D2322
 P 2600 2925
-F 0 "U1" H 2600 3292 50  0000 C CNN
-F 1 "TL084" H 2600 3201 50  0000 C CNN
+F 0 "U1" H 2555 2960 50  0000 C CNN
+F 1 "TL084" H 2710 3045 50  0000 C CNN
 F 2 "" H 2550 3025 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 2650 3125 50  0001 C CNN
 	3    2600 2925
@@ -53,7 +53,7 @@ $Comp
 L Amplifier_Operational:TL084 U1
 U 4 1 5E7D23D2
 P 2600 3375
-F 0 "U1" H 2600 3742 50  0000 C CNN
+F 0 "U1" H 2570 3370 50  0000 C CNN
 F 1 "TL084" H 2600 3651 50  0000 C CNN
 F 2 "" H 2550 3475 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 2650 3575 50  0001 C CNN
@@ -75,7 +75,7 @@ $Comp
 L Amplifier_Operational:TL084 U3
 U 1 1 5E7D2927
 P 2600 3850
-F 0 "U3" H 2600 4217 50  0000 C CNN
+F 0 "U3" H 2570 3840 50  0000 C CNN
 F 1 "TL084" H 2600 4126 50  0000 C CNN
 F 2 "" H 2550 3950 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 2650 4050 50  0001 C CNN
@@ -86,7 +86,7 @@ $Comp
 L Amplifier_Operational:TL084 U3
 U 2 1 5E7D292D
 P 2600 4300
-F 0 "U3" H 2900 4475 50  0000 C CNN
+F 0 "U3" H 2585 4315 50  0000 C CNN
 F 1 "TL084" H 2700 4475 50  0000 C CNN
 F 2 "" H 2550 4400 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 2650 4500 50  0001 C CNN
@@ -1594,8 +1594,8 @@ Wire Wire Line
 	6450 2825 6450 3225
 Text Notes 2050 -275 0    118  ~ 0
 For test we add power in 12v, 5v reg, 3.3v with jumper, headers with gnd and I/O, jacks for adc/dac in out.
-Text Notes 3500 1425 0    50   ~ 0
-changed to switched voltage in
+Text Notes 2805 1375 0    79   ~ 0
+changed to switched voltage in - ????
 $Comp
 L Device:R_Small R45
 U 1 1 5E902247
@@ -2394,8 +2394,8 @@ $EndSheet
 $Sheet
 S 8150 3475 1575 275 
 U 5E8972E3
-F0 "pulses_etc" 50
-F1 "pulsesetc.sch" 50
+F0 "pulses_etc" 79
+F1 "pulsesetc.sch" 79
 $EndSheet
 $Comp
 L Connector:Conn_01x03_Male J?

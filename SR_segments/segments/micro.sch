@@ -4,9 +4,9 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
-Title ""
-Date ""
+Sheet 5 5
+Title "SEGMENTS"
+Date "2020-09-30"
 Rev ""
 Comp ""
 Comment1 ""
@@ -14,4 +14,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 2365 1405 0    79   ~ 0
+STM32F401 as in WORM?
 $EndSCHEMATC

@@ -1,0 +1,18 @@
+* notes started 30/9/2020
+
+** schematic 
+
+- 6 bits ADC in (what is switched voltage in?) level pot also for input
+- 6 bits DAC out
+
+- 4 shift registers: noise (top), left and right, overlay (lower) with mode(knob only), speed, length (with cv both), 
+- left and right have clock/pulse and pulse in, 2 outs/divided one
+- noise and overlay have clock in, 2 outs
+
+total pulses: 6 in + ADC, 8 out + DAC
+
+- ADC/noise in mode for noise, DAC/out mode for overlay
+
+or just 2 SR with each own ADC, DAC and overlay...???
+
+- how drop or walk-ins could work with each?

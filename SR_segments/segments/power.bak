@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 4
+Sheet 2 5
 Title ""
 Date ""
 Rev ""
@@ -32,13 +32,6 @@ $EndComp
 Wire Wire Line
 	2300 1425 2345 1425
 Wire Wire Line
-	1675 1375 1675 1425
-Wire Wire Line
-	1675 1425 1750 1425
-Wire Wire Line
-	1580 1425 1675 1425
-Connection ~ 1675 1425
-Wire Wire Line
 	1295 1115 1295 1175
 $Comp
 L Device:D D3
@@ -53,10 +46,6 @@ F 3 "~" H 1365 1625 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1215 1625 1215 1660
-Wire Wire Line
-	1595 1175 1675 1175
-Wire Wire Line
-	1515 1625 1580 1625
 $Comp
 L Connector_Generic:Conn_02x05_Odd_Even J1
 U 1 1 5C3B711B
@@ -104,35 +93,18 @@ $EndComp
 $Comp
 L Device:CP_Small C10
 U 1 1 5C3B7C2F
-P 1675 1275
-F 0 "C10" H 1763 1321 50  0000 L CNN
-F 1 "10uF" H 1425 1250 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 1675 1275 50  0001 C CNN
-F 3 "~" H 1675 1275 50  0001 C CNN
-	1    1675 1275
+P 1295 1305
+F 0 "C10" H 1383 1351 50  0000 L CNN
+F 1 "10uF" H 1045 1280 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 1295 1305 50  0001 C CNN
+F 3 "~" H 1295 1305 50  0001 C CNN
+	1    1295 1305
 	1    0    0    -1  
 $EndComp
-Connection ~ 1675 1175
-$Comp
-L Device:CP_Small C9
-U 1 1 5C3B7CD7
-P 1580 1525
-F 0 "C9" H 1668 1571 50  0000 L CNN
-F 1 "10uF" H 1300 1550 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 1580 1525 50  0001 C CNN
-F 3 "~" H 1580 1525 50  0001 C CNN
-	1    1580 1525
-	1    0    0    -1  
-$EndComp
-Connection ~ 1580 1625
-Wire Wire Line
-	1580 1625 1760 1625
 Wire Wire Line
 	2305 1175 2305 1225
 Wire Wire Line
 	2305 1225 2300 1225
-Wire Wire Line
-	1675 1175 1800 1175
 Connection ~ 1800 1175
 Wire Wire Line
 	1800 1175 2305 1175
@@ -331,4 +303,42 @@ Text GLabel 4500 1200 2    50   Input ~ 0
 3.3volts
 Text GLabel 3175 1200 0    50   Input ~ 0
 5volts
+Wire Wire Line
+	1580 1425 1750 1425
+$Comp
+L Device:CP_Small C9
+U 1 1 5C3B7CD7
+P 1215 1495
+F 0 "C9" H 1303 1541 50  0000 L CNN
+F 1 "10uF" H 935 1520 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D5.0mm_P2.00mm" H 1215 1495 50  0001 C CNN
+F 3 "~" H 1215 1495 50  0001 C CNN
+	1    1215 1495
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1295 1175 1295 1205
+Wire Wire Line
+	1595 1175 1800 1175
+Wire Wire Line
+	1515 1625 1760 1625
+Connection ~ 1295 1175
+Wire Wire Line
+	1295 1405 1340 1405
+Wire Wire Line
+	1580 1405 1580 1425
+Wire Wire Line
+	1255 1395 1255 1445
+Wire Wire Line
+	1255 1445 1340 1445
+Wire Wire Line
+	1340 1445 1340 1405
+Wire Wire Line
+	1215 1395 1255 1395
+Connection ~ 1340 1405
+Wire Wire Line
+	1340 1405 1580 1405
+Wire Wire Line
+	1215 1595 1215 1625
+Connection ~ 1215 1625
 $EndSCHEMATC
