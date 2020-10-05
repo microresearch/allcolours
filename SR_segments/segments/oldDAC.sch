@@ -1,0 +1,574 @@
+EESchema Schematic File Version 4
+LIBS:segments-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BF92
+P 4605 1835
+F 0 "R?" V 4409 1835 50  0000 C CNN
+F 1 "12K" V 4500 1835 50  0000 C CNN
+F 2 "" H 4605 1835 50  0001 C CNN
+F 3 "~" H 4605 1835 50  0001 C CNN
+	1    4605 1835
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BF99
+P 4605 2110
+F 0 "R?" V 4409 2110 50  0000 C CNN
+F 1 "25K" V 4500 2110 50  0000 C CNN
+F 2 "" H 4605 2110 50  0001 C CNN
+F 3 "~" H 4605 2110 50  0001 C CNN
+	1    4605 2110
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BFA0
+P 4605 2385
+F 0 "R?" V 4409 2385 50  0000 C CNN
+F 1 "51K" V 4500 2385 50  0000 C CNN
+F 2 "" H 4605 2385 50  0001 C CNN
+F 3 "~" H 4605 2385 50  0001 C CNN
+	1    4605 2385
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BFA7
+P 4605 2685
+F 0 "R?" V 4409 2685 50  0000 C CNN
+F 1 "100K" V 4500 2685 50  0000 C CNN
+F 2 "" H 4605 2685 50  0001 C CNN
+F 3 "~" H 4605 2685 50  0001 C CNN
+	1    4605 2685
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BFAE
+P 4605 2985
+F 0 "R?" V 4409 2985 50  0000 C CNN
+F 1 "200K" V 4500 2985 50  0000 C CNN
+F 2 "" H 4605 2985 50  0001 C CNN
+F 3 "~" H 4605 2985 50  0001 C CNN
+	1    4605 2985
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BFB5
+P 4605 3260
+F 0 "R?" V 4409 3260 50  0000 C CNN
+F 1 "390K" V 4500 3260 50  0000 C CNN
+F 2 "" H 4605 3260 50  0001 C CNN
+F 3 "~" H 4605 3260 50  0001 C CNN
+	1    4605 3260
+	0    1    1    0   
+$EndComp
+$Comp
+L Transistor_BJT:MMBT3904 Q?
+U 1 1 5F89BFBC
+P 3855 1860
+F 0 "Q?" H 4046 1906 50  0000 L CNN
+F 1 "MMBT3904" H 4046 1815 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 4055 1785 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 3855 1860 50  0001 L CNN
+	1    3855 1860
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F89BFC3
+P 3955 1360
+F 0 "#PWR?" H 3955 1210 50  0001 C CNN
+F 1 "+12V" H 3955 1510 50  0000 C CNN
+F 2 "" H 3955 1360 50  0001 C CNN
+F 3 "" H 3955 1360 50  0001 C CNN
+	1    3955 1360
+	1    0    0    -1  
+$EndComp
+Text GLabel 3355 1860 0    50   Input ~ 0
+MSB_OUT
+$Comp
+L power:GND #PWR?
+U 1 1 5F89BFCA
+P 3955 2110
+F 0 "#PWR?" H 3955 1860 50  0001 C CNN
+F 1 "GND" H 4080 2035 50  0000 C CNN
+F 2 "" H 3955 2110 50  0001 C CNN
+F 3 "" H 3955 2110 50  0001 C CNN
+	1    3955 2110
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3605 1860 3655 1860
+Wire Wire Line
+	3955 2060 3955 2110
+Wire Wire Line
+	4705 1835 4705 2110
+Wire Wire Line
+	4705 2110 4705 2285
+Connection ~ 4705 2110
+Wire Wire Line
+	4705 2385 4705 2685
+Connection ~ 4705 2385
+Wire Wire Line
+	4705 2685 4705 2985
+Connection ~ 4705 2685
+Wire Wire Line
+	4705 2985 4705 3260
+Connection ~ 4705 2985
+Wire Wire Line
+	4755 2360 4755 2285
+Wire Wire Line
+	4755 2285 4705 2285
+Connection ~ 4705 2285
+Wire Wire Line
+	4705 2285 4705 2385
+Wire Wire Line
+	4380 1835 4505 1835
+Text Notes 3780 1660 0    79   ~ 0
+all inverted
+Wire Wire Line
+	4205 2310 4205 2110
+Wire Wire Line
+	4205 2110 4505 2110
+Wire Wire Line
+	4205 2985 4505 2985
+Wire Wire Line
+	4505 3260 4380 3260
+Wire Wire Line
+	4380 3260 4380 3660
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BFE6
+P 3505 1860
+F 0 "R?" V 3309 1860 50  0000 C CNN
+F 1 "10K" V 3400 1860 50  0000 C CNN
+F 2 "" H 3505 1860 50  0001 C CNN
+F 3 "~" H 3505 1860 50  0001 C CNN
+	1    3505 1860
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89BFED
+P 3955 1510
+F 0 "R?" V 3759 1510 50  0000 C CNN
+F 1 "10K" V 3850 1510 50  0000 C CNN
+F 2 "" H 3955 1510 50  0001 C CNN
+F 3 "~" H 3955 1510 50  0001 C CNN
+	1    3955 1510
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3955 1360 3955 1410
+Wire Wire Line
+	3955 1610 3955 1635
+Wire Wire Line
+	3955 1635 4380 1635
+Wire Wire Line
+	4380 1635 4380 1835
+Connection ~ 3955 1635
+Wire Wire Line
+	3955 1635 3955 1660
+Wire Wire Line
+	3355 1860 3405 1860
+$Comp
+L Transistor_BJT:MMBT3904 Q?
+U 1 1 5F89BFFB
+P 3455 2610
+F 0 "Q?" H 3646 2656 50  0000 L CNN
+F 1 "MMBT3904" H 3646 2565 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 3655 2535 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 3455 2610 50  0001 L CNN
+	1    3455 2610
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F89C002
+P 3555 2110
+F 0 "#PWR?" H 3555 1960 50  0001 C CNN
+F 1 "+12V" H 3555 2260 50  0000 C CNN
+F 2 "" H 3555 2110 50  0001 C CNN
+F 3 "" H 3555 2110 50  0001 C CNN
+	1    3555 2110
+	1    0    0    -1  
+$EndComp
+Text GLabel 2955 2610 0    50   Input ~ 0
+5_OUT
+$Comp
+L power:GND #PWR?
+U 1 1 5F89C009
+P 3555 2860
+F 0 "#PWR?" H 3555 2610 50  0001 C CNN
+F 1 "GND" H 3680 2785 50  0000 C CNN
+F 2 "" H 3555 2860 50  0001 C CNN
+F 3 "" H 3555 2860 50  0001 C CNN
+	1    3555 2860
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3205 2610 3255 2610
+Wire Wire Line
+	3555 2810 3555 2860
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C011
+P 3105 2610
+F 0 "R?" V 2909 2610 50  0000 C CNN
+F 1 "10K" V 3000 2610 50  0000 C CNN
+F 2 "" H 3105 2610 50  0001 C CNN
+F 3 "~" H 3105 2610 50  0001 C CNN
+	1    3105 2610
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C018
+P 3555 2260
+F 0 "R?" V 3359 2260 50  0000 C CNN
+F 1 "10K" V 3450 2260 50  0000 C CNN
+F 2 "" H 3555 2260 50  0001 C CNN
+F 3 "~" H 3555 2260 50  0001 C CNN
+	1    3555 2260
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3555 2110 3555 2160
+Wire Wire Line
+	2955 2610 3005 2610
+$Comp
+L Transistor_BJT:MMBT3904 Q?
+U 1 1 5F89C021
+P 3530 3710
+F 0 "Q?" H 3721 3756 50  0000 L CNN
+F 1 "MMBT3904" H 3721 3665 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 3730 3635 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 3530 3710 50  0001 L CNN
+	1    3530 3710
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F89C028
+P 3630 3210
+F 0 "#PWR?" H 3630 3060 50  0001 C CNN
+F 1 "+12V" H 3630 3360 50  0000 C CNN
+F 2 "" H 3630 3210 50  0001 C CNN
+F 3 "" H 3630 3210 50  0001 C CNN
+	1    3630 3210
+	1    0    0    -1  
+$EndComp
+Text GLabel 3030 3710 0    50   Input ~ 0
+4_OUT
+$Comp
+L power:GND #PWR?
+U 1 1 5F89C02F
+P 3630 3960
+F 0 "#PWR?" H 3630 3710 50  0001 C CNN
+F 1 "GND" H 3755 3885 50  0000 C CNN
+F 2 "" H 3630 3960 50  0001 C CNN
+F 3 "" H 3630 3960 50  0001 C CNN
+	1    3630 3960
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3280 3710 3330 3710
+Wire Wire Line
+	3630 3910 3630 3960
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C037
+P 3180 3710
+F 0 "R?" V 2984 3710 50  0000 C CNN
+F 1 "10K" V 3075 3710 50  0000 C CNN
+F 2 "" H 3180 3710 50  0001 C CNN
+F 3 "~" H 3180 3710 50  0001 C CNN
+	1    3180 3710
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C03E
+P 3630 3360
+F 0 "R?" V 3434 3360 50  0000 C CNN
+F 1 "10K" V 3525 3360 50  0000 C CNN
+F 2 "" H 3630 3360 50  0001 C CNN
+F 3 "~" H 3630 3360 50  0001 C CNN
+	1    3630 3360
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3630 3210 3630 3260
+Wire Wire Line
+	3030 3710 3080 3710
+$Comp
+L Transistor_BJT:MMBT3904 Q?
+U 1 1 5F89C047
+P 3930 4535
+F 0 "Q?" H 4121 4581 50  0000 L CNN
+F 1 "MMBT3904" H 4121 4490 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 4130 4460 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 3930 4535 50  0001 L CNN
+	1    3930 4535
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F89C04E
+P 4030 4035
+F 0 "#PWR?" H 4030 3885 50  0001 C CNN
+F 1 "+12V" H 4030 4185 50  0000 C CNN
+F 2 "" H 4030 4035 50  0001 C CNN
+F 3 "" H 4030 4035 50  0001 C CNN
+	1    4030 4035
+	1    0    0    -1  
+$EndComp
+Text GLabel 3430 4535 0    50   Input ~ 0
+3_OUT
+$Comp
+L power:GND #PWR?
+U 1 1 5F89C055
+P 4030 4785
+F 0 "#PWR?" H 4030 4535 50  0001 C CNN
+F 1 "GND" H 4155 4710 50  0000 C CNN
+F 2 "" H 4030 4785 50  0001 C CNN
+F 3 "" H 4030 4785 50  0001 C CNN
+	1    4030 4785
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3680 4535 3730 4535
+Wire Wire Line
+	4030 4735 4030 4785
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C05D
+P 3580 4535
+F 0 "R?" V 3384 4535 50  0000 C CNN
+F 1 "10K" V 3475 4535 50  0000 C CNN
+F 2 "" H 3580 4535 50  0001 C CNN
+F 3 "~" H 3580 4535 50  0001 C CNN
+	1    3580 4535
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C064
+P 4030 4185
+F 0 "R?" V 3834 4185 50  0000 C CNN
+F 1 "10K" V 3925 4185 50  0000 C CNN
+F 2 "" H 4030 4185 50  0001 C CNN
+F 3 "~" H 4030 4185 50  0001 C CNN
+	1    4030 4185
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4030 4035 4030 4085
+Wire Wire Line
+	3430 4535 3480 4535
+$Comp
+L Transistor_BJT:MMBT3904 Q?
+U 1 1 5F89C06D
+P 4605 5110
+F 0 "Q?" H 4796 5156 50  0000 L CNN
+F 1 "MMBT3904" H 4796 5065 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 4805 5035 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 4605 5110 50  0001 L CNN
+	1    4605 5110
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F89C074
+P 4705 4610
+F 0 "#PWR?" H 4705 4460 50  0001 C CNN
+F 1 "+12V" H 4705 4760 50  0000 C CNN
+F 2 "" H 4705 4610 50  0001 C CNN
+F 3 "" H 4705 4610 50  0001 C CNN
+	1    4705 4610
+	1    0    0    -1  
+$EndComp
+Text GLabel 4105 5110 0    50   Input ~ 0
+2_OUT
+$Comp
+L power:GND #PWR?
+U 1 1 5F89C07B
+P 4705 5360
+F 0 "#PWR?" H 4705 5110 50  0001 C CNN
+F 1 "GND" H 4830 5285 50  0000 C CNN
+F 2 "" H 4705 5360 50  0001 C CNN
+F 3 "" H 4705 5360 50  0001 C CNN
+	1    4705 5360
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4355 5110 4405 5110
+Wire Wire Line
+	4705 5310 4705 5360
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C083
+P 4255 5110
+F 0 "R?" V 4059 5110 50  0000 C CNN
+F 1 "10K" V 4150 5110 50  0000 C CNN
+F 2 "" H 4255 5110 50  0001 C CNN
+F 3 "~" H 4255 5110 50  0001 C CNN
+	1    4255 5110
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C08A
+P 4705 4760
+F 0 "R?" V 4509 4760 50  0000 C CNN
+F 1 "10K" V 4600 4760 50  0000 C CNN
+F 2 "" H 4705 4760 50  0001 C CNN
+F 3 "~" H 4705 4760 50  0001 C CNN
+	1    4705 4760
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4705 4610 4705 4660
+Wire Wire Line
+	4705 4860 4705 4885
+Connection ~ 4705 4885
+Wire Wire Line
+	4705 4885 4705 4910
+Wire Wire Line
+	4105 5110 4155 5110
+$Comp
+L Transistor_BJT:MMBT3904 Q?
+U 1 1 5F89C096
+P 5030 5985
+F 0 "Q?" H 5221 6031 50  0000 L CNN
+F 1 "MMBT3904" H 5221 5940 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 5230 5910 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 5030 5985 50  0001 L CNN
+	1    5030 5985
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F89C09D
+P 5130 5485
+F 0 "#PWR?" H 5130 5335 50  0001 C CNN
+F 1 "+12V" H 5130 5635 50  0000 C CNN
+F 2 "" H 5130 5485 50  0001 C CNN
+F 3 "" H 5130 5485 50  0001 C CNN
+	1    5130 5485
+	1    0    0    -1  
+$EndComp
+Text GLabel 4530 5985 0    50   Input ~ 0
+1_OUT
+$Comp
+L power:GND #PWR?
+U 1 1 5F89C0A4
+P 5130 6235
+F 0 "#PWR?" H 5130 5985 50  0001 C CNN
+F 1 "GND" H 5255 6160 50  0000 C CNN
+F 2 "" H 5130 6235 50  0001 C CNN
+F 3 "" H 5130 6235 50  0001 C CNN
+	1    5130 6235
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4780 5985 4830 5985
+Wire Wire Line
+	5130 6185 5130 6235
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C0AC
+P 4680 5985
+F 0 "R?" V 4484 5985 50  0000 C CNN
+F 1 "10K" V 4575 5985 50  0000 C CNN
+F 2 "" H 4680 5985 50  0001 C CNN
+F 3 "~" H 4680 5985 50  0001 C CNN
+	1    4680 5985
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F89C0B3
+P 5130 5635
+F 0 "R?" V 4934 5635 50  0000 C CNN
+F 1 "10K" V 5025 5635 50  0000 C CNN
+F 2 "" H 5130 5635 50  0001 C CNN
+F 3 "~" H 5130 5635 50  0001 C CNN
+	1    5130 5635
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5130 5485 5130 5535
+Wire Wire Line
+	4530 5985 4580 5985
+Wire Wire Line
+	3630 3460 3630 3485
+Wire Wire Line
+	3630 3485 3780 3485
+Connection ~ 3630 3485
+Wire Wire Line
+	3630 3485 3630 3510
+Wire Wire Line
+	4030 4285 4030 4310
+Wire Wire Line
+	3555 2360 3555 2385
+Wire Wire Line
+	3980 2385 3980 2310
+Wire Wire Line
+	3980 2310 4205 2310
+Wire Wire Line
+	3555 2385 3980 2385
+Connection ~ 3555 2385
+Wire Wire Line
+	3555 2385 3555 2410
+Wire Wire Line
+	3780 2410 4105 2410
+Wire Wire Line
+	4105 2410 4105 2385
+Wire Wire Line
+	4105 2385 4505 2385
+Wire Wire Line
+	3780 2410 3780 3485
+Wire Wire Line
+	4505 2685 3930 2685
+Wire Wire Line
+	3930 2685 3930 4310
+Wire Wire Line
+	3930 4310 4030 4310
+Connection ~ 4030 4310
+Wire Wire Line
+	4030 4310 4030 4335
+Wire Wire Line
+	4205 2985 4205 4885
+Wire Wire Line
+	4205 4885 4705 4885
+Wire Wire Line
+	5130 5735 5130 5760
+Wire Wire Line
+	5130 5760 4955 5760
+Wire Wire Line
+	4955 5760 4955 3660
+Wire Wire Line
+	4955 3660 4380 3660
+Connection ~ 5130 5760
+Wire Wire Line
+	5130 5760 5130 5785
+$EndSCHEMATC

@@ -1381,9 +1381,6 @@ Wire Wire Line
 	5760 2985 6135 2985
 Wire Wire Line
 	5760 2710 5760 2985
-Connection ~ 5760 2710
-Wire Wire Line
-	5760 2710 5460 2710
 Wire Wire Line
 	6485 2610 6510 2610
 Wire Wire Line
@@ -1883,4 +1880,33 @@ U 5F8171BE
 F0 "oldDAC" 50
 F1 "oldDAC.sch" 50
 $EndSheet
+$Comp
+L Device:CP_Small C?
+U 1 1 5F8B848A
+P 5660 2710
+F 0 "C?" V 5435 2710 50  0000 C CNN
+F 1 "4.7uF" V 5526 2710 50  0000 C CNN
+F 2 "" H 5660 2710 50  0001 C CNN
+F 3 "~" H 5660 2710 50  0001 C CNN
+	1    5660 2710
+	0    1    1    0   
+$EndComp
+Connection ~ 5760 2710
+$Comp
+L Device:R_Small R?
+U 1 1 5F8B8D27
+P 5430 2710
+F 0 "R?" H 5489 2756 50  0000 L CNN
+F 1 "1K" H 5489 2665 50  0000 L CNN
+F 2 "" H 5430 2710 50  0001 C CNN
+F 3 "~" H 5430 2710 50  0001 C CNN
+	1    5430 2710
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5530 2710 5560 2710
+Wire Wire Line
+	5330 2710 5280 2710
+Text GLabel 5280 2710 0    50   Input ~ 0
+DAC_MC_OUT
 $EndSCHEMATC

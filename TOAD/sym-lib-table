@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name allcolours_analogue-rescue)(type Legacy)(uri ${KIPRJMOD}/allcolours_analogue-rescue.lib)(options "")(descr ""))
+)
