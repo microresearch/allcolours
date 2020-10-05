@@ -13,6 +13,8 @@ To note for new schematic:
 
 - all 4069 are seperate to avoid heating - do we need to GND extra pins? no
 
-- WASP feedback with diodes - on breadboard is from ...
+- WASP feedback with diodes - on breadboard is from where damping would be - test without this, test LM13700, test other SIGNUM option.
 
 - prototype PCB with all stages pluggable, NLC-style SIGNUM also patchable and invert/non-inv input options for each OTA  
+
+- note that in HAIBLE/DUAL WASP there is 1k in parallel with 10k LIN pot and 1k and diode at bottom of pot - this is to turn into log pot?
