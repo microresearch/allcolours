@@ -9,11 +9,20 @@ To note for new schematic:
 - +12v and GND only throughout except first and last stage
 - maybe add OTA/CVA on input too
 - OTA control of b1/bb1 - b2/bb2 and b3/bb3 is all from same CV - one knob/cv
-- OTA control of VCA in, damping and SIGNUM feedback is all CV - so 3 more knob/CV
+- OTA control of VCA in, damping?? and SIGNUM feedback is all CV - so 2 or 3 more knob/CV
 
 - all 4069 are seperate to avoid heating - do we need to GND extra pins? no
 
-- WASP feedback with diodes - on breadboard is from where damping would be - test without this, test LM13700, test other SIGNUM option.
+- TEST: WASP feedback with diodes ->
+
+- On breadboard is from where damping would be //2nd stage// - we just have 100k and
+  pot at moment - test with wasp feedback - tested and works well but
+  we can't put under voltage control
+
+- Original damping option with 22k (or otherwise) to GND and OTA feedback...
+
+- test LM13700, test other SIGNUM option.
+
 
 - prototype PCB with all stages pluggable, NLC-style SIGNUM also patchable and invert/non-inv input options for each OTA  
 
