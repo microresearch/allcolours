@@ -503,8 +503,8 @@ $Comp
 L 4xxx:4066 U?
 U 1 1 5F874E5F
 P 3320 5390
-F 0 "U?" V 3366 5263 50  0000 R CNN
-F 1 "4066" V 3275 5263 50  0000 R CNN
+F 0 "U?" V 3470 5670 50  0000 R CNN
+F 1 "4066" V 3205 5735 50  0000 R CNN
 F 2 "" H 3320 5390 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/cd4066b.pdf" H 3320 5390 50  0001 C CNN
 	1    3320 5390
@@ -732,21 +732,20 @@ Wire Wire Line
 $Comp
 L Device:R_Small R?
 U 1 1 5F8983A6
-P 3585 5090
+P 3740 5090
 AR Path="/5ED966D6/5F8983A6" Ref="R?"  Part="1" 
 AR Path="/5F86F8BD/5F8983A6" Ref="R?"  Part="1" 
-F 0 "R?" V 3690 5060 50  0000 C CNN
-F 1 "1k" V 3500 5090 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 3585 5090 50  0001 C CNN
-F 3 "~" H 3585 5090 50  0001 C CNN
-	1    3585 5090
+F 0 "R?" V 3810 5095 50  0000 C CNN
+F 1 "1k" V 3655 5090 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3740 5090 50  0001 C CNN
+F 3 "~" H 3740 5090 50  0001 C CNN
+	1    3740 5090
 	0    1    1    0   
 $EndComp
-Connection ~ 3485 5090
-Text GLabel 3710 5090 2    50   Input ~ 0
+Text GLabel 3865 5090 2    50   Input ~ 0
 SIGOUT_2
 Wire Wire Line
-	3685 5090 3710 5090
+	3840 5090 3865 5090
 $Comp
 L Amplifier_Operational:TL074 U?
 U 5 1 5F89B198
@@ -1039,4 +1038,38 @@ Wire Wire Line
 	6560 4750 6600 4750
 Wire Wire Line
 	6800 4915 7035 4915
+$Comp
+L Device:R_Small R?
+U 1 1 5F8CC40D
+P 3580 5190
+AR Path="/5ED966D6/5F8CC40D" Ref="R?"  Part="1" 
+AR Path="/5F86F8BD/5F8CC40D" Ref="R?"  Part="1" 
+F 0 "R?" V 3650 5115 50  0000 C CNN
+F 1 "10k" V 3770 5105 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3580 5190 50  0001 C CNN
+F 3 "~" H 3580 5190 50  0001 C CNN
+	1    3580 5190
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F8CC73A
+P 3580 5320
+AR Path="/5ED966D6/5F8CC73A" Ref="#PWR?"  Part="1" 
+AR Path="/5F86F8BD/5F8CC73A" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 3580 5070 50  0001 C CNN
+F 1 "GND" H 3585 5147 50  0000 C CNN
+F 2 "" H 3580 5320 50  0001 C CNN
+F 3 "" H 3580 5320 50  0001 C CNN
+	1    3580 5320
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3485 5090 3580 5090
+Connection ~ 3485 5090
+Wire Wire Line
+	3580 5090 3640 5090
+Connection ~ 3580 5090
+Wire Wire Line
+	3580 5290 3580 5320
 $EndSCHEMATC

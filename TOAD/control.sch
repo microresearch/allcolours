@@ -17,12 +17,12 @@ $EndDescr
 $Comp
 L Amplifier_Operational:LM13700 U11
 U 1 1 5ED96BBF
-P 1490 2725
-F 0 "U11" H 1490 3092 50  0000 C CNN
-F 1 "LM13700" H 1490 3001 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 1190 2750 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 1190 2750 50  0001 C CNN
-	1    1490 2725
+P 1105 4450
+F 0 "U11" H 1105 4817 50  0000 C CNN
+F 1 "LM13700" H 1105 4726 50  0000 C CNN
+F 2 "SMD_Packages:SO-16-N" H 805 4475 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 805 4475 50  0001 C CNN
+	1    1105 4450
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -712,4 +712,6 @@ F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 1190 1280 50  0001 C CNN
 	3    1490 1255
 	1    0    0    -1  
 $EndComp
+Text Notes 840  2050 0    50   ~ 0
+1st stage b1/bb1 has extra op-amp 10k inv and needs to be inv too/check again
 $EndSCHEMATC
