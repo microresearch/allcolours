@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 4
+Sheet 4 5
 Title ""
 Date ""
 Rev ""
@@ -17,12 +17,12 @@ $EndDescr
 $Comp
 L Amplifier_Operational:LM13700 U11
 U 1 1 5ED96BBF
-P 1490 1895
-F 0 "U11" H 1490 2262 50  0000 C CNN
-F 1 "LM13700" H 1490 2171 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 1190 1920 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 1190 1920 50  0001 C CNN
-	1    1490 1895
+P 1490 2725
+F 0 "U11" H 1490 3092 50  0000 C CNN
+F 1 "LM13700" H 1490 3001 50  0000 C CNN
+F 2 "SMD_Packages:SO-16-N" H 1190 2750 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 1190 2750 50  0001 C CNN
+	1    1490 2725
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -448,7 +448,7 @@ Wire Wire Line
 Wire Wire Line
 	10685 1135 10685 1220
 Text Notes 6475 715  0    79   ~ 0
-redrafted for wasp version which is all +12v and GND so mid gnd
+redrafted for wasp version which is all +12v and GND so mid gnd- add CV
 $Comp
 L power:GND #PWR?
 U 1 1 5F6F208B
@@ -699,10 +699,8 @@ Wire Wire Line
 	4945 1070 5015 1070
 Wire Wire Line
 	4940 1070 4940 1220
-Text Notes 6445 3585 0    79   ~ 0
-one OTA for input section
-Text Notes 6755 5115 0    79   ~ 0
-NLC style SIGNUM
+Text Notes 4980 2505 0    79   ~ 0
+one OTA for input section 
 $Comp
 L Amplifier_Operational:LM13700 U?
 U 3 1 5F8277CF
