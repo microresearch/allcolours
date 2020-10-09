@@ -1423,17 +1423,17 @@ Wire Wire Line
 Text GLabel 2080 2050 2    50   Input ~ 0
 B3
 Wire Wire Line
-	1800 1750 1800 2050
+	1800 1750 1800 1935
 Wire Wire Line
 	1800 2050 1840 2050
 Connection ~ 1800 2050
 Wire Wire Line
-	1800 2050 1800 2350
+	1800 2050 1800 2225
 Wire Wire Line
 	2040 2050 2080 2050
 Text GLabel 925  1125 2    50   Input ~ 0
 D1
-Text GLabel 1460 2390 0    50   Input ~ 0
+Text GLabel 1565 1935 0    50   Input ~ 0
 DD1
 Wire Wire Line
 	550  1125 925  1125
@@ -1548,13 +1548,6 @@ Wire Wire Line
 	5990 6735 5990 6760
 Wire Wire Line
 	4915 5175 4915 5210
-Wire Wire Line
-	1460 2390 1515 2390
-Wire Wire Line
-	1715 2390 1800 2390
-Wire Wire Line
-	1800 2390 1800 2350
-Connection ~ 1800 2350
 $Comp
 L power:+12V #PWR?
 U 1 1 5F75D5C2
@@ -1774,4 +1767,124 @@ Text Notes 4355 1785 0    50   ~ 0
 4-5
 Text Notes 6535 1535 0    50   ~ 0
 6-1ofnext
+$Comp
+L Device:R_Small R?
+U 1 1 5F8403E3
+P 1700 2225
+F 0 "R?" V 1504 2225 50  0000 C CNN
+F 1 "56K" V 1595 2225 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 1700 2225 50  0001 C CNN
+F 3 "~" H 1700 2225 50  0001 C CNN
+	1    1700 2225
+	0    1    1    0   
+$EndComp
+Connection ~ 1800 2225
+Wire Wire Line
+	1800 2225 1800 2350
+$Comp
+L power:GND #PWR?
+U 1 1 5F840710
+P 1560 2225
+F 0 "#PWR?" H 1560 1975 50  0001 C CNN
+F 1 "GND" H 1660 2085 50  0000 C CNN
+F 2 "" H 1560 2225 50  0001 C CNN
+F 3 "" H 1560 2225 50  0001 C CNN
+	1    1560 2225
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1560 2225 1600 2225
+Wire Wire Line
+	1565 1935 1800 1935
+Connection ~ 1800 1935
+Wire Wire Line
+	1800 1935 1800 2050
+$Comp
+L 4xxx:4069 U?
+U 7 1 5F890CAC
+P 10135 1610
+F 0 "U?" H 10365 1656 50  0000 L CNN
+F 1 "4069" H 10365 1565 50  0000 L CNN
+F 2 "" H 10135 1610 50  0001 C CNN
+F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 10135 1610 50  0001 C CNN
+	7    10135 1610
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4069 U?
+U 7 1 5F890DEC
+P 10585 1610
+F 0 "U?" H 10815 1656 50  0000 L CNN
+F 1 "4069" H 10815 1565 50  0000 L CNN
+F 2 "" H 10585 1610 50  0001 C CNN
+F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 10585 1610 50  0001 C CNN
+	7    10585 1610
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4069 U?
+U 7 1 5F890F0D
+P 9690 1610
+F 0 "U?" H 9920 1656 50  0000 L CNN
+F 1 "4069" H 9920 1565 50  0000 L CNN
+F 2 "" H 9690 1610 50  0001 C CNN
+F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 9690 1610 50  0001 C CNN
+	7    9690 1610
+	1    0    0    -1  
+$EndComp
+$Comp
+L 4xxx:4069 U?
+U 7 1 5F89121D
+P 9200 1610
+F 0 "U?" H 9430 1656 50  0000 L CNN
+F 1 "4069" H 9430 1565 50  0000 L CNN
+F 2 "" H 9200 1610 50  0001 C CNN
+F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 9200 1610 50  0001 C CNN
+	7    9200 1610
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 2110 9690 2110
+Wire Wire Line
+	9690 2110 10135 2110
+Connection ~ 9690 2110
+Wire Wire Line
+	10135 2110 10295 2110
+Connection ~ 10135 2110
+$Comp
+L power:GND #PWR?
+U 1 1 5F8C6964
+P 10295 2110
+F 0 "#PWR?" H 10295 1860 50  0001 C CNN
+F 1 "GND" H 10300 1937 50  0000 C CNN
+F 2 "" H 10295 2110 50  0001 C CNN
+F 3 "" H 10295 2110 50  0001 C CNN
+	1    10295 2110
+	1    0    0    -1  
+$EndComp
+Connection ~ 10295 2110
+Wire Wire Line
+	10295 2110 10585 2110
+$Comp
+L power:+12V #PWR?
+U 1 1 5F8C6BDE
+P 9730 1110
+F 0 "#PWR?" H 9730 960 50  0001 C CNN
+F 1 "+12V" H 9745 1283 50  0000 C CNN
+F 2 "" H 9730 1110 50  0001 C CNN
+F 3 "" H 9730 1110 50  0001 C CNN
+	1    9730 1110
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 1110 9690 1110
+Wire Wire Line
+	9690 1110 9730 1110
+Connection ~ 9690 1110
+Wire Wire Line
+	9730 1110 10135 1110
+Connection ~ 9730 1110
+Connection ~ 10135 1110
+Wire Wire Line
+	10135 1110 10585 1110
 $EndSCHEMATC

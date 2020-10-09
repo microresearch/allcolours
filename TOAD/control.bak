@@ -16,132 +16,115 @@ Comment4 ""
 $EndDescr
 $Comp
 L Amplifier_Operational:LM13700 U11
-U 1 1 5ED96BBF
-P 1105 4450
-F 0 "U11" H 1105 4817 50  0000 C CNN
-F 1 "LM13700" H 1105 4726 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 805 4475 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 805 4475 50  0001 C CNN
-	1    1105 4450
-	1    0    0    -1  
-$EndComp
-$Comp
-L Amplifier_Operational:LM13700 U11
 U 2 1 5ED96C37
-P 2850 995
-F 0 "U11" H 2750 1343 50  0000 C CNN
-F 1 "LM13700" H 2750 1252 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 2550 1020 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 2550 1020 50  0001 C CNN
-	2    2850 995 
+P 1010 1095
+F 0 "U11" H 910 1443 50  0000 C CNN
+F 1 "LM13700" H 910 1352 50  0000 C CNN
+F 2 "SMD_Packages:SO-16-N" H 710 1120 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 710 1120 50  0001 C CNN
+	2    1010 1095
 	1    0    0    -1  
 $EndComp
 $Comp
 L Amplifier_Operational:LM13700 U11
 U 4 1 5ED96D52
-P 2850 1535
-F 0 "U11" H 2750 1883 50  0000 C CNN
-F 1 "LM13700" H 2750 1792 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 2550 1560 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 2550 1560 50  0001 C CNN
-	4    2850 1535
+P 1010 1635
+F 0 "U11" H 910 1983 50  0000 C CNN
+F 1 "LM13700" H 910 1892 50  0000 C CNN
+F 2 "SMD_Packages:SO-16-N" H 710 1660 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 710 1660 50  0001 C CNN
+	4    1010 1635
 	1    0    0    -1  
 $EndComp
 $Comp
 L Amplifier_Operational:LM13700 U11
 U 5 1 5ED96DED
-P 3635 1250
-F 0 "U11" H 3593 1296 50  0000 L CNN
-F 1 "LM13700" H 3593 1205 50  0000 L CNN
-F 2 "SMD_Packages:SO-16-N" H 3335 1275 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 3335 1275 50  0001 C CNN
-	5    3635 1250
+P 1795 1350
+F 0 "U11" H 1753 1396 50  0000 L CNN
+F 1 "LM13700" H 1753 1305 50  0000 L CNN
+F 2 "SMD_Packages:SO-16-N" H 1495 1375 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 1495 1375 50  0001 C CNN
+	5    1795 1350
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR071
 U 1 1 5ED96EDD
-P 2475 995
-F 0 "#PWR071" H 2475 745 50  0001 C CNN
-F 1 "GND" H 2480 822 50  0000 C CNN
-F 2 "" H 2475 995 50  0001 C CNN
-F 3 "" H 2475 995 50  0001 C CNN
-	1    2475 995 
+P 635 1095
+F 0 "#PWR071" H 635 845 50  0001 C CNN
+F 1 "GND" H 640 922 50  0000 C CNN
+F 2 "" H 635 1095 50  0001 C CNN
+F 3 "" H 635 1095 50  0001 C CNN
+	1    635  1095
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR072
 U 1 1 5ED96F44
-P 2475 1535
-F 0 "#PWR072" H 2475 1285 50  0001 C CNN
-F 1 "GND" H 2480 1362 50  0000 C CNN
-F 2 "" H 2475 1535 50  0001 C CNN
-F 3 "" H 2475 1535 50  0001 C CNN
-	1    2475 1535
+P 635 1635
+F 0 "#PWR072" H 635 1385 50  0001 C CNN
+F 1 "GND" H 640 1462 50  0000 C CNN
+F 2 "" H 635 1635 50  0001 C CNN
+F 3 "" H 635 1635 50  0001 C CNN
+	1    635  1635
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR057
 U 1 1 5ED973F7
-P 3535 875
-F 0 "#PWR057" H 3535 725 50  0001 C CNN
-F 1 "+12V-power" H 3550 1048 50  0000 C CNN
-F 2 "" H 3535 875 50  0001 C CNN
-F 3 "" H 3535 875 50  0001 C CNN
-	1    3535 875 
+P 1695 975
+F 0 "#PWR057" H 1695 825 50  0001 C CNN
+F 1 "+12V-power" H 1710 1148 50  0000 C CNN
+F 2 "" H 1695 975 50  0001 C CNN
+F 3 "" H 1695 975 50  0001 C CNN
+	1    1695 975 
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3535 875  3535 950 
+	1695 975  1695 1050
 Wire Wire Line
-	3535 1550 3535 1625
+	1695 1650 1695 1725
 $Comp
 L Device:R_Small R26
 U 1 1 5ED98928
-P 990 1355
-F 0 "R26" V 1095 1325 50  0000 C CNN
-F 1 "47K" V 1190 1365 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 990 1355 50  0001 C CNN
-F 3 "~" H 990 1355 50  0001 C CNN
-	1    990  1355
+P 2500 1105
+F 0 "R26" V 2570 1060 50  0000 C CNN
+F 1 "47k" V 2425 1095 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2500 1105 50  0001 C CNN
+F 3 "~" H 2500 1105 50  0001 C CNN
+	1    2500 1105
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR061
 U 1 1 5ED9893C
-P 1235 875
-F 0 "#PWR061" H 1235 625 50  0001 C CNN
-F 1 "GND" H 1110 975 50  0000 C CNN
-F 2 "" H 1235 875 50  0001 C CNN
-F 3 "" H 1235 875 50  0001 C CNN
-	1    1235 875 
+P 2605 1540
+F 0 "#PWR061" H 2605 1290 50  0001 C CNN
+F 1 "GND" H 2730 1455 50  0000 C CNN
+F 2 "" H 2605 1540 50  0001 C CNN
+F 3 "" H 2605 1540 50  0001 C CNN
+	1    2605 1540
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R28
 U 1 1 5ED98942
-P 1140 1255
-F 0 "R28" V 944 1255 50  0000 C CNN
-F 1 "1K" V 1270 1150 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 1140 1255 50  0001 C CNN
-F 3 "~" H 1140 1255 50  0001 C CNN
-	1    1140 1255
+P 2655 1205
+F 0 "R28" V 2459 1205 50  0000 C CNN
+F 1 "1K" V 2710 1205 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2655 1205 50  0001 C CNN
+F 3 "~" H 2655 1205 50  0001 C CNN
+	1    2655 1205
 	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	1140 1155 1160 1155
-Wire Wire Line
-	890  1355 740  1355
-Text GLabel 740  1355 0    50   Input ~ 0
+Text GLabel 2360 1105 0    50   Input ~ 0
 B1
-Wire Wire Line
-	1790 1255 1890 1255
-Text GLabel 1890 1255 2    50   Input ~ 0
+Text GLabel 4045 1105 2    50   Input ~ 0
 BB1
-Text GLabel 1790 1455 0    50   Input ~ 0
+Text GLabel 3305 1405 0    50   Input ~ 0
 C1
 Wire Wire Line
-	1790 1355 1790 1455
+	3305 1305 3305 1405
 $Comp
 L Amplifier_Operational:LM13700 U17
 U 2 1 5ED9B467
@@ -211,7 +194,7 @@ Wire Wire Line
 Text GLabel 10145 1960 2    50   Input ~ 0
 R1
 Text GLabel 9795 2160 0    50   Input ~ 0
-C4
+CSIG
 Wire Wire Line
 	9795 2060 9795 2160
 $Comp
@@ -275,7 +258,7 @@ L Device:R_Small R48
 U 1 1 5EDCD3BD
 P 9995 1960
 F 0 "R48" V 9799 1960 50  0000 C CNN
-F 1 "100K" V 9890 1960 50  0000 C CNN
+F 1 "47K" V 9890 1960 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 9995 1960 50  0001 C CNN
 F 3 "~" H 9995 1960 50  0001 C CNN
 	1    9995 1960
@@ -284,9 +267,9 @@ $EndComp
 Wire Wire Line
 	10600 2025 10675 2025
 Wire Wire Line
-	2475 1535 2550 1535
+	635  1635 710  1635
 Wire Wire Line
-	2475 995  2550 995 
+	635  1095 710  1095
 $Comp
 L Device:R_Small R45
 U 1 1 5EDDD9F4
@@ -327,46 +310,46 @@ $EndComp
 $Comp
 L Device:C_Small C?
 U 1 1 5EEEC611
-P 3215 1240
+P 1375 1340
 AR Path="/5EC7DA76/5EEEC611" Ref="C?"  Part="1" 
 AR Path="/5ED966D6/5EEEC611" Ref="C50"  Part="1" 
-F 0 "C50" H 3307 1286 50  0000 L CNN
-F 1 "100N" H 3307 1195 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 3215 1240 50  0001 C CNN
-F 3 "~" H 3215 1240 50  0001 C CNN
-	1    3215 1240
+F 0 "C50" H 1467 1386 50  0000 L CNN
+F 1 "100N" H 1467 1295 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 1375 1340 50  0001 C CNN
+F 3 "~" H 1375 1340 50  0001 C CNN
+	1    1375 1340
 	1    0    0    -1  
 $EndComp
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR01
 U 1 1 5EEEC61F
-P 3215 1090
+P 1375 1190
 AR Path="/5ED966D6/5EEEC61F" Ref="#PWR01"  Part="1" 
 AR Path="/5EC7DA76/5EEEC61F" Ref="#PWR?"  Part="1" 
-F 0 "#PWR01" H 3215 940 50  0001 C CNN
-F 1 "+12V-power" H 3230 1263 50  0000 C CNN
-F 2 "" H 3215 1090 50  0001 C CNN
-F 3 "" H 3215 1090 50  0001 C CNN
-	1    3215 1090
+F 0 "#PWR01" H 1375 1040 50  0001 C CNN
+F 1 "+12V-power" H 1390 1363 50  0000 C CNN
+F 2 "" H 1375 1190 50  0001 C CNN
+F 3 "" H 1375 1190 50  0001 C CNN
+	1    1375 1190
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR031
 U 1 1 5EEEC62B
-P 3215 1390
+P 1375 1490
 AR Path="/5ED966D6/5EEEC62B" Ref="#PWR031"  Part="1" 
 AR Path="/5EC7DA76/5EEEC62B" Ref="#PWR?"  Part="1" 
-F 0 "#PWR031" H 3215 1140 50  0001 C CNN
-F 1 "GND" H 3165 1515 50  0000 C CNN
-F 2 "" H 3215 1390 50  0001 C CNN
-F 3 "" H 3215 1390 50  0001 C CNN
-	1    3215 1390
+F 0 "#PWR031" H 1375 1240 50  0001 C CNN
+F 1 "GND" H 1325 1615 50  0000 C CNN
+F 2 "" H 1375 1490 50  0001 C CNN
+F 3 "" H 1375 1490 50  0001 C CNN
+	1    1375 1490
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3215 1090 3215 1140
+	1375 1190 1375 1240
 Wire Wire Line
-	3215 1340 3215 1390
+	1375 1440 1375 1490
 $Comp
 L Amplifier_Operational:LM13700 U5
 U 1 1 5EF3FD63
@@ -447,7 +430,7 @@ Wire Wire Line
 	10685 1420 10685 1470
 Wire Wire Line
 	10685 1135 10685 1220
-Text Notes 6475 715  0    79   ~ 0
+Text Notes 7535 -295 0    79   ~ 0
 redrafted for wasp version which is all +12v and GND so mid gnd- add CV
 $Comp
 L power:GND #PWR?
@@ -539,67 +522,52 @@ Wire Wire Line
 $Comp
 L power:GND #PWR?
 U 1 1 5F70236A
-P 3535 1625
-F 0 "#PWR?" H 3535 1375 50  0001 C CNN
-F 1 "GND" H 3540 1452 50  0000 C CNN
-F 2 "" H 3535 1625 50  0001 C CNN
-F 3 "" H 3535 1625 50  0001 C CNN
-	1    3535 1625
+P 1695 1725
+F 0 "#PWR?" H 1695 1475 50  0001 C CNN
+F 1 "GND" H 1700 1552 50  0000 C CNN
+F 2 "" H 1695 1725 50  0001 C CNN
+F 3 "" H 1695 1725 50  0001 C CNN
+	1    1695 1725
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1090 1355 1140 1355
-Connection ~ 1140 1355
+	2605 1305 2655 1305
+Connection ~ 2655 1305
 Wire Wire Line
-	1140 1355 1190 1355
+	2655 1305 2705 1305
 $Comp
 L Device:R_Small R?
 U 1 1 5F70629F
-P 1160 1055
-F 0 "R?" V 964 1055 50  0000 C CNN
-F 1 "10K" V 1290 950 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 1160 1055 50  0001 C CNN
-F 3 "~" H 1160 1055 50  0001 C CNN
-	1    1160 1055
+P 2450 1405
+F 0 "R?" V 2545 1500 50  0000 C CNN
+F 1 "10K" V 2555 1385 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2450 1405 50  0001 C CNN
+F 3 "~" H 2450 1405 50  0001 C CNN
+	1    2450 1405
 	-1   0    0    1   
 $EndComp
-Connection ~ 1160 1155
-Wire Wire Line
-	1160 1155 1190 1155
 $Comp
 L Device:R_Small R?
 U 1 1 5F70640E
-P 1065 1055
-F 0 "R?" V 869 1055 50  0000 C CNN
-F 1 "10K" V 1195 950 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 1065 1055 50  0001 C CNN
-F 3 "~" H 1065 1055 50  0001 C CNN
-	1    1065 1055
+P 2605 1405
+F 0 "R?" V 2520 1405 50  0000 C CNN
+F 1 "10K" V 2675 1395 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2605 1405 50  0001 C CNN
+F 3 "~" H 2605 1405 50  0001 C CNN
+	1    2605 1405
 	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	1065 1155 1160 1155
-Wire Wire Line
-	1235 875  1160 875 
-Wire Wire Line
-	1160 875  1160 955 
 $Comp
 L allcolours_analogue-rescue:+12V-power #PWR?
 U 1 1 5F70777F
-P 860 835
-F 0 "#PWR?" H 860 685 50  0001 C CNN
-F 1 "+12V-power" H 875 1008 50  0000 C CNN
-F 2 "" H 860 835 50  0001 C CNN
-F 3 "" H 860 835 50  0001 C CNN
-	1    860  835 
+P 2280 1590
+F 0 "#PWR?" H 2280 1440 50  0001 C CNN
+F 1 "+12V-power" H 2220 1510 50  0000 C CNN
+F 2 "" H 2280 1590 50  0001 C CNN
+F 3 "" H 2280 1590 50  0001 C CNN
+	1    2280 1590
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	860  835  1065 835 
-Wire Wire Line
-	1065 835  1065 955 
-Text Notes 720  275  0    79   ~ 0
-B1/B2/B3- share same cv more or less - do as negative in also to test\nD1 so 4x these OTA
 $Comp
 L Amplifier_Operational:LM13700 U?
 U 5 1 5F81723F
@@ -639,77 +607,326 @@ Wire Wire Line
 	10950 2480 10950 2520
 Wire Wire Line
 	10950 3120 10950 3150
-Text Notes 4650 690  0    79   ~ 0
+Text Notes 6040 780  0    79   ~ 0
 cv for b1/b2/b3
 $Comp
 L Device:R_Small R?
 U 1 1 5F81ACEC
-P 5120 885
-F 0 "R?" V 5035 880 50  0000 C CNN
-F 1 "3.3k" V 5200 895 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 5120 885 50  0001 C CNN
-F 3 "~" H 5120 885 50  0001 C CNN
-	1    5120 885 
+P 6510 975
+F 0 "R?" V 6425 970 50  0000 C CNN
+F 1 "3.3k" V 6590 985 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6510 975 50  0001 C CNN
+F 3 "~" H 6510 975 50  0001 C CNN
+	1    6510 975 
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	5220 885  5285 885 
-Text GLabel 5285 885  2    50   Input ~ 0
+	6610 975  6675 975 
+Text GLabel 6675 975  2    50   Input ~ 0
 C1
 Wire Wire Line
-	5020 885  4945 885 
+	6410 975  6335 975 
 $Comp
 L Device:R_Small R?
 U 1 1 5F81EBF6
-P 5115 1070
-F 0 "R?" V 5030 1065 50  0000 C CNN
-F 1 "3.3k" V 5195 1080 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 5115 1070 50  0001 C CNN
-F 3 "~" H 5115 1070 50  0001 C CNN
-	1    5115 1070
+P 6505 1160
+F 0 "R?" V 6420 1155 50  0000 C CNN
+F 1 "3.3k" V 6585 1170 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6505 1160 50  0001 C CNN
+F 3 "~" H 6505 1160 50  0001 C CNN
+	1    6505 1160
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	5215 1070 5280 1070
-Text GLabel 5280 1070 2    50   Input ~ 0
+	6605 1160 6670 1160
+Text GLabel 6670 1160 2    50   Input ~ 0
 C2
 $Comp
 L Device:R_Small R?
 U 1 1 5F81F974
-P 5115 1220
-F 0 "R?" V 5030 1215 50  0000 C CNN
-F 1 "3.3k" V 5195 1230 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 5115 1220 50  0001 C CNN
-F 3 "~" H 5115 1220 50  0001 C CNN
-	1    5115 1220
+P 6505 1310
+F 0 "R?" V 6420 1305 50  0000 C CNN
+F 1 "3.3k" V 6585 1320 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6505 1310 50  0001 C CNN
+F 3 "~" H 6505 1310 50  0001 C CNN
+	1    6505 1310
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	5215 1220 5280 1220
-Text GLabel 5280 1220 2    50   Input ~ 0
+	6605 1310 6670 1310
+Text GLabel 6670 1310 2    50   Input ~ 0
 C3
 Wire Wire Line
-	5015 1220 4940 1220
+	6405 1310 6330 1310
 Wire Wire Line
-	4945 885  4945 1070
+	6335 975  6335 1160
 Wire Wire Line
-	4940 1070 4945 1070
-Connection ~ 4945 1070
+	6330 1160 6335 1160
+Connection ~ 6335 1160
 Wire Wire Line
-	4945 1070 5015 1070
+	6335 1160 6405 1160
 Wire Wire Line
-	4940 1070 4940 1220
-Text Notes 4980 2505 0    79   ~ 0
-one OTA for input section 
+	6330 1160 6330 1310
 $Comp
 L Amplifier_Operational:LM13700 U?
 U 3 1 5F8277CF
-P 1490 1255
-F 0 "U?" H 1490 1622 50  0000 C CNN
-F 1 "LM13700" H 1490 1531 50  0000 C CNN
-F 2 "" H 1190 1280 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 1190 1280 50  0001 C CNN
-	3    1490 1255
+P 3005 1205
+F 0 "U?" H 2815 1580 50  0000 C CNN
+F 1 "LM13700" H 2815 1490 50  0000 C CNN
+F 2 "" H 2705 1230 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 2705 1230 50  0001 C CNN
+	3    3005 1205
 	1    0    0    -1  
 $EndComp
+Text Notes 995  330  0    50   ~ 0
+4x b/bb stages have extra op-amp 10k inv and needs to be inv too - tested!
+Wire Wire Line
+	2655 1105 2705 1105
+Wire Wire Line
+	2600 1105 2655 1105
+Connection ~ 2655 1105
+Wire Wire Line
+	2360 1105 2400 1105
+Wire Wire Line
+	2605 1505 2605 1540
+Wire Wire Line
+	2450 1305 2605 1305
+Connection ~ 2605 1305
+Wire Wire Line
+	2280 1590 2450 1590
+Wire Wire Line
+	2450 1590 2450 1505
+$Comp
+L Amplifier_Operational:TL074 U?
+U 1 1 5F82D21A
+P 3705 1105
+F 0 "U?" H 3800 1390 50  0000 C CNN
+F 1 "TL074" H 3760 1270 50  0000 C CNN
+F 2 "" H 3655 1205 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3755 1305 50  0001 C CNN
+	1    3705 1105
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3305 1205 3375 1205
+Wire Wire Line
+	4005 1105 4030 1105
+$Comp
+L Device:R_Small R?
+U 1 1 5F8309DA
+P 3715 1415
+F 0 "R?" V 3820 1260 50  0000 C CNN
+F 1 "10K" V 3820 1395 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3715 1415 50  0001 C CNN
+F 3 "~" H 3715 1415 50  0001 C CNN
+	1    3715 1415
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3375 1205 3375 1415
+Wire Wire Line
+	3375 1415 3615 1415
+Connection ~ 3375 1205
+Wire Wire Line
+	3375 1205 3405 1205
+Wire Wire Line
+	3815 1415 4030 1415
+Wire Wire Line
+	4030 1415 4030 1105
+Connection ~ 4030 1105
+Wire Wire Line
+	4030 1105 4045 1105
+$Comp
+L Device:R_Small R?
+U 1 1 5F833297
+P 3355 905
+F 0 "R?" V 3270 905 50  0000 C CNN
+F 1 "10K" V 3425 895 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3355 905 50  0001 C CNN
+F 3 "~" H 3355 905 50  0001 C CNN
+	1    3355 905 
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F83342B
+P 3245 905
+F 0 "R?" V 3340 1000 50  0000 C CNN
+F 1 "10K" V 3350 885 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3245 905 50  0001 C CNN
+F 3 "~" H 3245 905 50  0001 C CNN
+	1    3245 905 
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3245 1005 3355 1005
+Wire Wire Line
+	3355 1005 3405 1005
+Connection ~ 3355 1005
+$Comp
+L power:GND #PWR?
+U 1 1 5F836299
+P 3430 740
+F 0 "#PWR?" H 3430 490 50  0001 C CNN
+F 1 "GND" H 3555 655 50  0000 C CNN
+F 2 "" H 3430 740 50  0001 C CNN
+F 3 "" H 3430 740 50  0001 C CNN
+	1    3430 740 
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5F8363F8
+P 3245 765
+F 0 "#PWR?" H 3245 615 50  0001 C CNN
+F 1 "+12V-power" H 3240 905 50  0000 C CNN
+F 2 "" H 3245 765 50  0001 C CNN
+F 3 "" H 3245 765 50  0001 C CNN
+	1    3245 765 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3245 765  3245 805 
+Wire Wire Line
+	3355 740  3430 740 
+Wire Wire Line
+	3355 740  3355 805 
+Text Notes 7650 2795 0    79   ~ 0
+one + OTA for damping - no op-amp
+$Comp
+L Amplifier_Operational:LM13700 U?
+U 4 1 5F83DB0C
+P 10590 2795
+F 0 "U?" H 10490 3143 50  0000 C CNN
+F 1 "LM13700" H 10490 3052 50  0000 C CNN
+F 2 "" H 10290 2820 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 10290 2820 50  0001 C CNN
+	4    10590 2795
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F83DBC4
+P 10290 2835
+F 0 "#PWR?" H 10290 2585 50  0001 C CNN
+F 1 "GND" H 10295 2662 50  0000 C CNN
+F 2 "" H 10290 2835 50  0001 C CNN
+F 3 "" H 10290 2835 50  0001 C CNN
+	1    10290 2835
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10290 2795 10290 2835
+$Comp
+L Device:R_Small R?
+U 1 1 5F8670CC
+P 8160 3505
+F 0 "R?" V 8230 3460 50  0000 C CNN
+F 1 "47k" V 8085 3495 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 8160 3505 50  0001 C CNN
+F 3 "~" H 8160 3505 50  0001 C CNN
+	1    8160 3505
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F8670D3
+P 8040 3070
+F 0 "#PWR?" H 8040 2820 50  0001 C CNN
+F 1 "GND" H 8165 2985 50  0000 C CNN
+F 2 "" H 8040 3070 50  0001 C CNN
+F 3 "" H 8040 3070 50  0001 C CNN
+	1    8040 3070
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F8670D9
+P 8410 3405
+F 0 "R?" V 8214 3405 50  0000 C CNN
+F 1 "1K" V 8465 3405 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 8410 3405 50  0001 C CNN
+F 3 "~" H 8410 3405 50  0001 C CNN
+	1    8410 3405
+	-1   0    0    1   
+$EndComp
+Text GLabel 8020 3505 0    50   Input ~ 0
+D1
+Text GLabel 9115 3605 0    50   Input ~ 0
+CDAMP
+Wire Wire Line
+	9115 3505 9115 3605
+$Comp
+L Device:R_Small R?
+U 1 1 5F8670E7
+P 8195 3205
+F 0 "R?" V 8290 3300 50  0000 C CNN
+F 1 "10K" V 8300 3185 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 8195 3205 50  0001 C CNN
+F 3 "~" H 8195 3205 50  0001 C CNN
+	1    8195 3205
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5F8670EE
+P 8040 3205
+F 0 "R?" V 7955 3205 50  0000 C CNN
+F 1 "10K" V 8110 3195 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 8040 3205 50  0001 C CNN
+F 3 "~" H 8040 3205 50  0001 C CNN
+	1    8040 3205
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 5F8670F5
+P 8365 3020
+F 0 "#PWR?" H 8365 2870 50  0001 C CNN
+F 1 "+12V-power" H 8305 2940 50  0000 C CNN
+F 2 "" H 8365 3020 50  0001 C CNN
+F 3 "" H 8365 3020 50  0001 C CNN
+	1    8365 3020
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:LM13700 U?
+U 3 1 5F8670FB
+P 8815 3405
+F 0 "U?" H 8625 3780 50  0000 C CNN
+F 1 "LM13700" H 8625 3690 50  0000 C CNN
+F 2 "" H 8515 3430 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 8515 3430 50  0001 C CNN
+	3    8815 3405
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8020 3505 8060 3505
+Wire Wire Line
+	8040 3105 8040 3070
+Wire Wire Line
+	8365 3020 8195 3020
+Wire Wire Line
+	8195 3020 8195 3105
+Wire Wire Line
+	8410 3305 8515 3305
+Wire Wire Line
+	8260 3505 8410 3505
+Wire Wire Line
+	9115 3405 9225 3405
+Text GLabel 9225 3405 2    50   Input ~ 0
+DD1
+Connection ~ 8410 3505
+Wire Wire Line
+	8410 3505 8515 3505
+Wire Wire Line
+	8410 3305 8195 3305
+Connection ~ 8410 3305
+Wire Wire Line
+	8195 3305 8040 3305
+Connection ~ 8195 3305
+Text Notes 6140 1760 0    79   ~ 0
+CV for CDAMP\n
+Text Notes 6185 2355 0    79   ~ 0
+CV for CSIG
 $EndSCHEMATC

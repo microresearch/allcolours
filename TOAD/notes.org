@@ -7,8 +7,9 @@ cap filter:
 To note for new schematic:
 
 - +12v and GND only throughout except first and last stage
-- maybe add OTA/CVA on input too
+- maybe add OTA/VCA on input too
 - OTA control of b1/bb1 - b2/bb2 and b3/bb3 is all from same CV - one knob/cv
+
 - OTA control of VCA in, damping?? and SIGNUM feedback is all CV - so 2 or 3 more knob/CV
 
 - all 4069 are seperate to avoid heating - do we need to GND extra pins? no
@@ -19,11 +20,46 @@ To note for new schematic:
   pot at moment - test with wasp feedback - tested and works well but
   we can't put under voltage control
 
-- Original damping option with 22k (or otherwise) to GND and OTA feedback...
+- Original damping option with 22k (or otherwise) to GND and OTA
+  feedback (on sprott that was inverting then into inverting in so we
+  test it non-inverting ??) TEST
 
-- test LM13700, test other SIGNUM option.
+- test LM13700 with extra op-amp (we tried this for first stage B1/BB1 and seems to work but then we need to go inv and inv - TEST for all
 
 
 - prototype PCB with all stages pluggable, NLC-style SIGNUM also patchable and invert/non-inv input options for each OTA  
 
 - note that in HAIBLE/DUAL WASP there is 1k in parallel with 10k LIN pot and 1k and diode at bottom of pot - this is to turn into log pot?
+
+- in sprott what we have for last SIGNUM feedback stage is x-signum(x) which is same as in Sprott paper "A new class of chaotic circuit"
+
+G(x)=Bx-Csgn(x) which plugs into x``` + Ax`` + x` = G(x)
+
+x``` + Ax`` + x` = Bx-Csgn(x)
+
+so: x``` + Ax`` + x` - [Bx-Csgn(x)] = 0
+
+which is close to:
+
+sprott manual is ax``` + bx`` + [cSGN(x) - dx] = 0
+
+where is x` ???
+
+* TODO
+
+- front vca or not? TESTED and gets complicated...
+
+so we have 3 mid stages controlled by one CV, damping-CV, SIGNUM CV = 3xCV so maybe
+
+
+- 47k for ota stages
+
+- test different feedback options for damping/first feedback loop:
+  tested 51k to GND and straight 13700 through (+) and this works
+  fine: maybe leave WASP feedback as an option on test pcb
+
+- test all feedthrough 13700 with extra op amp and inv/inv setup - so 2 extra to do - seems to work out also but values will need to be tweaked
+
+- test extra op-amp on signum but then we reverse the OTA! - tested but not sure - so leave as is...
+
+- maybe leave out alt signum
