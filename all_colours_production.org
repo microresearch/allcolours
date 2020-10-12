@@ -2,7 +2,7 @@
 
 - finals software: re-acquaint with modes
 - +check proto+ - all checked out fine but decide on filter resistors
-- BOM and quote/production - check on imac which version we have
+- +BOM and quote/production - check on imac which version we have+
 
 
 * production notes
