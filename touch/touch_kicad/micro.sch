@@ -390,7 +390,7 @@ U 1 1 5F0A9097
 P 755 4990
 F 0 "J2" H 675 4565 50  0000 C CNN
 F 1 "prog" H 900 4960 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Angled_1x04_Pitch2.54mm" H 755 4990 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 755 4990 50  0001 C CNN
 F 3 "~" H 755 4990 50  0001 C CNN
 	1    755  4990
 	-1   0    0    1   

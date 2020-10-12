@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 5
+Sheet 3 4
 Title ""
 Date ""
 Rev ""
@@ -28,10 +28,10 @@ F 3 "" H 3425 1375 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR039
+L allcolours_analogue-rescue:+12V-power #PWR043
 U 1 1 5C3AA48C
 P 2670 2265
-F 0 "#PWR039" H 2670 2115 50  0001 C CNN
+F 0 "#PWR043" H 2670 2115 50  0001 C CNN
 F 1 "+12V" H 2670 2390 50  0000 C CNN
 F 2 "" H 2670 2265 50  0000 C CNN
 F 3 "" H 2670 2265 50  0000 C CNN
@@ -39,10 +39,10 @@ F 3 "" H 2670 2265 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR040
+L allcolours_analogue-rescue:GND-power #PWR044
 U 1 1 5C3AA492
 P 3875 2575
-F 0 "#PWR040" H 3875 2325 50  0001 C CNN
+F 0 "#PWR044" H 3875 2325 50  0001 C CNN
 F 1 "GND" H 3875 2425 50  0000 C CNN
 F 2 "" H 3875 2575 50  0000 C CNN
 F 3 "" H 3875 2575 50  0000 C CNN
@@ -65,10 +65,10 @@ Wire Wire Line
 	3175 2775 3675 2775
 Connection ~ 3175 2375
 $Comp
-L power:-12V #PWR038
+L power:-12V #PWR042
 U 1 1 5C3AA4A4
 P 2590 2810
-F 0 "#PWR038" H 2590 2910 50  0001 C CNN
+F 0 "#PWR042" H 2590 2910 50  0001 C CNN
 F 1 "-12V" H 2605 2983 50  0000 C CNN
 F 2 "" H 2590 2810 50  0001 C CNN
 F 3 "" H 2590 2810 50  0001 C CNN
@@ -78,10 +78,10 @@ $EndComp
 Wire Wire Line
 	3675 2575 3875 2575
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C23
+L allcolours_analogue-rescue:CP1_Small-device C36
 U 1 1 5C3AA4AB
 P 2600 2450
-F 0 "C23" H 2610 2520 50  0000 L CNN
+F 0 "C36" H 2610 2520 50  0000 L CNN
 F 1 "10u" H 2610 2370 50  0000 L CNN
 F 2 "SMD_Packages:SMD-1206_Pol" H 2600 2450 50  0001 C CNN
 F 3 "" H 2600 2450 50  0000 C CNN
@@ -89,10 +89,10 @@ F 3 "" H 2600 2450 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C22
+L allcolours_analogue-rescue:CP1_Small-device C37
 U 1 1 5C3AA4B4
 P 3050 2800
-F 0 "C22" H 3060 2870 50  0000 L CNN
+F 0 "C37" H 3060 2870 50  0000 L CNN
 F 1 "10u" H 3060 2720 50  0000 L CNN
 F 2 "SMD_Packages:SMD-1206_Pol" H 3050 2800 50  0001 C CNN
 F 3 "" H 3050 2800 50  0000 C CNN

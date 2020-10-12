@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
+Sheet 1 4
 Title ""
 Date ""
 Rev ""
@@ -31,11 +31,5 @@ S 675  2200 1475 425
 U 5ED966D6
 F0 "control" 79
 F1 "control.sch" 79
-$EndSheet
-$Sheet
-S 765  3145 1405 560 
-U 5F86F8BD
-F0 "SIGNUM- move elsewhere" 50
-F1 "signum.sch" 50
 $EndSheet
 $EndSCHEMATC

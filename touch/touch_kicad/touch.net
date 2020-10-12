@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /root/projects/ERD_MODULES/all_colours/touch/touch_kicad/touch.sch)
-    (date "Wed 30 Sep 2020 20:34:50 CEST")
+    (date "Mon 12 Oct 2020 20:58:14 CEST")
     (tool "Eeschema 5.0.2+dfsg1-1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -1277,7 +1277,7 @@
       (tstamp 5F0632A4))
     (comp (ref J2)
       (value prog)
-      (footprint Pin_Headers:Pin_Header_Angled_1x04_Pitch2.54mm)
+      (footprint Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm)
       (datasheet ~)
       (libsource (lib Connector_Generic) (part Conn_01x04) (description "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"))
       (sheetpath (names /micro/) (tstamps /5EEBC3AA/))
