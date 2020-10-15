@@ -469,10 +469,6 @@ Wire Wire Line
 	3770 4595 3865 4595
 Text GLabel 3865 4595 2    50   Input ~ 0
 push
-Text GLabel 3830 4695 2    50   Input ~ 0
-pop
-Wire Wire Line
-	3770 4695 3830 4695
 Wire Wire Line
 	3770 4795 3875 4795
 Wire Wire Line

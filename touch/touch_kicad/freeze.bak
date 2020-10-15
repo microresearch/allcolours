@@ -14,8 +14,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Notes 1550 865  0    118  ~ 0
-add 4066 for touch input (freeze x10 and rec, play, push, pop = x14 which is 3x 4066)
+Text Notes 1005 1170 0    118  ~ 0
+add 4066 for touch input (freeze x10 and rec, play, push, pop = x14 which is 3x 4066)\nfreeze is now pull to +V so held to GND - inverted.\npop is gone and now just poush.pop and or rec/play variations
 $Comp
 L Device:R_Small R?
 U 1 1 5F118A01
@@ -88,17 +88,6 @@ F1
 Text GLabel 2775 1790 2    79   Input ~ 0
 FR1
 $Comp
-L power:+3.3V #PWR071
-U 1 1 5F118A1F
-P 1835 1490
-F 0 "#PWR071" H 1835 1340 50  0001 C CNN
-F 1 "+3.3V" H 1850 1663 50  0000 C CNN
-F 2 "" H 1835 1490 50  0001 C CNN
-F 3 "" H 1835 1490 50  0001 C CNN
-	1    1835 1490
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R?
 U 1 1 5F118A25
 P 1860 2270
@@ -151,17 +140,6 @@ Text GLabel 1760 2420 0    79   Input ~ 0
 F2
 Text GLabel 2800 2420 2    79   Input ~ 0
 FR2
-$Comp
-L power:+3.3V #PWR072
-U 1 1 5F118A3C
-P 1860 2120
-F 0 "#PWR072" H 1860 1970 50  0001 C CNN
-F 1 "+3.3V" H 1875 2293 50  0000 C CNN
-F 2 "" H 1860 2120 50  0001 C CNN
-F 3 "" H 1860 2120 50  0001 C CNN
-	1    1860 2120
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5F118A42
@@ -216,17 +194,6 @@ F3
 Text GLabel 2820 3265 2    79   Input ~ 0
 FR3
 $Comp
-L power:+3.3V #PWR073
-U 1 1 5F118A59
-P 1880 2965
-F 0 "#PWR073" H 1880 2815 50  0001 C CNN
-F 1 "+3.3V" H 1895 3138 50  0000 C CNN
-F 2 "" H 1880 2965 50  0001 C CNN
-F 3 "" H 1880 2965 50  0001 C CNN
-	1    1880 2965
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R?
 U 1 1 5F118A5F
 P 1905 3745
@@ -279,17 +246,6 @@ Text GLabel 1805 3895 0    79   Input ~ 0
 F4
 Text GLabel 2845 3895 2    79   Input ~ 0
 FR4
-$Comp
-L power:+3.3V #PWR074
-U 1 1 5F118A76
-P 1905 3595
-F 0 "#PWR074" H 1905 3445 50  0001 C CNN
-F 1 "+3.3V" H 1920 3768 50  0000 C CNN
-F 2 "" H 1905 3595 50  0001 C CNN
-F 3 "" H 1905 3595 50  0001 C CNN
-	1    1905 3595
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5F118A7C
@@ -344,17 +300,6 @@ F5
 Text GLabel 4445 1770 2    79   Input ~ 0
 FR5
 $Comp
-L power:+3.3V #PWR077
-U 1 1 5F118A93
-P 3505 1470
-F 0 "#PWR077" H 3505 1320 50  0001 C CNN
-F 1 "+3.3V" H 3520 1643 50  0000 C CNN
-F 2 "" H 3505 1470 50  0001 C CNN
-F 3 "" H 3505 1470 50  0001 C CNN
-	1    3505 1470
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R?
 U 1 1 5F118A99
 P 3530 2250
@@ -407,17 +352,6 @@ Text GLabel 3430 2400 0    79   Input ~ 0
 F6
 Text GLabel 4470 2400 2    79   Input ~ 0
 FR6
-$Comp
-L power:+3.3V #PWR078
-U 1 1 5F118AB0
-P 3530 2100
-F 0 "#PWR078" H 3530 1950 50  0001 C CNN
-F 1 "+3.3V" H 3545 2273 50  0000 C CNN
-F 2 "" H 3530 2100 50  0001 C CNN
-F 3 "" H 3530 2100 50  0001 C CNN
-	1    3530 2100
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R_Small R?
 U 1 1 5F118AB6
@@ -472,17 +406,6 @@ F7
 Text GLabel 4490 3245 2    79   Input ~ 0
 FR7
 $Comp
-L power:+3.3V #PWR079
-U 1 1 5F118ACD
-P 3550 2945
-F 0 "#PWR079" H 3550 2795 50  0001 C CNN
-F 1 "+3.3V" H 3565 3118 50  0000 C CNN
-F 2 "" H 3550 2945 50  0001 C CNN
-F 3 "" H 3550 2945 50  0001 C CNN
-	1    3550 2945
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R?
 U 1 1 5F118AD3
 P 3575 3725
@@ -535,17 +458,6 @@ Text GLabel 3475 3875 0    79   Input ~ 0
 F8
 Text GLabel 4515 3875 2    79   Input ~ 0
 FR8
-$Comp
-L power:+3.3V #PWR080
-U 1 1 5F118AEA
-P 3575 3575
-F 0 "#PWR080" H 3575 3425 50  0001 C CNN
-F 1 "+3.3V" H 3590 3748 50  0000 C CNN
-F 2 "" H 3575 3575 50  0001 C CNN
-F 3 "" H 3575 3575 50  0001 C CNN
-	1    3575 3575
-	1    0    0    -1  
-$EndComp
 $Comp
 L 4xxx:40106 U?
 U 1 1 5F118AF0
@@ -706,17 +618,6 @@ Frec
 Text GLabel 2875 4935 2    79   Input ~ 0
 rec
 $Comp
-L power:+3.3V #PWR075
-U 1 1 5F118B46
-P 1935 4635
-F 0 "#PWR075" H 1935 4485 50  0001 C CNN
-F 1 "+3.3V" H 1950 4808 50  0000 C CNN
-F 2 "" H 1935 4635 50  0001 C CNN
-F 3 "" H 1935 4635 50  0001 C CNN
-	1    1935 4635
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R?
 U 1 1 5F118B4C
 P 4220 4780
@@ -769,17 +670,6 @@ Text GLabel 4120 4930 0    79   Input ~ 0
 Fplay
 Text GLabel 5160 4930 2    79   Input ~ 0
 play
-$Comp
-L power:+3.3V #PWR081
-U 1 1 5F118B63
-P 4220 4630
-F 0 "#PWR081" H 4220 4480 50  0001 C CNN
-F 1 "+3.3V" H 4235 4803 50  0000 C CNN
-F 2 "" H 4220 4630 50  0001 C CNN
-F 3 "" H 4220 4630 50  0001 C CNN
-	1    4220 4630
-	1    0    0    -1  
-$EndComp
 $Comp
 L 4xxx:40106 U13
 U 7 1 5F24A7EC
@@ -906,81 +796,6 @@ Fpush
 Text GLabel 3180 5740 2    79   Input ~ 0
 push
 $Comp
-L power:+3.3V #PWR076
-U 1 1 5F2C3CBD
-P 2240 5440
-F 0 "#PWR076" H 2240 5290 50  0001 C CNN
-F 1 "+3.3V" H 2255 5613 50  0000 C CNN
-F 2 "" H 2240 5440 50  0001 C CNN
-F 3 "" H 2240 5440 50  0001 C CNN
-	1    2240 5440
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5F2C3CC3
-P 4225 5560
-AR Path="/5C0A69D0/5F2C3CC3" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5F2C3CC3" Ref="R?"  Part="1" 
-AR Path="/5F2C3CC3" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5F2C3CC3" Ref="R?"  Part="1" 
-AR Path="/5EBFD180/5F2C3CC3" Ref="R?"  Part="1" 
-AR Path="/5F0C4BC3/5F2C3CC3" Ref="R?"  Part="1" 
-AR Path="/5F0CAD2E/5F2C3CC3" Ref="R46"  Part="1" 
-F 0 "R46" H 4284 5606 50  0000 L CNN
-F 1 "1M" H 4284 5515 50  0000 L CNN
-F 2 "Resistors_SMD:R_0805" H 4225 5560 50  0001 C CNN
-F 3 "~" H 4225 5560 50  0001 C CNN
-	1    4225 5560
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4225 5410 4225 5460
-Wire Wire Line
-	4225 5660 4225 5710
-Wire Wire Line
-	4225 5710 4250 5710
-$Comp
-L Device:R_Small R?
-U 1 1 5F2C3CCD
-P 5025 5710
-AR Path="/5C0A69D0/5F2C3CCD" Ref="R?"  Part="1" 
-AR Path="/5E97CA7E/5F2C3CCD" Ref="R?"  Part="1" 
-AR Path="/5F2C3CCD" Ref="R?"  Part="1" 
-AR Path="/5EF10D95/5F2C3CCD" Ref="R?"  Part="1" 
-AR Path="/5EBFD180/5F2C3CCD" Ref="R?"  Part="1" 
-AR Path="/5F0C4BC3/5F2C3CCD" Ref="R?"  Part="1" 
-AR Path="/5F0CAD2E/5F2C3CCD" Ref="R52"  Part="1" 
-F 0 "R52" H 5084 5756 50  0000 L CNN
-F 1 "1K" H 5084 5665 50  0000 L CNN
-F 2 "Resistors_SMD:R_0805" H 5025 5710 50  0001 C CNN
-F 3 "~" H 5025 5710 50  0001 C CNN
-	1    5025 5710
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	4925 5710 4850 5710
-Wire Wire Line
-	5125 5710 5165 5710
-Wire Wire Line
-	4225 5710 4125 5710
-Connection ~ 4225 5710
-Text GLabel 4125 5710 0    79   Input ~ 0
-Fpop
-Text GLabel 5165 5710 2    79   Input ~ 0
-pop
-$Comp
-L power:+3.3V #PWR082
-U 1 1 5F2C3CDA
-P 4225 5410
-F 0 "#PWR082" H 4225 5260 50  0001 C CNN
-F 1 "+3.3V" H 4240 5583 50  0000 C CNN
-F 2 "" H 4225 5410 50  0001 C CNN
-F 3 "" H 4225 5410 50  0001 C CNN
-	1    4225 5410
-	1    0    0    -1  
-$EndComp
-$Comp
 L 4xxx:40106 U13
 U 6 1 5F2C8FE2
 P 2570 5740
@@ -994,17 +809,6 @@ $EndComp
 Connection ~ 2870 5740
 Wire Wire Line
 	2870 5740 2865 5740
-$Comp
-L 4xxx:40106 U14
-U 6 1 5F2C927C
-P 4550 5710
-F 0 "U14" H 4550 6027 50  0000 C CNN
-F 1 "40106" H 4550 5936 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 4550 5710 50  0001 C CNN
-F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4550 5710 50  0001 C CNN
-	6    4550 5710
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:C_Small C?
 U 1 1 5F38F66E
@@ -1089,4 +893,147 @@ F 3 "" H 9335 3405 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2240 5740 2270 5740
+$Comp
+L power:GND #PWR0101
+U 1 1 5F88EBEF
+P 1755 1490
+F 0 "#PWR0101" H 1755 1240 50  0001 C CNN
+F 1 "GND" H 1760 1317 50  0000 C CNN
+F 2 "" H 1755 1490 50  0001 C CNN
+F 3 "" H 1755 1490 50  0001 C CNN
+	1    1755 1490
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1755 1490 1835 1490
+$Comp
+L power:GND #PWR0102
+U 1 1 5F893FDD
+P 3425 1470
+F 0 "#PWR0102" H 3425 1220 50  0001 C CNN
+F 1 "GND" H 3430 1297 50  0000 C CNN
+F 2 "" H 3425 1470 50  0001 C CNN
+F 3 "" H 3425 1470 50  0001 C CNN
+	1    3425 1470
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3425 1470 3505 1470
+$Comp
+L power:GND #PWR0103
+U 1 1 5F8967A3
+P 1780 2120
+F 0 "#PWR0103" H 1780 1870 50  0001 C CNN
+F 1 "GND" H 1785 1947 50  0000 C CNN
+F 2 "" H 1780 2120 50  0001 C CNN
+F 3 "" H 1780 2120 50  0001 C CNN
+	1    1780 2120
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1780 2120 1860 2120
+$Comp
+L power:GND #PWR0104
+U 1 1 5F8984FE
+P 1800 2965
+F 0 "#PWR0104" H 1800 2715 50  0001 C CNN
+F 1 "GND" H 1805 2792 50  0000 C CNN
+F 2 "" H 1800 2965 50  0001 C CNN
+F 3 "" H 1800 2965 50  0001 C CNN
+	1    1800 2965
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1800 2965 1880 2965
+$Comp
+L power:GND #PWR0105
+U 1 1 5F89C1AB
+P 1825 3595
+F 0 "#PWR0105" H 1825 3345 50  0001 C CNN
+F 1 "GND" H 1830 3422 50  0000 C CNN
+F 2 "" H 1825 3595 50  0001 C CNN
+F 3 "" H 1825 3595 50  0001 C CNN
+	1    1825 3595
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1825 3595 1905 3595
+$Comp
+L power:GND #PWR0106
+U 1 1 5F89E0BE
+P 3495 3575
+F 0 "#PWR0106" H 3495 3325 50  0001 C CNN
+F 1 "GND" H 3500 3402 50  0000 C CNN
+F 2 "" H 3495 3575 50  0001 C CNN
+F 3 "" H 3495 3575 50  0001 C CNN
+	1    3495 3575
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3495 3575 3575 3575
+$Comp
+L power:GND #PWR0107
+U 1 1 5F8A0103
+P 3470 2945
+F 0 "#PWR0107" H 3470 2695 50  0001 C CNN
+F 1 "GND" H 3475 2772 50  0000 C CNN
+F 2 "" H 3470 2945 50  0001 C CNN
+F 3 "" H 3470 2945 50  0001 C CNN
+	1    3470 2945
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3470 2945 3550 2945
+$Comp
+L power:GND #PWR0108
+U 1 1 5F8A2321
+P 3450 2100
+F 0 "#PWR0108" H 3450 1850 50  0001 C CNN
+F 1 "GND" H 3455 1927 50  0000 C CNN
+F 2 "" H 3450 2100 50  0001 C CNN
+F 3 "" H 3450 2100 50  0001 C CNN
+	1    3450 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3450 2100 3530 2100
+$Comp
+L power:GND #PWR0109
+U 1 1 5F8A4861
+P 4140 4630
+F 0 "#PWR0109" H 4140 4380 50  0001 C CNN
+F 1 "GND" H 4145 4457 50  0000 C CNN
+F 2 "" H 4140 4630 50  0001 C CNN
+F 3 "" H 4140 4630 50  0001 C CNN
+	1    4140 4630
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4140 4630 4220 4630
+$Comp
+L power:GND #PWR0110
+U 1 1 5F8A6BCD
+P 1855 4635
+F 0 "#PWR0110" H 1855 4385 50  0001 C CNN
+F 1 "GND" H 1860 4462 50  0000 C CNN
+F 2 "" H 1855 4635 50  0001 C CNN
+F 3 "" H 1855 4635 50  0001 C CNN
+	1    1855 4635
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1855 4635 1935 4635
+$Comp
+L power:GND #PWR0111
+U 1 1 5F8A907B
+P 2160 5440
+F 0 "#PWR0111" H 2160 5190 50  0001 C CNN
+F 1 "GND" H 2165 5267 50  0000 C CNN
+F 2 "" H 2160 5440 50  0001 C CNN
+F 3 "" H 2160 5440 50  0001 C CNN
+	1    2160 5440
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2160 5440 2240 5440
 $EndSCHEMATC

@@ -414,47 +414,6 @@ F 3 "~" H 1525 1840 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1325 1840 1325 1865
-Text Notes 1525 2355 0    79   ~ 0
-\n
-$Comp
-L Connector_Generic:Conn_01x01 J18
-U 1 1 5F274DAB
-P 1670 2175
-F 0 "J18" H 1590 1950 50  0000 C CNN
-F 1 "Conn_01x01" H 1590 2041 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1670 2175 50  0001 C CNN
-F 3 "~" H 1670 2175 50  0001 C CNN
-	1    1670 2175
-	-1   0    0    1   
-$EndComp
-Text GLabel 1905 2175 2    50   Input ~ 0
-Fpop
-Wire Wire Line
-	1870 2175 1905 2175
-$Comp
-L power:GND #PWR0127
-U 1 1 5F274DB4
-P 1320 2200
-F 0 "#PWR0127" H 1320 1950 50  0001 C CNN
-F 1 "GND" H 1325 2027 50  0000 C CNN
-F 2 "" H 1320 2200 50  0001 C CNN
-F 3 "" H 1320 2200 50  0001 C CNN
-	1    1320 2200
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J14
-U 1 1 5F274DBA
-P 1520 2175
-F 0 "J14" H 1440 1950 50  0000 C CNN
-F 1 "Conn_01x01" H 1440 2041 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1520 2175 50  0001 C CNN
-F 3 "~" H 1520 2175 50  0001 C CNN
-	1    1520 2175
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1320 2175 1320 2200
 Text Notes 1055 3190 0    118  ~ 0
 [1]
 Text Notes 4000 3655 0    79   ~ 0
@@ -1288,4 +1247,6 @@ Wire Wire Line
 	6085 5885 6085 5910
 Text Notes 4205 5180 0    118  ~ 0
 [4]
+Text Notes 3110 1205 0    118  ~ 24
+This is top panel now...
 $EndSCHEMATC
