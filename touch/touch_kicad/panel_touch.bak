@@ -16,8 +16,8 @@ Comment4 ""
 $EndDescr
 Text Notes 780  3380 0    79   ~ 0
 \n
-Text Notes 7150 6290 0    118  ~ 0
-For panel we have 4 sets of:\n\n       C- feedback out from jack\n       |\nA---VCA---B [B is also mix from B pad]\n       |\n       0-adc voltage for A->B VCA\n       |\n       o-freeze\n       |\n       O-adc voltage for insert\n       |\n       o-freeze\n\n\n\n\nPlus rec,play, push and pop!\n\nTouch pads are A, B, C(out) 2x voltage sun/mooncrescent for\n VCA and for voltage insert, and two freezes.\n\nHere all is plain pads. \n6x\nA- out from A\nB- in to Bmix\nC- out from jack\n1-adcX/divider\n2-adcX/for voltage/divider\n2xfreeze - plain pad/crescent+V
+Text Notes 7165 5835 0    118  ~ 0
+For panel we have 4 sets of:\n\n       C- feedback out from jack\n       |\nA---VCA---B [B is also mix from B pad]\n       |\n       0-adc voltage for A->B VCA\n       |\n       o-freeze\n       |\n       O-adc voltage for insert\n       |\n       o-freeze\n\n\n\n\nPlus rec,play, push/pop!\n\nTouch pads are A, B, C(out) 2x voltage sun/mooncrescent for\n VCA and for voltage insert, and two freezes.\n\nHere all is plain pads. \n6x\nA- out from A\nB- in to Bmix\nC- out from jack\n1-adcX/divider\n2-adcX/for voltage/divider\n2xfreeze - plain pad/crescent+V
 $Comp
 L Connector_Generic:Conn_01x01 J3
 U 1 1 5F230F3E
@@ -207,8 +207,6 @@ F 3 "" H 1795 4075 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1795 4075 1795 4110
-Text Notes 3135 3595 0    79   ~ 0
-\n
 $Comp
 L Connector_Generic:Conn_01x01 J12
 U 1 1 5F263C71
@@ -224,32 +222,8 @@ Text GLabel 3515 3415 2    50   Input ~ 0
 F1
 Wire Wire Line
 	3480 3415 3515 3415
-$Comp
-L power:GND #PWR0125
-U 1 1 5F270988
-P 2930 3440
-F 0 "#PWR0125" H 2930 3190 50  0001 C CNN
-F 1 "GND" H 2935 3267 50  0000 C CNN
-F 2 "" H 2930 3440 50  0001 C CNN
-F 3 "" H 2930 3440 50  0001 C CNN
-	1    2930 3440
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J10
-U 1 1 5F263C78
-P 3130 3415
-F 0 "J10" H 3050 3190 50  0000 C CNN
-F 1 "Conn_01x01" H 3050 3281 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3130 3415 50  0001 C CNN
-F 3 "~" H 3130 3415 50  0001 C CNN
-	1    3130 3415
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2930 3415 2930 3440
 Text Notes 2725 3120 0    50   ~ 0
-freeze is to GND\n
+freeze is to GND\n\n
 Text Notes 3140 4075 0    79   ~ 0
 \n
 $Comp
@@ -267,30 +241,6 @@ Text GLabel 3520 3895 2    50   Input ~ 0
 F2
 Wire Wire Line
 	3485 3895 3520 3895
-$Comp
-L power:GND #PWR0126
-U 1 1 5F272F65
-P 2935 3920
-F 0 "#PWR0126" H 2935 3670 50  0001 C CNN
-F 1 "GND" H 2940 3747 50  0000 C CNN
-F 2 "" H 2935 3920 50  0001 C CNN
-F 3 "" H 2935 3920 50  0001 C CNN
-	1    2935 3920
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J11
-U 1 1 5F272F6B
-P 3135 3895
-F 0 "J11" H 3055 3670 50  0000 C CNN
-F 1 "Conn_01x01" H 3055 3761 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3135 3895 50  0001 C CNN
-F 3 "~" H 3135 3895 50  0001 C CNN
-	1    3135 3895
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2935 3895 2935 3920
 Text Notes 1535 1395 0    79   ~ 0
 \n
 $Comp
@@ -308,30 +258,6 @@ Text GLabel 1915 1215 2    50   Input ~ 0
 Frec
 Wire Wire Line
 	1880 1215 1915 1215
-$Comp
-L power:GND #PWR0130
-U 1 1 5F274524
-P 1330 1240
-F 0 "#PWR0130" H 1330 990 50  0001 C CNN
-F 1 "GND" H 1335 1067 50  0000 C CNN
-F 2 "" H 1330 1240 50  0001 C CNN
-F 3 "" H 1330 1240 50  0001 C CNN
-	1    1330 1240
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J17
-U 1 1 5F27452A
-P 1530 1215
-F 0 "J17" H 1450 990 50  0000 C CNN
-F 1 "Conn_01x01" H 1450 1081 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1530 1215 50  0001 C CNN
-F 3 "~" H 1530 1215 50  0001 C CNN
-	1    1530 1215
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1330 1215 1330 1240
 Text Notes 1530 1730 0    79   ~ 0
 \n
 $Comp
@@ -349,30 +275,6 @@ Text GLabel 1910 1550 2    50   Input ~ 0
 Fplay
 Wire Wire Line
 	1875 1550 1910 1550
-$Comp
-L power:GND #PWR0128
-U 1 1 5F274AAA
-P 1325 1575
-F 0 "#PWR0128" H 1325 1325 50  0001 C CNN
-F 1 "GND" H 1330 1402 50  0000 C CNN
-F 2 "" H 1325 1575 50  0001 C CNN
-F 3 "" H 1325 1575 50  0001 C CNN
-	1    1325 1575
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J15
-U 1 1 5F274AB0
-P 1525 1550
-F 0 "J15" H 1445 1325 50  0000 C CNN
-F 1 "Conn_01x01" H 1445 1416 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1525 1550 50  0001 C CNN
-F 3 "~" H 1525 1550 50  0001 C CNN
-	1    1525 1550
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1325 1550 1325 1575
 Text Notes 1530 2020 0    79   ~ 0
 \n
 $Comp
@@ -390,30 +292,6 @@ Text GLabel 1910 1840 2    50   Input ~ 0
 Fpush
 Wire Wire Line
 	1875 1840 1910 1840
-$Comp
-L power:GND #PWR0129
-U 1 1 5F274D9C
-P 1325 1865
-F 0 "#PWR0129" H 1325 1615 50  0001 C CNN
-F 1 "GND" H 1330 1692 50  0000 C CNN
-F 2 "" H 1325 1865 50  0001 C CNN
-F 3 "" H 1325 1865 50  0001 C CNN
-	1    1325 1865
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J16
-U 1 1 5F274DA2
-P 1525 1840
-F 0 "J16" H 1445 1615 50  0000 C CNN
-F 1 "Conn_01x01" H 1445 1706 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 1525 1840 50  0001 C CNN
-F 3 "~" H 1525 1840 50  0001 C CNN
-	1    1525 1840
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1325 1840 1325 1865
 Text Notes 1055 3190 0    118  ~ 0
 [1]
 Text Notes 4000 3655 0    79   ~ 0
@@ -624,32 +502,6 @@ Text GLabel 6700 3430 2    50   Input ~ 0
 F3
 Wire Wire Line
 	6665 3430 6700 3430
-$Comp
-L power:GND #PWR0213
-U 1 1 5F283F71
-P 6115 3455
-F 0 "#PWR0213" H 6115 3205 50  0001 C CNN
-F 1 "GND" H 6120 3282 50  0000 C CNN
-F 2 "" H 6115 3455 50  0001 C CNN
-F 3 "" H 6115 3455 50  0001 C CNN
-	1    6115 3455
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J66
-U 1 1 5F283F77
-P 6315 3430
-F 0 "J66" H 6235 3205 50  0000 C CNN
-F 1 "Conn_01x01" H 6235 3296 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6315 3430 50  0001 C CNN
-F 3 "~" H 6315 3430 50  0001 C CNN
-	1    6315 3430
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6115 3430 6115 3455
-Text Notes 5910 3135 0    50   ~ 0
-freeze is to GND\n
 Text Notes 6325 4090 0    79   ~ 0
 \n
 $Comp
@@ -667,30 +519,6 @@ Text GLabel 6705 3910 2    50   Input ~ 0
 F4
 Wire Wire Line
 	6670 3910 6705 3910
-$Comp
-L power:GND #PWR0215
-U 1 1 5F283F8A
-P 6120 3935
-F 0 "#PWR0215" H 6120 3685 50  0001 C CNN
-F 1 "GND" H 6125 3762 50  0000 C CNN
-F 2 "" H 6120 3935 50  0001 C CNN
-F 3 "" H 6120 3935 50  0001 C CNN
-	1    6120 3935
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J68
-U 1 1 5F283F90
-P 6320 3910
-F 0 "J68" H 6240 3685 50  0000 C CNN
-F 1 "Conn_01x01" H 6240 3776 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6320 3910 50  0001 C CNN
-F 3 "~" H 6320 3910 50  0001 C CNN
-	1    6320 3910
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6120 3910 6120 3935
 Text Notes 4240 3205 0    118  ~ 0
 [2]
 Text Notes 780  5615 0    79   ~ 0
@@ -901,32 +729,6 @@ Text GLabel 3480 5390 2    50   Input ~ 0
 F5
 Wire Wire Line
 	3445 5390 3480 5390
-$Comp
-L power:GND #PWR0197
-U 1 1 5F285297
-P 2895 5415
-F 0 "#PWR0197" H 2895 5165 50  0001 C CNN
-F 1 "GND" H 2900 5242 50  0000 C CNN
-F 2 "" H 2895 5415 50  0001 C CNN
-F 3 "" H 2895 5415 50  0001 C CNN
-	1    2895 5415
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J37
-U 1 1 5F28529D
-P 3095 5390
-F 0 "J37" H 3015 5165 50  0000 C CNN
-F 1 "Conn_01x01" H 3015 5256 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3095 5390 50  0001 C CNN
-F 3 "~" H 3095 5390 50  0001 C CNN
-	1    3095 5390
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2895 5390 2895 5415
-Text Notes 2690 5095 0    50   ~ 0
-freeze is to GND\n
 Text Notes 3105 6050 0    79   ~ 0
 \n
 $Comp
@@ -944,30 +746,6 @@ Text GLabel 3485 5870 2    50   Input ~ 0
 F6
 Wire Wire Line
 	3450 5870 3485 5870
-$Comp
-L power:GND #PWR0198
-U 1 1 5F2852B0
-P 2900 5895
-F 0 "#PWR0198" H 2900 5645 50  0001 C CNN
-F 1 "GND" H 2905 5722 50  0000 C CNN
-F 2 "" H 2900 5895 50  0001 C CNN
-F 3 "" H 2900 5895 50  0001 C CNN
-	1    2900 5895
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J38
-U 1 1 5F2852B6
-P 3100 5870
-F 0 "J38" H 3020 5645 50  0000 C CNN
-F 1 "Conn_01x01" H 3020 5736 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3100 5870 50  0001 C CNN
-F 3 "~" H 3100 5870 50  0001 C CNN
-	1    3100 5870
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2900 5870 2900 5895
 Text Notes 1020 5165 0    118  ~ 0
 [3]
 Text Notes 3965 5630 0    79   ~ 0
@@ -1161,8 +939,6 @@ F 3 "" H 4945 6065 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4945 6065 4945 6100
-Text Notes 6285 5585 0    79   ~ 0
-\n
 $Comp
 L Connector_Generic:Conn_01x01 J73
 U 1 1 5F285330
@@ -1178,32 +954,6 @@ Text GLabel 6665 5405 2    50   Input ~ 0
 F7
 Wire Wire Line
 	6630 5405 6665 5405
-$Comp
-L power:GND #PWR0214
-U 1 1 5F285339
-P 6080 5430
-F 0 "#PWR0214" H 6080 5180 50  0001 C CNN
-F 1 "GND" H 6085 5257 50  0000 C CNN
-F 2 "" H 6080 5430 50  0001 C CNN
-F 3 "" H 6080 5430 50  0001 C CNN
-	1    6080 5430
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x01 J67
-U 1 1 5F28533F
-P 6280 5405
-F 0 "J67" H 6200 5180 50  0000 C CNN
-F 1 "Conn_01x01" H 6200 5271 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6280 5405 50  0001 C CNN
-F 3 "~" H 6280 5405 50  0001 C CNN
-	1    6280 5405
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6080 5405 6080 5430
-Text Notes 5875 5110 0    50   ~ 0
-freeze is to GND\n
 Text Notes 6290 6065 0    79   ~ 0
 \n
 $Comp
@@ -1221,17 +971,36 @@ Text GLabel 6670 5885 2    50   Input ~ 0
 F8
 Wire Wire Line
 	6635 5885 6670 5885
+Text Notes 4205 5180 0    118  ~ 0
+[4]
+Text Notes 830  845  0    118  ~ 24
+This is top panel now... with header/what kind or lower panel
+Wire Wire Line
+	6120 3910 6120 3935
 $Comp
-L power:GND #PWR0216
-U 1 1 5F285352
-P 6085 5910
-F 0 "#PWR0216" H 6085 5660 50  0001 C CNN
-F 1 "GND" H 6090 5737 50  0000 C CNN
-F 2 "" H 6085 5910 50  0001 C CNN
-F 3 "" H 6085 5910 50  0001 C CNN
-	1    6085 5910
+L Connector_Generic:Conn_01x01 J68
+U 1 1 5F283F90
+P 6320 3910
+F 0 "J68" H 6240 3685 50  0000 C CNN
+F 1 "Conn_01x01" H 6240 3776 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6320 3910 50  0001 C CNN
+F 3 "~" H 6320 3910 50  0001 C CNN
+	1    6320 3910
 	1    0    0    -1  
 $EndComp
+$Comp
+L power:GND #PWR0215
+U 1 1 5F283F8A
+P 6120 3935
+F 0 "#PWR0215" H 6120 3685 50  0001 C CNN
+F 1 "GND" H 6125 3762 50  0000 C CNN
+F 2 "" H 6120 3935 50  0001 C CNN
+F 3 "" H 6120 3935 50  0001 C CNN
+	1    6120 3935
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6085 5885 6085 5910
 $Comp
 L Connector_Generic:Conn_01x01 J69
 U 1 1 5F285358
@@ -1243,10 +1012,173 @@ F 3 "~" H 6285 5885 50  0001 C CNN
 	1    6285 5885
 	1    0    0    -1  
 $EndComp
+$Comp
+L power:GND #PWR0216
+U 1 1 5F285352
+P 6085 5910
+F 0 "#PWR0216" H 6085 5660 50  0001 C CNN
+F 1 "GND" H 6090 5737 50  0000 C CNN
+F 2 "" H 6085 5910 50  0001 C CNN
+F 3 "" H 6085 5910 50  0001 C CNN
+	1    6085 5910
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	6085 5885 6085 5910
-Text Notes 4205 5180 0    118  ~ 0
-[4]
-Text Notes 3110 1205 0    118  ~ 24
-This is top panel now...
+	6080 5405 6080 5430
+$Comp
+L Connector_Generic:Conn_01x01 J67
+U 1 1 5F28533F
+P 6280 5405
+F 0 "J67" H 6200 5180 50  0000 C CNN
+F 1 "Conn_01x01" H 6200 5271 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6280 5405 50  0001 C CNN
+F 3 "~" H 6280 5405 50  0001 C CNN
+	1    6280 5405
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0214
+U 1 1 5F285339
+P 6080 5430
+F 0 "#PWR0214" H 6080 5180 50  0001 C CNN
+F 1 "GND" H 6085 5257 50  0000 C CNN
+F 2 "" H 6080 5430 50  0001 C CNN
+F 3 "" H 6080 5430 50  0001 C CNN
+	1    6080 5430
+	1    0    0    -1  
+$EndComp
+Text Notes 6285 5585 0    79   ~ 0
+\n
+Wire Wire Line
+	2900 5870 2900 5895
+$Comp
+L Connector_Generic:Conn_01x01 J38
+U 1 1 5F2852B6
+P 3100 5870
+F 0 "J38" H 3020 5645 50  0000 C CNN
+F 1 "Conn_01x01" H 3020 5736 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3100 5870 50  0001 C CNN
+F 3 "~" H 3100 5870 50  0001 C CNN
+	1    3100 5870
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0198
+U 1 1 5F2852B0
+P 2900 5895
+F 0 "#PWR0198" H 2900 5645 50  0001 C CNN
+F 1 "GND" H 2905 5722 50  0000 C CNN
+F 2 "" H 2900 5895 50  0001 C CNN
+F 3 "" H 2900 5895 50  0001 C CNN
+	1    2900 5895
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2895 5390 2895 5415
+$Comp
+L Connector_Generic:Conn_01x01 J37
+U 1 1 5F28529D
+P 3095 5390
+F 0 "J37" H 3015 5165 50  0000 C CNN
+F 1 "Conn_01x01" H 3015 5256 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3095 5390 50  0001 C CNN
+F 3 "~" H 3095 5390 50  0001 C CNN
+	1    3095 5390
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0197
+U 1 1 5F285297
+P 2895 5415
+F 0 "#PWR0197" H 2895 5165 50  0001 C CNN
+F 1 "GND" H 2900 5242 50  0000 C CNN
+F 2 "" H 2895 5415 50  0001 C CNN
+F 3 "" H 2895 5415 50  0001 C CNN
+	1    2895 5415
+	1    0    0    -1  
+$EndComp
+Text Notes 2690 5095 0    50   ~ 0
+freeze is to GND\n
+Text Notes 5875 5110 0    50   ~ 0
+freeze is to GND\n
+Text Notes 5910 3135 0    50   ~ 0
+freeze is to GND\n
+Wire Wire Line
+	6115 3430 6115 3455
+$Comp
+L Connector_Generic:Conn_01x01 J66
+U 1 1 5F283F77
+P 6315 3430
+F 0 "J66" H 6235 3205 50  0000 C CNN
+F 1 "Conn_01x01" H 6235 3296 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6315 3430 50  0001 C CNN
+F 3 "~" H 6315 3430 50  0001 C CNN
+	1    6315 3430
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0213
+U 1 1 5F283F71
+P 6115 3455
+F 0 "#PWR0213" H 6115 3205 50  0001 C CNN
+F 1 "GND" H 6120 3282 50  0000 C CNN
+F 2 "" H 6115 3455 50  0001 C CNN
+F 3 "" H 6115 3455 50  0001 C CNN
+	1    6115 3455
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2935 3895 2935 3920
+$Comp
+L Connector_Generic:Conn_01x01 J11
+U 1 1 5F272F6B
+P 3135 3895
+F 0 "J11" H 3055 3670 50  0000 C CNN
+F 1 "Conn_01x01" H 3055 3761 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3135 3895 50  0001 C CNN
+F 3 "~" H 3135 3895 50  0001 C CNN
+	1    3135 3895
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0126
+U 1 1 5F272F65
+P 2935 3920
+F 0 "#PWR0126" H 2935 3670 50  0001 C CNN
+F 1 "GND" H 2940 3747 50  0000 C CNN
+F 2 "" H 2935 3920 50  0001 C CNN
+F 3 "" H 2935 3920 50  0001 C CNN
+	1    2935 3920
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2930 3415 2930 3440
+$Comp
+L Connector_Generic:Conn_01x01 J10
+U 1 1 5F263C78
+P 3130 3415
+F 0 "J10" H 3050 3190 50  0000 C CNN
+F 1 "Conn_01x01" H 3050 3281 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3130 3415 50  0001 C CNN
+F 3 "~" H 3130 3415 50  0001 C CNN
+	1    3130 3415
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0125
+U 1 1 5F270988
+P 2930 3440
+F 0 "#PWR0125" H 2930 3190 50  0001 C CNN
+F 1 "GND" H 2935 3267 50  0000 C CNN
+F 2 "" H 2930 3440 50  0001 C CNN
+F 3 "" H 2930 3440 50  0001 C CNN
+	1    2930 3440
+	1    0    0    -1  
+$EndComp
+Text Notes 3135 3595 0    79   ~ 0
+\n
+Text Notes 2170 1500 0    50   ~ 10
+These are now to +3.3v which is on central circle!
+Text Notes 1200 4560 0    50   ~ 10
+central circle is +3,3V
 $EndSCHEMATC

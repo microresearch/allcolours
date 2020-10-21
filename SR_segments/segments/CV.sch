@@ -23,7 +23,7 @@ AR Path="/5E933887/5F8F146E" Ref="U?"  Part="1"
 AR Path="/5F8E1429/5F8F146E" Ref="U9"  Part="1" 
 F 0 "U9" H 3600 1290 50  0000 L CNN
 F 1 "MCP6002" H 3545 1050 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 3545 1150 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 3545 1150 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 3545 1150 50  0001 C CNN
 	1    3545 1150
 	1    0    0    -1  
@@ -251,7 +251,7 @@ AR Path="/5E933887/5F8F14DC" Ref="U?"  Part="2"
 AR Path="/5F8E1429/5F8F14DC" Ref="U11"  Part="1" 
 F 0 "U11" H 5905 1320 50  0000 L CNN
 F 1 "MCP6002" H 5850 1080 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 5850 1180 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5850 1180 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5850 1180 50  0001 C CNN
 	1    5850 1180
 	1    0    0    -1  
@@ -491,7 +491,7 @@ AR Path="/5E933887/5F909C58" Ref="U?"  Part="1"
 AR Path="/5F8E1429/5F909C58" Ref="U10"  Part="1" 
 F 0 "U10" H 3700 3070 50  0000 L CNN
 F 1 "MCP6002" H 3645 2830 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 3645 2930 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 3645 2930 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 3645 2930 50  0001 C CNN
 	1    3645 2930
 	1    0    0    -1  
@@ -671,7 +671,7 @@ AR Path="/5E933887/5F909CB0" Ref="U?"  Part="2"
 AR Path="/5F8E1429/5F909CB0" Ref="U12"  Part="1" 
 F 0 "U12" H 6005 3100 50  0000 L CNN
 F 1 "MCP6002" H 5950 2860 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 5950 2960 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5950 2960 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5950 2960 50  0001 C CNN
 	1    5950 2960
 	1    0    0    -1  
@@ -865,7 +865,7 @@ AR Path="/5E933887/5F90D3A4" Ref="U?"  Part="1"
 AR Path="/5F8E1429/5F90D3A4" Ref="U10"  Part="2" 
 F 0 "U10" H 3710 4770 50  0000 L CNN
 F 1 "MCP6002" H 3655 4530 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 3655 4630 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 3655 4630 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 3655 4630 50  0001 C CNN
 	2    3655 4630
 	1    0    0    -1  
@@ -1045,7 +1045,7 @@ AR Path="/5E933887/5F90D3FC" Ref="U?"  Part="2"
 AR Path="/5F8E1429/5F90D3FC" Ref="U12"  Part="2" 
 F 0 "U12" H 6015 4800 50  0000 L CNN
 F 1 "MCP6002" H 5960 4560 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 5960 4660 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5960 4660 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5960 4660 50  0001 C CNN
 	2    5960 4660
 	1    0    0    -1  
@@ -1275,7 +1275,7 @@ AR Path="/5E933887/5F914D11" Ref="U?"  Part="1"
 AR Path="/5F8E1429/5F914D11" Ref="U9"  Part="2" 
 F 0 "U9" H 3695 6440 50  0000 L CNN
 F 1 "MCP6002" H 3640 6200 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 3640 6300 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 3640 6300 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 3640 6300 50  0001 C CNN
 	2    3640 6300
 	1    0    0    -1  
@@ -1455,7 +1455,7 @@ AR Path="/5E933887/5F914D69" Ref="U?"  Part="2"
 AR Path="/5F8E1429/5F914D69" Ref="U11"  Part="2" 
 F 0 "U11" H 6000 6470 50  0000 L CNN
 F 1 "MCP6002" H 5945 6230 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 5945 6330 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5945 6330 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf" H 5945 6330 50  0001 C CNN
 	2    5945 6330
 	1    0    0    -1  

@@ -307,7 +307,7 @@ U 1 1 5BD13CF3
 P 8900 3425
 F 0 "U10" V 8854 4366 50  0000 L CNN
 F 1 "4051" V 8945 4366 50  0000 L CNN
-F 2 "SMD_Packages:SO-16-N" H 8900 3425 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 8900 3425 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4051bms-52bms-53bms.pdf" H 8900 3425 50  0001 C CNN
 	1    8900 3425
 	0    1    1    0   
@@ -768,7 +768,7 @@ U 1 1 5EAFE965
 P 2005 6235
 F 0 "U1" H 2105 6460 50  0000 L CNN
 F 1 "TL071" H 2055 6560 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 2055 6285 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 2055 6285 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2155 6385 50  0001 C CNN
 	1    2005 6235
 	1    0    0    -1  
@@ -1454,7 +1454,7 @@ U 1 1 5BC901A7
 P 5015 5760
 F 0 "U6" H 5165 6010 50  0000 L CNN
 F 1 "TL071" H 5115 5910 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 5065 5810 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5065 5810 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5165 5910 50  0001 C CNN
 	1    5015 5760
 	1    0    0    -1  
@@ -1649,7 +1649,7 @@ U 1 1 5F7AB50F
 P 2100 1650
 F 0 "U2" H 2100 1967 50  0000 C CNN
 F 1 "4069" H 2100 1876 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2100 1650 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2100 1650 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 2100 1650 50  0001 C CNN
 	1    2100 1650
 	1    0    0    -1  
@@ -1689,7 +1689,7 @@ U 1 1 5F840FC8
 P 3425 1650
 F 0 "U5" H 3425 1967 50  0000 C CNN
 F 1 "4069" H 3425 1876 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3425 1650 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3425 1650 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 3425 1650 50  0001 C CNN
 	1    3425 1650
 	1    0    0    -1  
@@ -1700,7 +1700,7 @@ U 1 1 5F8410D0
 P 5100 1550
 F 0 "U7" H 5100 1867 50  0000 C CNN
 F 1 "4069" H 5100 1776 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 5100 1550 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 5100 1550 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 5100 1550 50  0001 C CNN
 	1    5100 1550
 	1    0    0    -1  
@@ -1711,7 +1711,7 @@ U 1 1 5F8734E9
 P 8175 1500
 F 0 "U9" H 8175 1817 50  0000 C CNN
 F 1 "4069" H 8175 1726 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 8175 1500 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 8175 1500 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 8175 1500 50  0001 C CNN
 	1    8175 1500
 	1    0    0    -1  
@@ -1805,7 +1805,7 @@ U 7 1 5F890CAC
 P 10135 1610
 F 0 "U7" H 10365 1656 50  0000 L CNN
 F 1 "4069" H 10365 1565 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 10135 1610 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 10135 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 10135 1610 50  0001 C CNN
 	7    10135 1610
 	1    0    0    -1  
@@ -1816,7 +1816,7 @@ U 7 1 5F890DEC
 P 10585 1610
 F 0 "U9" H 10815 1656 50  0000 L CNN
 F 1 "4069" H 10815 1565 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 10585 1610 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 10585 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 10585 1610 50  0001 C CNN
 	7    10585 1610
 	1    0    0    -1  
@@ -1827,7 +1827,7 @@ U 7 1 5F890F0D
 P 9690 1610
 F 0 "U5" H 9920 1656 50  0000 L CNN
 F 1 "4069" H 9920 1565 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 9690 1610 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 9690 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 9690 1610 50  0001 C CNN
 	7    9690 1610
 	1    0    0    -1  
@@ -1838,7 +1838,7 @@ U 7 1 5F89121D
 P 9200 1610
 F 0 "U2" H 9430 1656 50  0000 L CNN
 F 1 "4069" H 9430 1565 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 9200 1610 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 9200 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 9200 1610 50  0001 C CNN
 	7    9200 1610
 	1    0    0    -1  
@@ -1887,8 +1887,6 @@ Connection ~ 9730 1110
 Connection ~ 10135 1110
 Wire Wire Line
 	10135 1110 10585 1110
-Text Notes 4045 695  0    79   ~ 0
-where do we take OUT from?
 Wire Wire Line
 	8025 5080 8120 5080
 Text GLabel 8120 5080 2    79   Input ~ 0
