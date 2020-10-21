@@ -1887,10 +1887,12 @@ Connection ~ 9730 1110
 Connection ~ 10135 1110
 Wire Wire Line
 	10135 1110 10585 1110
-Text Notes 4045 695  0    79   ~ 0
-where do we take OUT from?
 Wire Wire Line
 	8025 5080 8120 5080
 Text GLabel 8120 5080 2    79   Input ~ 0
 IN
+Wire Wire Line
+	4125 1550 4125 1375
+Text Label 4125 1375 0    50   ~ 0
+OUT
 $EndSCHEMATC

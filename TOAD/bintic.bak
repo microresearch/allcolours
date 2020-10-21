@@ -1649,7 +1649,7 @@ U 1 1 5F7AB50F
 P 2100 1650
 F 0 "U2" H 2100 1967 50  0000 C CNN
 F 1 "4069" H 2100 1876 50  0000 C CNN
-F 2 "" H 2100 1650 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 2100 1650 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 2100 1650 50  0001 C CNN
 	1    2100 1650
 	1    0    0    -1  
@@ -1660,7 +1660,7 @@ U 1 1 5F7AEB2D
 P 4280 5860
 F 0 "C14" V 4505 5860 50  0000 C CNN
 F 1 "10uF" V 4414 5860 50  0000 C CNN
-F 2 "" H 4280 5860 50  0001 C CNN
+F 2 "SMD_Packages:SMD-1206_Pol" H 4280 5860 50  0001 C CNN
 F 3 "~" H 4280 5860 50  0001 C CNN
 	1    4280 5860
 	0    -1   -1   0   
@@ -1689,7 +1689,7 @@ U 1 1 5F840FC8
 P 3425 1650
 F 0 "U5" H 3425 1967 50  0000 C CNN
 F 1 "4069" H 3425 1876 50  0000 C CNN
-F 2 "" H 3425 1650 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 3425 1650 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 3425 1650 50  0001 C CNN
 	1    3425 1650
 	1    0    0    -1  
@@ -1700,7 +1700,7 @@ U 1 1 5F8410D0
 P 5100 1550
 F 0 "U7" H 5100 1867 50  0000 C CNN
 F 1 "4069" H 5100 1776 50  0000 C CNN
-F 2 "" H 5100 1550 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 5100 1550 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 5100 1550 50  0001 C CNN
 	1    5100 1550
 	1    0    0    -1  
@@ -1711,7 +1711,7 @@ U 1 1 5F8734E9
 P 8175 1500
 F 0 "U9" H 8175 1817 50  0000 C CNN
 F 1 "4069" H 8175 1726 50  0000 C CNN
-F 2 "" H 8175 1500 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 8175 1500 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 8175 1500 50  0001 C CNN
 	1    8175 1500
 	1    0    0    -1  
@@ -1739,7 +1739,7 @@ U 1 1 5F7EAF23
 P 1600 1750
 F 0 "C1" V 1371 1750 50  0000 C CNN
 F 1 "220N" V 1462 1750 50  0000 C CNN
-F 2 "" H 1600 1750 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 1600 1750 50  0001 C CNN
 F 3 "~" H 1600 1750 50  0001 C CNN
 	1    1600 1750
 	0    1    1    0   
@@ -1805,7 +1805,7 @@ U 7 1 5F890CAC
 P 10135 1610
 F 0 "U7" H 10365 1656 50  0000 L CNN
 F 1 "4069" H 10365 1565 50  0000 L CNN
-F 2 "" H 10135 1610 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 10135 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 10135 1610 50  0001 C CNN
 	7    10135 1610
 	1    0    0    -1  
@@ -1816,7 +1816,7 @@ U 7 1 5F890DEC
 P 10585 1610
 F 0 "U9" H 10815 1656 50  0000 L CNN
 F 1 "4069" H 10815 1565 50  0000 L CNN
-F 2 "" H 10585 1610 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 10585 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 10585 1610 50  0001 C CNN
 	7    10585 1610
 	1    0    0    -1  
@@ -1827,7 +1827,7 @@ U 7 1 5F890F0D
 P 9690 1610
 F 0 "U5" H 9920 1656 50  0000 L CNN
 F 1 "4069" H 9920 1565 50  0000 L CNN
-F 2 "" H 9690 1610 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 9690 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 9690 1610 50  0001 C CNN
 	7    9690 1610
 	1    0    0    -1  
@@ -1838,7 +1838,7 @@ U 7 1 5F89121D
 P 9200 1610
 F 0 "U2" H 9430 1656 50  0000 L CNN
 F 1 "4069" H 9430 1565 50  0000 L CNN
-F 2 "" H 9200 1610 50  0001 C CNN
+F 2 "SMD_Packages:SOIC-14_N" H 9200 1610 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4069ubms.pdf" H 9200 1610 50  0001 C CNN
 	7    9200 1610
 	1    0    0    -1  
@@ -1893,4 +1893,8 @@ Wire Wire Line
 	8025 5080 8120 5080
 Text GLabel 8120 5080 2    79   Input ~ 0
 IN
+Wire Wire Line
+	4125 1550 4125 1375
+Text Label 4125 1375 0    50   ~ 0
+OUT
 $EndSCHEMATC
