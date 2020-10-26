@@ -29,19 +29,13 @@ F0 "euro_touch" 118
 F1 "euro_touch.sch" 118
 $EndSheet
 $Sheet
-S 715  4590 1715 455 
-U 5EBFD183
-F0 "panel_touch" 79
-F1 "panel_touch.sch" 118
-$EndSheet
-$Sheet
-S 790  5505 1710 520 
+S 715  4320 1710 520 
 U 5EEBC3AA
 F0 "micro" 79
 F1 "micro.sch" 79
 $EndSheet
 $Sheet
-S 2665 4610 1925 395 
+S 2715 3575 1925 395 
 U 5EED47D5
 F0 "mixetc" 79
 F1 "mixetc.sch" 79
@@ -53,7 +47,7 @@ F0 "IOjacks" 79
 F1 "IOjacks.sch" 79
 $EndSheet
 $Sheet
-S 2790 5445 1780 470 
+S 2655 4290 1780 470 
 U 5F0CAD2E
 F0 "freeze" 79
 F1 "freeze.sch" 79
@@ -62,4 +56,10 @@ Text Notes 895  6375 0    118  ~ 0
 \nNotes: that frozen levels are saved to a stack and can be popped off the stack, various over-rides...
 Text Notes 6085 4805 0    118  ~ 24
        C- feedback out from jack\n       |\nA---VCA---B [B is also mix from B pad]\n       |\n       0-adc voltage for A->B VCA\n       |\n       o-freeze\n       |\n       O-adc voltage for insert\n       |\n       o-freeze\n\n\n
+$Sheet
+S 725  5170 1720 480 
+U 5F99750E
+F0 "panel_connector" 50
+F1 "panel_connector.sch" 50
+$EndSheet
 $EndSCHEMATC
