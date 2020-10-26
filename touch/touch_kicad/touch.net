@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /root/projects/ERD_MODULES/all_colours/touch/touch_kicad/touch.sch)
-    (date "Mon 26 Oct 2020 23:35:54 CET")
+    (date "Mon 26 Oct 2020 23:43:41 CET")
     (tool "Eeschema 5.0.2+dfsg1-1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -1130,7 +1130,7 @@
       (tstamp 5F394F21))
     (comp (ref J3)
       (value Conn_02x20_Counter_Clockwise)
-      (footprint Pin_Headers:Pin_Header_Straight_2x20_Pitch2.54mm_SMD)
+      (footprint Pin_Headers:Pin_Header_Straight_2x20_Pitch2.54mm)
       (datasheet ~)
       (libsource (lib Connector_Generic) (part Conn_02x20_Odd_Even) (description "Generic connector, double row, 02x20, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"))
       (sheetpath (names /panel_connector/) (tstamps /5F99750E/))
