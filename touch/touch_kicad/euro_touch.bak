@@ -22,7 +22,7 @@ U 1 1 5F0C50E3
 P 2005 2345
 F 0 "U6" H 2546 2391 50  0000 L CNN
 F 1 "4051" H 2546 2300 50  0000 L CNN
-F 2 "SMD_Packages:SO-16-N" H 2005 2345 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 2005 2345 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4051bms-52bms-53bms.pdf" H 2005 2345 50  0001 C CNN
 	1    2005 2345
 	1    0    0    -1  
@@ -112,7 +112,7 @@ U 1 1 5EEBD5B4
 P 1445 4075
 F 0 "U4" H 1445 4442 50  0000 C CNN
 F 1 "TL074" H 1445 4351 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 1395 4175 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 1395 4175 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1495 4275 50  0001 C CNN
 	1    1445 4075
 	1    0    0    -1  
@@ -123,7 +123,7 @@ U 2 1 5EEBD68B
 P 2745 4085
 F 0 "U3" H 2745 4452 50  0000 C CNN
 F 1 "TL074" H 2745 4361 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2695 4185 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2695 4185 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2795 4285 50  0001 C CNN
 	2    2745 4085
 	1    0    0    -1  
@@ -134,7 +134,7 @@ U 3 1 5EEBD796
 P 1445 4660
 F 0 "U4" H 1445 5027 50  0000 C CNN
 F 1 "TL074" H 1445 4936 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 1395 4760 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 1395 4760 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1495 4860 50  0001 C CNN
 	3    1445 4660
 	1    0    0    -1  
@@ -145,7 +145,7 @@ U 4 1 5EEBD887
 P 2745 4630
 F 0 "U3" H 2745 4997 50  0000 C CNN
 F 1 "TL074" H 2745 4906 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2695 4730 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2695 4730 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2795 4830 50  0001 C CNN
 	4    2745 4630
 	1    0    0    -1  
@@ -156,7 +156,7 @@ U 5 1 5EEBD93D
 P 3815 4720
 F 0 "U4" H 3773 4766 50  0000 L CNN
 F 1 "TL074" H 3773 4675 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3765 4820 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3765 4820 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3865 4920 50  0001 C CNN
 	5    3815 4720
 	1    0    0    -1  
@@ -361,7 +361,7 @@ U 2 1 5F0C50F5
 P 3765 1705
 F 0 "U8" H 3665 2053 50  0000 C CNN
 F 1 "LM13700" H 3665 1962 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 3465 1730 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 3465 1730 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 3465 1730 50  0001 C CNN
 	2    3765 1705
 	1    0    0    -1  
@@ -372,7 +372,7 @@ U 3 1 5F0C50F6
 P 9860 1900
 F 0 "U8" H 9860 2267 50  0000 C CNN
 F 1 "LM13700" H 9860 2176 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 9560 1925 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 9560 1925 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 9560 1925 50  0001 C CNN
 	3    9860 1900
 	1    0    0    -1  
@@ -383,7 +383,7 @@ U 4 1 5F0C50F7
 P 4450 1740
 F 0 "U8" H 4350 2088 50  0000 C CNN
 F 1 "LM13700" H 4350 1997 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 4150 1765 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 4150 1765 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 4150 1765 50  0001 C CNN
 	4    4450 1740
 	1    0    0    -1  
@@ -394,7 +394,7 @@ U 5 1 5F0C50F8
 P 5335 2815
 F 0 "U7" H 5293 2861 50  0000 L CNN
 F 1 "LM13700" H 5293 2770 50  0000 L CNN
-F 2 "SMD_Packages:SO-16-N" H 5035 2840 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 5035 2840 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 5035 2840 50  0001 C CNN
 	5    5335 2815
 	1    0    0    -1  
@@ -459,7 +459,7 @@ U 1 1 5EECFBFD
 P 7490 1775
 F 0 "U5" H 7525 2025 50  0000 C CNN
 F 1 "TL074" H 7525 1940 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 7440 1875 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 7440 1875 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7540 1975 50  0001 C CNN
 	1    7490 1775
 	1    0    0    -1  
@@ -470,7 +470,7 @@ U 2 1 5EECFCB1
 P 7480 3050
 F 0 "U5" H 7480 3417 50  0000 C CNN
 F 1 "TL074" H 7480 3326 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 7430 3150 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 7430 3150 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7530 3250 50  0001 C CNN
 	2    7480 3050
 	1    0    0    -1  
@@ -481,7 +481,7 @@ U 3 1 5F0C50FD
 P 10485 4435
 F 0 "U9" H 10485 4802 50  0000 C CNN
 F 1 "TL074" H 10485 4711 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 10435 4535 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 10435 4535 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 10535 4635 50  0001 C CNN
 	3    10485 4435
 	1    0    0    -1  
@@ -492,7 +492,7 @@ U 4 1 5F0C50FE
 P 10455 5740
 F 0 "U9" H 10455 6107 50  0000 C CNN
 F 1 "TL074" H 10455 6016 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 10405 5840 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 10405 5840 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 10505 5940 50  0001 C CNN
 	4    10455 5740
 	1    0    0    -1  
@@ -503,7 +503,7 @@ U 5 1 5EECFFA8
 P 5300 5495
 F 0 "U9" H 5258 5541 50  0000 L CNN
 F 1 "TL074" H 5258 5450 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 5250 5595 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 5250 5595 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5350 5695 50  0001 C CNN
 	5    5300 5495
 	1    0    0    -1  
@@ -540,7 +540,7 @@ U 1 1 5F0C5102
 P 10495 1800
 F 0 "U9" H 10495 2167 50  0000 C CNN
 F 1 "TL074" H 10495 2076 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 10445 1900 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 10445 1900 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 10545 2000 50  0001 C CNN
 	1    10495 1800
 	1    0    0    -1  
@@ -551,7 +551,7 @@ U 2 1 5F0C5103
 P 10485 3075
 F 0 "U9" H 10485 3442 50  0000 C CNN
 F 1 "TL074" H 10485 3351 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 10435 3175 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 10435 3175 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 10535 3275 50  0001 C CNN
 	2    10485 3075
 	1    0    0    -1  
@@ -562,7 +562,7 @@ U 3 1 5F0C5104
 P 7480 4410
 F 0 "U5" H 7480 4777 50  0000 C CNN
 F 1 "TL074" H 7480 4686 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 7430 4510 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 7430 4510 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7530 4610 50  0001 C CNN
 	3    7480 4410
 	1    0    0    -1  
@@ -573,7 +573,7 @@ U 4 1 5F0C5105
 P 7450 5715
 F 0 "U5" H 7450 6082 50  0000 C CNN
 F 1 "TL074" H 7450 5991 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 7400 5815 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 7400 5815 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 7500 5915 50  0001 C CNN
 	4    7450 5715
 	1    0    0    -1  
@@ -768,7 +768,7 @@ U 1 1 5F0C5116
 P 1315 5700
 F 0 "U3" H 1315 6067 50  0000 C CNN
 F 1 "TL074" H 1315 5976 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 1265 5800 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 1265 5800 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1365 5900 50  0001 C CNN
 	1    1315 5700
 	1    0    0    -1  
@@ -779,7 +779,7 @@ U 5 1 5EF3F042
 P 3925 6150
 F 0 "U3" H 3883 6196 50  0000 L CNN
 F 1 "TL074" H 3883 6105 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3875 6250 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3875 6250 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3975 6350 50  0001 C CNN
 	5    3925 6150
 	1    0    0    -1  
@@ -1349,7 +1349,7 @@ U 1 1 5F0C514C
 P 9850 3175
 F 0 "U7" H 9850 3542 50  0000 C CNN
 F 1 "LM13700" H 9850 3451 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 9550 3200 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 9550 3200 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 9550 3200 50  0001 C CNN
 	1    9850 3175
 	1    0    0    -1  
@@ -1360,7 +1360,7 @@ U 1 1 5EFB0268
 P 9850 4535
 F 0 "U8" H 9850 4902 50  0000 C CNN
 F 1 "LM13700" H 9850 4811 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 9550 4560 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 9550 4560 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 9550 4560 50  0001 C CNN
 	1    9850 4535
 	1    0    0    -1  
@@ -1371,7 +1371,7 @@ U 3 1 5EFB07D3
 P 9820 5840
 F 0 "U7" H 9820 6207 50  0000 C CNN
 F 1 "LM13700" H 9820 6116 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 9520 5865 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 9520 5865 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 9520 5865 50  0001 C CNN
 	3    9820 5840
 	1    0    0    -1  
@@ -1382,7 +1382,7 @@ U 2 1 5F0C514F
 P 3705 3175
 F 0 "U7" H 3605 3523 50  0000 C CNN
 F 1 "LM13700" H 3605 3432 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 3405 3200 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 3405 3200 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 3405 3200 50  0001 C CNN
 	2    3705 3175
 	1    0    0    -1  
@@ -1393,7 +1393,7 @@ U 4 1 5F0C5150
 P 4460 3185
 F 0 "U7" H 4360 3533 50  0000 C CNN
 F 1 "LM13700" H 4360 3442 50  0000 C CNN
-F 2 "SMD_Packages:SO-16-N" H 4160 3210 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 4160 3210 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 4160 3210 50  0001 C CNN
 	4    4460 3185
 	1    0    0    -1  
@@ -1404,7 +1404,7 @@ U 5 1 5EFBE9DA
 P 5360 4225
 F 0 "U8" H 5318 4271 50  0000 L CNN
 F 1 "LM13700" H 5318 4180 50  0000 L CNN
-F 2 "SMD_Packages:SO-16-N" H 5060 4250 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 5060 4250 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/lm13700.pdf" H 5060 4250 50  0001 C CNN
 	5    5360 4225
 	1    0    0    -1  
@@ -1464,7 +1464,7 @@ U 5 1 5F100777
 P 5305 6725
 F 0 "U5" H 5263 6771 50  0000 L CNN
 F 1 "TL074" H 5263 6680 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 5255 6825 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 5255 6825 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5355 6925 50  0001 C CNN
 	5    5305 6725
 	1    0    0    -1  
@@ -1501,7 +1501,7 @@ U 2 1 5F3D2590
 P 2690 5630
 F 0 "U4" H 2690 5997 50  0000 C CNN
 F 1 "TL074" H 2690 5906 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2640 5730 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2640 5730 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2740 5830 50  0001 C CNN
 	2    2690 5630
 	1    0    0    -1  
@@ -2412,7 +2412,7 @@ U 4 1 5F357955
 P 1440 7000
 F 0 "U4" H 1440 7367 50  0000 C CNN
 F 1 "TL074" H 1440 7276 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 1390 7100 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 1390 7100 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1490 7200 50  0001 C CNN
 	4    1440 7000
 	1    0    0    -1  
@@ -2423,7 +2423,7 @@ U 3 1 5F358F5A
 P 2815 6890
 F 0 "U3" H 2815 7257 50  0000 C CNN
 F 1 "TL074" H 2815 7166 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2765 6990 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2765 6990 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2865 7090 50  0001 C CNN
 	3    2815 6890
 	1    0    0    -1  
