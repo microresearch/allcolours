@@ -326,9 +326,9 @@ void TIM2_IRQHandler(void){
  
   counterl++;
 
-  //  if (modelsr==0) { 
-  //    speedll= shift_registerh&0xfff;
-    //  }
+    if (modelsr==0) { 
+      speedll= shift_registerh&0xfff; // leave here and without equal weights
+    }
 
   if (counterl>speedll){
     counterl=0;
@@ -337,7 +337,8 @@ void TIM2_IRQHandler(void){
 
     case 0: // new experimental mode where other SR DAC controls speed
       //->>>>>>>>>>>>>> CV selects length of SR .. -> LFSR here
-      speedll= shift_registerh&0xfff;
+      //      speedll= shift_registerh&0xfff;
+      //      speedll=16*(bitsz[shift_registerh&0xff]+bitsz[(shift_registerh>>8)&0xff]+bitsz[(shift_registerh>>16)&0xff]+bitsz[(shift_registerh>>24)&0xff]) ; // // try equal weightings - 32 bits // in or out of speed loop
       SRlengthl=31-(ADCBuffer[3]>>11);
       if (SRlengthl<4) SRlengthl=4;
       lengthbitl=(SRlengthl/2);
@@ -699,7 +700,7 @@ void TIM2_IRQHandler(void){
 	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -732,7 +733,7 @@ void TIM2_IRQHandler(void){
  
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -769,7 +770,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -801,7 +802,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -841,7 +842,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -879,7 +880,7 @@ void TIM2_IRQHandler(void){
 	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -912,7 +913,7 @@ void TIM2_IRQHandler(void){
 	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -956,7 +957,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -992,7 +993,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -1027,7 +1028,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -1062,7 +1063,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -1103,7 +1104,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -1151,7 +1152,7 @@ void TIM2_IRQHandler(void){
 	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -1192,7 +1193,7 @@ void TIM2_IRQHandler(void){
 	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -1229,7 +1230,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	intl++;
-	if (intl>13){
+	if (intl>12){
 	  intl=0;
 	targetl=(8503-(shift_registerl&0x01FFF))<<16; // for low we have 500-16000
 	// or 0x1fff for 13 bits = 312+8191=8503
@@ -1291,9 +1292,11 @@ void TIM2_IRQHandler(void){
 
   counterh++;
 
-  //  if (modehsr==0) { 
-  //    speedhh= shift_registerl&0xfff;
-    //  }
+        if (modehsr==0) { 
+	  speedhh= (shift_registerl&0xfff); // leave here and without equal weights
+      //      speedhh=8*(bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff]+bitsz[(shift_registerl&0xff)>>16]+bitsz[(shift_registerl>>24)&0xff]) ; // // try equal weightings - 32 bits
+	  //	  speedhh=4096-(128*(bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff]+bitsz[(shift_registerl>>16)&0xff]+bitsz[(shift_registerl>>24)&0xff])) ; // // try equal weightings - 32 bits // in or out of speed loop      //speedhh=0xffff;
+          }
   
   if (counterh>speedhh){
       counterh=0;
@@ -1304,9 +1307,8 @@ void TIM2_IRQHandler(void){
 
       case 0: // speed controlled by other SR so we free up PULSE and CV - here CV-> length and pulse/toggles
       //->>>>>>>>>>>>>> CV selects length of SR  -> LFSR here
-	speedhh= shift_registerl&0xfff; //4095 or more bits as speed goes as slow as: 131071 so could be 0xffff for 16 bits
-
-      SRlengthh=31-(ADCBuffer[2]>>11);
+	//      speedhh= shift_registerl&0xfff; //4095 or more bits as speed goes as slow as: 131071 so could be 0xffff for 16 bits
+	//	speedhh=(128*(bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff]+bitsz[(shift_registerl&0xff)>>16]+bitsz[(shift_registerl>>24)&0xff])) ; // // try equal weightings - 32 bits      SRlengthh=31-(ADCBuffer[2]>>11);
       if (SRlengthh<4) SRlengthh=4;
       lengthbith=(SRlengthh/2);
       if (shift_registerh==0) shift_registerh=0xff;
@@ -1708,7 +1710,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -1745,7 +1747,7 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -1788,7 +1790,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -1825,7 +1827,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -1869,7 +1871,7 @@ void TIM2_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -1911,7 +1913,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -1949,7 +1951,7 @@ void TIM2_IRQHandler(void){
 	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2010,7 +2012,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2054,7 +2056,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2102,7 +2104,7 @@ void TIM2_IRQHandler(void){
 	
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2148,7 +2150,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2188,7 +2190,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2234,7 +2236,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2287,7 +2289,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2340,7 +2342,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2383,7 +2385,7 @@ void TIM2_IRQHandler(void){
 
 	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
 	inth++;
-	if (inth>11){ // 10 bits now
+	if (inth>10){ // 11 bits now
 	  inth=0;
 	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
@@ -2415,8 +2417,8 @@ void TIM4_IRQHandler(void){
   //  temp=ADCBuffer[0]>>10; //smoothing necessary for higher speeds
   temp=(((ADCBuffer[0])+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
-  modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-  // modehsr=38; // TESTING all modes on H side 47 is exp mode for now 
+    modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
+    //    modehsr=32; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX

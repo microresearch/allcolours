@@ -1419,6 +1419,8 @@ allcolours_in_progress.xls
 
 * TRACKLIST
 
+These are in fromzoom_2020 on intenso HD: copied to recordings here in AC!
+
 387: internal patching and single DUSG as modulation source 
 394: internal patching, static (no twiddling)
 435: internal patching, single DUSG, some smooth slow changes
@@ -1426,6 +1428,26 @@ allcolours_in_progress.xls
 451: dual DUSG with changes across all, small changes
 453: same 2 modulations
 454: as above
+
+- july_zoom_transfer?
+
+low no ext 152 160
+high 154 161-ext
+156 165 159
+
+low 166/163 with ext env in
+
+- fromzoomoct30? 
+
+no ext 000, 3,4,5,6,7,8,13,14,15/16,9extmod,10lowextmod, 50-hi-speech in, 54-no cv, 55low
+
+- octnov2020 - latest (keep all on zoom)
+
+0017 - hf with one external source in (DUSG) mode 57
+0018 - as above mode 58
+0019 - as above +1 extra modulation source mode 61
+0020//21 - as above mode 62
+0022 - as above mode 63
 
 * future module - name? Heaven's Gate, Walker, Stalker
 
