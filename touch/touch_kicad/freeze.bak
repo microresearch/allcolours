@@ -53,7 +53,7 @@ AR Path="/5F0C4BC3/5F118A0B" Ref="U?"  Part="1"
 AR Path="/5F0CAD2E/5F118A0B" Ref="U13"  Part="1" 
 F 0 "U13" H 2160 2107 50  0000 C CNN
 F 1 "40106" H 2160 2016 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2160 1790 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2160 1790 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2160 1790 50  0001 C CNN
 	1    2160 1790
 	1    0    0    -1  
@@ -471,7 +471,7 @@ AR Path="/5F0C4BC3/5F118AF0" Ref="U?"  Part="1"
 AR Path="/5F0CAD2E/5F118AF0" Ref="U14"  Part="1" 
 F 0 "U14" H 3830 2087 50  0000 C CNN
 F 1 "40106" H 3830 1996 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3830 1770 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3830 1770 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 3830 1770 50  0001 C CNN
 	1    3830 1770
 	1    0    0    -1  
@@ -482,7 +482,7 @@ U 2 1 5F118AF7
 P 2185 2420
 F 0 "U13" H 2185 2737 50  0000 C CNN
 F 1 "40106" H 2185 2646 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2185 2420 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2185 2420 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2185 2420 50  0001 C CNN
 	2    2185 2420
 	1    0    0    -1  
@@ -493,7 +493,7 @@ U 2 1 5F118AFE
 P 3855 2400
 F 0 "U14" H 3855 2717 50  0000 C CNN
 F 1 "40106" H 3855 2626 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3855 2400 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3855 2400 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 3855 2400 50  0001 C CNN
 	2    3855 2400
 	1    0    0    -1  
@@ -504,7 +504,7 @@ U 3 1 5F118B05
 P 3875 3245
 F 0 "U14" H 3875 3562 50  0000 C CNN
 F 1 "40106" H 3875 3471 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3875 3245 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3875 3245 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 3875 3245 50  0001 C CNN
 	3    3875 3245
 	1    0    0    -1  
@@ -515,7 +515,7 @@ U 4 1 5F118B0C
 P 3900 3875
 F 0 "U14" H 3900 4192 50  0000 C CNN
 F 1 "40106" H 3900 4101 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3900 3875 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3900 3875 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 3900 3875 50  0001 C CNN
 	4    3900 3875
 	1    0    0    -1  
@@ -526,7 +526,7 @@ U 4 1 5F118B13
 P 2230 3895
 F 0 "U13" H 2230 4212 50  0000 C CNN
 F 1 "40106" H 2230 4121 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2230 3895 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2230 3895 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2230 3895 50  0001 C CNN
 	4    2230 3895
 	1    0    0    -1  
@@ -537,7 +537,7 @@ U 3 1 5F118B1A
 P 2205 3265
 F 0 "U13" H 2205 3582 50  0000 C CNN
 F 1 "40106" H 2205 3491 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2205 3265 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2205 3265 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2205 3265 50  0001 C CNN
 	3    2205 3265
 	1    0    0    -1  
@@ -548,7 +548,7 @@ U 5 1 5F118B21
 P 4545 4930
 F 0 "U14" H 4545 5247 50  0000 C CNN
 F 1 "40106" H 4545 5156 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 4545 4930 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 4545 4930 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 4545 4930 50  0001 C CNN
 	5    4545 4930
 	1    0    0    -1  
@@ -559,7 +559,7 @@ U 5 1 5F118B28
 P 2260 4935
 F 0 "U13" H 2260 5252 50  0000 C CNN
 F 1 "40106" H 2260 5161 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2260 4935 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2260 4935 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2260 4935 50  0001 C CNN
 	5    2260 4935
 	1    0    0    -1  
@@ -676,7 +676,7 @@ U 7 1 5F24A7EC
 P 8610 2010
 F 0 "U13" H 8840 2056 50  0000 L CNN
 F 1 "40106" H 8840 1965 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 8610 2010 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 8610 2010 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 8610 2010 50  0001 C CNN
 	7    8610 2010
 	1    0    0    -1  
@@ -687,7 +687,7 @@ U 7 1 5F24A902
 P 9340 2010
 F 0 "U14" H 9570 2056 50  0000 L CNN
 F 1 "40106" H 9570 1965 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 9340 2010 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 9340 2010 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 9340 2010 50  0001 C CNN
 	7    9340 2010
 	1    0    0    -1  
@@ -801,7 +801,7 @@ U 6 1 5F2C8FE2
 P 2570 5740
 F 0 "U13" H 2570 6057 50  0000 C CNN
 F 1 "40106" H 2570 5966 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2570 5740 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2570 5740 50  0001 C CNN
 F 3 "http://www.nxp.com/documents/data_sheet/HEF40106B.pdf" H 2570 5740 50  0001 C CNN
 	6    2570 5740
 	1    0    0    -1  

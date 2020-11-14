@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 6 8
+Sheet 5 8
 Title ""
 Date ""
 Rev ""
@@ -22,7 +22,7 @@ U 1 1 5F0CCDFB
 P 2855 2085
 F 0 "U10" H 2855 2452 50  0000 C CNN
 F 1 "TL074" H 2855 2361 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2805 2185 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2805 2185 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2905 2285 50  0001 C CNN
 	1    2855 2085
 	1    0    0    -1  
@@ -278,7 +278,7 @@ U 3 1 5F295E1B
 P 5065 1965
 F 0 "U10" H 5065 2332 50  0000 C CNN
 F 1 "TL074" H 5065 2241 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 5015 2065 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 5015 2065 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5115 2165 50  0001 C CNN
 	3    5065 1965
 	1    0    0    -1  
@@ -290,7 +290,7 @@ U 4 1 5F295FB2
 P 5120 2865
 F 0 "U10" H 5120 3232 50  0000 C CNN
 F 1 "TL074" H 5120 3141 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 5070 2965 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 5070 2965 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5170 3065 50  0001 C CNN
 	4    5120 2865
 	1    0    0    -1  
@@ -302,7 +302,7 @@ U 2 1 5F2960D2
 P 2855 2850
 F 0 "U10" H 2855 3217 50  0000 C CNN
 F 1 "TL074" H 2855 3126 50  0000 C CNN
-F 2 "SMD_Packages:SOIC-14_N" H 2805 2950 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2805 2950 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2905 3050 50  0001 C CNN
 	2    2855 2850
 	1    0    0    -1  
@@ -316,7 +316,7 @@ AR Path="/5EBFD180/5F297F4A" Ref="U?"  Part="5"
 AR Path="/5EED47D5/5F297F4A" Ref="U10"  Part="5" 
 F 0 "U10" H 6158 2606 50  0000 L CNN
 F 1 "TL074" H 6158 2515 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 6150 2660 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 6150 2660 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6250 2760 50  0001 C CNN
 	5    6200 2560
 	1    0    0    -1  
