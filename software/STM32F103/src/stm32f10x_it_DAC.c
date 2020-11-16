@@ -30,7 +30,8 @@ volatile uint32_t shift_registerl=0xff;
 volatile uint32_t shift_registerx=0xff;
 volatile uint32_t shift_registerxl=0xff;
 volatile uint32_t hstack[4], lstack[4]; // length minus 1;
-volatile uint32_t model, modeh; 
+volatile uint32_t model, modeh, spdqh, spdql;
+volatile uint32_t intervall,intervalh; 
 volatile uint32_t bith=0, bitl=0, inth=0, intl=0;
 volatile uint32_t lastspeedhh, lastspeedll, lastmodeh=63, lastmodel=63;
 volatile uint32_t targeth=8000<16, interh=1<<16, whereh=312<<16; // for interpol
@@ -279,6 +280,8 @@ void TIM2_IRQHandler(void){
   static uint32_t SRlengthx=31, SRlengthl=31, lengthbitl=15, SRlengthh=31, lengthbith=15;
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
+  intervalh++; // inc for counter
+  
   // INTERPOLATE for high side modes 32->47
   if (modehsr>31 && modehsr<48){
   if (goinguph==1){ // 
@@ -2417,8 +2420,8 @@ void TIM4_IRQHandler(void){
   //  temp=ADCBuffer[0]>>10; //smoothing necessary for higher speeds
   temp=(((ADCBuffer[0])+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
-    modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-    //    modehsr=32; // TESTING all modes on H side 47 is exp mode for now 
+  //    modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
+  modehsr=64; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
@@ -2431,7 +2434,8 @@ void TIM4_IRQHandler(void){
   hh++;
   if (hh>=SMOOTHINGS) hh=0;
   temp=toth/SMOOTHINGS;  
-
+  spdqh=temp;
+  
   speedh=logger[temp>>6]; // 1024  = 10 bits -> could be less logger to make smoother?
   if (modehsr!=0)   speedhh=slower_even_logforSR[temp>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother? - could also be a lot slower at one end - TESTY even slower
   
@@ -2471,7 +2475,7 @@ void EXTI9_5_IRQHandler(void){
   uint32_t SRlengthx=31, SRlengthl, SRlengthh, lengthbitl, lengthbith;
   uint32_t spl, sph;
   uint32_t tmp;
-
+  
   // --------------------LF pulse modes
   if(pending & (1 << 5)) { // LF on 5 out on B
     EXTI->PR = 1 << 5; // clear pending flag, otherwise we'd get endless interrupts -!!!!!!!!!!!!!!!!!!!!!!!!!        // handle pin 5 here
@@ -3370,7 +3374,7 @@ void EXTI9_5_IRQHandler(void){
   // --------------------HF Pulse modes 
   if(pending & (1 << 7)) { // HF on 7/out on C
     EXTI->PR = 1 << 7;        // handle pin 7 here
-
+    
 //*PULSE_HF: 10, 11, 12, 13, 14, 15, 43, 44, 45, 48, 50, 52, 53, 56, 57, 58*
     
     switch(modehsr){
@@ -4281,6 +4285,18 @@ void EXTI9_5_IRQHandler(void){
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
       break;
+
+    case 64: // test mode: clock is dependent on intervalh and on ADCbuffer[2] = multiplier
+      // try here without max and minimum
+      tmp=intervalh;
+      intervalh=0;
+      sph= tmp*((spdqh>>8)+1); // lower is faster freq
+      //      sph=tmp*4;
+      sph+=312;
+      TIM1->ARR =sph;
+      TIM1->CCR1 = sph/2; // pulse width
+      // and just run one regular SHIFTREGISTER - which one? somehow could it relate to intervalh?
+      break;            
     }       /// end of HF modes
   }  
 }
