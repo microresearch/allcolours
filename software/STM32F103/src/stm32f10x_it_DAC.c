@@ -281,6 +281,8 @@ void TIM2_IRQHandler(void){
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
   intervalh++; // inc for counter
+  intervall++; // inc for counter
+
   
   // INTERPOLATE for high side modes 32->47
   if (modehsr>31 && modehsr<48){
@@ -2420,8 +2422,8 @@ void TIM4_IRQHandler(void){
   //  temp=ADCBuffer[0]>>10; //smoothing necessary for higher speeds
   temp=(((ADCBuffer[0])+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
-  //    modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-  modehsr=64; // TESTING all modes on H side 47 is exp mode for now 
+  modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
+  //    modehsr=62; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
@@ -2441,8 +2443,8 @@ void TIM4_IRQHandler(void){
   
   temp=(((ADCBuffer[1])+lastmodel)/2); //smoothing necessary for higher speeds - TEST!
   lastmodel=temp;
-  modelsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
-  //  modelsr=0; // TESTING!
+    modelsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
+  //    modelsr=64; // TESTING!
   
   totl=totl-smoothl[ll];
   smoothl[ll]=ADCBuffer[3];
@@ -2450,6 +2452,7 @@ void TIM4_IRQHandler(void){
   ll++;
   if (ll>=SMOOTHINGS) ll=0;
   temp=totl/SMOOTHINGS;  
+  spdql=temp;
   
   speedl=lf_logger[temp>>6]; // 1024  = 10 bits -> could be less logger to make smoother?
   if (modelsr!=0) speedll=slower_even_logforSR[temp>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother? - could also be a lot slower at one end
@@ -3331,6 +3334,7 @@ void EXTI9_5_IRQHandler(void){
       TIM3->CCR1 = spl/2; // pulse width
       break;
 
+      /*
     case 63: // TEST CASE FOR new ADC/DAC modes...
 	    // try and use incoming bit to shift 4 bits in lstack - working now
 	    // same as above but now we do for the output bits - maybe not so interesting as just effects the DAC! seems oks!
@@ -3368,6 +3372,34 @@ void EXTI9_5_IRQHandler(void){
       TIM3->ARR =spl;
       TIM3->CCR1 = spl/2; // pulse width
       break;
+      */
+    case 63: // test mode: clock is dependent on intervalh and on ADCbuffer[2] = multiplier
+      // added in max for 16 bit timers
+      // Q. of SR to use and which mode to replace
+      // then port to low side, test all
+      tmp=intervall;
+      intervall=0;
+      spl= tmp*((spdql>>8)+1); // lower is faster freq
+      //      sph=tmp*4;
+      if (spl>65222) spl=65222;
+      spl+=312;
+      TIM3->ARR =spl;
+      TIM3->CCR1 = spl/2; // pulse width
+      // and just run one regular SHIFTREGISTER - which one? 
+      // test from case 4 but with in bit and not clock bit:
+	bitl = (shift_registerl>>31) & 0x01; // bit which would be shifted out 
+	if (GPIOB->IDR & 0x0040) shift_registerl = (shift_registerl<<1) + bitl;
+	else shift_registerl = (shift_registerl<<1) + (!bitl);
+
+	// for divide down
+	new_statl=(shift_registerl & (1<<15))>>15; // so that is not just a simple divide down
+	if (prev_statl==0 && new_statl==1) flipdl^=1;
+	prev_statl=new_statl;	
+	if (flipdl) GPIOB->BRR = 0b0010000000000000;  
+	else GPIOB->BSRR = 0b0010000000000000;
+	if (bitl) GPIOB->BRR = 0b0100000000000000;   // this is top one!
+	else GPIOB->BSRR = 0b0100000000000000;
+      break;                  
     }       /// end of LF modes
   }
 
@@ -4247,7 +4279,7 @@ void EXTI9_5_IRQHandler(void){
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
       break;
-      
+      /*      
     case 63: // TEST CASE FOR new ADC/DAC modes...
 	    // try and use incoming bit to shift 4 bits in hstack - working now
 	    // same as above but now we do for the output bits - maybe not so interesting as just effects the DAC! seems oks!
@@ -4285,17 +4317,34 @@ void EXTI9_5_IRQHandler(void){
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
       break;
-
-    case 64: // test mode: clock is dependent on intervalh and on ADCbuffer[2] = multiplier
-      // try here without max and minimum
+      */
+    case 63: // test mode: clock is dependent on intervalh and on ADCbuffer[2] = multiplier
+      // added in max for 16 bit timers
+      // Q. of SR to use and which mode to replace
+      // then port to low side, test all
       tmp=intervalh;
       intervalh=0;
       sph= tmp*((spdqh>>8)+1); // lower is faster freq
       //      sph=tmp*4;
+      if (sph>65222) sph=65222;
       sph+=312;
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
-      // and just run one regular SHIFTREGISTER - which one? somehow could it relate to intervalh?
+      // and just run one regular SHIFTREGISTER - which one? 
+      // test from case 4 but with in bit and not clock bit:
+      	bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out 
+	if (GPIOB->IDR & 0x0400) shift_registerh = (shift_registerh<<1) + bith;
+	else shift_registerh = (shift_registerh<<1) + (!bith);
+
+	// divide down
+	new_stath=(shift_registerh & (1<<15))>>15; // so that is not just a simple divide down
+	if (prev_stath==0 && new_stath==1) flipdh^=1;
+	prev_stath=new_stath;	
+	if (flipdh) GPIOC->BRR = 0b0010000000000000;  
+	else GPIOC->BSRR = 0b0010000000000000;
+
+	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
+	else GPIOC->BSRR = 0b0100000000000000;	
       break;            
     }       /// end of HF modes
   }  
