@@ -20,7 +20,7 @@ U 1 1 5BC8F88F
 P 3055 6010
 F 0 "U4" V 3101 5657 50  0000 R CNN
 F 1 "4024" V 3010 5657 50  0000 R CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3055 6010 60  0001 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 3055 6010 60  0001 C CNN
 F 3 "" H 3055 6010 60  0001 C CNN
 	1    3055 6010
 	0    -1   -1   0   
@@ -897,7 +897,7 @@ U 1 1 5ECAAC6D
 P 5825 3475
 F 0 "U8" V 5779 4416 50  0000 L CNN
 F 1 "4051" V 5870 4416 50  0000 L CNN
-F 2 "SMD_Packages:SO-16-N" H 5825 3475 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 5825 3475 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4051bms-52bms-53bms.pdf" H 5825 3475 50  0001 C CNN
 	1    5825 3475
 	0    1    1    0   
@@ -1581,7 +1581,7 @@ U 1 1 5BC8F92B
 P 3025 3475
 F 0 "U3" V 2979 4416 50  0000 L CNN
 F 1 "4051" V 3070 4416 50  0000 L CNN
-F 2 "SMD_Packages:SO-16-N" H 3025 3475 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 3025 3475 50  0001 C CNN
 F 3 "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4051bms-52bms-53bms.pdf" H 3025 3475 50  0001 C CNN
 	1    3025 3475
 	0    1    1    0   
