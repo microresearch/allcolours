@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /root/projects/ERD_MODULES/all_colours/touch/touch_kicad/touch.sch)
-    (date "Mon 30 Nov 2020 11:23:31 CET")
+    (date "Mon 07 Dec 2020 11:35:44 CET")
     (tool "Eeschema 5.0.2+dfsg1-1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -2183,8 +2183,8 @@
       (node (ref U11) (pin 34))
       (node (ref R47) (pin 1)))
     (net (code 92) (name play)
-      (node (ref U11) (pin 56))
-      (node (ref R51) (pin 1)))
+      (node (ref R37) (pin 1))
+      (node (ref U11) (pin 56)))
     (net (code 93) (name push)
       (node (ref R40) (pin 1))
       (node (ref U11) (pin 58)))
@@ -2196,7 +2196,7 @@
       (node (ref U11) (pin 62)))
     (net (code 96) (name FR3)
       (node (ref U11) (pin 29))
-      (node (ref R37) (pin 1)))
+      (node (ref R51) (pin 1)))
     (net (code 97) (name FR4)
       (node (ref R38) (pin 1))
       (node (ref U11) (pin 33)))
