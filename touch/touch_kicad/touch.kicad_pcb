@@ -3,7 +3,7 @@
   (general
     (thickness 1.6)
     (drawings 9)
-    (tracks 0)
+    (tracks 10)
     (zones 0)
     (modules 165)
     (nets 139)
@@ -1409,7 +1409,7 @@
   )
 
   (module Capacitors_SMD:C_0805 (layer B.Cu) (tedit 58AA8463) (tstamp 5F97B203)
-    (at 88.45 78.45)
+    (at 88 80.2)
     (descr "Capacitor SMD 0805, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0805")
     (path /5EEBC3AA/5F061066)
@@ -1475,7 +1475,7 @@
   )
 
   (module Capacitors_SMD:C_0805 (layer B.Cu) (tedit 5FC772A2) (tstamp 5F97B223)
-    (at 92.2 78.5)
+    (at 92.1 80.2)
     (descr "Capacitor SMD 0805, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0805")
     (path /5EEBC3AA/5F0632A4)
@@ -1511,7 +1511,7 @@
   )
 
   (module Capacitors_SMD:C_0805 (layer B.Cu) (tedit 58AA8463) (tstamp 5F97B234)
-    (at 84.55 78.45)
+    (at 83.7 80.2)
     (descr "Capacitor SMD 0805, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0805")
     (path /5EEBC3AA/5F062E38)
@@ -1619,7 +1619,7 @@
   )
 
   (module Capacitors_SMD:C_0805 (layer B.Cu) (tedit 58AA8463) (tstamp 5F97B267)
-    (at 83.7 94.6)
+    (at 81.2 97.2)
     (descr "Capacitor SMD 0805, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0805")
     (path /5EEBC3AA/5F063158)
@@ -1655,7 +1655,7 @@
   )
 
   (module Capacitors_SMD:C_0805 (layer B.Cu) (tedit 58AA8463) (tstamp 5F97B278)
-    (at 80.2 78.2 180)
+    (at 79.6 81 180)
     (descr "Capacitor SMD 0805, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0805")
     (path /5EEBC3AA/5F0631CA)
@@ -6017,7 +6017,7 @@
   )
 
   (module Housings_QFP:LQFP-64_10x10mm_Pitch0.5mm (layer B.Cu) (tedit 5FC6B882) (tstamp 5F97BB1D)
-    (at 87.9 86.6 270)
+    (at 87 88.7 270)
     (descr "64 LEAD LQFP 10x10mm (see MICREL LQFP10x10-64LD-PL-1.pdf)")
     (tags "QFP 0.5")
     (path /5EEBC3AA/5F0570D5)
@@ -6333,15 +6333,15 @@
     )
   )
 
-  (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FC4CE1E) (tstamp 5FD7541E)
-    (at 144.2 122.8)
+  (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FCA964A) (tstamp 5FD7541E)
+    (at 133.3 137.8)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4EB23)
     (fp_text reference M1 (at -4.03 1.08 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value AUDIO-JACKERTHENVAR-PJ398 (at -2.45 2.35 180) (layer F.Fab)
+    (fp_text value AUDIO-JACKERTHENVAR-PJ398 (at -2.3 1.2 180) (layer F.Fab)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0 0) (end 0 2.03) (layer F.Fab) (width 0.1))
@@ -6388,7 +6388,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FC4CE12) (tstamp 5FD75440)
-    (at 133.05 137.8)
+    (at 144.3 137.8)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4F7E9)
@@ -6442,7 +6442,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD75462)
-    (at 143.8 137.6)
+    (at 144.2 122.9)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4E359)
@@ -6550,7 +6550,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD754A6)
-    (at 61.9 120.45)
+    (at 72.6 137.15)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4EB33)
@@ -6604,7 +6604,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FC6B6A1) (tstamp 5FD754C8)
-    (at 74.8 120.5)
+    (at 60.3 138.05)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4F7F9)
@@ -6658,7 +6658,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD754EA)
-    (at 61.85 135.2)
+    (at 60.55 122.7)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4E369)
@@ -6712,7 +6712,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FC6B6A6) (tstamp 5FD7550C)
-    (at 73.8 135.75)
+    (at 72.75 121.9)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4D854)
@@ -6766,7 +6766,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD7552E)
-    (at 59.95 49.35)
+    (at 72 49.15)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4EB43)
@@ -6820,7 +6820,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD75550)
-    (at 60.45 64.55)
+    (at 60.8 49)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4F809)
@@ -6874,7 +6874,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD75572)
-    (at 71.9 48.95)
+    (at 60.3 64.9)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4E379)
@@ -6982,7 +6982,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD755B6)
-    (at 143.75 64.45)
+    (at 132.05 48.9)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4EB53)
@@ -7036,7 +7036,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 5FD755D8)
-    (at 132.35 49.5)
+    (at 143.6 49.15)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4F819)
@@ -7089,15 +7089,15 @@
     )
   )
 
-  (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FC6B77B) (tstamp 5FD755FA)
-    (at 132.55 64.7)
+  (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FCA978C) (tstamp 5FD755FA)
+    (at 143.75 64.25)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4E389)
     (fp_text reference M15 (at -4.03 1.08 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value AUDIO-JACKERTHENVAR-PJ398 (at 4.914997 5.214999 180) (layer F.Fab)
+    (fp_text value AUDIO-JACKERTHENVAR-PJ398 (at 1.15 3.7 180) (layer F.Fab)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text user KEEPOUT (at 0 6.48) (layer Cmts.User)
@@ -7144,7 +7144,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5FC6B761) (tstamp 5FD7561C)
-    (at 143.4 49.45)
+    (at 132.2 64.6)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5EED4BC5/5FC4DE2E)
@@ -7197,7 +7197,7 @@
     )
   )
 
-  (gr_text "recheck placement" (at 163.15 131.55) (layer Dwgs.User)
+  (gr_text "placement of jacks will change = order is correct, recheck" (at 186.6 136.1) (layer Dwgs.User)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
   (gr_text "leave height as 104 as is max 108" (at 179.75 64.1) (layer Dwgs.User)
@@ -7234,5 +7234,16 @@
   (gr_text "checked alignment" (at 101.95 39.1) (layer Dwgs.User)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
+
+  (segment (start 81.3 86.95) (end 82.5 87) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA466) (status 400000))
+  (segment (start 82 85.5) (end 81.3 85.45) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA46B) (status 800000))
+  (segment (start 82.5 85.3) (end 82 85.5) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA46A))
+  (segment (start 82.9 85.5) (end 82.5 85.3) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA469))
+  (segment (start 83.1 86.4) (end 82.9 85.5) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA468))
+  (segment (start 82.5 87) (end 83.1 86.4) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA467))
+  (segment (start 81.3 85.45) (end 79.9 85.4) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA46E) (status 400000))
+  (segment (start 78.1 80.9) (end 76.1 80.1) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA473) (status 800000))
+  (segment (start 78.8 83.6) (end 78.1 80.9) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA471))
+  (segment (start 79.9 85.4) (end 78.8 83.6) (width 0.25) (layer B.Cu) (net 5) (tstamp 5FCAA46F))
 
 )
