@@ -2461,8 +2461,8 @@ void TIM4_IRQHandler(void){
   //  temp=ADCBuffer[0]>>10; //smoothing necessary for higher speeds
   temp=(((ADCBuffer[0])+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
-  //  modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-    modehsr=48; // TESTING all modes on H side 47 is exp mode for now 
+    modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
+  //    modehsr=48; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
