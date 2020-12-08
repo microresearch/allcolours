@@ -282,6 +282,7 @@ void TIM2_IRQHandler(void){
     whereh+=interh;
     tmp=(whereh>>16);
     if (tmp>=(targeth>>16)) goinguph=2;
+    if (tmp<312) tmp=312;
     TIM1->ARR =tmp;
     TIM1->CCR1 =tmp/2; // pulse width
   }
@@ -290,6 +291,7 @@ void TIM2_IRQHandler(void){
     whereh-=interh;
     tmp=(whereh>>16);
     if (tmp<=(targeth>>16)) goinguph=2;
+    if (tmp<312) tmp=312;
     TIM1->ARR =tmp;
     TIM1->CCR1 =tmp/2; // pulse width
   }
@@ -297,6 +299,7 @@ void TIM2_IRQHandler(void){
     {
       whereh=targeth;
       tmp=(whereh>>16);
+      if (tmp<312) tmp=312;
       TIM1->ARR =tmp;
       TIM1->CCR1 =tmp/2; // pulse width
       }
@@ -309,6 +312,7 @@ void TIM2_IRQHandler(void){
     wherel+=interl;
     tmp=(wherel>>16);
     if (tmp>=(targetl>>16)) goingupl=2;
+    if (tmp<312) tmp=312;
     TIM3->ARR =tmp;
     TIM3->CCR1 =tmp/2; // pulse width
   }
@@ -317,6 +321,7 @@ void TIM2_IRQHandler(void){
     wherel-=interl;
     tmp=(wherel>>16);
     if (tmp<=(targetl>>16)) goingupl=2;
+    if (tmp<312) tmp=312;
     TIM3->ARR =tmp;
     TIM3->CCR1 =tmp/2; // pulse width
   }
@@ -324,6 +329,7 @@ void TIM2_IRQHandler(void){
     {
       wherel=targetl;
       tmp=(wherel>>16);
+      if (tmp<312) tmp=312;
       TIM3->ARR =tmp;
       TIM3->CCR1 =tmp/2; // pulse width
       }
@@ -2071,7 +2077,7 @@ void TIM2_IRQHandler(void){
 	  }*/
 	  tmp=bitsz[shift_registerh&0xff]+bitsz[(shift_registerh>>8)&0xff];//+bitsz[(shift_registerh>>16)&0xff]+bitsz[(shift_registerh>>24)&0xff]; // now 32 bits
 	tmp*=312; // for 16 bits - how shall we calculate this range
-	whereh=targeth=tmp<<16;
+	whereh=targeth=(tmp+312)<<16;
 	goinguph=2;	
       }
 	break;
@@ -2461,8 +2467,8 @@ void TIM4_IRQHandler(void){
   //  temp=ADCBuffer[0]>>10; //smoothing necessary for higher speeds
   temp=(((ADCBuffer[0])+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
-    modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-  //    modehsr=48; // TESTING all modes on H side 47 is exp mode for now 
+  modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
+  //    modehsr=39; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
@@ -2483,7 +2489,7 @@ void TIM4_IRQHandler(void){
   temp=(((ADCBuffer[1])+lastmodel)/2); //smoothing necessary for higher speeds - TEST!
   lastmodel=temp;
   modelsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
-  //  modelsr=47; // TESTING!
+  //  modelsr=48; // TESTING!
   
   totl=totl-smoothl[ll];
   smoothl[ll]=ADCBuffer[3];
@@ -2929,8 +2935,9 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;
 
 	// testing equal weightings
-	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
-	tmp*=312; 
+	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff]; // leave as 16 bits
+	tmp*=312;
+
 	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
 	TIM3->ARR =spl;
 	TIM3->CCR1 = spl/2; // pulse width
@@ -3240,8 +3247,12 @@ void EXTI9_5_IRQHandler(void){
  
       spl= (((shift_registerl&(1<<7))>>7) + ((shift_registerl&(1<<15))>>14) + ((shift_registerl&(1<<23))>>21) + ((shift_registerl&(1<<31))>>28))<<6; // this one from test.c tested... so that is 4 bits <<4 to 10 bits = 1024 11 is 2048 12 is 4096
 // keeps it high!
+ // for <<6 bits we have 960 +312= 1272
+ // for <<7 bits 1920 +312= 2232
+ // for <<8 bits 3840 +312= 4152
+ // for <<9 bits 7680 + 312 = 7992
 
-      spl=1336-spl; // try 312+1024=1336- 312+2048=2360
+      spl=1272-spl; // try 312+1024=1336- 312+2048=2360
       TIM3->ARR =spl;
       TIM3->CCR1 = spl/2; // pulse width	
       break;
@@ -3270,8 +3281,11 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
  	
       spl= (((shift_registerl&(1<<7))>>7) + ((shift_registerl&(1<<15))>>14) + ((shift_registerl&(1<<23))>>21) + ((shift_registerl&(1<<31))>>28))<<7; // this one from test.c tested...
+ // for <<7 bits 1920 +312= 2232
+ // for <<8 bits 3840 +312= 4152
+ // for <<9 bits 7680 + 312 = 7992
 
-      spl=2360-spl; // try 312+1024=1336- 312+2048=2360
+      spl=2232-spl; // try 312+1024=1336- 312+2048=2360
       TIM3->ARR =spl;
       TIM3->CCR1 = spl/2; // pulse width
       break;
@@ -3303,7 +3317,7 @@ void EXTI9_5_IRQHandler(void){
       //	  spl= (((shift_registerl&(1<<8))>>8) + ((shift_registerl&(1<<16))>>15) + ((shift_registerl&(1<<24))>>22) + ((shift_registerl&(1<<32))>>29))<<4;
 
       spl= (((shift_registerl&(1<<7))>>7) + ((shift_registerl&(1<<15))>>14) + ((shift_registerl&(1<<23))>>21) + ((shift_registerl&(1<<31))>>28))<<7; // this one from test.c tested...
-      spl=2360-spl;
+      spl=2232-spl;
       TIM3->ARR =spl;
       TIM3->CCR1 = spl/2; // pulse width
       break;
@@ -3330,7 +3344,7 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
  
       spl= (((shift_registerl&(1<<3))>>3) + ((shift_registerl&(1<<7))>>6) + ((shift_registerl&(1<<11))>>9) + ((shift_registerl&(1<<15))>>12) + ((shift_registerl&(1<<19))>>15) +((shift_registerl&(1<<23))>>18) +((shift_registerl&(1<<27))>>21) +((shift_registerl&(1<<31))>>24))<<4; // this one from test.c tested...
-      spl=4408-spl; // 12 bits=4096+312=4408
+      spl=4392-spl; // 12 bits=4096+312=4408
       TIM3->ARR =spl;
       TIM3->CCR1 = spl/2; // pulse width
       break;
@@ -3368,7 +3382,11 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOB->BSRR = 0b0100000000000000;	
  
       spl= (((shift_registerl&(1<<7))>>7) + ((shift_registerl&(1<<15))>>14) + ((shift_registerl&(1<<23))>>21) + ((shift_registerl&(1<<31))>>28))<<7; // this one from test.c tested...
-      spl=2360-spl;
+ // for <<7 bits 1920 +312= 2232
+ // for <<8 bits 3840 +312= 4152
+ // for <<9 bits 7680 + 312 = 7992
+
+      spl=2232-spl;
       TIM3->ARR =spl;
       TIM3->CCR1 = spl/2; // pulse width
       break;
@@ -4123,7 +4141,6 @@ void EXTI9_5_IRQHandler(void){
 
     case 57: // - TEST CASE FOR new ADC/DAC modes...
       // shift in bits one by one use probh as storage
-
       bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
       counter12h++;
       if (counter12h > 7){       // every 8 cycles
@@ -4182,9 +4199,13 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	
       sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<6; // this one from test.c tested... so that is 4 bits <<4 to 10 bits = 1024 11 is 2048 12 is 4096
+ // for <<6 bits we have 960 +312= 1272
+ // for <<7 bits 1920 +312= 2232
+ // for <<8 bits 3840 +312= 4152
+ // for <<9 bits 7680 + 312 = 7992
 
       // keeps it high!
-      sph=1336-sph; // try 312+1024=1336- 312+2048=2360
+      sph=1272-sph; // try 312+1024=1336- 312+2048=2360
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width	
       break;
@@ -4213,7 +4234,12 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	
       sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<7; // this one from test.c tested...
-      sph=2360-sph; // try 312+1024=1336- 312+2048=2360
+       // for <<6 bits we have 960 +312= 1272
+ // for <<7 bits 1920 +312= 2232
+ // for <<8 bits 3840 +312= 4152
+ // for <<9 bits 7680 + 312 = 7992
+
+      sph=2232-sph; // try 312+1024=1336- 312+2048=2360
       //      sph+=312;
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
@@ -4245,7 +4271,12 @@ void EXTI9_5_IRQHandler(void){
 	  // no extract those 4 bits from the last slots bits 32, 24, 16 and 8, shift these and then << say 4 bits
 	  //	  sph= (((shift_registerh&(1<<8))>>8) + ((shift_registerh&(1<<16))>>15) + ((shift_registerh&(1<<24))>>22) + ((shift_registerh&(1<<32))>>29))<<4;
       sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<7; // this one from test.c tested...
-      sph=2360-sph;
+       // for <<6 bits we have 960 +312= 1272
+ // for <<7 bits 1920 +312= 2232
+ // for <<8 bits 3840 +312= 4152
+ // for <<9 bits 7680 + 312 = 7992
+
+      sph=2232-sph;
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
       break;
@@ -4274,7 +4305,8 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 
       sph= (((shift_registerh&(1<<3))>>3) + ((shift_registerh&(1<<7))>>6) + ((shift_registerh&(1<<11))>>9) + ((shift_registerh&(1<<15))>>12) + ((shift_registerh&(1<<19))>>15) +((shift_registerh&(1<<23))>>18) +((shift_registerh&(1<<27))>>21) +((shift_registerh&(1<<31))>>24))<<4; // this one from test.c tested...
-      sph=4408-sph; // 12 bits=4096+312=4408
+      
+      sph=4392-sph; // 12 bits=4096+312=4408
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
       break;
@@ -4314,7 +4346,12 @@ void EXTI9_5_IRQHandler(void){
 	else GPIOC->BSRR = 0b0100000000000000;	
 	
       sph= (((shift_registerh&(1<<7))>>7) + ((shift_registerh&(1<<15))>>14) + ((shift_registerh&(1<<23))>>21) + ((shift_registerh&(1<<31))>>28))<<7; // this one from test.c tested...
-      sph=2360-sph;
+       // for <<6 bits we have 960 +312= 1272
+ // for <<7 bits 1920 +312= 2232
+ // for <<8 bits 3840 +312= 4152
+ // for <<9 bits 7680 + 312 = 7992
+
+      sph=2232-sph;
       TIM1->ARR =sph;
       TIM1->CCR1 = sph/2; // pulse width
       break;
