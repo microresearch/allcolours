@@ -272,6 +272,7 @@ void TIM2_IRQHandler(void){
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
   intervalh++; // inc for counter
+  //  intervalh=1024;
   intervall++; // inc for counter
 
   
@@ -4399,6 +4400,7 @@ void EXTI9_5_IRQHandler(void){
       // Q. of SR to use and which mode to replace
       // then port to low side, test all
       tmp=intervalh;
+      //      tmp=1024;
       intervalh=0;
       sph= tmp*((spdqh>>8)+1); // lower is faster freq
       //      sph=tmp*4;
