@@ -2049,11 +2049,11 @@ void TIM2_IRQHandler(void){
 	  {
 	  prev_state[0]=1;
 
-	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this!
-	inth++;
+	// INTERPOL TEST  - try this for every 12  or so bits - check logic for this! = or as is triggered try as equal weight pwm
+	  /*	inth++;
 	if (inth>10){ // 11 bits now
-	  inth=0;
-	  targeth=(2359-(shift_registerh&0x7FF))<<16;
+	inth=0;
+	  	  targeth=(2359-(shift_registerh&0x7FF))<<16;
 	  // or 0x3ff for 10 bits = 312+1023 = 1335 
 	  // or 0x7ff for 11 bits = 312+2047= 2359
 	  // or 0xfff for 12 bits = 312+4095 = 4407
@@ -2067,9 +2067,13 @@ void TIM2_IRQHandler(void){
 	else {
 	  goinguph=1; // increase
 	  interh=(targeth-whereh)/(11*(speedhh+1)); // and if goes down to 0 which will do as speedh maxes at 16383 - so
-	}
-	}
-	}
+	  }
+	  }*/
+	  tmp=bitsz[shift_registerh&0xff]+bitsz[(shift_registerh>>8)&0xff];//+bitsz[(shift_registerh>>16)&0xff]+bitsz[(shift_registerh>>24)&0xff]; // now 32 bits
+	tmp*=312; // for 16 bits - how shall we calculate this range
+	whereh=targeth=tmp<<16;
+	goinguph=2;	
+      }
 	break;
 
       case 40: // was 25
@@ -2457,8 +2461,8 @@ void TIM4_IRQHandler(void){
   //  temp=ADCBuffer[0]>>10; //smoothing necessary for higher speeds
   temp=(((ADCBuffer[0])+lastmodeh)/2); //smoothing necessary for higher speeds
   lastmodeh=temp;
-  modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-  //  modehsr=8; // TESTING all modes on H side 47 is exp mode for now 
+  //  modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
+    modehsr=48; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
@@ -3860,7 +3864,7 @@ void EXTI9_5_IRQHandler(void){
 
 	// Equal weightings: so each bit is the same value - count number of bits - say for 16 bits
 	tmp=bitsz[shift_registerh&0xff]+bitsz[(shift_registerh>>8)&0xff]+bitsz[(shift_registerh>>16)&0xff]+bitsz[(shift_registerh>>24)&0xff]; // now 32 bits
-	tmp*=312; // 312- for 16 bits - how shall we calculate this range
+	tmp*=156; // now is 156- for 32 bits - how shall we calculate this range
 	sph=312+tmp; // higher is lower
 	TIM1->ARR =sph;
 	TIM1->CCR1 = sph/2; // pulse width
