@@ -10,7 +10,7 @@
 #include <malloc.h>
 
 void main(void){
-  uint64_t x,y,z,min=0,max=255,mmm=1, zz, yy;
+  uint64_t x,y,z,min=0,max=255,mmm=1, zz, yy, flipped[2];
   x=0; y=!x;
   //  printf("NOT %d\n", y);
 
@@ -110,11 +110,10 @@ uint32_t looker[32]={2147483648U, 3221225472U, 3758096384U, 4026531840U, 4160749
 //  if ((x | y) == looker[3]) printf("YES\n");
 //  else   printf ("xORy %u \n", x | y);
 
-  y=1;
+  y=255;
 
-  y^=1;
+  //  y^=1;
 
-  //  printf("XOR %zu\n", y);
-  
-  
+  printf("<<24 %zu\n", y<<24);
+
 }
