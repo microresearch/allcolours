@@ -514,7 +514,7 @@ void TIM2_IRQHandler(void){
 	// shifting the array of LFSR taps = ghost_tapsH on the high side
 	// clock pulse shifts one selected by pulse 
 	if (!(GPIOB->IDR & 0x0020)) lcount++;
-	if (lcount>3) lcount=0;
+	if (lcount>2) lcount=0;
 	if (!(GPIOB->IDR & 0x0040)) {
 	  ghost_tapsL[31][lcount+1]+=1;
 	  ghost_tapsL[31][lcount+1]%=31;
@@ -839,7 +839,7 @@ void TIM2_IRQHandler(void){
     case 36: 
 	//->>>>>>>>>>>>>> 4- parity for loopback XOR is determined by pulsed bits in -> select bits with pulse and queue 
 	lcount++;
-	if (lcount>31) lcount=0;
+	if (lcount>30) lcount=0;
 	if( !(GPIOB->IDR & 0x0020)) {
 	  lstack[3]=lstack[2];
 	  lstack[2]=lstack[1];
@@ -956,7 +956,7 @@ void TIM2_IRQHandler(void){
 	if (!(GPIOB->IDR & 0x0020))
 	  {
 	    lcount++;
-	    if (lcount>3) lcount=0;
+	    if (lcount>2) lcount=0;
 	    //	if (!(GPIOB->IDR & 0x0040)) {
 	    ghost_tapsL[31][lcount+1]+=1;
 	    ghost_tapsL[31][lcount+1]%=31;
@@ -1513,7 +1513,7 @@ void TIM2_IRQHandler(void){
 	// shifting the array of LFSR taps = ghost_tapsH on the high side
 	// clock pulse shifts one selected by pulse 
 	if (!(GPIOB->IDR & 0x0080)) hcount++;
-	if (hcount>3) hcount=0;
+	if (hcount>2) hcount=0;
 	if (!(GPIOB->IDR & 0x0400)) {
 	  ghost_tapsH[31][hcount+1]+=1;
 	  ghost_tapsH[31][hcount+1]%=31;
@@ -1892,7 +1892,7 @@ void TIM2_IRQHandler(void){
       case 36: 
 	//->>>>>>>>>>>>>> 4- parity for loopback XOR is determined by pulsed bits in -> select bits with pulse and queue 
 	hcount++;
-	if (hcount>31) hcount=0;
+	if (hcount>30) hcount=0;
 	if( !(GPIOB->IDR & 0x0080)) {
 	  hstack[3]=hstack[2];
 	  hstack[2]=hstack[1];
@@ -2023,7 +2023,7 @@ void TIM2_IRQHandler(void){
 	if (!(GPIOB->IDR & 0x0400))
 	  {
 	    hcount++;
-	    if (hcount>3) hcount=0;
+	    if (hcount>2) hcount=0;
 	    //if (!(GPIOB->IDR & 0x0400)) {
 	    ghost_tapsH[31][hcount+1]+=1;
 	    ghost_tapsH[31][hcount+1]%=31;
@@ -2622,11 +2622,12 @@ void EXTI9_5_IRQHandler(void){
 
       // flip flop: rising edge - if last was 0 and now is 1 then we trigger flip 1-0 or 0-1
       numflips=(ADCBuffer[3]>>12); //or 15-(ADCBuffer[3]>>12) if we wish it to go in the opposite direction
+
       new_statel[0]=bitl;
       if (prev_statel[0]==0 && new_statel[0]==1) flippedl[0]^=1;
       prev_statel[0]=new_statel[0];	
 
-      for (x=1;x<numflips;x++){ 
+      for (x=1;x<numflips;x++){ // tested
 	new_statel[x]=flippedl[x-1];
 	if (prev_statel[x]==0 && new_statel[x]==1) flippedl[x]^=1;
 	prev_statel[x]=new_statel[x];
@@ -3565,14 +3566,14 @@ void EXTI9_5_IRQHandler(void){
       numflips=(ADCBuffer[2]>>12); //or 15-(ADCBuffer[2]>>12) if we wish it to go in the opposite direction
       new_state[0]=bith;
       if (prev_state[0]==0 && new_state[0]==1) flipped[0]^=1;
-      prev_state[0]=new_state[0];	
-
+      prev_state[0]=new_state[0];   
+      
       for (x=1;x<numflips;x++){ 
 	new_state[x]=flipped[x-1];
 	if (prev_state[x]==0 && new_state[x]==1) flipped[x]^=1;
 	prev_state[x]=new_state[x];
       }
-      if (numflips>0)	bith=flipped[numflips-1];
+      if (numflips>0)	bith=flipped[numflips];
 
 	// divide down
 	new_stath=bith; // its is just divided down
