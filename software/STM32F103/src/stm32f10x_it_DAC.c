@@ -22,7 +22,7 @@ volatile uint32_t hstack[4], lstack[4]; // length minus 1;
 volatile uint32_t model, modeh, spdqh, spdql;
 volatile uint32_t intervall,intervalh; 
 volatile uint32_t bith=0, bitl=0, inth=0, intl=0;
-volatile uint32_t lastspeedhh, lastspeedll, lastmodeh=63, lastmodel=63;
+volatile uint32_t lastspeedhh, lastspeedll, lastmodeh=63, lastlastmodeh=63, lastlastmodel=63, lastmodel=63;
 volatile uint32_t targeth=8000<<16, interh=1<<16, whereh=312<<16; // for interpol
 volatile uint32_t targetl=8000<<16, interl=1<<16, wherel=312<<16; // for interpol
 
@@ -848,7 +848,7 @@ void TIM2_IRQHandler(void){
 	}	  
 
 	bitl= ((shift_registerl >> lstack[0]) ^ (shift_registerl >> lstack[1]) ^ (shift_registerl >> lstack[2]) ^ (shift_registerl >> lstack[3])) & 1u; // 32 is 31, 29, 25, 24
-	shift_registerl= (shift_registerl<<1) + (bitl ^ !(GPIOB->IDR & 0x0040)); // TESTY - to OR in new bit or not?
+	shift_registerl= (shift_registerl<<1) + (bitl | !(GPIOB->IDR & 0x0040)); // TESTY - to OR in new bit or not?
 
 	// for divide down
 	new_statl=(shift_registerl & (1<<15))>>15; // so that is not just a simple divide down
@@ -953,7 +953,7 @@ void TIM2_IRQHandler(void){
     case 39: //was 23 -  experimental modes 23+ here and 32+ in pulses - TESTED/WORKING!
 	// shifting the array of LFSR taps = ghost_tapsH on the high side
 	// clock pulse shifts one selected by pulse 
-	if (!(GPIOB->IDR & 0x0020))
+      if (!(GPIOB->IDR & 0x0040)) // bit
 	  {
 	    lcount++;
 	    if (lcount>2) lcount=0;
@@ -966,7 +966,7 @@ void TIM2_IRQHandler(void){
 	bitl= ((shift_registerl >> (ghost_tapsL[31][0])) ^ (shift_registerl >> (ghost_tapsL[31][1])) ^ (shift_registerl >> (ghost_tapsL[31][2])) ^ (shift_registerl >> (ghost_tapsL[31][3]))) & 1u; // 32 is 31, 29, 25, 24
 	shift_registerl = (shift_registerl<<1) + bitl;
 
-	if (!(GPIOB->IDR & 0x0040)) {
+	if (!(GPIOB->IDR & 0x0020)) { // pulse
 	// for divide down
 	new_statl=(shift_registerl & (1<<15))>>15; // so that is not just a simple divide down
 	if (prev_statl==0 && new_statl==1) flipdl^=1;
@@ -1533,7 +1533,7 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
   	break;
-	
+       
       case 9: // was 25
 	// SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits - TESTED/WORKING!
 	bith = (shift_registerh>>31) & 0x01; // bit which would be shifted out
@@ -1556,7 +1556,7 @@ void TIM2_IRQHandler(void){
 	if (bith) GPIOC->BRR = 0b0100000000000000;   // this is top one!
 	else GPIOC->BSRR = 0b0100000000000000;	
 	break;
-
+	
       case 10: // was 26
 	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
 	// can use input bit as length of either SR
@@ -2020,7 +2020,7 @@ void TIM2_IRQHandler(void){
 	// shifting the array of LFSR taps = ghost_tapsH on the high side
 	// clock pulse shifts one selected by pulse
 	// modded so that pulse toggles PWM on/off can also be for pulse
-	if (!(GPIOB->IDR & 0x0400))
+	if (!(GPIOB->IDR & 0x0400)) // bit
 	  {
 	    hcount++;
 	    if (hcount>2) hcount=0;
@@ -2033,7 +2033,7 @@ void TIM2_IRQHandler(void){
 	bith= ((shift_registerh >> (ghost_tapsH[31][0])) ^ (shift_registerh >> (ghost_tapsH[31][1])) ^ (shift_registerh >> (ghost_tapsH[31][2])) ^ (shift_registerh >> (ghost_tapsH[31][3]))) & 1u; // 32 is 31, 29, 25, 24
 	shift_registerh = (shift_registerh<<1) + bith;
 	
-	if (!(GPIOB->IDR & 0x0080)) { //trigger toggle just once
+	if (!(GPIOB->IDR & 0x0080)) { //trigger toggle just once - pulse
 
 	// divide down
 	new_stath=(shift_registerh & (1<<15))>>15; // so that is not just a simple divide down
@@ -2466,10 +2466,12 @@ void TIM4_IRQHandler(void){
   TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 
   //  temp=ADCBuffer[0]>>10; //smoothing necessary for higher speeds
-  temp=(((ADCBuffer[0])+lastmodeh)/2); //smoothing necessary for higher speeds
+  temp=(((ADCBuffer[0])+lastmodeh+lastlastmodeh)/3); //smoothing necessary for higher speeds
+  lastlastmodeh=lastmodeh;
   lastmodeh=temp;
+
   modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-  //    modehsr=39; // TESTING all modes on H side 47 is exp mode for now 
+  //    modehsr=36; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
@@ -2487,10 +2489,11 @@ void TIM4_IRQHandler(void){
   speedh=logger[temp>>6]; // 1024  = 10 bits -> could be less logger to make smoother?
   if (modehsr!=0)   speedhh=slower_even_logforSR[temp>>6]; // 1024 option = 10 bits log ->  could be less logger to make smoother? - could also be a lot slower at one end - TESTY even slower
   
-  temp=(((ADCBuffer[1])+lastmodel)/2); //smoothing necessary for higher speeds - TEST!
+  temp=(((ADCBuffer[1])+lastlastmodel+lastmodel)/3); //smoothing necessary for higher speeds - TEST!
+  lastlastmodel=lastmodel;
   lastmodel=temp;
   modelsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
-  //  modelsr=48; // TESTING!
+  //  modelsr=36; // TESTING!
   
   totl=totl-smoothl[ll];
   smoothl[ll]=ADCBuffer[3];
