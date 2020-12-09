@@ -595,13 +595,13 @@ void TIM2_IRQHandler(void){
 	/// length thing	
 	// - TESTED/WORKING!
 	lcount++;
-      if (lcount>31) lcount=4;
-      if (!(GPIOB->IDR & 0x0020)) {
-	SRlengthl=lcount;
-	lengthbitl=(SRlengthl/2);
+	if (lcount>31) lcount=4;
+	if (!(GPIOB->IDR & 0x0020)) {
+	  SRlengthl=lcount;
+	  lengthbitl=(SRlengthl/2);
 	}
-      // as mode 3::::
-      bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out 
+	// as mode 3::::
+	bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out 
 	if (GPIOB->IDR & 0x0040) shift_registerl = (shift_registerl<<1) + bitl;
 	else shift_registerl = (shift_registerl<<1) + (!bitl);
 
@@ -2627,7 +2627,7 @@ void EXTI9_5_IRQHandler(void){
       if (prev_statel[0]==0 && new_statel[0]==1) flippedl[0]^=1;
       prev_statel[0]=new_statel[0];	
 
-      for (x=1;x<numflips;x++){ // tested
+      for (x=1;x<15;x++){ // tested - we always need full flips
 	new_statel[x]=flippedl[x-1];
 	if (prev_statel[x]==0 && new_statel[x]==1) flippedl[x]^=1;
 	prev_statel[x]=new_statel[x];
@@ -2655,7 +2655,7 @@ void EXTI9_5_IRQHandler(void){
       if (prev_statel[0]==0 && new_statel[0]==1) flippedl[0]^=1;
       prev_statel[0]=new_statel[0];	
 
-      for (x=1;x<numflips;x++){ 
+      for (x=1;x<15;x++){ 
 	new_statel[x]=flippedl[x-1];
 	if (prev_statel[x]==0 && new_statel[x]==1) flippedl[x]^=1;
 	prev_statel[x]=new_statel[x];
@@ -3568,12 +3568,12 @@ void EXTI9_5_IRQHandler(void){
       if (prev_state[0]==0 && new_state[0]==1) flipped[0]^=1;
       prev_state[0]=new_state[0];   
       
-      for (x=1;x<numflips;x++){ 
+      for (x=1;x<15;x++){ 
 	new_state[x]=flipped[x-1];
 	if (prev_state[x]==0 && new_state[x]==1) flipped[x]^=1;
 	prev_state[x]=new_state[x];
       }
-      if (numflips>0)	bith=flipped[numflips];
+      if (numflips>0)	bith=flipped[numflips-1];
 
 	// divide down
 	new_stath=bith; // its is just divided down
@@ -3597,7 +3597,7 @@ void EXTI9_5_IRQHandler(void){
       if (prev_state[0]==0 && new_state[0]==1) flipped[0]^=1;
       prev_state[0]=new_state[0];	
 
-      for (x=1;x<numflips;x++){ 
+      for (x=1;x<15;x++){ 
 	new_state[x]=flipped[x-1];
 	if (prev_state[x]==0 && new_state[x]==1) flipped[x]^=1;
 	prev_state[x]=new_state[x];
