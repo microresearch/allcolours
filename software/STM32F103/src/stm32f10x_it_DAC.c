@@ -1496,7 +1496,7 @@ void TIM2_IRQHandler(void){
 	if (shift_registerh==0) shift_registerh=0xff; // catch it!
 	bith= ((shift_registerh >> (lfsr_taps[31][0])) ^ (shift_registerh >> (lfsr_taps[31][1])) ^ (shift_registerh >> (lfsr_taps[31][2])) ^ (shift_registerh >> (lfsr_taps[31][3]))) & 1u; // 32 is 31, 29, 25, 24
 	if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + bith;
-	else shift_registerh = (shift_registerh<<1) + (bith | !(GPIOB->IDR & 0x0400)); 
+	else  shift_registerh = (shift_registerh<<1) + (bith | !(GPIOB->IDR & 0x0400)); 
 
 	// divide down
 	new_stath=(shift_registerh & (1<<15))>>15; // so that is not just a simple divide down
@@ -2471,7 +2471,7 @@ void TIM4_IRQHandler(void){
   lastmodeh=temp;
 
   modehsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases - never seems hit 0/63
-  //    modehsr=36; // TESTING all modes on H side 47 is exp mode for now 
+  //  modehsr=40; // TESTING all modes on H side 47 is exp mode for now 
   
   // 0-15 is pwmX
   // 16-31 is pulseX
@@ -2493,7 +2493,7 @@ void TIM4_IRQHandler(void){
   lastlastmodel=lastmodel;
   lastmodel=temp;
   modelsr=63-(temp>>10); // for a new total of 64 modes=6bits - no modehpwm - REVERSED or we reverse in cases
-  //  modelsr=36; // TESTING!
+  //  modelsr=63; // TESTING!
   
   totl=totl-smoothl[ll];
   smoothl[ll]=ADCBuffer[3];
@@ -3064,6 +3064,7 @@ void EXTI9_5_IRQHandler(void){
 
 	// testing equal weightings
 	tmp=bitsz[shift_registerl&0xff]+bitsz[(shift_registerl>>8)&0xff];
+	//	tmp=shift_registerl;
 	tmp*=312; 
 	spl=312+tmp; // 17*312=5304 - as we want on the lower side (not as in HF modes)
 	TIM3->ARR =spl;
