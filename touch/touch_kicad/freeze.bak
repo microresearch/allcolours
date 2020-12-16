@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 8 8
+Sheet 7 8
 Title ""
 Date ""
 Rev ""
@@ -191,7 +191,7 @@ Wire Wire Line
 Connection ~ 1880 3265
 Text GLabel 1780 3265 0    79   Input ~ 0
 F3
-Text GLabel 2820 3265 2    79   Input ~ 0
+Text GLabel 5160 4930 2    79   Input ~ 0
 FR3
 $Comp
 L Device:R_Small R?
@@ -668,7 +668,7 @@ Wire Wire Line
 Connection ~ 4220 4930
 Text GLabel 4120 4930 0    79   Input ~ 0
 Fplay
-Text GLabel 5160 4930 2    79   Input ~ 0
+Text GLabel 2820 3265 2    79   Input ~ 0
 play
 $Comp
 L 4xxx:40106 U13
