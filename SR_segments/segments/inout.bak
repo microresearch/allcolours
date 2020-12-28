@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Notes 1375 1275 0    118  ~ 0
-CV in jacks x8\nADC in, DAC in\nPulse in x6\nPulse out x6
+CV in jacks x8\nADC in, DAC out\nPulse in x6\nPulse out x6
 $Comp
 L erthenvar:AUDIO-JACKERTHENVAR M1
 U 1 1 5FABE71D
