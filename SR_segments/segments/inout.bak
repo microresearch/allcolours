@@ -6,7 +6,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 6
 Title "SEGMENTS"
-Date "2020-09-30"
+Date "2020-12-28"
 Rev ""
 Comp ""
 Comment1 ""
@@ -648,4 +648,6 @@ Text GLabel 1660 5425 0    60   Input ~ 0
 CSROUT1
 Text GLabel 3090 5405 0    60   Input ~ 0
 CSROUT2
+Text Notes 6195 5775 0    79   ~ 0
+TIM2 is 32 bit so maybe think to shift to TIM8
 $EndSCHEMATC

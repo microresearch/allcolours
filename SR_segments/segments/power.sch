@@ -6,7 +6,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 6
 Title "SEGMENTS"
-Date "2020-09-30"
+Date "2020-12-28"
 Rev ""
 Comp ""
 Comment1 ""

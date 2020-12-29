@@ -6,8 +6,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 6
 Title "SEGMENTS"
-Date "2020-09-30"
-Rev "001"
+Date "2020-12-28"
+Rev "002"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -1821,8 +1821,8 @@ L Device:CP_Small C?
 U 1 1 5FEB04BE
 P 5725 2395
 AR Path="/5E8871AA/5FEB04BE" Ref="C?"  Part="1" 
-AR Path="/5FEB04BE" Ref="C?"  Part="1" 
-F 0 "C?" H 5813 2441 50  0000 L CNN
+AR Path="/5FEB04BE" Ref="C40"  Part="1" 
+F 0 "C40" H 5813 2441 50  0000 L CNN
 F 1 "1uF" H 5810 2550 50  0000 L CNN
 F 2 "SMD_Packages:SMD-1206_Pol" H 5725 2395 50  0001 C CNN
 F 3 "~" H 5725 2395 50  0001 C CNN
