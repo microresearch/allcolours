@@ -21,14 +21,15 @@ But we can keep DAC on PA4
 
 TODO: list our new I/O here, check interrupts and PWM
 
-fast interrupt (TIM?) for all shift registers with counters, interrupt for ADCs (TIM?), interrupt for pulsed SR, PWM for default/normed clockings!
+fast interrupt (TIM?) for all shift registers with counters, interrupt for ADCs (TIM?), interrupt for pulsed SR, PWM for default/normed clockings (set by speed pot)
 
 I/O:
 
-- pulse ins: PC3-6 clkins(interrupts), PC7/8 pulsein, PC9-MCB, to PC14-LLSB of 6 bits
+- pulse ins: PC3-5 + PB6 clkins(interrupts), PC7/8 pulsein, PC9-MCB, to PC14-LSB of 6 bits
 - ADC 1-11
-- DAcout PA4
-- TIM1-CH1, TIM1-CH2, TIM2-CH1(maybe change to TIM8), TIM3-CH1 - check these 5 timers on nucleo before we start pcb layout, and we need 2 extra internal timers! 
+- DAC out PA4
+- TIM1-CH1 drived normed top LFSR - and we need 2 extra internal timers! 
+- 11 pulse outs: PB2,3,4,5,7,8,9,10,12,13,14 = 5 fakes and 6 real outs
 
 apparently there are 12x 16bit and 2x 32 bit timers (TIM2, TIM5) 
 
@@ -36,8 +37,7 @@ refs here:
 
 https://stm32f4-discovery.net/2014/08/stm32f4-external-interrupts-tutorial/
 
-
-  
+https://electronics.stackexchange.com/questions/281831/how-to-configure-stm32f4s-tim1-and-8-for-pwm
 
 //////////////////////////////////FROM TOUCH:
 

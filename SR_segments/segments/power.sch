@@ -31,21 +31,17 @@ F 3 "" H 1215 1660 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2300 1425 2345 1425
-Wire Wire Line
-	1295 1115 1295 1175
 $Comp
 L Device:D D7
 U 1 1 5C3AA4C8
 P 1365 1625
 F 0 "D7" H 1365 1409 50  0000 C CNN
 F 1 "D" H 1365 1500 50  0000 C CNN
-F 2 "Diodes_ThroughHole:D_A-405_P12.70mm_Horizontal" H 1365 1625 50  0001 C CNN
+F 2 "Diodes_SMD:D_SOD-123" H 1365 1625 50  0001 C CNN
 F 3 "~" H 1365 1625 50  0001 C CNN
 	1    1365 1625
-	1    0    0    -1  
+	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	1215 1625 1215 1660
 $Comp
 L Connector_Generic:Conn_02x05_Odd_Even J1
 U 1 1 5C3B711B
@@ -85,10 +81,10 @@ U 1 1 5C3AA4BD
 P 1445 1175
 F 0 "D8" H 1445 1391 50  0000 C CNN
 F 1 "D" H 1445 1300 50  0000 C CNN
-F 2 "Diodes_THT:D_A-405_P12.70mm_Horizontal" H 1445 1175 50  0001 C CNN
+F 2 "Diodes_SMD:D_SOD-123" H 1445 1175 50  0001 C CNN
 F 3 "~" H 1445 1175 50  0001 C CNN
 	1    1445 1175
-	-1   0    0    1   
+	1    0    0    -1  
 $EndComp
 $Comp
 L Device:CP_Small C13
@@ -315,12 +311,9 @@ F 3 "~" H 1215 1495 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1295 1175 1295 1205
-Wire Wire Line
 	1595 1175 1800 1175
 Wire Wire Line
 	1515 1625 1760 1625
-Connection ~ 1295 1175
 Wire Wire Line
 	1295 1405 1340 1405
 Wire Wire Line
@@ -336,9 +329,6 @@ Wire Wire Line
 Connection ~ 1340 1405
 Wire Wire Line
 	1340 1405 1580 1405
-Wire Wire Line
-	1215 1595 1215 1625
-Connection ~ 1215 1625
 Text Notes 4405 1760 0    79   ~ 0
 added\n analogue volts
 $Comp
@@ -369,7 +359,7 @@ U 1 1 5FF50524
 P 4805 2070
 F 0 "L1" V 4975 2010 50  0000 C CNN
 F 1 "IND" V 4905 2105 50  0000 C CNN
-F 2 "" H 4805 2070 50  0001 C CNN
+F 2 "Inductors_SMD:L_0603" H 4805 2070 50  0001 C CNN
 F 3 "~" H 4805 2070 50  0001 C CNN
 	1    4805 2070
 	0    -1   -1   0   
@@ -472,7 +462,7 @@ U 1 1 5FFD94FF
 P 5860 1890
 F 0 "R99" V 5664 1890 50  0000 C CNN
 F 1 "1K" V 5755 1890 50  0000 C CNN
-F 2 "" H 5860 1890 50  0001 C CNN
+F 2 "Resistors_SMD:R_0805" H 5860 1890 50  0001 C CNN
 F 3 "~" H 5860 1890 50  0001 C CNN
 	1    5860 1890
 	0    1    1    0   
@@ -491,9 +481,20 @@ $EndComp
 Wire Wire Line
 	5715 1890 5760 1890
 Wire Wire Line
+	5995 2090 5995 2120
+Wire Wire Line
 	5960 1890 5995 1890
 Wire Wire Line
-	6000 1890 6025 1890
+	5995 1890 6025 1890
+Connection ~ 5995 1890
 Wire Wire Line
-	5995 2090 5995 2120
+	1295 1115 1295 1175
+Connection ~ 1295 1175
+Wire Wire Line
+	1295 1175 1295 1205
+Wire Wire Line
+	1215 1595 1215 1625
+Connection ~ 1215 1625
+Wire Wire Line
+	1215 1625 1215 1660
 $EndSCHEMATC

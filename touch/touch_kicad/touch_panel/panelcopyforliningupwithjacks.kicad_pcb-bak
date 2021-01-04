@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 7)
+    (drawings 6)
     (tracks 264)
     (zones 0)
     (modules 76)
@@ -36795,9 +36795,6 @@
   (gr_line (start 51.85 34.45) (end 153.25 34.45) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 51.85 162.9) (end 51.85 34.45) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 153.175 162.9) (end 51.85 162.9) (angle 90) (layer Edge.Cuts) (width 0.15))
-  (gr_text "leave height as 104 as is max 108" (at 179.75 64.1) (layer Dwgs.User)
-    (effects (font (size 1.5 1.5) (thickness 0.3)))
-  )
   (gr_text "checked alignment" (at 101.95 39.1) (layer Dwgs.User)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )

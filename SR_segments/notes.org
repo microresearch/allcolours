@@ -22,3 +22,12 @@ total pulses: 6 in, 6 out
 - DAC is now from the STM32F446 as in TOUCH - we copy micro.sch across
 
 but we keep ADC as analogue 6 bits in 
+
+** notes 30/12/2020+
+
+- +note that now we have only 4x pulse outs which is one from each SR!+
+
+** 1/4/2020
+
+- now there are 6 pulse outs, 2 from each side, 2 from lower and fake norming ones which could be from uppers
+- only one PWM clock to drive normed clock in for ADC/LFSER top
