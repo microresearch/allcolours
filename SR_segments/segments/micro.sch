@@ -485,10 +485,10 @@ Wire Wire Line
 	6730 3620 6785 3620
 Text GLabel 6785 3420 2    50   Input ~ 0
 PULSE2OUT
-Text GLabel 6765 4020 2    50   Input ~ 0
+Text GLabel 6790 3820 2    50   Input ~ 0
+PULSE5OUT
+Text GLabel 6785 3520 2    50   Input ~ 0
 PULSE3OUT
-Text GLabel 6785 3620 2    50   Input ~ 0
-PULSE4OUT
 Text Notes 4575 3335 2    50   ~ 0
 CLK need to be on interrupts = should be so
 Text GLabel 5285 3820 0    50   Input ~ 0
@@ -547,30 +547,30 @@ Text GLabel 5275 4420 0    50   Input ~ 0
 1_IN
 Wire Wire Line
 	6730 3720 6785 3720
-Text GLabel 6790 3820 2    50   Input ~ 0
-PULSE5OUT
+Text GLabel 6785 3620 2    50   Input ~ 0
+PULSE4OUT
 Text GLabel 6765 3920 2    50   Input ~ 0
 PULSE6OUT
 Wire Wire Line
 	6730 3820 6790 3820
-Text GLabel 6760 4120 2    50   Input ~ 0
+Text GLabel 6765 4020 2    50   Input ~ 0
 PULSE7OUT
-Text GLabel 6760 4220 2    50   Input ~ 0
+Text GLabel 6760 4120 2    50   Input ~ 0
 PULSE8OUT
 Wire Wire Line
 	6730 4120 6760 4120
 Wire Wire Line
 	6730 4220 6760 4220
-Text GLabel 6760 4320 2    50   Input ~ 0
+Text GLabel 6760 4220 2    50   Input ~ 0
 PULSE9OUT
-Text GLabel 6760 4420 2    50   Input ~ 0
+Text GLabel 6760 4320 2    50   Input ~ 0
 PULSE10OUT
 Wire Wire Line
 	6730 4320 6760 4320
 Wire Wire Line
 	6730 4420 6760 4420
-Text GLabel 6760 4520 2    50   Input ~ 0
+Text GLabel 6760 4420 2    50   Input ~ 0
 PULSE11OUT
 Wire Wire Line
-	6730 4520 6760 4520
+	6730 3520 6785 3520
 $EndSCHEMATC

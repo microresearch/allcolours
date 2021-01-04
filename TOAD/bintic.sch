@@ -719,12 +719,12 @@ Wire Wire Line
 Text Notes 795  5175 0    79   ~ 0
 comparator in for clock - tested now.
 $Comp
-L erthenvar:AUDIO-JACKERTHENVAR M2
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M2
 U 1 1 5EADB3AA
 P 6240 5960
 F 0 "M2" H 5913 5922 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 6240 5960 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 6270 6110 20  0001 C CNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 6270 6110 20  0001 C CNN
 F 3 "" H 6240 5960 79  0001 C CNN
 	1    6240 5960
 	-1   0    0    1   
@@ -741,12 +741,12 @@ F 3 "" H 5940 6110 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L erthenvar:AUDIO-JACKERTHENVAR M3
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M3
 U 1 1 5EADB5B3
 P 7725 5280
 F 0 "M3" H 7397 5242 45  0000 R CNN
 F 1 "AUDIO-JACKERTHENVAR" H 7725 5280 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7755 5430 20  0001 C CNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7755 5430 20  0001 C CNN
 F 3 "" H 7725 5280 79  0001 C CNN
 	1    7725 5280
 	1    0    0    1   
@@ -774,12 +774,12 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2155 6385 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L erthenvar:AUDIO-JACKERTHENVAR M1
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M1
 U 1 1 5EB1ED03
 P 1030 5935
 F 0 "M1" H 1036 6154 45  0000 C CNN
 F 1 "AUDIO-JACKERTHENVAR" H 1030 5935 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1060 6085 20  0001 C CNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1060 6085 20  0001 C CNN
 F 3 "" H 1030 5935 79  0001 C CNN
 	1    1030 5935
 	1    0    0    -1  

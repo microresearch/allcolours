@@ -668,4 +668,12 @@ Text Notes 5585 5830 0    50   ~ 0
 this one can be fake too but could be LSROUT1
 Text GLabel 5445 5880 2    50   Input ~ 0
 PULSE11OUT
+Text GLabel 5625 1685 2    63   Input ~ 0
+DAC_OUT
+Wire Wire Line
+	5490 1685 5490 1750
+Wire Wire Line
+	5490 1750 5625 1750
+Wire Wire Line
+	5625 1750 5625 1685
 $EndSCHEMATC
