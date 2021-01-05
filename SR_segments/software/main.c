@@ -13,6 +13,8 @@
 #include "adc.h"
 /*
 
+*** SEGMENTS
+
 Testing on STM32F446 NUCLEO
 
 This was copied from TOUCH so some things will need to change: 
@@ -38,6 +40,8 @@ refs here:
 https://stm32f4-discovery.net/2014/08/stm32f4-external-interrupts-tutorial/
 
 https://electronics.stackexchange.com/questions/281831/how-to-configure-stm32f4s-tim1-and-8-for-pwm
+
+*TEST: for schematic that a simple pulse out from micro will trigger transistor->pulse in!*
 
 //////////////////////////////////FROM TOUCH:
 

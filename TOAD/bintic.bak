@@ -522,7 +522,7 @@ F 3 "" H 4915 5175 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4915 5410 4915 5460
+	4915 5410 4915 5433
 Wire Wire Line
 	4915 6060 4915 6135
 Wire Wire Line
@@ -1196,14 +1196,14 @@ Wire Wire Line
 $Comp
 L Device:C_Small C?
 U 1 1 5ED84208
-P 5990 6860
+P 5351 5300
 AR Path="/5EC7DA76/5ED84208" Ref="C?"  Part="1" 
 AR Path="/5EB3CA17/5ED84208" Ref="C18"  Part="1" 
-F 0 "C18" H 6082 6906 50  0000 L CNN
-F 1 "100N" H 6082 6815 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 5990 6860 50  0001 C CNN
-F 3 "~" H 5990 6860 50  0001 C CNN
-	1    5990 6860
+F 0 "C18" H 5443 5346 50  0000 L CNN
+F 1 "100N" H 5443 5255 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 5351 5300 50  0001 C CNN
+F 3 "~" H 5351 5300 50  0001 C CNN
+	1    5351 5300
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1217,20 +1217,6 @@ F 1 "100N" H 6407 6790 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805" H 6315 6835 50  0001 C CNN
 F 3 "~" H 6315 6835 50  0001 C CNN
 	1    6315 6835
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
-U 1 1 5ED84216
-P 5990 6735
-AR Path="/5ED966D6/5ED84216" Ref="#PWR?"  Part="1" 
-AR Path="/5EC7DA76/5ED84216" Ref="#PWR?"  Part="1" 
-AR Path="/5EB3CA17/5ED84216" Ref="#PWR028"  Part="1" 
-F 0 "#PWR028" H 5990 6585 50  0001 C CNN
-F 1 "+12V-power" H 5990 6885 50  0000 C CNN
-F 2 "" H 5990 6735 50  0001 C CNN
-F 3 "" H 5990 6735 50  0001 C CNN
-	1    5990 6735
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1250,15 +1236,15 @@ $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5ED84222
-P 5990 7010
+P 5351 5450
 AR Path="/5ED966D6/5ED84222" Ref="#PWR?"  Part="1" 
 AR Path="/5EC7DA76/5ED84222" Ref="#PWR?"  Part="1" 
 AR Path="/5EB3CA17/5ED84222" Ref="#PWR029"  Part="1" 
-F 0 "#PWR029" H 5990 6760 50  0001 C CNN
-F 1 "GND" H 5940 7135 50  0000 C CNN
-F 2 "" H 5990 7010 50  0001 C CNN
-F 3 "" H 5990 7010 50  0001 C CNN
-	1    5990 7010
+F 0 "#PWR029" H 5351 5200 50  0001 C CNN
+F 1 "GND" H 5301 5575 50  0000 C CNN
+F 2 "" H 5351 5450 50  0001 C CNN
+F 3 "" H 5351 5450 50  0001 C CNN
+	1    5351 5450
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1276,7 +1262,7 @@ F 3 "" H 6415 6560 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5990 6960 5990 7010
+	5351 5400 5351 5450
 Wire Wire Line
 	6315 6735 6315 6560
 Wire Wire Line
@@ -1529,7 +1515,7 @@ F 3 "~" H 4915 5310 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	5990 6735 5990 6760
+	5351 5175 5351 5176
 Wire Wire Line
 	4915 5175 4915 5210
 $Comp
@@ -1890,4 +1876,16 @@ Wire Wire Line
 Connection ~ 1905 5878
 Wire Wire Line
 	1905 5878 1905 5935
+Wire Wire Line
+	5224 5433 5224 5176
+Wire Wire Line
+	5224 5176 5351 5176
+Connection ~ 5351 5176
+Wire Wire Line
+	5351 5176 5351 5200
+Wire Wire Line
+	4915 5433 5224 5433
+Connection ~ 4915 5433
+Wire Wire Line
+	4915 5433 4915 5460
 $EndSCHEMATC
