@@ -41,7 +41,7 @@ https://stm32f4-discovery.net/2014/08/stm32f4-external-interrupts-tutorial/
 
 https://electronics.stackexchange.com/questions/281831/how-to-configure-stm32f4s-tim1-and-8-for-pwm
 
-*TEST: for schematic that a simple pulse out from micro will trigger transistor->pulse in!*
+TESTED: for schematic that a simple pulse out from micro will trigger transistor->pulse in!
 
 //////////////////////////////////FROM TOUCH:
 
@@ -162,9 +162,9 @@ int main(void)
     
     // and maybe add timer for updating all in interrupt
     
-    io_config2 ();
+  //    io_config2 ();
     //DAC_Cmd( DAC_Channel_2, ENABLE);
-    DAC_Cmd( DAC_Channel_1, ENABLE);
+    //    DAC_Cmd( DAC_Channel_1, ENABLE);
 
     // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
 
@@ -178,7 +178,7 @@ int main(void)
     while(1) {
       // test SPI comms - what message to send a value to the DAC1!?
       // from arduino code: https://github.com/michd/Arduino-MCP492X/blob/master/MCP492X.cpp
-      value=k;
+      //      value=k;
       
       //      delay();
       // flip-flop from PC8
@@ -205,12 +205,12 @@ int main(void)
             
       //    GPIOB->ODR = 0b0000000100000000;  //13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
     // Y1 is S1 on 4051 high which is 11 on 4051 which is pin PB8
-      otherk++;
+      /*      otherk++;
       if (otherk>32){
 	otherk=0;
       k++;
       if (k>4095) k=0;
-      }
+      }*/
       //      k=0;
       //    DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
       //    j = DAC_GetDataOutputValue (DAC_Channel_1);
@@ -221,10 +221,10 @@ int main(void)
     //    delay();
     
       // testing transistor switch of 4066 on and off
-    //    GPIOB->ODR = 0b0000000100000000;  //PB8-13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
-    //    delayy();
-    //    GPIOB->ODR = 0b0000000000000000;  //PB8-13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
-    //    delayy();
+        GPIOB->ODR = 0b0000000100000000;  //PB8-13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
+        delayy();
+        GPIOB->ODR = 0b0000000000000000;  //PB8-13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
+	delayy();
       
       
     }
