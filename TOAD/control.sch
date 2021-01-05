@@ -1594,17 +1594,6 @@ $EndComp
 Text Notes 5035 2910 0    79   ~ 0
 TODO: Add 3 pots to mix with CV in?
 $Comp
-L Device:R_POT RV3
-U 1 1 5FF41140
-P 5680 2340
-F 0 "RV3" H 5610 2386 50  0000 R CNN
-F 1 "10k log" H 5610 2295 50  0000 R CNN
-F 2 "new_kicad:Potentiometer_Alps-RK09" H 5680 2340 50  0001 C CNN
-F 3 "~" H 5680 2340 50  0001 C CNN
-	1    5680 2340
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R59
 U 1 1 5FF41350
 P 5680 2050
@@ -1655,8 +1644,6 @@ Wire Wire Line
 Wire Wire Line
 	5680 2490 5680 2525
 Wire Wire Line
-	5830 2340 5860 2340
-Wire Wire Line
 	6060 2340 6115 2340
 Wire Wire Line
 	6115 2340 6115 1865
@@ -1674,7 +1661,7 @@ F 1 "10k lin" H 5485 5680 50  0000 R CNN
 F 2 "new_kicad:Potentiometer_Alps-RK09" H 5555 5725 50  0001 C CNN
 F 3 "~" H 5555 5725 50  0001 C CNN
 	1    5555 5725
-	1    0    0    -1  
+	-1   0    0    1   
 $EndComp
 $Comp
 L Device:R_Small R58
@@ -1727,7 +1714,7 @@ Wire Wire Line
 Wire Wire Line
 	5555 5875 5555 5910
 Wire Wire Line
-	5705 5725 5735 5725
+	5705 5725 5706 5725
 Wire Wire Line
 	5935 5725 5990 5725
 $Comp
@@ -1739,7 +1726,7 @@ F 1 "10k lin" H 5450 6720 50  0000 R CNN
 F 2 "new_kicad:Potentiometer_Alps-RK09" H 5520 6765 50  0001 C CNN
 F 3 "~" H 5520 6765 50  0001 C CNN
 	1    5520 6765
-	1    0    0    -1  
+	-1   0    0    1   
 $EndComp
 $Comp
 L Device:R_Small R50
@@ -1792,7 +1779,7 @@ Wire Wire Line
 Wire Wire Line
 	5520 6915 5520 6950
 Wire Wire Line
-	5670 6765 5700 6765
+	5670 6765 5671 6765
 Wire Wire Line
 	5900 6765 5955 6765
 Text GLabel 5990 5725 2    50   Input ~ 0
@@ -1855,4 +1842,44 @@ Wire Wire Line
 	10631 4143 10631 4193
 Wire Wire Line
 	10631 4393 10631 4443
+Wire Wire Line
+	5830 2340 5831 2340
+Connection ~ 5831 2340
+Wire Wire Line
+	5831 2340 5860 2340
+Wire Wire Line
+	5405 5725 5405 5785
+Wire Wire Line
+	5405 5785 5706 5785
+Wire Wire Line
+	5706 5785 5706 5725
+Connection ~ 5706 5725
+Wire Wire Line
+	5706 5725 5735 5725
+Wire Wire Line
+	5370 6765 5370 6976
+Wire Wire Line
+	5370 6976 5671 6976
+Wire Wire Line
+	5671 6976 5671 6765
+Connection ~ 5671 6765
+Wire Wire Line
+	5671 6765 5700 6765
+$Comp
+L Device:R_POT RV3
+U 1 1 5FF41140
+P 5680 2340
+F 0 "RV3" H 5610 2386 50  0000 R CNN
+F 1 "10k log" H 5610 2295 50  0000 R CNN
+F 2 "new_kicad:Potentiometer_Alps-RK09" H 5680 2340 50  0001 C CNN
+F 3 "~" H 5680 2340 50  0001 C CNN
+	1    5680 2340
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5530 2340 5530 2467
+Wire Wire Line
+	5530 2467 5831 2467
+Wire Wire Line
+	5831 2340 5831 2467
 $EndSCHEMATC
