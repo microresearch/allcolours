@@ -485,7 +485,7 @@ Wire Wire Line
 	6730 3620 6785 3620
 Text GLabel 6785 3420 2    50   Input ~ 0
 PULSE2OUT
-Text GLabel 6790 3820 2    50   Input ~ 0
+Text GLabel 5300 4520 0    50   Input ~ 0
 PULSE5OUT
 Text GLabel 6785 3520 2    50   Input ~ 0
 PULSE3OUT
@@ -547,9 +547,9 @@ Text GLabel 5275 4420 0    50   Input ~ 0
 1_IN
 Wire Wire Line
 	6730 3720 6785 3720
-Text GLabel 6785 3620 2    50   Input ~ 0
+Text GLabel 6750 2620 2    50   Input ~ 0
 PULSE4OUT
-Text GLabel 6765 3920 2    50   Input ~ 0
+Text GLabel 6760 2520 2    50   Input ~ 0
 PULSE6OUT
 Wire Wire Line
 	6730 3820 6790 3820
@@ -575,4 +575,10 @@ Wire Wire Line
 	6730 3520 6785 3520
 Wire Wire Line
 	6730 4520 6760 4520
+Wire Wire Line
+	6730 2620 6750 2620
+Wire Wire Line
+	6730 2520 6760 2520
+Wire Wire Line
+	5300 4520 5330 4520
 $EndSCHEMATC
