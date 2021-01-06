@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 9)
+    (drawings 1)
     (tracks 0)
     (zones 0)
     (modules 219)
@@ -9244,14 +9244,6 @@
     )
   )
 
-  (gr_line (start 43.83 143.53) (end 43.85 143.55) (layer Edge.Cuts) (width 0.15) (tstamp 600CC68C))
-  (gr_line (start 44.6 143.55) (end 43.85 143.55) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 43.87 143.58) (end 43.87 143.49) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 43.87 143.48) (end 43.87 143.58) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 43.87 41.84) (end 43.87 143.48) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 143.92 143.55) (end 44.59 143.55) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 143.92 41.85) (end 143.92 143.55) (layer Edge.Cuts) (width 0.15))
-  (gr_line (start 43.88 41.85) (end 143.92 41.85) (layer Edge.Cuts) (width 0.15))
   (gr_text "20 HP = 101.3 x 128.5" (at 131.94 27.88) (layer Dwgs.User)
     (effects (font (size 2 2) (thickness 0.3)))
   )

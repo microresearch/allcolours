@@ -1769,46 +1769,16 @@ Wire Wire Line
 	5600 2495 5600 2515
 Wire Wire Line
 	5600 2010 5600 2055
-$Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M?
-U 1 1 5FF5A8CC
-P 6070 4015
-AR Path="/5E9336F6/5FF5A8CC" Ref="M?"  Part="1" 
-AR Path="/5FF5A8CC" Ref="M23"  Part="1" 
-F 0 "M23" H 6076 4234 45  0000 C CNN
-F 1 "AUDIO-JACKERTHENVAR" H 6070 4015 45  0001 L BNN
-F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 6100 4165 20  0001 C CNN
-F 3 "" H 6070 4015 50  0001 C CNN
-	1    6070 4015
-	1    0    0    -1  
-$EndComp
 Text Label 2150 1250 2    50   ~ 0
 ADCREF
 Text Label 6670 4365 0    50   ~ 0
 ADCREF
 Wire Wire Line
 	6625 4365 6670 4365
-$Comp
-L power:GND #PWR0157
-U 1 1 5FF73F3E
-P 6285 3650
-F 0 "#PWR0157" H 6285 3400 50  0001 C CNN
-F 1 "GND" H 6410 3575 50  0000 C CNN
-F 2 "" H 6285 3650 50  0001 C CNN
-F 3 "" H 6285 3650 50  0001 C CNN
-	1    6285 3650
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	6285 3650 6370 3650
-Wire Wire Line
-	6370 3650 6370 3915
-Wire Wire Line
-	6370 4015 6405 4015
+	6370 4015 6371 4015
 Wire Wire Line
 	6605 4015 6655 4015
-Wire Wire Line
-	6370 4215 6475 4215
 Wire Wire Line
 	5825 2710 5825 2905
 Wire Wire Line
@@ -1843,4 +1813,16 @@ Wire Wire Line
 	5600 2515 5600 2535
 Text Notes 6515 6885 0    79   ~ 0
 Revised for new buffer DAC out, ADCref jack and analog power 28/12/2020\nChanged normings so is only one PWM norm 4/1/2020
+Text Notes 6909 865  0    118  ~ 0
+all pots reversed on pcb
+Wire Wire Line
+	6371 4015 6371 4215
+Wire Wire Line
+	6370 4215 6371 4215
+Connection ~ 6371 4015
+Wire Wire Line
+	6371 4015 6405 4015
+Connection ~ 6371 4215
+Wire Wire Line
+	6371 4215 6475 4215
 $EndSCHEMATC
