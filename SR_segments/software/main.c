@@ -31,7 +31,7 @@ I/O:
 - ADC 1-11
 - DAC out PA4
 - TIM1-CH1 drived normed top LFSR - and we need 2 extra internal timers! 
-- 11 pulse outs: PB2,3,4,5,7,8,9,10,12,13,14 = 5 fakes and 6 real outs
+- 11 pulse outs: PB2,3,4,10,12,13,14 = 5 fakes and 6 real out + now we have changed for schematic: PA11=pulse6, PA12=pulse4, PC15=pulse5, PB15=pulse7
 
 apparently there are 12x 16bit and 2x 32 bit timers (TIM2, TIM5) 
 

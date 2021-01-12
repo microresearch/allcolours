@@ -4178,7 +4178,7 @@
   )
 
   (module new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles (layer F.Cu) (tedit 5D4B3013) (tstamp 60147F05)
-    (at 122.78 153.13)
+    (at 122.78 153.08)
     (descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
     (tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
     (path /5E9336F6/5FAC10B9)

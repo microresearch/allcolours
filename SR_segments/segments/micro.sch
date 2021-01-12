@@ -481,8 +481,6 @@ Wire Wire Line
 	6730 3320 6785 3320
 Wire Wire Line
 	6730 3420 6785 3420
-Wire Wire Line
-	6730 3620 6785 3620
 Text GLabel 6785 3420 2    50   Input ~ 0
 PULSE2OUT
 Text GLabel 5300 4520 0    50   Input ~ 0
@@ -517,10 +515,6 @@ Text GLabel 6800 2220 2    50   Input ~ 0
 TIM1_CH1
 Wire Wire Line
 	6730 2220 6800 2220
-Wire Wire Line
-	6730 3920 6765 3920
-Wire Wire Line
-	6730 4020 6765 4020
 Text GLabel 5290 3920 0    50   Input ~ 0
 MSB_IN
 Text GLabel 5285 4020 0    50   Input ~ 0
@@ -551,8 +545,6 @@ Text GLabel 6750 2620 2    50   Input ~ 0
 PULSE4OUT
 Text GLabel 6760 2520 2    50   Input ~ 0
 PULSE6OUT
-Wire Wire Line
-	6730 3820 6790 3820
 Text GLabel 6760 4520 2    50   Input ~ 0
 PULSE7OUT
 Text GLabel 6760 4120 2    50   Input ~ 0
