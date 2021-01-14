@@ -1670,7 +1670,7 @@ F0 "CVs" 79
 F1 "CV.sch" 79
 $EndSheet
 Text Notes 5470 4995 0    79   ~ 0
-added cv in for this voltage: \njack normed to 12v with 1k over there - NLC digifilter\n
+no cv in (too many) just pot!\n
 Connection ~ 5760 2710
 Wire Wire Line
 	6485 2610 6535 2610

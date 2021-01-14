@@ -1731,12 +1731,6 @@ Wire Wire Line
 	8025 5380 8150 5380
 Wire Wire Line
 	8150 5380 8150 5460
-Text Notes 2650 1890 0    50   ~ 0
-2-3
-Text Notes 4355 1785 0    50   ~ 0
-4-5
-Text Notes 6535 1535 0    50   ~ 0
-6-1ofnext
 $Comp
 L Device:R_Small R6
 U 1 1 5F8403E3

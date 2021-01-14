@@ -1594,17 +1594,6 @@ $EndComp
 Text Notes 5035 2910 0    79   ~ 0
 TODO: Add 3 pots to mix with CV in?
 $Comp
-L Device:R_POT RV3
-U 1 1 5FF41140
-P 5680 2340
-F 0 "RV3" H 5610 2386 50  0000 R CNN
-F 1 "10k log" H 5610 2295 50  0000 R CNN
-F 2 "new_kicad:Potentiometer_Alps-RK09" H 5680 2340 50  0001 C CNN
-F 3 "~" H 5680 2340 50  0001 C CNN
-	1    5680 2340
-	-1   0    0    1   
-$EndComp
-$Comp
 L Device:R_Small R59
 U 1 1 5FF41350
 P 5680 2050
@@ -1855,12 +1844,6 @@ Wire Wire Line
 	10631 4393 10631 4443
 Wire Wire Line
 	5830 2340 5831 2340
-Wire Wire Line
-	5529 2340 5529 2383
-Wire Wire Line
-	5529 2383 5831 2383
-Wire Wire Line
-	5831 2383 5831 2340
 Connection ~ 5831 2340
 Wire Wire Line
 	5831 2340 5860 2340
@@ -1882,4 +1865,21 @@ Wire Wire Line
 Connection ~ 5671 6765
 Wire Wire Line
 	5671 6765 5700 6765
+$Comp
+L Device:R_POT RV3
+U 1 1 5FF41140
+P 5680 2340
+F 0 "RV3" H 5610 2386 50  0000 R CNN
+F 1 "10k log" H 5610 2295 50  0000 R CNN
+F 2 "new_kicad:Potentiometer_Alps-RK09" H 5680 2340 50  0001 C CNN
+F 3 "~" H 5680 2340 50  0001 C CNN
+	1    5680 2340
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5530 2340 5530 2467
+Wire Wire Line
+	5530 2467 5831 2467
+Wire Wire Line
+	5831 2340 5831 2467
 $EndSCHEMATC
