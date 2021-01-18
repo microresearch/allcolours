@@ -1,5 +1,13 @@
 * notes started 30/9/2020
 
+** 18/1/2021
+
+TODO: 
+
+- Code basics for 4x shift registers for SEGMENTS - add artificial drift and dropped bits
+- wrap up schematic notes and I/O
+
+
 ** schematic 
 
 pulses/ADC for CV/amps. in and out.
@@ -27,7 +35,7 @@ but we keep ADC as analogue 6 bits in
 
 - +note that now we have only 4x pulse outs which is one from each SR!+
 
-** 1/4/2020
+** 1/4/2021
 
 - now there are 6 pulse outs, 2 from each side, 2 from lower and fake norming ones which could be from uppers
 - only one PWM clock to drive normed clock in for ADC/LFSER top
