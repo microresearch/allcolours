@@ -13,6 +13,25 @@
 #include "adc.h"
 /*
 
+26/1/2020 - new code base for testing on latest PCB -> note on pcb PROG HEADER we swop last 2 gnd and swdio 
+
+- internal DAC PA4 with multiplex with EN_LOW1 on PC11 and sel1/2/3 on PC13/14/15
+
+- ADC0-3 on PA0/1/2/3
+- ADC5-7 on PA5/6/7
+- ADC4 on PC0
+
+- rec on PB2, play on PB4, push on PB6
+- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
+
+On PCB panel (clockwise): 
+- top one(3): ADC5 and ADC4, F6 and F5 (is adc5top or 4 the one for VCA?)
+- 4: ADC7 and ADC6, F8, F7
+- 1: ADC1, ADC0, F1, F2
+- 2: AS+DC3, ADC2, F3, F4
+
+/////////////////////////////////////////////////////////////
+
 New note - now we will use onboard DAC as we only use 12x ADC
 
 Testing on STM32F446 NUCLEO
