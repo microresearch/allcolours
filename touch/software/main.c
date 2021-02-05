@@ -81,7 +81,7 @@ void TIM2_IRQHandler(void) {
   }*/
 
 /* DMA buffer for ADC  & copy */
-__IO uint16_t adc_buffer[5];
+__IO uint16_t adc_buffer[8];
 
 #define delay()						 do {	\
     register unsigned int ix;					\
@@ -127,45 +127,89 @@ void io_config2 (void) {
 
 int main(void)
 {
-  unsigned int i, adcr, j, k=0, otherk=0, flipped, prev_state, value;
-    i = adcr = j = k = 0;
-    // ADC - now just 5 channels - skip pin 4 as we use this for the DAC ???
+  unsigned int i, adcr, j, k=0, otherk=0, flipped, prev_state, value, daccount, offset;
+    daccount = i = adcr = j = k = 0;
+    unsigned int dacval[8]={};
+    // 8 channels
     ADC1_Init((uint16_t *)adc_buffer);
 
-    // output pins for addressing = x3 + 2 for enables is 5 total
-    // say: PB8, 9, 10, 13, 14
-
     GPIO_InitTypeDef GPIO_InitStructure;
+
+    //- rec on PB2, play on PB4, push on PB6
+    //- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
+
     
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   // TEST - PC8 input from 40106 for freezing/rec/play etc. power it with 3.3v
 
@@ -197,7 +241,13 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
-  
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
     
     // and maybe add timer for updating all in interrupt
     
@@ -209,7 +259,7 @@ int main(void)
 
     uint8_t firstByte, secondByte, configBits;
     
-    while(1) {
+    while(1) { // this should all be placed in interrupt so is well timed
       
       //      delay();
       // flip-flop from PC8
@@ -236,26 +286,43 @@ int main(void)
             
       //    GPIOB->ODR = 0b0000000100000000;  //13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
     // Y1 is S1 on 4051 high which is 11 on 4051 which is pin PB8
-      otherk++;
-      if (otherk>32){
+           otherk++;
+      if (otherk>16){
 	otherk=0;
       k++;
       if (k>4095) k=0;
       }
       //      k=0;
       //      EN_LOW1 on PC11 and sel1/2/3 on PC13/14/15
-      GPIOC->BRR = 0b0000100000000000;  // clear PC11 - en low
-      GPIOC->BSRR = 0b1110000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right
+
+      // 5,6,7,8 DACs are voltages to test - tested and all fine but test sample and hold
+      //      daccount=2;
+      daccount=0;
+      GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
+      //      GPIOC->BSRRL = 0b1100000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
+      //      GPIOC->BSRRL=(daccount)<<13;
+      GPIOC->BSRRL = 0b0000000000000000;      // now we want to test the VCAs-> lower bits so 1 is lower right
+      //k=4095; // peak 6.6v      
+      //DAC_SetChannel1Data(DAC_Align_12b_R, dacval[daccount]); // 1000/4096 * 3V3 == 0V8
+      //      k=4095;
+      ADC_SoftwareStartConv(ADC1);
+      k=adc_buffer[1]>>4; // adc[1] is dac0, 3 is dac 1, 5 is dac 2, 7 is dac 3 - we can organise this in adc.c
+      // but still question of bleed of adc0 into adc3 - check if is vice versa? seems in software as changed when re-org
       
-      
+      // TEST setting k to ADC1
+      //        value =(float)adc_buffer[SELX]/65536.0f; 
+      //dacval[daccount]=0;//adc_buffer[daccount]>>4; // 12 bits for DAC
+      //      dacval[daccount]=4095;
       DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
       j = DAC_GetDataOutputValue (DAC_Channel_1);
-      delay();
-
+      //      delay();
+      //      daccount++;
+      //      if (daccount==1) daccount=0;
       //      GPIOB->ODR = 0b0000000000000000;  //13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
       //      DAC_SetChannel1Data(DAC_Align_12b_R, 4095-k); // 1000/4096 * 3V3 == 0V8
       //      j = DAC_GetDataOutputValue (DAC_Channel_1);
-      //      delay();
+      delay();
+      //      delayy();
     
       // testing transistor switch of 4066 on and off
     //    GPIOB->ODR = 0b0000000100000000;  //PB8-13? - for Y0 which is on pin 13 (4051): first output on TL074 on prototype!
