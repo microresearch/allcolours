@@ -10,9 +10,10 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_spi.h"
 #include "stm32f4xx_tim.h"
+#include "stm32f4xx_hal_pwr.h"
 #include "misc.h"
 #include "adc.h"
-
+#include "stm32f4xx_conf.h"
 /*
 
 10/2/2020 - start to set up TIM2 interrupt
@@ -126,6 +127,102 @@ void io_config2 (void) {
        DAC_Cmd(DAC_Channel_1, ENABLE);
 }
 
+//Initialize clock config
+
+//Siehe: https://github.com/jkerdels/stm32edu/blob/master/src/rcc.c
+
+#define false 0
+
+void initClock(){
+
+  //Enable HSI-clock -> 16MHz
+
+  RCC -> CR |= RCC_CR_HSION;
+
+  //Wait for HSI is stable running
+
+  while((RCC -> CR & RCC_CR_HSIRDY) == 0){}
+
+  
+
+  //Switch SYSCLK to HSI, SW -> 00
+
+  RCC -> CFGR &= ~RCC_CFGR_SW_0;
+
+  RCC -> CFGR &= ~RCC_CFGR_SW_1;
+
+  //Wait for switching SYSCLK is ready
+
+  while((RCC -> CFGR & RCC_CFGR_SWS_0 == false) && (RCC -> CFGR & RCC_CFGR_SWS_1 == false)){}
+
+  //Config waitstates for flash memory, cpu should run with nearly 180MHz@3,3V -> 5ws after table, page 64
+
+  FLASH -> ACR |= FLASH_ACR_LATENCY_5WS;
+
+  //Config realtime clock, set LSI as clocksource
+
+  RCC -> CSR |= RCC_CSR_LSION;
+
+  //Set AHB clock prescaler for main bus matrix, psc=1 for running with maximum speed -> 180MHz, Presc. =1
+
+  RCC -> CFGR |= RCC_CFGR_HPRE_DIV1;
+
+  //Set clock for APB1 to AHB/4 => 180MHz/4 -> 45MHz
+
+  RCC -> CFGR |= RCC_CFGR_PPRE1_DIV4;
+
+  //Set clock for APB2 to AHB/2 => 180MHz/2 -> 90MHz
+
+  RCC -> CFGR |= RCC_CFGR_PPRE2_DIV2;
+
+  //Set phase lock loop
+
+  //Disable PLL for config
+
+  RCC -> CR &= ~RCC_CR_PLLON;
+
+  RCC -> CR &= ~RCC_CR_PLLI2SON;
+
+  //Select HSI for pll clock source
+
+  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLSRC_HSI;
+
+  //Set prescaler for pll clock input: HSI(16MHz) -> input should be 2MHz -> Prescaler =8
+
+  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLM_3;
+
+  //Clock = fin*(N/M) -> 2MHz*(360/4) for 180MHz
+
+  //Set N=360 -> 0b1 0110 1000
+
+  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLN_8 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_3;
+
+  //Set M=4 0b100
+
+  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLM_2;
+
+  //Set 48MHz for VCO, -> 2*(N/Q) -> Set Q=15 -> 0b1111
+
+  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLQ_3 | RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_1 | RCC_PLLCFGR_PLLQ_0;
+
+  //Enable PLL-Modul
+
+  RCC -> CR |= RCC_CR_PLLON;
+
+  //Wait for PLL is stable running
+
+  while(RCC -> CR & RCC_CR_PLLRDY){}
+
+  //Switch SYSCLK to PLL_P, SW -> 10
+
+  RCC -> CFGR |= RCC_CFGR_SW_1 & ~RCC_CFGR_SW_0;
+
+  //Wait for clock switch is ready -> SWS = 10
+
+  while(RCC -> CFGR & RCC_CFGR_SWS_PLL){};
+
+}
+
 
 //DAC_InitTypeDef dac_init_s;
 
@@ -136,9 +233,13 @@ int main(void)
   NVIC_InitTypeDef NVIC_InitStructure;
 
   
-  unsigned int i, adcr, j, k=0, otherk=0, flipped, prev_state, value, daccount, offset;
-    daccount = i = adcr = j = k = 0;
+  unsigned int i, adcr, j, k=0, otherk=0, flipped, prev_state, value, offset;
+    i = adcr = j = k = 0;
     unsigned int dacval[8]={};
+
+    //      SystemClock_Config();
+    initClock();
+
     // 8 channels
     ADC1_Init((uint16_t *)adc_buffer);
 
@@ -154,61 +255,58 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; 
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -227,86 +325,89 @@ int main(void)
 
   // internal DAC PA4 with multiplex with EN_LOW1 on PC11 and sel1/2/3 on PC13/14/15
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
-
     
-    // and maybe add timer for updating all in interrupt
-  // this is for flashing onboard LED LD2 on pin PA5
-
-  //    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // enable the clock to GPIOD
-
-  /*    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN; // enable TIM2 clock
-     
-    GPIOA->MODER = (1 << 10); // set pin PA5 to be general purpose output
-     
-    NVIC->ISER[0] |= 1<< (TIM2_IRQn); // enable the TIM2 IRQ
-     
-    TIM2->PSC = 0xff; // no prescaler, timer counts up in sync with the peripheral clock
-    TIM2->DIER |= TIM_DIER_UIE; // enable update interrupt
-    TIM2->ARR = 0xffff; // count to 1 (autoreload value 1)
-    TIM2->CR1 |= TIM_CR1_ARPE | TIM_CR1_CEN; // autoreload on, counter enabled
-    TIM2->EGR = 1; // trigger update event to reload timer registers
-  */
-    io_config2 ();
-  
-
+  io_config2 ();
+       
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 32768;
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 5; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
-  // now is around 200Hz
+  TIM_TimeBase_InitStructure.TIM_Period = 4096; // was 32768
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 4; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  // now is around 200Hz  but we need 8x speed for 8 dacs
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
-  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-
+  
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; // was 1
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01; // was 1
   NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM2, ENABLE);
-
+  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
   
-    //DAC_Cmd( DAC_Channel_2, ENABLE);
-  //    DAC_Cmd( DAC_Channel_1, ENABLE);
+  // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
+  //    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
 
-    // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
-    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
-
-    uint8_t firstByte, secondByte, configBits;
+  //    uint8_t firstByte, secondByte, configBits;
     
     while(1) {
 
+      
       // all now placed in interrupt so is well timed
       // TODO - test freeze and all buttons
+      //  daccount=1;
+      //    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
+      //      delay();
+      //      GPIOC->BSRRL = 0b1110000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
+  //  GPIOC->BSRRL=(daccount)<<13; // for now just top bits
+  //  GPIOC->BSRRL = 0b001000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
+      //      GPIOC->BSRRL = 0b1000000000000000;      // now we want to test the VCAs-> lower bits so 1 is lower right
+  //k=4095; // peak 6.6v      
+  //DAC_SetChannel1Data(DAC_Align_12b_R, dacval[daccount]); // 1000/4096 * 3V3 == 0V8
+  //      k=4095;
+      //    ADC_SoftwareStartConv(ADC1);
+    //  k=adc_buffer[daccount]>>4; // adc[1] is dac0, 3 is dac 1, 5 is dac 2, 7 is dac 3 - we can organise this in adc.c
+  // but still question of bleed of adc0 into adc3 - check if is vice versa? seems in software as changed when re-org
+  
+  // TEST setting k to ADC1
+  //        value =(float)adc_buffer[SELX]/65536.0f; 
+  //dacval[daccount]=0;//adc_buffer[daccount]>>4; // 12 bits for DAC
+  //      dacval[daccount]=4095;
+      //  k=0;
+      //  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
+      //  j = DAC_GetDataOutputValue (DAC_Channel_1);
+      //  daccount++;
+      //  if (daccount==8) daccount=0;  
+    delay();
+      
 
     }
 }

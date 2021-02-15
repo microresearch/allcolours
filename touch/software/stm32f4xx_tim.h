@@ -1,4 +1,5 @@
 /**
+ #include "stm32f4xx_hal_pwr.h"
   ******************************************************************************
   * @file    stm32f4xx_tim.h
   * @author  MCD Application Team

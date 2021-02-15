@@ -88,7 +88,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 
 	/* Enable Complete DMA interrupt  */
 	
-	DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, DISABLE); // do we need this?
+	//	DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, DISABLE); // do we need this?
     
 	/* ADC DMA IRQ Channel configuration */
 	//		NVIC_EnableIRQ(DMA2_Stream0_IRQn);
