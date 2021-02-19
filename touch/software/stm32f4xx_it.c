@@ -34,6 +34,18 @@
 #include "misc.h"
 #include "adc.h"
 
+#define delay()						 do {	\
+    register unsigned int ix;					\
+    for (ix = 0; ix < 1000; ++ix)				\
+      __asm__ __volatile__ ("nop\n\t":::"memory");		\
+  } while (0)
+
+#define delayy()						 do {	\
+    register unsigned int ix;					\
+    for (ix = 0; ix < 10000000; ++ix)				\
+      __asm__ __volatile__ ("nop\n\t":::"memory");		\
+  } while (0)
+
 
 /* ---------------------------------------------------------------------------*/
 
@@ -158,61 +170,56 @@ void PendSV_Handler(void)
 
 extern __IO uint16_t adc_buffer[8];
 
+static uint16_t lastadcs[8];
+static uint16_t frozen[8]={0};
+static uint16_t frozenvals[8]={0};
+static uint32_t avv[8];
+
 void TIM2_IRQHandler(void)
 {
-  static uint16_t flipdl=1;
+  static uint16_t c=0;
   static uint16_t daccount=0;
-  uint16_t j,k;
-
+  volatile uint16_t k;
+  uint16_t j;
+  // array to map freeze but exception is FR8 on PC4! 
+  uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
+  uint16_t bits;
+  
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-  // test speed so we toggle pc15 -> pin 9 of 4051
-  //  flipdl^=1;
-  //  if (flipdl) GPIOC->BSRRH = 0b1000000000000000;  // clear PC11 - clear pc11 and top bits -> low
-  //  else GPIOC->BSRRL =        0b1000000000000000;      // now we want to test the VCAs-> lower bits so 1 is lower right
 
-  // how we can test F pins:
-  //- rec on PB2, play on PB4, push on PB6
-  //- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
-  
-  // 	  if (GPIOB->IDR & 0x0080) shift_registerh = (shift_registerh<<1) + bith; // AC code
-
-  
-  //// DAC code TODO for multiple DACs
-  
-  //      EN_LOW1 on PC11 and sel1/2/3 on PC13/14/15
-
-  // 5,6,7,8 DACs are voltages to test - tested and all fine but test sample and hold
-  //      daccount=2;
-  
-  //daccount=0;
-     GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
-  //  GPIOC->BSRRL = 0b0000000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
-      GPIOC->BSRRL=(daccount)<<13; // for now just top bits
+  // read
+    //  GPIOC->BSRRL = 0b0000000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
   //  GPIOC->BSRRL = 0b1110000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
   //      GPIOC->BSRRL = 0b1000000000000000;      // now we want to test the VCAs-> lower bits so 1 is lower right
   //k=4095; // peak 6.6v      
   //DAC_SetChannel1Data(DAC_Align_12b_R, dacval[daccount]); // 1000/4096 * 3V3 == 0V8
   //      k=4095;
+  // but Voltages are mixed up as ADC0 is not there
+  //  daccount=0;
   ADC_SoftwareStartConv(ADC1);
-  //  k=adc_buffer[daccount]>>4; // adc[1] is dac0, 3 is dac 1, 5 is dac 2, 7 is dac 3 - we can organise this in adc.c - does it need smoothing
-  k=(adc_buffer[daccount]>>6)<<3; // adc[1] is dac0, 3 is dac 1, 5 is dac 2, 7 is dac 3 - we can organise this in adc.c - does it need smoothing
-  // maybe run irq faster and do smoothing
-  // all excpet dac1 is low and unstable
-  // but still question of bleed of adc0 into adc3 - check if is vice versa? seems in software as changed when re-org
-  
-  // TEST setting k to ADC1
-  //        value =(float)adc_buffer[SELX]/65536.0f; 
-  //dacval[daccount]=0;//adc_buffer[daccount]>>4; // 12 bits for DAC
-  //      dacval[daccount]=4095;
-  //  k=4095;
+  k=adc_buffer[daccount]>>4; // 16 bits to 12 
   //  k=0;
+  //  if (daccount!=1) k=0;
   DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1);
+  // wait for dac to settle
+  //  delay();
+  GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+  GPIOC->BSRRL=(daccount)<<13; //  write DAC bits 
   daccount++;
-  if (daccount==8) daccount=0;  
-
-    
+  if (daccount==8) daccount=0;
+ 
 }
+
+  
+  /*
+    if (!(bits & (freezer[daccount]))) { // inverted and mistake on PCB but mid ones work now with higher res pullup
+    frozen[daccount]=1; // toggle but for now just test
+    frozenvals[daccount]=k;
+  }
+  
+    if (frozen[daccount]) k= frozenvals[daccount];
+  */
 
   
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

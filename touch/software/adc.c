@@ -76,14 +76,14 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	/* ADC1 regular channel configuration -----------------------------------*/
 	//	      k=adc_buffer[3]>>4; // adc[1]pa1 is dac0, 3pa3 is dac 1, 5pa5 is dac 2, 7pa7 is dac 3 - we can organise this in adc.c
 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);// all fine
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_480Cycles);
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 3, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 4, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 5, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 6, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 7, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 8, ADC_SampleTime_480Cycles); //if this is PC0 to check
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 4, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 5, ADC_SampleTime_480Cycles); // works - is PA2 as swopped
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 6, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 7, ADC_SampleTime_480Cycles); //ok
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 8, ADC_SampleTime_480Cycles); //
 	
 
 	/* Enable Complete DMA interrupt  */
