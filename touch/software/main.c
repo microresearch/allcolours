@@ -380,7 +380,10 @@ int main(void)
   GPIO_Init(GPIOC, &GPIO_InitStructure);
     
   io_config2 ();
-       
+
+  // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
+  // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
+  
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;

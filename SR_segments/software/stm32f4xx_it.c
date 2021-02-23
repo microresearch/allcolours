@@ -22,13 +22,32 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+//#include "main.h"
+#include "stm32f4xx.h"
+#include "stm32f4xx_dac.h"
+#include "stm32f4xx_gpio.h"
+#include "stm32f4xx_adc.h"
+#include "stm32f4xx_dma.h"
+#include "stm32f4xx_rcc.h"
+#include "stm32f4xx_spi.h"
+#include "stm32f4xx_tim.h"
+#include "misc.h"
+#include "adc.h"
+
+#define delay()						 do {	\
+    register unsigned int ix;					\
+    for (ix = 0; ix < 1000; ++ix)				\
+      __asm__ __volatile__ ("nop\n\t":::"memory");		\
+  } while (0)
+
+#define delayy()						 do {	\
+    register unsigned int ix;					\
+    for (ix = 0; ix < 10000000; ++ix)				\
+      __asm__ __volatile__ ("nop\n\t":::"memory");		\
+  } while (0)
+
 
 /* ---------------------------------------------------------------------------*/
-
-extern float 	f1;
-extern __IO uint16_t ADC3ConvertedValue ;
-extern __IO uint32_t 	TimingDelay ;
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -142,25 +161,95 @@ void PendSV_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f4xx.s).                                               */
 /******************************************************************************/
+
 /**
-  * @brief  This function handles External line 0 interrupt request.
+  * @brief  This function handles TIM2 global interrupt request.
   * @param  None
   * @retval None
   */
-void EXTI0_IRQHandler(void)
+
+extern __IO uint16_t adc_buffer[8];
+
+static uint16_t lastadcs[8];
+static uint16_t frozen[8]={0};
+static uint16_t frozenvals[8]={0};
+static uint32_t avv[8];
+
+/* for record:
+
+8 values each 16 bits (well 12 bits plus one bit for freeze) = 16 bytes per step
+
+- for say 120K we have 7500 steps - so at 100Hz this is 75 seconds, at 1KHz 7.5 seconds
+
+- rec places into record mode, at limit we overwrite.
+- play stops record mode and plays back, we can play over or record over
+- mode (was push) sets mode for overwrites etc: what else?
+
+ */
+
+void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
+  
 {
+  static uint16_t c=0;
+  static uint16_t daccount=0;
+  volatile uint16_t k;
+  uint16_t j;
+  // array to map freeze but exception is FR8 on PC4! 
+  uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
+  uint16_t bits;
+  
+  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-}
+  // measuring the toggle:
+  /*
+  if (c==0)   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+  else GPIOC->BSRRL=0b1110100000000000; //  write DAC bits 
+  c^=1;
+  */  
 
-/**
-  * @brief  This function handles TIM4 global interrupt request.
-  * @param  None
-  * @retval None
+  // workings
+  ADC_SoftwareStartConv(ADC1);
+  k=adc_buffer[daccount]>>4; // 16 bits to 12 
+  //  k=4095;
+  //  if (daccount!=1) k=0;
+  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1);
+  GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+  GPIOC->BSRRL=(daccount)<<13; //  write DAC bits 
+  daccount++;
+  if (daccount==8) daccount=0;
+  
+
+  /*
+  // test central circles - all work but strong 50Hz so we need toggle and delay
+  // others need to be larger with small gap!
+
+  // FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
+  // swopped play and FR3
+  //  - rec on PB2, play on PB4/swopped->, push on PB6
+  // play and FR3 are swopped - FR3 was on PB10
   */
-void TIM4_IRQHandler(void)
-{
+  /*
+  if (!(GPIOB->IDR & (1<<8))) k=4095; // 2 6 and 10
+      else k=0;
+  
+  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1);
+  GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+  GPIOC->BSRRL=(1)<<13; //  write DAC bits 
+  */
   
 }
+
+  
+  /*
+    if (!(bits & (freezer[daccount]))) { // inverted and mistake on PCB but mid ones work now with higher res pullup
+    frozen[daccount]=1; // toggle but for now just test
+    frozenvals[daccount]=k;
+  }
+  
+    if (frozen[daccount]) k= frozenvals[daccount];
+  */
 
   
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

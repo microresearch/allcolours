@@ -175,7 +175,20 @@ static uint16_t frozen[8]={0};
 static uint16_t frozenvals[8]={0};
 static uint32_t avv[8];
 
-void TIM2_IRQHandler(void)
+/* for record:
+
+8 values each 16 bits (well 12 bits plus one bit for freeze) = 16 bytes per step
+
+- for say 120K we have 7500 steps - so at 100Hz this is 75 seconds, at 1KHz 7.5 seconds
+
+- rec places into record mode, at limit we overwrite.
+- play stops record mode and plays back, we can play over or record over
+- mode (was push) sets mode for overwrites etc: what else?
+
+ */
+
+void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
+  
 {
   static uint16_t c=0;
   static uint16_t daccount=0;
@@ -187,28 +200,45 @@ void TIM2_IRQHandler(void)
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-  // read
-    //  GPIOC->BSRRL = 0b0000000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
-  //  GPIOC->BSRRL = 0b1110000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
-  //      GPIOC->BSRRL = 0b1000000000000000;      // now we want to test the VCAs-> lower bits so 1 is lower right
-  //k=4095; // peak 6.6v      
-  //DAC_SetChannel1Data(DAC_Align_12b_R, dacval[daccount]); // 1000/4096 * 3V3 == 0V8
-  //      k=4095;
-  // but Voltages are mixed up as ADC0 is not there
-  //  daccount=0;
+  // measuring the toggle:
+  /*
+  if (c==0)   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+  else GPIOC->BSRRL=0b1110100000000000; //  write DAC bits 
+  c^=1;
+  */  
+
+  // workings
   ADC_SoftwareStartConv(ADC1);
   k=adc_buffer[daccount]>>4; // 16 bits to 12 
-  //  k=0;
+  //  k=4095;
   //  if (daccount!=1) k=0;
   DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1);
-  // wait for dac to settle
-  //  delay();
   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
   GPIOC->BSRRL=(daccount)<<13; //  write DAC bits 
   daccount++;
   if (daccount==8) daccount=0;
- 
+  
+
+  /*
+  // test central circles - all work but strong 50Hz so we need toggle and delay
+  // others need to be larger with small gap!
+
+  // FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
+  // swopped play and FR3
+  //  - rec on PB2, play on PB4/swopped->, push on PB6
+  // play and FR3 are swopped - FR3 was on PB10
+  */
+  /*
+  if (!(GPIOB->IDR & (1<<8))) k=4095; // 2 6 and 10
+      else k=0;
+  
+  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1);
+  GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+  GPIOC->BSRRL=(1)<<13; //  write DAC bits 
+  */
+  
 }
 
   
