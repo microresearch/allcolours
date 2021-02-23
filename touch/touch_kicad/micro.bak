@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 8
+Sheet 4 8
 Title ""
 Date ""
 Rev ""
@@ -504,11 +504,11 @@ FR8
 Text GLabel 3890 2695 2    50   Input ~ 0
 DAC
 Text GLabel 3895 2295 2    50   Input ~ 0
-ADC0
+ADC2
 Text GLabel 3895 2395 2    50   Input ~ 0
 ADC1
 Text GLabel 3895 2495 2    50   Input ~ 0
-ADC2
+ADC0
 Text GLabel 3895 2595 2    50   Input ~ 0
 ADC3
 Text GLabel 3890 2795 2    50   Input ~ 0

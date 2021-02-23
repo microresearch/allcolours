@@ -658,7 +658,7 @@ Connection ~ 7170 1875
 Wire Wire Line
 	7170 1875 7190 1875
 Wire Wire Line
-	7170 2175 7170 2480
+	7170 2175 7170 2290
 Wire Wire Line
 	7170 2480 7380 2480
 Connection ~ 7170 2175
@@ -758,7 +758,7 @@ Wire Wire Line
 	10795 2255 10795 2390
 Text GLabel 10795 1800 2    50   Input ~ 0
 OUT1TOMIX
-Text Notes 8290 1050 0    79   ~ 0
+Text Notes 7300 995  0    79   ~ 0
 VCA - tested with approx values (18k bit low so now 20k)
 Text Notes 1385 3650 0    79   ~ 0
 sample and hold -3.3v max
@@ -2773,4 +2773,130 @@ Wire Wire Line
 Connection ~ 9495 5740
 Wire Wire Line
 	9495 5740 9520 5740
+$Comp
+L Device:R_Small R?
+U 1 1 60357630
+P 7070 2290
+F 0 "R?" V 6874 2290 50  0000 C CNN
+F 1 "220K" V 6965 2290 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7070 2290 50  0001 C CNN
+F 3 "~" H 7070 2290 50  0001 C CNN
+	1    7070 2290
+	0    1    1    0   
+$EndComp
+Connection ~ 7170 2290
+Wire Wire Line
+	7170 2290 7170 2480
+$Comp
+L Device:R_Small R?
+U 1 1 60357D80
+P 7060 5115
+F 0 "R?" V 6864 5115 50  0000 C CNN
+F 1 "220K" V 6955 5115 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7060 5115 50  0001 C CNN
+F 3 "~" H 7060 5115 50  0001 C CNN
+	1    7060 5115
+	0    1    1    0   
+$EndComp
+Connection ~ 7160 5115
+$Comp
+L Device:R_Small R?
+U 1 1 603584DD
+P 7030 6420
+F 0 "R?" V 6834 6420 50  0000 C CNN
+F 1 "220K" V 6925 6420 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7030 6420 50  0001 C CNN
+F 3 "~" H 7030 6420 50  0001 C CNN
+	1    7030 6420
+	0    1    1    0   
+$EndComp
+Connection ~ 7130 6420
+$Comp
+L Device:R_Small R?
+U 1 1 603589F9
+P 7060 3755
+F 0 "R?" V 6864 3755 50  0000 C CNN
+F 1 "220K" V 6955 3755 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7060 3755 50  0001 C CNN
+F 3 "~" H 7060 3755 50  0001 C CNN
+	1    7060 3755
+	0    1    1    0   
+$EndComp
+Connection ~ 7160 3755
+$Comp
+L Device:R_Small R?
+U 1 1 6035942F
+P 6230 1535
+F 0 "R?" V 6034 1535 50  0000 C CNN
+F 1 "100R" V 6125 1535 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6230 1535 50  0001 C CNN
+F 3 "~" H 6230 1535 50  0001 C CNN
+	1    6230 1535
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 603597A4
+P 6230 1780
+F 0 "R?" V 6034 1780 50  0000 C CNN
+F 1 "47K" V 6125 1780 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 6230 1780 50  0001 C CNN
+F 3 "~" H 6230 1780 50  0001 C CNN
+	1    6230 1780
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 6035A140
+P 6230 1915
+F 0 "#PWR?" H 6230 2015 50  0001 C CNN
+F 1 "-12V" H 6245 2088 50  0000 C CNN
+F 2 "" H 6230 1915 50  0001 C CNN
+F 3 "" H 6230 1915 50  0001 C CNN
+	1    6230 1915
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 6035AC54
+P 6125 1435
+F 0 "#PWR?" H 6125 1185 50  0001 C CNN
+F 1 "GND" H 6130 1262 50  0000 C CNN
+F 2 "" H 6125 1435 50  0001 C CNN
+F 3 "" H 6125 1435 50  0001 C CNN
+	1    6125 1435
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6125 1435 6230 1435
+Wire Wire Line
+	6230 1635 6230 1655
+Wire Wire Line
+	6230 1880 6230 1915
+Wire Wire Line
+	6230 1655 6840 1655
+Wire Wire Line
+	6840 1655 6840 2290
+Wire Wire Line
+	6840 2290 6970 2290
+Connection ~ 6230 1655
+Wire Wire Line
+	6230 1655 6230 1680
+Wire Wire Line
+	6960 3755 6840 3755
+Wire Wire Line
+	6840 3755 6840 2290
+Connection ~ 6840 2290
+Wire Wire Line
+	6840 3755 6840 5115
+Wire Wire Line
+	6840 5115 6960 5115
+Connection ~ 6840 3755
+Wire Wire Line
+	6840 5115 6840 6420
+Wire Wire Line
+	6840 6420 6930 6420
+Connection ~ 6840 5115
+Text Notes 5285 1505 0    50   ~ 0
+to close VCA! 22/2\n
 $EndSCHEMATC
