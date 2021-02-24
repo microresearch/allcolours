@@ -1816,7 +1816,7 @@ AR Path="/5F9B2101" Ref="R?"  Part="1"
 AR Path="/5F96598A/5F9B2101" Ref="R?"  Part="1" 
 AR Path="/5F8E1429/5F9B2101" Ref="R98"  Part="1" 
 F 0 "R98" V 859 3415 50  0000 C CNN
-F 1 "470R" V 950 3415 50  0000 C CNN
+F 1 "100R" V 950 3415 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 1055 3415 50  0001 C CNN
 F 3 "" H 1055 3415 50  0001 C CNN
 	1    1055 3415
@@ -1998,4 +1998,6 @@ F 3 "" H 7020 5920 50  0001 C CNN
 	1    7020 5920
 	1    0    0    -1  
 $EndComp
+Text Notes 1150 3250 0    50   ~ 0
+changed form 470R 24/2
 $EndSCHEMATC

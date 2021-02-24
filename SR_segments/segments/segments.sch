@@ -227,8 +227,8 @@ F 3 "~" H 2150 5975 50  0001 C CNN
 $EndComp
 Text Notes 1675 6550 0    79   ~ 0
 buffer in
-Text Notes 5680 3330 0    79   ~ 0
-buffer out - revised for +-5v (tides)
+Text Notes 5480 3740 0    79   ~ 0
+buffer out - revised for +-5v (tides) - fixed 24/2
 Text Notes 3300 1975 0    118  ~ 0
 MSB
 $Comp
@@ -240,28 +240,6 @@ F 1 "10K" H 1934 1880 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 1875 1925 50  0001 C CNN
 F 3 "~" H 1875 1925 50  0001 C CNN
 	1    1875 1925
-	1    0    0    -1  
-$EndComp
-$Comp
-L Amplifier_Operational:TL082 U4
-U 1 1 5E7E2119
-P 6185 2610
-F 0 "U4" H 6185 2977 50  0000 C CNN
-F 1 "TLV172" H 6185 2886 50  0000 C CNN
-F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 6185 2610 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6185 2610 50  0001 C CNN
-	1    6185 2610
-	1    0    0    -1  
-$EndComp
-$Comp
-L Amplifier_Operational:TL082 U4
-U 3 1 5E7E2384
-P 7510 1835
-F 0 "U4" H 7468 1881 50  0000 L CNN
-F 1 "TLV172" H 7510 1810 50  0000 L CNN
-F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 7510 1835 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 7510 1835 50  0001 C CNN
-	3    7510 1835
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1082,29 +1060,25 @@ $EndComp
 $Comp
 L power:-12V #PWR040
 U 1 1 5E8BB6AF
-P 7410 2185
-F 0 "#PWR040" H 7410 2285 50  0001 C CNN
-F 1 "-12V" H 7285 2260 50  0000 C CNN
-F 2 "" H 7410 2185 50  0001 C CNN
-F 3 "" H 7410 2185 50  0001 C CNN
-	1    7410 2185
+P 6085 3055
+F 0 "#PWR040" H 6085 3155 50  0001 C CNN
+F 1 "-12V" H 6220 3125 50  0000 C CNN
+F 2 "" H 6085 3055 50  0001 C CNN
+F 3 "" H 6085 3055 50  0001 C CNN
+	1    6085 3055
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:+12V #PWR039
 U 1 1 5E8BB6B5
-P 7410 1485
-F 0 "#PWR039" H 7410 1335 50  0001 C CNN
-F 1 "+12V" H 7410 1635 50  0000 C CNN
-F 2 "" H 7410 1485 50  0001 C CNN
-F 3 "" H 7410 1485 50  0001 C CNN
-	1    7410 1485
+P 6085 2275
+F 0 "#PWR039" H 6085 2125 50  0001 C CNN
+F 1 "+12V" H 6085 2425 50  0000 C CNN
+F 2 "" H 6085 2275 50  0001 C CNN
+F 3 "" H 6085 2275 50  0001 C CNN
+	1    6085 2275
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7410 1485 7410 1535
-Wire Wire Line
-	7410 2135 7410 2185
 $Comp
 L Device:C_Small C10
 U 1 1 5E8C7ADC
@@ -1215,7 +1189,7 @@ L Device:R_Small R34
 U 1 1 5E9181B8
 P 6235 2985
 F 0 "R34" V 6450 3000 50  0000 C CNN
-F 1 "60K" V 6350 2995 50  0000 C CNN
+F 1 "68K" V 6350 2995 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 6235 2985 50  0001 C CNN
 F 3 "~" H 6235 2985 50  0001 C CNN
 	1    6235 2985
@@ -1234,8 +1208,6 @@ F 3 "" H 5600 2535 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5810 2510 5885 2510
-Wire Wire Line
-	5885 2710 5825 2710
 Wire Wire Line
 	5760 2985 6135 2985
 Wire Wire Line
@@ -1672,13 +1644,11 @@ $EndSheet
 Text Notes 5470 4995 0    79   ~ 0
 no cv in (too many) just pot!\n
 Connection ~ 5760 2710
-Wire Wire Line
-	6485 2610 6535 2610
 $Comp
 L Device:R_Small R37
 U 1 1 5FECDD21
 P 6660 2610
-F 0 "R37" H 6719 2656 50  0000 L CNN
+F 0 "R37" H 6460 2605 50  0000 L CNN
 F 1 "1K" H 6719 2565 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 6660 2610 50  0001 C CNN
 F 3 "~" H 6660 2610 50  0001 C CNN
@@ -1692,19 +1662,14 @@ Wire Wire Line
 $Comp
 L Device:C_Small C7
 U 1 1 5FED4BC6
-P 6235 2815
-F 0 "C7" H 6327 2861 50  0000 L CNN
-F 1 "47pF" V 6310 2925 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 6235 2815 50  0001 C CNN
-F 3 "~" H 6235 2815 50  0001 C CNN
-	1    6235 2815
+P 6245 3315
+F 0 "C7" H 6337 3361 50  0000 L CNN
+F 1 "47pF" V 6320 3425 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 6245 3315 50  0001 C CNN
+F 3 "~" H 6245 3315 50  0001 C CNN
+	1    6245 3315
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	6135 2905 6135 2815
-Connection ~ 6535 2610
-Wire Wire Line
-	6535 2610 6560 2610
 Wire Wire Line
 	6760 2610 6770 2610
 Connection ~ 6760 2610
@@ -1724,7 +1689,7 @@ L Device:R_Small R35
 U 1 1 5FEF2936
 P 5600 2155
 F 0 "R35" V 5815 2170 50  0000 C CNN
-F 1 "100K" V 5715 2165 50  0000 C CNN
+F 1 "130K" V 5715 2165 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 5600 2155 50  0001 C CNN
 F 3 "~" H 5600 2155 50  0001 C CNN
 	1    5600 2155
@@ -1753,10 +1718,6 @@ F 3 "" H 5600 2010 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6335 2815 6535 2815
-Wire Wire Line
-	6535 2610 6535 2815
-Wire Wire Line
 	5600 2255 5600 2275
 Wire Wire Line
 	5600 2275 5725 2275
@@ -1779,13 +1740,6 @@ Wire Wire Line
 	6370 4015 6371 4015
 Wire Wire Line
 	6605 4015 6655 4015
-Wire Wire Line
-	5825 2710 5825 2905
-Wire Wire Line
-	5825 2905 6135 2905
-Connection ~ 5825 2710
-Wire Wire Line
-	5825 2710 5760 2710
 $Comp
 L Device:CP_Small C?
 U 1 1 5FEB04BE
@@ -1825,4 +1779,35 @@ Wire Wire Line
 Connection ~ 6371 4215
 Wire Wire Line
 	6371 4215 6475 4215
+Wire Wire Line
+	5760 2710 5885 2710
+$Comp
+L Amplifier_Operational:TL071 U4
+U 1 1 603957CA
+P 6185 2610
+F 0 "U4" H 6526 2656 50  0000 L CNN
+F 1 "TL071/TLV172" H 6135 3010 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 6235 2660 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6335 2760 50  0001 C CNN
+	1    6185 2610
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6485 2610 6515 2610
+Wire Wire Line
+	5760 2985 5760 3315
+Wire Wire Line
+	5760 3315 6145 3315
+Connection ~ 5760 2985
+Wire Wire Line
+	6345 3315 6515 3315
+Wire Wire Line
+	6515 3315 6515 2610
+Connection ~ 6515 2610
+Wire Wire Line
+	6515 2610 6560 2610
+Wire Wire Line
+	6085 2910 6085 3055
+Wire Wire Line
+	6085 2275 6085 2310
 $EndSCHEMATC
