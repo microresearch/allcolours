@@ -1,9 +1,17 @@
 /*
  * adc.c - adc setup
 
-- ADC0-3 on PA0/1/2/3
-- ADC5-7 on PA5/6/7
-- ADC4 on PC0
+- ADC 0-11
+
+PA0->PA3 4
+
+PA5->PA7 3
+
+PC0->PC2 3
+
+PB0(ADC4), PB1(ADC8) 2
+
+TOTAL 12 ADC
 
 */
  
@@ -17,7 +25,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	/* enable clocks for DMA2, ADC1, GPIOA ----------------------------------*/
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC, ENABLE);
 	//	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
@@ -28,7 +36,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
 	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_Buffer[0];
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-	DMA_InitStructure.DMA_BufferSize = 8;
+	DMA_InitStructure.DMA_BufferSize = 12;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -56,34 +64,54 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
 	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Left; // was right - in CLOUDS is left?
-	ADC_InitStructure.ADC_NbrOfConversion = 8;
+	ADC_InitStructure.ADC_NbrOfConversion = 12;
 	//	ADC_InitStructure.ADC_NbrOfChannel = 10; not existing
 	ADC_Init(ADC1, &ADC_InitStructure);
+
+	/*
+	  PA0->PA3 4
+	  PA5->PA7 3
+	  PC0->PC2 3
+	  PB0(ADC4), PB1(ADC8) 2
+	*/
+
 	
-	/* Configure analog input pins ------------------------------------------*/
+	// adc0,1,2,3,5,6,7
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;// as pin 4 is DAC
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 
-	// adc8 is adc1_10 =pc0
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;// | GPIO_Pin_1; PC10
+	// adc9,10,11
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2; // 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+	// adc4, adc8
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;// 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
 	
 	/* ADC1 regular channel configuration -----------------------------------*/
-	//	      k=adc_buffer[3]>>4; // adc[1]pa1 is dac0, 3pa3 is dac 1, 5pa5 is dac 2, 7pa7 is dac 3 - we can organise this in adc.c
+	// put them in order // test
+	
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 5, ADC_SampleTime_480Cycles);// PB0
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 7, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 8, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 9, ADC_SampleTime_480Cycles);// PB1 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 10, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 11, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 12, ADC_SampleTime_480Cycles);// 
 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);// all fine
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 3, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 4, ADC_SampleTime_480Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 5, ADC_SampleTime_480Cycles); // works - is PA2 as swopped
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 6, ADC_SampleTime_480Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 7, ADC_SampleTime_480Cycles); //ok
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 8, ADC_SampleTime_480Cycles); //
 	
 
 	/* Enable Complete DMA interrupt  */

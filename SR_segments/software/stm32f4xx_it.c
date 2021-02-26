@@ -30,6 +30,7 @@
 #include "stm32f4xx_dma.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_spi.h"
+#include "stm32f4xx_exti.h"
 #include "stm32f4xx_tim.h"
 #include "misc.h"
 #include "adc.h"
@@ -168,88 +169,108 @@ void PendSV_Handler(void)
   * @retval None
   */
 
-extern __IO uint16_t adc_buffer[8];
+extern __IO uint16_t adc_buffer[12];
 
-static uint16_t lastadcs[8];
-static uint16_t frozen[8]={0};
-static uint16_t frozenvals[8]={0};
-static uint32_t avv[8];
+// TEST: inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
 
-/* for record:
+void EXTI3_IRQHandler(void){ // working CSR
+  static uint16_t flipper=0;
+if (EXTI_GetITStatus(EXTI_Line3) != RESET) {
+  /*
+  // flip PB4 to test interrupt on PC3 -> CSR
+    flipper^=1;
+  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  */
+  EXTI_ClearITPendingBit(EXTI_Line3);
+ }
+ }
 
-8 values each 16 bits (well 12 bits plus one bit for freeze) = 16 bytes per step
+void EXTI4_IRQHandler(void){ // working NSR
+  static uint16_t flipper=0;
+if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
+  /*
+  // flip PB4 to test interrupt on PC3 -> CSR
+    flipper^=1;
+  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  */
+  EXTI_ClearITPendingBit(EXTI_Line4);
+ }
+ }
 
-- for say 120K we have 7500 steps - so at 100Hz this is 75 seconds, at 1KHz 7.5 seconds
+void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but both work out
+  static uint16_t flipper=0;
+if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
+  /*
+  // flip PB4 to test interrupt on PC3 -> CSR
+    flipper^=1;
+  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  */
+  EXTI_ClearITPendingBit(EXTI_Line5);
+ }
+ else if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
 
-- rec places into record mode, at limit we overwrite.
-- play stops record mode and plays back, we can play over or record over
-- mode (was push) sets mode for overwrites etc: what else?
+  // flip PB4 to test interrupt on PC3 -> CSR
+    flipper^=1;
+  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+   else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
- */
+  EXTI_ClearITPendingBit(EXTI_Line6);
+ } 
+ }
+
+
+
 
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   
 {
-  static uint16_t c=0;
-  static uint16_t daccount=0;
-  volatile uint16_t k;
+  static volatile uint16_t k=0,ll=0;
   uint16_t j;
-  // array to map freeze but exception is FR8 on PC4! 
-  uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
-  uint16_t bits;
+  TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
+
+  // test pulse ins   // inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
+  // PC7/8 pulsein (RSR-7/LSR-8), PC9-MCB, to PC14-LSB of 6 bits
+
+  // test in gives out on PB4 - always inverted...
+  //  if ((GPIOB->IDR & (1<<6)))  GPIOB->BSRRH = (1)<<4;  // clear bits PB4
+  //  else   GPIOB->BSRRL=(1)<<4; //  write bits   
   
-  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-
-  // measuring the toggle:
-  /*
-  if (c==0)   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
-  else GPIOC->BSRRL=0b1110100000000000; //  write DAC bits 
-  c^=1;
-  */  
-
-  // workings
-  ADC_SoftwareStartConv(ADC1);
-  k=adc_buffer[daccount]>>4; // 16 bits to 12 
+  //  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+  //  ADC_SoftwareStartConv(ADC1);
+  //  k=(adc_buffer[1]>>4); // 16 bits to 12 bits // tested all knobs - working // test CV ins - all workings
+  //    k++; // inverted // DAC works but not amp?
+    //  if (k>4095) k=0;
+  //    k=0;
+  //  k=2500; //
   //  k=4095;
-  //  if (daccount!=1) k=0;
-  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
-  j = DAC_GetDataOutputValue (DAC_Channel_1);
-  GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
-  GPIOC->BSRRL=(daccount)<<13; //  write DAC bits 
-  daccount++;
-  if (daccount==8) daccount=0;
-  
 
-  /*
-  // test central circles - all work but strong 50Hz so we need toggle and delay
-  // others need to be larger with small gap!
-
-  // FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
-  // swopped play and FR3
-  //  - rec on PB2, play on PB4/swopped->, push on PB6
-  // play and FR3 are swopped - FR3 was on PB10
-  */
-  /*
-  if (!(GPIOB->IDR & (1<<8))) k=4095; // 2 6 and 10
-      else k=0;
+  // test the primitive DAC
+  //  PC9-MSB, to PC14-LSB of 6 bits // 6 bits to 12 bits of DAC
+  // !(GPIOC->IDR & 0x0020)
+  //        k=(((!(GPIOC->IDR & (1<<9)))<<11) + (((!(GPIOC->IDR & (1<<10)))<<10)  + ((!(GPIOC->IDR & (1<<11)))<<9) + ((!(GPIOC->IDR & (1<<12)))<<8) + ((!(GPIOC->IDR & (1<<13)))<<7) + ((!(GPIOC->IDR & (1<<14)))<<6)));//  - 2048;// probably easier way to do this
+  /*    if (!(GPIOC->IDR & (1<<11))) k=4095;
+    else if (!(GPIOC->IDR & (1<<10))) k=2048;
+    else if (!(GPIOC->IDR & (1<<11))) k=1024;
+    else if (!(GPIOC->IDR & (1<<12))) k=512;
+    else if (!(GPIOC->IDR & (1<<13))) k=256;
+    else k=0;*/
+    //    if (k==(2048)) k=4095;
   
-  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
-  j = DAC_GetDataOutputValue (DAC_Channel_1);
-  GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
-  GPIOC->BSRRL=(1)<<13; //  write DAC bits 
-  */
+  //    k=(((GPIOC->IDR & (1<<9)))<<11) + (((GPIOC->IDR & (1<<10)))<<9) + (((GPIOC->IDR & (1<<11)))<<7) + (((GPIOC->IDR & (1<<12)))<<5) + (((GPIOC->IDR & (1<<13)))<<3) + (((GPIOC->IDR & (1<<14)))<<1) ;//  - 2048;// probably easier way to do this
+  // check each one
+  //  k=((!(GPIOC->IDR & (1<<14)))<<11); //14 haas issues
+  //  k=(1<<11); //puts us in middle
+  //  k=4095;
+  //  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
+  //  j = DAC_GetDataOutputValue (DAC_Channel_1);
+
+  //  if(ll)      GPIOB->BSRRH = (1)<<2;  // clear bits PB2
+  //   else   GPIOB->BSRRL=(1)<<2; //  write bits 
+
   
 }
-
-  
-  /*
-    if (!(bits & (freezer[daccount]))) { // inverted and mistake on PCB but mid ones work now with higher res pullup
-    frozen[daccount]=1; // toggle but for now just test
-    frozenvals[daccount]=k;
-  }
-  
-    if (frozen[daccount]) k= frozenvals[daccount];
-  */
-
   
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

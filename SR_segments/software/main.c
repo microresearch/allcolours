@@ -10,6 +10,8 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_spi.h"
 #include "stm32f4xx_tim.h"
+#include "stm32f4xx_exti.h"
+#include "stm32f4xx_syscfg.h"
 #include "stm32f4xx_hal_pwr.h"
 #include "misc.h"
 #include "adc.h"
@@ -19,11 +21,15 @@
 
 *** SEGMENTS
 
-// copied over from TOUCH so we need to change ADCs, DAC out is the same, add timers and change interrupt timing, add external interrupts, PWMS.
+- what needs testing? ADC, DAC out, all pulses in (and volts knob for ADC pulsed in: PC9->PC14), pulses out, TIM1-CH1 normings 
+
+TESTED/WORKING: ADC all tested, DAC out tested, pulses out all tested, TIM1-CH1 norming to top clock, volts knob/primitive ADC, pulse ins, interrupt pulse ins 
+
+/////////
+
+// copied over from TOUCH so we need to change ADCsDONE, DAC out is the same, add timers and change interrupt timing, add external interrupts, PWMS.
 
 TODO: list our new I/O here, check interrupts and PWM
-
-- what needs testing? ADC, DAC out, all pulses in (and volts knob for ADC pulsed in: PC9->PC14), pulses out, TIM1-CH1 normings 
 
 - general scheme of things
 
@@ -40,8 +46,8 @@ fast interrupt (TIM?) for all shift registers with counters, interrupt for ADCs 
 
 I/O:
 
-- pulse ins: PC3-5 + PB6 clkins(interrupts), PC7/8 pulsein, PC9-MCB, to PC14-LSB of 6 bits
-- ADC 1-11
+- pulse ins: PC3-5 + PB6 clkins(interrupts), PC7/8 pulsein, PC9-MSB, to PC14-LSB of 6 bits
+- ADC 0-11 see adc.c
 - DAC out PA4
 - TIM1-CH1 drived normed top LFSR - and we need 2 extra internal timers! 
 - 11 pulse outs: PB2,3,4,10,12,13,14 = 5 fakes and 6 real out + now we have changed for schematic: PA11=pulse6, PA12=pulse4, PC15=pulse5, PB15=pulse7
@@ -61,7 +67,7 @@ void TIM2_IRQHandler(void) {
   }*/
 
 /* DMA buffer for ADC  & copy */
-__IO uint16_t adc_buffer[8];
+__IO uint16_t adc_buffer[12];
 
 #define delay()						 do {	\
     register unsigned int ix;					\
@@ -95,9 +101,9 @@ void io_config2 (void) {
        DAC_InitTypeDef DAC_InitStructure1;
        DAC_InitStructure1.DAC_Trigger = DAC_Trigger_None;
        DAC_InitStructure1.DAC_WaveGeneration = DAC_WaveGeneration_None;
-       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Disable; // was Enable but disable gets rid of offset! both bleed
+       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Enable; // was Enable but disable gets rid of offset! both bleed
+       // enable better in this case
        DAC_Init(DAC_Channel_1, &DAC_InitStructure1);
-       //       DAC_StructInit(&DAC_InitStructure1);
        /* Enable DAC Channel 1 */
        DAC_Cmd(DAC_Channel_1, ENABLE);
 }
@@ -117,8 +123,6 @@ void initClock(){
   //Wait for HSI is stable running
 
   while((RCC -> CR & RCC_CR_HSIRDY) == 0){}
-
-  
 
   //Switch SYSCLK to HSI, SW -> 00
 
@@ -206,164 +210,182 @@ int main(void)
   TIM_TimeBaseInitTypeDef TIM_TimeBase_InitStructure;
   TIM_OCInitTypeDef TIM_OC_InitStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
+  EXTI_InitTypeDef EXTI_InitStructure;
 
   
   unsigned int i, adcr, j, k=0, otherk=0, flipped, prev_state, value, offset;
     i = adcr = j = k = 0;
-    unsigned int dacval[8]={};
 
-    //      SystemClock_Config();
-        initClock();
+    initClock();
 
-    // 8 channels
+    // 12 channels
     ADC1_Init((uint16_t *)adc_buffer);
 
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    //- rec on PB2, play on PB4 - swopped with FR3, push on PB6 
-    //- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
-
-    
+    // TODO: organise ins and outs
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+  // out pulses are on: PB2,3,4,10,12,13,14,15
+  // PC15, PA11, PA12
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  //  TIM1-CH1 norming to top clock is on PA8
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_TIM1);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+    
+  // inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
+  // PC7/8 pulsein (LSR/RSR), PC9-MCB, to PC14-LSB of 6 bits
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-
+  
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
   
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  // TEST - PC8 input from 40106 for freezing/rec/play etc. power it with 3.3v
-
-  // led first
-  //  GPIOA->MODER = (1 << 10); // set pin PA5 to be general purpose output
-
-  // internal DAC PA4 with multiplex with EN_LOW1 on PC11 and sel1/2/3 on PC13/14/15
-
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
+  
+  io_config2();
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  // TIM1 on PA8 to set up // working!
+  
+  TIM_DeInit(TIM1);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+  
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 16; // fastest gives 12 MHz our max for filter is 4 Mhz
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 128; // was 0 but use 1 for overclock!
+  TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
+ 
+  TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OC_InitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
+  TIM_OC_InitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+  TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+  TIM_OC_InitStructure.TIM_Pulse = 128; // pulse size
+  TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
+  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this!
+  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
 
+  TIM_Cmd(TIM1, ENABLE);
+  TIM_CtrlPWMOutputs(TIM1, ENABLE); // we needed this for timer1 to be added
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+TIM_BDTRInitTypeDef TIM_BDTRInitStruct;
+TIM_BDTRStructInit(&TIM_BDTRInitStruct);
+TIM_BDTRConfig(TIM1, &TIM_BDTRInitStruct);
+TIM_CCPreloadControl(TIM1, ENABLE);
+TIM_CtrlPWMOutputs(TIM1, ENABLE);
     
-  io_config2 ();
-
   // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
+
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 32768
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // was 32768 // was 1024
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 128; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   // now is around 200Hz  but we need 8x speed for 8 dacs
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
@@ -375,44 +397,92 @@ int main(void)
   TIM_Cmd(TIM2, ENABLE);
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
   
-  // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
-  //    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
-
-  //    uint8_t firstByte, secondByte, configBits;
+  // inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
     
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource3);
+  EXTI_InitStructure.EXTI_Line = EXTI_Line3; // PC3
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource4);
+  EXTI_InitStructure.EXTI_Line = EXTI_Line4; // PC4
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource5);
+  EXTI_InitStructure.EXTI_Line = EXTI_Line5; // PC5
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource6);
+  EXTI_InitStructure.EXTI_Line = EXTI_Line6; // PB6
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  
+  
+  
+  
     while(1) {
 
-      
-      // all now placed in interrupt so is well timed
-      // TODO - test freeze and all buttons
-      //  daccount=1;
-      //    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
-      //      delay();
-      //      GPIOC->BSRRL = 0b1110000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
-  //  GPIOC->BSRRL=(daccount)<<13; // for now just top bits
-  //  GPIOC->BSRRL = 0b001000000000000;       // write PC13/14/15  -> DAC8 which is v4 top right, 7 is v3 top left, 6 is v2 lower left, 5 is v1 lower right
-      //      GPIOC->BSRRL = 0b1000000000000000;      // now we want to test the VCAs-> lower bits so 1 is lower right
-  //k=4095; // peak 6.6v      
-  //DAC_SetChannel1Data(DAC_Align_12b_R, dacval[daccount]); // 1000/4096 * 3V3 == 0V8
-  //      k=4095;
-      //    ADC_SoftwareStartConv(ADC1);
-    //  k=adc_buffer[daccount]>>4; // adc[1] is dac0, 3 is dac 1, 5 is dac 2, 7 is dac 3 - we can organise this in adc.c
-  // but still question of bleed of adc0 into adc3 - check if is vice versa? seems in software as changed when re-org
-  
-  // TEST setting k to ADC1
-  //        value =(float)adc_buffer[SELX]/65536.0f; 
-  //dacval[daccount]=0;//adc_buffer[daccount]>>4; // 12 bits for DAC
-  //      dacval[daccount]=4095;
-      //  k=0;
-      //  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
-      //  j = DAC_GetDataOutputValue (DAC_Channel_1);
-      //  daccount++;
-      //  if (daccount==8) daccount=0;  
-      //    delay();
-      
+  // test in gives out on PB4 - always inverted...
+      //      if ((GPIOC->IDR & (1<<3)))  GPIOB->BSRRH = (1)<<4;  // clear bits PB4
+      //      else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
+      
+      // test pulse outs one by one:
+      // L1-PB2, L2-PC15, R1-PB3, R2-PA11, C1-PB4, C2-PA12
+
+      // normed/fake pulses are: LSR-pulse8=PB10, RSR-pulse7=PB15, LSRCLK-pulse9=PB12, RSRCLK-pulse10=PB13, CSRCLCK-pulse11=PB14
+
+       // toggle bits test
+      // out pulses are on: PB2,3,4,10,12,13,14,15 // checked and all working!
+      /*
+      GPIOB->BSRRH = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits 
+      delay();
+      GPIOB->BSRRL = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits 
+      delay();
+      */
     }
 }
+
+
+
+
+
+
 
 #ifdef  USE_FULL_ASSERT
 #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
@@ -421,49 +491,9 @@ void assert_failed(uint8_t* file, uint32_t line)
 { 
   while (1)
     {
+
+
     }
 }
 #endif
 
-#if 0
-void NMI_Handler(void)
-{ 
-  while(1){};
-}
-
-void HardFault_Handler(void)
-{ 
-  while(1){};
-  }
-
-
-void MemManage_Handler(void)
-{ 
-  while(1){};
-}
-
-void BusFault_Handler(void)
-{ 
-  while(1){};
-}
-
-void UsageFault_Handler(void)
-{ 
-  while(1){};
-}
-
-void SVC_Handler(void)
-{ 
-  while(1){};
-}
-
-void DebugMon_Handler(void)
-{ 
-  while(1){};
-}
-
-void PendSV_Handler(void)
-{ 
-  while(1){};
-}
-#endif
