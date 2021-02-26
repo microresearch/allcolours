@@ -457,17 +457,6 @@ F 3 "~" H 5995 1990 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Device:R_Small R99
-U 1 1 5FFD94FF
-P 5860 1890
-F 0 "R99" V 5664 1890 50  0000 C CNN
-F 1 "1K" V 5755 1890 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 5860 1890 50  0001 C CNN
-F 3 "~" H 5860 1890 50  0001 C CNN
-	1    5860 1890
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR041
 U 1 1 5FFD9784
 P 5995 2120
@@ -479,11 +468,7 @@ F 3 "" H 5995 2120 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5715 1890 5760 1890
-Wire Wire Line
 	5995 2090 5995 2120
-Wire Wire Line
-	5960 1890 5995 1890
 Wire Wire Line
 	5995 1890 6025 1890
 Connection ~ 5995 1890
@@ -497,4 +482,8 @@ Wire Wire Line
 Connection ~ 1215 1625
 Wire Wire Line
 	1215 1625 1215 1660
+Wire Wire Line
+	5715 1890 5995 1890
+Text Notes 6250 1796 0    50   ~ 0
+1K removed 24.2
 $EndSCHEMATC

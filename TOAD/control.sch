@@ -1591,8 +1591,6 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 8590 2450 50  0001 C CNN
 	4    8540 2250
 	1    0    0    -1  
 $EndComp
-Text Notes 5035 2910 0    79   ~ 0
-TODO: Add 3 pots to mix with CV in?
 $Comp
 L Device:R_Small R59
 U 1 1 5FF41350
@@ -1631,7 +1629,7 @@ L Device:R_Small R62
 U 1 1 5FF42533
 P 5960 2340
 F 0 "R62" V 6030 2295 50  0000 C CNN
-F 1 "1K" V 5885 2330 50  0000 C CNN
+F 1 "10K" V 5805 2340 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 5960 2340 50  0001 C CNN
 F 3 "~" H 5960 2340 50  0001 C CNN
 	1    5960 2340
@@ -1882,4 +1880,8 @@ Wire Wire Line
 	5530 2467 5831 2467
 Wire Wire Line
 	5831 2340 5831 2467
+Text Notes 6000 2445 0    50   ~ 0
+was 1k - could be 4.7K even
+Text Notes 5365 2735 0    50   ~ 0
+TODO: add diode drops to GND
 $EndSCHEMATC
