@@ -227,7 +227,7 @@ F 3 "~" H 2150 5975 50  0001 C CNN
 $EndComp
 Text Notes 1675 6550 0    79   ~ 0
 buffer in
-Text Notes 5480 3740 0    79   ~ 0
+Text Notes 5298 3546 0    79   ~ 0
 buffer out - revised for +-5v (tides) - fixed 24/2
 Text Notes 3300 1975 0    118  ~ 0
 MSB

@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Notes 1005 1170 0    118  ~ 0
-add 4066 for touch input (freeze x10 and rec, play, push, pop = x14 which is 3x 4066)\nfreeze is now pull to +V so held to GND - inverted.\npop is gone and now just poush.pop and or rec/play variations
+add 40106 for touch input (freeze x10 and rec, play, push/mode = x13 which is 3x 40106)\nfreeze is now pull to +V so held to GND - inverted.\npush is mode now
 $Comp
 L Device:R_Small R?
 U 1 1 5F118A01
@@ -28,7 +28,7 @@ AR Path="/5EBFD180/5F118A01" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118A01" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118A01" Ref="R29"  Part="1" 
 F 0 "R29" H 1894 1686 50  0000 L CNN
-F 1 "1M" H 1894 1595 50  0000 L CNN
+F 1 "3.3M" H 1798 1416 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 1835 1640 50  0001 C CNN
 F 3 "~" H 1835 1640 50  0001 C CNN
 	1    1835 1640
@@ -99,7 +99,7 @@ AR Path="/5EBFD180/5F118A25" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118A25" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118A25" Ref="R30"  Part="1" 
 F 0 "R30" H 1919 2316 50  0000 L CNN
-F 1 "1M" H 1919 2225 50  0000 L CNN
+F 1 "3.3M" H 1806 2028 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 1860 2270 50  0001 C CNN
 F 3 "~" H 1860 2270 50  0001 C CNN
 	1    1860 2270
@@ -152,7 +152,7 @@ AR Path="/5EBFD180/5F118A42" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118A42" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118A42" Ref="R31"  Part="1" 
 F 0 "R31" H 1939 3161 50  0000 L CNN
-F 1 "1M" H 1939 3070 50  0000 L CNN
+F 1 "3.3M" H 1848 2879 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 1880 3115 50  0001 C CNN
 F 3 "~" H 1880 3115 50  0001 C CNN
 	1    1880 3115
@@ -205,7 +205,7 @@ AR Path="/5EBFD180/5F118A5F" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118A5F" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118A5F" Ref="R32"  Part="1" 
 F 0 "R32" H 1964 3791 50  0000 L CNN
-F 1 "1M" H 1964 3700 50  0000 L CNN
+F 1 "3.3M" H 1888 3527 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 1905 3745 50  0001 C CNN
 F 3 "~" H 1905 3745 50  0001 C CNN
 	1    1905 3745
@@ -258,7 +258,7 @@ AR Path="/5EBFD180/5F118A7C" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118A7C" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118A7C" Ref="R41"  Part="1" 
 F 0 "R41" H 3564 1666 50  0000 L CNN
-F 1 "1M" H 3564 1575 50  0000 L CNN
+F 1 "3.3M" H 3480 1385 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 3505 1620 50  0001 C CNN
 F 3 "~" H 3505 1620 50  0001 C CNN
 	1    3505 1620
@@ -311,7 +311,7 @@ AR Path="/5EBFD180/5F118A99" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118A99" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118A99" Ref="R42"  Part="1" 
 F 0 "R42" H 3589 2296 50  0000 L CNN
-F 1 "1M" H 3589 2205 50  0000 L CNN
+F 1 "3.3M" H 3472 1993 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 3530 2250 50  0001 C CNN
 F 3 "~" H 3530 2250 50  0001 C CNN
 	1    3530 2250
@@ -364,7 +364,7 @@ AR Path="/5EBFD180/5F118AB6" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118AB6" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118AB6" Ref="R43"  Part="1" 
 F 0 "R43" H 3609 3141 50  0000 L CNN
-F 1 "1M" H 3609 3050 50  0000 L CNN
+F 1 "3.3M" H 3532 2843 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 3550 3095 50  0001 C CNN
 F 3 "~" H 3550 3095 50  0001 C CNN
 	1    3550 3095
@@ -417,7 +417,7 @@ AR Path="/5EBFD180/5F118AD3" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118AD3" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118AD3" Ref="R44"  Part="1" 
 F 0 "R44" H 3634 3771 50  0000 L CNN
-F 1 "1M" H 3634 3680 50  0000 L CNN
+F 1 "3.3M" H 3520 3483 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 3575 3725 50  0001 C CNN
 F 3 "~" H 3575 3725 50  0001 C CNN
 	1    3575 3725
@@ -576,7 +576,7 @@ AR Path="/5EBFD180/5F118B2F" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118B2F" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118B2F" Ref="R33"  Part="1" 
 F 0 "R33" H 1994 4831 50  0000 L CNN
-F 1 "1M" H 1994 4740 50  0000 L CNN
+F 1 "3.3M" H 1964 4551 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 1935 4785 50  0001 C CNN
 F 3 "~" H 1935 4785 50  0001 C CNN
 	1    1935 4785
@@ -629,7 +629,7 @@ AR Path="/5EBFD180/5F118B4C" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F118B4C" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F118B4C" Ref="R45"  Part="1" 
 F 0 "R45" H 4279 4826 50  0000 L CNN
-F 1 "1M" H 4279 4735 50  0000 L CNN
+F 1 "3.3M" H 4216 4577 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 4220 4780 50  0001 C CNN
 F 3 "~" H 4220 4780 50  0001 C CNN
 	1    4220 4780
@@ -756,7 +756,7 @@ AR Path="/5EBFD180/5F2C3CA6" Ref="R?"  Part="1"
 AR Path="/5F0C4BC3/5F2C3CA6" Ref="R?"  Part="1" 
 AR Path="/5F0CAD2E/5F2C3CA6" Ref="R34"  Part="1" 
 F 0 "R34" H 2299 5636 50  0000 L CNN
-F 1 "1M" H 2299 5545 50  0000 L CNN
+F 1 "3.3M" H 2180 5329 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 2240 5590 50  0001 C CNN
 F 3 "~" H 2240 5590 50  0001 C CNN
 	1    2240 5590
@@ -1036,4 +1036,6 @@ F 3 "" H 2160 5440 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2160 5440 2240 5440
+Text Notes 4148 1436 0    79   ~ 0
+1M pull downs changed to 3.3M 1/3
 $EndSCHEMATC

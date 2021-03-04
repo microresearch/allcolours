@@ -2897,6 +2897,6 @@ Wire Wire Line
 Wire Wire Line
 	6840 6420 6930 6420
 Connection ~ 6840 5115
-Text Notes 5285 1505 0    50   ~ 0
+Text Notes 5115 1633 0    50   ~ 0
 to close VCA! 22/2\n
 $EndSCHEMATC

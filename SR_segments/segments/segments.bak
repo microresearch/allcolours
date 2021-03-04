@@ -1782,12 +1782,12 @@ Wire Wire Line
 Wire Wire Line
 	5760 2710 5885 2710
 $Comp
-L Amplifier_Operational:TL071 U?
+L Amplifier_Operational:TL071 U4
 U 1 1 603957CA
 P 6185 2610
-F 0 "U?" H 6526 2656 50  0000 L CNN
+F 0 "U4" H 6526 2656 50  0000 L CNN
 F 1 "TL071/TLV172" H 6135 3010 50  0000 L CNN
-F 2 "" H 6235 2660 50  0001 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 6235 2660 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6335 2760 50  0001 C CNN
 	1    6185 2610
 	1    0    0    -1  
