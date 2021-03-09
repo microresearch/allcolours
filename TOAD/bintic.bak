@@ -118,7 +118,7 @@ L Device:R_Small R9
 U 1 1 5BC924A3
 P 2075 2350
 F 0 "R9" V 1879 2350 50  0000 C CNN
-F 1 "56K" V 1970 2350 50  0000 C CNN
+F 1 "33K" V 1970 2350 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 2075 2350 50  0001 C CNN
 F 3 "~" H 2075 2350 50  0001 C CNN
 	1    2075 2350
@@ -246,7 +246,7 @@ L Device:R_Small R15
 U 1 1 5BC9C3DA
 P 5040 6585
 F 0 "R15" V 5115 6560 50  0000 C CNN
-F 1 "10K" V 4965 6710 50  0000 C CNN
+F 1 "4.7K" V 4965 6710 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 5040 6585 50  0001 C CNN
 F 3 "~" H 5040 6585 50  0001 C CNN
 	1    5040 6585
@@ -508,8 +508,6 @@ Wire Wire Line
 	9800 3425 9800 3325
 Wire Wire Line
 	2400 1650 2450 1650
-Wire Wire Line
-	3025 1650 3075 1650
 $Comp
 L power:+12V #PWR024
 U 1 1 5BD36CEA
@@ -527,8 +525,6 @@ Wire Wire Line
 	4915 6060 4915 6135
 Wire Wire Line
 	4075 1550 4125 1550
-Wire Wire Line
-	7775 1500 7825 1500
 Wire Wire Line
 	4615 5860 4715 5860
 Wire Wire Line
@@ -599,21 +595,11 @@ Wire Wire Line
 Wire Wire Line
 	1725 3975 1725 2550
 Wire Wire Line
-	1725 2550 3075 2550
-Wire Wire Line
-	3075 2550 3075 1650
-Connection ~ 3075 1650
-Wire Wire Line
-	3075 1650 3125 1650
+	1725 2550 3025 2550
 Wire Wire Line
 	7500 3925 7500 2500
 Wire Wire Line
 	7500 2500 7825 2500
-Wire Wire Line
-	7825 2500 7825 1500
-Connection ~ 7825 1500
-Wire Wire Line
-	7825 1500 7875 1500
 Wire Wire Line
 	8850 1400 8850 2625
 Connection ~ 8850 1400
@@ -1100,8 +1086,6 @@ Wire Wire Line
 	4425 3975 4425 2550
 Wire Wire Line
 	4425 2550 4750 2550
-Wire Wire Line
-	4750 2550 4750 1550
 Connection ~ 5775 2675
 Wire Wire Line
 	5775 2675 5725 2675
@@ -1148,15 +1132,13 @@ Wire Wire Line
 	5775 1450 5875 1450
 Text GLabel 2500 1650 2    50   Input ~ 0
 B1
-Text GLabel 3025 1650 0    50   Input ~ 0
-BB1
 Text GLabel 4200 1550 2    50   Input ~ 0
 B2
-Text GLabel 4700 1550 0    50   Input ~ 0
+Text GLabel 4500 1430 0    50   Input ~ 0
 BB2
 Text GLabel 5875 1450 2    50   Input ~ 0
 B3
-Text GLabel 7775 1500 0    50   Input ~ 0
+Text GLabel 7575 1445 0    50   Input ~ 0
 BB3
 Text GLabel 3425 850  2    50   Input ~ 0
 R1
@@ -1382,7 +1364,7 @@ L Device:R_Small R8
 U 1 1 5ED0CAE4
 P 1940 2050
 F 0 "R8" V 1744 2050 50  0000 C CNN
-F 1 "56K" V 1835 2050 50  0000 C CNN
+F 1 "33K" V 1835 2050 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 1940 2050 50  0001 C CNN
 F 3 "~" H 1940 2050 50  0001 C CNN
 	1    1940 2050
@@ -1638,7 +1620,7 @@ L Device:R_Small R12
 U 1 1 5F7AEE84
 P 4515 5860
 F 0 "R12" V 4590 5835 50  0000 C CNN
-F 1 "10K" V 4440 5985 50  0000 C CNN
+F 1 "22K" V 4440 5985 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 4515 5860 50  0001 C CNN
 F 3 "~" H 4515 5860 50  0001 C CNN
 	1    4515 5860
@@ -1857,4 +1839,104 @@ Wire Wire Line
 	1800 2050 1800 2350
 Text Notes 495  2180 0    50   ~ 0
 R6 to GND removed! 23/2/2021
+Wire Wire Line
+	3025 1650 3125 1650
+$Comp
+L Device:R_Small R?
+U 1 1 60495516
+P 3025 1750
+F 0 "R?" V 2829 1750 50  0000 C CNN
+F 1 "1K" V 2920 1750 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3025 1750 50  0001 C CNN
+F 3 "~" H 3025 1750 50  0001 C CNN
+	1    3025 1750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2970 1650 3025 1650
+Connection ~ 3025 1650
+Wire Wire Line
+	3025 1850 3025 2550
+$Comp
+L Device:R_Small R?
+U 1 1 604BD034
+P 4750 1810
+F 0 "R?" V 4554 1810 50  0000 C CNN
+F 1 "1K" V 4645 1810 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 4750 1810 50  0001 C CNN
+F 3 "~" H 4750 1810 50  0001 C CNN
+	1    4750 1810
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4750 1710 4750 1550
+Wire Wire Line
+	4750 1910 4750 2550
+Text Notes 4525 1995 0    50   ~ 0
+added 2Ks and 1Ks imp 9/3/2021
+Wire Wire Line
+	7775 1500 7825 1500
+Wire Wire Line
+	7825 1820 7825 1500
+Connection ~ 7825 1500
+Wire Wire Line
+	7825 1500 7875 1500
+$Comp
+L Device:R_Small R?
+U 1 1 604F8A55
+P 7825 1920
+F 0 "R?" V 7629 1920 50  0000 C CNN
+F 1 "1K" V 7720 1920 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7825 1920 50  0001 C CNN
+F 3 "~" H 7825 1920 50  0001 C CNN
+	1    7825 1920
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7825 2020 7825 2500
+Text GLabel 2755 1510 0    50   Input ~ 0
+BB1
+$Comp
+L Device:R_Small R?
+U 1 1 60613851
+P 2870 1650
+F 0 "R?" V 2674 1650 50  0000 C CNN
+F 1 "2K" V 2765 1650 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2870 1650 50  0001 C CNN
+F 3 "~" H 2870 1650 50  0001 C CNN
+	1    2870 1650
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2755 1510 2755 1650
+Wire Wire Line
+	2755 1650 2770 1650
+$Comp
+L Device:R_Small R?
+U 1 1 60627DE0
+P 4600 1550
+F 0 "R?" V 4404 1550 50  0000 C CNN
+F 1 "2K" V 4495 1550 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 4600 1550 50  0001 C CNN
+F 3 "~" H 4600 1550 50  0001 C CNN
+	1    4600 1550
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4500 1430 4500 1550
+$Comp
+L Device:R_Small R?
+U 1 1 6063CF25
+P 7675 1500
+F 0 "R?" V 7479 1500 50  0000 C CNN
+F 1 "2K" V 7570 1500 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 7675 1500 50  0001 C CNN
+F 3 "~" H 7675 1500 50  0001 C CNN
+	1    7675 1500
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7575 1445 7575 1500
+Text Notes 1035 675  0    50   ~ 0
+56k to 33k 9/3/2021\n
 $EndSCHEMATC

@@ -9313,7 +9313,7 @@
   (gr_text "adc in" (at 112.35 54.56) (layer Dwgs.User)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
-  (gr_text "20 HP = 101.3 x 128.5 = 101.3 x 108" (at 123.95 39.71) (layer Dwgs.User)
+  (gr_text "20 HP = 101.3 x 128.5 = 101.3 x 108" (at 126.11 48.61) (layer Dwgs.User)
     (effects (font (size 2 2) (thickness 0.3)))
   )
 

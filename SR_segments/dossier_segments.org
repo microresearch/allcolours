@@ -1,0 +1,34 @@
+#+TITLE: SEGMENTS
+#+AUTHOR: anonymous
+#+STARTUP:    align fold nodlcheck hidestars oddeven lognotestate
+#+SEQ_TODO:   TODO(t) INPROGRESS(i) WAITING(w@) | DONE(d) CANCELED(c@)
+#+TAGS:       Write(w) Update(u) Fix(f) Check(c) 
+#+OPTIONS:   H:1 num:t toc:nil \n:nil @:t ::t |:t ^:nil -:t f:t *:t TeX:t LaTeX:t skip:nil d:(HIDE)
+#+latex_header: \usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
+#+latex_header: \usepackage[final]{pdfpages}.
+#+latex_header: usepackage{atbegshi}% http://ctan.org/pkg/atbegshi
+#+latex_header: \AtBeginDocument{\AtBeginShipoutNext{\AtBeginShipoutDiscard}}
+
+* SEGMENTS
+
+** PROGRESS/NOTES
+
+- Second set PCBs ordered - 0403
+
+\pagebreak
+
+** SCHEMATICS
+
+\includepdf[pages=-]{segments/segments_schem.pdf}
+
+** PANEL layout
+
+\includepdf[pages=-]{segments/panel.pdf}
+
+** PCB
+
+\includepdf[pages=-]{segments/layout.pdf}
+
+** BOM and orderings
+
+\includepdf[pages=-]{segments/segments_bom.pdf}
