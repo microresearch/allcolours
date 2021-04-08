@@ -2189,19 +2189,19 @@ Wire Wire Line
 	10615 4530 10815 4530
 Wire Wire Line
 	10815 4430 10615 4430
-Text Label 10615 4430 0    50   ~ 0
+Text Label 10615 4130 0    50   ~ 0
 S3
 Wire Wire Line
 	10815 4330 10615 4330
-Text Label 10615 4330 0    50   ~ 0
+Text Label 10615 4230 0    50   ~ 0
 SS3
 Wire Wire Line
 	10815 4230 10615 4230
-Text Label 10615 4230 0    50   ~ 0
+Text Label 10615 4430 0    50   ~ 0
 S4
 Wire Wire Line
 	10815 4130 10615 4130
-Text Label 10615 4130 0    50   ~ 0
+Text Label 10615 4330 0    50   ~ 0
 SS4
 Wire Wire Line
 	10815 4030 10640 4030
@@ -2221,19 +2221,19 @@ Text Label 10640 3730 0    50   ~ 0
 SS6
 Wire Wire Line
 	10815 3630 10640 3630
-Text Label 10640 3630 0    50   ~ 0
+Text Label 10640 3430 0    50   ~ 0
 S7
 Wire Wire Line
 	10815 3530 10640 3530
-Text Label 10640 3530 0    50   ~ 0
+Text Label 10640 3330 0    50   ~ 0
 SS7
 Wire Wire Line
 	10815 3430 10640 3430
-Text Label 10640 3430 0    50   ~ 0
+Text Label 10640 3630 0    50   ~ 0
 S8
 Wire Wire Line
 	10815 3330 10640 3330
-Text Label 10640 3330 0    50   ~ 0
+Text Label 10640 3530 0    50   ~ 0
 SS8
 Wire Wire Line
 	10815 3230 10640 3230
@@ -2253,19 +2253,19 @@ Text Label 10640 2930 0    50   ~ 0
 SS10
 Wire Wire Line
 	10815 2830 10665 2830
-Text Label 10665 2830 0    50   ~ 0
+Text Label 10640 2630 0    50   ~ 0
 S11
 Wire Wire Line
 	10815 2730 10665 2730
-Text Label 10665 2730 0    50   ~ 0
+Text Label 10640 2530 0    50   ~ 0
 SS11
 Wire Wire Line
 	10815 2630 10640 2630
-Text Label 10640 2630 0    50   ~ 0
+Text Label 10665 2830 0    50   ~ 0
 S12
 Wire Wire Line
 	10815 2530 10640 2530
-Text Label 10640 2530 0    50   ~ 0
+Text Label 10665 2730 0    50   ~ 0
 SS12
 $Comp
 L power:+9V #PWR0101
@@ -3554,4 +3554,352 @@ F 3 "~" H 10300 2125 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	10150 2125 10150 2155
+$Comp
+L Device:R_Small R?
+U 1 1 60E3A77D
+P 3675 1075
+AR Path="/5C0A69D0/60E3A77D" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60E3A77D" Ref="R?"  Part="1" 
+AR Path="/60E3A77D" Ref="R39"  Part="1" 
+F 0 "R39" H 3734 1121 50  0000 L CNN
+F 1 "20K" H 3734 1030 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3675 1075 50  0001 C CNN
+F 3 "~" H 3675 1075 50  0001 C CNN
+	1    3675 1075
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3775 1075 3815 1075
+Wire Wire Line
+	3575 1075 3550 1075
+$Comp
+L power:-9V #PWR0162
+U 1 1 60E3A786
+P 3815 1075
+F 0 "#PWR0162" H 3815 950 50  0001 C CNN
+F 1 "-9V" H 3830 1248 50  0000 C CNN
+F 2 "" H 3815 1075 50  0001 C CNN
+F 3 "" H 3815 1075 50  0001 C CNN
+	1    3815 1075
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60E5F8EE
+P 6625 1100
+AR Path="/5C0A69D0/60E5F8EE" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60E5F8EE" Ref="R?"  Part="1" 
+AR Path="/60E5F8EE" Ref="R45"  Part="1" 
+F 0 "R45" H 6684 1146 50  0000 L CNN
+F 1 "20K" H 6684 1055 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6625 1100 50  0001 C CNN
+F 3 "~" H 6625 1100 50  0001 C CNN
+	1    6625 1100
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6725 1100 6765 1100
+Wire Wire Line
+	6525 1100 6500 1100
+$Comp
+L power:-9V #PWR0163
+U 1 1 60E5F8F7
+P 6765 1100
+F 0 "#PWR0163" H 6765 975 50  0001 C CNN
+F 1 "-9V" H 6780 1273 50  0000 C CNN
+F 2 "" H 6765 1100 50  0001 C CNN
+F 3 "" H 6765 1100 50  0001 C CNN
+	1    6765 1100
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60E85013
+P 6600 2325
+AR Path="/5C0A69D0/60E85013" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60E85013" Ref="R?"  Part="1" 
+AR Path="/60E85013" Ref="R44"  Part="1" 
+F 0 "R44" H 6659 2371 50  0000 L CNN
+F 1 "20K" H 6659 2280 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6600 2325 50  0001 C CNN
+F 3 "~" H 6600 2325 50  0001 C CNN
+	1    6600 2325
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6700 2325 6740 2325
+Wire Wire Line
+	6500 2325 6475 2325
+$Comp
+L power:-9V #PWR0164
+U 1 1 60E8501C
+P 6740 2325
+F 0 "#PWR0164" H 6740 2200 50  0001 C CNN
+F 1 "-9V" H 6755 2498 50  0000 C CNN
+F 2 "" H 6740 2325 50  0001 C CNN
+F 3 "" H 6740 2325 50  0001 C CNN
+	1    6740 2325
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60EAAD00
+P 3650 2300
+AR Path="/5C0A69D0/60EAAD00" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60EAAD00" Ref="R?"  Part="1" 
+AR Path="/60EAAD00" Ref="R38"  Part="1" 
+F 0 "R38" H 3709 2346 50  0000 L CNN
+F 1 "20K" H 3709 2255 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3650 2300 50  0001 C CNN
+F 3 "~" H 3650 2300 50  0001 C CNN
+	1    3650 2300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3750 2300 3790 2300
+Wire Wire Line
+	3550 2300 3525 2300
+$Comp
+L power:-9V #PWR0165
+U 1 1 60EAAD09
+P 3790 2300
+F 0 "#PWR0165" H 3790 2175 50  0001 C CNN
+F 1 "-9V" H 3805 2473 50  0000 C CNN
+F 2 "" H 3790 2300 50  0001 C CNN
+F 3 "" H 3790 2300 50  0001 C CNN
+	1    3790 2300
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60EF7A47
+P 3700 3500
+AR Path="/5C0A69D0/60EF7A47" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60EF7A47" Ref="R?"  Part="1" 
+AR Path="/60EF7A47" Ref="R40"  Part="1" 
+F 0 "R40" H 3759 3546 50  0000 L CNN
+F 1 "20K" H 3759 3455 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3700 3500 50  0001 C CNN
+F 3 "~" H 3700 3500 50  0001 C CNN
+	1    3700 3500
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3800 3500 3840 3500
+Wire Wire Line
+	3600 3500 3575 3500
+$Comp
+L power:-9V #PWR0166
+U 1 1 60EF7A50
+P 3840 3500
+F 0 "#PWR0166" H 3840 3375 50  0001 C CNN
+F 1 "-9V" H 3855 3673 50  0000 C CNN
+F 2 "" H 3840 3500 50  0001 C CNN
+F 3 "" H 3840 3500 50  0001 C CNN
+	1    3840 3500
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60F1E317
+P 6650 3525
+AR Path="/5C0A69D0/60F1E317" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60F1E317" Ref="R?"  Part="1" 
+AR Path="/60F1E317" Ref="R46"  Part="1" 
+F 0 "R46" H 6709 3571 50  0000 L CNN
+F 1 "20K" H 6709 3480 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6650 3525 50  0001 C CNN
+F 3 "~" H 6650 3525 50  0001 C CNN
+	1    6650 3525
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6750 3525 6790 3525
+Wire Wire Line
+	6550 3525 6525 3525
+$Comp
+L power:-9V #PWR0167
+U 1 1 60F1E320
+P 6790 3525
+F 0 "#PWR0167" H 6790 3400 50  0001 C CNN
+F 1 "-9V" H 6805 3698 50  0000 C CNN
+F 2 "" H 6790 3525 50  0001 C CNN
+F 3 "" H 6790 3525 50  0001 C CNN
+	1    6790 3525
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60F45498
+P 6650 4700
+AR Path="/5C0A69D0/60F45498" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60F45498" Ref="R?"  Part="1" 
+AR Path="/60F45498" Ref="R47"  Part="1" 
+F 0 "R47" H 6709 4746 50  0000 L CNN
+F 1 "20K" H 6709 4655 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6650 4700 50  0001 C CNN
+F 3 "~" H 6650 4700 50  0001 C CNN
+	1    6650 4700
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6750 4700 6790 4700
+Wire Wire Line
+	6550 4700 6525 4700
+$Comp
+L power:-9V #PWR0168
+U 1 1 60F454A1
+P 6790 4700
+F 0 "#PWR0168" H 6790 4575 50  0001 C CNN
+F 1 "-9V" H 6805 4873 50  0000 C CNN
+F 2 "" H 6790 4700 50  0001 C CNN
+F 3 "" H 6790 4700 50  0001 C CNN
+	1    6790 4700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60F6CBA3
+P 3700 4675
+AR Path="/5C0A69D0/60F6CBA3" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60F6CBA3" Ref="R?"  Part="1" 
+AR Path="/60F6CBA3" Ref="R41"  Part="1" 
+F 0 "R41" H 3759 4721 50  0000 L CNN
+F 1 "20K" H 3759 4630 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3700 4675 50  0001 C CNN
+F 3 "~" H 3700 4675 50  0001 C CNN
+	1    3700 4675
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3800 4675 3840 4675
+Wire Wire Line
+	3600 4675 3575 4675
+$Comp
+L power:-9V #PWR0169
+U 1 1 60F6CBAC
+P 3840 4675
+F 0 "#PWR0169" H 3840 4550 50  0001 C CNN
+F 1 "-9V" H 3855 4848 50  0000 C CNN
+F 2 "" H 3840 4675 50  0001 C CNN
+F 3 "" H 3840 4675 50  0001 C CNN
+	1    3840 4675
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60F9493E
+P 3725 5825
+AR Path="/5C0A69D0/60F9493E" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60F9493E" Ref="R?"  Part="1" 
+AR Path="/60F9493E" Ref="R42"  Part="1" 
+F 0 "R42" H 3784 5871 50  0000 L CNN
+F 1 "20K" H 3784 5780 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3725 5825 50  0001 C CNN
+F 3 "~" H 3725 5825 50  0001 C CNN
+	1    3725 5825
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3825 5825 3865 5825
+Wire Wire Line
+	3625 5825 3600 5825
+$Comp
+L power:-9V #PWR0170
+U 1 1 60F94947
+P 3865 5825
+F 0 "#PWR0170" H 3865 5700 50  0001 C CNN
+F 1 "-9V" H 3880 5998 50  0000 C CNN
+F 2 "" H 3865 5825 50  0001 C CNN
+F 3 "" H 3865 5825 50  0001 C CNN
+	1    3865 5825
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60FBCE87
+P 6675 5850
+AR Path="/5C0A69D0/60FBCE87" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60FBCE87" Ref="R?"  Part="1" 
+AR Path="/60FBCE87" Ref="R48"  Part="1" 
+F 0 "R48" H 6734 5896 50  0000 L CNN
+F 1 "20K" H 6734 5805 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6675 5850 50  0001 C CNN
+F 3 "~" H 6675 5850 50  0001 C CNN
+	1    6675 5850
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6775 5850 6815 5850
+Wire Wire Line
+	6575 5850 6550 5850
+$Comp
+L power:-9V #PWR0171
+U 1 1 60FBCE90
+P 6815 5850
+F 0 "#PWR0171" H 6815 5725 50  0001 C CNN
+F 1 "-9V" H 6830 6023 50  0000 C CNN
+F 2 "" H 6815 5850 50  0001 C CNN
+F 3 "" H 6815 5850 50  0001 C CNN
+	1    6815 5850
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60FE5AD7
+P 6675 7025
+AR Path="/5C0A69D0/60FE5AD7" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/60FE5AD7" Ref="R?"  Part="1" 
+AR Path="/60FE5AD7" Ref="R49"  Part="1" 
+F 0 "R49" H 6734 7071 50  0000 L CNN
+F 1 "20K" H 6734 6980 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 6675 7025 50  0001 C CNN
+F 3 "~" H 6675 7025 50  0001 C CNN
+	1    6675 7025
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6775 7025 6815 7025
+Wire Wire Line
+	6575 7025 6550 7025
+$Comp
+L power:-9V #PWR0172
+U 1 1 60FE5AE0
+P 6815 7025
+F 0 "#PWR0172" H 6815 6900 50  0001 C CNN
+F 1 "-9V" H 6830 7198 50  0000 C CNN
+F 2 "" H 6815 7025 50  0001 C CNN
+F 3 "" H 6815 7025 50  0001 C CNN
+	1    6815 7025
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 6100EDBB
+P 3725 7000
+AR Path="/5C0A69D0/6100EDBB" Ref="R?"  Part="1" 
+AR Path="/5E97CA7E/6100EDBB" Ref="R?"  Part="1" 
+AR Path="/6100EDBB" Ref="R43"  Part="1" 
+F 0 "R43" H 3784 7046 50  0000 L CNN
+F 1 "20K" H 3784 6955 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" H 3725 7000 50  0001 C CNN
+F 3 "~" H 3725 7000 50  0001 C CNN
+	1    3725 7000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3825 7000 3865 7000
+Wire Wire Line
+	3625 7000 3600 7000
+$Comp
+L power:-9V #PWR0173
+U 1 1 6100EDC4
+P 3865 7000
+F 0 "#PWR0173" H 3865 6875 50  0001 C CNN
+F 1 "-9V" H 3880 7173 50  0000 C CNN
+F 2 "" H 3865 7000 50  0001 C CNN
+F 3 "" H 3865 7000 50  0001 C CNN
+	1    3865 7000
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC
