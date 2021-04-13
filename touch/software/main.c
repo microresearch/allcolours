@@ -16,6 +16,10 @@
 #include "stm32f4xx_conf.h"
 /*
 
+// latest PCB now
+
+//
+
 10/2/2020 - start to set up TIM2 interrupt
 
 26/1/2020 - new code base for testing on latest PCB -> note on pcb PROG HEADER we swop last 2 gnd and swdio 
@@ -238,7 +242,7 @@ int main(void)
     unsigned int dacval[8]={};
 
     //      SystemClock_Config();
-        initClock();
+            initClock();
 
     // 8 channels
     ADC1_Init((uint16_t *)adc_buffer);
@@ -394,7 +398,7 @@ int main(void)
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; // was 1
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; // was 1
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01; // was 1
   NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM2, ENABLE);

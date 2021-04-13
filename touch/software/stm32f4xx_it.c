@@ -189,8 +189,14 @@ static uint32_t avv[8];
  */
 
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
+  {
+    
+    if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
+    {
+        TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	//        GPIO_ToggleBits(GPIOD, GPIO_Pin_12);
   
-{
+    
   static uint16_t c=0;
   static uint16_t daccount=0;
   volatile uint16_t k;
@@ -198,15 +204,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   // array to map freeze but exception is FR8 on PC4! 
   uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
   uint16_t bits;
+  uint16_t values[8];
 
-  
   ADC_SoftwareStartConv(ADC1);
-  k=adc_buffer[daccount]>>4; // 16 bits to 12 
-  //  k=0;
-  //  if (daccount!=1) k=0;
-  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
-  j = DAC_GetDataOutputValue (DAC_Channel_1);
+  values[daccount]=adc_buffer[daccount]>>4; // 16 bits to 12 
   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1);
   GPIOC->BSRRL=(daccount)<<13; //  write DAC bits 
   daccount++;
   if (daccount==8) daccount=0;
@@ -230,7 +234,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
   GPIOC->BSRRL=(1)<<13; //  write DAC bits 
   */
-  
+    }  
 }
 
   
