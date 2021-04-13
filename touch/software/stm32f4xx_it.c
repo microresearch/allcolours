@@ -204,19 +204,44 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   // array to map freeze but exception is FR8 on PC4! 
   uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
   uint16_t bits;
-  uint16_t values[8];
+  static uint16_t values[8];
+  static uint16_t frozen[8]={0};
+  static uint16_t laststate[8]={0};
+  uint16_t newstate[8];
 
-  ADC_SoftwareStartConv(ADC1);
-  values[daccount]=adc_buffer[daccount]>>4; // 16 bits to 12 
+  // MODES TODO:
+  // GPIOB 2 is lower rightPLAY, 6 is topMODE, 10 is leftREC
+  // with adc_buffer[4] as speed in certain modes...
+
+  if (daccount==7){
+    // handle GPIOC instead
+  if (!(GPIOC->IDR & (freezer[daccount]))) newstate[daccount]=1; // seems to work for test case
+  else newstate[daccount]=0;
+
+  if (laststate[daccount]==0 && newstate[daccount]==1) frozen[daccount]^=1;
+  laststate[daccount]=newstate[daccount];	
+  }
+  else
+    {
+  if (!(GPIOB->IDR & (freezer[daccount]))) newstate[daccount]=1; // seems to work for test case
+  else newstate[daccount]=0;
+
+  if (laststate[daccount]==0 && newstate[daccount]==1) frozen[daccount]^=1;
+  laststate[daccount]=newstate[daccount];	
+    }
+  
+  if (frozen[daccount]==0){
+    ADC_SoftwareStartConv(ADC1);
+  values[daccount]=adc_buffer[daccount]>>4; // 16 bits to 12
+  }
+  //  values[daccount]=4095; // 16 bits to 12 
   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
   DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1);
-  GPIOC->BSRRL=(daccount)<<13; //  write DAC bits 
-  daccount++;
-  if (daccount==8) daccount=0;
-  
+  GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
 
-  /*
+  //////////////  TEST CODE
+  
   // test central circles - all work but strong 50Hz so we need toggle and delay
   // others need to be larger with small gap!
 
@@ -224,16 +249,20 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   // swopped play and FR3
   //  - rec on PB2, play on PB4/swopped->, push on PB6
   // play and FR3 are swopped - FR3 was on PB10
-  */
+
   /*
-  if (!(GPIOB->IDR & (1<<8))) k=4095; // 2 6 and 10
+  if (!(GPIOB->IDR & (1<<9))) k=4095; // 2 6 and 10
       else k=0;
   
   DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1);
   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
-  GPIOC->BSRRL=(1)<<13; //  write DAC bits 
+  GPIOC->BSRRL=(0)<<13; //  write DAC bits 
   */
+
+  daccount++;
+  if (daccount==8) daccount=0;
+
     }  
 }
 

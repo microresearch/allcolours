@@ -16,7 +16,13 @@
 #include "stm32f4xx_conf.h"
 /*
 
-// latest PCB now
+// latest PCB now April 2021:
+
+// 13/4/2021: toggling and freezing implemented, all hardware tested and working...
+
+TODO:
+
+- different modes to list out and implement for record and playback
 
 //
 
