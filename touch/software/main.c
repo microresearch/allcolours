@@ -22,7 +22,21 @@
 
 TODO:
 
+- basic recording mode, how we handle freezes and length
+
 - different modes to list out and implement for record and playback
+
+//NOTES 14/4:
+
+STM32F446RETx: 128KB memory. so if we have 2bytes for each cell x8 = 16 per step at 1 KHz
+
+say we use 8k for other variables =120,000 remaining
+
+7500 steps for each max = 7.5 seconds at 1KHz (fastest)
+
+75 seconds at 100Hz
+
+- run at max speed and record at slower speed
 
 //
 
@@ -397,10 +411,9 @@ int main(void)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 32768
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
-  // now is around 200Hz  but we need 8x speed for 8 dacs
-  TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
+  TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+ TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
