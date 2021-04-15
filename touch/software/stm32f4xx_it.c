@@ -173,8 +173,16 @@ extern __IO uint16_t adc_buffer[8];
 static uint16_t recordings[8][7000]; // top bit signifies frozen and then lower 15 are the length/counter max 32766
 static uint16_t rec_cnt[8]={0};
 static uint16_t play_cnt[8]={0};
-static uint16_t tgr_cnt[8]={0};
+static uint16_t tgr_cnt[8]={0}, tgr_rec=0, tgr_play=0;
 static uint16_t rec=0, play=0;
+
+/* TODO:
+
+- test rec/play across all 4 areas
+- test freeze with rec and playback for each
+- all modes to implement/test and then see what works
+
+ */
 
 /* for record:
 
@@ -200,56 +208,51 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
   uint16_t bits;
   static uint16_t values[8];
-    static uint16_t frozen[8]={0};
-    static uint16_t laststate[8]={0}, state[8]={0}, laststaterec=0, laststateplay=0, lastrec=0, staterec=0, stateplay=0;
+    static uint16_t frozen[8]={0}, freezern[8]={0}, frcount[8]={0};
+    static uint16_t laststate[8]={0}, state[8]={0}, target[8]={0}, laststaterec=0, laststateplay=0, lastrec=0, lastplay=0,staterec=0, stateplay=0;
     static uint16_t count=0;
-    uint16_t newstate[8], newstaterec, newstateplay;
+    uint16_t newstate[8], newstaterec, newstateplay, tmp;
     
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-	// handle buttons
+	// handle buttons outside all loops
+	// GPIOB 2 is lower rightPLAY, 6 is topMODE, 10 is leftREC
+	// with adc_buffer[4] as speed in certain modes... = lower voltage one!
+	// rec
+
+	if (!(GPIOB->IDR & (1<<10))) newstaterec=1; 
+	else newstaterec=0;
+
+	if (laststaterec!=newstaterec) tgr_rec=0;
+
+    	if (tgr_rec>40){
+	  if (newstaterec!=staterec){
+	    staterec=newstaterec;
+	    if (staterec==1) rec^=1;
+	  }
+	}
 	
- 
-  // GPIOB 2 is lower rightPLAY, 6 is topMODE, 10 is leftREC
-  // with adc_buffer[4] as speed in certain modes... = lower voltage one!
-	/*
+	laststaterec=newstaterec;	
+	tgr_rec++;
+
+	//play	
+	if (!(GPIOB->IDR & (1<<2))) newstateplay=1; 
+	else newstateplay=0;
+
+	if (laststateplay!=newstateplay) tgr_play=0;
+
+    	if (tgr_play>40){
+	  if (newstateplay!=stateplay){
+	    stateplay=newstateplay;
+	    if (stateplay==1) play^=1;
+	  }
+	}
 	
-    if (count%(40)==0) { //for xxx HZ?
-
-      if (!(GPIOB->IDR & (1<<10))) newstaterec=1; // seems to work for test case if is slow enough here...
-      else newstaterec=0;
-      
-      if (laststaterec==0 && newstaterec==1) rec^=1; // build in delay
-      laststaterec=newstaterec;	
- 
-
-    if (!(GPIOB->IDR & (1<<2))) newstateplay=1; // seems to work for test case
-    else newstateplay=0;
-    
-    if (laststateplay==0 && newstateplay==1) play^=1; 
-    laststateplay=newstateplay;
-
-    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
-    if (rec) play=0;
-    
-  if (rec==1){ // we are recording
-    if (lastrec==0) {     // is it a new recording?
-      rec_cnt[0]=0;
-      lastrec=1;
-    }
-    recordings[daccount][rec_cnt[0]]=values[daccount];
-    if (daccount==7) { // last one
-      rec_cnt[0]++; // for now just use this one and later implement freeze which will change this
-    if (rec_cnt[0]>7000) rec_cnt[0]=0;
-    }
-
-
-  }
-  else lastrec=0;
-  }*/
-
+	laststateplay=newstateplay;	
+	tgr_play++;
+	
 	/////// TOGGLING for freezers	
 	if (daccount==7){
     // handle GPIOC instead
@@ -296,12 +299,43 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   }
 
   if (play){
-    values[daccount]=recordings[daccount][play_cnt[daccount]];
-    if ((count%40)==0){
-    play_cnt[daccount]++;
-    if (play_cnt[daccount]>rec_cnt[0]) play_cnt[daccount]=0;
+    if (lastplay==0) {     // is it a new play?
+      play_cnt[0]=0;
+      lastplay=1;
+      freezern[daccount]=0;
+      frcount[daccount]=0;
     }
-  }
+    // take care of frozen/repeats - top bit is toggled and we just repeat last value...
+    // we can re-use frcount and freezern as rec and play never happen at same time - and we zero them on entry
+    if ( ((recordings[daccount][play_cnt[daccount]]) & (1<<15)) && freezern[daccount]==0  ){ // top bit is toggled
+      freezern[daccount]==1;
+      frcount[daccount]=0;
+      target[daccount]=recordings[daccount][play_cnt[daccount]] - (1<15);
+    }
+	
+    if (freezern[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    else { // freezern!
+      if (play_cnt[daccount]==0) tmp=(recordings[daccount][6999]);
+      else tmp=(recordings[daccount][play_cnt[daccount]-1]);
+      values[daccount]=tmp;
+    }
+
+    if ((count%40)==0){
+      if (freezern[daccount]==1){
+	frcount[daccount]++;
+	if (frcount[daccount]==target[daccount]) {
+	  freezern[daccount]=0;
+	  play_cnt[daccount]++;
+	  if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+	}
+      }
+      else {
+    play_cnt[daccount]++;
+    if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+      }
+    }
+  } // if play
+  else lastplay=0;
   
   //  values[daccount]=4095; // 16 bits to 12 
   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
@@ -314,10 +348,53 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     daccount=0;
     count++;
   }  
-  	
+
+  ///// recordings
+  
+    if (count%(40)==0) { //for xxx HZ?
+
+    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
+    if (rec) play=0;
+    
+  if (rec){ // we are recording
+    if (lastrec==0) {     // is it a new recording?
+      rec_cnt[0]=0;
+      lastrec=1;
+      freezern[daccount]=0;
+      frcount[daccount]=0;
+    }
+    // TODO: implement freeze:  marked by upper bit and value is length of repeat...
+    if (frozen[daccount] && freezern[daccount==0]) {
+      freezern[daccount]==1;  //toggle freezern[daccount] to signal we start
+      frcount[daccount]=0;
+	}
+    // and start counting until freeze goes to zero then write this counter to lower bits(make sure is not>max=32767 + toggle top bit
+    if (freezern[daccount]){
+      frcount[daccount]++;
+      recordings[daccount][rec_cnt[daccount]]=frcount[daccount]+(1<<15);
+      if (frozen[daccount]==0 || frcount[daccount]==32767){ // so there is a max frozen time?
+	freezern[daccount]=0;
+	frcount[daccount]=0;
+	rec_cnt[daccount]++; // for now just use this one and later implement freeze which will change this
+	if (rec_cnt[daccount]>7000) rec_cnt[0]=0;
+      }
+    }
+    else { // in freezern
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
+    //    if (daccount==7) { // last one
+      rec_cnt[daccount]++; // for now just use this one and later implement freeze which will change this
+    if (rec_cnt[daccount]>7000) rec_cnt[0]=0;
+    //    }
+    }
+
+  }
+  else lastrec=0;
+  }
+
+  
   /* /////////////////////////////
 
-  // test code only for toggling: this works so implement for all!
+  // test code only for toggling: this works so implemented for all!
 
 	if (!(GPIOB->IDR & (1<<10))) newstaterec=1; 
 	else newstaterec=0;
