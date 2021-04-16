@@ -178,8 +178,8 @@ static uint16_t rec=0, play=0;
 
 /* TODO:
 
-- test rec/play across all 4 areas
-- test freeze with rec and playback for each
+- test rec/play across all 4 areas - seems to work 15/4 - need more tests
+- test freeze with rec and playback for each - seems to work 15/4 - need more tests
 - all modes to implement/test and then see what works
 
  */
@@ -216,42 +216,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-
-	// handle buttons outside all loops
-	// GPIOB 2 is lower rightPLAY, 6 is topMODE, 10 is leftREC
-	// with adc_buffer[4] as speed in certain modes... = lower voltage one!
-	// rec
-
-	if (!(GPIOB->IDR & (1<<10))) newstaterec=1; 
-	else newstaterec=0;
-
-	if (laststaterec!=newstaterec) tgr_rec=0;
-
-    	if (tgr_rec>40){
-	  if (newstaterec!=staterec){
-	    staterec=newstaterec;
-	    if (staterec==1) rec^=1;
-	  }
-	}
-	
-	laststaterec=newstaterec;	
-	tgr_rec++;
-
-	//play	
-	if (!(GPIOB->IDR & (1<<2))) newstateplay=1; 
-	else newstateplay=0;
-
-	if (laststateplay!=newstateplay) tgr_play=0;
-
-    	if (tgr_play>40){
-	  if (newstateplay!=stateplay){
-	    stateplay=newstateplay;
-	    if (stateplay==1) play^=1;
-	  }
-	}
-	
-	laststateplay=newstateplay;	
-	tgr_play++;
 	
 	/////// TOGGLING for freezers	
 	if (daccount==7){
@@ -300,10 +264,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
   if (play){
     if (lastplay==0) {     // is it a new play?
-      play_cnt[0]=0;
       lastplay=1;
-      freezern[daccount]=0;
-      frcount[daccount]=0;
+      // zero all of them
+      play_cnt[0]=0;       freezern[0]=0;       frcount[0]=0;
+      play_cnt[1]=0;       freezern[1]=0;       frcount[1]=0;
+      play_cnt[2]=0;       freezern[2]=0;       frcount[2]=0;
+      play_cnt[3]=0;       freezern[3]=0;       frcount[3]=0;
+      play_cnt[4]=0;       freezern[4]=0;       frcount[4]=0;
+      play_cnt[5]=0;       freezern[5]=0;       frcount[5]=0;
+      play_cnt[6]=0;       freezern[6]=0;       frcount[6]=0;
+      play_cnt[7]=0;       freezern[7]=0;       frcount[7]=0;
     }
     // take care of frozen/repeats - top bit is toggled and we just repeat last value...
     // we can re-use frcount and freezern as rec and play never happen at same time - and we zero them on entry
@@ -337,31 +307,22 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   } // if play
   else lastplay=0;
   
-  //  values[daccount]=4095; // 16 bits to 12 
-  GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
-  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
-  j = DAC_GetDataOutputValue (DAC_Channel_1);
-  GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
-
-  daccount++;
-  if (daccount==8) {
-    daccount=0;
-    count++;
-  }  
-
   ///// recordings
   
     if (count%(40)==0) { //for xxx HZ?
-
-    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
-    if (rec) play=0;
     
   if (rec){ // we are recording
     if (lastrec==0) {     // is it a new recording?
-      rec_cnt[0]=0;
       lastrec=1;
-      freezern[daccount]=0;
-      frcount[daccount]=0;
+      // zero all of them
+      rec_cnt[0]=0;       freezern[0]=0;       frcount[0]=0;
+      rec_cnt[1]=0;       freezern[1]=0;       frcount[1]=0;
+      rec_cnt[2]=0;       freezern[2]=0;       frcount[2]=0;
+      rec_cnt[3]=0;       freezern[3]=0;       frcount[3]=0;
+      rec_cnt[4]=0;       freezern[4]=0;       frcount[4]=0;
+      rec_cnt[5]=0;       freezern[5]=0;       frcount[5]=0;
+      rec_cnt[6]=0;       freezern[6]=0;       frcount[6]=0;
+      rec_cnt[7]=0;       freezern[7]=0;       frcount[7]=0;
     }
     // TODO: implement freeze:  marked by upper bit and value is length of repeat...
     if (frozen[daccount] && freezern[daccount==0]) {
@@ -376,21 +337,73 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	freezern[daccount]=0;
 	frcount[daccount]=0;
 	rec_cnt[daccount]++; // for now just use this one and later implement freeze which will change this
-	if (rec_cnt[daccount]>7000) rec_cnt[0]=0;
+	if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
       }
     }
     else { // in freezern
     recordings[daccount][rec_cnt[daccount]]=values[daccount];
     //    if (daccount==7) { // last one
       rec_cnt[daccount]++; // for now just use this one and later implement freeze which will change this
-    if (rec_cnt[daccount]>7000) rec_cnt[0]=0;
+    if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
     //    }
     }
 
-  }
+  } // if rec
   else lastrec=0;
   }
 
+    ////// write to DAC
+
+    //  values[daccount]=4095; // 16 bits to 12 
+    GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+    DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
+    j = DAC_GetDataOutputValue (DAC_Channel_1);
+    GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
+
+    daccount++;
+    if (daccount==8) {
+      daccount=0;
+      count++;
+
+      // only toggle rec and play after all dacs
+      	if (!(GPIOB->IDR & (1<<10))) newstaterec=1; 
+	else newstaterec=0;
+
+	if (laststaterec!=newstaterec) tgr_rec=0;
+
+    	if (tgr_rec>40){
+	  if (newstaterec!=staterec){
+	    staterec=newstaterec;
+	    if (staterec==1) rec^=1;
+	  }
+	}
+	
+	laststaterec=newstaterec;	
+	tgr_rec++;
+
+	//play	
+	if (!(GPIOB->IDR & (1<<2))) newstateplay=1; 
+	else newstateplay=0;
+
+	if (laststateplay!=newstateplay) tgr_play=0;
+
+    	if (tgr_play>40){
+	  if (newstateplay!=stateplay){
+	    stateplay=newstateplay;
+	    if (stateplay==1) play^=1;
+	  }
+	}
+	
+	laststateplay=newstateplay;	
+	tgr_play++;
+
+    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
+    if (rec) play=0;
+
+	
+  }  
+
+    
   
   /* /////////////////////////////
 

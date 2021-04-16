@@ -412,7 +412,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 4; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
  TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
