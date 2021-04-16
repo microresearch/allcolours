@@ -247,25 +247,30 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   //  k=2500; //
   //  k=4095;
 
-  // test the primitive DAC
+  // test the primitive ADC
   //  PC9-MSB, to PC14-LSB of 6 bits // 6 bits to 12 bits of DAC
   // !(GPIOC->IDR & 0x0020)
   //        k=(((!(GPIOC->IDR & (1<<9)))<<11) + (((!(GPIOC->IDR & (1<<10)))<<10)  + ((!(GPIOC->IDR & (1<<11)))<<9) + ((!(GPIOC->IDR & (1<<12)))<<8) + ((!(GPIOC->IDR & (1<<13)))<<7) + ((!(GPIOC->IDR & (1<<14)))<<6)));//  - 2048;// probably easier way to do this
-  /*    if (!(GPIOC->IDR & (1<<11))) k=4095;
-    else if (!(GPIOC->IDR & (1<<10))) k=2048;
-    else if (!(GPIOC->IDR & (1<<11))) k=1024;
-    else if (!(GPIOC->IDR & (1<<12))) k=512;
-    else if (!(GPIOC->IDR & (1<<13))) k=256;
-    else k=0;*/
+    if (!(GPIOC->IDR & (1<<9))) k=4095; // msb
+  else if (!(GPIOC->IDR & (1<<10))) k=2048; // 
+  else if (!(GPIOC->IDR & (1<<11))) k=1024;// works
+  else if (!(GPIOC->IDR & (1<<12))) k=512; // works
+  else if (!(GPIOC->IDR & (1<<13))) k=256; // no
+  else if (!(GPIOC->IDR & (1<<14))) k=128; // no
+  else k=0;
+  k=4095-k;
     //    if (k==(2048)) k=4095;
   
   //    k=(((GPIOC->IDR & (1<<9)))<<11) + (((GPIOC->IDR & (1<<10)))<<9) + (((GPIOC->IDR & (1<<11)))<<7) + (((GPIOC->IDR & (1<<12)))<<5) + (((GPIOC->IDR & (1<<13)))<<3) + (((GPIOC->IDR & (1<<14)))<<1) ;//  - 2048;// probably easier way to do this
   // check each one
   //  k=((!(GPIOC->IDR & (1<<14)))<<11); //14 haas issues
   //  k=(1<<11); //puts us in middle
-  //  k=4095;
-  //  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
-  //  j = DAC_GetDataOutputValue (DAC_Channel_1);
+  //      k=4095; // with
+	//  k=4000; // with R35 as 150k and R34 as 66.5k we have 4095 as -4.96 and 0 as 5.6k // 180k puts us opposite (-5.6) so we need like 160k
+  // we leave buffer on DAC or these values change
+  //  k=rand()%4095;
+  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1);
 
   //  if(ll)      GPIOB->BSRRH = (1)<<2;  // clear bits PB2
   //   else   GPIOB->BSRRL=(1)<<2; //  write bits 

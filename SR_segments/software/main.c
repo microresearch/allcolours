@@ -21,7 +21,15 @@
 
 *** SEGMENTS
 
-- what needs testing? ADC, DAC out, all pulses in (and volts knob for ADC pulsed in: PC9->PC14), pulses out, TIM1-CH1 normings 
+Newest PCB:
+
+16/4/2021:
+
+- what needs testing? DAC out, ADCs in, all pulses in (and volts knob for ADC pulsed in: PC9->PC14), pulses out, TIM1-CH1 normings 
+
+
+///
+
 
 TESTED/WORKING: ADC all tested, DAC out tested, pulses out all tested, TIM1-CH1 norming to top clock, volts knob/primitive ADC, pulse ins, interrupt pulse ins 
 
@@ -101,7 +109,7 @@ void io_config2 (void) {
        DAC_InitTypeDef DAC_InitStructure1;
        DAC_InitStructure1.DAC_Trigger = DAC_Trigger_None;
        DAC_InitStructure1.DAC_WaveGeneration = DAC_WaveGeneration_None;
-       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Enable; // was Enable but disable gets rid of offset! both bleed
+       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Enable; // leave as enable for impedance
        // enable better in this case
        DAC_Init(DAC_Channel_1, &DAC_InitStructure1);
        /* Enable DAC Channel 1 */
@@ -385,8 +393,7 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32; // was 32768 // was 1024
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 128; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
-  // now is around 200Hz  but we need 8x speed for 8 dacs
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
