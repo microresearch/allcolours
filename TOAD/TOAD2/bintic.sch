@@ -2329,8 +2329,6 @@ Wire Wire Line
 	1725 1660 1725 850 
 Wire Wire Line
 	7220 4845 7160 4845
-Text Label 7160 4845 2    79   ~ 0
-D1
 Wire Wire Line
 	7220 4945 7160 4945
 Wire Wire Line
@@ -2353,32 +2351,8 @@ Wire Wire Line
 	7220 5845 7160 5845
 Wire Wire Line
 	7220 5945 7160 5945
-Text Label 7160 4945 2    79   ~ 0
-DD1
-Text Label 7160 5045 2    79   ~ 0
-R1
-Text Label 7160 5145 2    79   ~ 0
-RR1
-Text Label 7160 5245 2    79   ~ 0
-B1
-Text Label 7160 5345 2    79   ~ 0
-BB1
-Text Label 7160 5445 2    79   ~ 0
-B2
-Text Label 7160 5545 2    79   ~ 0
-BB2
-Text Label 7160 5645 2    79   ~ 0
-B3
-Text Label 7160 5745 2    79   ~ 0
-BB3
-Text Label 7160 5845 2    79   ~ 0
-R1
-Text Label 7160 5945 2    79   ~ 0
-RR1
 Wire Wire Line
 	8950 1400 8950 1500
-Text Label 8950 1500 3    79   ~ 0
-OUT
 $Comp
 L Connector:Conn_01x14_Male J1
 U 1 1 6079C989
@@ -2392,6 +2366,32 @@ F 3 "~" H 7420 5545 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	7220 6045 7160 6045
-Text Label 7160 6045 2    79   ~ 0
+Text GLabel 7160 4845 0    50   Input ~ 0
+D1
+Text GLabel 7160 4945 0    50   Input ~ 0
+DD1
+Text GLabel 7160 5045 0    50   Input ~ 0
+R1
+Text GLabel 7160 5145 0    50   Input ~ 0
+RR1
+Text GLabel 7160 5245 0    50   Input ~ 0
+B1
+Text GLabel 7160 5345 0    50   Input ~ 0
+BB1
+Text GLabel 7160 5445 0    50   Input ~ 0
+B2
+Text GLabel 7160 5545 0    50   Input ~ 0
+BB2
+Text GLabel 7160 5645 0    50   Input ~ 0
+B3
+Text GLabel 7160 5745 0    50   Input ~ 0
+BB3
+Text GLabel 7160 5845 0    50   Input ~ 0
+R1
+Text GLabel 7160 5945 0    50   Input ~ 0
+RR1
+Text GLabel 7160 6045 0    50   Input ~ 0
+OUT
+Text GLabel 8950 1500 3    50   Input ~ 0
 OUT
 $EndSCHEMATC

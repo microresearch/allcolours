@@ -373,7 +373,7 @@ AR Path="/5ED966D6/60A8A796" Ref="C?"  Part="1"
 AR Path="/60663957/60A8A796" Ref="C?"  Part="1" 
 AR Path="/60663E79/60A8A796" Ref="C62"  Part="1" 
 F 0 "C62" H 2597 3776 50  0000 L CNN
-F 1 "100N" H 2597 3685 50  0000 L CNN
+F 1 "100N" H 2605 3555 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805" H 2505 3730 50  0001 C CNN
 F 3 "~" H 2505 3730 50  0001 C CNN
 	1    2505 3730
@@ -1615,4 +1615,324 @@ Wire Wire Line
 Connection ~ 9095 1720
 Wire Wire Line
 	9095 1720 9115 1720
+Wire Wire Line
+	7055 4185 6965 4185
+Wire Wire Line
+	8230 4085 8380 4085
+Connection ~ 8230 4085
+Text Label 6965 4185 2    50   ~ 0
+ABSIN
+Text Label 8380 4085 0    50   ~ 0
+ABSOUT
+$Comp
+L eec:AD633JN U20
+U 1 1 606FAE82
+P 1600 6360
+F 0 "U20" H 2100 6625 50  0000 C CNN
+F 1 "AD633JN" H 2100 6534 50  0000 C CNN
+F 2 "Analog_Devices-AD633JN-*" H 1600 6760 50  0001 L CNN
+F 3 "http://www.analog.com/media/en/technical-documentation/data-sheets/AD633.pdf" H 1600 6860 50  0001 L CNN
+F 4 "Manufacturer URL" H 1600 6960 50  0001 L CNN "Component Link 1 Description"
+F 5 "http://www.analog.com/en/index.html" H 1600 7060 50  0001 L CNN "Component Link 1 URL"
+F 6 "Package Specification" H 1600 7160 50  0001 L CNN "Component Link 3 Description"
+F 7 "http://www.analog.com/static/imported-files/packages/PKG_PDF/PDIP(N)/N_8.pdf" H 1600 7260 50  0001 L CNN "Component Link 3 URL"
+F 8 "Rev. K" H 1600 7360 50  0001 L CNN "Datasheet Version"
+F 9 "Through Hole" H 1600 7460 50  0001 L CNN "Mounting Technology"
+F 10 "2" H 1600 7560 50  0001 L CNN "Number of Channels"
+F 11 "8-Pin Plastic Dual In-Line Package, Body 9.59 x 6.6 mm, Pitch 2.54 mm" H 1600 7660 50  0001 L CNN "Package Description"
+F 12 "07/2006" H 1600 7760 50  0001 L CNN "Package Version"
+F 13 "Tube" H 1600 7860 50  0001 L CNN "Packing"
+F 14 "20 V/us" H 1600 7960 50  0001 L CNN "Slew Rate"
+F 15 "6 mA" H 1600 8060 50  0001 L CNN "Supply Current Max"
+F 16 "70 degC" H 1600 8160 50  0001 L CNN "Temperature Max"
+F 17 "0 degC" H 1600 8260 50  0001 L CNN "Temperature Min"
+F 18 "IC" H 1600 8360 50  0001 L CNN "category"
+F 19 "82579f909b82c26c" H 1600 8460 50  0001 L CNN "library id"
+F 20 "Analog Devices" H 1600 8560 50  0001 L CNN "manufacturer"
+F 21 "MS-001" H 1600 8660 50  0001 L CNN "package"
+F 22 "D70804D2-C31E-4A78-88FF-EDD09AD4FF7C" H 1600 8760 50  0001 L CNN "vault revision"
+F 23 "yes" H 1600 8860 50  0001 L CNN "imported"
+	1    1600 6360
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1700 6460 1570 6460
+Wire Wire Line
+	1570 6760 1700 6760
+$Comp
+L power:GND #PWR0190
+U 1 1 606FAE8B
+P 1570 6760
+F 0 "#PWR0190" H 1570 6510 50  0001 C CNN
+F 1 "GND" H 1575 6587 50  0000 C CNN
+F 2 "" H 1570 6760 50  0001 C CNN
+F 3 "" H 1570 6760 50  0001 C CNN
+	1    1570 6760
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0191
+U 1 1 606FAE91
+P 2550 6660
+F 0 "#PWR0191" H 2550 6410 50  0001 C CNN
+F 1 "GND" H 2555 6487 50  0000 C CNN
+F 2 "" H 2550 6660 50  0001 C CNN
+F 3 "" H 2550 6660 50  0001 C CNN
+	1    2550 6660
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 6660 2550 6660
+$Comp
+L allcolours_analogue-rescue:+12V-power #PWR?
+U 1 1 606FAE98
+P 1200 6960
+AR Path="/5ED966D6/606FAE98" Ref="#PWR?"  Part="1" 
+AR Path="/5EC7DA76/606FAE98" Ref="#PWR?"  Part="1" 
+AR Path="/60663957/606FAE98" Ref="#PWR?"  Part="1" 
+AR Path="/60663E79/606FAE98" Ref="#PWR0192"  Part="1" 
+F 0 "#PWR0192" H 1200 6810 50  0001 C CNN
+F 1 "+12V-power" H 1215 7133 50  0000 C CNN
+F 2 "" H 1200 6960 50  0001 C CNN
+F 3 "" H 1200 6960 50  0001 C CNN
+	1    1200 6960
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 606FAE9E
+P 1350 7060
+AR Path="/5EC7DA76/606FAE9E" Ref="C?"  Part="1" 
+AR Path="/5ED966D6/606FAE9E" Ref="C?"  Part="1" 
+AR Path="/60663957/606FAE9E" Ref="C?"  Part="1" 
+AR Path="/60663E79/606FAE9E" Ref="C67"  Part="1" 
+F 0 "C67" H 1442 7106 50  0000 L CNN
+F 1 "100N" H 1442 7015 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 1350 7060 50  0001 C CNN
+F 3 "~" H 1350 7060 50  0001 C CNN
+	1    1350 7060
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 606FAEA5
+P 2675 6960
+AR Path="/5ED966D6/606FAEA5" Ref="#PWR?"  Part="1" 
+AR Path="/5EC7DA76/606FAEA5" Ref="#PWR?"  Part="1" 
+AR Path="/60663957/606FAEA5" Ref="#PWR?"  Part="1" 
+AR Path="/60663E79/606FAEA5" Ref="#PWR0193"  Part="1" 
+F 0 "#PWR0193" H 2675 7060 50  0001 C CNN
+F 1 "-12V" H 2690 7133 50  0000 C CNN
+F 2 "" H 2675 6960 50  0001 C CNN
+F 3 "" H 2675 6960 50  0001 C CNN
+	1    2675 6960
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	1700 6960 1350 6960
+Connection ~ 1350 6960
+Wire Wire Line
+	1350 6960 1200 6960
+$Comp
+L power:GND #PWR0194
+U 1 1 606FAEAE
+P 1350 7195
+F 0 "#PWR0194" H 1350 6945 50  0001 C CNN
+F 1 "GND" H 1355 7022 50  0000 C CNN
+F 2 "" H 1350 7195 50  0001 C CNN
+F 3 "" H 1350 7195 50  0001 C CNN
+	1    1350 7195
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 7160 1350 7195
+Wire Wire Line
+	2500 6960 2545 6960
+$Comp
+L Device:C_Small C?
+U 1 1 606FAEB6
+P 2545 7080
+AR Path="/5EC7DA76/606FAEB6" Ref="C?"  Part="1" 
+AR Path="/5ED966D6/606FAEB6" Ref="C?"  Part="1" 
+AR Path="/60663957/606FAEB6" Ref="C?"  Part="1" 
+AR Path="/60663E79/606FAEB6" Ref="C68"  Part="1" 
+F 0 "C68" H 2637 7126 50  0000 L CNN
+F 1 "100N" H 2637 7035 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2545 7080 50  0001 C CNN
+F 3 "~" H 2545 7080 50  0001 C CNN
+	1    2545 7080
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0195
+U 1 1 606FAEBD
+P 2545 7215
+F 0 "#PWR0195" H 2545 6965 50  0001 C CNN
+F 1 "GND" H 2550 7042 50  0000 C CNN
+F 2 "" H 2545 7215 50  0001 C CNN
+F 3 "" H 2545 7215 50  0001 C CNN
+	1    2545 7215
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2545 7180 2545 7215
+Wire Wire Line
+	2545 6960 2545 6980
+Connection ~ 2545 6960
+Wire Wire Line
+	2545 6960 2675 6960
+Wire Wire Line
+	1700 6360 1535 6360
+Text Label 1535 6360 2    50   ~ 0
+X14
+$Comp
+L power:GND #PWR0196
+U 1 1 606FAEC9
+P 1570 6460
+F 0 "#PWR0196" H 1570 6210 50  0001 C CNN
+F 1 "GND" H 1575 6287 50  0000 C CNN
+F 2 "" H 1570 6460 50  0001 C CNN
+F 3 "" H 1570 6460 50  0001 C CNN
+	1    1570 6460
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1700 6660 1440 6660
+Text Label 1440 6660 2    50   ~ 0
+X24
+Wire Wire Line
+	2500 6360 2565 6360
+Text Label 2565 6360 0    50   ~ 0
+OUTX4
+Wire Wire Line
+	9970 2760 9910 2760
+Wire Wire Line
+	9970 2860 9910 2860
+Wire Wire Line
+	9970 2960 9910 2960
+Wire Wire Line
+	9970 3060 9910 3060
+Wire Wire Line
+	9970 3160 9910 3160
+Wire Wire Line
+	9970 3260 9910 3260
+Wire Wire Line
+	9970 3360 9910 3360
+Wire Wire Line
+	9970 3460 9910 3460
+Wire Wire Line
+	9970 3560 9910 3560
+Wire Wire Line
+	9970 3660 9910 3660
+Wire Wire Line
+	9970 3760 9910 3760
+Wire Wire Line
+	9970 3860 9910 3860
+Wire Wire Line
+	9970 3960 9910 3960
+Wire Wire Line
+	9970 4060 9910 4060
+Wire Wire Line
+	9970 4160 9910 4160
+Wire Wire Line
+	9970 4260 9910 4260
+Wire Wire Line
+	9970 4360 9910 4360
+Wire Wire Line
+	9970 4460 9910 4460
+Wire Wire Line
+	9970 4560 9910 4560
+Wire Wire Line
+	9970 4660 9910 4660
+Wire Wire Line
+	9970 4760 9910 4760
+Wire Wire Line
+	9970 4860 9910 4860
+Wire Wire Line
+	9970 4960 9910 4960
+Wire Wire Line
+	9970 5060 9910 5060
+Wire Wire Line
+	9970 5160 9910 5160
+Wire Wire Line
+	9970 5260 9910 5260
+Wire Wire Line
+	9970 5360 9910 5360
+Wire Wire Line
+	9970 5460 9910 5460
+Text Label 9910 2760 2    50   ~ 0
+X1
+Text Label 9910 2860 2    50   ~ 0
+X2
+Text Label 9910 2960 2    50   ~ 0
+OUTX
+Text Label 9910 3060 2    50   ~ 0
+X12
+Text Label 9910 3160 2    50   ~ 0
+X22
+Text Label 9910 3260 2    50   ~ 0
+OUTX2
+Text Label 9910 3360 2    50   ~ 0
+X13
+Text Label 9910 3460 2    50   ~ 0
+X23
+Text Label 9910 3560 2    50   ~ 0
+OUTX3
+Text Label 9910 3660 2    50   ~ 0
+X14
+Text Label 9910 3760 2    50   ~ 0
+X24
+Text Label 9910 3860 2    50   ~ 0
+OUTX4
+Text Label 9910 3960 2    50   ~ 0
+INV1I
+Text Label 9910 4060 2    50   ~ 0
+INV1O
+Text Label 9910 4160 2    50   ~ 0
+INV2I
+Text Label 9910 4260 2    50   ~ 0
+INV2O
+Text Label 9910 4360 2    50   ~ 0
+INV3I
+Text Label 9910 4460 2    50   ~ 0
+INV3O
+Text Label 9910 4560 2    50   ~ 0
+INV4I
+Text Label 9910 4660 2    50   ~ 0
+INV4O
+Text Label 9910 4760 2    50   ~ 0
+DIN1
+Text Label 9910 4860 2    50   ~ 0
+DIN2
+Text Label 9910 4960 2    50   ~ 0
+DOUT1
+Text Label 9910 5060 2    50   ~ 0
+DOUT2
+Text Label 9910 5160 2    50   ~ 0
+ABSIN
+Text Label 9910 5260 2    50   ~ 0
+ABSOUT
+Text Label 9910 5360 2    50   ~ 0
+S1I
+Text Label 9910 5460 2    50   ~ 0
+S1O
+$Comp
+L Connector:Conn_01x30_Male J3
+U 1 1 608C8DBE
+P 10170 4260
+F 0 "J3" H 10143 4140 50  0000 R CNN
+F 1 "Conn_01x30_Male" H 10143 4231 50  0000 R CNN
+F 2 "" H 10170 4260 50  0001 C CNN
+F 3 "~" H 10170 4260 50  0001 C CNN
+	1    10170 4260
+	-1   0    0    1   
+$EndComp
+Text Label 9910 5560 2    50   ~ 0
+S2I
+Wire Wire Line
+	9970 5560 9910 5560
+Wire Wire Line
+	9970 5660 9910 5660
+Text Label 9910 5660 2    50   ~ 0
+S2O
 $EndSCHEMATC
