@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 5
+Sheet 4 6
 Title ""
 Date ""
 Rev ""
@@ -2556,8 +2556,8 @@ Wire Wire Line
 	4120 2210 4180 2210
 Text GLabel 4180 2210 2    50   Input ~ 0
 VCAA4
-Text Notes 1510 700  0    79   ~ 0
-leave as plus or as options
+Text Notes 1420 335  0    79   ~ 0
+change to negative or as optionals! -> best
 Wire Wire Line
 	4385 6465 4460 6465
 $Comp

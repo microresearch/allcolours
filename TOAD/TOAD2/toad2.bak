@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
+Sheet 1 6
 Title ""
 Date ""
 Rev ""
@@ -40,4 +40,10 @@ F1 "anlog.sch" 50
 $EndSheet
 Text Notes 3485 1510 0    79   ~ 0
 Pluggable test board for: VCAs, inverters/summer, bintic/switched caps, signum variations, diff-rect, abs, multipliers
+$Sheet
+S 700  3270 1755 460 
+U 6082A447
+F0 "SIGMAA" 50
+F1 "sigma.sch" 50
+$EndSheet
 $EndSCHEMATC
