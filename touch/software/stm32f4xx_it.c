@@ -34,10 +34,10 @@
 #include "misc.h"
 #include "adc.h"
 
-#define TRG 100 // trigger - was 100 but /8
-#define BRK 1200 // off hold was 1200 but /8
+#define TRG 10 // trigger - was 100 but /8 - thse for frz
+#define BRK 100 // off hold was 1200 but /8
 
-#define TRG8 15
+#define TRG8 15 // these for rec/play etc
 #define BRK8 150
 
 // rev log doesn't work
@@ -212,8 +212,6 @@ but not in record function but overlaid - or can add/subtract from what was ther
 - Only record the VCA and not the voltages and vice versa…
 - Playback starts from same position it ended or from beginning
 
-
-
  */
 
 /* for record:
@@ -242,7 +240,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     uint16_t bits;
     static uint16_t values[8];
     static uint16_t frozen[8]={0}, freezern[8]={0}, frcount[8]={0};
-    static uint16_t laststate[8]={0}, state[8]={0}, target[8]={0}, laststaterec=0, laststateplay=0, lastrec=0, lastplay=0,staterec=0, stateplay=0;
+    static uint16_t target[8]={0}, lastrec=0, lastplay=0, lastvalue[8];
     static uint16_t count=0, triggered[10]={0}, lasttriggered[10]={0}, breaker[10]={0};
 
     uint16_t tmp;
@@ -305,26 +303,30 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   if (frozen[daccount]==0 && play==0){
     ADC_SoftwareStartConv(ADC1);
     //            values[daccount]=logval[adc_buffer[daccount]>>2];// now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
-    values[daccount]=adc_buffer[daccount]<<1;// now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
+    values[daccount]=adc_buffer[daccount]<<1;// shift a bit so louder now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
   }
 
+  // if play stops and we were in freeze before entering we need to restore the last value
+  //
+
+  
   if (play){
     if (lastplay==0) {     // is it a new play?
       lastplay=1;
       // zero all of them
-      play_cnt[0]=0;       freezern[0]=0;       frcount[0]=0;
-      play_cnt[1]=0;       freezern[1]=0;       frcount[1]=0;
-      play_cnt[2]=0;       freezern[2]=0;       frcount[2]=0;
-      play_cnt[3]=0;       freezern[3]=0;       frcount[3]=0;
-      play_cnt[4]=0;       freezern[4]=0;       frcount[4]=0;
-      play_cnt[5]=0;       freezern[5]=0;       frcount[5]=0;
-      play_cnt[6]=0;       freezern[6]=0;       frcount[6]=0;
-      play_cnt[7]=0;       freezern[7]=0;       frcount[7]=0;
+      play_cnt[0]=0;       freezern[0]=0;       frcount[0]=0; lastvalue[0]=values[0];
+      play_cnt[1]=0;       freezern[1]=0;       frcount[1]=0; lastvalue[1]=values[1];
+      play_cnt[2]=0;       freezern[2]=0;       frcount[2]=0; lastvalue[2]=values[2];
+      play_cnt[3]=0;       freezern[3]=0;       frcount[3]=0; lastvalue[3]=values[3];
+      play_cnt[4]=0;       freezern[4]=0;       frcount[4]=0; lastvalue[4]=values[4];
+      play_cnt[5]=0;       freezern[5]=0;       frcount[5]=0; lastvalue[5]=values[5];
+      play_cnt[6]=0;       freezern[6]=0;       frcount[6]=0; lastvalue[6]=values[6];
+      play_cnt[7]=0;       freezern[7]=0;       frcount[7]=0; lastvalue[7]=values[7];
     }
     // take care of frozen/repeats - top bit is toggled and we just repeat last value...
     // we can re-use frcount and freezern as rec and play never happen at same time - and we zero them on entry
     if ( ((recordings[daccount][play_cnt[daccount]]) & (1<<15)) && freezern[daccount]==0  ){ // top bit is toggled
-      freezern[daccount]==1;
+      freezern[daccount]=1;
       frcount[daccount]=0;
       target[daccount]=recordings[daccount][play_cnt[daccount]] - (1<15);
     }
@@ -340,11 +342,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       if (freezern[daccount]==1){
 	frcount[daccount]++;
 	if (frcount[daccount]==target[daccount]) {
+	  if (rec_cnt[daccount]==1) { // then just loop on freeze
+	    frcount[daccount]=0;
+	  }
+	else {
 	  freezern[daccount]=0;
 	  play_cnt[daccount]++;
 	  if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
 	}
-      }
+	}
+      } // freezern
       else {
     play_cnt[daccount]++;
     if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
@@ -352,7 +359,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     }
   } // if play
   else lastplay=0;
-  
+
+    
   ///// recordings
   
     if (count%(32)==0) { //for xxx HZ?
@@ -372,9 +380,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     }
     // TODO: implement freeze:  marked by upper bit and value is length of repeat...
     if (frozen[daccount] && freezern[daccount==0]) {
-      freezern[daccount]==1;  //toggle freezern[daccount] to signal we start
+      freezern[daccount]=1;  //toggle freezern[daccount] to signal we start
       frcount[daccount]=0;
+      if (rec_cnt[daccount]==0) { // there is no previous value...
+	recordings[daccount][0]=values[daccount];
+	rec_cnt[daccount]=1;
 	}
+
+    }
     // and start counting until freeze goes to zero then write this counter to lower bits(make sure is not>max=32767 + toggle top bit
     if (freezern[daccount]){
       frcount[daccount]++;
@@ -385,13 +398,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	rec_cnt[daccount]++;
 	if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
       }
-    }
-    else { // in freezern
+    } // in freezern
+    else { 
     recordings[daccount][rec_cnt[daccount]]=values[daccount];
-    //    if (daccount==7) { // last one
-      rec_cnt[daccount]++; // 
+    rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
-    //    }
     }
 
   } // if rec
@@ -412,9 +423,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       count++;
       ADC_SoftwareStartConv(ADC1);
       speed=(adc_buffer[6]>>6); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits
-      if (speed>31) speed=31;
-      speed=32-(speed); //4 bits=16 256/16=
-      //      speed=1;
+      if (speed>32) speed=32;
+      speed=33-(speed); //4 bits=16 256/16=
+      //      speed=32;
 
       // only toggle rec and play after all dacs
             
