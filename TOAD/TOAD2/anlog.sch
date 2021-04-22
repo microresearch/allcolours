@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 5
+Sheet 5 6
 Title ""
 Date ""
 Rev ""
@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Notes 4455 815  0    118  ~ 0
-3x multipliers and 4x inverters\n
+4x multipliers and 4x inverters\n
 $Comp
 L eec:AD633JN U15
 U 1 1 6073FD6A
