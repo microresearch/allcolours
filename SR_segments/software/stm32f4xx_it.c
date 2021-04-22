@@ -176,12 +176,12 @@ extern __IO uint16_t adc_buffer[12];
 void EXTI3_IRQHandler(void){ // working CSR
   static uint16_t flipper=0;
 if (EXTI_GetITStatus(EXTI_Line3) != RESET) {
-  /*
+  
   // flip PB4 to test interrupt on PC3 -> CSR
     flipper^=1;
-  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-   else   GPIOB->BSRRL=(1)<<4; //  write bits   
-  */
+    //  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    //   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  
   EXTI_ClearITPendingBit(EXTI_Line3);
  }
  }
@@ -189,12 +189,12 @@ if (EXTI_GetITStatus(EXTI_Line3) != RESET) {
 void EXTI4_IRQHandler(void){ // working NSR
   static uint16_t flipper=0;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
-  /*
+  
   // flip PB4 to test interrupt on PC3 -> CSR
     flipper^=1;
-  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-   else   GPIOB->BSRRL=(1)<<4; //  write bits   
-  */
+      if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+       else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
  }
@@ -202,20 +202,20 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
 void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but both work out
   static uint16_t flipper=0;
 if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
-  /*
+  
   // flip PB4 to test interrupt on PC3 -> CSR
     flipper^=1;
-  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-   else   GPIOB->BSRRL=(1)<<4; //  write bits   
-  */
+    //  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    //   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  
   EXTI_ClearITPendingBit(EXTI_Line5);
  }
  else if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
 
   // flip PB4 to test interrupt on PC3 -> CSR
     flipper^=1;
-  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+    //  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    //   else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
   EXTI_ClearITPendingBit(EXTI_Line6);
  } 
@@ -235,14 +235,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   // PC7/8 pulsein (RSR-7/LSR-8), PC9-MCB, to PC14-LSB of 6 bits
 
   // test in gives out on PB4 - always inverted...
-  //  if ((GPIOB->IDR & (1<<6)))  GPIOB->BSRRH = (1)<<4;  // clear bits PB4
-  //  else   GPIOB->BSRRL=(1)<<4; //  write bits   
-  
+  //    if ((GPIOC->IDR & (1<<7)))  GPIOB->BSRRH = (1)<<4;  // clear bits PB4
+  //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  //  if (k==0) k=4095;
+  //  else k=0;
   //  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
   //  ADC_SoftwareStartConv(ADC1);
-  //  k=(adc_buffer[1]>>4); // 16 bits to 12 bits // tested all knobs - working // test CV ins - all workings
-  //    k++; // inverted // DAC works but not amp?
-    //  if (k>4095) k=0;
+  k=(adc_buffer[0]>>4); // 16 bits to 12 bits
+  k=4095-k;
+  //      k+=256; // inverted // DAC works but not amp?
+  //    if (k>4095) k=0;
   //    k=0;
   //  k=2500; //
   //  k=4095;
@@ -251,14 +253,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   //  PC9-MSB, to PC14-LSB of 6 bits // 6 bits to 12 bits of DAC
   // !(GPIOC->IDR & 0x0020)
   //        k=(((!(GPIOC->IDR & (1<<9)))<<11) + (((!(GPIOC->IDR & (1<<10)))<<10)  + ((!(GPIOC->IDR & (1<<11)))<<9) + ((!(GPIOC->IDR & (1<<12)))<<8) + ((!(GPIOC->IDR & (1<<13)))<<7) + ((!(GPIOC->IDR & (1<<14)))<<6)));//  - 2048;// probably easier way to do this
-    if (!(GPIOC->IDR & (1<<9))) k=4095; // msb
+  /*    if (!(GPIOC->IDR & (1<<9))) k=4095; // msb
   else if (!(GPIOC->IDR & (1<<10))) k=2048; // 
   else if (!(GPIOC->IDR & (1<<11))) k=1024;// works
   else if (!(GPIOC->IDR & (1<<12))) k=512; // works
   else if (!(GPIOC->IDR & (1<<13))) k=256; // no
   else if (!(GPIOC->IDR & (1<<14))) k=128; // no
   else k=0;
-  k=4095-k;
+  k=4095-k;*/
     //    if (k==(2048)) k=4095;
   
   //    k=(((GPIOC->IDR & (1<<9)))<<11) + (((GPIOC->IDR & (1<<10)))<<9) + (((GPIOC->IDR & (1<<11)))<<7) + (((GPIOC->IDR & (1<<12)))<<5) + (((GPIOC->IDR & (1<<13)))<<3) + (((GPIOC->IDR & (1<<14)))<<1) ;//  - 2048;// probably easier way to do this

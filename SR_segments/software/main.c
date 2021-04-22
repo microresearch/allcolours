@@ -19,14 +19,28 @@
 
 /*
 
+PROG HEADER: brown, red, yellow, orange (from top of both)
+
 *** SEGMENTS
 
-Newest PCB:
+Newest PCB: all working 19/4 but we will need to re-work ADC entry -
+test now with lower cap on say ADC0 - nspeedin c30->100pf//33k, removed cap (but leave on schematic)
+and increased ADC speed, changed to continuous mode and we have a high
+sample rate in 100kHZ
 
-16/4/2021:
 
-- what needs testing? DAC out, ADCs in, all pulses in (and volts knob for ADC pulsed in: PC9->PC14), pulses out, TIM1-CH1 normings 
+ 
+16/4/2021->19/4/2021:
 
+- what needs testing? DAC outDONE, ADCs inDONE, 
+
+- all pulses in //(and volts knob for ADC pulsed in: PC9->PC14-REDO)DONE
+
+- pulses outDONE, 
+
+TIM1-CH1 normings WORKING - so is TIM1 normed to top clock/NSR
+
+----> could do with organizing all a bit better with arrays
 
 ///
 
@@ -109,7 +123,7 @@ void io_config2 (void) {
        DAC_InitTypeDef DAC_InitStructure1;
        DAC_InitStructure1.DAC_Trigger = DAC_Trigger_None;
        DAC_InitStructure1.DAC_WaveGeneration = DAC_WaveGeneration_None;
-       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Enable; // leave as enable for impedance
+       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Enable; // leave as enable for impedance BUFFER???
        // enable better in this case
        DAC_Init(DAC_Channel_1, &DAC_InitStructure1);
        /* Enable DAC Channel 1 */
@@ -279,6 +293,12 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  
   //  TIM1-CH1 norming to top clock is on PA8
   GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_TIM1);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
@@ -287,7 +307,20 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
-    
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+ 
+  
+
+  
   // inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
@@ -360,8 +393,8 @@ int main(void)
   
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 16; // fastest gives 12 MHz our max for filter is 4 Mhz
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 128; // was 0 but use 1 for overclock!
+  TIM_TimeBase_InitStructure.TIM_Period = 128; // 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 256; // 
   TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -387,13 +420,13 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
     
   // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
-
+// 32 and 8 is 100 KHz but why can't we sample so fast...
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32; // was 32768 // was 1024
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
@@ -476,11 +509,13 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
 
        // toggle bits test
       // out pulses are on: PB2,3,4,10,12,13,14,15 // checked and all working!
-      /*
-      GPIOB->BSRRH = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits 
+      /*      
+      GPIOB->BSRRH = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
+      //GPIOA->BSRRH = (1)<<11 | (1<<12);// | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
       delay();
-      GPIOB->BSRRL = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits 
-      delay();
+      GPIOB->BSRRL = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
+      //      GPIOA->BSRRL = (1)<<11 | (1<<12);// | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
+            delay();
       */
     }
 }
