@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Notes 640  1160 0    118  ~ 0
-Two versions - one just with edge connector for own conns, other with jacks:\n\nFor each of 4 elements we have 4x jacks - A, B and C (out/feedback) and E which is voltage out!
+Added 4 pins norms for each I/O x4 22/4/2021\n\nFor each of 4 elements we have 4x jacks - A, B and C (out/feedback) and E which is voltage out!
 Text Notes 6560 1385 0    79   ~ 0
 16x jacks
 $Comp
@@ -466,94 +466,112 @@ Text GLabel 9710 4270 2    43   Input ~ 0
 C4
 Wire Wire Line
 	9685 4270 9710 4270
+Text Label 5935 1995 0    50   ~ 0
+nv1
 $Comp
-L Connector_Generic:Conn_01x17 J22
-U 1 1 5F37A0C9
-P 1445 2980
-F 0 "J22" H 1365 1955 50  0000 C CNN
-F 1 "Conn_01x17" H 1365 2046 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x17_Pitch2.54mm" H 1445 2980 50  0001 C CNN
-F 3 "~" H 1445 2980 50  0001 C CNN
-	1    1445 2980
-	-1   0    0    1   
-$EndComp
-Text GLabel 1685 3680 2    43   Input ~ 0
-C4
-Text GLabel 1685 3580 2    43   Input ~ 0
-C3
-Text GLabel 1685 3480 2    43   Input ~ 0
-C2
-Text GLabel 1685 3380 2    43   Input ~ 0
-C1
-Text GLabel 1685 3280 2    43   Input ~ 0
-OUT4
-Text GLabel 1685 3180 2    43   Input ~ 0
-OUT3
-Text GLabel 1685 3080 2    43   Input ~ 0
-OUT2
-Text GLabel 1685 2980 2    43   Input ~ 0
-OUT1
-Text GLabel 1685 2880 2    43   Input ~ 0
-IN4
-Text GLabel 1685 2780 2    43   Input ~ 0
-IN3
-Text GLabel 1685 2680 2    43   Input ~ 0
-IN2
-Text GLabel 1685 2580 2    43   Input ~ 0
-IN1
-Text GLabel 1685 2480 2    43   Input ~ 0
-v4
-Text GLabel 1685 2380 2    43   Input ~ 0
-v3
-Text GLabel 1685 2280 2    43   Input ~ 0
-v2
-Text GLabel 1685 2180 2    43   Input ~ 0
-v1
-Wire Wire Line
-	1645 3780 1720 3780
-$Comp
-L power:GND #PWR0131
-U 1 1 5F28EA46
-P 1720 3780
-F 0 "#PWR0131" H 1720 3530 50  0001 C CNN
-F 1 "GND" H 1725 3607 50  0000 C CNN
-F 2 "" H 1720 3780 50  0001 C CNN
-F 3 "" H 1720 3780 50  0001 C CNN
-	1    1720 3780
+L Connector:Conn_01x04_Male J4
+U 1 1 60821104
+P 1165 2045
+F 0 "J4" H 1271 2323 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 1271 2232 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 1165 2045 50  0001 C CNN
+F 3 "~" H 1165 2045 50  0001 C CNN
+	1    1165 2045
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1645 3680 1685 3680
-Wire Wire Line
-	1645 3580 1685 3580
-Wire Wire Line
-	1645 3480 1685 3480
-Wire Wire Line
-	1645 3380 1685 3380
-Wire Wire Line
-	1645 3280 1685 3280
-Wire Wire Line
-	1645 3180 1685 3180
-Wire Wire Line
-	1645 3080 1685 3080
-Wire Wire Line
-	1645 2980 1685 2980
-Wire Wire Line
-	1645 2880 1685 2880
-Wire Wire Line
-	1645 2780 1685 2780
-Wire Wire Line
-	1645 2680 1685 2680
-Wire Wire Line
-	1645 2580 1685 2580
-Wire Wire Line
-	1645 2480 1685 2480
-Wire Wire Line
-	1645 2380 1685 2380
-Wire Wire Line
-	1645 2280 1685 2280
-Wire Wire Line
-	1645 2180 1685 2180
-Text Notes 860  1870 0    79   ~ 0
-Edge conns: 16x +GND = total 17
+Text Label 1365 1945 0    50   ~ 0
+nv1
+Text Label 7265 1995 0    50   ~ 0
+nv2
+Text Label 8415 1960 0    50   ~ 0
+nv3
+Text Label 9745 1960 0    50   ~ 0
+nv4
+Text Label 5880 2825 0    50   ~ 0
+ni1
+Text Label 7210 2825 0    50   ~ 0
+ni2
+Text Label 8360 2790 0    50   ~ 0
+ni3
+Text Label 9690 2790 0    50   ~ 0
+ni4
+Text Label 9685 3480 0    50   ~ 0
+no4
+Text Label 8355 3480 0    50   ~ 0
+no3
+Text Label 7205 3515 0    50   ~ 0
+no2
+Text Label 5875 3515 0    50   ~ 0
+no1
+Text Label 5875 4105 0    50   ~ 0
+nc1
+Text Label 7205 4105 0    50   ~ 0
+nc2
+Text Label 8355 4070 0    50   ~ 0
+nc3
+Text Label 9685 4070 0    50   ~ 0
+nc4
+Text Label 1365 2045 0    50   ~ 0
+ni1
+Text Label 1365 2145 0    50   ~ 0
+no1
+Text Label 1365 2245 0    50   ~ 0
+nc1
+$Comp
+L Connector:Conn_01x04_Male J6
+U 1 1 608271DD
+P 2220 2025
+F 0 "J6" H 2326 2303 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 2326 2212 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 2220 2025 50  0001 C CNN
+F 3 "~" H 2220 2025 50  0001 C CNN
+	1    2220 2025
+	1    0    0    -1  
+$EndComp
+Text Label 2420 1925 0    50   ~ 0
+nv2
+Text Label 2420 2025 0    50   ~ 0
+ni2
+Text Label 2420 2125 0    50   ~ 0
+no2
+Text Label 2420 2225 0    50   ~ 0
+nc2
+$Comp
+L Connector:Conn_01x04_Male J5
+U 1 1 60827B02
+P 1225 2700
+F 0 "J5" H 1331 2978 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 1331 2887 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 1225 2700 50  0001 C CNN
+F 3 "~" H 1225 2700 50  0001 C CNN
+	1    1225 2700
+	1    0    0    -1  
+$EndComp
+Text Label 1425 2600 0    50   ~ 0
+nv3
+Text Label 1425 2700 0    50   ~ 0
+ni3
+Text Label 1425 2800 0    50   ~ 0
+no3
+Text Label 1425 2900 0    50   ~ 0
+nc3
+$Comp
+L Connector:Conn_01x04_Male J7
+U 1 1 6082845D
+P 2250 2715
+F 0 "J7" H 2356 2993 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 2356 2902 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 2250 2715 50  0001 C CNN
+F 3 "~" H 2250 2715 50  0001 C CNN
+	1    2250 2715
+	1    0    0    -1  
+$EndComp
+Text Label 2450 2615 0    50   ~ 0
+nv4
+Text Label 2450 2715 0    50   ~ 0
+ni4
+Text Label 2450 2815 0    50   ~ 0
+no4
+Text Label 2450 2915 0    50   ~ 0
+nc4
 $EndSCHEMATC

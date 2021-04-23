@@ -127,14 +127,10 @@ Connection ~ 1760 1625
 Wire Wire Line
 	1760 1625 1800 1625
 Wire Wire Line
-	2300 1525 2345 1525
-Wire Wire Line
 	2345 1525 2345 1425
 Connection ~ 2345 1425
 Wire Wire Line
 	2345 1425 2500 1425
-Wire Wire Line
-	1800 1525 1750 1525
 Wire Wire Line
 	1750 1525 1750 1425
 Connection ~ 1750 1425
@@ -433,4 +429,15 @@ Wire Wire Line
 Connection ~ 1215 1625
 Wire Wire Line
 	1215 1625 1215 1660
+Wire Wire Line
+	1750 1525 1800 1525
+Connection ~ 1800 1525
+Wire Wire Line
+	1800 1525 2300 1525
+Connection ~ 2300 1525
+Wire Wire Line
+	2300 1525 2345 1525
+Connection ~ 2345 1525
+Wire Wire Line
+	2345 1525 2346 1525
 $EndSCHEMATC
