@@ -16,6 +16,8 @@
 #include "stm32f4xx_conf.h"
 /*
 
+PROG: from top: 3.3v, SWCLK, SWDIO, GND (lower 2 swopped)
+
 // latest PCB now April 2021:
 
 // 13/4/2021: toggling and freezing implemented, all hardware tested and working...

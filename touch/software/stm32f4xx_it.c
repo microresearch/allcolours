@@ -211,11 +211,15 @@ then play back alongside temp additions (and as above variations)
 record sets back to original
 play returns to no playback but can still record additions
 5 
-6 midpoint - seems go to silence???
-7
+6 midpoint - seems go to silence??? so maybe lose THIS ONE!
+7 modulo
+
 //////TODO::::::::::::::::::::
 
 8 - press freeze and plays back for that section the last x seconds (so always recording) - how do we determine the x seconds? (next freeze sets that?)
+       [ but how does this operate when we enter this mode from nothing and freeze - start recording on entry and max will be length]
+       [ what do rec and play buttons do?]
+- IN TESTING
 9
 10
 11
@@ -225,16 +229,20 @@ play returns to no playback but can still record additions
 14
 15
 
-16 - freezers free/detach that section or start playback again in that section... again with overlays
+16 - freezers free/detach that section or start playback again in that section... again with overlays (what then does play button do?)
+[ 
 17
 18
 19
 
 others: 
 
+voltage controlled speed of all playback from top voltage
+
 20 - each voltage changes speed of that specific playback section and
 we use freeze, unfreeze to record those changes, overlays also only
 for VCA and for speed. speeds for each sample are set in top 5 or 6 bits?
+
 21
 22
 23
@@ -251,8 +259,6 @@ for VCA and for speed. speeds for each sample are set in top 5 or 6 bits?
 32
 
 /////////////////////////////
-
-
 
 - maybe add logarithmic for all touch and for speed so we get full range!
 - test rec/play across all 4 areas - seems to work 15/4 - need more testsDONE
@@ -283,8 +289,6 @@ new mode - playback has overlay, but when press freeze (zero on
 playback) it records this until unpress, and can still add overlay
 
 playback has overlay with freeze as usual (default mode)
-
-
 
 problem with all overlay modes is that freeze recording scheme doesn't work as we would need to keep expanding and shifting??? (possible but...)
 
@@ -322,8 +326,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     uint16_t bits;
     static uint16_t values[8], real[8];
     static uint16_t frozen[8]={0};
-    static uint16_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0};
-    static uint16_t count=0, triggered[11]={0}, lasttriggered[11]={0}, breaker[11]={0}, mode=0;
+    static uint16_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
+    static uint16_t count=0, triggered[11]={0}, lasttriggered[11]={0}, breaker[11]={0}, mode=0, starter[8]={0}, ender[8]={7000};
 
     uint16_t tmp;
     int16_t midder;
@@ -361,7 +365,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	}
     } // end of mode selector, each mode needs to take care of everything
     
-    mode=7; // testings
+    mode=8; // testings
     
     switch(mode){
     case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing...
@@ -1946,7 +1950,203 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     }
     break; // mode 7
 
+    case 8:
+      ///8 - press freeze and plays back for that section the last x seconds (so always recording) - how do we determine the x seconds? (next freeze sets that?)
+      //       [ but how does this operate when we enter this mode from nothing and freeze - start recording on entry and max will be length]
+      // question is if we loop - so continue recording in a loop even if we play back...
+      // what does rec do : (play deals with playback)
+      // rec button could reset everything
       
+      // if we just entered start recording and continue
+      if (lastmode!=mode){ // assign lastmode in other modes
+	rec=1;
+	starter[0]=0; ender[0]=7000;	
+	starter[1]=0; ender[1]=7000;	
+	starter[2]=0; ender[2]=7000;	
+	starter[3]=0; ender[3]=7000;	
+	starter[4]=0; ender[4]=7000;	
+	starter[5]=0; ender[5]=7000;	
+	starter[6]=0; ender[6]=7000;	
+	starter[7]=0; ender[7]=7000;	
+      }
+	/////// TOGGLING for freezers	
+      // in this case freezer=1 sets start point, 0 sets end point for each one... in starter and ender...
+      // for playback
+
+      if (daccount==7){
+    // handle GPIOC instead
+
+	if (!(GPIOC->IDR & (freezer[7])) && triggered[7]==0 && breaker[7]>BRK) {
+	  triggered[7]=1;
+	  frozen[7]^=1;
+	  if (frozen[7]==1) {
+	    starter[7]=rec_cnt[7];
+	    play_cnt[7]=rec_cnt[7];
+	  }
+	  else ender[7]=rec_cnt[7];
+	  breaker[7]=0;
+	}
+	
+	if ( (GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]++; 
+
+	if (triggered[7]==1 && lasttriggered[7]==0) { // new trigger
+	  tgr_cnt[7]=0;
+	  lasttriggered[7]=1;
+	}
+	
+	if (lasttriggered[7]==1) 	tgr_cnt[7]++;
+
+	if (tgr_cnt[7]>TRG){
+	  triggered[7]=0;
+	  lasttriggered[7]=0;
+	}	 	  
+	} // daccount==7
+  else
+    {
+	if (!(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0 && breaker[daccount]>BRK) {
+	  triggered[daccount]=1;
+	  frozen[daccount]^=1;
+	  if (frozen[daccount]==1) {
+	    starter[daccount]=rec_cnt[daccount];
+	    play_cnt[daccount]=rec_cnt[daccount];
+	  }
+	  else ender[daccount]=rec_cnt[daccount];
+	  breaker[daccount]=0;
+	}
+	
+	if ( (GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]++; 
+
+	if (triggered[daccount]==1 && lasttriggered[daccount]==0) { // new trigger
+	  tgr_cnt[daccount]=0;
+	  lasttriggered[daccount]=1;
+	}
+	
+	if (lasttriggered[daccount]==1) 	tgr_cnt[daccount]++;
+
+	if (tgr_cnt[daccount]>TRG){
+	  triggered[daccount]=0;
+	  lasttriggered[daccount]=0;
+	}
+    }
+	// this runs always at full speed!
+	
+      ADC_SoftwareStartConv(ADC1);
+      real[daccount]=adc_buffer[daccount]<<1;// shift a bit so louder now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
+
+  if (play){
+
+    values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    
+    if ((count%speed)==0){ // speed goes from 1 to X what
+    play_cnt[daccount]++;
+    if (play_cnt[daccount]>ender[daccount]) play_cnt[daccount]=starter[daccount];
+    }
+  } // if play
+
+    
+  ///// recordings
+  
+    if (count%(32)==0) { //for xxx HZ?
+    
+  if (rec){ // we are always recording 
+
+    recordings[daccount][rec_cnt[daccount]]=real[daccount]&4095; // ignore top bits
+    rec_cnt[daccount]++; // 
+    if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+  } // if rec
+    } // count32
+
+    ////// write to DAC
+    // if playback add
+    if (play==1) {
+      values[daccount]+=real[daccount];
+      if (values[daccount]>4095) values[daccount]=4095;
+    }
+    else values[daccount]=real[daccount];    // otherwise just values
+    
+    //  values[daccount]=4095; // 16 bits to 12 
+    GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+    DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
+    j = DAC_GetDataOutputValue (DAC_Channel_1);
+    GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
+
+    daccount++;
+    if (daccount==8) {
+      daccount=0;
+      count++;
+      ADC_SoftwareStartConv(ADC1);
+      speed=(adc_buffer[6]>>6); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits
+      if (speed>32) speed=32;
+      speed=33-(speed); //4 bits=16 256/16=
+      //      speed=32;
+
+      // only toggle rec and play after all dacs
+
+      // in this case what does rec do?
+      
+      /*            
+    	if (!(GPIOB->IDR & (1<<10)) && triggered[8]==0 && breaker[8]>BRK8) {
+	  triggered[8]=1;
+	  rec^=1;
+	  breaker[8]=0;
+	}
+
+	if ( (GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]++; 
+	
+	if (triggered[8]==1 && lasttriggered[8]==0) { // new trigger
+	  tgr_cnt[8]=0;
+	  lasttriggered[8]=1;
+	}
+	
+	if (lasttriggered[8]==1) 	tgr_cnt[8]++;
+
+	if (tgr_cnt[8]>TRG8){
+	  triggered[8]=0;
+	  lasttriggered[8]=0;
+	}
+      */
+	//play	
+      
+    	if (!(GPIOB->IDR & (1<<2)) && triggered[9]==0 && breaker[9]>BRK8) {
+	  triggered[9]=1;
+	  play^=1;
+	  breaker[9]=0;
+	}
+
+	if ( (GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]++; 
+	
+	if (triggered[9]==1 && lasttriggered[9]==0) { // new trigger
+	  tgr_cnt[9]=0;
+	  lasttriggered[9]=1;
+	}
+	
+	if (lasttriggered[9]==1) 	tgr_cnt[9]++;
+
+	if (tgr_cnt[9]>TRG8){
+	  triggered[9]=0;
+	  lasttriggered[9]=0;
+	}
+      	
+	//    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
+	//    if (rec) play=0;
+    }
+    lastmode=8;      
+      break; // mode 8
+
+    case 20:
+      /* 20 - each voltage changes speed of that specific playback section and
+	 we use freeze, unfreeze to record those changes, overlays also only
+	 for VCA and for speed. speeds for each sample are set in top 5 or 6 bits?
+	 
+	 - so is speed for VCA and voltage for each section
+	 - rec and non-playback is all as usual (freeze is freeze)
+	 - playback mode - speed changes for each section (overlay also), freeze to rec, unfreeze to stop rec...
+
+      */
+
+
+      
+      break: // mode 20
       
     } // end of modes switch    
     } 
