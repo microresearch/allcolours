@@ -225,27 +225,34 @@ play returns to no playback but can still record additions
 11
 
 12 - freezers reverse the last section for playback, and can overlay (no freeze allowed tho) 
+[ so in rec and non-playback freeze also freezes]
+- IMPLEMENTED but needs testings
+
 13
 14
 15
 
 16 - freezers free/detach that section or start playback again in that section... again with overlays (what then does play button do?)
-[ 
+[ play button plays them all!]
 17
 18
 19
 
-others: 
-
-voltage controlled speed of all playback from top voltage
-
 20 - each voltage changes speed of that specific playback section and
 we use freeze, unfreeze to record those changes, overlays also only
 for VCA and for speed. speeds for each sample are set in top 5 or 6 bits?
+- IMPLEMENTED but needs more testings
 
 21
 22
 23
+
+
+others: 
+
+- [voltage controlled speed of all playback from top voltage ????what does this mean?]
+
+- that we can also attach and detach recordings for each cv (what then does rec do-> reattaches all of them)
 
 24
 25
@@ -327,7 +334,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint16_t values[8], real[8];
     static uint16_t frozen[8]={0};
     static uint16_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
-    static uint16_t count=0, triggered[11]={0}, lasttriggered[11]={0}, breaker[11]={0}, mode=0, starter[8]={0}, ender[8]={7000};
+    static uint16_t count=0, triggered[11]={0}, lasttriggered[11]={0}, breaker[11]={0}, mode=0, starter[8]={0}, ender[8]={7000}, recsp[8]={0};
 
     uint16_t tmp;
     int16_t midder;
@@ -365,7 +372,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	}
     } // end of mode selector, each mode needs to take care of everything
     
-    mode=8; // testings
+    mode=12; // testings
     
     switch(mode){
     case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing...
@@ -439,10 +446,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[6]=0;
       play_cnt[7]=0;
     }
-    // take care of frozen/repeats - top bit is toggled and we just repeat last value...
-    // we can re-use frcount and freezern as rec and play never happen at same time - and we zero them on entry
 
-    values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
     
     if ((count%speed)==0){ // speed goes from 1 to X what
     play_cnt[daccount]++;
@@ -470,7 +475,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -624,10 +629,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[6]=0;
       play_cnt[7]=0;
     }
-    // take care of frozen/repeats - top bit is toggled and we just repeat last value...
-    // we can re-use frcount and freezern as rec and play never happen at same time - and we zero them on entry
 
-    values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    values[daccount]=(recordings[daccount][play_cnt[daccount]]) & 4095;  // ignore top bits
     
     if ((count%speed)==0){ // speed goes from 1 to X what
     play_cnt[daccount]++;
@@ -655,7 +658,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -806,10 +809,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[6]=0;
       play_cnt[7]=0;
     }
-    // take care of frozen/repeats - top bit is toggled and we just repeat last value...
-    // we can re-use frcount and freezern as rec and play never happen at same time - and we zero them on entry
 
-    values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
     
     if ((count%speed)==0){ // speed goes from 1 to X what
     play_cnt[daccount]++;
@@ -837,7 +838,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -991,10 +992,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[6]=0;
       play_cnt[7]=0;
     }
-    // take care of frozen/repeats - top bit is toggled and we just repeat last value...
-    // we can re-use frcount and freezern as rec and play never happen at same time - and we zero them on entry
 
-    values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
     
     if ((count%speed)==0){ // speed goes from 1 to X what
     play_cnt[daccount]++;
@@ -1022,7 +1021,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -1181,7 +1180,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[7]=0; frozen[7]=0; added[7]=0;
     }
 
-    if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits;
 
     // in play if frozen then add the value to the recording
     // otherwise nothing - but only do this once even if we are still here....
@@ -1218,7 +1217,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -1389,7 +1388,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[7]=0; frozen[7]=0; added[7]=0;
     }
 
-        if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+        if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits;
 
     // in play if frozen then add the value to the recording
     // otherwise nothing - but only do this once even if we are still here....
@@ -1426,7 +1425,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -1597,7 +1596,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[7]=0; frozen[7]=0; added[7]=0;
     }
 
-    if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095; // ignore top bits
 
     // in play if frozen then add the value to the recording
     // otherwise nothing - but only do this once even if we are still here....
@@ -1640,7 +1639,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -1815,7 +1814,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       play_cnt[7]=0; frozen[7]=0; added[7]=0;
     }
 
-    if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]]);
+    if (added[daccount]==0) values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095; // ignore top bits;
 
     // in play if frozen then add the value to the recording
     // otherwise nothing - but only do this once even if we are still here....
@@ -1854,7 +1853,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       rec_cnt[7]=0; 
     }
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -2050,7 +2049,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     
   if (rec){ // we are always recording 
 
-    recordings[daccount][rec_cnt[daccount]]=real[daccount]&4095; // ignore top bits
+    recordings[daccount][rec_cnt[daccount]]=real[daccount];
     rec_cnt[daccount]++; // 
     if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
   } // if rec
@@ -2142,12 +2141,410 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	 - rec and non-playback is all as usual (freeze is freeze)
 	 - playback mode - speed changes for each section (overlay also), freeze to rec, unfreeze to stop rec...
 
+	 - speed say is 1-64 so 5 bits... (always plus one in case there are zeroes)
+
       */
 
+	/////// TOGGLING for freezers	
+	if (daccount==7){
+    // handle GPIOC instead
 
+	if (!(GPIOC->IDR & (freezer[7])) && triggered[7]==0 && breaker[7]>BRK) {
+	  triggered[7]=1;
+	  frozen[7]^=1;
+	  recsp[7]=frozen[7];
+	  breaker[7]=0;
+	}
+	
+	if ( (GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]++; 
+
+	if (triggered[7]==1 && lasttriggered[7]==0) { // new trigger
+	  tgr_cnt[7]=0;
+	  lasttriggered[7]=1;
+	}
+	
+	if (lasttriggered[7]==1) 	tgr_cnt[7]++;
+
+	if (tgr_cnt[7]>TRG){
+	  triggered[7]=0;
+	  lasttriggered[7]=0;
+	}	 	  
+	} // daccount==7
+  else
+    {
+	if (!(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0 && breaker[daccount]>BRK) {
+	  triggered[daccount]=1;
+	  frozen[daccount]^=1;
+	  recsp[daccount]=frozen[daccount];
+	  breaker[daccount]=0;
+	}
+	
+	if ( (GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]++; 
+
+	if (triggered[daccount]==1 && lasttriggered[daccount]==0) { // new trigger
+	  tgr_cnt[daccount]=0;
+	  lasttriggered[daccount]=1;
+	}
+	
+	if (lasttriggered[daccount]==1) 	tgr_cnt[daccount]++;
+
+	if (tgr_cnt[daccount]>TRG){
+	  triggered[daccount]=0;
+	  lasttriggered[daccount]=0;
+	}
+    }
+	// this runs always at full speed!
+	// handle playback here too
+	// what happens if play and rec are both ON!?
+	
+  if (frozen[daccount]==0 || play==1) {
+    ADC_SoftwareStartConv(ADC1);
+    //            values[daccount]=logval[adc_buffer[daccount]>>2];// now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
+    real[daccount]=adc_buffer[daccount]<<1;// shift a bit so louder now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
+  }
+
+  if (play){
+    if (lastplay==0) {     // is it a new play?
+      lastplay=1;
+      // zero all of them
+      play_cnt[0]=0; recsp[0]=0;
+      play_cnt[1]=0; recsp[1]=0;
+      play_cnt[2]=0; recsp[2]=0;
+      play_cnt[3]=0; recsp[3]=0;
+      play_cnt[4]=0; recsp[4]=0;
+      play_cnt[5]=0; recsp[5]=0;
+      play_cnt[6]=0; recsp[6]=0;
+      play_cnt[7]=0; recsp[7]=0;
+    } // lastplay
+
+    uint16_t speeder[8]={4,5,6,7,4,5,6,7};
+    // if we are recording speed then do it here - we need to know what pairs have what?
+    // ie. which is control mapping to which - 4,5,6,7 -> 0,1,2,3 I guess - test this!
+      ADC_SoftwareStartConv(ADC1);
+      // speed is for 2x daccounts - how to handle...
+      speed=(adc_buffer[speeder[daccount]]>>5); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits
+      if (speed>64) speed=64;
+      speed=64-(speed); //4 bits=16 256/16=
+
+    if (recsp[daccount]) {
+      recordings[daccount][play_cnt[daccount]]=(recordings[daccount][play_cnt[daccount]]&4095)+(speed<<10); // top 5 bits
+     }
+    else { // we have speed already    
+    speed+=((recordings[daccount][play_cnt[daccount]])>>10)+1; // top 5 bits - question of overlay?
+    }
+    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;
+    if ((count%speed)==0){ // speed goes from 1 to X what
+    play_cnt[daccount]++;
+    if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+    }
+  } // if play
+  else {
+    lastplay=0;
+    if (lastplay==1) { // we just left play
+      frozen[0]=0; // we don't want freezers still on...
+      frozen[1]=0;
+      frozen[2]=0;
+      frozen[3]=0;
+      frozen[4]=0;
+      frozen[5]=0;
+      frozen[6]=0;
+      frozen[7]=0;      
+    }
+  }
+    
+  ///// recordings
+  
+    if (count%(32)==0) { //for xxx HZ?
+    
+  if (rec){ // we are recording
+    if (lastrec==0) {     // is it a new recording?
+      lastrec=1;
+      // zero all of them
+      rec_cnt[0]=0; 
+      rec_cnt[1]=0; 
+      rec_cnt[2]=0; 
+      rec_cnt[3]=0; 
+      rec_cnt[4]=0; 
+      rec_cnt[5]=0; 
+      rec_cnt[6]=0; 
+      rec_cnt[7]=0; 
+    }
+
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
+    rec_cnt[daccount]++; // 
+    if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+  } // if rec
+  else lastrec=0;
+    } // count32
+
+    ////// write to DAC
+    // if playback add
+    if (play==1) {
+      if (daccount<4) {
+	values[daccount]+=real[daccount];
+      if (values[daccount]>4095) values[daccount]=4095;
+      }
+    }
+    else values[daccount]=real[daccount];    // otherwise just values
+    
+    //  values[daccount]=4095; // 16 bits to 12 
+    GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+    DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
+    j = DAC_GetDataOutputValue (DAC_Channel_1);
+    GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
+
+    daccount++;
+    if (daccount==8) {
+      daccount=0;
+      count++;
+      /*
+      ADC_SoftwareStartConv(ADC1);
+      speed=(adc_buffer[6]>>6); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits
+      if (speed>32) speed=32;
+      speed=33-(speed); //4 bits=16 256/16=
+      */
+      //      speed=32;
+
+      // only toggle rec and play after all dacs
+            
+    	if (!(GPIOB->IDR & (1<<10)) && triggered[8]==0 && breaker[8]>BRK8) {
+	  triggered[8]=1;
+	  rec^=1;
+	  breaker[8]=0;
+	}
+
+	if ( (GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]++; 
+	
+	if (triggered[8]==1 && lasttriggered[8]==0) { // new trigger
+	  tgr_cnt[8]=0;
+	  lasttriggered[8]=1;
+	}
+	
+	if (lasttriggered[8]==1) 	tgr_cnt[8]++;
+
+	if (tgr_cnt[8]>TRG8){
+	  triggered[8]=0;
+	  lasttriggered[8]=0;
+	}
       
-      break: // mode 20
+	//play	
       
+    	if (!(GPIOB->IDR & (1<<2)) && triggered[9]==0 && breaker[9]>BRK8) {
+	  triggered[9]=1;
+	  play^=1;
+	  breaker[9]=0;
+	}
+
+	if ( (GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]++; 
+	
+	if (triggered[9]==1 && lasttriggered[9]==0) { // new trigger
+	  tgr_cnt[9]=0;
+	  lasttriggered[9]=1;
+	}
+	
+	if (lasttriggered[9]==1) 	tgr_cnt[9]++;
+
+	if (tgr_cnt[9]>TRG8){
+	  triggered[9]=0;
+	  lasttriggered[9]=0;
+	}
+      
+	
+    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
+    if (rec) play=0;
+    }
+            
+    break; // mode 20
+
+    // THIS ONE TO TEST
+    
+    case 12:// - freezers reverse the last section for playback, and can overlay (no freeze allowed tho) 
+      //[ so in rec and non-playback freeze also freezes]
+	/////// TOGGLING for freezers	- use recsp for the reverse or not
+	if (daccount==7){
+    // handle GPIOC instead
+
+	if (!(GPIOC->IDR & (freezer[7])) && triggered[7]==0 && breaker[7]>BRK) {
+	  triggered[7]=1;
+	  frozen[7]^=1;
+	  recsp[7]=frozen[7];
+	  breaker[7]=0;
+	}
+	
+	if ( (GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]++; 
+
+	if (triggered[7]==1 && lasttriggered[7]==0) { // new trigger
+	  tgr_cnt[7]=0;
+	  lasttriggered[7]=1;
+	}
+	
+	if (lasttriggered[7]==1) 	tgr_cnt[7]++;
+
+	if (tgr_cnt[7]>TRG){
+	  triggered[7]=0;
+	  lasttriggered[7]=0;
+	}	 	  
+	} // daccount==7
+  else
+    {
+	if (!(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0 && breaker[daccount]>BRK) {
+	  triggered[daccount]=1;
+	  frozen[daccount]^=1;
+	  recsp[daccount]=frozen[daccount];
+	  breaker[daccount]=0;
+	}
+	
+	if ( (GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]++; 
+
+	if (triggered[daccount]==1 && lasttriggered[daccount]==0) { // new trigger
+	  tgr_cnt[daccount]=0;
+	  lasttriggered[daccount]=1;
+	}
+	
+	if (lasttriggered[daccount]==1) 	tgr_cnt[daccount]++;
+
+	if (tgr_cnt[daccount]>TRG){
+	  triggered[daccount]=0;
+	  lasttriggered[daccount]=0;
+	}
+    }
+	// this runs always at full speed!
+	// handle playback here too
+	// what happens if play and rec are both ON!?
+	
+  if (frozen[daccount]==0 || play==1) {
+    ADC_SoftwareStartConv(ADC1);
+    //            values[daccount]=logval[adc_buffer[daccount]>>2];// now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
+    real[daccount]=adc_buffer[daccount]<<1;// shift a bit so louder now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
+  }
+
+  if (play){
+    if (lastplay==0) {     // is it a new play?
+      lastplay=1;
+      // zero all of them
+      play_cnt[0]=0; recsp[0]=0;
+      play_cnt[1]=0; recsp[1]=0;
+      play_cnt[2]=0; recsp[2]=0;
+      play_cnt[3]=0; recsp[3]=0;
+      play_cnt[4]=0; recsp[4]=0;
+      play_cnt[5]=0; recsp[5]=0;
+      play_cnt[6]=0; recsp[6]=0;
+      play_cnt[7]=0; recsp[7]=0;
+    }
+
+    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095; // ignore top bits
+    
+    if ((count%speed)==0){ // speed goes from 1 to X what
+      if (recsp==0) play_cnt[daccount]++;
+      else {
+	if (play_cnt[daccount]==0) play_cnt[daccount]= rec_cnt[daccount]+1;
+	play_cnt[daccount]--;
+	    }	
+    if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+    }
+  } // if play
+  else lastplay=0;
+
+    
+  ///// recordings
+  
+    if (count%(32)==0) { //for xxx HZ?
+    
+  if (rec){ // we are recording
+    if (lastrec==0) {     // is it a new recording?
+      lastrec=1;
+      // zero all of them
+      rec_cnt[0]=0; 
+      rec_cnt[1]=0; 
+      rec_cnt[2]=0; 
+      rec_cnt[3]=0; 
+      rec_cnt[4]=0; 
+      rec_cnt[5]=0; 
+      rec_cnt[6]=0; 
+      rec_cnt[7]=0; 
+    }
+
+    recordings[daccount][rec_cnt[daccount]]=values[daccount];
+    rec_cnt[daccount]++; // 
+    if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+  } // if rec
+  else lastrec=0;
+    } // count32
+
+    ////// write to DAC
+    // if playback add
+    if (play==1) {
+      values[daccount]+=real[daccount];
+      if (values[daccount]>4095) values[daccount]=4095;
+    }
+    else values[daccount]=real[daccount];    // otherwise just values
+    
+    //  values[daccount]=4095; // 16 bits to 12 
+    GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+    DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
+    j = DAC_GetDataOutputValue (DAC_Channel_1);
+    GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
+
+    daccount++;
+    if (daccount==8) {
+      daccount=0;
+      count++;
+      ADC_SoftwareStartConv(ADC1);
+      speed=(adc_buffer[6]>>6); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits
+      if (speed>32) speed=32;
+      speed=33-(speed); //4 bits=16 256/16=
+      //      speed=32;
+
+      // only toggle rec and play after all dacs
+            
+    	if (!(GPIOB->IDR & (1<<10)) && triggered[8]==0 && breaker[8]>BRK8) {
+	  triggered[8]=1;
+	  rec^=1;
+	  breaker[8]=0;
+	}
+
+	if ( (GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]++; 
+	
+	if (triggered[8]==1 && lasttriggered[8]==0) { // new trigger
+	  tgr_cnt[8]=0;
+	  lasttriggered[8]=1;
+	}
+	
+	if (lasttriggered[8]==1) 	tgr_cnt[8]++;
+
+	if (tgr_cnt[8]>TRG8){
+	  triggered[8]=0;
+	  lasttriggered[8]=0;
+	}
+      
+	//play	
+      
+    	if (!(GPIOB->IDR & (1<<2)) && triggered[9]==0 && breaker[9]>BRK8) {
+	  triggered[9]=1;
+	  play^=1;
+	  breaker[9]=0;
+	}
+
+	if ( (GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]++; 
+	
+	if (triggered[9]==1 && lasttriggered[9]==0) { // new trigger
+	  tgr_cnt[9]=0;
+	  lasttriggered[9]=1;
+	}
+	
+	if (lasttriggered[9]==1) 	tgr_cnt[9]++;
+
+	if (tgr_cnt[9]>TRG8){
+	  triggered[9]=0;
+	  lasttriggered[9]=0;
+	}
+      
+	
+    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
+    if (rec) play=0;
+    }      
+      break; // mode 12
+    
     } // end of modes switch    
     } 
   }

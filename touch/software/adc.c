@@ -78,14 +78,14 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 
 	// all fine - was 480 cycles - faster and might need smoothings
 	
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_480Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 3, ADC_SampleTime_480Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 3, ADC_SampleTime_480Cycles);//
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 4, ADC_SampleTime_480Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 5, ADC_SampleTime_480Cycles); // works - is PA2 as swopped
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 6, ADC_SampleTime_480Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 7, ADC_SampleTime_480Cycles); //ok
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 8, ADC_SampleTime_480Cycles); //
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 5, ADC_SampleTime_480Cycles);// works - is PA2 as swopped
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 6, ADC_SampleTime_480Cycles);//   
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 7, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 8, ADC_SampleTime_480Cycles);//
 	
 
 	/* Enable Complete DMA interrupt  */
