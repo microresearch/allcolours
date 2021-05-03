@@ -55,7 +55,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; // was enable
 	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
 	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
-	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right; // was right - in CLOUDS is left?
+	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right; // left if we want to shift >>
 	ADC_InitStructure.ADC_NbrOfConversion = 8;
 	//	ADC_InitStructure.ADC_NbrOfChannel = 10; not existing
 	ADC_Init(ADC1, &ADC_InitStructure);
