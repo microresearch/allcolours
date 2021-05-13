@@ -34,11 +34,11 @@
 #include "misc.h"
 #include "adc.h"
 
-#define TRG 8 // trigger - was 100 but /8 - these are for freeze
-#define BRK 60 // off hold was 1200 but /8
+#define TRG 4 // trigger - was 100 but /8 - these are for freeze
+#define BRK 30 // off hold was 1200 but /8
 
-#define TRG8 8 // these for rec/play etc
-#define BRK8 60
+#define TRG8 1 // these for rec/play etc
+#define BRK8 80
 
 #define MAXMODES 4
 
@@ -198,6 +198,14 @@ resolve: voltage levels, freezing Qs, toggling timings
 
 - are levels different for VCA, voltage and for speed  // voltage too high
 
+- decide on behaviour on rec and play: if rec is pressed during play or vice versa
+
+options: 
+
+- rec starts. rec stops play. play stops rec and starts play (this is what we have)
+- rec starts. rec stops rec. play doesn't stop rec but records add/overlay
+
+
 ///
 
 - test all modes and resolve questions of zeroing freezers (after playback), level of voltages/ADC (left or right adc), freezing of speed or of value/or both?
@@ -205,6 +213,20 @@ resolve: voltage levels, freezing Qs, toggling timings
 - question of midpoint thing. different speeds across modes - how many major modes we have?
 
 - new mode TODO/TEST: that we can also attach and detach recordings for each cv (what then does rec do-> reattaches all of them)
+
+13/5:
+
+- added one line for trigger code to be implemented in all modes for rec and freeze but freeze timing still not quite right
+- major problems as with finger on ADC or B then we have no triggers... B is virtual GND in, ADC is grounding?
+
+- TOUCH issues: pull down from triggers when we touch adc or virtual
+  ground B and all signals also go high when we touch power - only
+  solution is to rework trigger from 50Hz with timing and do away with
+  power centre circle and blood power… and no pull up before 40106
+
+Break centre circle at edges, add new vias to keep design and just
+have each part of drop to 40106/freeze
+
 
 3/5:
 
@@ -383,7 +405,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	 */
 
 	////////////// getting modes on count:
-    if (count%(32)==0) { //for xxx HZ?
+	/*    if (count%(32)==0) { //for xxx HZ?
 
       if (!(GPIOB->IDR & (1<<6)) && triggered[10]==0 && breaker[10]>BRK8) {
 	  triggered[10]=1;
@@ -405,9 +427,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  triggered[10]=0;
 	  lasttriggered[10]=0;
 	}
-    } // end of mode selector, each mode needs to take care of everything
+	} */
+
+// end of mode selector, each mode needs to take care of everything
     
-    mode=0; // testings
+    mode=23; // testings
     
     switch(mode){
     case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing...
@@ -422,7 +446,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  breaker[7]=0;
 	}
 	
-	if ( (GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]++; 
+	if ( (GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]++;
+	if ( !(GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]=0; 
 
 	if (triggered[7]==1 && lasttriggered[7]==0) { // new trigger
 	  tgr_cnt[7]=0;
@@ -445,7 +470,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	}
 	
 	if ( (GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]++; 
-
+	if ( !(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]=0;
+	
 	if (triggered[daccount]==1 && lasttriggered[daccount]==0) { // new trigger
 	  tgr_cnt[daccount]=0;
 	  lasttriggered[daccount]=1;
@@ -536,6 +562,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     
     //  values[daccount]=4095; // 16 bits to 12 
     GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+    //    values[daccount]=4095; // TESTY
     DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
     j = DAC_GetDataOutputValue (DAC_Channel_1);
     GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
@@ -560,7 +587,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  breaker[8]=0;
 	}
 
-	if ( (GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]++; 
+	if ( (GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]++;
+	//	if ( !(GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]=0; 
 	
 	if (triggered[8]==1 && lasttriggered[8]==0) { // new trigger
 	  tgr_cnt[8]=0;
@@ -582,7 +610,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  breaker[9]=0;
 	}
 
-	if ( (GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]++; 
+	if ( (GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]++;
+	//	if ( !(GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]=0; 
 	
 	if (triggered[9]==1 && lasttriggered[9]==0) { // new trigger
 	  tgr_cnt[9]=0;
@@ -596,9 +625,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  lasttriggered[9]=0;
 	}
       
-	
-    if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
-    if (rec) play=0;
+	tmp=rec;
+	if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
+	if (tmp) play=0;
     }      
     break; ///// case 0
       
@@ -2600,7 +2629,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	
     if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
     if (rec) play=0;
-    }      
+    }
       break; // mode 12
 
     case 16: // freezers free/detach that section or start playback again in that section... again with overlays (what then does play button do?)
@@ -2802,6 +2831,92 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     }      
 
       break; // mode 16
+
+    case 23: // mode to test freeze timings on middle and freeze pads // BRK8
+
+          // test freezers
+    
+	if (!(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0 && breaker[daccount]>BRK) {
+	  triggered[daccount]=1;
+	  if (play==0) frozen[daccount]^=1;
+	  else recsp[daccount]^=1;
+	  breaker[daccount]=0;
+	}
+	
+	if ( (GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]++; 
+	//	if ( !(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]=0;
+	
+	if (triggered[daccount]==1 && lasttriggered[daccount]==0) { // new trigger
+	  tgr_cnt[daccount]=0;
+	  lasttriggered[daccount]=1;
+	}
+	
+	if (lasttriggered[daccount]==1) 	tgr_cnt[daccount]++;
+
+	if (tgr_cnt[daccount]>TRG){
+	  triggered[daccount]=0;
+	  lasttriggered[daccount]=0;
+	
+	  }
+      
+   GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+    //    values[daccount]=4095; // TESTY
+   //   if (frozen[daccount]) values[daccount]=4095;
+             if (rec) values[daccount]=4095;
+    else values[daccount]=0;
+
+    DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
+    j = DAC_GetDataOutputValue (DAC_Channel_1);
+    GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
+
+
+    
+    daccount++;
+    if (daccount==8) {
+      daccount=0;
+      count++;
+      
+      //            if ((GPIOB->IDR & (1<<10))) rec=0; // finger on
+      //      else rec=1; // finger off
+      // so default is !NOT (in case above rec=1)
+      // with finger we have 50Hz
+      // and with finger on adc we have 0
+
+      //      if ((GPIOB->IDR & (1<<10)){// finger down in both cases
+
+	  
+      // test rec button - works fine with TRG8 as 8 and BRK8 as 60!
+      if ( (GPIOB->IDR & (1<<10))) {
+	triggered[8]=1;
+      }
+
+      if (!(GPIOB->IDR & (1<<10)) && triggered[8]==1) breaker[8]++;  // finger off
+      if ( (GPIOB->IDR & (1<<10)) && triggered[8]==1) breaker[8]=0; // finger on
+
+      if (breaker[8]>BRK8) { // 0 
+	rec^=1;
+	breaker[8]=0;
+	triggered[8]=0;
+      }
+
+      
+
+      /*
+	
+	if (triggered[8]==1 && lasttriggered[8]==0) { // new trigger
+	  tgr_cnt[8]=0;
+	  lasttriggered[8]=1;
+	}
+	
+		if (lasttriggered[8]==1) 	tgr_cnt[8]++;
+
+	if (tgr_cnt[8]>TRG8){
+	  triggered[8]=0;
+	  lasttriggered[8]=0;
+	  }
+	*/      
+    }
+    break; /// end of TEST button mode 23      
       
     } // end of modes switch    
     } 
