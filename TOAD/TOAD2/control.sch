@@ -1014,45 +1014,8 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5260 6865 50  0001 C CNN
 	4    5210 6665
 	1    0    0    -1  
 $EndComp
-$Comp
-L Amplifier_Operational:TL074 U11
-U 5 1 5EC15F10
-P 3635 5715
-F 0 "U11" H 3593 5761 50  0000 L CNN
-F 1 "TL074" H 3593 5670 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-14_N" H 3585 5815 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 3685 5915 50  0001 C CNN
-	5    3635 5715
-	1    0    0    -1  
-$EndComp
-$Comp
-L allcolours_analogue-rescue:+12V-power #PWR095
-U 1 1 5EC160B4
-P 3535 5340
-F 0 "#PWR095" H 3535 5190 50  0001 C CNN
-F 1 "+12V-power" H 3550 5513 50  0000 C CNN
-F 2 "" H 3535 5340 50  0001 C CNN
-F 3 "" H 3535 5340 50  0001 C CNN
-	1    3535 5340
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:-12V #PWR096
-U 1 1 5EC16227
-P 3535 6090
-F 0 "#PWR096" H 3535 6190 50  0001 C CNN
-F 1 "-12V" H 3550 6263 50  0000 C CNN
-F 2 "" H 3535 6090 50  0001 C CNN
-F 3 "" H 3535 6090 50  0001 C CNN
-	1    3535 6090
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3535 5340 3535 5415
 Wire Wire Line
 	2410 6715 2515 6715
-Wire Wire Line
-	3535 6015 3535 6090
 $Comp
 L Device:C_Small C?
 U 1 1 5EC833AD
@@ -2376,8 +2339,6 @@ Wire Wire Line
 	7205 1315 7605 1315
 Wire Wire Line
 	7505 1515 7505 1765
-Text Notes 7165 -665 0    118  ~ 0
-Break out to pins and not direct to LABELS
 $Comp
 L Amplifier_Operational:LM13700 U10
 U 3 1 5ED9B46E
@@ -2557,7 +2518,7 @@ Wire Wire Line
 Text GLabel 4180 2210 2    50   Input ~ 0
 VCAA4
 Text Notes 1420 335  0    79   ~ 0
-change to negative or as optionals! -> best
+change to negative or as optionals! -> bestDONE
 Wire Wire Line
 	4385 6465 4460 6465
 $Comp
@@ -2588,28 +2549,6 @@ Wire Wire Line
 	1285 6815 1460 6815
 Wire Wire Line
 	1285 6515 1360 6515
-$Comp
-L erthenvar:AUDIO-JACKERTHENVAR M5
-U 1 1 5EDAC51C
-P 985 6615
-F 0 "M5" H 991 6834 45  0000 C CNN
-F 1 "AUDIO-JACKERTHENVAR" H 985 6615 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 1015 6765 20  0001 C CNN
-F 3 "" H 985 6615 79  0001 C CNN
-	1    985  6615
-	1    0    0    -1  
-$EndComp
-$Comp
-L erthenvar:AUDIO-JACKERTHENVAR M7
-U 1 1 5EDB0053
-P 4085 6565
-F 0 "M7" H 4091 6784 45  0000 C CNN
-F 1 "AUDIO-JACKERTHENVAR" H 4085 6565 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 4115 6715 20  0001 C CNN
-F 3 "" H 4085 6565 79  0001 C CNN
-	1    4085 6565
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7470 5010 7645 5010
 Wire Wire Line
@@ -2623,17 +2562,6 @@ F 1 "GND" H 7495 4835 50  0000 C CNN
 F 2 "" H 7545 4710 50  0001 C CNN
 F 3 "" H 7545 4710 50  0001 C CNN
 	1    7545 4710
-	1    0    0    -1  
-$EndComp
-$Comp
-L erthenvar:AUDIO-JACKERTHENVAR M8
-U 1 1 5EE2F07E
-P 7170 4810
-F 0 "M8" H 7176 5029 45  0000 C CNN
-F 1 "AUDIO-JACKERTHENVAR" H 7170 4810 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 7200 4960 20  0001 C CNN
-F 3 "" H 7170 4810 79  0001 C CNN
-	1    7170 4810
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -2651,17 +2579,6 @@ F 3 "" H 4335 4240 50  0001 C CNN
 	1    4335 4240
 	1    0    0    -1  
 $EndComp
-$Comp
-L erthenvar:AUDIO-JACKERTHENVAR M6
-U 1 1 5EDADD86
-P 3960 4340
-F 0 "M6" H 3966 4559 45  0000 C CNN
-F 1 "AUDIO-JACKERTHENVAR" H 3960 4340 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 3990 4490 20  0001 C CNN
-F 3 "" H 3960 4340 79  0001 C CNN
-	1    3960 4340
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1260 4540 1435 4540
 Wire Wire Line
@@ -2675,17 +2592,6 @@ F 1 "GND" H 1285 4365 50  0000 C CNN
 F 2 "" H 1335 4240 50  0001 C CNN
 F 3 "" H 1335 4240 50  0001 C CNN
 	1    1335 4240
-	1    0    0    -1  
-$EndComp
-$Comp
-L erthenvar:AUDIO-JACKERTHENVAR M4
-U 1 1 5EDA48E3
-P 960 4340
-F 0 "M4" H 966 4559 45  0000 C CNN
-F 1 "AUDIO-JACKERTHENVAR" H 960 4340 45  0001 L BNN
-F 2 "erthenvar:ERTHENVAR-JACK" H 990 4490 20  0001 C CNN
-F 3 "" H 960 4340 79  0001 C CNN
-	1    960  4340
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -2728,23 +2634,6 @@ Text GLabel 6775 3865 0    50   Input ~ 0
 SIG1
 Text GLabel 6775 3965 0    50   Input ~ 0
 SIGG1
-$Comp
-L Device:R_Small R91
-U 1 1 6072F5C0
-P 980 -455
-F 0 "R91" V 1100 -495 50  0000 C CNN
-F 1 "100K" V 875 -455 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 980 -455 50  0001 C CNN
-F 3 "~" H 980 -455 50  0001 C CNN
-	1    980  -455
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	980  -355 980  -205
-Text GLabel 980  -205 3    50   Input ~ 0
-VCA1
-Wire Wire Line
-	980  -555 980  -580
 $Comp
 L Device:R_Small R95
 U 1 1 607A825B
@@ -2839,7 +2728,7 @@ U 1 1 608D730B
 P 7115 3365
 F 0 "J2" H 7088 3245 50  0000 R CNN
 F 1 "Conn_01x14_Male" H 7088 3336 50  0000 R CNN
-F 2 "" H 7115 3365 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x14_Pitch2.54mm" H 7115 3365 50  0001 C CNN
 F 3 "~" H 7115 3365 50  0001 C CNN
 	1    7115 3365
 	-1   0    0    1   
@@ -2981,4 +2870,59 @@ F 3 "" H 9270 4195 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	9270 4160 9270 4195
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M4
+U 1 1 60920E36
+P 960 4340
+F 0 "M4" H 966 4559 45  0000 C CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 960 4340 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 990 4490 20  0001 C CNN
+F 3 "" H 960 4340 60  0001 C CNN
+	1    960  4340
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M5
+U 1 1 6092160C
+P 985 6615
+F 0 "M5" H 991 6834 45  0000 C CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 985 6615 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 1015 6765 20  0001 C CNN
+F 3 "" H 985 6615 60  0001 C CNN
+	1    985  6615
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M8
+U 1 1 60923008
+P 7170 4810
+F 0 "M8" H 7176 5029 45  0000 C CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 7170 4810 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 7200 4960 20  0001 C CNN
+F 3 "" H 7170 4810 60  0001 C CNN
+	1    7170 4810
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M6
+U 1 1 609238BF
+P 3960 4340
+F 0 "M6" H 3966 4559 45  0000 C CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 3960 4340 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3990 4490 20  0001 C CNN
+F 3 "" H 3960 4340 60  0001 C CNN
+	1    3960 4340
+	1    0    0    -1  
+$EndComp
+$Comp
+L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M7
+U 1 1 60924107
+P 4085 6565
+F 0 "M7" H 4091 6784 45  0000 C CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 4085 6565 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 4115 6715 20  0001 C CNN
+F 3 "" H 4085 6565 60  0001 C CNN
+	1    4085 6565
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
