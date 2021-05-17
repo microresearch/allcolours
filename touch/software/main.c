@@ -352,9 +352,10 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-
+  /// TO TEST: as output
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  //  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
