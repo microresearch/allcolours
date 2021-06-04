@@ -16,19 +16,6 @@ Comment4 ""
 $EndDescr
 $Comp
 L power:+3.3VA #PWR?
-U 1 1 5FA1B8B3
-P 4150 3380
-AR Path="/5FA18436/5FA1B8B3" Ref="#PWR?"  Part="1" 
-AR Path="/5F99750E/5FA1B8B3" Ref="#PWR039"  Part="1" 
-F 0 "#PWR039" H 4150 3230 50  0001 C CNN
-F 1 "+3.3VA" H 4165 3553 50  0000 C CNN
-F 2 "" H 4150 3380 50  0001 C CNN
-F 3 "" H 4150 3380 50  0001 C CNN
-	1    4150 3380
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3VA #PWR?
 U 1 1 5FA1B8B9
 P 5235 3080
 AR Path="/5FA18436/5FA1B8B9" Ref="#PWR?"  Part="1" 
@@ -286,4 +273,6 @@ F 3 "~" H 4555 3680 50  0001 C CNN
 	1    4555 3680
 	1    0    0    1   
 $EndComp
+Text GLabel 4150 3380 0    50   Input ~ 0
+TRIG
 $EndSCHEMATC

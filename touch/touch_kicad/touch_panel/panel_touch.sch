@@ -223,7 +223,7 @@ F1
 Wire Wire Line
 	3505 2215 3540 2215
 Text Notes 2750 1920 0    50   ~ 0
-freeze is to GND\n\n
+freeze is to NOT to GND\n\n
 Text Notes 3165 2875 0    79   ~ 0
 \n
 $Comp
@@ -988,17 +988,6 @@ F 3 "~" H 6345 2710 50  0001 C CNN
 	1    6345 2710
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR024
-U 1 1 5F283F8A
-P 6145 2735
-F 0 "#PWR024" H 6145 2485 50  0001 C CNN
-F 1 "GND" H 6150 2562 50  0000 C CNN
-F 2 "" H 6145 2735 50  0001 C CNN
-F 3 "" H 6145 2735 50  0001 C CNN
-	1    6145 2735
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	6110 4685 6110 4710
 $Comp
@@ -1012,17 +1001,6 @@ F 3 "~" H 6310 4685 50  0001 C CNN
 	1    6310 4685
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR022
-U 1 1 5F285352
-P 6110 4710
-F 0 "#PWR022" H 6110 4460 50  0001 C CNN
-F 1 "GND" H 6115 4537 50  0000 C CNN
-F 2 "" H 6110 4710 50  0001 C CNN
-F 3 "" H 6110 4710 50  0001 C CNN
-	1    6110 4710
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	6105 4205 6105 4230
 $Comp
@@ -1034,17 +1012,6 @@ F 1 "Conn_01x01" H 6225 4071 50  0000 C CNN
 F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 6305 4205 50  0001 C CNN
 F 3 "~" H 6305 4205 50  0001 C CNN
 	1    6305 4205
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR021
-U 1 1 5F285339
-P 6105 4230
-F 0 "#PWR021" H 6105 3980 50  0001 C CNN
-F 1 "GND" H 6110 4057 50  0000 C CNN
-F 2 "" H 6105 4230 50  0001 C CNN
-F 3 "" H 6105 4230 50  0001 C CNN
-	1    6105 4230
 	1    0    0    -1  
 $EndComp
 Text Notes 6310 4385 0    79   ~ 0
@@ -1062,17 +1029,6 @@ F 3 "~" H 3125 4670 50  0001 C CNN
 	1    3125 4670
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR010
-U 1 1 5F2852B0
-P 2925 4695
-F 0 "#PWR010" H 2925 4445 50  0001 C CNN
-F 1 "GND" H 2930 4522 50  0000 C CNN
-F 2 "" H 2925 4695 50  0001 C CNN
-F 3 "" H 2925 4695 50  0001 C CNN
-	1    2925 4695
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2920 4190 2920 4215
 $Comp
@@ -1086,20 +1042,7 @@ F 3 "~" H 3120 4190 50  0001 C CNN
 	1    3120 4190
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR09
-U 1 1 5F285297
-P 2920 4215
-F 0 "#PWR09" H 2920 3965 50  0001 C CNN
-F 1 "GND" H 2925 4042 50  0000 C CNN
-F 2 "" H 2920 4215 50  0001 C CNN
-F 3 "" H 2920 4215 50  0001 C CNN
-	1    2920 4215
-	1    0    0    -1  
-$EndComp
 Text Notes 2715 3895 0    50   ~ 0
-freeze is to GND\n
-Text Notes 5900 3910 0    50   ~ 0
 freeze is to GND\n
 Text Notes 5935 1935 0    50   ~ 0
 freeze is to GND\n
@@ -1116,17 +1059,6 @@ F 3 "~" H 6340 2230 50  0001 C CNN
 	1    6340 2230
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR023
-U 1 1 5F283F71
-P 6140 2255
-F 0 "#PWR023" H 6140 2005 50  0001 C CNN
-F 1 "GND" H 6145 2082 50  0000 C CNN
-F 2 "" H 6140 2255 50  0001 C CNN
-F 3 "" H 6140 2255 50  0001 C CNN
-	1    6140 2255
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2960 2695 2960 2720
 $Comp
@@ -1138,17 +1070,6 @@ F 1 "Conn_01x01" H 3080 2561 50  0000 C CNN
 F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 3160 2695 50  0001 C CNN
 F 3 "~" H 3160 2695 50  0001 C CNN
 	1    3160 2695
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR012
-U 1 1 5F272F65
-P 2960 2720
-F 0 "#PWR012" H 2960 2470 50  0001 C CNN
-F 1 "GND" H 2965 2547 50  0000 C CNN
-F 2 "" H 2960 2720 50  0001 C CNN
-F 3 "" H 2960 2720 50  0001 C CNN
-	1    2960 2720
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -1164,34 +1085,12 @@ F 3 "~" H 3155 2215 50  0001 C CNN
 	1    3155 2215
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR011
-U 1 1 5F270988
-P 2955 2240
-F 0 "#PWR011" H 2955 1990 50  0001 C CNN
-F 1 "GND" H 2960 2067 50  0000 C CNN
-F 2 "" H 2955 2240 50  0001 C CNN
-F 3 "" H 2955 2240 50  0001 C CNN
-	1    2955 2240
-	1    0    0    -1  
-$EndComp
 Text Notes 3160 2395 0    79   ~ 0
 \n
 Text Notes 1600 1340 0    50   ~ 10
 These are now to +3.3v which is on central circle!
 Text Notes 1225 3360 0    50   ~ 10
 central circle is +3,3V
-$Comp
-L power:+3.3VA #PWR025
-U 1 1 5F99F0D8
-P 8200 3650
-F 0 "#PWR025" H 8200 3500 50  0001 C CNN
-F 1 "+3.3VA" H 8215 3823 50  0000 C CNN
-F 2 "" H 8200 3650 50  0001 C CNN
-F 3 "" H 8200 3650 50  0001 C CNN
-	1    8200 3650
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:+3.3VA #PWR028
 U 1 1 5F9A15F1
@@ -1433,4 +1332,22 @@ F 3 "~" H 8605 3950 50  0001 C CNN
 	1    8605 3950
 	1    0    0    1   
 $EndComp
+Text GLabel 8200 3650 0    50   Input ~ 0
+TRIG
+Text GLabel 2955 2240 0    50   Input ~ 0
+TRIG
+Text GLabel 2960 2720 0    50   Input ~ 0
+TRIG
+Text GLabel 6140 2255 0    50   Input ~ 0
+TRIG
+Text GLabel 6145 2735 0    50   Input ~ 0
+TRIG
+Text GLabel 6105 4230 0    50   Input ~ 0
+TRIG
+Text GLabel 6110 4710 0    50   Input ~ 0
+TRIG
+Text GLabel 2920 4215 0    50   Input ~ 0
+TRIG
+Text GLabel 2925 4695 0    50   Input ~ 0
+TRIG
 $EndSCHEMATC

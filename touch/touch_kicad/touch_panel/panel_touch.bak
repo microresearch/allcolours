@@ -223,7 +223,7 @@ F1
 Wire Wire Line
 	3505 2215 3540 2215
 Text Notes 2750 1920 0    50   ~ 0
-freeze is to GND\n\n
+freeze is to NOT to GND\n\n
 Text Notes 3165 2875 0    79   ~ 0
 \n
 $Comp
@@ -1140,17 +1140,6 @@ F 3 "~" H 3160 2695 50  0001 C CNN
 	1    3160 2695
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR012
-U 1 1 5F272F65
-P 2960 2720
-F 0 "#PWR012" H 2960 2470 50  0001 C CNN
-F 1 "GND" H 2965 2547 50  0000 C CNN
-F 2 "" H 2960 2720 50  0001 C CNN
-F 3 "" H 2960 2720 50  0001 C CNN
-	1    2960 2720
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2955 2215 2955 2240
 $Comp
@@ -1164,34 +1153,12 @@ F 3 "~" H 3155 2215 50  0001 C CNN
 	1    3155 2215
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR011
-U 1 1 5F270988
-P 2955 2240
-F 0 "#PWR011" H 2955 1990 50  0001 C CNN
-F 1 "GND" H 2960 2067 50  0000 C CNN
-F 2 "" H 2955 2240 50  0001 C CNN
-F 3 "" H 2955 2240 50  0001 C CNN
-	1    2955 2240
-	1    0    0    -1  
-$EndComp
 Text Notes 3160 2395 0    79   ~ 0
 \n
 Text Notes 1600 1340 0    50   ~ 10
 These are now to +3.3v which is on central circle!
 Text Notes 1225 3360 0    50   ~ 10
 central circle is +3,3V
-$Comp
-L power:+3.3VA #PWR025
-U 1 1 5F99F0D8
-P 8200 3650
-F 0 "#PWR025" H 8200 3500 50  0001 C CNN
-F 1 "+3.3VA" H 8215 3823 50  0000 C CNN
-F 2 "" H 8200 3650 50  0001 C CNN
-F 3 "" H 8200 3650 50  0001 C CNN
-	1    8200 3650
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:+3.3VA #PWR028
 U 1 1 5F9A15F1
@@ -1203,9 +1170,9 @@ F 3 "" H 9285 3350 50  0001 C CNN
 	1    9285 3350
 	1    0    0    -1  
 $EndComp
-Text GLabel 8360 3750 0    50   Input ~ 0
-Frec
 Text GLabel 8370 3950 0    50   Input ~ 0
+Frec
+Text GLabel 8360 3750 0    50   Input ~ 0
 Fplay
 Text GLabel 8960 3850 2    50   Input ~ 0
 Fpush
@@ -1433,4 +1400,10 @@ F 3 "~" H 8605 3950 50  0001 C CNN
 	1    8605 3950
 	1    0    0    1   
 $EndComp
+Text GLabel 8200 3650 0    50   Input ~ 0
+TRIG
+Text GLabel 2955 2240 0    50   Input ~ 0
+TRIG
+Text GLabel 2960 2720 0    50   Input ~ 0
+TRIG
 $EndSCHEMATC

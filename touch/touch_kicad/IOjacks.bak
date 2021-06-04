@@ -474,7 +474,7 @@ U 1 1 60821104
 P 1165 2045
 F 0 "J4" H 1271 2323 50  0000 C CNN
 F 1 "Conn_01x04_Male" H 1271 2232 50  0000 C CNN
-F 2 "" H 1165 2045 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 1165 2045 50  0001 C CNN
 F 3 "~" H 1165 2045 50  0001 C CNN
 	1    1165 2045
 	1    0    0    -1  
@@ -518,12 +518,12 @@ no1
 Text Label 1365 2245 0    50   ~ 0
 nc1
 $Comp
-L Connector:Conn_01x04_Male J?
+L Connector:Conn_01x04_Male J6
 U 1 1 608271DD
 P 2220 2025
-F 0 "J?" H 2326 2303 50  0000 C CNN
+F 0 "J6" H 2326 2303 50  0000 C CNN
 F 1 "Conn_01x04_Male" H 2326 2212 50  0000 C CNN
-F 2 "" H 2220 2025 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 2220 2025 50  0001 C CNN
 F 3 "~" H 2220 2025 50  0001 C CNN
 	1    2220 2025
 	1    0    0    -1  
@@ -537,12 +537,12 @@ no2
 Text Label 2420 2225 0    50   ~ 0
 nc2
 $Comp
-L Connector:Conn_01x04_Male J?
+L Connector:Conn_01x04_Male J5
 U 1 1 60827B02
 P 1225 2700
-F 0 "J?" H 1331 2978 50  0000 C CNN
+F 0 "J5" H 1331 2978 50  0000 C CNN
 F 1 "Conn_01x04_Male" H 1331 2887 50  0000 C CNN
-F 2 "" H 1225 2700 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 1225 2700 50  0001 C CNN
 F 3 "~" H 1225 2700 50  0001 C CNN
 	1    1225 2700
 	1    0    0    -1  
@@ -556,12 +556,12 @@ no3
 Text Label 1425 2900 0    50   ~ 0
 nc3
 $Comp
-L Connector:Conn_01x04_Male J?
+L Connector:Conn_01x04_Male J7
 U 1 1 6082845D
 P 2250 2715
-F 0 "J?" H 2356 2993 50  0000 C CNN
+F 0 "J7" H 2356 2993 50  0000 C CNN
 F 1 "Conn_01x04_Male" H 2356 2902 50  0000 C CNN
-F 2 "" H 2250 2715 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 2250 2715 50  0001 C CNN
 F 3 "~" H 2250 2715 50  0001 C CNN
 	1    2250 2715
 	1    0    0    -1  

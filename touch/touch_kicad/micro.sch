@@ -523,4 +523,23 @@ Text GLabel 2250 3895 0    35   Input ~ 0
 ADC4
 Wire Wire Line
 	2370 3895 2250 3895
+Text GLabel 2100 4495 0    50   Input ~ 0
+TRIG
+$Comp
+L Device:R_Small R71
+U 1 1 60A4B109
+P 2240 4495
+F 0 "R71" V 2325 4480 50  0000 C CNN
+F 1 "1K" V 2135 4495 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2240 4495 50  0001 C CNN
+F 3 "~" H 2240 4495 50  0001 C CNN
+	1    2240 4495
+	0    1    1    0   
+$EndComp
+Text Notes 1825 4510 2    50   ~ 0
+17.5 - added OUT for trig surrounds to switch on/off
+Wire Wire Line
+	2100 4495 2140 4495
+Wire Wire Line
+	2340 4495 2370 4495
 $EndSCHEMATC
