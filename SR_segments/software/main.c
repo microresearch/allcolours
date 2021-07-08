@@ -21,14 +21,44 @@
 
 PROG HEADER: brown, red, yellow, orange (from top of both)
 
-*** SEGMENTS
+*** SEGMENTS 
+
+Newest PCB (after 19/4) with new ADC(pin and setup?//ADC12//on pin PC3)
+
+TODO:
+
+- retest all
+
+CSRCLKIN moved from PC3 to PB7
+
+older: fast interrupt (TIM?) for all shift registers with counters,
+interrupt for ADCs (TIM?), interrupt for pulsed SR, PWM for
+default/normed clockings (set by speed pot)
+
+or just one timer for all and run at max speed with counters
+
+re-check: pulse ins, outs, pwm out, timers, interrupts, ADCin, DACout
+
+
+- test ADC in -> DAC out mirror
+- ADC input schemes - number of bits, sigma/delta, bit equality (unary - no weighting) with x bits // what else?
+- 4x pin interrupts, how many timers
+
+new notes:
+
+- working with sigma delta, digital filter simulator and list first all
+
+- clock from speed/cv, clock from external pulse, clock from other
+  shift register // combos of thse so could be ext pulse AND/XOR/OR
+  other shift reg or clocked speed pulse etc.
+
+
+///
 
 Newest PCB: all working 19/4 but we will need to re-work ADC entry -
 test now with lower cap on say ADC0 - nspeedin c30->100pf//33k, removed cap (but leave on schematic)
 and increased ADC speed, changed to continuous mode and we have a high
 sample rate in 100kHZ
-
-
  
 16/4/2021->19/4/2021:
 
@@ -36,7 +66,7 @@ sample rate in 100kHZ
 
 - all pulses in //(and volts knob for ADC pulsed in: PC9->PC14-REDO)DONE
 
-- pulses outDONE, 
+- pulses outDONE
 
 TIM1-CH1 normings WORKING - so is TIM1 normed to top clock/NSR
 
@@ -89,7 +119,7 @@ void TIM2_IRQHandler(void) {
   }*/
 
 /* DMA buffer for ADC  & copy */
-__IO uint16_t adc_buffer[12];
+__IO uint16_t adc_buffer[13];
 
 #define delay()						 do {	\
     register unsigned int ix;					\
@@ -321,11 +351,11 @@ int main(void)
   
 
   
-  // inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+  // inpulse interrupts to attach are: CSR: PC3-moved to PB7, NSR: PC4, RSR: PC5, LSR: PB6
+g
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7; // now is PB7
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
@@ -340,6 +370,7 @@ int main(void)
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   // PC7/8 pulsein (LSR/RSR), PC9-MCB, to PC14-LSB of 6 bits
+  
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
@@ -349,6 +380,7 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
+  /* // no longer used 
   
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
@@ -374,16 +406,8 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-  
+  */
+    
   io_config2();
 
   // TIM1 on PA8 to set up // working!
@@ -437,17 +461,17 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   TIM_Cmd(TIM2, ENABLE);
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
   
-  // inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
+  // inpulse interrupts to attach are: CSR: PC3->now PB7, NSR: PC4, RSR: PC5, LSR: PB6
     
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource3);
-  EXTI_InitStructure.EXTI_Line = EXTI_Line3; // PC3
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource7);
+  EXTI_InitStructure.EXTI_Line = EXTI_Line7; // PC3->PB7 now
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
-  NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI7_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;

@@ -13,6 +13,10 @@ PB0(ADC4), PB1(ADC8) 2
 
 TOTAL 12 ADC
 
++1 - ADC12, PC3 is ADCIN
+
+TOTAL 13
+
 */
  
 #include "adc.h"
@@ -36,7 +40,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
 	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_Buffer[0];
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-	DMA_InitStructure.DMA_BufferSize = 12;
+	DMA_InitStructure.DMA_BufferSize = 13;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -64,7 +68,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
 	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Left; // was right - in CLOUDS is left?
-	ADC_InitStructure.ADC_NbrOfConversion = 12;
+	ADC_InitStructure.ADC_NbrOfConversion = 13;
 	//	ADC_InitStructure.ADC_NbrOfChannel = 10; not existing
 	ADC_Init(ADC1, &ADC_InitStructure);
 
@@ -83,8 +87,8 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 
-	// adc9,10,11
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2; // 
+	// adc9,10,11,12
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3; // +PC3 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
@@ -110,7 +114,8 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 9, ADC_SampleTime_3Cycles);// PB1 
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 10, ADC_SampleTime_3Cycles);//
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 11, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 12, ADC_SampleTime_3Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 12, ADC_SampleTime_3Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 13, ADC_SampleTime_3Cycles);// PC3 added 
 
 	
 
