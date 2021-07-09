@@ -23,7 +23,7 @@ PROG HEADER: brown, red, yellow, orange (from top of both)
 
 *** SEGMENTS 
 
-Newest PCB (after 19/4) with new ADC(pin and setup?//ADC12//on pin PC3)
+Newest PCB (14/5/2021) with new ADC(pin and setup?//ADC12//on pin PC3)
 
 TODO:
 
