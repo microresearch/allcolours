@@ -19,15 +19,31 @@
 
 /*
 
-PROG HEADER: brown, red, yellow, orange (from top of both)
+PROG HEADER: yellow, green, blue, purple
 
 *** SEGMENTS 
 
-Newest PCB (14/5/2021) with new ADC(pin and setup?//ADC12//on pin PC3)
+TODO: new notes, collect all notes, modes and speed/basic tests
 
-TODO:
+Newest PCB (14/5/2021) with new ADC(ADC12//on pin PC3) TESTED ALL FINE
 
-- retest all
+9/7/2021: ADC in and DAC tested correctly with 11vPP for 0-4095
+
+14/7/2021 - retested allFINE: 
+
+all ADC ins: mode, spd and len x4
+
+  // map ADCs: note all modes are inverted
+
+  // 0: nspd, 1: nlen, 2: nmode
+  // 3: lspd, 4: llen, 5: lmode
+  // 6: rspd, 7: rlen, 8: rmode
+  // 9: cspd, 10: , 11: cmode
+
+/ pulse ins: PC7 is RSRIN, PC8 is LSRIN XDONE
+
+/ interrupt ins: LSR, RSR, CSR, NSR -DONE / PWM outX, pulse outsXDONE
+
 
 CSRCLKIN moved from PC3 to PB7
 
@@ -39,12 +55,11 @@ or just one timer for all and run at max speed with counters
 
 re-check: pulse ins, outs, pwm out, timers, interrupts, ADCin, DACout
 
-
 - test ADC in -> DAC out mirror
 - ADC input schemes - number of bits, sigma/delta, bit equality (unary - no weighting) with x bits // what else?
 - 4x pin interrupts, how many timers
 
-new notes:
+pc3new notes:
 
 - working with sigma delta, digital filter simulator and list first all
 
@@ -352,7 +367,7 @@ int main(void)
 
   
   // inpulse interrupts to attach are: CSR: PC3-moved to PB7, NSR: PC4, RSR: PC5, LSR: PB6
-g
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7; // now is PB7
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -417,7 +432,7 @@ g
   
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 128; // 
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // 
   TIM_TimeBase_InitStructure.TIM_Prescaler = 256; // 
   TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
  
@@ -428,7 +443,7 @@ g
   TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-  TIM_OC_InitStructure.TIM_Pulse = 128; // pulse size
+  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
   TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
   TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this!
   TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
@@ -462,20 +477,8 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
   
   // inpulse interrupts to attach are: CSR: PC3->now PB7, NSR: PC4, RSR: PC5, LSR: PB6
-    
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource7);
-  EXTI_InitStructure.EXTI_Line = EXTI_Line7; // PC3->PB7 now
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
-  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-  EXTI_Init(&EXTI_InitStructure);
 
-  NVIC_InitStructure.NVIC_IRQChannel = EXTI7_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
   SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource4);
   EXTI_InitStructure.EXTI_Line = EXTI_Line4; // PC4
@@ -515,14 +518,31 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+
   
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource7); // adding PB7
+  EXTI_InitStructure.EXTI_Line = EXTI_Line7; // PB7
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // changed to falling
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+ 
   
   
   
     while(1) {
 
   // test in gives out on PB4 - always inverted...
-      //      if ((GPIOC->IDR & (1<<3)))  GPIOB->BSRRH = (1)<<4;  // clear bits PB4
+
+      // test pulse ins on... PC7 PC8?
+
+      //      if ((GPIOC->IDR & (1<<8)))  GPIOB->BSRRH = (1)<<4;  // clear bits PB4
       //      else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
       
@@ -533,13 +553,15 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
 
        // toggle bits test
       // out pulses are on: PB2,3,4,10,12,13,14,15 // checked and all working!
-      /*      
+      /*
+      GPIOC->BSRRH = (1<<15) ;  // clear bits            
       GPIOB->BSRRH = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
-      //GPIOA->BSRRH = (1)<<11 | (1<<12);// | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
+      GPIOA->BSRRH = (1)<<11 | (1<<12);// | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
       delay();
+      GPIOC->BSRRL = (1<<15) ;  // clear bits            
       GPIOB->BSRRL = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
-      //      GPIOA->BSRRL = (1)<<11 | (1<<12);// | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
-            delay();
+      GPIOA->BSRRL = (1)<<11 | (1<<12);// | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // clear bits
+      delay();
       */
     }
 }

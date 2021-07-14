@@ -171,55 +171,58 @@ void PendSV_Handler(void)
 
 extern __IO uint16_t adc_buffer[12];
 
-// TEST: inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
-
-void EXTI3_IRQHandler(void){ // working CSR
-  static uint16_t flipper=0;
-if (EXTI_GetITStatus(EXTI_Line3) != RESET) {
-  
-  // flip PB4 to test interrupt on PC3 -> CSR
-    flipper^=1;
-    //  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-    //   else   GPIOB->BSRRL=(1)<<4; //  write bits   
-  
-  EXTI_ClearITPendingBit(EXTI_Line3);
- }
- }
+// TEST: inpulse interrupts to attach are: CSR: PC3nowPB7, NSR: PC4, RSR: PC5, LSR: PB6
 
 void EXTI4_IRQHandler(void){ // working NSR
   static uint16_t flipper=0;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   
-  // flip PB4 to test interrupt on PC3 -> CSR
+  // flip PB4 to test interrupt on NSR PC4
     flipper^=1;
-      if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-       else   GPIOB->BSRRL=(1)<<4; //  write bits   
+    //    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
   
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
  }
 
 void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but both work out
+  // added PB7 now for CSRCLKIN CSR which moved from PC3!!!
+
   static uint16_t flipper=0;
 if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
+
+  // CSR: PC3->now PB7, NSR: PC4, RSR: PC5, LSR: PB6
   
-  // flip PB4 to test interrupt on PC3 -> CSR
+  // flip PB4 to test interrupt on  RSR
     flipper^=1;
-    //  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-    //   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    else   GPIOB->BSRRL=(1)<<4; //  write bits   
   
   EXTI_ClearITPendingBit(EXTI_Line5);
  }
- else if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
 
-  // flip PB4 to test interrupt on PC3 -> CSR
+ if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
+
+  // flip PB4 to test interrupt on LSR
     flipper^=1;
-    //  if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-    //   else   GPIOB->BSRRL=(1)<<4; //  write bits   
+    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
   EXTI_ClearITPendingBit(EXTI_Line6);
  } 
- }
+
+  if (EXTI_GetITStatus(EXTI_Line7) != RESET) {
+
+  // flip PB4 to test interrupt on PB7 -> CSR
+    flipper^=1;
+    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+
+  EXTI_ClearITPendingBit(EXTI_Line7);
+ } 
+
+}
 
 
 
@@ -242,9 +245,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   //  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
   //  ADC_SoftwareStartConv(ADC1);
 
-  k=(adc_buffer[12]>>4); // 16 bits to 12 bits - this is now our ADCin!
-  k=4095-k;
-  
+  // map ADCs: note all modes are inverted
+
+  // 0: nspd, 1: nlen, 2: nmode
+  // 3: lspd, 4: llen, 5: lmode
+  // 6: rspd, 7: rlen, 8: rmode
+  // 9: cspd, 10: , 11: cmode
+      k=(adc_buffer[6]); // now 12 bits only // 16 bits to 12 bits - this is now our ADCin!
+    //  k=4095-k;
+  //  k=rand()%4095;
+  //  k++;
+  //  if (k>4095) k=0;
   //    k=(((GPIOC->IDR & (1<<9)))<<11) + (((GPIOC->IDR & (1<<10)))<<9) + (((GPIOC->IDR & (1<<11)))<<7) + (((GPIOC->IDR & (1<<12)))<<5) + (((GPIOC->IDR & (1<<13)))<<3) + (((GPIOC->IDR & (1<<14)))<<1) ;//  - 2048;// probably easier way to do this
   // check each one
   //  k=((!(GPIOC->IDR & (1<<14)))<<11); //14 haas issues
@@ -255,7 +266,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   //  k=rand()%4095;
 
   DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
-  j = DAC_GetDataOutputValue (DAC_Channel_1);
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
 
   //  if(ll)      GPIOB->BSRRH = (1)<<2;  // clear bits PB2
   //   else   GPIOB->BSRRL=(1)<<2; //  write bits 
