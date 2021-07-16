@@ -225,15 +225,25 @@ if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
 }
 
 
+#define MAXVALUE 4095
 
-
-void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
-  
+void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - how fast can we run this?
+// period 32, prescaler 8 = toggle of 104 KHz
+// 4 and 4 we go up to 800 KHz
 {
-  static volatile uint16_t k=0,ll=0;
-  uint16_t j;
-  TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
+  static volatile uint16_t k=0,ll=0, n=0, accum;
+  static volatile int16_t integrator=0, oldValue=0;
+  uint16_t j, bit;
+    //low pass test
 
+  static float SmoothData=0.0;
+  float LPF_Beta = 0.02; // 0<ß<1
+
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
+
+  // TODO 16/7/2021: test simple delta/sigma ADC and DAC (first bits say on PB4 then low pass) out
+    // concept works fine...
+  
   // test pulse ins   // inpulse interrupts to attach are: CSR: PC3, NSR: PC4, RSR: PC5, LSR: PB6
   // PC7/8 pulsein (RSR-7/LSR-8), PC9-MCB, to PC14-LSB of 6 bits
 
@@ -251,8 +261,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   // 3: lspd, 4: llen, 5: lmode
   // 6: rspd, 7: rlen, 8: rmode
   // 9: cspd, 10: , 11: cmode
-      k=(adc_buffer[6]); // now 12 bits only // 16 bits to 12 bits - this is now our ADCin!
-    //  k=4095-k;
+
+  //k=(adc_buffer[12]); // now 12 bits only // 16 bits to 12 bits - this is now our ADCin!
+
+  //  k=4095-k;
   //  k=rand()%4095;
   //  k++;
   //  if (k>4095) k=0;
@@ -265,13 +277,47 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   // we leave buffer on DAC or these values change
   //  k=rand()%4095;
 
-  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
-  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  // http://www.danbullard.com/dan/A_Sigma_Delta_ADC_Simulator_in_C.pdf
+  // https://www.mikrocontroller.net/topic/293454
 
-  //  if(ll)      GPIOB->BSRRH = (1)<<2;  // clear bits PB2
-  //   else   GPIOB->BSRRL=(1)<<2; //  write bits 
+      
+  // outPUT
+  //DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
+  // j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
 
+  //  if(ll)      GPIOB->BSRRH = (1)<<4;  // clear bits PB4
+  //  else   GPIOB->BSRRL=(1)<<4; //  write bits 
+  //  ll^=1;
+
+  n++;
+  if (n>50) {
+    k=(adc_buffer[12]); // now 12 bits only // 16 bits to 12 bits - this is now our ADCin!
+    n=0;
+  }
+
+  integrator+=k-oldValue;
+   if(integrator>0)
+  {
+     oldValue=MAXVALUE;
+     //     digitalWrite(13, HIGH);   // set the LED on
+     //     GPIOB->BSRRL=(1)<<4; //  write bits 
+     bit=4095;
+  }
+   else
+   {
+      oldValue=0;
+      //      digitalWrite(13, LOW);    // set the LED off
+      //      GPIOB->BSRRH = (1)<<4;  // clear bits PB4
+      bit=0;
+   }
   
+   // low pass to our DAC!
+   SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit));
+   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+
+
+   
 }
   
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

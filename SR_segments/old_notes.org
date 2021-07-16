@@ -2,7 +2,7 @@
 
 ** 18/1/2021
 
-TODO: 
+
 
 - Code basics for 4x shift registers for SEGMENTS - add artificial drift and dropped bits
 - wrap up schematic notes and I/O

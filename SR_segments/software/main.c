@@ -23,7 +23,30 @@ PROG HEADER: yellow, green, blue, purple
 
 *** SEGMENTS 
 
+older: fast interrupt (TIM?) for all shift registers with counters,
+interrupt for ADCs (TIM?), interrupt for pulsed SR, PWM for
+default/normed clockings (set by speed pot)
+
+or just one timer for all and run at max speed with counters
+
+- ADC input schemes - number of bits, sigma/delta, bit equality (unary - no weighting) with x bits // what else?
+- 4x pin interrupts, how many timers
+- working with sigma delta ADC, DAC out, digital filter simulator and list first all possible modes and ways of operating
+- clock from speed/cv, clock from external pulse, clock from other
+  shift register // combos of thse so could be ext pulse AND/XOR/OR
+  other shift reg or clocked speed pulse etc.
+- bitdsp library borrowings?
+- fakes, ghosts, SR_IN_SR, overlaps
+- add artificial drift and dropped bits
+
+Sigma/delta out as pulses and as DAC (low pass?)
+
+
+/////
+
 TODO: new notes, collect all notes, modes and speed/basic tests
+
+Questions: how we use the 5 fake pulse outs normed to pulse ins: PB10-PB15 ! 
 
 Newest PCB (14/5/2021) with new ADC(ADC12//on pin PC3) TESTED ALL FINE
 
@@ -44,29 +67,7 @@ all ADC ins: mode, spd and len x4
 
 / interrupt ins: LSR, RSR, CSR, NSR -DONE / PWM outX, pulse outsXDONE
 
-
 CSRCLKIN moved from PC3 to PB7
-
-older: fast interrupt (TIM?) for all shift registers with counters,
-interrupt for ADCs (TIM?), interrupt for pulsed SR, PWM for
-default/normed clockings (set by speed pot)
-
-or just one timer for all and run at max speed with counters
-
-re-check: pulse ins, outs, pwm out, timers, interrupts, ADCin, DACout
-
-- test ADC in -> DAC out mirror
-- ADC input schemes - number of bits, sigma/delta, bit equality (unary - no weighting) with x bits // what else?
-- 4x pin interrupts, how many timers
-
-pc3new notes:
-
-- working with sigma delta, digital filter simulator and list first all
-
-- clock from speed/cv, clock from external pulse, clock from other
-  shift register // combos of thse so could be ext pulse AND/XOR/OR
-  other shift reg or clocked speed pulse etc.
-
 
 ///
 
@@ -464,7 +465,7 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 32; // was 32768 // was 1024
+  TIM_TimeBase_InitStructure.TIM_Period = 8; // was 32768 // was 1024
   TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   

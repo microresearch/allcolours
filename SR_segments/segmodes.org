@@ -1,0 +1,27 @@
+* general //16/7/2021+
+
+- AC has 64 modes so 64x64x64x64=16 million combinations
+- speed CV to use in trigger mode (eg. length of overlap)
+- divide into speedCV, trigger/pulse
+- see also AC modes.org!
+- parallel bits input modes - eg. all x ADC bits are thrown into top or other SR
+
+* NSR, LSR, RSR, CSR
+
+** NSR - top register:
+
+- noise/ADC in -LSR/or/RSR or both 
+- types of ADC, length in bits
+- can also be clocked by CSR and/or ghosted noise SR 
+
+** LSR/RSR - regular shift register modes borrow from AC
+
+- how we handle entry and overlap from NSR (logical ops, length of overlap)
+- can also be clocked by bits from the NSR top register
+- also micro registers in SR
+
+** CSR - output register
+
+- type of DAC (eg. sigma/delta which is low pass of x bits)
+
+* notes from elsewhere
