@@ -6,22 +6,111 @@
 - see also AC modes.org!
 - parallel bits input modes - eg. all x ADC bits are thrown into top or other SR
 
+timing from speed-cv, pulse in, top reg(but no bits in), pulse AND
+speedcv (divide, multiply, expect), pulse AND/OR/XOR top (again no
+bits), from ghost registers (which can also be themselves clocked by
+top register and then we can use bits in or?)
+
 * NSR, LSR, RSR, CSR
 
 ** NSR - top register:
 
 - noise/ADC in -LSR/or/RSR or both 
-- types of ADC, length in bits
+- types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits
 - can also be clocked by CSR and/or ghosted noise SR 
 
 ** LSR/RSR - regular shift register modes borrow from AC
 
 - how we handle entry and overlap from NSR (logical ops, length of overlap)
-- can also be clocked by bits from the NSR top register
-- also micro registers in SR
+
+- can also be clocked by bits from the NSR top register - but in this case we can't input bits from NSR as these will just be 1s!
+ 
+- also micro shift-registers in SR
+
+- regular AC/SR modes
+
+- just one way shift/delay - in one end, out the other (with/without bit degradation)
+- looping SR with/without degradation
 
 ** CSR - output register
 
 - type of DAC (eg. sigma/delta which is low pass of x bits)
 
 * notes from elsewhere
+
+- drooling shift register legged caterpillars
+
+- how to do digital filtering - x spaced bits enter, passed down straight SR (with/without bit degradation, any other fancy stuff)
+and X spaced bits are sent to DAC from CSR. return bits (how to select) OR/XOR from output (as bits or via DAC/ADC feedback options) to NSR/top register.
+
+
+- maximum SR length as 32?
+- ghost SRs
+- parallel entry of data/ADC, sudden mirroring of SRs?
+
+- leaky, rottin and/or infectuous logic/sticky logic/slow logic others?, UFO stuff 
+
+what other kinds of logic gates there can be (based on CA, ternary etc)?
+
+- how to work with overlaps?
+
+- overlap XOR LSR and RSR
+
+- sieves - that LSR can be used as a sieve or bitmask for
+  RSR/others... - how we deal with sudden events such as this, freeze,
+  copy, ghost etc. (on a pulse in?)
+
+- marking bits which always stay frozen - concept of sieves, masks,
+  ghosts, revenants (eg. slow drift or decay of bits from one set to
+  another, frozen, prevous or ghosted - so bit by bit they shift back,
+  question of how long they take to go back?)
+
+ 
+  walkins - what else can be borrowed from language, concepts from UFO
+  encounters?
+
+- pulse triggers exchange between ghost and real, what pulses might
+  mean - primitive programming language like brainfuck
+
+//interpret set of bits as instruction on pulse in - say an x bit
+sequence (but how to work with bits rather than bytes)
+
+instructions shift left or right the opposite SR (can also use bits as
+mask to do this - so we interpret one SR as shifting the other on each
+bit in)
+
+The Infinite Abacus: Brainfuck's "grand-parent" language
+
+A version with explicit memory addressing rather without stack and a
+conditional jump was introduced by Joachim Lambek in 1961 under the
+name of the Infinite Abacus, consisting of an infinite number of
+cells and two instructions:
+
+    X+ (increment cell X)
+    X- else jump T (decrement X if it is positive else jump to T)
+
+
+
+- reverse direction of register (what this means?)
+
+* in progress/ideas/todo
+
+- how we pass through SR bits at different speeds - top one resets cycling/circling counter which wheels through SR
+- is [0 bit our output?
+- smoothing and other aspects from AC to implement
+- re-test function pointers/how to make code more modular?
+
+
+* TODO/plan
+
+- basic structure of the 4 SR and straightforward tests eg. ADC in,
+  pass down SR, DAC out
+
+- proof of concept for digital filter and what ideas come from this
+
+- all basic SR concepts implemented
+
+- brainstorm and tests of all concepts
+
+- basic modes layed out and tested - first speed CV then pulse driven and fancier...
+
