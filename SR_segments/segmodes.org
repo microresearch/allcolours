@@ -38,6 +38,9 @@ top register and then we can use bits in or?)
 
 * notes from elsewhere
 
+- what second bits out can be - different taps,
+  divided/flip_flop, diff tap and flip_flop, logical ops with other bit!
+
 - drooling shift register legged caterpillars
 
 - how to do digital filtering - x spaced bits enter, passed down straight SR (with/without bit degradation, any other fancy stuff)
