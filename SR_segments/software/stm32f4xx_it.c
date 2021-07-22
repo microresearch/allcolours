@@ -341,17 +341,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // 4 and 4 we go up to 800 KHz
 {
   static volatile uint16_t k=0,ll=0, n=0, accum, cnt=4;
-  static volatile int16_t integrator=0, oldValue=0;
+  static volatile int16_t integrator=0, oldValue=0, tmp=0;
   uint16_t j, bit;
     //low pass test
   static float SmoothData=0.0;
   float LPF_Beta = 0.02; // 0<ß<1
-  uint32_t tmp;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
     // TODO 16/7/2021: test simple delta/sigma ADC and DAC (first bits say on PB4 then low pass) out
-    // concept works fine...
+    // concept works fine...DONE
 
     // map ADCs: note all modes are inverted
 
@@ -360,16 +359,73 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     // 6: rspd, 7: rlen, 8: rmode
     // 9: cspd, 10: , 11: cmode
 
+  // test speed for all - from cspd
+  counterc++;
+  speedc=adc_buffer[9]<<4; // ??? and smoothings/logger but just test here
+  // can also be with modes in another interrupt
+  if (counterc>speedc){
+    counterc=0;
+  
+  ///////////////////////////////////////////////////////
+  // from late July 2021 test sketches which show directions rather than full framework
+
+  ///////////////////////////////////////////////////////
+  // test with SR in SR for digital filter simulator - works with simple pass through
+  // how we could simplify with more arrays, masks?
+  // how we can substitute leaky logic for logic ops
+
+  // 4 bits go into NSR as in original AC and are shifted
+  // can also be feedback so is micro-SR in largerSR
+  k=(adc_buffer[12])>>8;//+tmp)>>8; // now 12 bits only -> 4 bits
+  // copy into ghost reg so we can feedback bits if we like
+  Gshift_registern=shift_registern;
+  shift_registern &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+  // put the 4 bits in
+  shift_registern += ((k&0x01) + ((k&0x02)<<7) + ((k&0x04)<<14) + ((k&0x08)<<21)); // would be 0 8-1 16-2 24-3 -
+  shift_registern=(shift_registern<<1); // here or later/earlier?
+  
+  // 4 bits into LSR
+  shift_registerl &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+  // put the 4 bits in there
+  // test feeding back some of the bits
+  shift_registerl += (((shift_registern&(1<<7))>>7) + ((shift_registern&(1<<15))>>7) + ((shift_registern&(1<<23))>>7) + ((shift_registern&(1<<31))>>7));
+  //  shift_registerl += (((shift_registern&(1<<7))>>7) ^ ((shift_registerl&(1<<7))>>7)  ) + (((shift_registern&(1<<15))>>7) ^ ((shift_registerl&(1<<15))>>7)) + (((shift_registern&(1<<23))>>7) ^ ((shift_registerl&(1<<23))>>7)) + (((shift_registern&(1<<31))>>7) ^ ((shift_registerl&(1<<31))>>7));
+
+  shift_registerl=(shift_registerl<<1); // here or later/earlier?
+  
+  // 4 bits into CSR and out
+  shift_registerc &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+  // put the 4 bits in there
+  shift_registerc += (((shift_registerl&(1<<7))>>7) + ((shift_registerl&(1<<15))>>7) + ((shift_registerl&(1<<23))>>7) + ((shift_registerl&(1<<31))>>7));
+  shift_registerc=(shift_registerc<<1); // here or later/earlier?
+
+  // output it! 
+  tmp= (((shift_registerc&(1<<7))>>7) + ((shift_registerc&(1<<15))>>14) + ((shift_registerc&(1<<23))>>21) + ((shift_registerc&(1<<31))>>28))<<8;
+  //  tmp=rand()%4095;
+
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+
+  /////
+  } // close of speedc
+  
+  ///////////////////////////////////////////////////////
+  // test for parallell SR in top NSR
+  ///////////////////////////////////////////////////////
+
+  
     ///////////////////////////////////////////////////////
   // test for x(say 4) ADC bits in spaced out, feed through and DAC out, to lead towards digital filter simulation
   // not really working but kind of interesting - question is order of bits, also return of bits
 
-
+  // sr in sr, parallel SR, feedback as bits or as addition into ADC in from DAC
+  /*
   if (cnt==4){
   k=(adc_buffer[12])>>8; // now 12 bits only -> 4 bits
   cnt=0;
   // out - question is what is order of first bit? and return of bits
   }
+  */
   /*  // can also be just 4 simple bits eg.
   k=(adc_buffer[12])>>4; // 8 bits
   if (k<64) tmp=1;
@@ -379,10 +435,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // how to do as 4 independent bits ie. number of bits is the important thing - more about dac out from this one as is same no?
   */
+  /*
   bitn = (shift_registern>>31) & 0x01; // bit which would be shifted out
   shift_registern=(shift_registern<<1); // here or later?
   shift_registern+=((k&(1<<cnt))>>cnt);// ^ bitc;
-  
+  */
   /* // older not workings
   // try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
   shift_registern &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
@@ -393,6 +450,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   */
   
   // pass to shiftregl
+  /*
   bitl = (shift_registerl>>31) & 0x01; // bit which would be shifted out
   shift_registerl=(shift_registerl<<1)+bitn;
 
@@ -403,10 +461,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   tmp= ( (shift_registerc&1) + (shift_registerc&(1<<1)) + (shift_registerc&(1<<2)) + (shift_registerc&(1<<3)))<<8; 
   DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
-
+ 
   
   cnt++;
-
+  */
   
   // and output
   //  tmp= (((shift_registerc&(1<<7))>>7) + ((shift_registerc&(1<<15))>>14) + ((shift_registerc&(1<<23))>>21) + ((shift_registerc&(1<<31))>>28))<<8; // much further bits  // msb first

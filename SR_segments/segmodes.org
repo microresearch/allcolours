@@ -19,6 +19,8 @@ top register and then we can use bits in or?)
 - types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits
 - can also be clocked by CSR and/or ghosted noise SR 
 
+- can be set of parallel SRs which feed into CSR, or juts x bits from ADC go straight into CSR
+
 ** LSR/RSR - regular shift register modes borrow from AC
 
 - how we handle entry and overlap from NSR (logical ops, length of overlap)
