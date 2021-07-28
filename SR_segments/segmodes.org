@@ -53,9 +53,18 @@ and X spaced bits are sent to DAC from CSR. return bits (how to select) OR/XOR f
 - ghost SRs
 - parallel entry of data/ADC, sudden mirroring of SRs?
 
-- leaky, rottin and/or infectuous logic/sticky logic/slow logic others?, UFO stuff 
+- leaky, rotting and/or infectuous logic/sticky logic/slow logic others?, UFO stuff 
 
 what other kinds of logic gates there can be (based on CA, ternary etc)?
+
+timing of a slow logic leak? 
+
+trigger->latch and slow leak, disappearance of ones, bit by bit (how we could also display this as side project)
+
+- NLC 8 bit cipher simulation:
+
+... strobe is always high on 4094 so bits go into SR and are out, but
+option for data on strobe which means all SR only change on 1, CV combines different bits and primitive XOR for 2nd bit/data in...
 
 - how to work with overlaps?
 
@@ -93,8 +102,6 @@ cells and two instructions:
 
     X+ (increment cell X)
     X- else jump T (decrement X if it is positive else jump to T)
-
-
 
 - reverse direction of register (what this means?)
 
