@@ -465,7 +465,7 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 8; // was 32768 // was 1024
+  TIM_TimeBase_InitStructure.TIM_Period = 128; // was 8, now 12 for other interruot
   TIM_TimeBase_InitStructure.TIM_Prescaler = 16; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
@@ -476,6 +476,24 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM2, ENABLE);
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+
+  // TIM4 - extra timer for modes and speeds...
+
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 256; 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 2; 
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBase_InitStructure);
+  
+  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; // was 1
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01; // was 1
+  NVIC_Init(&NVIC_InitStructure);
+  TIM_Cmd(TIM4, ENABLE);
+  TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
+  
   
   // inpulse interrupts to attach are: CSR: PC3->now PB7, NSR: PC4, RSR: PC5, LSR: PB6
 

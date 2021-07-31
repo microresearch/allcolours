@@ -11,17 +11,38 @@ speedcv (divide, multiply, expect), pulse AND/OR/XOR top (again no
 bits), from ghost registers (which can also be themselves clocked by
 top register and then we can use bits in or?)
 
+- question of range of speed - from slow CV (Hz?) to KHz for sigma/delta
+
+- how we prevent running down to zero for SR on length change (trap this?)
+
+variable stopping bits/zeroes
+
 * NSR, LSR, RSR, CSR
 
-** NSR - top register:
+** NSR - top register - ADC in, CLKIN only, no pulse outs:
 
-- noise/ADC in -LSR/or/RSR or both 
+- 1-noise/2-ADC in/ -to-LSR/or/RSR or both (do we decide that here)
+
+each has-feedback(from CSR) (only makes sense with input)
+
+comparator function for ADC ins
+
 - types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits
+
+electronotes just has standard weighting ADC, uniform (bits x X) from consecitive taps, and sets of spaced taps -> wide spacings
+
+- pulse in/or pseedCV and what Cv does when pulse in/vice versa! (eg. number of bits, LFSR length)
+
 - can also be clocked by CSR and/or ghosted noise SR 
+- can be set of parallel SRs which feed into CSR, or just x bits from ADC go straight into CSR
 
-- can be set of parallel SRs which feed into CSR, or juts x bits from ADC go straight into CSR
+** LSR/RSR - regular shift register modes borrow from AC - CLKIN and PULSIN, 2 pulse outs/bits or flipflops: 
 
-** LSR/RSR - regular shift register modes borrow from AC
+Question of how we work with entry of pulse ins: as togglers, as extra
+bits (but do we always have NSR entering in, maybe AND with extra bits
+or other logic ops)
+
+List leaky/decay possibilities...
 
 - how we handle entry and overlap from NSR (logical ops, length of overlap)
 
@@ -32,13 +53,24 @@ top register and then we can use bits in or?)
 - regular AC/SR modes
 
 - just one way shift/delay - in one end, out the other (with/without bit degradation)
+
 - looping SR with/without degradation
 
-** CSR - output register
+- leaking/decaying of bits, other logic feedbacks - (SRs in SRS)...
+
+- regular and ghost LFSRs...
+
+- latchings, holdings
+
+- multiple flipflops of various decsriptions
+
+** CSR - output register - CLKIN only, 2 pulse outs/bits or flipflops, DAC out: 
 
 - type of DAC (eg. sigma/delta which is low pass of x bits)
+- which of the bits are used for DAC
+- overlays, masks for DAC bits
 
-* notes from elsewhere
+* notes... from elsewhere/sketches
 
 - what second bits out can be - different taps,
   divided/flip_flop, diff tap and flip_flop, logical ops with other bit!
@@ -64,7 +96,11 @@ trigger->latch and slow leak, disappearance of ones, bit by bit (how we could al
 - NLC 8 bit cipher simulation:
 
 ... strobe is always high on 4094 so bits go into SR and are out, but
-option for data on strobe which means all SR only change on 1, CV combines different bits and primitive XOR for 2nd bit/data in...
+option for data on strobe which means all SR only change on 1, CV
+combines different bits and primitive XOR for 2nd bit/data in...
+
+so strobe is pulse in which can latch (incoming-ADC or noise) bits on to NSR or CSR
+(outgoings) - and this is different to speedCv/pulse_speed as SR is still operating...
 
 - how to work with overlaps?
 
@@ -104,6 +140,16 @@ cells and two instructions:
     X- else jump T (decrement X if it is positive else jump to T)
 
 - reverse direction of register (what this means?)
+
+- glue one LFSR onto end/beginning of another
+
+** parallel SRs
+
+- feed data into top of parallel LFSRs, data read out from all bit outs: test for 12 bits, 12 parallel streams
+
+** two headed SR
+
+
 
 * in progress/ideas/todo
 
