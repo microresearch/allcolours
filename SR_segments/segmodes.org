@@ -17,6 +17,8 @@ top register and then we can use bits in or?)
 
 variable stopping bits/zeroes
 
+- left hand path/ right hand path: tree of life, kenneth grant and overlays for ...?
+
 * NSR, LSR, RSR, CSR
 
 ** NSR - top register - ADC in, CLKIN only, no pulse outs:

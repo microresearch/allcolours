@@ -450,21 +450,31 @@ void TIM4_IRQHandler(void)
     // 9: cspd, 10: clen, 11: cmode
 
   
-  // speedc
-  totc=totc-smoothc[cc];
-  smoothc[cc]=adc_buffer[9];
-  totc+=smoothc[cc];
-  cc++;
-  if (cc>=SMOOTHINGS) cc=0;
-  temp=totc/SMOOTHINGS;  
-  speedc=logger[temp>>2];
+  // speedn
+  totn=totn-smoothn[nn];
+  smoothn[nn]=adc_buffer[0];
+  totn+=smoothn[nn];
+  nn++;
+  if (nn>=SMOOTHINGS) nn=0;
+  temp=totn/SMOOTHINGS;  
+  speedn=logger[temp>>2];
 
-  //modec
-  temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3; //smoothing necessary for higher speeds - TEST!
-  lastlastmodec=lastmodec;
-  lastmodec=temp;
-  modec=63-(temp>>6); // 64 modes = 6 bits  
+  //moden
+  temp=(adc_buffer[11]+lastlastmoden+lastmoden)/3; //smoothing necessary for higher speeds - TEST!
+  lastlastmoden=lastmoden;
+  lastmoden=temp;
+  moden=63-(temp>>6); // 64 modes = 6 bits  
 
+  // speedl
+  totl=totl-smoothl[ll];
+  smoothl[ll]=adc_buffer[3];
+  totl+=smoothl[ll];
+  ll++;
+  if (ll>=SMOOTHINGS) ll=0;
+  temp=totl/SMOOTHINGS;  
+  speedl=logger[temp>>2];
+
+  
   // lens from 4 to 32
   SRlengthn=31-(adc_buffer[1]>>7); // 12 bits to 5 bits
   if (SRlengthn<4) SRlengthn=4;
@@ -505,21 +515,50 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //  tmp^=1;
   //  if (tmp) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
   //  else   GPIOB->BSRRL=(1)<<4; //  write bits   
-  
-  // test speed for all - from cspd
 
   /// TODO: test wheels across speeds and lengths of basic SRs
-  // how does wheel work
-
-
-  counterc++;
-  if (counterc>=speedc){
-    counterc=0;
-
+  // top one resets cycling/circling counter which wheels through SR
+  // TESTED but sanity check lengths...
+  
+  countern++;
+  if (countern>=speedn){
+    countern=0;
+    // do NSR - LFSR
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
     
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    shift_registern+= bitn | bitl;    
+    coggn=0;
+  }
 
-    
-    ///////////////////////////////////////////////////////
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+    // do LSR - input from shift_registern
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+tmp;
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  }    
+
+  // test output for now from l:
+  tmp=((shift_registerl & masky[SRlengthl])>>(SRlengthl-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  
+  
+  // TEST SINGLE counter for sketches below...
+  //  counterc++;
+  //  if (counterc>=speedc){
+  //    counterc=0;
+
+  ///////////////////////////////////////////////////////
     // TODO: try parallel SRs with few bits, delay of different bits (but how to assign these - testing with bits in)
     // delay would be different lengths
     ///////////////////////////////////////////////////////
@@ -697,20 +736,21 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // sr in sr, parallel SR, feedback as bits or as addition into ADC in from DAC
 
     // try with different lengths
-    
+  /*
   if (cnt==4){
   k=(adc_buffer[12])>>8; // now 12 bits only -> 4 bits
   // test using moden as comparator in: adc_buffer[2]
   // but we can also use 4 bits and work like that
   // shifting these values, or spacings of these values...
-  /*  if (k<64) tmp=1;
-  else if (k<128) tmp=3;
-  else if (k<192) tmp=7; // these values can also shift
-  else tmp=15;
-  k=tmp;
-  */
+  //  if (k<64) tmp=1;
+//  else if (k<128) tmp=3;
+//  else if (k<192) tmp=7; // these values can also shift
+//  else tmp=15;
+//  k=tmp;
+
 
   // comparator just outputs high if above level.
+ 
   if (k>(adc_buffer[2]>>8)) k=4094;
   
   cnt=0;
@@ -725,14 +765,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   shift_registern^=(shift_registerc&masky[SRlengthc]); // other kinds of logical opps but we need to mask for length
   // how do we mask for length?
   
-  /* // older not workings 
-  // try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
-  shift_registern &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
-  // put the 4 bits in
-  shift_registern += ((k&0x01) + ((k&0x02)<<7) + ((k&0x04)<<14) + ((k&0x08)<<21)); // would be 0 8-1 16-2 24-3 -
-  // without clearing bits is interesting also we can have other options like delay of some bits which would happen anyways
-  // eg. sample and then put bit in one by one
-  */
+// older not workings 
+// try for 4 bits in - at intervals of 32/4= 8 bits: 1, 8, 16, 24
+//  shift_registern &= 0b11111110111111101111111011111110; // inverted mask: 0b11111110111111101111111011111110 LSB is at end
+// put the 4 bits in
+//  shift_registern += ((k&0x01) + ((k&0x02)<<7) + ((k&0x04)<<14) + ((k&0x08)<<21)); // would be 0 8-1 16-2 24-3 -
+// without clearing bits is interesting also we can have other options like delay of some bits which would happen anyways
+// eg. sample and then put bit in one by one
   
   // pass to shiftregl
   
@@ -746,12 +785,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // output based on SRlengthc or we can just accumulate bitc
   
   //  tmp= ( (shift_registerc&1) + (shift_registerc&(1<<1)) + (shift_registerc&(1<<2)) + (shift_registerc&(1<<3)))<<8; // olde one
-  tmp=((shift_registerc & masky[SRlengthn])>>(SRlengthn-4))<<8;
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8;
   DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
  
   cnt++;
-  
+*/  
   
   // and output
   //  tmp= (((shift_registerc&(1<<7))>>7) + ((shift_registerc&(1<<15))>>14) + ((shift_registerc&(1<<23))>>21) + ((shift_registerc&(1<<31))>>28))<<8; // much further bits  // msb first
@@ -791,7 +830,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   */
 
-    } // close of speedc
+  //    } // close of speedc FOR TEST sketches
  
     
 }
