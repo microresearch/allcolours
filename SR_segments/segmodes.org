@@ -25,7 +25,7 @@ variable stopping bits/zeroes
 
 - 1-noise/2-ADC in/ -to-LSR/or/RSR or both (do we decide that here)
 
-each has-feedback(from CSR) (only makes sense with input)
+each has-feedback(from CSR) (only makes sense with input - bitmasks from CSR etc, wheels also)
 
 comparator function for ADC ins
 
@@ -40,13 +40,18 @@ electronotes just has standard weighting ADC, uniform (bits x X) from consecitiv
 
 ** LSR/RSR - regular shift register modes borrow from AC - CLKIN and PULSIN, 2 pulse outs/bits or flipflops: 
 
+LSR has entry from NSR and feeds into CSR
+RSR has entry from CSR and feeds into NSR (so is the feedback register)
+
+dark/light sides, left and right hand patrhs, mirrors (moon and sun), tree of life (Kenneth Grant - Nightside of Eden)
+
 Question of how we work with entry of pulse ins: as togglers, as extra
 bits (but do we always have NSR entering in, maybe AND with extra bits
 or other logic ops)
 
 List leaky/decay possibilities...
 
-- how we handle entry and overlap from NSR (logical ops, length of overlap)
+- how we handle entry and overlap from NSR or CSR (logical ops, length of overlap)
 
 - can also be clocked by bits from the NSR top register - but in this case we can't input bits from NSR as these will just be 1s!
  
@@ -68,8 +73,8 @@ List leaky/decay possibilities...
 
 ** CSR - output register - CLKIN only, 2 pulse outs/bits or flipflops, DAC out: 
 
-- type of DAC (eg. sigma/delta which is low pass of x bits)
-- which of the bits are used for DAC
+- type of DAC (eg. sigma/delta which is low pass of single stream of bits)
+- which of the bits are used for regular DAC: weighted, unweighted, spacings
 - overlays, masks for DAC bits
 
 * notes... from elsewhere/sketches

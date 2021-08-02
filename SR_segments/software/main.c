@@ -465,7 +465,7 @@ TIM_CtrlPWMOutputs(TIM1, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 128; // was 8, now 12 for other interruot
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // was 8, now 12 for other interruot
   TIM_TimeBase_InitStructure.TIM_Prescaler = 16; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
