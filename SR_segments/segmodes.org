@@ -6,6 +6,8 @@
 - see also AC modes.org!
 - parallel bits input modes - eg. all x ADC bits are thrown into top or other SR
 
+- speed can go to zero! signal this in array somehows... and speeds should be slower at one end
+
 timing from speed-cv, pulse in, top reg(but no bits in), pulse AND
 speedcv (divide, multiply, expect), pulse AND/OR/XOR top (again no
 bits), from ghost registers (which can also be themselves clocked by
@@ -19,11 +21,15 @@ variable stopping bits/zeroes
 
 - left hand path/ right hand path: tree of life, kenneth grant and overlays for ...?
 
+- how we deal with overlaps
+
 * NSR, LSR, RSR, CSR
 
 ** NSR - top register - ADC in, CLKIN only, no pulse outs:
 
-- 1-noise/2-ADC in/ -to-LSR/or/RSR or both (do we decide that here)
+mode 0 is straight LFSR (or with ADC or)
+
+- 1-LFSRnoise/2-ADC in/3-mix of LFSR and ADC -to-LSR/or/RSR or both (do we decide that here and RSR is now designated as feedback)
 
 each has-feedback(from CSR) (only makes sense with input - bitmasks from CSR etc, wheels also)
 
@@ -33,12 +39,14 @@ comparator function for ADC ins
 
 electronotes just has standard weighting ADC, uniform (bits x X) from consecitive taps, and sets of spaced taps -> wide spacings
 
-- pulse in/or pseedCV and what Cv does when pulse in/vice versa! (eg. number of bits, LFSR length)
+- pulse in/or speedCV and what CV does when pulse in/vice versa! (eg. number of bits, LFSR length)
 
 - can also be clocked by CSR and/or ghosted noise SR 
 - can be set of parallel SRs which feed into CSR, or just x bits from ADC go straight into CSR
 
 ** LSR/RSR - regular shift register modes borrow from AC - CLKIN and PULSIN, 2 pulse outs/bits or flipflops: 
+
+mode 0: feedthrough only
 
 LSR has entry from NSR and feeds into CSR
 RSR has entry from CSR and feeds into NSR (so is the feedback register)
@@ -73,9 +81,14 @@ List leaky/decay possibilities...
 
 ** CSR - output register - CLKIN only, 2 pulse outs/bits or flipflops, DAC out: 
 
-- type of DAC (eg. sigma/delta which is low pass of single stream of bits)
+mode 0: basic DAC out
+
+
+- type of DAC (eg. sigma/delta which is low pass of single stream of bits, x bit DAC)
 - which of the bits are used for regular DAC: weighted, unweighted, spacings
 - overlays, masks for DAC bits
+
+what else for 64 modes divided by speedcv/pulsin = 32 still (in pulsin we have bit length for DAC)
 
 * notes... from elsewhere/sketches
 
@@ -109,7 +122,7 @@ combines different bits and primitive XOR for 2nd bit/data in...
 so strobe is pulse in which can latch (incoming-ADC or noise) bits on to NSR or CSR
 (outgoings) - and this is different to speedCv/pulse_speed as SR is still operating...
 
-- how to work with overlaps?
+- how to work with overlaps? 
 
 - overlap XOR LSR and RSR
 
