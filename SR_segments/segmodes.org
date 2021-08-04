@@ -113,11 +113,13 @@ timing of a slow logic leak?
 
 trigger->latch and slow leak, disappearance of ones, bit by bit (how we could also display this as side project)
 
-- NLC 8 bit cipher simulation:
+- NLC 8 bit cipher simulation: only makes sense fro NSR and CSR where we have many bits in
 
 ... strobe is always high on 4094 so bits go into SR and are out, but
 option for data on strobe which means all SR only change on 1, CV
-combines different bits and primitive XOR for 2nd bit/data in...
+combines different bits and primitive XOR for 2nd bit/mix with data in...
+
+basically data goes to out when strobe is high, low -> just shifts 
 
 so strobe is pulse in which can latch (incoming-ADC or noise) bits on to NSR or CSR
 (outgoings) - and this is different to speedCv/pulse_speed as SR is still operating...
@@ -135,8 +137,13 @@ so strobe is pulse in which can latch (incoming-ADC or noise) bits on to NSR or 
   another, frozen, prevous or ghosted - so bit by bit they shift back,
   question of how long they take to go back?)
 
+question of recording position and lifetime for decay - we erase on
+death from the list but list handling is slow (finite sets of arrays
+and garbage collect in one interrupt?) or we can just record and keep one bit max per SR
+
+- TM encoding for SR_as_tape operations
  
-  walkins - what else can be borrowed from language, concepts from UFO
+  walk_ins - what else can be borrowed from language, concepts from UFO
   encounters?
 
 - pulse triggers exchange between ghost and real, what pulses might

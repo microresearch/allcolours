@@ -148,7 +148,8 @@ static uint32_t masky[32]={//0,0,0, // we don't use
 			   0b11111111111111111111111111111111,			   
 };
 
-// TODO: test much greater range of slow speeds!
+// TODO: test much greater range of slow speeds - and stop indicator/value at end -> first establish basic speed for all modes and then
+// we can do this...
 
 static uint16_t logger[1024]={1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 25, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26, 27, 27, 27, 27, 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 30, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 33, 33, 33, 33, 34, 34, 34, 34, 35, 35, 35, 35, 36, 36, 36, 36, 37, 37, 37, 37, 38, 38, 38, 38, 39, 39, 39, 39, 40, 40, 40, 40, 41, 41, 41, 42, 42, 42, 42, 43, 43, 43, 44, 44, 44, 45, 45, 45, 45, 46, 46, 46, 47, 47, 47, 48, 48, 48, 49, 49, 49, 50, 50, 50, 51, 51, 51, 52, 52, 53, 53, 53, 54, 54, 54, 55, 55, 55, 56, 56, 57, 57, 57, 58, 58, 59, 59, 59, 60, 60, 61, 61, 61, 62, 62, 63, 63, 64, 64, 64, 65, 65, 66, 66, 67, 67, 68, 68, 69, 69, 69, 70, 70, 71, 71, 72, 72, 73, 73, 74, 74, 75, 75, 76, 76, 77, 78, 78, 79, 79, 80, 80, 81, 81, 82, 82, 83, 84, 84, 85, 85, 86, 86, 87, 88, 88, 89, 89, 90, 91, 91, 92, 93, 93, 94, 94, 95, 96, 96, 97, 98, 98, 99, 100, 100, 101, 102, 102, 103, 104, 105, 105, 106, 107, 107, 108, 109, 110, 110, 111, 112, 113, 113, 114, 115, 116, 117, 117, 118, 119, 120, 121, 121, 122, 123, 124, 125, 126, 127, 127, 128, 129, 130, 131, 132, 133, 134, 135, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 161, 162, 163, 164, 165, 166, 167, 168, 170, 171, 172, 173, 174, 175, 177, 178, 179, 180, 181, 183, 184, 185, 186, 188, 189, 190, 192, 193, 194, 196, 197, 198, 200, 201, 202, 204, 205, 206, 208, 209, 211, 212, 214, 215, 216, 218, 219, 221, 222, 224, 225, 227, 229, 230, 232, 233, 235, 236, 238, 240, 241, 243, 245, 246, 248, 250, 251, 253, 255, 257, 258, 260, 262, 264, 265, 267, 269, 271, 273, 275, 276, 278, 280, 282, 284, 286, 288, 290, 292, 294, 296, 298, 300, 302, 304, 306, 308, 310, 312, 314, 317, 319, 321, 323, 325, 328, 330, 332, 334, 337, 339, 341, 343, 346, 348, 351, 353, 355, 358, 360, 363, 365, 368, 370, 373, 375, 378, 380, 383, 385, 388, 391, 393, 396, 399, 401, 404, 407, 410, 413, 415, 418, 421, 424, 427, 430, 433, 436, 439, 441, 444, 448, 451, 454, 457, 460, 463, 466, 469, 472, 476, 479, 482, 485, 489, 492, 495, 499, 502, 506, 509, 513, 516, 520, 523, 527, 530, 534, 537, 541, 545, 549, 552, 556, 560, 564, 567, 571, 575, 579, 583, 587, 591, 595, 599, 603, 607, 611, 616, 620, 624, 628, 632, 637, 641, 645, 650, 654, 659, 663, 668, 672, 677, 681, 686, 691, 695, 700, 705, 710, 715, 719, 724, 729, 734, 739, 744, 749, 754, 760, 765, 770, 775, 780, 786, 791, 796, 802, 807, 813, 818, 824, 830, 835, 841, 847, 852, 858, 864, 870, 876, 882, 888, 894, 900, 906, 912, 918, 925, 931, 937, 944, 950, 956, 963, 969, 976, 983, 989, 996, 1003, 1010, 1017, 1024};
 
@@ -418,10 +419,15 @@ if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
 
 uint16_t leaks(uint16_t d, uint16_t p){ // try lazy, stickyt, leaky, decaying logic here...
   static uint16_t timer=0;
+  // p as probability or time
   // keep track of how many times this is called and flip bit
-  // but that is too deterministic...
 
-  //
+  // or we can track bits recording their position for a certain lifespan
+  // one bit per SR is tracked and lost... so would be leakNSR for example for that bit
+  
+  // but that is too deterministic... but if we share timers or if timer is across different speeds
+
+  // leaky XOR, AND, NAND (OR doesn't leak)
   
   /*  timer++;
   if (timer>p){
@@ -452,7 +458,9 @@ void TIM4_IRQHandler(void)
     // 6: rspd, 7: rlen, 8: rmode // adc6 fixed hw
     // 9: cspd, 10: clen, 11: cmode
 
-  // double-check inversion of modes?
+  // deal with PWM for normings (always follows speedn)
+  
+  // double-check inversion of modes? as doesn't seem so!
   
   //moden
   temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; //smoothing necessary for higher speeds - TEST!
@@ -536,8 +544,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // 4 and 4 we go up to 800 KHz
 {
   static volatile uint16_t k=0,ll=0, n=0, accum, cnt=0;
-  static volatile int16_t integrator=0, oldValue=0, tmp=0;
+  static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
   uint16_t j, bit, xx;
+  int16_t tmpt;
     //low pass test
   static float SmoothData=0.0;
   float LPF_Beta = 0.02; // 0<ß<1
@@ -558,7 +567,104 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   /// TODO: test wheels across speeds and lengths of basic SRs
   // top one resets cycling/circling counter which wheels through SR
   // TESTED but sanity check lengths...
+ 
+  /////////////////////////////////////////////////////////////////////////////////////////  
+  // TODO: try SR within SR - returning bit will have to be LOGICAL OPed with place in larger SR
+  // ideas to try: different lengths of the SR in the SR, changing barrier bits which temporarily stop the
+  // flow of the main SR - which is maybe better as keeping bits static -
+  // so that we only shift a part of that SR - to try this!
+  /////////////////////////////////////////////////////////////////////////////////////////
 
+  // - NLC 8 bit cipher simulation: only makes sense for NSR and CSR where we have many bits in
+  // so for NSR - with ADC input we can try to have bits only entering CSR register on strobe
+  // so we need to feed them into ghost reg then copy over on strobe...
+  // test this which doesn't work so well with NSR/ADC but could work with CSR (remember feedback bit is only renewed on strobe)
+  // what is CSR clkin= //   if (!(GPIOB->IDR & (1<<7)))    shift_registerpar[xx]+= bitn;
+
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    if (n==8) {
+      k=(adc_buffer[12]);//+tmpp; // now 8 bits only
+      n=0;
+    }
+    bitn = (shift_registern>>SRlengthn) & 0x01; 
+    shift_registern=(shift_registern<<1)+(((k>>n)&0x01)|bitc);
+    n++;    
+    coggn=0;
+
+  }  
+
+  // just try passing this down to CSR with latch on output 
+  // do CSR and output - input from n
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+
+    if (!(GPIOC->IDR & (1<<4))) {
+      tmpp=(shift_registerc &0xff)<<4; // 8 bits
+      bitc = ((shift_registerc>>SRlengthc) & 0x01) ^  (shift_registerc&0x01); // in 8 bit cipher is XOR with bit0
+    }
+
+    if (coggn==0)  shift_registerc=(shift_registerc<<1)+bitn;
+    else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+    }
+    coggn++;
+    if (coggn>(SRlengthn+1)) coggn=0;
+    coggc=0;
+  //  tmpt=SRlengthc-8;
+  //  if (tmpt<0) tmpt=0;
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(tmpt))<<4; // 8 bits out - but mask doesn't work
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmpp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  }
+
+  
+  /*
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    if (n==8) {
+      k=(adc_buffer[12]); // now 8 bits only
+      n=0;
+    }
+    // feed those bits in to GSR one by one
+    bit = (Gshift_registern>>SRlengthn) & 0x01; 
+    Gshift_registern=(Gshift_registern<<1)+(((k>>n)&0x01)^bitc);
+    // if strobe bit - NSR CLKIN PC4 - copy bits
+    if (!(GPIOC->IDR & (1<<4))) shift_registern=Gshift_registern;
+    
+    bitn = (shift_registern>>SRlengthn) & 0x01; 
+    shift_registern=(shift_registern<<1)+bitn; // or we can use other bits here
+    n++;    
+    coggn=0;
+  }  
+
+  // just try passing this down to CSR with latch on output TODO later
+  // do CSR and output - input from n
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0)  shift_registerc=(shift_registerc<<1)+bitn;
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggc=0;
+  //  tmpt=SRlengthc-8;
+  //  if (tmpt<0) tmpt=0;
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(tmpt))<<4; // 8 bits out - but mask doesn't work
+  tmp=(shift_registerc &0xff)<<4; // 8 bits
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  }
+  */
+  
   /////////////////////////////////////////////////////////////////////////////////////////  
   // try overlap with entry point after that overlap - but then it would eat the overlap
   
@@ -566,8 +672,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // test idea of overlaps across 2 SR (for testing just use top LFSR/NSR and CSR for output and use modes as length?)
   // this one is overlap from NSR into CSR
   // try now NSR into LSR
-  
-  
+  /*  
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -578,6 +683,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     // copy bits into CSR for overlap length before we SHIFT!
     tmp=model>>1; // for max 31?
     // ignore length of CSR
+    //    tmp=31; tmp of 31 will kill all...
+    if (tmp==31) tmp=30;
     shift_registerl^=masky[tmp]; // clear overlap
     shift_registerl+=((shift_registern>>(31-tmp))&masky[tmp]); // push top bits into that overlap gap
     
@@ -648,7 +755,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (coggc>(SRlengthc+1)) coggc=0;
   coggr=0;
   }    
-
+  */
   
   /////////////////////////////////////////////////////////////////////////////////////////
   
