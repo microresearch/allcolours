@@ -74,7 +74,8 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 volatile uint32_t shift_registern=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff;
 volatile uint32_t shift_registerr=0xff;
-volatile uint32_t shift_registerc=0xff; 
+volatile uint32_t shift_registerc=0xff;
+volatile uint32_t shift_registerR=0xff; 
 
 // ghosts, revenants
 volatile uint32_t Gshift_registern=0xff; // 32 bit SR but we can change length just using output bit
@@ -417,8 +418,9 @@ if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
 
 }
 
-uint16_t leaks(uint16_t d, uint16_t p){ // try lazy, stickyt, leaky, decaying logic here...
+uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob){ // try lazy, stickyt, leaky, decaying logic here...
   static uint16_t timer=0;
+  uint16_t z;
   // p as probability or time
   // keep track of how many times this is called and flip bit
 
@@ -426,8 +428,15 @@ uint16_t leaks(uint16_t d, uint16_t p){ // try lazy, stickyt, leaky, decaying lo
   // one bit per SR is tracked and lost... so would be leakNSR for example for that bit
   
   // but that is too deterministic... but if we share timers or if timer is across different speeds
-
-  // leaky XOR, AND, NAND (OR doesn't leak)
+  //  prob=1;
+  // leaky XOR to test
+  if (prob>31) prob=31;
+  
+  if (x^y==0) return 0;
+  shift_registerR=(shift_registerR<<1)+z; // we are shifting left << so bit 31 is out last one
+  if ((shift_registerR&masky[prob])==0) return 1;
+  //  else if (rand()%prob==0) return 1;
+  return 0;
   
   /*  timer++;
   if (timer>p){
@@ -575,24 +584,100 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // so that we only shift a part of that SR - to try this!
   /////////////////////////////////////////////////////////////////////////////////////////
 
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // try basics but with leaky SR and probability set from pulses or from CV depending on mode...
+  /////////////////////////////////////////////////////////////////////////////////////////
+  
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    if (coggr==0)    shift_registern+= leaks(bitn,bitr, 8);
+    //    if (coggr==0)    shift_registern+= bitn ^ bitr;
+    else shift_registern+= leaks(bitn, ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01), 8); // was better with only coggr as leaky above but can have both
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+  }
+
+
+  // do LSR - input from shift_registern
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+tmp;
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+  }    
+
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+  
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  } 
+
+   //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggc==0)  shift_registerr=(shift_registerr<<1)+bitc;
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+tmp;
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+  }    
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////
   // - NLC 8 bit cipher simulation: only makes sense for NSR and CSR where we have many bits in
   // so for NSR - with ADC input we can try to have bits only entering CSR register on strobe
   // so we need to feed them into ghost reg then copy over on strobe...
   // test this which doesn't work so well with NSR/ADC but could work with CSR (remember feedback bit is only renewed on strobe)
   // what is CSR clkin= //   if (!(GPIOB->IDR & (1<<7)))    shift_registerpar[xx]+= bitn;
-
+  // working well - we can use top and bottom strobes and lots of potential variations
+  /////////////////////////////////////////////////////////////////////////////////////////
+  /*
   countern++;
   if (countern>=speedn){ 
     countern=0;
     if (n==8) {
-      k=(adc_buffer[12]);//+tmpp; // now 8 bits only
+      k=(adc_buffer[12])>>4;//+tmpp; // now 8 bits only
       n=0;
     }
     bitn = (shift_registern>>SRlengthn) & 0x01; 
-    shift_registern=(shift_registern<<1)+(((k>>n)&0x01)|bitc);
+    shift_registern=(shift_registern<<1)+(((k>>n)&0x01));//|bitc); with or without bitc
     n++;    
     coggn=0;
-
   }  
 
   // just try passing this down to CSR with latch on output 
@@ -602,7 +687,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     counterc=0;
 
     if (!(GPIOC->IDR & (1<<4))) {
-      tmpp=(shift_registerc &0xff)<<4; // 8 bits
+      tmpp=(shift_registerc & 0xff)<<4; // 8 bits and we could also change the number of bits dynamically
       bitc = ((shift_registerc>>SRlengthc) & 0x01) ^  (shift_registerc&0x01); // in 8 bit cipher is XOR with bit0
     }
 
@@ -620,7 +705,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   DAC_SetChannel1Data(DAC_Align_12b_R, tmpp); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
   }
-
+  */
   
   /*
   countern++;
