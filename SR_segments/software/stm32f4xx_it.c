@@ -28,6 +28,14 @@
 
 TODO:
 
+// August 2021: brainstorms still but start working/testing pulse driven speeds, fill in basics and final speed adjustments
+// each mode has:
+
+// speed from CV or from pulse/interrupts, speedCV has no speed at
+// slowest end, think about how we norm left, right and lower ghost
+// pulses to keep things running (as cannot be straight out por delayed out but we need to test this in practice)
+// pulse ins usage, pulse outs/any division...
+
 // from late July 2021 test sketches which show directions rather than full framework
 
 - DONEfix noise in DAC out (is from speed of ADC or DAC?, what speed can we aim for? - was smoothing of speed.
@@ -88,6 +96,7 @@ volatile uint16_t speedn, speedl, speedr, speedc=0;
 
 volatile uint16_t countern, counterl, counterr, counterc=0;
 volatile uint16_t SRlengthn=31, SRlengthl=31, SRlengthr=31, SRlengthc=31, lengthbitn=15, Slengthbitl=15, lengthbitr=15, Slengthbitc=15;
+volatile uint16_t GSRlengthn=31, GSRlengthl=31, GSRlengthr=31, GSRlengthc=31;
 
 // and also need counters for "cogs"
 volatile uint32_t coggn, coggl, coggr, coggc=0;
@@ -107,7 +116,7 @@ static uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 
 static uint8_t bitsz[256]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8};
 
-static uint32_t masky[32]={//0,0,0, // we don't use
+static uint32_t masky[32]={//0,0,0, // we don't use but here they are
 			   0b00000000000000000000000000000000,			  
 			   0b00000000000000000000000000000001,			  
 			   0b00000000000000000000000000000111,			  
@@ -552,7 +561,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  static volatile uint16_t k=0,ll=0, n=0, accum, cnt=0;
+  static volatile uint16_t k=0,ll=0, n=0, accum, cnt=0, sl=0;
   static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
   uint16_t j, bit, xx;
   int16_t tmpt;
@@ -582,12 +591,105 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // ideas to try: different lengths of the SR in the SR, changing barrier bits which temporarily stop the
   // flow of the main SR - which is maybe better as keeping bits static -
   // so that we only shift a part of that SR - to try this!
+  // so do we tag in an extra SR: Gshift_register?
+  // bit is chosen as start of loop ->Gshift advances (length) and returns to xor with bit x
+  // - how we choose length and returning bit (also speed matches overall speed or?
+
+  // works well but we need control over return bit and length (right now we use model and moder which works well but
+  // will have to use either cv for one and pulses//
+
+  // how extra loops could work for all SRs?
   /////////////////////////////////////////////////////////////////////////////////////////
 
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    if (coggr==0)    shift_registern+= bitn | bitr;
+    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+  }
+
+ 
+   // do LSR - input from shift_registern - this one has the extra loop inside
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+    bitl = (shift_registerl>>SRlengthl) & 0x01;
+    tmpp=(Gshift_registerl>>GSRlengthl) & 0x01;
+    // xor tmmp with tmpp at bit sl
+    sl=model>>1; //++ to change TEST
+    shift_registerl=shift_registerl^(tmpp<<sl);
+    if (coggn==0)  shift_registerl=(shift_registerl<<1)+(bitn);
+    else {
+      tmp=((shift_registern>>(SRlengthn-(coggn-1)))&0x01); // double check length of coggn - for length 31 we can go to 32
+      shift_registerl=(shift_registerl<<1)+tmp;
+    }
+    coggn++;
+    if (coggn>(SRlengthn+1)) coggn=0;
+    coggl=0;
+    // entry of bit sl into Gshift_register
+    sl=moder>>1; //++ to change TEST
+    Gshift_registerl=(Gshift_registerl<<1)+((shift_registerl>>sl)&0x01);    
+  }    
+
+    // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+  
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggc==0)  shift_registerr=(shift_registerr<<1)+bitc;
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+tmp;
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+  }    
+
+
+  
   /////////////////////////////////////////////////////////////////////////////////////////
   // try basics but with leaky SR and probability set from pulses or from CV depending on mode...
   /////////////////////////////////////////////////////////////////////////////////////////
-  
+  /*  
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -655,7 +757,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (coggc>(SRlengthc+1)) coggc=0;
   coggr=0;
   }    
-
+  */
 
   /////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////
