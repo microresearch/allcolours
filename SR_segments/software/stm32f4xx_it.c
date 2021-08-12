@@ -28,6 +28,8 @@
 
 TODO:
 
+- try pulse driven basic SR structure with ADC and DAC!
+
 // August 2021: brainstorms still but start working/testing pulse driven speeds, fill in basics and final speed adjustments
 // each mode has:
 
@@ -38,6 +40,8 @@ TODO:
 
 // from late July 2021 test sketches which show directions rather than full framework
 
+
+/////////////////////////////////////////////////////
 - DONEfix noise in DAC out (is from speed of ADC or DAC?, what speed can we aim for? - was smoothing of speed.
 
 - do all speeds/modes and check feedback is working...
@@ -91,7 +95,7 @@ volatile uint32_t Gshift_registerl=0xff;
 volatile uint32_t Gshift_registerr=0xff;
 volatile uint32_t Gshift_registerc=0xff; 
 
-volatile uint16_t bitn, bitl, bitr, bitc=0, bitnx;
+volatile uint32_t bitn, bitl, bitr, bitc=0, bitnx;
 volatile uint16_t speedn, speedl, speedr, speedc=0;
 
 volatile uint16_t countern, counterl, counterr, counterc=0;
@@ -116,7 +120,7 @@ static uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 
 static uint8_t bitsz[256]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8};
 
-static uint32_t masky[32]={//0,0,0, // we don't use but here they are
+static uint32_t masky[32]={//0,0,0, // 
 			   0b00000000000000000000000000000000,			  
 			   0b00000000000000000000000000000001,			  
 			   0b00000000000000000000000000000111,			  
@@ -157,6 +161,42 @@ static uint32_t masky[32]={//0,0,0, // we don't use but here they are
 			   0b01111111111111111111111111111111,			   
 			   0b11111111111111111111111111111111,			   
 };
+
+static uint32_t othermasky[32]={
+  0b00000000000000000000000000000000,
+  0b10000000000000000000000000000000,
+  0b11000000000000000000000000000000,
+  0b11100000000000000000000000000000,
+  0b11110000000000000000000000000000,
+  0b11111000000000000000000000000000,
+  0b11111100000000000000000000000000,
+  0b11111110000000000000000000000000,
+  0b11111111000000000000000000000000,
+  0b11111111100000000000000000000000,
+  0b11111111110000000000000000000000,
+  0b11111111111000000000000000000000,
+  0b11111111111100000000000000000000,
+  0b11111111111110000000000000000000,
+  0b11111111111111000000000000000000,
+  0b11111111111111100000000000000000,
+  0b11111111111111110000000000000000,
+  0b11111111111111111000000000000000,
+  0b11111111111111111100000000000000,
+  0b11111111111111111110000000000000,
+  0b11111111111111111111000000000000,
+  0b11111111111111111111100000000000,
+  0b11111111111111111111110000000000,
+  0b11111111111111111111111000000000,
+  0b11111111111111111111111100000000,
+  0b11111111111111111111111110000000,
+  0b11111111111111111111111111000000,
+  0b11111111111111111111111111100000,
+  0b11111111111111111111111111110000,
+  0b11111111111111111111111111111000,
+  0b11111111111111111111111111111110,
+  0b11111111111111111111111111111111,
+};
+
 
 // TODO: test much greater range of slow speeds - and stop indicator/value at end -> first establish basic speed for all modes and then
 // we can do this...
@@ -563,7 +603,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 {
   static volatile uint16_t k=0,ll=0, n=0, accum, cnt=0, sl=0;
   static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
-  uint16_t j, bit, xx;
+  uint16_t j, bit, xx, x;
   int16_t tmpt;
     //low pass test
   static float SmoothData=0.0;
@@ -585,9 +625,195 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   /// TODO: test wheels across speeds and lengths of basic SRs
   // top one resets cycling/circling counter which wheels through SR
   // TESTED but sanity check lengths...
- 
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // 2nd OVERLAP attempt
+  // overlap is always from following SR
+  /////////////////////////////////////////////////////////////////////////////////////////
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    if (coggr==0)    shift_registern+= bitn | bitr;
+    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+  }
+//  }
+
+  // do LSR - input from shift_registern - TEST overlap here
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+  bitl = (shift_registerl>>SRlengthl) & 0x01;
+  // overlap - shift it, copy sl x bits and place shifted bit in x+1
+  // question is if sl>length of register?
+  sl=(model>>2)+1; // TESTY - but we need to get this value from somewhere else
+  shift_registerl=(shift_registerl<<1);
+  shift_registerl^=masky[sl]; // clears it
+  // take sl-1 x bits from top of shift_registern
+  // but this depends on length?
+  tmpp=(shift_registern>>(31-SRlengthn))&(othermasky[sl]>>(31-SRlengthn));
+  // shift them x bits
+  tmpt=SRlengthn-sl;
+  if (tmpt<sl) tmpt=sl; // ???
+  tmpp=tmpp>>(tmpt);
+  // and place bitn at sl+1 bit
+  shift_registerl+=(bitn<<sl+1);
+  // also no COGG here and a test for what happens when one SR doesn't implement coggs
+  coggl=0;
+  }    
+
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+  
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggc==0)  shift_registerr=(shift_registerr<<1)+bitc;
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+tmp;
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+  }    
+  
+  /////////////////////////////////////////////////////////////////////////////////////////
+  //.. try shifting x number of bits across for each register
+  // but we then need to hold x bits and copy across to next reg
+  // so for modes both would need to be in agreement which is not so GREAT!
   /////////////////////////////////////////////////////////////////////////////////////////  
-  // TODO: try SR within SR - returning bit will have to be LOGICAL OPed with place in larger SR
+  /*
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    // repeat x times
+    sl=moden>>2;
+    tmpp=0;
+    for (x=0;x<sl;x++){
+      bitn = (((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u); // 32 is 31, 29, 25, 24
+      tmpp+=bitn<<x;
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    if (coggr==0)    shift_registern+= bitn | bitr;
+    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    }
+    coggn=0;
+    bitn=tmpp;
+  }
+//  }
+
+  // do LSR - input from shift_registern - but now bitn is many bits so need to be masked and input
+  // but then cogs is funny but try it anyways
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  //  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
+  if (coggn==0)  {
+    shift_registerl=shift_registerl<<1;
+    shift_registerl=(shift_registerl^masky[sl])+bitn;
+  }
+  // COGGN should also be x bits across!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO-DONE TO TEST
+  else {
+    // then here we want sl x bits from the top masked in
+    //    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    tmpt=(SRlengthn-(coggn-1))-sl;
+    if (tmpt<sl) tmpt=sl;
+    shift_registerl=((shift_registerl<<1)^masky[sl])+(shift_registern&othermasky[sl])>>tmpp;
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+  }    
+
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+  
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggc==0)  shift_registerr=(shift_registerr<<1)+bitc;
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+tmp;
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+  }    
+  */  
+  /////////////////////////////////////////////////////////////////////////////////////////  
+  // SR within SR - returning bit will have to be LOGICAL OPed with place in larger SR
   // ideas to try: different lengths of the SR in the SR, changing barrier bits which temporarily stop the
   // flow of the main SR - which is maybe better as keeping bits static -
   // so that we only shift a part of that SR - to try this!
@@ -600,7 +826,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // how extra loops could work for all SRs?
   /////////////////////////////////////////////////////////////////////////////////////////
-
+  /*
+  
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -683,7 +910,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (coggc>(SRlengthc+1)) coggc=0;
   coggr=0;
   }    
-
+  */
 
   
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -971,7 +1198,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   */
 
   /*
-  if (speedn<1000){// TEST stopping but value of 1000 will change
+//  if (speedn<1000){// TEST stopping but value of 1000 will change
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -987,7 +1214,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
     coggn=0;
   }
-  }
+//  }
 
   // do LSR - input from shift_registern
   counterl++;

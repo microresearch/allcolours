@@ -2,7 +2,7 @@
 
 - AC has 64 modes so 64x64x64x64=16 million combinations
 - speed CV to use in trigger mode (eg. length of overlap)
-- divide into speedCV, trigger/pulse
+- divide into speedCV, trigger/pulse - so that makes 32 modes doubled up
 - see also AC modes.org!
 - parallel bits input modes - eg. all x ADC bits are thrown into top or other SR
 
@@ -21,7 +21,21 @@ variable stopping bits/zeroes
 
 - left hand path/ right hand path: tree of life, kenneth grant and overlays for ...?
 
-- how we deal with overlaps
+- how we deal with overlaps? some test code already but need to think through, could connect to length?
+
+- *use other SR bits to determine length of other SR* then free up length cv for something else? 
+
+also pulse clock or cv advances number/x once eg for cycling ghost sr
+or length of ghost sr, or we can have smaller degrees of that advance,
+say 1/10 so is not such a big jump
+
+- how clock pulses can be changed for speed - xor with other parts of
+  SR, with returning bits (experiment with these timings), with speed bits????
+
+- how to notate SR - black and white, left and right, that a ghost SR
+  could decide how to route bits to left or right (but we use right
+  for feedback but could still be interesting - general idea of
+  routing bits eg ADC to one side, LFSR to other)
 
 * NSR, LSR, RSR, CSR
 
@@ -29,77 +43,97 @@ variable stopping bits/zeroes
 
 mode 0 is straight LFSR (or with ADC or)
 
-- 1-LFSRnoise/2-ADC in/3-mix of LFSR and ADC -to-LSR/or/RSR or both (do we decide that here and RSR is now designated as feedback)
+- 1-LFSRnoise/2-ADC in/3-mix of LFSR and ADC //4-comparator? -to-LSR/or/RSR or both (do we decide that here *BUT* RSR is now designated as feedback)
 
-each has-feedback(from CSR) (only makes sense with input - bitmasks from CSR etc, wheels also)
+[so that gives us 8 or so modes for each one]
 
-comparator function for ADC ins
++ comparator function for ADC ins (can we also use this for LFSR -
+  ways that we can combine bits from that?) - comp only works when we
+  have no speedCV/pulsein only
 
 - types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits
 
-electronotes just has standard weighting ADC, uniform (bits x X) from consecitive taps, and sets of spaced taps -> wide spacings
-
-- pulse in/or speedCV and what CV does when pulse in/vice versa! (eg. number of bits, LFSR length)
+- pulse in/or speedCV and what CV does when pulse in/vice versa! (eg. number of bits, LFSR length if we have as extra)
 
 - can also be clocked by CSR and/or ghosted noise SR 
+
+- *look at AC SRs and see what can be adapted for ADC as incoming bits and cycling bit or RSR return bit (or combinations of these)*
+
 - can be set of parallel SRs which feed into CSR, or just x bits from ADC go straight into CSR
+
+- ADC with LFSR options: that we OR/XOR each incoming ADC bit with
+  LFSR generated bit (from ghost LFSR), cases for parallel ADCs, that
+  we weight incoming LFSR bits, that we use LFSR as DAC to
+  add/subtract from ADC in, that we bulk XOR or just one bit per x
+  incoming ADC bits, comparator of incoming DAC against LFSR/DAC
 
 ** LSR/RSR - regular shift register modes borrow from AC - CLKIN and PULSIN, 2 pulse outs/bits or flipflops: 
 
-mode 0: feedthrough only
+mode 0: feedthrough only - straight shift through with no return
 
 LSR has entry from NSR and feeds into CSR
 RSR has entry from CSR and feeds into NSR (so is the feedback register)
 
-dark/light sides, left and right hand patrhs, mirrors (moon and sun), tree of life (Kenneth Grant - Nightside of Eden)
+dark/light sides, left and right hand paths, mirrors (moon and sun), tree of life (Kenneth Grant - Nightside of Eden)
 
-Question of how we work with entry of pulse ins: as togglers, as extra
+Question of how we work with entry of pulse ins: as togglers, pausers also, as extra
 bits (but do we always have NSR entering in, maybe AND with extra bits
 or other logic ops)
 
 List leaky/decay possibilities...
 
+- *look at AC SRs and see what can be adapted for NSR/CSR as incoming bits and cycling bit or pulse in bit (or combinations of these)*
+
 - how we handle entry and overlap from NSR or CSR (logical ops, length of overlap)
 
 - can also be clocked by bits from the NSR top register - but in this case we can't input bits from NSR as these will just be 1s!
  
-- also micro shift-registers in SR
-
 - regular AC/SR modes
 
 - just one way shift/delay - in one end, out the other (with/without bit degradation)
 
 - looping SR with/without degradation
 
-- leaking/decaying of bits, other logic feedbacks - (SRs in SRS)...
+- leaking/decaying of bits, other logic feedbacks 
+
+- micro-SRs in SRS - additional loops and feedbacks (that we can have loop in loop but also feedback in RSR to LSR and vice versa)
 
 - regular and ghost LFSRs...
 
 - latchings, holdings
 
-- multiple flipflops of various decsriptions
+- multiple flipflops of various decsriptions for pulses out
+
+- RSR is clocking/logicopwithclocking LSR and vice versa - need to test how this will work in all cases
 
 ** CSR - output register - CLKIN only, 2 pulse outs/bits or flipflops, DAC out: 
 
 mode 0: basic DAC out
 
-
 - type of DAC (eg. sigma/delta which is low pass of single stream of bits, x bit DAC)
 - which of the bits are used for regular DAC: weighted, unweighted, spacings
 - overlays, masks for DAC bits
+
+- how we handle the pulseouts so this can also be extra/doubling up of modes
+
+- *look at AC SRs and see what can be adapted for LSR as incoming bits and cycling bit (or combinations of these)*
+
+- DAC outs from SR
+
+- electronotes just has standard weighting ADC, uniform (bits x X) from consecutive taps, and sets of spaced taps -> wide spacings)
 
 what else for 64 modes divided by speedcv/pulsin = 32 still (in pulsin we have bit length for DAC)
 
 * notes... from elsewhere/sketches
 
-- what second bits out can be - different taps,
-  divided/flip_flop, diff tap and flip_flop, logical ops with other bit!
+- extra SR for random ops and timings maybe - that we can copy other SR to this also...
+
+- what second bits out can be - different taps, divided/flip_flop, diff tap and flip_flop, logical ops with other bit!
 
 - drooling shift register legged caterpillars
 
 - how to do digital filtering - x spaced bits enter, passed down straight SR (with/without bit degradation, any other fancy stuff)
 and X spaced bits are sent to DAC from CSR. return bits (how to select) OR/XOR from output (as bits or via DAC/ADC feedback options) to NSR/top register.
-
 
 - maximum SR length as 32?
 - ghost SRs
@@ -113,7 +147,7 @@ timing of a slow logic leak?
 
 trigger->latch and slow leak, disappearance of ones, bit by bit (how we could also display this as side project)
 
-- NLC 8 bit cipher simulation: only makes sense fro NSR and CSR where we have many bits in
+- NLC 8 bit cipher simulation: only makes sense for NSR and CSR where we have many bits in
 
 ... strobe is always high on 4094 so bits go into SR and are out, but
 option for data on strobe which means all SR only change on 1, CV
