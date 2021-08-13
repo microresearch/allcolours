@@ -120,49 +120,43 @@ static uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 
 static uint8_t bitsz[256]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8};
 
-static uint32_t masky[32]={//0,0,0, // 
+static uint32_t masky[32]={//0,0,0, // skip all zeroes or all ones ???
 			   0b00000000000000000000000000000000,			  
 			   0b00000000000000000000000000000001,			  
+			   0b00000000000000000000000000000011,			  
 			   0b00000000000000000000000000000111,			  
-			  
 			   0b00000000000000000000000000001111,			  
 			   0b00000000000000000000000000011111,			  
 			   0b00000000000000000000000000111111,			  
 			   0b00000000000000000000000001111111,			  
 			   0b00000000000000000000000011111111,			  
-
 			   0b00000000000000000000000111111111,			  
 			   0b00000000000000000000001111111111,			  
 			   0b00000000000000000000011111111111,			  
 			   0b00000000000000000000111111111111,			  
-			   
 			   0b00000000000000000001111111111111,			  
 			   0b00000000000000000011111111111111,			  
 			   0b00000000000000000111111111111111,			  
 			   0b00000000000000001111111111111111,			  
-			   
 			   0b00000000000000011111111111111111,			  
 			   0b00000000000000111111111111111111,			  
 			   0b00000000000001111111111111111111,			  
 			   0b00000000000011111111111111111111,			  
-			   
 			   0b00000000000111111111111111111111,			  
 			   0b00000000001111111111111111111111,			  
 			   0b00000000011111111111111111111111,			  
 			   0b00000000111111111111111111111111,			  
-			   
 			   0b00000001111111111111111111111111,			  
 			   0b00000011111111111111111111111111,			  
 			   0b00000111111111111111111111111111,			  
 			   0b00001111111111111111111111111111,			  
-
 			   0b00011111111111111111111111111111,			  
 			   0b00111111111111111111111111111111,			  
 			   0b01111111111111111111111111111111,			   
-			   0b11111111111111111111111111111111,			   
+			   //			   0b11111111111111111111111111111111,
 };
 
-static uint32_t othermasky[32]={
+static uint32_t othermasky[32]={  // skip all zeroes or all ones ???
   0b00000000000000000000000000000000,
   0b10000000000000000000000000000000,
   0b11000000000000000000000000000000,
@@ -193,8 +187,9 @@ static uint32_t othermasky[32]={
   0b11111111111111111111111111100000,
   0b11111111111111111111111111110000,
   0b11111111111111111111111111111000,
+  0b11111111111111111111111111111100,  
   0b11111111111111111111111111111110,
-  0b11111111111111111111111111111111,
+  //  0b11111111111111111111111111111111,
 };
 
 
@@ -629,7 +624,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   /////////////////////////////////////////////////////////////////////////////////////////
   // 2nd OVERLAP attempt
   // overlap is always from following SR
+  // works but needs tweaks connected with the length
+  // or we just leave length as 31
   /////////////////////////////////////////////////////////////////////////////////////////
+  /*
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -645,7 +643,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
     coggn=0;
   }
-//  }
+
 
   // do LSR - input from shift_registern - TEST overlap here
   counterl++;
@@ -658,7 +656,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   shift_registerl=(shift_registerl<<1);
   shift_registerl^=masky[sl]; // clears it
   // take sl-1 x bits from top of shift_registern
-  // but this depends on length?
+  // but this depends on length? or do we just ignore and assume length of 31?
   tmpp=(shift_registern>>(31-SRlengthn))&(othermasky[sl]>>(31-SRlengthn));
   // shift them x bits
   tmpt=SRlengthn-sl;
@@ -713,22 +711,19 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (coggc>(SRlengthc+1)) coggc=0;
   coggr=0;
   }    
-  
+  */  
   /////////////////////////////////////////////////////////////////////////////////////////
   //.. try shifting x number of bits across for each register
   // but we then need to hold x bits and copy across to next reg
   // so for modes both would need to be in agreement which is not so GREAT!
+  // TODO: try to fix that issue so we only do in following SR.
+  // done but need to check logic of this
   /////////////////////////////////////////////////////////////////////////////////////////  
-  /*
+  
   countern++;
   if (countern>=speedn){ 
     countern=0;
-    // repeat x times
-    sl=moden>>2;
-    tmpp=0;
-    for (x=0;x<sl;x++){
-      bitn = (((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u); // 32 is 31, 29, 25, 24
-      tmpp+=bitn<<x;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
     // need to catch it
     if (shift_registern==0)     shift_registern=0xff;
     
@@ -738,30 +733,44 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
     coggr++;
     if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
-    }
     coggn=0;
-    bitn=tmpp;
   }
-//  }
 
-  // do LSR - input from shift_registern - but now bitn is many bits so need to be masked and input
+  
+  // do LSR - input from shift_registern - but now bitn is many bits so need to be masked and input - trying to fix as now bitn is one bit
   // but then cogs is funny but try it anyways
+
   counterl++;
   if (counterl>=speedl){
     counterl=0;
   bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
   //  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
-  if (coggn==0)  {
-    shift_registerl=shift_registerl<<1;
-    shift_registerl=(shift_registerl^masky[sl])+bitn;
-  }
+  sl=(model>>2)+1; // need to get this from somewhere else?
+
+  if (coggn==0)  {// unsure of this logic
+    //     shift_registerl=(shift_registerl^masky[sl])+bitn;
+
+    tmpt=(SRlengthn-(sl-1)); // again what if sl is longer than lengthn - this is key figure
+    if (tmpt<(sl-1)) tmpt=(sl-1);
+    shift_registerl=((shift_registerl<<1)^masky[sl]);
+	shift_registerl+=((shift_registern&(othermasky[sl-1])>>tmpt)>>tmpt);
+	shift_registerl+=(bitn<<(sl-1)); // but that bit needs to be empty
+	}
   // COGGN should also be x bits across!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO-DONE TO TEST
   else {
     // then here we want sl x bits from the top masked in
     //    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    /*    tmpt=(SRlengthn-(coggn-1))-sl;
+    if (tmpt<sl) tmpt=sl;
+    shift_registerl=((shift_registerl<<1)^masky[sl])+(shift_registern&othermasky[sl])>>tmpt;
+    */
+    //    tmpt=(SRlengthn-(sl-1)); // again what if sl is longer than lengthn - this is key figure
     tmpt=(SRlengthn-(coggn-1))-sl;
     if (tmpt<sl) tmpt=sl;
-    shift_registerl=((shift_registerl<<1)^masky[sl])+(shift_registern&othermasky[sl])>>tmpp;
+    shift_registerl=((shift_registerl<<1)^masky[sl]);
+    shift_registerl+=((shift_registern&(othermasky[sl])>>tmpt)>>tmpt);
+    //    shift_registerl+=(bitn<<(sl-1)); // but that bit needs to be empty
+    
   }
   coggn++;
   if (coggn>(SRlengthn+1)) coggn=0;
@@ -811,7 +820,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (coggc>(SRlengthc+1)) coggc=0;
   coggr=0;
   }    
-  */  
+
   /////////////////////////////////////////////////////////////////////////////////////////  
   // SR within SR - returning bit will have to be LOGICAL OPed with place in larger SR
   // ideas to try: different lengths of the SR in the SR, changing barrier bits which temporarily stop the
