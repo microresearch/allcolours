@@ -28,7 +28,11 @@
 
 TODO:
 
+- sort masks and re-do anything which is clearing bits
+
 - try pulse driven basic SR structure with ADC and DAC!
+
+// check logic of overlaps and lengths
 
 // August 2021: brainstorms still but start working/testing pulse driven speeds, fill in basics and final speed adjustments
 // each mode has:
@@ -88,7 +92,7 @@ volatile uint32_t shift_registerl=0xff;
 volatile uint32_t shift_registerr=0xff;
 volatile uint32_t shift_registerc=0xff;
 volatile uint32_t shift_registerR=0xff; 
-
+ 
 // ghosts, revenants
 volatile uint32_t Gshift_registern=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t Gshift_registerl=0xff;
@@ -120,6 +124,43 @@ static uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 
 static uint8_t bitsz[256]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8};
 
+static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ???
+
+0b11111111111111111111111111111111,
+0b11111111111111111111111111111110,
+0b11111111111111111111111111111100,
+0b11111111111111111111111111111000,
+0b11111111111111111111111111110000,
+0b11111111111111111111111111100000,
+0b11111111111111111111111111000000,
+0b11111111111111111111111110000000,
+0b11111111111111111111111100000000,
+0b11111111111111111111111000000000,
+0b11111111111111111111110000000000,
+0b11111111111111111111100000000000,
+0b11111111111111111111000000000000,
+0b11111111111111111110000000000000,
+0b11111111111111111100000000000000,
+0b11111111111111111000000000000000,
+0b11111111111111110000000000000000,
+0b11111111111111100000000000000000,
+0b11111111111111000000000000000000,
+0b11111111111110000000000000000000,
+0b11111111111100000000000000000000,
+0b11111111111000000000000000000000,
+0b11111111110000000000000000000000,
+0b11111111100000000000000000000000,
+0b11111111000000000000000000000000,
+0b11111110000000000000000000000000,
+0b11111100000000000000000000000000,
+0b11111000000000000000000000000000,
+0b11110000000000000000000000000000,
+0b11100000000000000000000000000000,
+0b11000000000000000000000000000000,
+0b10000000000000000000000000000000,
+};
+
+  
 static uint32_t masky[32]={//0,0,0, // skip all zeroes or all ones ???
 			   0b00000000000000000000000000000000,			  
 			   0b00000000000000000000000000000001,			  
@@ -188,7 +229,7 @@ static uint32_t othermasky[32]={  // skip all zeroes or all ones ???
   0b11111111111111111111111111110000,
   0b11111111111111111111111111111000,
   0b11111111111111111111111111111100,  
-  0b11111111111111111111111111111110,
+  0b11111111111111111111111111111110
   //  0b11111111111111111111111111111111,
 };
 
@@ -495,7 +536,7 @@ void TIM4_IRQHandler(void)
 {
   uint32_t temp;
   volatile static uint16_t tmp;
-  
+
   TIM_ClearITPendingBit(TIM4, TIM_IT_Update); 
 
   /*  
@@ -514,30 +555,31 @@ void TIM4_IRQHandler(void)
   // deal with PWM for normings (always follows speedn)
   
   // double-check inversion of modes? as doesn't seem so!
+// mode are not inverted!
   
   //moden
   temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmoden=lastmoden;
   lastmoden=temp;
-  moden=63-(temp>>6); // 64 modes = 6 bits  
+  moden=(temp>>6); // 64 modes = 6 bits  
 
   // modec
   temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmodec=lastmodec;
   lastmodec=temp;
-  modec=63-(temp>>6); // 64 modes = 6 bits  
+  modec=(temp>>6); // 64 modes = 6 bits  
 
   // model
   temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmodel=lastmodel;
   lastmodel=temp;
-  model=63-(temp>>6); // 64 modes = 6 bits  
+  model=(temp>>6); // 64 modes = 6 bits  
 
   // moder
   temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmoder=lastmoder;
   lastmoder=temp;
-  moder=63-(temp>>6); // 64 modes = 6 bits  
+  moder=(temp>>6); // 64 modes = 6 bits  
    
   // speedn
   totn=totn-smoothn[nn];
@@ -599,6 +641,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   static volatile uint16_t k=0,ll=0, n=0, accum, cnt=0, sl=0;
   static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
   uint16_t j, bit, xx, x;
+uint64_t longer;
+uint32_t shift_register; // tmp
   int16_t tmpt;
     //low pass test
   static float SmoothData=0.0;
@@ -723,7 +767,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   countern++;
   if (countern>=speedn){ 
     countern=0;
-    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    //    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // try with input now - consecutive bits in
+    if (n==8) {
+      k=(adc_buffer[12])>>4;//+tmpp; // now 8 bits only
+      n=0;
+    }
+    bitn = (k>>n)&0x01;
+    n++;    
     // need to catch it
     if (shift_registern==0)     shift_registern=0xff;
     
@@ -747,31 +798,42 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
   sl=(model>>2)+1; // need to get this from somewhere else?
 
-  if (coggn==0)  {// unsure of this logic
-    //     shift_registerl=(shift_registerl^masky[sl])+bitn;
-
+  // handling overlap with new test code in binary.c
+  // but that is not right! as is at top end not length
+  // TODO: to fix
+  if (coggn==0)  {
+    // we shift round shift_regn and dump overlapx bits into bottom part of SRL
+    if (sl>SRlengthn) sl=SRlengthn;
     tmpt=(SRlengthn-(sl-1)); // again what if sl is longer than lengthn - this is key figure
-    if (tmpt<(sl-1)) tmpt=(sl-1);
-    shift_registerl=((shift_registerl<<1)^masky[sl]);
-	shift_registerl+=((shift_registern&(othermasky[sl-1])>>tmpt)>>tmpt);
-	shift_registerl+=(bitn<<(sl-1)); // but that bit needs to be empty
+    //    if (tmpt<(sl-1)) tmpt=(sl-1); // double check this!
+    //    shift_registerl=((shift_registerl<<1)^masky[sl]); // checked TOFIX
+    shift_registerl=((shift_registerl<<1) & (invmasky[sl-1])); // checked TOFIX make new masky with ~
+
+    // we want top sl-1 bits which are at length x
+    //    shift_registerl+=( (shift_registern&((othermasky[sl-1]>>(31-SRlengthn)))) >> tmpt);// FIX
+    shift_registerl+=( (shift_registern&((othermasky[sl-1]>>(32-SRlengthn))))>> tmpt);
+
+    shift_registerl+=(bitn<<(sl-1)); // but that bit needs to be empty - it is masked
 	}
   // COGGN should also be x bits across!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO-DONE TO TEST
   else {
-    // then here we want sl x bits from the top masked in
-    //    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
-    /*    tmpt=(SRlengthn-(coggn-1))-sl;
-    if (tmpt<sl) tmpt=sl;
-    shift_registerl=((shift_registerl<<1)^masky[sl])+(shift_registern&othermasky[sl])>>tmpt;
-    */
-    //    tmpt=(SRlengthn-(sl-1)); // again what if sl is longer than lengthn - this is key figure
-    tmpt=(SRlengthn-(coggn-1))-sl;
-    if (tmpt<sl) tmpt=sl;
-    shift_registerl=((shift_registerl<<1)^masky[sl]);
-    shift_registerl+=((shift_registern&(othermasky[sl])>>tmpt)>>tmpt);
-    //    shift_registerl+=(bitn<<(sl-1)); // but that bit needs to be empty
+    longer=shift_registern;
+    longer=longer<<coggn; // shifter must be below length which we check below
+    if (sl>SRlengthn) sl=SRlengthn;
+    //    shift_register=(longer&othermasky[sl])+((longer&(0b1111111111111111111111111111111100000000000000000000000000000000))>>(sl+1)); // so this seems to workNOT
+    shift_register=(longer&masky[SRlengthn])+((longer&((0b1111111111111111111111111111111100000000000000000000000000000000)+othermasky[31-SRlengthn]))>>(SRlengthn+1)); // working now from binary.c
+
     
+    tmpt=SRlengthn-sl;
+    // we want overlap_length=x which is top x bits of shift_register shifted to bottom bits and anded for cogg
+    // clear 
+    //    shift_registerl=((shift_registerl<<1)^masky[sl]); // XOR doesn;t clear - number &= ~(1UL << n);
+    shift_registerl=((shift_registerl<<1) & (invmasky[sl-1])); // checked TOFIX make new masky with ~
+    // shift to lower x bits
+    shift_register=(shift_register>>tmpt)&masky[sl];
+    shift_registerl+=shift_register;     
   }
+
   coggn++;
   if (coggn>(SRlengthn+1)) coggn=0;
   coggl=0;
