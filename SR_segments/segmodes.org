@@ -37,6 +37,16 @@ say 1/10 so is not such a big jump
   for feedback but could still be interesting - general idea of
   routing bits eg ADC to one side, LFSR to other)
 
+- test with/withouts coggs running - how this works
+
+- for overlap: what comes out is only one bit (of course there could be pulses from earlier bits)
+  try overlap with multiple << shift (same as or differing from overlap size)
+  returning bits
+
+- overlap also in sense that both overlap (XOR etc top and bottom overlapped SRs), what other kinds of overlap?
+
+- how else to use our new multiple shift code?
+
 * NSR, LSR, RSR, CSR
 
 ** NSR - top register - ADC in, CLKIN only, no pulse outs:
@@ -51,7 +61,7 @@ mode 0 is straight LFSR (or with ADC or)
   ways that we can combine bits from that?) - comp only works when we
   have no speedCV/pulsein only
 
-- types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits
+- types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits, delayed/stored bits
 
 - pulse in/or speedCV and what CV does when pulse in/vice versa! (eg. number of bits, LFSR length if we have as extra)
 

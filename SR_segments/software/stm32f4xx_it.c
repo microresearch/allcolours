@@ -698,7 +698,7 @@ uint32_t shift_register; // tmp
   // question is if sl>length of register?
   sl=(model>>2)+1; // TESTY - but we need to get this value from somewhere else
   shift_registerl=(shift_registerl<<1);
-  shift_registerl^=masky[sl]; // clears it
+  shift_registerl&=invmasky[sl]; // clears itNOT TESTY/FIXED
   // take sl-1 x bits from top of shift_registern
   // but this depends on length? or do we just ignore and assume length of 31?
   tmpp=(shift_registern>>(31-SRlengthn))&(othermasky[sl]>>(31-SRlengthn));
@@ -806,8 +806,8 @@ uint32_t shift_register; // tmp
     if (sl>SRlengthn) sl=SRlengthn;
     tmpt=(SRlengthn-(sl-1)); // again what if sl is longer than lengthn - this is key figure
     //    if (tmpt<(sl-1)) tmpt=(sl-1); // double check this!
-    //    shift_registerl=((shift_registerl<<1)^masky[sl]); // checked TOFIX
-    shift_registerl=((shift_registerl<<1) & (invmasky[sl-1])); // checked TOFIX make new masky with ~
+    //    shift_registerl=((shift_registerl<<1)^masky[sl]); // checked
+    shift_registerl=((shift_registerl<<1) & (invmasky[sl-1])); // make new masky with ~ & (invmasky[sl-1])
 
     // we want top sl-1 bits which are at length x
     //    shift_registerl+=( (shift_registern&((othermasky[sl-1]>>(31-SRlengthn)))) >> tmpt);// FIX
@@ -924,7 +924,8 @@ uint32_t shift_register; // tmp
     tmpp=(Gshift_registerl>>GSRlengthl) & 0x01;
     // xor tmmp with tmpp at bit sl
     sl=model>>1; //++ to change TEST
-    shift_registerl=shift_registerl^(tmpp<<sl);
+//    shift_registerl=shift_registerl^(tmpp<<sl);
+   shift_registerl=shift_registerl& ~(tmpp<<sl); // TESTY/FIXED
     if (coggn==0)  shift_registerl=(shift_registerl<<1)+(bitn);
     else {
       tmp=((shift_registern>>(SRlengthn-(coggn-1)))&0x01); // double check length of coggn - for length 31 we can go to 32
@@ -1170,7 +1171,8 @@ uint32_t shift_register; // tmp
     // ignore length of CSR
     //    tmp=31; tmp of 31 will kill all...
     if (tmp==31) tmp=30;
-    shift_registerl^=masky[tmp]; // clear overlap
+    shift_registerl &= (invmasky[tmp]); // clear overlap - TEST
+
     shift_registerl+=((shift_registern>>(31-tmp))&masky[tmp]); // push top bits into that overlap gap
     
     shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
@@ -1590,7 +1592,8 @@ uint32_t shift_register; // tmp
   bitn = (shift_registern>>SRlengthn) & 0x01; // bit which would be shifted out
   shift_registern=(shift_registern<<1); // here or later?
   shift_registern+=((k&(1<<cnt))>>cnt);// ^ bitc; or internal feedback of bits on bits...
-  shift_registern^=(shift_registerc&masky[SRlengthc]); // other kinds of logical opps but we need to mask for length
+//  shift_registern^=(shift_registerc&masky[SRlengthc]); // other kinds of logical opps but we need to mask for length FIXED TEST
+shift_registern&=~(shift_registerc&masky[SRlengthc]); // other kinds of logical opps but we need to mask for length FIXED TEST
   // how do we mask for length?
   
 // older not workings 
