@@ -3,6 +3,9 @@
 - AC has 64 modes so 64x64x64x64=16 million combinations
 - speed CV to use in trigger mode (eg. length of overlap)
 - divide into speedCV, trigger/pulse - so that makes 32 modes doubled up
+
+maybe with/without coggs as further option becomes 16 modes
+
 - see also AC modes.org!
 - parallel bits input modes - eg. all x ADC bits are thrown into top or other SR
 
@@ -37,7 +40,7 @@ say 1/10 so is not such a big jump
   for feedback but could still be interesting - general idea of
   routing bits eg ADC to one side, LFSR to other)
 
-- test with/withouts coggs running - how this works
+- *test with/withouts coggs running - how this works - seems to work so how to deal with this option in modes*
 
 - for overlap: what comes out is only one bit (of course there could be pulses from earlier bits)
   try overlap with multiple << shift (same as or differing from overlap size)
@@ -47,6 +50,14 @@ say 1/10 so is not such a big jump
 
 - how else to use our new multiple shift code?
 
+- what we do with both clock and pulse in bits in CV mode and how we
+  norm these bits (NSR clock is normed to TIM1 pwm which we will use
+  speedCV as control for) - otherwise we have pulseouts normed to all other pulse/clock ins
+
+[but none of these will advance so maybe sync all to this clock which frees up their own speedCVs]
+
+- experimental modes for LSR, RSR and CSR only advance with cogg=0 from previous (maybe logic op with bit)???
+
 * NSR, LSR, RSR, CSR
 
 ** NSR - top register - ADC in, CLKIN only, no pulse outs:
@@ -55,11 +66,11 @@ mode 0 is straight LFSR (or with ADC or)
 
 - 1-LFSRnoise/2-ADC in/3-mix of LFSR and ADC //4-comparator? -to-LSR/or/RSR or both (do we decide that here *BUT* RSR is now designated as feedback)
 
-[so that gives us 8 or so modes for each one]
+[so that gives us 8 or so modes for each one - or 4 with new coggs setup]
 
 + comparator function for ADC ins (can we also use this for LFSR -
   ways that we can combine bits from that?) - comp only works when we
-  have no speedCV/pulsein only
+  have no speedCV/pulsein only - or we can have 
 
 - types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits, delayed/stored bits
 
@@ -76,6 +87,10 @@ mode 0 is straight LFSR (or with ADC or)
   we weight incoming LFSR bits, that we use LFSR as DAC to
   add/subtract from ADC in, that we bulk XOR or just one bit per x
   incoming ADC bits, comparator of incoming DAC against LFSR/DAC
+
+- number of bits in/out by CV or pulse counter(which wraps around)
+
+- what to do if bits in/out is greater than length (options: put in anyways and lose top/bottom bits - shift if necessary // stop at length)
 
 ** LSR/RSR - regular shift register modes borrow from AC - CLKIN and PULSIN, 2 pulse outs/bits or flipflops: 
 
@@ -112,9 +127,9 @@ List leaky/decay possibilities...
 
 - latchings, holdings
 
-- multiple flipflops of various decsriptions for pulses out
+- multiple flipflops of various descriptions for pulses out
 
-- RSR is clocking/logicopwithclocking LSR and vice versa - need to test how this will work in all cases
+- RSR is "clocking/logicopwithclocking" LSR and vice versa - need to test how this will work in all cases
 
 ** CSR - output register - CLKIN only, 2 pulse outs/bits or flipflops, DAC out: 
 
@@ -126,13 +141,17 @@ mode 0: basic DAC out
 
 - how we handle the pulseouts so this can also be extra/doubling up of modes
 
-- *look at AC SRs and see what can be adapted for LSR as incoming bits and cycling bit (or combinations of these)*
+- *look at AC SRs and see what can be adapted for CSR as incoming bits and cycling bit (or combinations of these)*
 
 - DAC outs from SR
 
 - electronotes just has standard weighting ADC, uniform (bits x X) from consecutive taps, and sets of spaced taps -> wide spacings)
 
 what else for 64 modes divided by speedcv/pulsin = 32 still (in pulsin we have bit length for DAC)
+
+- number of bits in/out by CV or pulse counter(which wraps around)
+
+- what to do if bits in/out is greater than length (options: put in anyways and lose top/bottom bits - shift if necessary // stop at length)
 
 * notes... from elsewhere/sketches
 

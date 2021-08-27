@@ -28,9 +28,17 @@
 
 TODO:
 
-- sort masks and re-do anything which is clearing bits
+- sort masks and re-do anything which is clearing bits - DONE but re-check and test
 
-- try pulse driven basic SR structure with ADC and DAC!
+- *try pulse driven basic SR structure with ADC and DAC!*
+
+- new overlap notes from notebook - testings!
+
+- also pulse clock or cv advances number/x once eg for cycling ghost sr
+or length of ghost sr, or we can have smaller degrees of that advance,
+say 1/10 so is not such a big jump
+
+- see all segmodes notes and port AC modes...
 
 // check logic of overlaps and lengths
 
@@ -46,14 +54,13 @@ TODO:
 
 
 /////////////////////////////////////////////////////
+//older:
 - DONEfix noise in DAC out (is from speed of ADC or DAC?, what speed can we aim for? - was smoothing of speed.
 
 - do all speeds/modes and check feedback is working...
 // new interrupt for these on TIM
 
 - test out wheel for connection between SRs
-
-
 - revisit LFSR and taps
 - experiment with how sets of parallel SRs might sound -> CV
 
@@ -452,7 +459,7 @@ void PendSV_Handler(void)
 
 // TEST: inpulse interrupts to attach are: CSR: PC3nowPB7, NSR: PC4, RSR: PC5, LSR: PB6
 
-void EXTI4_IRQHandler(void){ // working NSR
+void EXTI4_IRQHandler(void){ // working NSR 
   static uint16_t flipper=0;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   
@@ -650,21 +657,210 @@ uint32_t shift_register; // tmp
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
-  /*
+  /* // basic tests!
   k=(adc_buffer[12]); // now 12 bits only 
   DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
-  */  
+  
 
   // time PB4 with period=9 prescaler=8 we have 300KHz
   //  tmp^=1;
   //  if (tmp) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
   //  else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  */
 
-  /// TODO: test wheels across speeds and lengths of basic SRs
-  // top one resets cycling/circling counter which wheels through SR
-  // TESTED but sanity check lengths...
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // - experimental mode for LSR, RSR and CSR only advance with cogg=0 from previous (maybe logic op with other bits)???
+  //   works but with all 4
+  // can also mix up dependency loop
+  // xor etc with other bits
+  /////////////////////////////////////////////////////////////////////////////////////////
 
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    if (coggr==0) {
+      shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+      shift_registern+= bitn | bitr;
+      coggn=0; // we still need to reset this! - but do we do that even if we don't advance? -> 2 options here and below!
+          }
+    coggr=1;
+    //if (coggr==0)    shift_registern+= bitn | bitr;
+    //    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    //    coggr++;
+    //    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    //    coggn=0; // we still need to reset this! - but do we do that even if we don't advance?
+  }
+
+  // do LSR - input from shift_registern
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0) {
+    shift_registerl=(shift_registerl<<1)+bitn;
+    coggl=0;
+  }
+  //  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
+  //  else {
+  //    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+  //    shift_registerl=(shift_registerl<<1)+tmp;
+  //  }
+    coggn=1;
+  //  if (coggn>(SRlengthn+1)) coggn=0;
+    //  coggl=0;
+  }    
+
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  //  shift_registerc=(shift_registerc<<1)+bitl;
+  if (coggl==0) {
+    shift_registerc=(shift_registerc<<1)+bitl;
+    coggc=0;
+  }
+  //if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  //  else {
+  //    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+  //    shift_registerc=(shift_registerc<<1)+tmp;
+  //  }
+    coggl=1;
+  //  if (coggl>(SRlengthl+1)) coggl=0;
+  // coggc=0;
+  
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  //shift_registerr=(shift_registerr<<1)+bitc;
+
+  if (coggc==0)  {
+    shift_registerr=(shift_registerr<<1)+bitc;
+    coggr=0;
+  }
+  //  else {
+  //    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+  //    shift_registerr=(shift_registerr<<1)+tmp;
+  //  }
+    coggc=1;
+  //  if (coggc>(SRlengthc+1)) coggc=0;
+    //    coggr=0;
+  }    
+
+  
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // testing what happens when one SR has no coggs
+  // TODO: say LSR has no coggs! DONE
+  // TODO: try all with no coggs now! DONE and seems interesting but chokes a bit
+  /////////////////////////////////////////////////////////////////////////////////////////
+  //  speedn=2048;
+  /*
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    shift_registern+= bitn | bitr;
+    
+    //if (coggr==0)    shift_registern+= bitn | bitr;
+    //    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    //    coggr++;
+    //    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0; // we still need to reset this!
+  }
+
+  // do LSR - input from shift_registern
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  shift_registerl=(shift_registerl<<1)+bitn;
+  //  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
+  //  else {
+  //    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+  //    shift_registerl=(shift_registerl<<1)+tmp;
+  //  }
+  //  coggn++;
+  //  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+  }    
+
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  shift_registerc=(shift_registerc<<1)+bitl;
+
+  //if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  //  else {
+  //    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+  //    shift_registerc=(shift_registerc<<1)+tmp;
+  //  }
+  //  coggl++;
+  //  if (coggl>(SRlengthl+1)) coggl=0;
+    coggc=0;
+  
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  shift_registerr=(shift_registerr<<1)+bitc;
+
+  //  if (coggc==0)  shift_registerr=(shift_registerr<<1)+bitc;
+  //  else {
+  //    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+  //    shift_registerr=(shift_registerr<<1)+tmp;
+  //  }
+  //  coggc++;
+  //  if (coggc>(SRlengthc+1)) coggc=0;
+    coggr=0;
+  }    
+  */
+
+  
   /////////////////////////////////////////////////////////////////////////////////////////
   // 2nd OVERLAP attempt
   // overlap is always from following SR
@@ -761,10 +957,11 @@ uint32_t shift_register; // tmp
   // but we then need to hold x bits and copy across to next reg
   // so for modes both would need to be in agreement which is not so GREAT!
   // TODO: try to fix that issue so we only do in following SR.
-  // done but need to check logic of this
+  // DONE but need to check logic of this
   /////////////////////////////////////////////////////////////////////////////////////////  
-  
-  countern++;
+
+  /*
+    countern++;
   if (countern>=speedn){ 
     countern=0;
     //    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
@@ -882,6 +1079,8 @@ uint32_t shift_register; // tmp
   if (coggc>(SRlengthc+1)) coggc=0;
   coggr=0;
   }    
+
+  */
 
   /////////////////////////////////////////////////////////////////////////////////////////  
   // SR within SR - returning bit will have to be LOGICAL OPed with place in larger SR
@@ -1246,7 +1445,7 @@ uint32_t shift_register; // tmp
   
   /////////////////////////////////////////////////////////////////////////////////////////
   
-  // TODO: full pass through of NSR->LSR->CSR->RSR->NSR(logic) -tested and works well below
+  // Full pass through of NSR->LSR->CSR->RSR->NSR(logic) -tested and works well below
 
   // do NSR - LFSR
 
