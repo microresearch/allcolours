@@ -1,4 +1,6 @@
 // code for basic pass through so for testing ideas/brainstorming
+// bug here with passing on bitn
+
 
 countern++;
   if (countern>=speedn){ 
@@ -15,7 +17,6 @@ countern++;
     if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
     coggn=0;
   }
-//  }
 
   // do LSR - input from shift_registern
   counterl++;

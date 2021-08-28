@@ -6,6 +6,65 @@
 
 maybe with/without coggs as further option becomes 16 modes
 
+/// LOTS TO RESOLVE:
+
+*questions to resolve: routing and feedback, coggs or micro-registers, in or out number of bits vs. length of register* 
+
+*how to make modes more generic/independent whilst keeping routing options and open-ness*
+
+- feedback thru RSR makes more sense for ADC in modes and less for LFSR so maybe this decides routing?
+
+/////
+
+- *thinking also that coggs are a bit like small shift registers* -
+  what could be done with these - rotating/looping SRs handle
+  feedthrough of registers TODO! - also that this is more like overlap
+  we had in mind - this seems to work
+
+//////
+
+- kind of bug in all lfsr code (28/8/2021) as was passing on bitn
+  which was LFSR feedback bit - still was interesting and keep for
+  some modes or use that bitn for timing etc...
+
+- also question as bitc is out but speed there determines speed of
+  feedback so we should really have different paths:
+
+eg. NSR->LSR->CSR
+            ->RSR
+
+NSR->LSR->CSR
+   ->RSR->NSR [in this routing then how do we make sense of NSR length]
+
+NSR->LSR->CSR
+   ->RSR->CSR 
+
+need to figure out how to select these from modes - see below
+
+routing can be array of pointers
+
+//////
+
+- do we always want same flow NSR->LSR->CSR->RSR->backtoNSR (at least
+  do we always want feedback to NSR but then if not RSR would be
+  redundant)... Q is how to signal different routing across independent modes:
+
+if (routex==1) do this... // or pointers to entries
+
+*so we can list routings but how are these selected - by the top mode maybe?*
+
+/////
+
+- generic SR classifications to work on:
+
+-routing
+-what drives it on: pulses, bits/otherSR, values=speed
+-looping/input bits
+-output bits
+-question of overlap/coggs/SR
+
+/////
+
 - see also AC modes.org!
 - parallel bits input modes - eg. all x ADC bits are thrown into top or other SR
 
@@ -14,7 +73,8 @@ maybe with/without coggs as further option becomes 16 modes
 timing from speed-cv, pulse in, top reg(but no bits in), pulse AND
 speedcv (divide, multiply, expect), pulse AND/OR/XOR top (again no
 bits), from ghost registers (which can also be themselves clocked by
-top register and then we can use bits in or?)
+top register and then we can use bits in or?), timing also from SR->DAC
+
 
 - question of range of speed - from slow CV (Hz?) to KHz for sigma/delta
 
@@ -72,6 +132,8 @@ mode 0 is straight LFSR (or with ADC or)
   ways that we can combine bits from that?) - comp only works when we
   have no speedCV/pulsein only - or we can have 
 
+- feedback of analogue output - eg. comparator using analogue out
+
 - types of ADC (x bits, simple uncombined bits as in digfiltersim, equivalent bits), length in bits, delayed/stored bits
 
 - pulse in/or speedCV and what CV does when pulse in/vice versa! (eg. number of bits, LFSR length if we have as extra)
@@ -98,6 +160,8 @@ mode 0: feedthrough only - straight shift through with no return
 
 LSR has entry from NSR and feeds into CSR
 RSR has entry from CSR and feeds into NSR (so is the feedback register)
+
+*but now we look into different paths!*
 
 dark/light sides, left and right hand paths, mirrors (moon and sun), tree of life (Kenneth Grant - Nightside of Eden)
 
