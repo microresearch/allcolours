@@ -8,7 +8,7 @@ maybe with/without coggs as further option becomes 16 modes
 
 /// LOTS TO RESOLVE:
 
-*questions to resolve: routing and feedback, coggs or micro-registers, in or out number of bits vs. length of register* 
+*questions to resolve: routing and feedback, coggs and/or micro-registers, in or out number of bits vs. length of register* 
 
 *how to make modes more generic/independent whilst keeping routing options and open-ness?*
 

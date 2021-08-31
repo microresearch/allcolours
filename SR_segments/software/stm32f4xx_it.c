@@ -146,9 +146,11 @@ static uint32_t rightshift[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, // first 12 bits
 static uint32_t leftshift[32]= {11,10,9, 8,7,6,5, 4,3,2,1,
 				0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 
-static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ???
+// fixed masks 31/8/2021
 
-0b11111111111111111111111111111111,
+static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ??? skip all ones
+
+  //0b11111111111111111111111111111111,
 0b11111111111111111111111111111110,
 0b11111111111111111111111111111100,
 0b11111111111111111111111111111000,
@@ -180,6 +182,7 @@ static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ???
 0b11100000000000000000000000000000,
 0b11000000000000000000000000000000,
 0b10000000000000000000000000000000,
+0b00000000000000000000000000000000
 };
 
   
@@ -219,7 +222,7 @@ static uint32_t masky[32]={//0,0,0, // skip all zeroes or all ones ??? all 0
 };
 
 static uint32_t othermasky[32]={  // skip all zeroes or all ones ???
-  0b00000000000000000000000000000000,
+  //  0b00000000000000000000000000000000,
   0b10000000000000000000000000000000,
   0b11000000000000000000000000000000,
   0b11100000000000000000000000000000,
@@ -250,8 +253,8 @@ static uint32_t othermasky[32]={  // skip all zeroes or all ones ???
   0b11111111111111111111111111110000,
   0b11111111111111111111111111111000,
   0b11111111111111111111111111111100,  
-  0b11111111111111111111111111111110
-  //  0b11111111111111111111111111111111,
+  0b11111111111111111111111111111110,
+  0b11111111111111111111111111111111,
 };
 
 
@@ -686,7 +689,7 @@ uint32_t shift_register; // tmp
   /////////////////////////////////////////////////////////////////////////////////////////
   // how to re-think overlap with new scheme
   /////////////////////////////////////////////////////////////////////////////////////////
-    
+  /*    
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -700,7 +703,7 @@ uint32_t shift_register; // tmp
     bitr=(Gshift_registerr>>SRlengthr) & 0x01;
     Gshift_registerr=(Gshift_registerr<<1)+bitr;
 
-    shift_registern+= bitn & bitr; // or goes to 1s, xor is risky, AND works...
+    shift_registern+= bitn ^ bitr; // or goes to 1s, xor is risky, AND works...
   }
 
   // do LSR - input from shift_registern
@@ -722,7 +725,8 @@ uint32_t shift_register; // tmp
   shift_registerl=(shift_registerl<<1);
     // overlap bottom x bits of l with top x bits of Gn
   tmpp=shift_registerl&masky[sl];
-  shift_registerl&=invmasky[sl]; // clear lower - masks don't match but we did one shift - see if it makes sense?
+  shift_registerl&=invmasky[sl]; // clear lower - masks don't match but we did one shift - see if it makes sense? - try in test2.c
+  // tested and we fixed the two masky arrays
   tmp=Gshift_registern>>(32-sl); // top x bits
   tmpp^=tmp;
   shift_registerl+=tmpp;
@@ -757,7 +761,7 @@ uint32_t shift_register; // tmp
 
   shift_registerr=(shift_registerr<<1)+bitc;
   }
-
+*/
   /////////////////////////////////////////////////////////////////////////////////////////
   // *thinking also that coggs are a bit like small shift registers* -
   // as below with SRs as coggs but now we try different routings:
@@ -771,11 +775,11 @@ uint32_t shift_register; // tmp
   // this seems to work well
   //
   // try putting LFSR feedback into smaller coggSRs!DONE
-  // also testing LFSR as structure for all...
+  // also testing LFSR as structure for all... - but this is maybe too noisy
   /////////////////////////////////////////////////////////////////////////////////////////
   
   // isolate generic structure and re-do for pointer arrays... - see test2.c
-  /*
+  /*  
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -855,7 +859,7 @@ uint32_t shift_register; // tmp
 
   shift_registerr=(shift_registerr<<1)+(bitn^bitnn);
   }
-  */
+*/
   
   /////////////////////////////////////////////////////////////////////////////////////////
   // *thinking also that coggs are a bit like small shift registers* -
