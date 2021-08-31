@@ -286,7 +286,7 @@ int main(void)
 
     initClock();
 
-    // 12 channels
+    // 13 channels now
     ADC1_Init((uint16_t *)adc_buffer);
 
     GPIO_InitTypeDef GPIO_InitStructure;

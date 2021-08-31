@@ -10,9 +10,14 @@ maybe with/without coggs as further option becomes 16 modes
 
 *questions to resolve: routing and feedback, coggs or micro-registers, in or out number of bits vs. length of register* 
 
-*how to make modes more generic/independent whilst keeping routing options and open-ness*
+*how to make modes more generic/independent whilst keeping routing options and open-ness?*
 
 - feedback thru RSR makes more sense for ADC in modes and less for LFSR so maybe this decides routing?
+
+- what if each of the 4 SRs is totally generic (in/out can be from
+  anywhere, routing is unfixed and modifiable in runtime,
+  self-modifying) - so there could be multiple ins, mixed outs
+  (busses)... how to test this as proof of concept?
 
 /////
 
@@ -326,3 +331,7 @@ cells and two instructions:
 
 - basic modes layed out and tested - first speed CV then pulse driven and fancier...
 
+* generic structure
+
+- isolate generic structure and re-do for pointer arrays...
+- in progress in test2.c

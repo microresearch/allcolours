@@ -28,7 +28,13 @@
 
 TODO:
 
-- 28/8/2021 - spotted major bug in passing on of bitn with LFSR as bitn is the lfsr returnign bit not the bit coming out of the top! to try and fix
+30+ - overlap notes/modes, multiple shifts, multiple feedbacks, work
+with array of pointers to each SR (when we have structure, still in
+brainstorm)
+
+- 28/8/2021 - spotted major bug in passing on of bitn with LFSR as
+  bitn is the lfsr returning bit not the bit coming out of the top! to
+  try and fix but results are not so exciting - keep that version
 
 - sort masks and re-do anything which is clearing bits - DONE but re-check and test
 
@@ -49,7 +55,7 @@ say 1/10 so is not such a big jump
 
 // speed from CV or from pulse/interrupts, speedCV has no speed at
 // slowest end, think about how we norm left, right and lower ghost
-// pulses to keep things running (as cannot be straight out por delayed out but we need to test this in practice)
+// pulses to keep things running (as cannot be straight out or delayed out but we need to test this in practice)
 // pulse ins usage, pulse outs/any division...
 
 // from late July 2021 test sketches which show directions rather than full framework
@@ -665,17 +671,92 @@ uint32_t shift_register; // tmp
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
-  /* // basic tests!
-  k=(adc_buffer[12]); // now 12 bits only 
+   // basic tests!
+  /*
+  k=(adc_buffer[0]); // now 12 bits only
   DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
-  */  
+  */
 
   // time PB4 with period=9 prescaler=8 we have 300KHz
   //    tmpp^=1;
   //    if (tmpp) GPIOB->BSRRH = (1)<<4;  // clear bits PB4
   //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // how to re-think overlap with new scheme
+  /////////////////////////////////////////////////////////////////////////////////////////
+    
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    // copy now to ghost
+    Gshift_registern=shift_registern; // this could also be ORed or other logic operation with former ghost!
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    
+    bitr=(Gshift_registerr>>SRlengthr) & 0x01;
+    Gshift_registerr=(Gshift_registerr<<1)+bitr;
+
+    shift_registern+= bitn & bitr; // or goes to 1s, xor is risky, AND works...
+  }
+
+  // do LSR - input from shift_registern
+  // try overlap here...
+  // can also just be a big shift
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  Gshift_registerl=shift_registerl; // this could also be ORed or other logic operation with former ghost!
+
+  sl=(model>>2)+1; // TESTY - but we need to get this value from somewhere else
+
+  for (x=0;x<sl;x++){// multiple shift
+    bitn=(Gshift_registern>>SRlengthn) & 0x01; // try overlap with/without this shift
+    Gshift_registern=(Gshift_registern<<1)+bitn;
+  }
+    
+  shift_registerl=(shift_registerl<<1);
+    // overlap bottom x bits of l with top x bits of Gn
+  tmpp=shift_registerl&masky[sl];
+  shift_registerl&=invmasky[sl]; // clear lower - masks don't match but we did one shift - see if it makes sense?
+  tmp=Gshift_registern>>(32-sl); // top x bits
+  tmpp^=tmp;
+  shift_registerl+=tmpp;
+  }    
+
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  Gshift_registerc=shift_registerc; // this could also be ORed or other logic operation with former ghost!
+
+  bitl=(Gshift_registerl>>SRlengthl) & 0x01;
+  Gshift_registerl=(Gshift_registerl<<1)+bitl;
+  
+  shift_registerc=(shift_registerc<<1)+bitl; // or is this after out?
+
+  //////////////OUT!
+  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  }
+  
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  Gshift_registerr=shift_registerr; // this could also be ORed or other logic operation with former ghost!
+
+  bitc=(Gshift_registerc>>SRlengthc) & 0x01;
+  Gshift_registerc=(Gshift_registerc<<1)+bitc;
+
+  shift_registerr=(shift_registerr<<1)+bitc;
+  }
 
   /////////////////////////////////////////////////////////////////////////////////////////
   // *thinking also that coggs are a bit like small shift registers* -
@@ -690,9 +771,11 @@ uint32_t shift_register; // tmp
   // this seems to work well
   //
   // try putting LFSR feedback into smaller coggSRs!DONE
-  //
+  // also testing LFSR as structure for all...
   /////////////////////////////////////////////////////////////////////////////////////////
-
+  
+  // isolate generic structure and re-do for pointer arrays... - see test2.c
+  /*
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -702,35 +785,43 @@ uint32_t shift_register; // tmp
     // copy now to ghost
     Gshift_registern=shift_registern; // this could also be ORed or other logic operation with former ghost!
     Gshift_registernn=shift_registern; // this could also be ORed or other logic operation with former ghost!
+
     shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
     
-    //    bitr=(Gshift_registerr>>SRlengthr) & 0x01;
-    //    Gshift_registerr=(Gshift_registerr<<1)+bitr;
+    //    bitr=(Gshift_registerr>>SRlengthr) & 0x01; // we can only shift this ghost register in one case...
+    //    Gshift_registerr=(Gshift_registerr<<1)+bitr; 
 
     shift_registern+= bitn;// & bitr;// ^ (!(GPIOC->IDR & 0x0010)); // or goes to 1s, xor is risky, AND works... and clockbit PC4
   }
-
+  //////
+  
   // do LSR - input from shift_registern
   counterl++;
   if (counterl>=speedl){
     counterl=0;
   bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  // try adding in LFSR for each stage
+  bitnn = ((shift_registerl >> (lfsr_taps[SRlengthl][0])) ^ (shift_registerl >> (lfsr_taps[SRlengthl][1])) ^ (shift_registerl >> (lfsr_taps[SRlengthl][2])) ^ (shift_registerl >> (lfsr_taps[SRlengthl][3]))) & 1u;
+  
   Gshift_registerl=shift_registerl; // this could also be ORed or other logic operation with former ghost!
 
   // try putting LFSR feedback into smaller coggSRs! DONE!
-  //  bitn=(Gshift_registern>>SRlengthn) & 0x01;
-  bitn = ((Gshift_registern >> (lfsr_taps[SRlengthn][0])) ^ (Gshift_registern >> (lfsr_taps[SRlengthn][1])) ^ (Gshift_registern >> (lfsr_taps[SRlengthn][2])) ^ (Gshift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    bitn=(Gshift_registern>>SRlengthn) & 0x01;
+  //  bitn = ((Gshift_registern >> (lfsr_taps[SRlengthn][0])) ^ (Gshift_registern >> (lfsr_taps[SRlengthn][1])) ^ (Gshift_registern >> (lfsr_taps[SRlengthn][2])) ^ (Gshift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
 
   Gshift_registern=(Gshift_registern<<1)+bitn;
 
-  shift_registerl=(shift_registerl<<1)+bitn;
+  shift_registerl=(shift_registerl<<1)+(bitn ^ bitnn);
   }    
 
-  // do CSR and output - input from l
+  // do CSR and output - input from l and r
   counterc++;  
   if (counterc>=speedc){
     counterc=0;
   bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  bitnn = ((shift_registerc >> (lfsr_taps[SRlengthc][0])) ^ (shift_registerc >> (lfsr_taps[SRlengthc][1])) ^ (shift_registerc >> (lfsr_taps[SRlengthc][2])) ^ (shift_registerc >> (lfsr_taps[SRlengthc][3]))) & 1u;
+
+
   Gshift_registerc=shift_registerc; // this could also be ORed or other logic operation with former ghost!
 
   bitl=(Gshift_registerl>>SRlengthl) & 0x01;
@@ -739,7 +830,7 @@ uint32_t shift_register; // tmp
   bitr=(Gshift_registerr>>SRlengthr) & 0x01;
   Gshift_registerr=(Gshift_registerr<<1)+bitr;
   
-  shift_registerc=(shift_registerc<<1)+ (bitl^bitr); // or is this after out?
+  shift_registerc=(shift_registerc<<1)+ (bitl^bitr^bitnn); // or is this after out?
 
   //////////////OUT!
   //  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
@@ -755,16 +846,17 @@ uint32_t shift_register; // tmp
   if (counterr>=speedr){
     counterr=0;
   bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  bitnn = ((shift_registerr >> (lfsr_taps[SRlengthr][0])) ^ (shift_registerr >> (lfsr_taps[SRlengthr][1])) ^ (shift_registerr >> (lfsr_taps[SRlengthr][2])) ^ (shift_registerr >> (lfsr_taps[SRlengthr][3]))) & 1u;
+
   Gshift_registerr=shift_registerr; // this could also be ORed or other logic operation with former ghost!
 
   bitn=(Gshift_registernn>>SRlengthn) & 0x01;
   Gshift_registernn=(Gshift_registernn<<1)+bitn;
 
-  shift_registerr=(shift_registerr<<1)+bitn;
+  shift_registerr=(shift_registerr<<1)+(bitn^bitnn);
   }
-
+  */
   
- 
   /////////////////////////////////////////////////////////////////////////////////////////
   // *thinking also that coggs are a bit like small shift registers* -
   //  what could be done with these - rotating/looping SRs handle
