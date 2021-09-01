@@ -1,23 +1,123 @@
+* how to classify/generic ideas sept 2021
+
+** xxxxx
+
+- routing bits (routing table as one SR?) - or routing bits flipped/changed by other SR, incoming pulses...
+
+- generic: new inputs or not, or logiced with - returning bit or not or logic op (inv), parity settings
+
+equals:
+
+generic parity settings in array (0 for no feedback or tag array with meta-array for type of logical operation, or where it comes from)
+
+trial bits:
+
+pulse/cv speed, input ADC/LFSR, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from   
+
+1               1               1           1              1        1                                1 1
+
+is already 8 bits which would be 255 modes!!! we have limit of 64 modes
+
+unless we have other ways of thinking of modes...
+
+** how to make modes more generic/independent whilst keeping routing options and open-ness?*
+
+- feedback thru RSR makes more sense for ADC in modes and less for LFSR so maybe this decides routing?
+
+- *what if each of the 4 SRs is totally generic* (in/out can be from
+  anywhere, routing is unfixed and modifiable in runtime,
+  self-modifying) - so there could be multiple ins, mixed outs
+  (busses)... how to test this as proof of concept?
+
+- that NSR and CSR can be input and output buses
+
+- what this means for eg. notion of coggs and dependencies on other
+  SRs, digital style filters etc. maybe make small test - but problem is to have too many SRs types
+
+but also means we can have routings maybe switchable from pulses or from CV
+
+eg. switch routing on certain conditions...
+
+*or can mix of generic and otherwise work - as long as all are independent and share any necessary information. eg. new cogg/reset function*
+
+as in we can mix use of arrays of pointers and shiftregs with names which point to these...
+
+** generic SR classifications to work on:
+
+-routing
+-what drives it on: pulses, bits/otherSR, values=speed // values from CV, values from DACs/SRs
+-looping/input bits
+-output bits
+-question of overlap/coggs/SR
+
+or:
+
+-what drives it on: pulses, bits/otherSR, values=speed
+-returning bits (eg. LFSR, no bits=pass_through)
+-overlap (eg. LFSR in overlap, size of overlap)
+-incoming bits - this is routing also and pulses in/ADC, and what is done to them (eg. flip them)
+-output bits/DAC
+
+or: shift x bits, length, entry new bits
+
+and ADCpulsesDAC are attached in to this (as NSR, CSR)
+
+** another attempt from notebook
+
+1. basic division speed/pulse ->32 modes
+2. output/input ADC/DAC/LFSR/others
+3. type of SR-parallel/Turing.etc., logical opp (XOR,OR,AND, leaky)
+4. what are incoming bits
+5. outgoing bits
+
+** code basis from test2.c
+
+uint32_t *shift_[32], *Gshift_[32][4], coggs[4][4]; // gshift is 4 even though we don't use one
+
+b=0; g=2; // n=0,l=1,c=2,r=3 // so feedback here is from c 
+bitn = ((*shift_[b] >> (lfsr_taps[SRlength[b]][0])) ^ (*shift_[b] >> (lfsr_taps[SRlength[b]][1])) ^ (*shift_[b] >> (lfsr_taps[SRlength[b]][2])) ^ (*shift_[b] >> (lfsr_taps[SRlength[b]][3]))) & 1u; // 32 is 31, 29, 25, 24
+// need to catch it
+if (*shift_[b]==0)     *shift_[b]=0xff;
+// copy now to ghost
+//we need multiple ghosts for each possible shifter: eg. Gshift_rl, Gshift_rn, Gshift_rc (right ones for left, for n and for c)
+*Gshift_[b][0]=*shift_[b]; 
+*Gshift_[b][1]=*shift_[b]; 
+*Gshift_[b][2]=*shift_[b];
+*Gshift_[b][3]=*shift_[b]; // ghosts for l,c,r only but let's keep one spare
+// what else it needs to know - for each queued SR we need one cogg=0 for reset as we reset each on reading
+cogg[b][0]=0;
+cogg[b][1]=0;
+cogg[b][2]=0;
+cogg[b][3]=0;
+  
+*shift_[b]=*shift_[b]<<1; // we are shifting left << so bit 31 is out last one
+
+bitr=(*Gshift_[g][b]>>SRlength[b]) & 0x01;
+*Gshift_[g][b]=(*Gshift_[g][b]<<1)+bitr; 
+
+*shift_[b]+= bitn;// & bitr;// ^ (!(GPIOC->IDR & 0x0010)); // or goes to 1s, xor is risky, AND works... and clockbit PC4
+
+//also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST???, counters speed etc. all arrays 0,1,2,3
+
+** classify AC SR modes (did we attempt that there?)
+
+in separate file
+
+note that some modes deal with types of pulses out
+
 * general //16/7/2021+
 
 - AC has 64 modes so 64x64x64x64=16 million combinations
 - speed CV to use in trigger mode (eg. length of overlap)
-- divide into speedCV, trigger/pulse - so that makes 32 modes doubled up
+- divide into speedCV, trigger/pulse - so that makes 32 modes doubled up (what of SR effecting own/other speeds)
 
 maybe with/without coggs as further option becomes 16 modes
+
+freezing is not so interesting as just locks and gives continuous tone...
 
 /// LOTS TO RESOLVE:
 
 *questions to resolve: routing and feedback, coggs and/or micro-registers, in or out number of bits vs. length of register* 
-
-*how to make modes more generic/independent whilst keeping routing options and open-ness?*
-
-- feedback thru RSR makes more sense for ADC in modes and less for LFSR so maybe this decides routing?
-
-- what if each of the 4 SRs is totally generic (in/out can be from
-  anywhere, routing is unfixed and modifiable in runtime,
-  self-modifying) - so there could be multiple ins, mixed outs
-  (busses)... how to test this as proof of concept?
 
 /////
 
@@ -28,21 +128,30 @@ maybe with/without coggs as further option becomes 16 modes
 
 //////
 
+- also odd patterns just realized unless we constrain lengths to odd numbers (which is even lengths) *TEST this - improves but maybe keep odd option*
+
+- at high speeds timing of SR influences other timings
+
 - kind of bug in all lfsr code (28/8/2021) as was passing on bitn
   which was LFSR feedback bit - still was interesting and keep for
   some modes or use that bitn for timing etc...
 
-- also question as bitc is out but speed there determines speed of
+- also question as CSR is out but speed there determines speed of
   feedback so we should really have different paths:
+
+as we have it is NSR->LSR->CSR->RSR->NSR
 
 eg. NSR->LSR->CSR
             ->RSR
 
 NSR->LSR->CSR
-   ->RSR->NSR [in this routing then how do we make sense of NSR length]
+   ->RSR->NSR 
 
-NSR->LSR->CSR
-   ->RSR->CSR 
+NSR->LSR->CSR  ->NSR
+   ->RSR->CSR  ->NSR
+
+others: NSR->CSR->LSR ->NSR
+                ->RSR ->NSR
 
 need to figure out how to select these from modes - see below
 
@@ -57,16 +166,6 @@ routing can be array of pointers
 if (routex==1) do this... // or pointers to entries
 
 *so we can list routings but how are these selected - by the top mode maybe?*
-
-/////
-
-- generic SR classifications to work on:
-
--routing
--what drives it on: pulses, bits/otherSR, values=speed
--looping/input bits
--output bits
--question of overlap/coggs/SR
 
 /////
 
@@ -331,7 +430,3 @@ cells and two instructions:
 
 - basic modes layed out and tested - first speed CV then pulse driven and fancier...
 
-* generic structure
-
-- isolate generic structure and re-do for pointer arrays...
-- in progress in test2.c

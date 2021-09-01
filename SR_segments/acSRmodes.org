@@ -1,0 +1,412 @@
+* types based on loosely - returning bits
+
+Turing Machine: cycle bit is noise vs. comp less than 1, otherwise invert cycling bit
+
+Rungler: XOR out of SR with input bit [in benjolin the DAC out effects some parameter of both clock and data] eg. DAC effects speed of SR
+
+Wiard noise ring: noise/comp selects new input or loop back/inverted loop back (jumper)
+
+CGS(gated comparator - cgs313): This new "digital" input is OR gated with the original "analog" input,
+
+Electronotes wheel thing: LFSR SR is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+
+Others: 
+
+Triadex Muse: set parity switches - sequences incoming to 31 bit SR
+
+* modes from AC
+
+0- pulse (PB5) toggles loopback to OR with new input bit (PB6) /or just accept new input bit (CGS)
+
+1- pulse (PB5) toggles loopback to XOR with new input bit (PB6) /or just accept new input bit (CGS)
+
+2- loopback ORed with input bit and pulses flip/leak bits INSIDE the SR selected with counter and pulse
+
+3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
+
+4- parity for loopback XOR is determined by pulsed bits in -> select bits with pulse and queue 
+
+5- wiard1: pulse selects new data or loop old back into SR
+
+6- wiard2: pulse selects new data or inverted loop old back into SR
+
+7- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR - no input needed Q of lengths?
+
+8- SHORT PULSES OUT as mode 0: pulse (PB7) toggles loopback to OR with new input bit (PB10) /or just accept new input bit (CGS)
+
+9- LFSR noise only with varying taps depending on length with new bit ORed in depending on pulse - for LF we can do mirroring!
+
+23: // experimental modes 23+ here and 32+ in pulses - TESTED/WORKING!
+	// shifting the array of LFSR taps = ghost_tapsH on the high side
+	// clock pulse shifts one selected by pulse 
+
+24:	// Insert pulses into SR at points determined by CV or by pulses in - very similar to mode 2 above - TESTED/WORKING!
+
+25:
+	// SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits - TESTED/WORKING!
+
+26:
+	// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+	// can use input bit as length of either SR
+	// also can still use in clocking side of things
+	// no use of input bit...
+
+27: //too complex?
+	// if we have a bit then change/swop that bit from LFSR side... (could also be OR or other relation) - TESTED/WORKING! changed/TESTED
+
+	/*
+          extra modes which pulse SR using clock or input bits: only advance if
+	  we have a bit but still output, only output if we have a bit etc, advance but only output if we have a bit: so 3 options:
+
+	  if we have a bit: advance/output // advance/out anyways if or not // advance anyways, output if
+
+	  that we can gate on and off -> in both sets of pulse/speed modes!	  
+	*/
+
+28:
+	// Independent LFSR clocking regular SR (only in CV as speed) - as mode 26 but now we use 0x0080 bit also to see if we shift things...
+	// no use of input bit... - TESTED/WORKING!
+
+29:
+3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+
+30:
+3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+
+31:
+3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)-> our 3 options if we have a bit 0x0080
+
+32:
+// extra mode in which (both) pulse on is triggered by bitH but gated off by input bit or pulse - but do we need like a toggle?????
+//-BASE it on::: >>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
+
+33: // and invert the above
+// extra mode in which (both) pulse on is triggered by bitH but gated off by input bit or pulse - but do we need like a toggle?????
+//-BASE it on::: >>>>>>>>>>>>>> 3- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (**no extra input bit is used)
+	
+34:
+// extra modes use pulse or input bit as length of SR controller: see mode 42 below
+/// length thing	
+	
+35:
+// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+// can use input bit as length of either SR = here is regularSR
+
+38:
+// follows case 3 TM but we TESTY - use 0x0080 to toggle any output = gating
+pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit
+
+39:
+// as above but LFSR?
+
+40:
+// pulse in means a divide/flip flop
+// pulse in means double a step..
+
+*//// THESE ones are PULSE MODES:*
+
+10: entry into SR from CV - TM = no input bit 
+
+11: // MAYBE put this in middle of CV select mode for easy access TODO
+CV selects length of SR which will stay with us .. -> LFSR here
+	
+12: // works fine with cv in
+NEW mode TESTY: entry of ADC in from CV into upper bits?
+
+13:
+Electronotes: CV selects which bits to set to 1 = chance of change
+
+14: // could replace mode or one of these ???
+uses CV as speed/flipflop/clock divider
+	
+15:
+as mode 14=speed divider with XOR rungler: XOR out with input bit
+
+42:
+// + from TM - TM with probability CV (using random bits from other SR!) // combined with variable length -> pulse mode - TESTED/WORKING!
+43:
+// as above but other way round with CV for length and incoming bits for probability of TM
+
+      // more experimental modes
+	/* 
+
+	  modes 10 and 13 don't use input bit 0x0400 so we can use this for= case 10 as test case// try with 13:
+
+          extra modes which pulse SR using clock or input bits: only advance if - *more maybe on LF side these ones*
+	  we have a bit but still output, only output if we have a bit etc, advance but only output if we have a bit: so 3 options:
+
+	  if we have a bit: advance/output // advance/out anyways if or not // advance anyways, output if
+
+	  that we can gate on and off -> in both sets of pulse/speed modes!	  
+
+	*/
+44:
+// as mode 10 
+entry into SR from CV - TM = no input bit = 1st option of above... - *more maybe on LF side these ones*
+
+45:
+entry into SR from CV - TM = no input bit = 3rd option of above...
+
+46:
+entry into SR from CV - TM = no input bit = 2nd option of above...
+
+47:
+      // *we could use CV to set length of pulse (say up to 128 which is 7 bits >> 9)*
+      //->>>>>>>>>>>>>> as mode 14=speed divider with XOR rungler: XOR out with input bit
+      	// - TESTED/WORKING! - not so exciting ....
+
+48:
+//      	  extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse
+// use mode 13 as example here:::
+Electronotes: CV selects which bits to set to 1 = chance of change
+
+49:
+      // and we can have the inversion of 48
+      //      	  extra mode in which pulse on is triggered by bitH but gated off by input bit or pulse
+      // use mode 13 as example here:::
+Electronotes: CV selects which bits to set to 1 = chance of change
+
+      /////////////new /exp      
+53:
+// - after case 25 - SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits
+
+54:
+// - after case 25 - SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits
+// shift only on that bit
+
+55:
+// another loop variation, bith and loopback XORed (or other logic eg. OR) back in to first bit:
+	
+56:
+// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+// can use CV as length of either SR = here is regularSR
+
+57:
+// Independent LFSR clocking regular SR (only in CV as speed) - TESTED/WORKING!
+// can use CV as length of either SR = here is SRx
+
+58: // change the shifting amount - sort of works but not a great range and we need to take care of length
+
+* older from modes.org
+
+** from SR summaries we have:
+
+- length of SR
+- type of feedback: new in, looped out, parity generator, xor or ors of these possibles, from other SR (could be interesting)
+- how this type of feedback is selected
+- how the SR is clocked: by clocked pulses which can be irregular, by some feedback across two SRs, by regular speed CV, by some combination of these
+
+- out as short pulses or as toggle 0/1
+
+but only 16 modes
+
+** SR modes - low and high
+
+- length of SR (16 bits, 32 bits, x bits), shrink and extend, howdo we get to length? -> pulses count length????, speed cv is length with pulses as speed
+- leaky on/off (leaks on clock pulse so use with CV speed)
+- speed/clocking of SR is from CV, or speed follows pulse in/clock
+- toggle lock loop on clock/pulse in (speed CV only modes) - or always include it with AND or XOR?
+- entry into SR from pulse ins, or as LFSR (random)
+- entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
+- xors back in, no xors back in - and which xors? select by clock pulse?
+- sr as pulses or as bits 
+- which bits form the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM) - wide only
+
+- recursion: clock in of SR is XOR or other logic with output but would get stuck - maybe feedback output from other SR as clock for other but not both
+
+older version = recursions: SR is clocked by its own HIGH output or logic XOR/AND with clock in
+
+SR speed from own DAC out
+
+// HF SR: 32 stages max, LF: 16 or 24 max
+
+SR in timed interrupt:
+OR
+SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits:
+
+--> can we divide into pulse_in modes/speed_in modes
+
+**** clock/pulse=SPEED modes (input bit) - fewer of these
+
+options:L CGS, TM, wiard1/2, LFSR - lfsr would be nice on pulses
+
+1- entry into SR from CV (as threshold for bit or as ADC?)
+2- CV selects length of SR which will stay with us - bit in ORed with loop bit
+3- CV threshold determines if input bit ORed last bit
+4- CV threshold determines if input bit XORed last bit
+???5- CV determines probability of inverting the cycling bit in - no ext. bit in - this is Turing Machine - cycle bit or invert bit
+5- use CV as speed divider... where we don't use CV otherwise -> input bit ORed with loop bit 
+6- or rungler: XOR out with input bit
+
+**** cv/speed in modes - make use of pulses and input bit: DONE
+
+1- pulse toggles loopback to OR with new input bit/or just accept new input bit (CGS) -X
+
+2- XOR - X
+
+3- loopback ORed with input bit and pulses flip/leak bits INSIDE the SR (how we select these? with pulse and counter) -X
+
+4- pulse(1) inverts the cycling bit in - this is Turing Machine - cycle bit or invert bit (no extra input bit) -X
+
+5- parity for loopback XOR is determined by pulsed bits in (how long
+do we keep these as selected and how do we select bits - in a queue
+and selected with pulses) -X
+
+6- wiard1: pulse selects new data or loop old back into SR -X
+
+7- wiard2: pulse selects new data or inverted loop old back into SR -X
+
+8- electronotes: bits of the first SR determine (via NAND) if we recycle 2nd SR, or add new bit from the first SR -X
+
+[9- SR swopovers// feedbacks - somewhere above?]
+
+9 -or select as pulse out one mode eg mode 1 with pulses -X 
+// or // double all modes for pulse out = 128 modes? - depends on resolution
+// or we could toggle pulse out here in this mode...
+
+10- noise taps for noise out at different speeds...-> array of noise taps -X
+
+see: eg. 	32-bit Galois LFSR with taps at 32, 30, 26, 25. Sequence length is 4294967295. 0 is a lock-up state.  -1 for our purposes
+
+https://docs.rs/lfsr/0.2.0/lfsr/galois/index.html and test these//transformed for length... -> test.c DONE
+
+**** cv/speed in modes/older
+
+*combine both with speed as divider of clock/pulse in clock/pulse modes* -> where to do this in 16 modes?
+
+what can always be selected: external bits are always ANDed in (pullup?) ???
+
+1- get bit in from pulse in, xor with last SR bit and shift out /output(length?)
+2- as above, bit leaks on pulse - cv only
+3- no xor, no leaks - circulation toggles - no in - cv only
+4- no xor, leaks - circulation toggles - no in - cv only
+////5- as pulses or as bits out - general option for hf or lf sides
+6- bits in from CV as ADC - pulse only
+7- LFSR: taps for each to give noise but with bits in ANDed
+8- length from cv - pulse only
+9- recursion: clock in of SR is XOR or other logic with output but
+10- leaks with pulses (how often?)
+11- toggle circulation with pulse/or/CV cv->somehow / threshold
+
+- we can leave changes from one mode to the other (eg. length from CV set in pulse mode stays with CV as speed modes)
+
+**** other modes
+
+- SR is clocked by its own HIGH output or logic XOR/AND with clock in
+  -> doesn;t work - see above: maybe feedback output from other SR as
+  clock for other but not both
+
+- SR speed from own DAC out 
+
+** pwm modes low and high
+
+each low or high follows: CV, update DAC(speed by CV or speed from clock), clock
+
+0- pwm follows speed cv
+
+1- pwms follow clock pulse in for each - how we do this? speed CV as divider/multiplier 
+
+pulses per x microseconds // in 1KHz loop?
+
+2- pwm follows DAC from SR (not same on LF as DAC bits ?what this means?>) -> speed for DAC style updates is from speed cv
+
+2/clock- pwm follows DAC from SR (not same on LF as DAC bits ?what
+this means?>)- ... or speed for DAC updates is from clock pulse in
+depending on other mode, thus speed is same speed as DAC/shiftreg
+speed!  -> these depend on SR mode -> speed CV as offset for PWM-> in
+pulse mode only
+
+3- pwm is offset against the other (with each speed as plus/minus offset) - if both have this mode then left one is set by speed CV
+// how often do we update this last one...????? and we need to record this somewhere (or is as PWM -> check?)
+
+** modes tech
+
+values in array of pointers to avoid any switch routines
+
+** older version from all_colours.c
+
+pulse ins can leak, switch bits, input bits, select xor bits, select lengths, xor pulse in/not clock with last bit of sr -> input for sr
+
+pulse outs all at different taps (to ins also)
+
+- always pulses out, DAC out and PWM out.
+
+Shift registers -> pulses out, DAC out, PWM out/DAC style (for each low and high side):
+
+?mode low/mode high? - *thus we need seperate mode knobs*!
+
+- length of SR (16 bits, 32 bits, x bits), shrink and extend, howdo we get to length? -> pulses count length, speed cv is length with pulses as speed
+- leaky on/off (leaks on clock pulse so use with CV speed)
+- speed/clocking of SR is from CV, or speed follows pulse in/clock
+- toggle lock loop on clock/pulse in (speed CV only modes) - or always include it with AND or XOR?
+- entry into SR from pulse ins, or as LFSR (random)
+- entry into SR from speed CV (as threshold or as ADC?) - means we must use clock as speed cv
+- xors back in, no xors back in - and which xors? select by clock pulse?
+- sr as pulses or as bits is ONLY a choice on HF side
+- which bits form the usual DAC out and the PWM DAC out? wide spaced or close spaced (4 bits for DAC and 8 bits for PWM)
+- wild card of SR speed from DAC style SR output?
+
+// HF SR: 32 stages max, LF: 16 or 24 max
+
+HF SR in timed interrupt:
+
+HF SR in pulse/clock interrupt: DAC out bits/close out, pulse out bits
+
+1- get bit in from pulse in, xor with last SR bit and shift out /output(length?)
+
+2- as above, bit leaks?
+3- as above, no xor, no leaks
+4- no xor, leaks
+5- as pulses or as bits out
+6- bits in from CV
+
+/////////////
+
+recursions: 
+
+SR is clocked by its own HIGH output or logic XOR/AND with clock in, SR usual feedback, SR speed from own DAC out
+
+
+////PWM update in main loop speed???
+
+PWMs low and high so more combinations:
+
+each follows: CV, update DAC(speed by CV or speed from clock), clock
+
+or can mix/combine/logical op one against the other
+
+- pwms follow each speed cv
+- pwml follows cv, other is DAC style from SR - and can combine each also say mix DAC and cv
+- pwmh follows cv, other is DAC style from SR
+- both pwmh and pwml follow DAC style
+- speed for DAC style updates is from speed cv for each or speed for DAC updates is from pulse in for each -> speed is same speed as DAC/shiftreg speed!
+- pwms follow each clock pulse in for each...
+
+
+** older from notes.org
+
+- CV in incoming bit or set of bits to shift and/or value for clock out, CV pulse in to lock/unlock, slew for clock out/cv in, extra as speed of shifting?
+
+- pulse in to shift... purpose of shifting ...
+- larger speed shifts for filter are important so maybe look at dividers and changing these with CV
+- knob mode for leak etc
+
+start to list modes
+
+1-> various shift register implementations in pulse/bit and speed as
+speed/skew CV/knob - OUT is pulse/bit and/or DAC out and OUT is 7490
+clock/PWM OUT from shift reg taps ...
+
+2-> various shift register implementations in as pulse/bit (from CV -
+threshold) and speed as speed/skew CV/knob - OUT is pulse/bit and/or
+DAC out and in CV controls 7490 clock/PWM OUT and is skewed by
+speed/skew CV/knob
+
+3-> various shift register implementations in pulse/bit and speed as
+speed/skew CV/knob - OUT is pulse/bit and/or DAC out and in pulse
+controls 7490 clock/PWM out
+
+other modes?
+
+we can xor and other ops CV and shift reg/pulse/DAC to 7490 CLOCK
+
