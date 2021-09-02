@@ -1,6 +1,10 @@
-* how to classify/generic ideas sept 2021
+* how to sort and classify/generic ideas sept 2021
 
 ** xxxxx
+
+proof of concept generic routing in test2.c
+
+default or not: CSR DAC out->top PWMx which is normed to clock pulse for NSR
 
 - routing bits (routing table as one SR?) - or routing bits flipped/changed by other SR, incoming pulses...
 
@@ -12,13 +16,21 @@ generic parity settings in array (0 for no feedback or tag array with meta-array
 
 trial bits:
 
-pulse/cv speed, input ADC/LFSR, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from   
+pulse/cv speed, input ADC/LFSR, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
 
-1               1               1           1              1        1                                1 1
+1               1               1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
 
 is already 8 bits which would be 255 modes!!! we have limit of 64 modes
 
-unless we have other ways of thinking of modes...
++ additonal bits: advance on cogg, logical opps, type of ADC, type of DAC, OR of LFSR/ADC 
+
+// and we just leave outpulses as generic/divide down on 2nd set
+
+unless we have other ways of thinking of modes... (mode as itself shift_register, pulses as incrementing modes or is that all too complicated)
+
+
+
+*thinking to have special modes - at end of mode dial which implement this kind of thinking: even 3 or 4 last turns which inc bits*
 
 ** how to make modes more generic/independent whilst keeping routing options and open-ness?*
 
@@ -72,7 +84,7 @@ and ADCpulsesDAC are attached in to this (as NSR, CSR)
 
 ** code basis from test2.c
 
-uint32_t *shift_[32], *Gshift_[32][4], coggs[4][4]; // gshift is 4 even though we don't use one
+uint32_t *shift_[4], *Gshift_[4][4], coggs[4][4]; // gshift is 4 even though we don't use one
 
 b=0; g=2; // n=0,l=1,c=2,r=3 // so feedback here is from c 
 bitn = ((*shift_[b] >> (lfsr_taps[SRlength[b]][0])) ^ (*shift_[b] >> (lfsr_taps[SRlength[b]][1])) ^ (*shift_[b] >> (lfsr_taps[SRlength[b]][2])) ^ (*shift_[b] >> (lfsr_taps[SRlength[b]][3]))) & 1u; // 32 is 31, 29, 25, 24
@@ -113,7 +125,9 @@ note that some modes deal with types of pulses out
 
 maybe with/without coggs as further option becomes 16 modes
 
-freezing is not so interesting as just locks and gives continuous tone...
+NO freeze: freezing is not so interesting as just locks and gives continuous tone...
+
+*[note for SEG - electronotes wheel thing is passing down of bits so this could also be probability based (based on CV)!]*
 
 /// LOTS TO RESOLVE:
 
@@ -128,7 +142,8 @@ freezing is not so interesting as just locks and gives continuous tone...
 
 //////
 
-- also odd patterns just realized unless we constrain lengths to odd numbers (which is even lengths) *TEST this - improves but maybe keep odd option*
+- also odd patterns just realized unless we constrain lengths to odd numbers (which is even lengths) *TEST this - improves but maybe keep odd option//NO!
+- reverted to older code 2/9 as if we constrain this favours 101010etc regular outcomes
 
 - at high speeds timing of SR influences other timings
 
@@ -142,12 +157,12 @@ freezing is not so interesting as just locks and gives continuous tone...
 as we have it is NSR->LSR->CSR->RSR->NSR
 
 eg. NSR->LSR->CSR
-            ->RSR
+            ->RSR->NSR
 
-NSR->LSR->CSR
-   ->RSR->NSR 
+*NSR->LSR->CSR* // *could be default routing but then we need to see about use of SRlengthc but length is importnat if we re-circulate???*
+*///->RSR->NSR*
 
-NSR->LSR->CSR  ->NSR
+NSR->LSR->CSR  ->NSR/or not
    ->RSR->CSR  ->NSR
 
 others: NSR->CSR->LSR ->NSR
@@ -156,6 +171,12 @@ others: NSR->CSR->LSR ->NSR
 need to figure out how to select these from modes - see below
 
 routing can be array of pointers
+
+///what does it mean to have multiple routes -> route is only known to incoming SR which updates ghostSR which belongs to itself (so it can have all 4)
+
+so routing table for each incoming SR would be 4 bits 1 1 1 1 N,L,C,R - excluding itself (try version which includes itself and doesn't shift)
+
+*ghost shift registers (GSR) within GSRs - if itself is treated as a ghost revenanting/coming into itself*
 
 //////
 
@@ -216,7 +237,7 @@ say 1/10 so is not such a big jump
 
 - what we do with both clock and pulse in bits in CV mode and how we
   norm these bits (NSR clock is normed to TIM1 pwm which we will use
-  speedCV as control for) - otherwise we have pulseouts normed to all other pulse/clock ins
+  speedCV/or DAC out as control for) - otherwise we have pulseouts normed to all other pulse/clock ins
 
 [but none of these will advance so maybe sync all to this clock which frees up their own speedCVs]
 

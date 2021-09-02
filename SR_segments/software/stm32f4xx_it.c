@@ -113,7 +113,7 @@ volatile uint32_t shift_registerR=0xff;
  
 // ghosts, revenants
 volatile uint32_t Gshift_registern=0xff; 
-volatile uint32_t Gshift_registernn=0xff; // for routing we need 2x 
+volatile uint32_t Gshift_registernn=0xff; // for routing we need 2x  - this is resolved in arrays of ghosts
 volatile uint32_t Gshift_registerl=0xff;
 volatile uint32_t Gshift_registerr=0xff;
 volatile uint32_t Gshift_registerc=0xff; 
@@ -141,7 +141,9 @@ static uint32_t MASK[32]={4294967040, 4294967040, 4294967040, 4294967040, 429496
 
 static uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
 
-static uint32_t lookuplen[16]={5, 5, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31}; 
+static uint32_t lookuplenodd[16]={5, 5, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31}; 
+
+static uint32_t lookuplenall[32]={3, 3, 3, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
 
 static uint8_t bitsz[256]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8};
 
@@ -581,10 +583,10 @@ void TIM4_IRQHandler(void)
     // 6: rspd, 7: rlen, 8: rmode // adc6 fixed hw
     // 9: cspd, 10: clen, 11: cmode
 
-  // deal with PWM for normings (always follows speedn)
+  // deal with PWM for normings (always follows speedn - or now we think it should follow DAC out)
   
   // double-check inversion of modes? as doesn't seem so!
-// mode are not inverted!
+  // modes are NOT inverted!
   
   //moden
   temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; //smoothing necessary for higher speeds - TEST!
@@ -651,17 +653,17 @@ void TIM4_IRQHandler(void)
   // lens from 4 to 32
   // test now 1/9/2021 constraining to odd numbers and we can go small...
 
-  temp=15-(adc_buffer[1]>>8); // 12 bits to 5 bits // now 4 bits...which is 
-  SRlengthn=lookuplen[temp];
+  temp=31-(adc_buffer[1]>>7); // 12 bits to 5 bits 
+  SRlengthn=lookuplenall[temp];
 
-  temp=15-(adc_buffer[4]>>8); // 12 bits to 5 bits // now 4 bits...which is 
-  SRlengthl=lookuplen[temp];
+  temp=31-(adc_buffer[4]>>7); // 12 bits to 5 bits 
+  SRlengthl=lookuplenall[temp];
 
-  temp=15-(adc_buffer[7]>>8); // 12 bits to 5 bits // now 4 bits...which is 
-  SRlengthr=lookuplen[temp];
+  temp=31-(adc_buffer[7]>>7); // 12 bits to 5 bits 
+  SRlengthr=lookuplenall[temp];
 
-  temp=15-(adc_buffer[10]>>8); // 12 bits to 5 bits // now 4 bits...which is 
-  SRlengthc=lookuplen[temp];
+  temp=31-(adc_buffer[10]>>7); // 12 bits to 5 bits 
+  SRlengthc=lookuplenall[temp];
 
   /*
   SRlengthl=31-(adc_buffer[4]>>7); // 12 bits to 5 bits
@@ -711,6 +713,13 @@ uint32_t shift_register; // tmp
 
   /////////////////////////////////////////////////////////////////////////////////////////
   // how to re-think overlap with new scheme
+  // TODO: new routing to test:
+  //
+  // *NSR->LSR->CSR* // *could be default routing*
+  //     ->RSR->NSR // and adjusting CSR length business - but length is important if we re-circulate
+  //
+  // TODO: also to test re-introduction of our cycling bit!
+  //       test PWM which is normed to NSR top clock  DONE - needs work on ranges
   /////////////////////////////////////////////////////////////////////////////////////////
 
   //  if (speedn!=FROZENSPEED){ // testing freeze here at top  - not so exciting
@@ -722,6 +731,8 @@ uint32_t shift_register; // tmp
     if (shift_registern==0)     shift_registern=0xff;
     // copy now to ghost
     Gshift_registern=shift_registern; // this could also be ORed or other logic operation with former ghost!
+    Gshift_registernn=shift_registern; 
+
     shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
     
     bitr=(Gshift_registerr>>SRlengthr) & 0x01;
@@ -741,7 +752,7 @@ uint32_t shift_register; // tmp
   bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
   Gshift_registerl=shift_registerl; // this could also be ORed or other logic operation with former ghost!
 
-  sl=lookuplen[model>>3]; // TESTY - but we need to get this value from somewhere else
+  sl=lookuplenall[model>>2]; // TESTY - but we need to get this value from somewhere else
   // does sl need to be odd number too?
   //  sl=1;
   //  for (x=0;x<sl;x++){// multiple shift
@@ -759,7 +770,7 @@ uint32_t shift_register; // tmp
   shift_registerl+=tmpp;
   }    
 
-  // do CSR and output - input from l
+  // do CSR and output - input from L
   counterc++;
   if (counterc>=speedc){
     counterc=0;
@@ -769,24 +780,31 @@ uint32_t shift_register; // tmp
   bitl=(Gshift_registerl>>SRlengthl) & 0x01;
   Gshift_registerl=(Gshift_registerl<<1)+bitl;
   
-  shift_registerc=(shift_registerc<<1)+bitl; // or is this after out?
+  shift_registerc=(shift_registerc<<1)+(bitl ^ bitc); // or is this after out? // testing re-circulation
 
   //////////////OUT!
-  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-3))<<9; // older one
+  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference
+  // unless we reduce down as we have done here - adjust length/array accordingly
   DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  // also set PWM - TIM1 period and pulse - see AllColours... TESTed but needs control over range
+  tmp+=320;
+  TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
+  TIM1->CCR1 = tmp/2; // pulse width
   }
-  
+
+  // routes from top N
   counterr++;
   if (counterr>=speedr){
     counterr=0;
   bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
   Gshift_registerr=shift_registerr; // this could also be ORed or other logic operation with former ghost!
 
-  bitc=(Gshift_registerc>>SRlengthc) & 0x01;
-  Gshift_registerc=(Gshift_registerc<<1)+bitc;
+  bitn=(Gshift_registernn>>SRlengthn) & 0x01;
+  Gshift_registernn=(Gshift_registernn<<1)+bitn;
 
-  shift_registerr=(shift_registerr<<1)+bitc;
+  shift_registerr=(shift_registerr<<1)+(bitn ^ bitr); // testing re-circulation
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////

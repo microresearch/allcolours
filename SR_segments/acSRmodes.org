@@ -2,14 +2,13 @@
 
 Turing Machine: cycle bit is noise vs. comp less than 1, otherwise invert cycling bit
 
-Rungler: XOR out of SR with input bit [in benjolin the DAC out effects some parameter of both clock and data] eg. DAC effects speed of SR
+Rungler: XOR out of SR with input bit [in benjolin the DAC out effects some parameter of both clock and data] eg. DAC effects speed/clock of SR
 
 Wiard noise ring: noise/comp selects new input or loop back/inverted loop back (jumper)
 
 CGS(gated comparator - cgs313): This new "digital" input is OR gated with the original "analog" input,
 
-Electronotes wheel thing: LFSR SR is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
-
+Electronotes wheel thing: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
 Others: 
 
 Triadex Muse: set parity switches - sequences incoming to 31 bit SR

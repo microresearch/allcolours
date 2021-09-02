@@ -434,7 +434,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32; // 
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 256; // 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // 
   TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
  
   TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -446,18 +446,19 @@ int main(void)
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
   TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
   TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
-  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this!
-  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+  //  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this! // for TIM1 to update we needed to comment out - as opposed to in AC but there was TIM3 2/9/2021
+  //  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
 
   TIM_Cmd(TIM1, ENABLE);
   TIM_CtrlPWMOutputs(TIM1, ENABLE); // we needed this for timer1 to be added
+  /* // don't seem to need this
+  TIM_BDTRInitTypeDef TIM_BDTRInitStruct;
+  TIM_BDTRStructInit(&TIM_BDTRInitStruct);
+  TIM_BDTRConfig(TIM1, &TIM_BDTRInitStruct);
+  TIM_CCPreloadControl(TIM1, ENABLE);
+  TIM_CtrlPWMOutputs(TIM1, ENABLE);
+  */    
 
-TIM_BDTRInitTypeDef TIM_BDTRInitStruct;
-TIM_BDTRStructInit(&TIM_BDTRInitStruct);
-TIM_BDTRConfig(TIM1, &TIM_BDTRInitStruct);
-TIM_CCPreloadControl(TIM1, ENABLE);
-TIM_CtrlPWMOutputs(TIM1, ENABLE);
-    
   // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
 // 32 and 8 is 100 KHz but why can't we sample so fast...
