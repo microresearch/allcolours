@@ -28,7 +28,16 @@
 
 TODO:
 
-1/9 - test out some basic modes with no movement/frozen at top
+TODO from segmodes:
+
+- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse
+
+- test use of manipulated routing tables for one SR
+- trial RSR as random register with various routings for simulation of electronotes and TM.
+- new ghost/segmode notes
+
+//////
+1/9 - test out some basic modes with no movement/frozen at topDONE-no freezes!
 
 30+ - overlap notes/modes, multiple shifts, multiple feedbacks, work
 with array of pointers to each SR (when we have structure, still in
@@ -36,7 +45,7 @@ brainstorm)
 
 - 28/8/2021 - spotted major bug in passing on of bitn with LFSR as
   bitn is the lfsr returning bit not the bit coming out of the top! to
-  try and fix but results are not so exciting - keep that version
+  try and fix but results are not so exciting - keep that version as another option!
 
 - sort masks and re-do anything which is clearing bits - DONE but re-check and test
 
@@ -488,10 +497,24 @@ void EXTI4_IRQHandler(void){ // working NSR
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   
   // flip PB4 to test interrupt on NSR PC4
-    flipper^=1;
-    //    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-    //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  //    flipper^=1;
+  //    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+  //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+
+  // simple code to test pulse in
   
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    if (coggr==0)    shift_registern+= bitn | bitr;
+    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+    
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
  }
@@ -712,6 +735,83 @@ uint32_t shift_register; // tmp
   //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
   /////////////////////////////////////////////////////////////////////////////////////////
+  // simple test of routing with NSR as clocked (above) and generate NSR clock bit from DAC!
+  /////////////////////////////////////////////////////////////////////////////////////////
+
+  // do LSR - input from shift_registern
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0)  shift_registerl=(shift_registerl<<1)+bitn;
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+tmp;
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+
+  }    
+
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+
+  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+
+  // DAC for normed NSR but should be from other SR so is not locked to output speed
+  //  tmp+=320; 
+  //  TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
+  //  TIM1->CCR1 = tmp/2; // pulse width
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggc==0)  shift_registerr=(shift_registerr<<1)+bitc;
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+tmp;
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+
+  // DAC for normed NSR 
+  tmp=((shift_registerr & masky[SRlengthr-3])>>(rightshift[SRlengthr-3]))<<leftshift[SRlengthr-3]; // we want 12 bits but is not really audible difference
+  tmp+=320; 
+  TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
+  TIM1->CCR1 = tmp/2; // pulse width
+
+  
+  }    
+  
+  /////////////////////////////////////////////////////////////////////////////////////////
   // how to re-think overlap with new scheme
   // TODO: new routing to test:
   //
@@ -723,6 +823,7 @@ uint32_t shift_register; // tmp
   /////////////////////////////////////////////////////////////////////////////////////////
 
   //  if (speedn!=FROZENSPEED){ // testing freeze here at top  - not so exciting
+  /*
   countern++;
   if (countern>=speedn){ 
     countern=0;
@@ -753,7 +854,7 @@ uint32_t shift_register; // tmp
   Gshift_registerl=shift_registerl; // this could also be ORed or other logic operation with former ghost!
 
   sl=lookuplenall[model>>2]; // TESTY - but we need to get this value from somewhere else
-  // does sl need to be odd number too?
+  // does sl need to be odd number too? NO!
   //  sl=1;
   //  for (x=0;x<sl;x++){// multiple shift
   bitn=(Gshift_registern>>SRlengthn) & 0x01; // try overlap with/without this shift
@@ -806,7 +907,8 @@ uint32_t shift_register; // tmp
 
   shift_registerr=(shift_registerr<<1)+(bitn ^ bitr); // testing re-circulation
   }
-
+  */
+  
   /////////////////////////////////////////////////////////////////////////////////////////
   // *thinking also that coggs are a bit like small shift registers* -
   // as below with SRs as coggs but now we try different routings:

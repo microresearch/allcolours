@@ -1,10 +1,52 @@
 * how to sort and classify/generic ideas sept 2021
 
+thinking about multiple routing for DAC, clock DAC an ADC??? how this might work as gives flexibility for timings
+
+or we have anyways routings which are flexible so maybe is ok. just that DAC out clock/speed effects feedback etc...
+
+////
+
+TODO from below:
+
+- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse
+- test use of manipulated routing tables for one SR
+- trial RSR as random register with various routings for simulation of electronotes and TM.
+- in test2.c compare generic shiftings with coggs version (and also if we still need to do <<1 if routes to itself?)
+
+- ghostSR in ghostSR in test2.c to trial//also various crossings of delayed ghosts with "real" SRs
+
+from test2.c
+// own routing means we have the shifted out bit already (route to self) - but we still need to shift
+
+// we could also lag the ghost so is like a delayed revenant
+// so example it only shifts itself if there is a pulse bit
+
+////////////////further
+
+// and cycling/circling array of ghosts which can come back or go forwards/backwards - when these ghosts are copied over (on event)
+// with 256 cycles/copies - or we can have variable length of this shifting array
+
+we can also determine cycle we use using another SR
+
 ** xxxxx
 
 proof of concept generic routing in test2.c
 
-default or not: CSR DAC out->top PWMx which is normed to clock pulse for NSR
+default or not: CSR DAC out->top PWM/TIM1 which is normed to clock pulse for NSR
+
+*[we need to trial if this makes sense with routing]*
+
+// what bits make sense for SR definition to be changed by other processes?
+
+eg. input types are fixed or not, routing yes
+
+so we have several bit modes for different main SR types...
+
+for example bits determining type and routing = 7 bits
+
+- that we can choose (eg. RSR) to be specific controller or
+  determining SR (eg. for random operations we refer to this one
+  eg. for TM and electronotes determinings - to test this)
 
 - routing bits (routing table as one SR?) - or routing bits flipped/changed by other SR, incoming pulses...
 
@@ -52,7 +94,7 @@ eg. switch routing on certain conditions...
 
 *or can mix of generic and otherwise work - as long as all are independent and share any necessary information. eg. new cogg/reset function*
 
-as in we can mix use of arrays of pointers and shiftregs with names which point to these...
+as in we can mix use of arrays of (pointers)/srs and shiftregs with names which point to these...
 
 ** generic SR classifications to work on:
 
@@ -159,7 +201,7 @@ as we have it is NSR->LSR->CSR->RSR->NSR
 eg. NSR->LSR->CSR
             ->RSR->NSR
 
-*NSR->LSR->CSR* // *could be default routing but then we need to see about use of SRlengthc but length is importnat if we re-circulate???*
+*NSR->LSR->CSR* // *could be default routing but then we need to see about use of SRlengthc but length is important if we re-circulate???*
 *///->RSR->NSR*
 
 NSR->LSR->CSR  ->NSR/or not
@@ -170,7 +212,7 @@ others: NSR->CSR->LSR ->NSR
 
 need to figure out how to select these from modes - see below
 
-routing can be array of pointers
+routing can be array of shiftregs
 
 ///what does it mean to have multiple routes -> route is only known to incoming SR which updates ghostSR which belongs to itself (so it can have all 4)
 
@@ -184,7 +226,7 @@ so routing table for each incoming SR would be 4 bits 1 1 1 1 N,L,C,R - excludin
   do we always want feedback to NSR but then if not RSR would be
   redundant)... Q is how to signal different routing across independent modes:
 
-if (routex==1) do this... // or pointers to entries
+if (routex==1) do this... // or pointers to entries - but we don;t really need pointers
 
 *so we can list routings but how are these selected - by the top mode maybe?*
 

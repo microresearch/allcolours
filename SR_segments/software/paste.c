@@ -1,6 +1,5 @@
 // code for basic pass through so for testing ideas/brainstorming
-// bug here with passing on bitn
-
+// bug here with passing on bitn but let's keep it
 
 countern++;
   if (countern>=speedn){ 
@@ -47,7 +46,9 @@ countern++;
   if (coggl>(SRlengthl+1)) coggl=0;
   coggc=0;
   
-  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference - updated...
+
   DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
   
