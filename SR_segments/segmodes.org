@@ -1,17 +1,81 @@
 * how to sort and classify/generic ideas sept 2021
 
-thinking about multiple routing for DAC, clock DAC an ADC??? how this might work as gives flexibility for timings
+beckett/gray codes for routing ???
 
-or we have anyways routings which are flexible so maybe is ok. just that DAC out clock/speed effects feedback etc...
+how to make uncomplicated generic SR options which can interact across all sets of:
+
+1st set: simple SR modes for each SR with fixed routing
+2nd set: generic SRs with configurable routings
+3: complex routing with DAC, ADC etc.
+
+
+// also from triadex muse:
+--> this is an XOR of 4 bits - selected from clocking bits, on/off bit and from shift register feedback
+
+that we can have XORs of bits from other SRs entering our SR
+so table would be for 4 bits from 4x maxSRlength=32*4=128 (ignore lengths)
+
+thinking about multiple routing for DAC, clock DAC and ADC??? how this might work as gives flexibility for timings
+
+then we have x bits:
+
+routing / DAC output / LFSR feedback / ADC IN 
+1 2 3 4 / 5      /  6            /  7
+
+extra bits: clock DAC/pulse for speed with any offset(CV), comp DAC ->9 bits, 
+
+speed modes: CV as speed, CV plus DAC as speed, pulses, pulses from SR, combination of... see more below...
+
+routing table is for incoming SRs
+
+abstract out LFSR perhaps as just the returning of bits (so is routing)
+also we have entry bits, ADC bit/s, pulsin bits, returning bits
+
+what bits come in, logic, what determines speed, other determing factors for specific SRs
+
+
+speed/routing/logical ops (logical ops as also selected by bits, overlaying of masks)
+
+- question of multiple DAC outs - what we do with them
+
+if each SR has DAC out which can route somewhere, and ADC in
+
+7 bits - which is 0-128 (test if we can reach on CV knob)
+
+Other bits for pulse/cv and type of SR are fixed across multiple modes.
+
+routing also DAC->speed of register x
+pulses->speed of register x
+
+seperate DACs for output, speed/NSR normy clock, other uses (comparator)
+
+1 2 3 4 bits - question is if we combine multiple DACs???
+
+how we deal with incoming bits/pulsin?
+
+///
+
+(or we have anyways routings which are flexible so maybe is ok. just that DAC out clock/speed effects feedback etc...)
+
+// to have experimental modes in second half which do routing bits: in
+pulse modes these could depend on CV, and in CV on pulse or RSR.
+
+6/9/2021 - important thing is if we have routing table then what do we do if is
+  zeroes for one route - we need always to preserve a default route
+
+for first half of modes we fix top SR as in, left as through, right as feedback, bottom CSR as output
+
 
 ////
 
 TODO from below:
 
-- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse
+- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse-DONE
+- start porting SRs - more generic from AC!
+
 - test use of manipulated routing tables for one SR
 - trial RSR as random register with various routings for simulation of electronotes and TM.
-- in test2.c compare generic shiftings with coggs version (and also if we still need to do <<1 if routes to itself?)
+- in test2.c compare generic shiftings with coggs version (and also if we still need to do <<1 if routes to itself?)DONE, yes they are the same, and we do
 
 - ghostSR in ghostSR in test2.c to trial//also various crossings of delayed ghosts with "real" SRs
 
@@ -298,6 +362,8 @@ mode 0 is straight LFSR (or with ADC or)
 + comparator function for ADC ins (can we also use this for LFSR -
   ways that we can combine bits from that?) - comp only works when we
   have no speedCV/pulsein only - or we can have 
+
+comp in as one bit only ADC in comped with CV?
 
 - feedback of analogue output - eg. comparator using analogue out
 

@@ -30,7 +30,13 @@ TODO:
 
 TODO from segmodes:
 
-- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse
+- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse DONE for one...
+
+tried now with a different DAC! say from RSR! DONE
+
+- start porting SRs - more generic from AC! and try to closely replicate classic SRs after notes in fromAC.c
+
+
 
 - test use of manipulated routing tables for one SR
 - trial RSR as random register with various routings for simulation of electronotes and TM.
@@ -939,7 +945,7 @@ uint32_t shift_register; // tmp
 
     shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
     
-    //    bitr=(Gshift_registerr>>SRlengthr) & 0x01; // we can only shift this ghost register in one case...
+    //    bitr=(Gshift_registerr>>SRlengthr) & 0x01; // we can only shift this ghost register in one case...  ie. we use it elsewhereg
     //    Gshift_registerr=(Gshift_registerr<<1)+bitr; 
 
     shift_registern+= bitn;// & bitr;// ^ (!(GPIOC->IDR & 0x0010)); // or goes to 1s, xor is risky, AND works... and clockbit PC4

@@ -8,7 +8,8 @@
 
 // TODO:
 
-//- in test2.c compare generic shiftings with coggs version (and also if we still need to do <<1 if routes to itself? yes we do)
+//- in test2.c compare generic shiftings with coggs version (and also if we still need to do <<1 if routes to itself? yes we do) DONE
+// they are both the same...
 
 //- ghostSR in ghostSR in test2.c to trial//also various crossings of delayed ghosts with "real" SRs
 
@@ -24,6 +25,8 @@ uint32_t shift_[4], Gshift_[4][4], GGshift_[4], cogg[4][4], route[4]; // gshift 
 
 uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0};
 
+uint32_t default_route[4]={3,0,1,2}; // for 0,1,2,3 N,L,C,R - but routing is routing FROM!
+ 
 static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ???
 
 0b11111111111111111111111111111110,
@@ -149,6 +152,25 @@ printf("\n");
 int main(void)   // try to re-learn pointer arrays
 {
   uint32_t bitn, bitr, tmp;
+  uint32_t shift_registern=0xff; // 32 bit SR but we can change length just using output bit
+  uint32_t shift_registerl=0xff;
+  uint32_t shift_registerr=0xff;
+  uint32_t shift_registerc=0xff;
+  uint32_t shift_registerR=0xff; 
+
+  uint16_t speedn, speedl, speedr, speedc=0;
+  uint16_t countern, counterl, counterr, counterc=0;
+  uint16_t SRlengthn=31, SRlengthl=31, SRlengthr=31, SRlengthc=31, lengthbitn=15, Slengthbitl=15, lengthbitr=15, Slengthbitc=15;
+  uint32_t coggn, coggl, coggr, coggc=0;
+
+  uint32_t Gshift_registern=0xff; 
+  uint32_t Gshift_registernn=0xff; // for routing we need 2x  - this is resolved in arrays of ghosts
+  uint32_t Gshift_registerl=0xff;
+  uint32_t Gshift_registerr=0xff;
+  uint32_t Gshift_registerc=0xff; 
+
+  
+
   uint32_t b, g, x, y;
   shift_[0]=0b1010101010101010101010101010101;
   shift_[1]=0b0110111011111011101110111110000;
@@ -163,14 +185,20 @@ int main(void)   // try to re-learn pointer arrays
   uint32_t SRlength[4]={31,31,31,31};
   //  print32bits(*shift_[0]);
 
+  ////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////
   // trying to rewrite generic shifter for pointer arrays:
   // also counters can be arrays too...
   // whole of SR should be configurable as stream of bits so we can read a description from another SR
   // also mode and pulses can modify bits
-
+  ////////////////////////////////////////////////////
+  /*
   b=0; //this is us
 
   // trial routing table
+  // 6/9/2021 - important thing is if we have routing table then what do we do if is
+  //  zeroes for one route - we need always to preserve a default route
+
   route[b]=1; // lowest 4 bits of routing NLCR 1000 so C would be 0010 = 2  - or we use binary weighted
 
   for (y=0;y<32;y++){
@@ -207,10 +235,6 @@ int main(void)   // try to re-learn pointer arrays
   Gshift_revcnt[b]++; // events for increment
   if (Gshift_revcnt[b]>255) Gshift_revcnt[b]=0;
   // } wrap
-
-  
-
-
   
     // need to catch it
   if (shift_[b]==0)     shift_[b]=0xff;
@@ -243,15 +267,103 @@ int main(void)   // try to re-learn pointer arrays
     tmp=tmp>>1;
   }
 
+  // check that if is only a routing to itself that we do have one default route bit
+  if (tmp==(1<<b)) { // only itself - add in default route which is?
+    x=default_route[b];
+    bitr |= (Gshift_[b][x]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum
+    Gshift_[b][x]=(Gshift_[b][x]<<1)+bitr;
+  } 
+    
   shift_[b]+= bitr;// & bitr;// ^ (!(GPIOC->IDR & 0x0010)); // or goes to 1s, xor is risky, AND works... and clockbit PC4
   //  printf("%d\n",bitr);
   print32bits(shift_[0]);
   //  print32bits(Gshift_[0][0]);
   printf("\n");
   }
-
+  */
+  ////////////////////////////////////////////////////
   // how can we compare routing with ghosts to routing with coggs at different speeds
+  ////////////////////////////////////////////////////
+  // basic coggs code;
+
+  printf("coggs: \n");
+ 
+  for (y=0;y<32;y++){
   
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    if (coggr==0)    shift_registern+= bitn | bitr;
+    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+    print32bits(shift_registern);
+  }
+
+  speedr=12;
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  shift_registerr=(shift_registerr<<1)+bitr; // loop in this case
+  coggr=0;
+  }  
+  } // 32 y
+
+  printf("ghosts: \n");
+
+  shift_registern=0xff; 
+
+  for (y=0;y<32;y++){
+      
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    // copy now to ghost
+    Gshift_registern=shift_registern; // this could also be ORed or other logic operation with former ghost!
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    
+    bitr=(Gshift_registerr>>SRlengthr) & 0x01; 
+    Gshift_registerr=(Gshift_registerr<<1)+bitr; 
+
+    shift_registern+= bitn;// & bitr;// ^ (!(GPIOC->IDR & 0x0010)); // or goes to 1s, xor is risky, AND works... and clockbit PC4
+    print32bits(shift_registern);
+  }
+
+  speedr=12;
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  Gshift_registerr=shift_registerr; // this could also be ORed or other logic operation with former ghost!
+  //  bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  shift_registerr=(shift_registerr<<1)+bitr; // loop in this case
+
+  
+  }
+  
+  
+  
+    } // 32 ghosts
+
+  // XOR;
+
+  int testy=1^0^0;
+
+  printf("TEST: %d\n", testy);
+  
+    //////////////////////////////////
+    
   // test small SR and changes in length
   /*  SRlengthl=31;
     for (y=0;y<100000;y++){
