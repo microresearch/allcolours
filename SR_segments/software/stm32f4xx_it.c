@@ -30,17 +30,17 @@ TODO:
 
 TODO from segmodes:
 
-- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse DONE for one...
-
-tried now with a different DAC! say from RSR! DONE
-
 - start porting SRs - more generic from AC! and try to closely replicate classic SRs after notes in fromAC.c
 
-
-
+//
 - test use of manipulated routing tables for one SR
 - trial RSR as random register with various routings for simulation of electronotes and TM.
 - new ghost/segmode notes
+
+DONE:
+
+- set up clockins for basic pass/recirculate SRs and test with norm of CSR DAC to top TIM1 NSR pulse DONE for one...
+tried now with a different DAC! say from RSR! DONE
 
 //////
 1/9 - test out some basic modes with no movement/frozen at topDONE-no freezes!
@@ -134,11 +134,11 @@ volatile uint32_t Gshift_registerr=0xff;
 volatile uint32_t Gshift_registerc=0xff; 
 
 volatile uint32_t bitn, bitl, bitr, bitc=0, bitnx, bitnn=0;
-volatile uint16_t speedn, speedl, speedr, speedc=0;
+volatile uint32_t speedn, speedl, speedr, speedc=0;
 
-volatile uint16_t countern, counterl, counterr, counterc=0;
-volatile uint16_t SRlengthn=31, SRlengthl=31, SRlengthr=31, SRlengthc=31, lengthbitn=15, Slengthbitl=15, lengthbitr=15, Slengthbitc=15;
-volatile uint16_t GSRlengthn=31, GSRlengthl=31, GSRlengthr=31, GSRlengthc=31;
+volatile uint32_t countern, counterl, counterr, counterc=0;
+volatile uint32_t SRlengthn=31, SRlengthl=31, SRlengthr=31, SRlengthc=31, lengthbitn=15, Slengthbitl=15, lengthbitr=15, Slengthbitc=15;
+volatile uint32_t GSRlengthn=31, GSRlengthl=31, GSRlengthr=31, GSRlengthc=31;
 
 // and also need counters for "cogs"
 volatile uint32_t coggn, coggl, coggr, coggc=0;
@@ -500,6 +500,7 @@ void PendSV_Handler(void)
 
 void EXTI4_IRQHandler(void){ // working NSR 
   static uint16_t flipper=0;
+  uint32_t tmp, tmpp;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   
   // flip PB4 to test interrupt on NSR PC4
@@ -507,8 +508,10 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   //    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
   //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
+  //////////////////////////////////////////
   // simple code to test pulse in
-  
+  //////////////////////////////////////////
+  /*  
     bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
     // need to catch it
     if (shift_registern==0)     shift_registern=0xff;
@@ -520,7 +523,44 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
     coggr++;
     if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
     coggn=0;
-    
+  */
+  //////////////////////////////////////////
+  //  1- Turing Machine: cycle bit if noise vs. comp > than X, otherwise invert cycling bit so goes from probability - all flips to no flips
+  // so we can get probability from: SR (x bits are 1), SR DAC (x bits),
+  // CV in as comparator for SR DAC, CV as comparator for ADC in, ADC as
+  // comparator for SR DAC -- DAC routing for this
+  // rough and ready - to abstract out more what we have here
+  // but seems to work if a bit unstable
+  // can also imagine variations of this and TM within TM - eg. cycling of its own bitn (try this now)
+  // or of LFSR bits
+  //////////////////////////////////////////
+  // this more complex version works very well - again how to abstract it with routings for DACs
+  // let's use DAC from RSR 12 lower bits as probability vs CV.
+  bitn=(Gshift_registern>>SRlengthn) & 0x01; // try overlap with/without this shift
+  shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    // say bitr is cycling bit
+    //      tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference
+    tmp=shift_registerr>>19; // top 12 bits -32-19
+    tmpp=shift_registerl>>19; // top 12 bits -32-19
+    // but sRR is not really random - we would need a proper LFSR/dedicated
+    // where can we get another comparator for bitn from? - unless we use length here
+    if (tmp<adc_buffer[0]) bitn^=1;
+    //    if (tmp<adc_buffer[0]) { // or try to compare to other SR? eg SRL
+    if (tmp<tmpp) { // or try to compare to other SR? eg SRL
+      if (coggr==0)    shift_registern+= bitr | bitn;
+      else shift_registern+= ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01) | bitn;
+    }
+    else
+      {
+      if (coggr==0)    shift_registern+= !bitr | bitn;
+      else shift_registern+= !((shift_registerr>>(SRlengthr-(coggr-1)))&0x01) | bitn;
+      }
+      
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+
+
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
  }

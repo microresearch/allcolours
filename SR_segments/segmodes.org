@@ -2,12 +2,33 @@
 
 beckett/gray codes for routing ???
 
+9/9/2021 
+
+- each SR delivers DAC, how to do tables which don't allow for overlap of DACs eg.
+
+1000
+0100
+0010
+0001 for each table
+
+structure for all eg. speed from routing table// all is defined by tables/arrays which can be routed
+
+in test2.c speedroute as array of pointers to values...
+
+pulsin bits L, R is XOR always with new bit
+
+basic modes/expanded modes across split of cv/speed, pulse speed...
+
+/////
+
 how to make uncomplicated generic SR options which can interact across all sets of:
 
 1st set: simple SR modes for each SR with fixed routing
+1.5th: simple modes but with very specific configurable tables for routes eg. speed routes...
 2nd set: generic SRs with configurable routings
 3: complex routing with DAC, ADC etc.
 
+generic as all routing is internal - we do not dictate to other SR...
 
 // also from triadex muse:
 --> this is an XOR of 4 bits - selected from clocking bits, on/off bit and from shift register feedback
@@ -25,6 +46,11 @@ routing / DAC output / LFSR feedback / ADC IN
 extra bits: clock DAC/pulse for speed with any offset(CV), comp DAC ->9 bits, 
 
 speed modes: CV as speed, CV plus DAC as speed, pulses, pulses from SR, combination of... see more below...
+
+// and how would routing be for pulse modes: pulses, pulses from SR - but we can't use our own pulses
+// we can't make this so generic as one set uses interrupts... also we can always reroute pulses with cables so...
+
+CV plus DAC in CV modes, pulse plus SR in pulse modes????
 
 routing table is for incoming SRs
 

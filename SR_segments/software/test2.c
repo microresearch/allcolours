@@ -24,9 +24,26 @@ uint32_t shift_[4], Gshift_[4][4], GGshift_[4], cogg[4][4], route[4]; // gshift 
 // with 256 cycles/copies - or we can have variable length of this shifting array
 
 uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0};
-
 uint32_t default_route[4]={3,0,1,2}; // for 0,1,2,3 N,L,C,R - but routing is routing FROM!
- 
+uint32_t single_route[4]={1,2,4,8};
+uint32_t sroute=0; // counter for single routes so we can share this
+
+uint32_t *speedroute[4][5]; // speed from our CV, CV as offset for DAC from (1,2,3,4) // just for speedCV modes - pointer to these
+
+// and how would routing be for pulse modes: pulses, pulses from SR - but we can't use our own pulses
+// we can't make this so generic as one set uses interrupts... also we can always reroute pulses with cables so...
+// other options: DAC or CV as divider of pulses in these modes
+
+/* each SR delivers DAC, how to do tables which don't allow for overlap of DACs eg.
+
+1000
+0100
+0010
+0001 
+
+for each table - but what to do if one is chosen? route+1
+*/
+
 static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ???
 
 0b11111111111111111111111111111110,
@@ -158,9 +175,11 @@ int main(void)   // try to re-learn pointer arrays
   uint32_t shift_registerc=0xff;
   uint32_t shift_registerR=0xff; 
 
-  uint16_t speedn, speedl, speedr, speedc=0;
-  uint16_t countern, counterl, counterr, counterc=0;
-  uint16_t SRlengthn=31, SRlengthl=31, SRlengthr=31, SRlengthc=31, lengthbitn=15, Slengthbitl=15, lengthbitr=15, Slengthbitc=15;
+  uint32_t counter[4];
+  
+  uint32_t speedn, speedl, speedr, speedc=0;
+  uint32_t countern, counterl, counterr, counterc=0;
+  uint32_t SRlengthn=31, SRlengthl=31, SRlengthr=31, SRlengthc=31, lengthbitn=15, Slengthbitl=15, lengthbitr=15, Slengthbitc=15;
   uint32_t coggn, coggl, coggr, coggc=0;
 
   uint32_t Gshift_registern=0xff; 
@@ -169,8 +188,10 @@ int main(void)   // try to re-learn pointer arrays
   uint32_t Gshift_registerr=0xff;
   uint32_t Gshift_registerc=0xff; 
 
+  //  uint32_t *speedroute[4][5]; // speed from our CV, CV as offset for DAC from (1,2,3,4) // just for speedCV modes - so could be pointer to these
+  speedroute[0][0]=&speedn; // eg CV speed.
+  speedn=253;
   
-
   uint32_t b, g, x, y;
   shift_[0]=0b1010101010101010101010101010101;
   shift_[1]=0b0110111011111011101110111110000;
@@ -192,9 +213,17 @@ int main(void)   // try to re-learn pointer arrays
   // whole of SR should be configurable as stream of bits so we can read a description from another SR
   // also mode and pulses can modify bits
   ////////////////////////////////////////////////////
-  /*
+  
   b=0; //this is us
 
+  // we want speed to be a route:
+  //    countern++;
+  //  if (countern>=speedn){ 
+  //    countern=0;
+  //  printf("spedrot: %d\n", *speedroute[b][0]); // this works
+  counter[b]++;
+  if (counter[b]>*speedroute[b][0]){ // speed from our CV, CV as offset for DAC from (1,2,3,4) // just for speedCV modes - 0 is route
+    counter[b]=0;
   // trial routing table
   // 6/9/2021 - important thing is if we have routing table then what do we do if is
   //  zeroes for one route - we need always to preserve a default route
@@ -280,12 +309,13 @@ int main(void)   // try to re-learn pointer arrays
   //  print32bits(Gshift_[0][0]);
   printf("\n");
   }
-  */
+  }  
   ////////////////////////////////////////////////////
   // how can we compare routing with ghosts to routing with coggs at different speeds
   ////////////////////////////////////////////////////
   // basic coggs code;
 
+  /*
   printf("coggs: \n");
  
   for (y=0;y<32;y++){
@@ -355,12 +385,10 @@ int main(void)   // try to re-learn pointer arrays
   
   
     } // 32 ghosts
-
+  */
   // XOR;
-
-  int testy=1^0^0;
-
-  printf("TEST: %d\n", testy);
+  //  int testy=1^0^0;
+  //  printf("TEST: %d\n", testy);
   
     //////////////////////////////////
     
