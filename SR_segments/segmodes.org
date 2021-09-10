@@ -2,7 +2,22 @@
 
 beckett/gray codes for routing ???
 
+10/9/2021
+
+inline int bits(uint32_t reg, uint32_t length){ // function returns bottom length bits of SR reg
+
+and another inline function which returns different kinds of DAC from
+a certain SR eg. standard DAC of x bits, equivalent dac of x bits,
+what about one bit dac (more involved as takes time but we should have
+a pointer to that value
+
 9/9/2021 
+
+// always do DACs - but how these are handled according to length as we still want fixed number of bits
+
+implementing TM in TM: slowly start to see how to abstract as work through and implement all modes
+- TOWARDS: basic framework to use in Vienna! (using one bit DAC out
+  tho which we could also include in routing tables and as an always?)
 
 - each SR delivers DAC, how to do tables which don't allow for overlap of DACs eg.
 

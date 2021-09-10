@@ -30,6 +30,9 @@ uint32_t sroute=0; // counter for single routes so we can share this
 
 uint32_t *speedroute[4][5]; // speed from our CV, CV as offset for DAC from (1,2,3,4) // just for speedCV modes - pointer to these
 
+// can also be for any set of values - and we can include own length so +1
+// always do DACs - but how these are handled according to length as we still want fixed number of bits
+
 // and how would routing be for pulse modes: pulses, pulses from SR - but we can't use our own pulses
 // we can't make this so generic as one set uses interrupts... also we can always reroute pulses with cables so...
 // other options: DAC or CV as divider of pulses in these modes
@@ -152,6 +155,12 @@ static uint8_t lfsr_taps[32][4] = {
         {31, 29, 25, 24},
   };
 
+static uint32_t rightshift[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, // first 12 bits
+				1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16, 17,18,19,20};
+
+static uint32_t leftshift[32]= {11,10,9, 8,7,6,5, 4,3,2,1,
+				0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
+
 void print32bits(uint32_t bitz){
   int x,y;
   unsigned char bitt;
@@ -164,6 +173,36 @@ void print32bits(uint32_t bitz){
     printf("%d",bitt);
   }
 printf("\n");
+}
+
+static inline int bits_(uint32_t reg, uint32_t length){ // function returns bottom length bits of SR reg
+  uint32_t x=0;
+  if (reg<4) x=shift_[reg]>>(31-length);
+  return x;
+}
+
+// and another inline function which returns different kinds of DAC from
+// a certain SR eg. standard DAC of x bits, equivalent dac of x bits,
+// what about one bit dac (more involved as takes time but we should have
+// a pointer to that value
+
+static inline int DAC_(uint32_t reg, uint32_t length, uint32_t type){
+  uint32_t x=0;
+  if (type==0){ // standard bit DAC for x bits
+    if (reg<4 && length>3 && length<32) 
+      x=((shift_[reg] & masky[length-3])>>(rightshift[length]))<<leftshift[length]; // we want 12 bits but is not really audible difference    
+  }
+  else
+    {
+      // equivalent bit DAC for x bits - we need a table for this!
+      // or more like set of tables for each bit
+      // and we need divide highest but number - eg. for 8 bits we have max 8 (all 1s) - max 12 bits DAC is 4096 4096/8=512, 32 bits=128, 1 bit etc.
+      // we can have another table for this
+      if (reg<4){
+
+      }
+    }
+  return x;
 }
 
 int main(void)   // try to re-learn pointer arrays
