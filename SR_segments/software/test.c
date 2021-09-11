@@ -82,7 +82,14 @@ static uint8_t lfsr_taps[32][4] = {
 	
   };
 
-
+int countbits(int xxx){
+  int cont=0;
+  while (xxx>0){
+    if (xxx&1) cont++;
+    xxx=xxx>>1;
+  }
+  return cont;
+}
 
 
 
@@ -698,5 +705,10 @@ in reverse tho for 9->31
       //      printbits(&g_buf[0]);
       }*/
 		  //		   }
+    for (int x=0;x<4096;x++){ // 12 bits 
+      printf("%d, ", countbits(x));
+
+    }
+
     return 0;
 }

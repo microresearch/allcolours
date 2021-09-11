@@ -156,7 +156,7 @@ static uint32_t MASK[32]={4294967040, 4294967040, 4294967040, 4294967040, 429496
 
 static uint32_t SHIFT[32]={0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
 
-static uint32_t lookuplenodd[16]={5, 5, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31}; 
+//static uint32_t lookuplenodd[16]={5, 5, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31}; 
 
 static uint32_t lookuplenall[32]={3, 3, 3, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
 
@@ -524,6 +524,8 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
     if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
     coggn=0;
   */
+
+
   //////////////////////////////////////////
   //  1- Turing Machine: cycle bit if noise vs. comp > than X, otherwise invert cycling bit so goes from probability - all flips to no flips
   // so we can get probability from: SR (x bits are 1), SR DAC (x bits),
@@ -764,7 +766,7 @@ uint32_t shift_register; // tmp
   int16_t tmpt;
     //low pass test
   static float SmoothData=0.0;
-  float LPF_Beta = 0.02; // 0<ß<1
+  float LPF_Beta = 0.4; // 0<ß<1
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
@@ -814,23 +816,19 @@ uint32_t shift_register; // tmp
   if (coggl>(SRlengthl+1)) coggl=0;
   coggc=0;
 
-  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference
-  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
-  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  // OUTPUT DAC 
+  //  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference
+  //  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  //  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
 
-  // DAC for normed NSR but should be from other SR so is not locked to output speed
-  //  tmp+=320; 
-  //  TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
-  //  TIM1->CCR1 = tmp/2; // pulse width
+  // try as one bit audio out!
+  // low pass to our DAC!
   
-  //   try other outputs
-   // low pass to our DAC!
-  
-//  if (bitc==1) bit=4095;
-//  else bit=0;
-//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
-//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
-//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  if (bitc==1) bit=4095;
+  else bit=0;
+  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+  DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
   }
   
   //rsr is now the feedback register
@@ -849,6 +847,7 @@ uint32_t shift_register; // tmp
   coggr=0;
 
   // DAC for normed NSR 
+  
   tmp=((shift_registerr & masky[SRlengthr-3])>>(rightshift[SRlengthr-3]))<<leftshift[SRlengthr-3]; // we want 12 bits but is not really audible difference
   tmp+=320; 
   TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc

@@ -2,7 +2,15 @@
 
 beckett/gray codes for routing ???
 
-10/9/2021
+11/9/2021:
+
+finishing DAC and ADC generic options:
+TODO// other options are: comparator, equivalent sets of x bits incoming (how to do this cleanly for x number of bits)
+
+possibly we don't use fake pulse ins for norming left/right - to test that these don't effect incoming
+but we do need to use CLKins normed for L,R,C
+
+10/9/2021:
 
 inline int bits(uint32_t reg, uint32_t length){ // function returns bottom length bits of SR reg
 
