@@ -50,6 +50,25 @@ uint32_t *speedroute[4][5]; // speed from our CV, CV as offset for DAC from (1,2
 for each table - but what to do if one is chosen? route+1
 */
 
+// for generic CLK puls routing
+//LSRCLK-pulse9=PB12, RSRCLK-pulse10=PB13, CSRCLCK-pulse11=PB14
+// 000,001,010,011,100,101,110,111
+
+//GPIOC->BSRRH = (1<<15) ;  // clear bits            
+//GPIOC->BSRRL = (1<<15) ;  // write bits            
+
+
+static uint32_t clk_route[8]={0,
+			      (1<<12),
+			      (1<<13),
+			      (1<<12) | (1<<13),
+			      (1<<14),
+			      (1<<12) | (1<<14),
+			      (1<<14) | (1<<13),
+			      (1<<12) | (1<<13) | (1<<14)
+};
+
+  
 static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ???
 
 0b11111111111111111111111111111110,
@@ -273,7 +292,7 @@ static inline int DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 types
 int main(void)   // try to re-learn pointer arrays
 {
   uint32_t bitn, bitr, tmp;
-  uint32_t shift_registern=0xff; // 32 bit SR but we can change length just using output bit
+  uint32_t shift_registern=0xff; 
   uint32_t shift_registerl=0xff;
   uint32_t shift_registerr=0xff;
   uint32_t shift_registerc=0xff;
@@ -293,10 +312,11 @@ int main(void)   // try to re-learn pointer arrays
   uint32_t Gshift_registerc=0xff; 
 
   //  uint32_t *speedroute[4][5]; // speed from our CV, CV as offset for DAC from (1,2,3,4) // just for speedCV modes - so could be pointer to these
+  // but we can't add offset in pointers?
   speedroute[0][0]=&speedn; // eg CV speed.
   speedn=253;
   
-  uint32_t b, g, x, y;
+  uint32_t b, g, x, y, clkr=0;
   shift_[0]=0b1010101010101010101010101010101;
   shift_[1]=0b0110111011111011101110111110000;
   shift_[2]=0b0110111011111011101110111110000;
@@ -412,6 +432,17 @@ int main(void)   // try to re-learn pointer arrays
   print32bits(shift_[0]);
   //  print32bits(Gshift_[0][0]);
   printf("\n");
+
+  // generic output for fake CLKINS on: LSRCLK-pulse9=PB12, RSRCLK-pulse10=PB13, CSRCLCK-pulse11=PB14
+  // just deal with CLKS - they are all on PB. we can route to all/any so 3 bits
+
+  // if (bitr)     GPIOB->BSRRL = clk_route[clkr];
+  //  else GPIOB->BSRRH = clk_route[clkr]; // clear
+
+  //    GPIOB->BSRRL = (1)<<2 | (1<<3) | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // write bits
+  //  GPIOA->BSRRL = (1)<<11 | (1<<12);// | (1<<4) | (1<<10) | (1<<12)  | (1<<13)  | (1<<14) | (1<<15) ;  // write bits
+
+  
   }
   }  
   ////////////////////////////////////////////////////

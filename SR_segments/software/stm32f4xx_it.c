@@ -28,11 +28,34 @@
 
 TODO:
 
+- what will be setup for VIENNA? - one bit audio outs and ins, plus pulse ins...
+
 TODO from segmodes:
+
+- investigate interrupt priority - do pulse interrupts take over timer?
+
+[how can we investigate this - have strict DAC rising in TIM and then try interrupts]
+
+
+- clock fake routes: R->L and L->R (output bits of SR to CLKINS), CSR is speed controlled (has to be) - TO TEST!
+
+[how does this work as C, R and L share same interrupt? - guess they will have to wait]
+
+routing seems to not really work so now they all share speed but we can have experimental modes with different routings
+
+///////////////////////////////....
+
+// check lsr runs if all run in interrupt, put cycling single TM in other triggered ones
+
+///////
+
+- make latest TM SR more generic/start to port to arrays/tables // copy over...
+
+
 
 - start porting SRs - more generic from AC! and try to closely replicate classic SRs after notes in fromAC.c
 
-//
+
 - test use of manipulated routing tables for one SR
 - trial RSR as random register with various routings for simulation of electronotes and TM.
 - new ghost/segmode notes
@@ -142,6 +165,21 @@ volatile uint32_t GSRlengthn=31, GSRlengthl=31, GSRlengthr=31, GSRlengthc=31;
 
 // and also need counters for "cogs"
 volatile uint32_t coggn, coggl, coggr, coggc=0;
+
+// for generic CLK puls routing
+//LSRCLK-pulse9=PB12, RSRCLK-pulse10=PB13, CSRCLCK-pulse11=PB14
+// 000,001,010,011,100,101,110,111
+
+static uint32_t clk_route[8]={0,
+			      (1<<12),
+			      (1<<13),
+			      (1<<12) | (1<<13),
+			      (1<<14),
+			      (1<<12) | (1<<14),
+			      (1<<14) | (1<<13),
+			      (1<<12) | (1<<13) | (1<<14)
+};
+
 
 // experimental parallel SR
 uint32_t shift_registerpar[32]={0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
@@ -499,7 +537,6 @@ void PendSV_Handler(void)
 // TEST: inpulse interrupts to attach are: CSR: PC3nowPB7, NSR: PC4, RSR: PC5, LSR: PB6
 
 void EXTI4_IRQHandler(void){ // working NSR 
-  static uint16_t flipper=0;
   uint32_t tmp, tmpp;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   
@@ -568,38 +605,81 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
  }
 
 void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but both work out
+  uint32_t tmp, tmpp;
+  uint16_t j, bit, xx, x, clkr;
+  
   // added PB7 now for CSRCLKIN CSR which moved from PC3!!!
-
-  static uint16_t flipper=0;
-if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
-
   // CSR: PC3->now PB7, NSR: PC4, RSR: PC5, LSR: PB6
   
-  // flip PB4 to test interrupt on  RSR
-    flipper^=1;
-    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  //- clock fake routes: R->L and L->R (output bits of SR to CLKINS), CSR is speed controlled (has to be) - TO TEST!
+  // so we need to output pulses for CSR depending on speed
+  // RSR does DAC for CLK/pwm
+  
+  static uint16_t flipper=0;
+  if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  
+
+      bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+    tmp=shift_registern>>19; // top 12 bits -32-19 - uses n as our RNG or we could use ghost or other SR - routinga lso for this
+    if (tmp<adc_buffer[6]) bitr^=1; // n is 0, l is 3, r is 6, c is 9 - make array for this!
+
+    if (coggc==0)  shift_registerr=(shift_registerr<<1)+ (bitc | bitr);
+    else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+(tmp|bitr);
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+
+  // DAC for normed NSR 
+  
+  tmp=((shift_registerr & masky[SRlengthr-3])>>(rightshift[SRlengthr-3]))<<leftshift[SRlengthr-3]; // we want 12 bits but is not really audible difference
+  tmp+=320; 
+  TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
+  TIM1->CCR1 = tmp/2; // pulse width
+
   
   EXTI_ClearITPendingBit(EXTI_Line5);
  }
 
- if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
+  if (EXTI_GetITStatus(EXTI_Line6) != RESET) { //LSR
 
-  // flip PB4 to test interrupt on LSR
-    flipper^=1;
-    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-    else   GPIOB->BSRRL=(1)<<4; //  write bits   
-
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  tmp=shift_registern>>19; // top 12 bits -32-19 - uses n as our RNG or we could use ghost or other SR
+  if (tmp<adc_buffer[3]) bitl^=1; // n is 0, l is 3, r is 6, c is 9 - make array for this!
+  
+  if (coggn==0)  shift_registerl=(shift_registerl<<1)+(bitl | bitn);
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+(tmp|bitl);
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+  
   EXTI_ClearITPendingBit(EXTI_Line6);
  } 
 
-  if (EXTI_GetITStatus(EXTI_Line7) != RESET) {
+  if (EXTI_GetITStatus(EXTI_Line7) != RESET) {// CSR
 
-  // flip PB4 to test interrupt on PB7 -> CSR
-    flipper^=1;
-    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  tmp=shift_registern>>19; // top 12 bits -32-19 - uses n as our RNG or we could use ghost or other SR
+  if (tmp<adc_buffer[9]) bitc^=1; // n is 0, l is 3, r is 6, c is 9 - make array for this!
+  
+  if (coggl==0)  shift_registerc=(shift_registerc<<1)+(bitc|bitl);
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+(bitc|tmp);
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
 
+  // OUTPUT DAC 
+  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+    
   EXTI_ClearITPendingBit(EXTI_Line7);
  } 
 
@@ -757,7 +837,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST???, counters speed etc. all arrays 0,1,2,3
   volatile uint32_t *bitz;
   bitz=&(GPIOC->IDR);
-
+  static uint32_t flipper=0, countercc=0, clkr=7;
   static volatile uint16_t k=0,ll=0, n=0, accum, cnt=0, sl=0;
   static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
   uint16_t j, bit, xx, x;
@@ -770,6 +850,16 @@ uint32_t shift_register; // tmp
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
+    // so we need to output pulses for CSR depending on speed speedc
+  countercc++;  
+  if (countercc>=speedc){
+    countercc=0;
+    // flip the CSR bit
+    flipper^=1;
+    if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one
+    else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
+  }
+  
    // basic tests!
   /*
   k=(adc_buffer[0]); // now 12 bits only
@@ -783,9 +873,11 @@ uint32_t shift_register; // tmp
   //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
   /////////////////////////////////////////////////////////////////////////////////////////
-  // simple test of routing with NSR as clocked (above) and generate NSR clock bit from DAC!
+  // simple test of routing with NSR as clocked (above) and generate NSR clock bit from DAC on RSR!
+  // now we try all in clocked
   /////////////////////////////////////////////////////////////////////////////////////////
-
+  /*
+  
   // do LSR - input from shift_registern
   counterl++;
   if (counterl>=speedl){
@@ -852,9 +944,9 @@ uint32_t shift_register; // tmp
   tmp+=320; 
   TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
   TIM1->CCR1 = tmp/2; // pulse width
-
   
   }    
+  */
   
   /////////////////////////////////////////////////////////////////////////////////////////
   // how to re-think overlap with new scheme

@@ -1,3 +1,19 @@
+  // flip PB4 to test interrupt on PB7 -> CSR
+    flipper^=1;
+    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+
+  // flip PB4 to test interrupt on LSR
+    flipper^=1;
+    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+
+  // flip PB4 to test interrupt on  RSR
+    flipper^=1;
+    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
+    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+
+
 
 ((longer&(0b1111111111111111111111111111111100000000000000000000000000000000+othermasky[31-srlength])>>(sh-shifter))); // so this seems to work
 

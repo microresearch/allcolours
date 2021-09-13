@@ -2,6 +2,12 @@
 
 beckett/gray codes for routing ???
 
+13/9/2021:
+
+- investigate interrupt priority - do pulse interrupts take over timer?
+- clock fake routes: R->L and L->R (output bits of SR to CLKINS), CSR is speed controlled (has to be) - TO TEST!
+- make latest TM SR more generic/start to port to arrays/tables
+
 11/9/2021:
 
 finishing DAC and ADC generic options:
