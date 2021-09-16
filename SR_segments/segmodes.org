@@ -2,19 +2,101 @@
 
 beckett/gray codes for routing ???
 
+16/9/2021.
+
+- idea that CLK pulsins could trigger train of pulses at speed x
+  (eg. x by CV, by DAC) - descending speed, speed from other SR, train
+  from other SR
+
+- how to arrange:
+
+CV speed
+trigger speed
+speed from other DAC (which one) with CV offset
+SR->bit speed (ANDed with CV/trigger) eg. if && bitx
+train of pulses also (see above)
+
+[SR->fake triggers and mainPWM/normed in - but that is determined by other SRs] -> we need to sort this...
+-> how these are all selected as all SR are independent
+
+//MODE - where do I take my speed from?
+
+to resolve fixed scheme eg. CSR->DAC out as we can't have 2x DAC outs simultaneously (or we have bus/mix)?
+
+TODO: implement basic very generic SR for all cases, test if flag in clkin interrupt works so we can place all in main loop
+
+1-Where do I get speed from? if from SR which one and 
+1.5-shifting of which bits <<
+2-where is the input bit from (LFSR, ADC type?)
+3-what is routing for incoming SR bits, cycling bit
+4-what is incoming pulsin bit if any?
+5-XOR of logic op of all bits and re-insertion
+6-DAC output for any purposes
+7-pulses out if any
+
+8-fake/pwm for normed clkins - how? or we keep standard?
+
+options/ideas: DAC out runs at full speed and is changed by all/any, clkin interrupts flagged so all is in main loop
+
+  // we can still have specialised SRs but they should all be repeatable
+  // so can be placed in a loop!
+  SEE:  *generic.c*
+
+////////////////
+how to resolve clock norming?
+
+So we have PWM (TIMx) which norms to NSR clock - this is generated at the moment from RSR DAC
+
+LSR, RSR and CSR have fake clocks - CSR should be from speedc/CV, LSR and RSR???
+
+15/9/2021:
+
+- testing and implementing arrays for puls ins and outs (left, right and c) DONE
+- place into not-so-generic pasted LFSR round one at start// DONE
+
+- implementation for Benjolin/halfDONE but need to think about how we
+  can make generic one SR clocking another without failure in any loop, and/or generic use of fake clkins
+
+- TODO: Benjolin in trigger mode using fake clks - FIGURE out how to prevent freeze (CSR will have speed)
+
+- so start to think on what general modes for Vienna could be (before we get to rendering as all generic)
+
+// using sigma delta for bit input an low pass out (see test.c)
+// all modes with bits in and out
+
+eg.
+0-looping only/aka return only!
+1-pass on only - straight through
+2-pass on and return bitx
+3-TM with pass on - trigger mode
+4-TM with loop back
+5-TM in TM pass on
+6-TM in TM loop
+7-Rungler XOR pass on
+8-Rungler XOR loop back
+9+Run with different speeds
+10+Run with bits
+
+11other exp modes/trigger modes//what else?
+
+DACs,ADC types
+
+TODO: always have NSR/PWM from RSR DAC for the moment - so to add to the basic/pastey!
+
 13/9/2021:
 
-- investigate interrupt priority - do pulse interrupts take over timer?
 - clock fake routes: R->L and L->R (output bits of SR to CLKINS), CSR is speed controlled (has to be) - TO TEST!
+TESTING but tricky so made all from speed... NSR/pwm is from DAC
+
 - make latest TM SR more generic/start to port to arrays/tables
 
 11/9/2021:
 
 finishing DAC and ADC generic options:
-TODO// other options are: comparator, equivalent sets of x bits incoming (how to do this cleanly for x number of bits)
+TODO// other options are: comparator, equivalent sets of x bits incoming 
 
 possibly we don't use fake pulse ins for norming left/right - to test that these don't effect incoming
-but we do need to use CLKins normed for L,R,C
+(but we do need to use CLKins normed for L,R,C) - test with incoming bits
 
 10/9/2021:
 
@@ -270,7 +352,7 @@ bitr=(*Gshift_[g][b]>>SRlength[b]) & 0x01;
 
 *shift_[b]+= bitn;// & bitr;// ^ (!(GPIOC->IDR & 0x0010)); // or goes to 1s, xor is risky, AND works... and clockbit PC4
 
-//also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST???, counters speed etc. all arrays 0,1,2,3
+//also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST??? WORKS!, counters speed etc. all arrays 0,1,2,3
 
 ** classify AC SR modes (did we attempt that there?)
 

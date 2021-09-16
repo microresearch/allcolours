@@ -33,7 +33,6 @@ TODO:
 TODO from segmodes:
 
 - investigate interrupt priority - do pulse interrupts take over timer?
-
 [how can we investigate this - have strict DAC rising in TIM and then try interrupts]
 
 
@@ -49,7 +48,7 @@ routing seems to not really work so now they all share speed but we can have exp
 
 ///////
 
-- make latest TM SR more generic/start to port to arrays/tables // copy over...
+[- make latest TM SR more generic/start to port to arrays/tables // copy over... simpler maybe to leave as is]
 
 
 
@@ -129,6 +128,8 @@ say 1/10 so is not such a big jump
 
 /////////////////////
 extern __IO uint16_t adc_buffer[12];
+float LPF_Beta = 0.4; // 0<ß<1
+
 
 #define FROZENSPEED 1024 // 
 #define MAXVALUE 4095
@@ -139,9 +140,10 @@ uint32_t rr=0, totr=0, smoothr[SMOOTHINGS];
 uint32_t nn=0, totn=0, smoothn[SMOOTHINGS];
 
 uint16_t modec, moden, model, moder;
-
 uint16_t lastmodec, lastmoden, lastmodel, lastmoder;
 uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
+
+volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 
 volatile uint32_t shift_registern=0xff; // 32 bit SR but we can change length just using output bit
 volatile uint32_t shift_registerl=0xff;
@@ -158,6 +160,7 @@ volatile uint32_t Gshift_registerc=0xff;
 
 volatile uint32_t bitn, bitl, bitr, bitc=0, bitnx, bitnn=0;
 volatile uint32_t speedn, speedl, speedr, speedc=0;
+volatile uint32_t flipdl, prev_statl, flipdr, prev_statr, flipdc,prev_statc, dacr=0;
 
 volatile uint32_t countern, counterl, counterr, counterc=0;
 volatile uint32_t SRlengthn=31, SRlengthl=31, SRlengthr=31, SRlengthc=31, lengthbitn=15, Slengthbitl=15, lengthbitr=15, Slengthbitc=15;
@@ -166,7 +169,7 @@ volatile uint32_t GSRlengthn=31, GSRlengthl=31, GSRlengthr=31, GSRlengthc=31;
 // and also need counters for "cogs"
 volatile uint32_t coggn, coggl, coggr, coggc=0;
 
-// for generic CLK puls routing
+// for generic CLK fake puls routing
 //LSRCLK-pulse9=PB12, RSRCLK-pulse10=PB13, CSRCLCK-pulse11=PB14
 // 000,001,010,011,100,101,110,111
 
@@ -179,6 +182,25 @@ static uint32_t clk_route[8]={0,
 			      (1<<14) | (1<<13),
 			      (1<<12) | (1<<13) | (1<<14)
 };
+
+// what are pulse ins?
+// only for left and right! PC7 is RSR, PC8 is LSR
+// generic table and all on GPIOC
+static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
+
+// what are pulse outs?
+// L1-PB2, L2-PC15, R1-PB3, R2-PA11, C1-PB4, C2-PA12
+static uint32_t pulsouts[8]={0,0, 1<<2,1<<15, 1<<4,1<<12, 1<<3,1<<11};
+
+// test pointering WORKS! so we can have array of pointers for easier bit access
+//also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST???, counters speed etc. all arrays 0,1,2,3
+//  volatile uint32_t *bitz;
+//  bitz=&(GPIOC->IDR);
+
+
+volatile uint16_t *pulsoutHI[10]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
+//                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
+volatile uint16_t *pulsoutLO[10]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
 
 // experimental parallel SR
@@ -471,6 +493,40 @@ static uint8_t ghost_tapsR[32][4] = { // right hands path
         {31, 6, 5, 1},
 	 };
 
+static uint32_t countbts[4096]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 8, 9, 9, 10, 9, 10, 10, 11, 9, 10, 10, 11, 10, 11, 11, 12};
+
+uint32_t divy[12]={4096, 2048, 1365, 1024, 819, 682, 585, 512, 455, 409, 372, 341};
+
+/// for DAC we can also just pass in shiftreg itself as is quicker - but we also need number
+static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t which){ // 3 types 0,1,2 - but we can also add more types for spacings with array of spacers (which we did have somewhere
+  uint32_t y,x=0;
+  static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
+
+  if (type==0){ // standard bit DAC for x bits
+    if (length>3 && length<32) {
+      x=((reg & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
+  }
+  }
+  else if (type==1){
+      // equivalent bit DAC for x bits - we need a table for this!
+      // or more like set of tables for each bit
+      // and we need divide highest but number - eg. for 8 bits we have max 8 (all 1s) - max 12 bits DAC is 4096 4096/8=512 4096/12=341
+      // we can have another table for this - but just taking maybe max of 12 bits otherwise lookup is too long (max 12 bits=4096)
+	if (length>11) length=11;
+	x=countbts[reg&masky[length]]; // lower length bits only
+	y=divy[length]; // we can just have look up for this as is only 1->12
+	  x*=y;
+  }
+  else { // one bit audio
+    // top bit
+    y=(reg>>length)&1;
+    if (y==1) x=4095;
+    else x=0;
+    SmoothData[which] = SmoothData[which] - (LPF_Beta * (SmoothData[which] - x)); // how do we adjust beta for speed?
+    x=(int)SmoothData[which];
+  }
+  return x;
+}
 
 ///////////////////////////////////////////////////////////////////////// 
 
@@ -539,12 +595,37 @@ void PendSV_Handler(void)
 void EXTI4_IRQHandler(void){ // working NSR 
   uint32_t tmp, tmpp;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
-  
+  intflag[0]=1; //NSR
   // flip PB4 to test interrupt on NSR PC4
   //    flipper^=1;
   //    if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
   //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
 
+  //////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+  // RUNGLER options:2 but we need to pull LSR into interrupts so only works in that mode
+  // or more complex version DAC from NSR sets speed of LSR and RSR
+  // LSR is clock for NSR (so as bits) and RSR is bit
+  // for this we can use fake clkin bits - as easiest and NSR is from PWM DAC
+  /////////////////////////////////////////////////////////////////////////////////////////  
+  // drafting Rungleresque with fake clks
+  // NSR uses PWM which is from CSR
+  // LSR is routed from RSR and vice versa - to test.
+  // loop and incoming
+  // add in output bits
+  //////////////////////////////////////////
+  /*
+  // NSR
+    bitn=(shift_registern>>SRlengthn) & 0x01;
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    if (coggr==0)    shift_registern+= bitn ^ bitr; // XOR
+    else shift_registern+= bitn ^ ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01); // XOR
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+  */    
   //////////////////////////////////////////
   // simple code to test pulse in
   //////////////////////////////////////////
@@ -575,6 +656,7 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   //////////////////////////////////////////
   // this more complex version works very well - again how to abstract it with routings for DACs
   // let's use DAC from RSR 12 lower bits as probability vs CV.
+  /*
   bitn=(Gshift_registern>>SRlengthn) & 0x01; // try overlap with/without this shift
   shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
     // say bitr is cycling bit
@@ -598,7 +680,7 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
     coggr++;
     if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
     coggn=0;
-
+  */
 
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
@@ -606,7 +688,8 @@ if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
 
 void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but both work out
   uint32_t tmp, tmpp;
-  uint16_t j, bit, xx, x, clkr;
+  uint16_t j, bit, xx, x;
+  uint32_t lengthbitl=15, new_statl, new_statr,new_statc, lengthbitc=15, lengthbitr=15; // for 2nd bit on lsr, rsr and csr
   
   // added PB7 now for CSRCLKIN CSR which moved from PC3!!!
   // CSR: PC3->now PB7, NSR: PC4, RSR: PC5, LSR: PB6
@@ -614,11 +697,21 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
   //- clock fake routes: R->L and L->R (output bits of SR to CLKINS), CSR is speed controlled (has to be) - TO TEST!
   // so we need to output pulses for CSR depending on speed
   // RSR does DAC for CLK/pwm
-  
-  static uint16_t flipper=0;
-  if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  
+  //  static uint16_t flipper=0;
 
-      bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+  /////////////////////////////////////////////////////////////////////////////////////////  
+  // drafting Rungleresque with fake clks
+  // NSR uses PWM which is from CSR
+  // LSR is routed from RSR and vice versa - to test.
+  // loop and incoming
+  // add in output bits
+  //////////////////////////////////////////
+
+  
+  if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  
+  intflag[3]=1; //RSR
+  // this is what code? TM?
+  /*      bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
     tmp=shift_registern>>19; // top 12 bits -32-19 - uses n as our RNG or we could use ghost or other SR - routinga lso for this
     if (tmp<adc_buffer[6]) bitr^=1; // n is 0, l is 3, r is 6, c is 9 - make array for this!
 
@@ -630,20 +723,74 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
   coggc++;
   if (coggc>(SRlengthc+1)) coggc=0;
   coggr=0;
+      */
+    /*    xx=!(GPIOC->IDR & pulsins[3]); 
+    bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+    if (coggc==0)  shift_registerr=(shift_registerr<<1)+(bitr ^ bitc | xx);
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+(bitr ^ tmp | xx);
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
 
-  // DAC for normed NSR 
+    // test output bits
+  if (bitr) *pulsoutLO[6]=pulsouts[6];
+    else *pulsoutHI[6]=pulsouts[6];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitr=(SRlengthr/2);
+      new_statr=(shift_registerr & (1<<lengthbitr))>>lengthbitr; // so that is not just a simple divide down
+
+      if (prev_statr==0 && new_statr==1) flipdr^=1;
+      prev_statr=new_statr;	
+
+      if (flipdr) *pulsoutLO[7]=pulsouts[7];
+      else *pulsoutHI[7]=pulsouts[7];
+
   
+  // DAC for normed NSR/PWM  
   tmp=((shift_registerr & masky[SRlengthr-3])>>(rightshift[SRlengthr-3]))<<leftshift[SRlengthr-3]; // we want 12 bits but is not really audible difference
   tmp+=320; 
   TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
   TIM1->CCR1 = tmp/2; // pulse width
-
-  
+    */
   EXTI_ClearITPendingBit(EXTI_Line5);
  }
 
   if (EXTI_GetITStatus(EXTI_Line6) != RESET) { //LSR
+    intflag[1]=1; //LSR
+    /*
 
+    // test incoming bit - also in CV modes what do we do with the clock bit? ignore it for now!
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0)  shift_registerl=(shift_registerl<<1)+(bitl ^ bitn | xx);
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+(bitl ^ tmp | xx);
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+
+  // test output bits
+  if (bitl) *pulsoutLO[2]=pulsouts[2];
+    else *pulsoutHI[2]=pulsouts[2];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitl=(SRlengthl/2);
+      new_statl=(shift_registerl & (1<<lengthbitl))>>lengthbitl; // so that is not just a simple divide down
+
+      if (prev_statl==0 && new_statl==1) flipdl^=1;
+      prev_statl=new_statl;	
+
+      if (flipdl) *pulsoutLO[3]=pulsouts[3];
+      else *pulsoutHI[3]=pulsouts[3];
+    */
+    /*
   bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
   tmp=shift_registern>>19; // top 12 bits -32-19 - uses n as our RNG or we could use ghost or other SR
   if (tmp<adc_buffer[3]) bitl^=1; // n is 0, l is 3, r is 6, c is 9 - make array for this!
@@ -656,12 +803,46 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
   coggn++;
   if (coggn>(SRlengthn+1)) coggn=0;
   coggl=0;
-  
+    */  
   EXTI_ClearITPendingBit(EXTI_Line6);
  } 
 
   if (EXTI_GetITStatus(EXTI_Line7) != RESET) {// CSR
+      intflag[2]=1; //CSR
+    /*
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+    if (coggl==0)  shift_registerc=(shift_registerc<<1)+(bitc ^bitl);
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+(bitc ^ tmp);
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
 
+  
+  // test output bits
+  if (bitc) *pulsoutLO[4]=pulsouts[4];
+    else *pulsoutHI[4]=pulsouts[4];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitc=(SRlengthc/2);
+      new_statc=(shift_registerc & (1<<lengthbitc))>>lengthbitc; // so that is not just a simple divide down
+
+      if (prev_statc==0 && new_statc==1) flipdc^=1;
+      prev_statc=new_statc;	
+
+      if (flipdc) *pulsoutLO[5]=pulsouts[5];
+      else *pulsoutHI[5]=pulsouts[5];
+  
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference - updated...
+
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+    */
+  /*
   bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
   tmp=shift_registern>>19; // top 12 bits -32-19 - uses n as our RNG or we could use ghost or other SR
   if (tmp<adc_buffer[9]) bitc^=1; // n is 0, l is 3, r is 6, c is 9 - make array for this!
@@ -679,7 +860,7 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
   tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference
   DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-    
+    */    
   EXTI_ClearITPendingBit(EXTI_Line7);
  } 
 
@@ -835,30 +1016,22 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 {
   // test pointering WORKS! so we can have array of pointers for easier bit access
   //also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST???, counters speed etc. all arrays 0,1,2,3
-  volatile uint32_t *bitz;
-  bitz=&(GPIOC->IDR);
+  //  volatile uint32_t *bitz;
+  //  bitz=&(GPIOC->IDR);
   static uint32_t flipper=0, countercc=0, clkr=7;
-  static volatile uint16_t k=0,ll=0, n=0, accum, cnt=0, sl=0;
+  static volatile uint32_t k=0,ll=0, n=0, accum, cnt=0, sl=0;
   static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
+  uint32_t lengthbitl=15, new_statl, new_statr, new_statc, lengthbitc=15, lengthbitr=15; // for 2nd bit on lsr, rsr and csr
+
   uint16_t j, bit, xx, x;
-uint64_t longer;
-uint32_t shift_register; // tmp
+  uint64_t longer;
+  uint32_t shift_register;
+  static uint32_t dac_; 
   int16_t tmpt;
     //low pass test
   static float SmoothData=0.0;
-  float LPF_Beta = 0.4; // 0<ß<1
-  
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
-    // so we need to output pulses for CSR depending on speed speedc
-  countercc++;  
-  if (countercc>=speedc){
-    countercc=0;
-    // flip the CSR bit
-    flipper^=1;
-    if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one
-    else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
-  }
   
    // basic tests!
   /*
@@ -871,7 +1044,426 @@ uint32_t shift_register; // tmp
   //    tmpp^=1;
   //    if (tmpp) GPIOB->BSRRH = (1)<<4;  // clear bits PB4
   //    else   GPIOB->BSRRL=(1)<<4; //  write bits   
+  
+  // KEEP here! we need to output pulses for all CLKINS (not NSR as that is normed to pwm/DAC) depending on speed speedc
 
+  countercc++;  
+  if (countercc>=speedc){
+    countercc=0;
+    // flip the CSR bit
+    flipper^=1;
+    if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
+    // or we can set L and R from an independent SR with only CSR as clocked from here
+    else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // try here use of intflag so we only flag interrupts in the INT code and all processing is here
+  // which makes things cleaner
+  // so we just bring in rungleresque code from there and test it
+  // also that we can integrate more with CV/speed and buses perhaps here eg. mix of DACs
+  /////////////////////////////////////////////////////////////////////////////////////////
+  if (intflag[0]==1){  // NSR
+    bitn=(shift_registern>>SRlengthn) & 0x01;
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    if (coggr==0)    shift_registern+= bitn ^ bitr; // XOR
+    else shift_registern+= bitn ^ ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01); // XOR
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+    intflag[0]=0;
+  }
+
+  if (intflag[1]==1){  // LSR
+  
+    // test incoming bit - also in CV modes what do we do with the clock bit? ignore it for now!
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0)  shift_registerl=(shift_registerl<<1)+(bitl ^ bitn | xx);
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+(bitl ^ tmp | xx);
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+
+  // test output bits
+  if (bitl) *pulsoutLO[2]=pulsouts[2];
+    else *pulsoutHI[2]=pulsouts[2];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitl=(SRlengthl/2);
+      new_statl=(shift_registerl & (1<<lengthbitl))>>lengthbitl; // so that is not just a simple divide down
+
+      if (prev_statl==0 && new_statl==1) flipdl^=1;
+      prev_statl=new_statl;	
+
+      if (flipdl) *pulsoutLO[3]=pulsouts[3];
+      else *pulsoutHI[3]=pulsouts[3];
+
+    intflag[1]=0;
+  }
+
+  if (intflag[2]==1){  // CSR
+
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+    if (coggl==0)  shift_registerc=(shift_registerc<<1)+(bitc ^bitl);
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+(bitc ^ tmp);
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+
+  
+  // test output bits
+  if (bitc) *pulsoutLO[4]=pulsouts[4];
+    else *pulsoutHI[4]=pulsouts[4];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitc=(SRlengthc/2);
+      new_statc=(shift_registerc & (1<<lengthbitc))>>lengthbitc; // so that is not just a simple divide down
+
+      if (prev_statc==0 && new_statc==1) flipdc^=1;
+      prev_statc=new_statc;	
+
+      if (flipdc) *pulsoutLO[5]=pulsouts[5];
+      else *pulsoutHI[5]=pulsouts[5];
+  
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+      //  dac_=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference - updated
+      //      static inline int DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t which)
+      dac_=DAC_(shift_registerc, SRlengthc, 1,2);
+  // farmed out dac out itself into larger loop!
+    intflag[2]=0;
+  }
+
+  if (intflag[3]==1){  // RSR
+
+    xx=!(GPIOC->IDR & pulsins[3]); 
+    bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+    if (coggc==0)  shift_registerr=(shift_registerr<<1)+(bitr ^ bitc | xx);
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+(bitr ^ tmp | xx);
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+
+    // test output bits
+  if (bitr) *pulsoutLO[6]=pulsouts[6];
+    else *pulsoutHI[6]=pulsouts[6];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitr=(SRlengthr/2);
+      new_statr=(shift_registerr & (1<<lengthbitr))>>lengthbitr; // so that is not just a simple divide down
+
+      if (prev_statr==0 && new_statr==1) flipdr^=1;
+      prev_statr=new_statr;	
+
+      if (flipdr) *pulsoutLO[7]=pulsouts[7];
+      else *pulsoutHI[7]=pulsouts[7];
+  
+  // DAC for normed NSR/PWM  - could also farm it outside loop
+  tmp=((shift_registerr & masky[SRlengthr-3])>>(rightshift[SRlengthr-3]))<<leftshift[SRlengthr-3]; // we want 12 bits but is not really audible difference
+  tmp+=320; 
+  TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
+  TIM1->CCR1 = tmp/2; // pulse width
+    
+  intflag[3]=0;
+  }
+
+  DAC_SetChannel1Data(DAC_Align_12b_R, dac_); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+
+    
+
+  
+
+  
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // RUNGLER options:1
+  // so rungler is on NSR - XOR own cycling bit with incoming from RSR
+  // RSR DAC determines speed plus offset of NSR
+  // rest as usual
+  // or use XORs across all and have speed tables for all - how to do this offset in array
+  // trying that but should be extra mode for this cycling bit and offsets TODO.
+  //
+  // trying new version now with bitl as speed AND and XOR with bitr - that also seems to work
+  /////////////////////////////////////////////////////////////////////////////////////////
+  /*
+  countern++;
+  //  tmpt=((1024-speedn)-dacr);
+  //  if (tmpt<0) tmpt=0; // or just add them
+  if (countern>=speedn && !bitl){ // but speedn is 0 fastest 
+    countern=0;
+    //    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    bitn=(shift_registern>>SRlengthn) & 0x01;
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    if (coggr==0)    shift_registern+= bitn ^ bitr; // XOR
+    else shift_registern+= bitn ^ ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01); // XOR
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+  }
+
+  // do LSR - input from shift_registern
+  counterl++;
+  if (counterl>=(speedl)){
+    counterl=0;
+
+    // test incoming bit - also in CV modes what do we do with the clock bit? ignore it for now!
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggn==0)  shift_registerl=(shift_registerl<<1)+(bitl ^ bitn | xx);
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+(bitl ^ tmp | xx);
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+
+  // test output bits
+  if (bitl) *pulsoutLO[2]=pulsouts[2];
+    else *pulsoutHI[2]=pulsouts[2];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitl=(SRlengthl/2);
+      new_statl=(shift_registerl & (1<<lengthbitl))>>lengthbitl; // so that is not just a simple divide down
+
+      if (prev_statl==0 && new_statl==1) flipdl^=1;
+      prev_statl=new_statl;	
+
+      if (flipdl) *pulsoutLO[3]=pulsouts[3];
+      else *pulsoutHI[3]=pulsouts[3];
+}
+  
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=(speedc)){
+    counterc=0;
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+    if (coggl==0)  shift_registerc=(shift_registerc<<1)+(bitc ^bitl);
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+(bitc ^ tmp);
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+
+  
+  // test output bits
+  if (bitc) *pulsoutLO[4]=pulsouts[4];
+    else *pulsoutHI[4]=pulsouts[4];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitc=(SRlengthc/2);
+      new_statc=(shift_registerc & (1<<lengthbitc))>>lengthbitc; // so that is not just a simple divide down
+
+      if (prev_statc==0 && new_statc==1) flipdc^=1;
+      prev_statc=new_statc;	
+
+      if (flipdc) *pulsoutLO[5]=pulsouts[5];
+      else *pulsoutHI[5]=pulsouts[5];
+  
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference - updated...
+
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+    xx=!(GPIOC->IDR & pulsins[3]); 
+    bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+    if (coggc==0)  shift_registerr=(shift_registerr<<1)+(bitr ^ bitc | xx);
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+(bitr ^ tmp | xx);
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+
+    // test output bits
+  if (bitr) *pulsoutLO[6]=pulsouts[6];
+    else *pulsoutHI[6]=pulsouts[6];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitr=(SRlengthr/2);
+      new_statr=(shift_registerr & (1<<lengthbitr))>>lengthbitr; // so that is not just a simple divide down
+
+      if (prev_statr==0 && new_statr==1) flipdr^=1;
+      prev_statr=new_statr;	
+
+      if (flipdr) *pulsoutLO[7]=pulsouts[7];
+      else *pulsoutHI[7]=pulsouts[7];
+      // DACR for left speed
+      dacr=((shift_registerr & masky[SRlengthr-3])>>(rightshift[SRlengthr-3]))<<leftshift[SRlengthr-3]; // we want 12 bits but is not really audible difference - updated...
+
+  }
+  */  
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // let's test input and output pulse bits with our arrays and a simple test case
+  ////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+  countern++;
+  if (countern>=speedn){ 
+    countern=0;
+    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
+    // need to catch it
+    if (shift_registern==0)     shift_registern=0xff;
+    
+    shift_registern=shift_registern<<1; // we are shifting left << so bit 31 is out last one
+    //    bitn |=bit;
+    if (coggr==0)    shift_registern+= bitn | bitr;
+    else shift_registern+= bitn | ((shift_registerr>>(SRlengthr-(coggr-1)))&0x01);
+    coggr++;
+    if (coggr>(SRlengthr+1)) coggr=0; // we always update the cogg which is feeding into this one
+    coggn=0;
+  }
+
+  // do LSR - input from shift_registern
+  counterl++;
+  if (counterl>=speedl){
+    counterl=0;
+
+    // test incoming bit - also in CV modes what do we do with the clock bit? ignore it for now!
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    
+  bitl = (shift_registerl>>SRlengthl) & 0x01; // bit which would be shifted out but we don't use it so far
+	 if (coggn==0)  shift_registerl=(shift_registerl<<1)+(bitn | xx);
+  else {
+    tmp=(shift_registern>>(SRlengthn-(coggn-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerl=(shift_registerl<<1)+(tmp | xx);
+  }
+  coggn++;
+  if (coggn>(SRlengthn+1)) coggn=0;
+  coggl=0;
+
+  // test output bits
+  if (bitl) *pulsoutLO[2]=pulsouts[2];
+    else *pulsoutHI[2]=pulsouts[2];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitl=(SRlengthl/2);
+      new_statl=(shift_registerl & (1<<lengthbitl))>>lengthbitl; // so that is not just a simple divide down
+
+      if (prev_statl==0 && new_statl==1) flipdl^=1;
+      prev_statl=new_statl;	
+
+      if (flipdl) *pulsoutLO[3]=pulsouts[3];
+      else *pulsoutHI[3]=pulsouts[3];
+}
+  
+  // do CSR and output - input from l
+  counterc++;
+  if (counterc>=speedc){
+    counterc=0;
+    xx=!(GPIOC->IDR & pulsins[1]); 
+    bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far
+  if (coggl==0)  shift_registerc=(shift_registerc<<1)+bitl;
+  else {
+    tmp=(shift_registerl>>(SRlengthl-(coggl-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerc=(shift_registerc<<1)+tmp;
+  }
+  coggl++;
+  if (coggl>(SRlengthl+1)) coggl=0;
+  coggc=0;
+
+  
+  // test output bits
+  if (bitc) *pulsoutLO[4]=pulsouts[4];
+    else *pulsoutHI[4]=pulsouts[4];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitc=(SRlengthc/2);
+      new_statc=(shift_registerc & (1<<lengthbitc))>>lengthbitc; // so that is not just a simple divide down
+
+      if (prev_statc==0 && new_statc==1) flipdc^=1;
+      prev_statc=new_statc;	
+
+      if (flipdc) *pulsoutLO[5]=pulsouts[5];
+      else *pulsoutHI[5]=pulsouts[5];
+  
+  //  tmp=((shift_registerc & masky[SRlengthc])>>(SRlengthc-4))<<8; // other masks but then also need shifter arrays for bits - how to make this more generic
+  tmp=((shift_registerc & masky[SRlengthc-3])>>(rightshift[SRlengthc-3]))<<leftshift[SRlengthc-3]; // we want 12 bits but is not really audible difference - updated...
+
+  DAC_SetChannel1Data(DAC_Align_12b_R, tmp); // 1000/4096 * 3V3 == 0V8 
+  j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+  
+  //   try other outputs
+   // low pass to our DAC!
+  
+//  if (bitc==1) bit=4095;
+//  else bit=0;
+//  SmoothData = SmoothData - (LPF_Beta * (SmoothData - bit)); // how do we adjust beta for speed?
+//   DAC_SetChannel1Data(DAC_Align_12b_R, (int)SmoothData); // 1000/4096 * 3V3 == 0V8 
+//   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting
+  }
+  
+  //rsr is now the feedback register
+
+  counterr++;
+  if (counterr>=speedr){
+    counterr=0;
+    xx=!(GPIOC->IDR & pulsins[3]); 
+    bitr = (shift_registerr>>SRlengthr) & 0x01; // bit which would be shifted out but we don't use it so far
+    if (coggc==0)  shift_registerr=(shift_registerr<<1)+(bitc | xx);
+  else {
+    tmp=(shift_registerc>>(SRlengthc-(coggc-1)))&0x01; // double check length of coggn - for length 31 we can go to 32
+    shift_registerr=(shift_registerr<<1)+(tmp | xx);
+  }
+  coggc++;
+  if (coggc>(SRlengthc+1)) coggc=0;
+  coggr=0;
+
+    // test output bits
+  if (bitr) *pulsoutLO[6]=pulsouts[6];
+    else *pulsoutHI[6]=pulsouts[6];
+     
+  // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC
+      lengthbitr=(SRlengthr/2);
+      new_statr=(shift_registerr & (1<<lengthbitr))>>lengthbitr; // so that is not just a simple divide down
+
+      if (prev_statr==0 && new_statr==1) flipdr^=1;
+      prev_statr=new_statr;	
+
+      if (flipdr) *pulsoutLO[7]=pulsouts[7];
+      else *pulsoutHI[7]=pulsouts[7];
+  }
+*/
+
+  
   /////////////////////////////////////////////////////////////////////////////////////////
   // simple test of routing with NSR as clocked (above) and generate NSR clock bit from DAC on RSR!
   // now we try all in clocked

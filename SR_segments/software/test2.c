@@ -291,7 +291,7 @@ static inline int DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 types
 
 int main(void)   // try to re-learn pointer arrays
 {
-  uint32_t bitn, bitr, tmp;
+  uint32_t bitn, bitr, bitrr, tmp;
   uint32_t shift_registern=0xff; 
   uint32_t shift_registerl=0xff;
   uint32_t shift_registerr=0xff;
@@ -339,7 +339,6 @@ int main(void)   // try to re-learn pointer arrays
   ////////////////////////////////////////////////////
   
   b=0; //this is us
-
   // we want speed to be a route:
   //    countern++;
   //  if (countern>=speedn){ 
@@ -347,6 +346,7 @@ int main(void)   // try to re-learn pointer arrays
   //  printf("spedrot: %d\n", *speedroute[b][0]); // this works
   counter[b]++;
   if (counter[b]>*speedroute[b][0]){ // speed from our CV, CV as offset for DAC from (1,2,3,4) // just for speedCV modes - 0 is route
+    // how to make speed offset generic pointer (not) except using if ?
     counter[b]=0;
   // trial routing table
   // 6/9/2021 - important thing is if we have routing table then what do we do if is
@@ -412,16 +412,17 @@ int main(void)   // try to re-learn pointer arrays
   // if route to ourself then is cycling bit but we still need to cycle <<1 above!
   for (x=0;x<4;x++){
     if (tmp&0x01){  
-      bitr |= (Gshift_[b][x]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum
+      bitrr = (Gshift_[b][x]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum
       // could even shift them in one after the other
       // ghosts can also have ghosts and LFSR within themselves
-      Gshift_[b][x]=(Gshift_[b][x]<<1)+bitr;
+      Gshift_[b][x]=(Gshift_[b][x]<<1)+bitrr; // but this doesn't make sense as then later ones - TOFIX/FIXED
+      bitr |= bitrr;
     }
     tmp=tmp>>1;
   }
 
   // check that if is only a routing to itself that we do have one default route bit
-  if (tmp==(1<<b)) { // only itself - add in default route which is?
+  if (route[b]==(1<<b)) { // only itself - add in default route which is?
     x=default_route[b];
     bitr |= (Gshift_[b][x]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum
     Gshift_[b][x]=(Gshift_[b][x]<<1)+bitr;
@@ -444,7 +445,9 @@ int main(void)   // try to re-learn pointer arrays
 
   
   }
-  }  
+  }
+
+  
   ////////////////////////////////////////////////////
   // how can we compare routing with ghosts to routing with coggs at different speeds
   ////////////////////////////////////////////////////

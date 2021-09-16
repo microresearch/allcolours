@@ -705,10 +705,14 @@ in reverse tho for 9->31
       //      printbits(&g_buf[0]);
       }*/
 		  //		   }
-    for (int x=0;x<4096;x++){ // 12 bits 
-      printf("%d, ", countbits(x));
+    //    for (int x=0;x<4096;x++){ // 12 bits 
+    //      printf("%d, ", countbits(x));
 
-    }
+    //    }
 
+   for (int x=1;x<13;x++){ 
+     printf("%d, ", 4096/x);
+   }
+     
     return 0;
 }

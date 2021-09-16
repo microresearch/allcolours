@@ -6,7 +6,7 @@
 
 Implement/compare also these ones:
 
-1- Turing Machine: cycle bit if noise vs. comp > than X, otherwise invert cycling bit
+DONE1- Turing Machine: cycle bit if noise vs. comp > than X, otherwise invert cycling bit
 
 so goes from probability - all flips to no flips
 
@@ -15,12 +15,12 @@ so goes from probability - all flips to no flips
 // comparator for SR DAC -- DAC routing for this
 
 
-2- Rungler: XOR out/cycling of SR with input bit [in benjolin the DAC out effects
+DONE2- Rungler: XOR out/cycling of SR with input bit [in benjolin the DAC out effects
 freq of 2 oscs into both clock and as input bit - 2 offset
 oscillators] eg. DAC effects speed/clock of SR
 
-// complex: so one SR (osc) speed is determined by another one's DAC, with entry from
-// that SR XOred with our cycling bit but this needs syncing across
+// complex: so two SR (osc) speed is determined by another one's DAC, with entry from
+// another SR (osc) XOred with our cycling bit but this needs syncing across
 // modes or we just leave it open...  input bit is bit routed in...
 // special routing options
 
@@ -28,6 +28,9 @@ SR1->2(speed+offset)->SR1(incoming bit XOR with cycling bit)
    ->3(speed+offset)->SR1(speed)
 
 eg. SRX has routing tables for speeds, SR1 as NSR->RSR/LSR->CSR (speed and bit)
+
+//WHY? this is for trigger options only ??? or we do as trigger options
+
 
 
 3- Wiard noise ring: noise/comp selects new input or loop back/inverted loop back (jumper)
