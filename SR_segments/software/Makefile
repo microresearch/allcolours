@@ -16,7 +16,7 @@ LD      = $(PRG_PREFIX)gcc
 OBJECTS = 	startup_stm32f4xx.o system_stm32f4xx.o main.o adc.o \
 				stm32f4xx_tim.o stm32f4xx_pwr.o stm32f4xx_exti.o stm32f4xx_syscfg.o \
 				stm32f4xx_gpio.o stm32f4xx_i2c.o stm32f4xx_rcc.o stm32f4xx_dac.o \
-				stm32f4xx_spi.o stm32f4xx_dma.o stm32f4xx_adc.o misc.o stm32f4xx_it.o
+				stm32f4xx_spi.o stm32f4xx_dma.o stm32f4xx_adc.o misc.o stm32f4xx_it_generic.o
 
 
 # Linker script
@@ -29,7 +29,7 @@ CFLAGS  =  -I. -IInclude -Iinc -std=gnu99  \
 	 -D'__FPU_PRESENT=1' -DARM_MATH_CM4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
-	-c -lm -lc -fno-common -g \
+	-c -lm -lc -fno-common -O3 -funroll-loops \
 	-mcpu=cortex-m4 \
 	-mfloat-abi=hard \
 	-fsingle-precision-constant -fsigned-char -Wdouble-promotion -ffunction-sections -fdata-sections

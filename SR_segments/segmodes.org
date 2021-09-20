@@ -2,7 +2,26 @@
 
 beckett/gray codes for routing ???
 
-16/9/2021.
+20/9/2021:
+
+- testing generic SR is it_generic.c
+
+notes:
+
+- had to break down loop though as speed was overlapping/effecting others, can tighten up and make faster from main.c TIM2 dividers
+- that we should be able to make bitsize of dac independent from length - maybe?
+- lists of modes/settings
+
+- TODO: probability in generic code? where to place this????
+
+
+17/9/2021:
+
+- question of how we work with probability within generic framework - as in TM etc...
+
+// make it_gen.c + stripped version to test generic code!
+
+16/9/2021:
 
 - idea that CLK pulsins could trigger train of pulses at speed x
   (eg. x by CV, by DAC) - descending speed, speed from other SR, train
