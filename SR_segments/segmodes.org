@@ -12,7 +12,7 @@ notes:
 - that we should be able to make bitsize of dac independent from length - maybe?
 - lists of modes/settings
 
-- TODO: probability in generic code? where to place this????
+- TODO: probability in generic code? TESTING but might work???
 
 
 17/9/2021:

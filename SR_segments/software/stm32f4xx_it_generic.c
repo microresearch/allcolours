@@ -58,7 +58,7 @@ uint32_t ll=0, totl=0, smoothl[SMOOTHINGS];
 uint32_t rr=0, totr=0, smoothr[SMOOTHINGS];
 uint32_t nn=0, totn=0, smoothn[SMOOTHINGS];
 
-uint16_t modec, moden, model, moder;
+uint16_t mode[4]={0,0,0,0};
 uint16_t lastmodec, lastmoden, lastmodel, lastmoder;
 uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 
@@ -97,6 +97,16 @@ static uint32_t GGshift_[4], cogg[4][4]; // gshift is 4 even though we don't use
 
 uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0};
 
+// simple modes: speedfrom, speedfrom_, inputbit, adctype, dactype, doit and route (some of these are fixed)
+// route to itself, route from others
+// TODO: basic structures, experiment with route bits from SRs, ghosts in ghosts and aqdd in more esoteric modes
+// small tweaks, changes for more diverse modes
+
+// set of modes of how we interpret modes!!!
+
+// 20.9.2021: route is 4 bits - 0->15 try quick mode->route
+
+
 // so for simple pass through by speed would be: speedfrom=0/inputbit=2/adctype=0/route=last one as bit/
 uint32_t speedfrom[4]={1,0,0,0}; //0 is CV, 1 is interrupt, 2 is DACspeedfrom_ + CV
 uint32_t speedfrom_[4]={0,0,0,0}; // who we get dac offset from?
@@ -105,9 +115,9 @@ uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from!
 uint32_t adctype[4]={1,1,0,0}; // 0-basic, 1-one bit
 uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits
-uint32_t whichdoit[4]={3,0,0,0}; // dac from???
+uint32_t whichdoit[4]={2,0,0,0}; // dac from???
 
-uint32_t route[4]={9,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15
+uint32_t route[4]={1,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15
 uint32_t logopp[4]={0,0,0,0};
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
@@ -657,25 +667,25 @@ void TIM4_IRQHandler(void)
   temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmoden=lastmoden;
   lastmoden=temp;
-  moden=(temp>>6); // 64 modes = 6 bits  
+  mode[0]=(temp>>6); // 64 modes = 6 bits  
 
   // modec
   temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmodec=lastmodec;
   lastmodec=temp;
-  modec=(temp>>6); // 64 modes = 6 bits  
+  mode[2]=(temp>>6); // 64 modes = 6 bits  
 
   // model
   temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmodel=lastmodel;
   lastmodel=temp;
-  model=(temp>>6); // 64 modes = 6 bits  
+  mode[1]=(temp>>6); // 64 modes = 6 bits  
 
   // moder
   temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3; //smoothing necessary for higher speeds - TEST!
   lastlastmoder=lastmoder;
   lastmoder=temp;
-  moder=(temp>>6); // 64 modes = 6 bits  
+  mode[3]=(temp>>6); // 64 modes = 6 bits  
   
   // speedn
   totn=totn-smoothn[nn];
@@ -779,6 +789,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   else if (speedfrom[w]==2 && counter[w]>(speed[w]+dac[speedfrom_[w]])){ // add means we always slow down - other options (wrap, lookup)
       counter[w]=0; 
       start=1;
+      param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     }
   // also more cases eg. for AND with chosen SR bit!  
   if (start==1){ // all trigger one SR operation
@@ -814,7 +825,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
     //3-what is routing for incoming SR bits, cycling bit
     // how we do routing table? as binary/
-
+    route[w]=mode[w]>>2; // 4 bits
     tmp=route[w]; // route can also be another SR!
     // if route to ourself then is cycling bit but we still need to cycle <<1 above!
     for (x=0;x<4;x++){ //unroll?
@@ -836,7 +847,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
 
     if (doit && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
-
+    // can also do other things here?
 
     shift_[w]+=bitn;
     
