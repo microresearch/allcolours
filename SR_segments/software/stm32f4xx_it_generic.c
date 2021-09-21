@@ -59,6 +59,7 @@ uint32_t rr=0, totr=0, smoothr[SMOOTHINGS];
 uint32_t nn=0, totn=0, smoothn[SMOOTHINGS];
 
 uint16_t mode[4]={0,0,0,0};
+uint8_t clkr=7;
 uint16_t lastmodec, lastmoden, lastmodel, lastmoder;
 uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 
@@ -99,10 +100,13 @@ uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0};
 
 // simple modes: speedfrom, speedfrom_, inputbit, adctype, dactype, doit and route (some of these are fixed)
 // route to itself, route from others
-// TODO: basic structures, experiment with route bits from SRs, ghosts in ghosts and aqdd in more esoteric modes
+// TODO: basic structures, experiment with route bits from SRs, ghosts in ghosts and add in more esoteric modes
 // small tweaks, changes for more diverse modes
 
 // set of modes of how we interpret modes!!!
+// 64 modes
+//         32/16/8/4/2/1
+//          1  1 1 1 1 1 - 6 bits
 
 // 20.9.2021: route is 4 bits - 0->15 try quick mode->route
 
@@ -112,12 +116,12 @@ uint32_t speedfrom[4]={1,0,0,0}; //0 is CV, 1 is interrupt, 2 is DACspeedfrom_ +
 uint32_t speedfrom_[4]={0,0,0,0}; // who we get dac offset from?
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
 uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from!
-uint32_t adctype[4]={1,1,0,0}; // 0-basic, 1-one bit
-uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
-uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits
+uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
+uint32_t dactype[4]={0,0,2,0}; // 0-basic, 1-equiv bits, 2-one bit
+uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={2,0,0,0}; // dac from???
 
-uint32_t route[4]={1,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15
+uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15
 uint32_t logopp[4]={0,0,0,0};
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
@@ -133,16 +137,16 @@ static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
 
 // what are pulse outs?
 // L1-PB2, L2-PC15, R1-PB3, R2-PA11, C1-PB4, C2-PA12
-static uint32_t pulsouts[8]={0,0, 1<<2,1<<15, 1<<4,1<<12, 1<<3,1<<11};
+static uint32_t pulsouts[8]={0, 0, 1<<2,1<<15, 1<<4,1<<12, 1<<3,1<<11};
 
 // test pointering WORKS! so we can have array of pointers for easier bit access
 //also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST???, counters speed etc. all arrays 0,1,2,3
 //  volatile uint32_t *bitz;
 //  bitz=&(GPIOC->IDR);
 
-volatile uint16_t *pulsoutHI[10]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
+volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
 //                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
-volatile uint16_t *pulsoutLO[10]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
+volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
 static uint8_t lookuplenall[32]={3, 3, 3, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
 
@@ -426,10 +430,11 @@ uint32_t divy[12]={4096, 2048, 1365, 1024, 819, 682, 585, 512, 455, 409, 372, 34
 // TODO: generic ADC functions for bit insertions into shift registers! - for single bits only we return bit which is to be used here
 
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type){ // here we use length as number of bits max is 12 bits
-  static int n[4]={0,0,0,0}; // counters
+  static uint8_t n[4]={0,0,0,0}; // counters
   static int32_t integrator=0, oldValue=0;
 
-  int k, bt;
+  static uint32_t k; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
+  int bt;
 
   if (type==0){ // basic sequential length of bits cycling in
   if (length>11) length=11;
@@ -613,7 +618,7 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
   static uint16_t timer=0;
   uint16_t z;
   // p as probability or time
-  // keep track of how many times this is called and flip bit
+  // keep track of how many times this is called (for each register) and flip bit
 
   // or we can track bits recording their position for a certain lifespan
   // one bit per SR is tracked and lost... so would be leakNSR for example for that bit
@@ -794,8 +799,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // also more cases eg. for AND with chosen SR bit!  
   if (start==1){ // all trigger one SR operation
     //2.1-deal with housekeeping    
-    //    start=0;
-  // copy now to ghost
+    // speed from C for fake CLKINs
+    if (w==2){ // 2 is Cspeed
+    flipper^=1;
+    if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
+    // or we can set L and R from an independent SR with only CSR as clocked from here
+    else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
+    }
+
+    // copy now to ghost
   //we need multiple ghosts for each possible shifter: eg. Gshift_rl, Gshift_rn, Gshift_rc (right ones for left, for n and for c)
   Gshift_[w][0]=shift_[w]; 
   Gshift_[w][1]=shift_[w]; 
@@ -825,7 +837,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
     //3-what is routing for incoming SR bits, cycling bit
     // how we do routing table? as binary/
-    route[w]=mode[w]>>2; // 4 bits
+    route[w]=mode[w]>>2; // 4 bits TESTING!
     tmp=route[w]; // route can also be another SR!
     // if route to ourself then is cycling bit but we still need to cycle <<1 above!
     for (x=0;x<4;x++){ //unroll?
@@ -846,7 +858,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     bitn|=xx;
     }
 
-    if (doit && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
+    if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
     // can also do other things here?
 
     shift_[w]+=bitn;
@@ -891,7 +903,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       TIM1->CCR1 = tmp/2; // pulse width
 
       //TODO
-      // fake CLKINs for L,R,C are from speed - this needs to be in speeds then but...
+      // fake CLKINs for L,R,C are from Cspeed==2 - this needs to be in speeds then but...
       /*
       flipper^=1;
       if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them

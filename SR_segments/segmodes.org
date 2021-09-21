@@ -2,6 +2,18 @@
 
 beckett/gray codes for routing ???
 
+21/9/2021:
+
+- how to go further, collate ideas and see how these fit or don't fit with generic model:
+
+eg. in AC Cv modes was lots of use of pulses to do things which now we lose a bit...
+
+or we divide across 2 sets of generic modes, or simply have generic modes for things like routings
+
+- that incoming pulses can eg. change flip or not flip, change routing table, invert mode bits
+
+seperate mode and mode bits: mode determines mode bits (on mode change)
+
 20/9/2021:
 
 - testing generic SR is it_generic.c
