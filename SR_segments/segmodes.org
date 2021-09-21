@@ -14,6 +14,8 @@ or we divide across 2 sets of generic modes, or simply have generic modes for th
 
 seperate mode and mode bits: mode determines mode bits (on mode change)
 
+- fixed small bugs (like static in one bit DAC), and routing for fake clks
+
 20/9/2021:
 
 - testing generic SR is it_generic.c

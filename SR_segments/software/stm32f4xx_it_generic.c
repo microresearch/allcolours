@@ -47,7 +47,7 @@ TODO:
 /////////////////////
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
-uint32_t lookupadc[4]={0,3,9,6};
+uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed
 
 #define FULL 0b11111111111111111111111111111111 //32 bits full
 #define FROZENSPEED 1024 // 
@@ -119,7 +119,7 @@ uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from!
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
 uint32_t dactype[4]={0,0,2,0}; // 0-basic, 1-equiv bits, 2-one bit
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
-uint32_t whichdoit[4]={2,0,0,0}; // dac from???
+uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
 uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15
 uint32_t logopp[4]={0,0,0,0};
@@ -780,6 +780,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // cases are interrupt flag, CV, CV+DACroute
 
   counter[w]++;
+  speedfrom[w]=mode[w]>>5; // top bit maybe
+
+    if (w==2 && counter[2]>speed[w] && speedfrom[2]==1){ // 2 is Cspeed - but we have a problem when Cspeed is from an interrupt as this is never generated...FIXED HERE
+      counter[2]=0;
+      flipper^=1;
+      if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
+      // or we can set L and R from an independent SR with only CSR as clocked from here
+      else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
+    }
+
   
   if (speedfrom[w]==1 && intflag[w]==1){ // interrupt flag
     intflag[w]=0;
@@ -790,22 +800,25 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       counter[w]=0; 
       start=1;
       param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
-    }
+      flipper^=1;
+      if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
+      // or we can set L and R from an independent SR with only CSR as clocked from here
+      else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
+
+  }
   else if (speedfrom[w]==2 && counter[w]>(speed[w]+dac[speedfrom_[w]])){ // add means we always slow down - other options (wrap, lookup)
       counter[w]=0; 
       start=1;
       param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
+      flipper^=1;
+      if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
+      // or we can set L and R from an independent SR with only CSR as clocked from here
+      else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
     }
   // also more cases eg. for AND with chosen SR bit!  
   if (start==1){ // all trigger one SR operation
     //2.1-deal with housekeeping    
     // speed from C for fake CLKINs
-    if (w==2){ // 2 is Cspeed
-    flipper^=1;
-    if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
-    // or we can set L and R from an independent SR with only CSR as clocked from here
-    else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
-    }
 
     // copy now to ghost
   //we need multiple ghosts for each possible shifter: eg. Gshift_rl, Gshift_rn, Gshift_rc (right ones for left, for n and for c)
@@ -837,7 +850,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
     //3-what is routing for incoming SR bits, cycling bit
     // how we do routing table? as binary/
-    route[w]=mode[w]>>2; // 4 bits TESTING!
+    route[w]=mode[w]&15; // 4 bits TESTING!
     tmp=route[w]; // route can also be another SR!
     // if route to ourself then is cycling bit but we still need to cycle <<1 above!
     for (x=0;x<4;x++){ //unroll?
@@ -858,6 +871,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     bitn|=xx;
     }
 
+    doit[w]=(mode[w]>>4)&0x01; // top bit maybe
     if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
     // can also do other things here?
 
