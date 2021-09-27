@@ -1,5 +1,55 @@
 * how to sort and classify/generic ideas sept 2021
 
+27/9/2021/ notes form last days:
+
+- back to testing in it.c (not generic but slowly port/change that code) - new speed scheme
+
+RESOLVE:
+
+- CV modifier in pulse modes
+
+- fake CLK triggers from?
+
+NSR - always TImx from DACx
+L,C, R - from speedC-cv always
+
+what else makes sense - ghostSR but is more complex!
+
+- all simulated modes. eg. EN/electronotes - generalise as probability of new entry/just cycle/of inversion
+
+- test as CV generator
+
+- sequential SRs mean we can also slip one SR or double it (how to control this)
+
+- DAC/multiple DACs -> DAC bus/mix or even one after the other (faster)??? but how do we decide on this:
+
+eg. one SR has DAC out, any can have and is mixed, any can have and is sequential (as is meta-mode not just decided by SR) 
+
+- interrupt modes as 48-63 last quarter...
+
+Modes: // check if we can possibly hit more than 64 modes !?
+
+0-15: CVspeed: NSR, CSR have ADC/DAC options and basic routes in, LSR and RSR have all routing bit possibles, basic logic ops
+DAC is fixed from CSR, input bits from NSR
+
+16-31: CVspeed: exp modes, all SR->rerouting options
+DAC can be anywheres, ADC also (how many bits we have), resolve this!
+
+32-47: CV+DAC:  simple modes, exp modes, all SR->rerouting options
+where do we get speed DAC from - is it always RSR?
+
+48-63: Interrupt/trigger modes as mix of all...
+
+//address issues for each mode (selected) 
+
+other:
+- pulses/clkin in can toggle entry/no entry of new bits, cycling etc
+- pulses/clkin in can bump up/shift left/right the routing table
+- pulses/clkin in can mask bits as for DAC etc. or SR etc
+- pulses/clkin in can also slip/slow/bump up one CV speeded SR
+
+//////////////////////////////////
+
 beckett/gray codes for routing ???
 
 21/9/2021:

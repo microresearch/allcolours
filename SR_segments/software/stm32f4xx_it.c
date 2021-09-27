@@ -28,6 +28,11 @@
 
 TODO:
 
+- back to testing in here! 27/9+
+
+- test new CV+DAc scheme
+
+
 - what will be setup for VIENNA? - one bit audio outs and ins, plus pulse ins...
 
 TODO from segmodes:
@@ -130,7 +135,7 @@ say 1/10 so is not such a big jump
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
 
-
+#define TOPSPEED 1024 // as this might change for lower speeds
 #define FROZENSPEED 1024 // 
 #define MAXVALUE 4095
 #define SMOOTHINGS 512 // we can hold 65536 of our 16 bit ADC values...speed
@@ -1063,6 +1068,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // so we just bring in rungleresque code from there and test it
   // also that we can integrate more with CV/speed and buses perhaps here eg. mix of DACs
   /////////////////////////////////////////////////////////////////////////////////////////
+  /*
   if (intflag[0]==1){  // NSR
     bitn=(shift_registern>>SRlengthn) & 0x01;
     if (shift_registern==0)     shift_registern=0xff;
@@ -1182,12 +1188,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   DAC_SetChannel1Data(DAC_Align_12b_R, dac_); // 1000/4096 * 3V3 == 0V8 
   j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-
-    
-
-  
-
-  
+  */
+      
   /////////////////////////////////////////////////////////////////////////////////////////
   // RUNGLER options:1
   // so rungler is on NSR - XOR own cycling bit with incoming from RSR
@@ -1198,11 +1200,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //
   // trying new version now with bitl as speed AND and XOR with bitr - that also seems to work
   /////////////////////////////////////////////////////////////////////////////////////////
-  /*
+  
   countern++;
-  //  tmpt=((1024-speedn)-dacr);
-  //  if (tmpt<0) tmpt=0; // or just add them
-  if (countern>=speedn && !bitl){ // but speedn is 0 fastest 
+  tmpt=(dacr-(1024-speedn));
+    if (tmpt<0) tmpt=0; // or just add them
+  if (countern>=tmpt){ //&& !bitl){ // but speedn is 0 fastest 
     countern=0;
     //    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
     // need to catch it
@@ -1325,11 +1327,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
       if (flipdr) *pulsoutLO[7]=pulsouts[7];
       else *pulsoutHI[7]=pulsouts[7];
-      // DACR for left speed
+      // DACR for left/top speed
       dacr=((shift_registerr & masky[SRlengthr-3])>>(rightshift[SRlengthr-3]))<<leftshift[SRlengthr-3]; // we want 12 bits but is not really audible difference - updated...
 
   }
-  */  
+
 
   /////////////////////////////////////////////////////////////////////////////////////////
   // let's test input and output pulse bits with our arrays and a simple test case
