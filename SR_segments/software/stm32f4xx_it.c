@@ -1202,9 +1202,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   /////////////////////////////////////////////////////////////////////////////////////////
   
   countern++;
-  tmpt=(dacr-(1024-speedn));
-    if (tmpt<0) tmpt=0; // or just add them
-  if (countern>=tmpt){ //&& !bitl){ // but speedn is 0 fastest 
+  //  tmpt=(dacr-(1024-speedn));
+  //    if (tmpt<0) tmpt=0; // or just add them
+    //  if (countern>=tmpt){ //&& !bitl){ // but speedn is 0 fastest
+    if (countern>=speedn){ //&& !bitl){ // but speedn is 0 fastest 
     countern=0;
     //    bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
     // need to catch it
@@ -1252,9 +1253,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       else *pulsoutHI[3]=pulsouts[3];
 }
   
-  // do CSR and output - input from l
+  // do CSR and output -  input from l NOW test speedc with DAC from R (but R is linked to??? C???
+  // this seems to work...
   counterc++;
-  if (counterc>=(speedc)){
+  tmpt=((dacr>>2)-(1024-speedc)); // dacr is 12 bits, speedc is 10 bits
+  if (tmpt<0) tmpt=0; // or just add them
+    if (counterc>=tmpt){ //&& !bitl){ // but speedn is 0 fastest 
+  
+  //  if (counterc>=(speedc)){
     counterc=0;
     xx=!(GPIOC->IDR & pulsins[1]); 
     bitc = (shift_registerc>>SRlengthc) & 0x01; // bit which would be shifted out but we don't use it so far

@@ -1,6 +1,12 @@
-* how to sort and classify/generic ideas sept 2021
+* how to sort and classify/generic ideas sept 2021///
 
-27/9/2021/ notes form last days:
+28/9/2021:
+
+- new speed scheme/cv/dac to test now on speedc/lower one - seems to work well...
+
+- BOM/pos/quote made 28/9 AM pcbcart
+
+27/9/2021/ notes from last days:
 
 - back to testing in it.c (not generic but slowly port/change that code) - new speed scheme
 
