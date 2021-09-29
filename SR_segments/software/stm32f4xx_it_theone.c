@@ -27,7 +27,19 @@
 1  0  0  0  0  0  0  0  0  1  0  1  0  0  0  0  0  0  0  0  0  0  0  1  1  1  0  0  1  1  1  1  
 
 TODO:
-////- this version used in Vienna 22/23/9/2021
+////- porting generic.c so that we can have switches for modes and less generic 
+
+- that we keep generic structure but fix it so it is faster in general, and we have more flexibility for odd modes
+
+so modes always need to pass on: DAC, ghost SRs, COGG/reset if we end up using this  
+
+*at the moment we don't deal with fake CLKouts...*
+
+1- first try pass along as generic structure (no input, fixed routings, DAC out (8 bit)
+
+2- other options, spacing and DAC/ADC options
+
+3- fill out cases
 
   */ 
 
@@ -82,7 +94,7 @@ static uint32_t clk_route[8]={0,
 
 // simplest generic shifter without counter and with one route!
 
-static uint32_t shift_[4]={0xff,0xff,0xff,0xff};
+static uint32_t shift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t Gshift_[4][4]={
   {0xff,0xff,0xff,0xff},
   {0xff,0xff,0xff,0xff},
@@ -117,11 +129,12 @@ uint32_t speedfrom_[4]={0,0,0,0}; // who we get dac offset from?
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
 uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from!
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
-uint32_t dactype[4]={0,0,2,0}; // 0-basic, 1-equiv bits, 2-one bit
+uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
 uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15
+uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
 uint32_t logopp[4]={0,0,0,0};
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
@@ -138,11 +151,6 @@ static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
 // what are pulse outs?
 // L1-PB2, L2-PC15, R1-PB3, R2-PA11, C1-PB4, C2-PA12
 static uint32_t pulsouts[8]={0, 0, 1<<2,1<<15, 1<<4,1<<12, 1<<3,1<<11};
-
-// test pointering WORKS! so we can have array of pointers for easier bit access
-//also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST???, counters speed etc. all arrays 0,1,2,3
-//  volatile uint32_t *bitz;
-//  bitz=&(GPIOC->IDR);
 
 volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
 //                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
@@ -656,38 +664,35 @@ void TIM4_IRQHandler(void)
       else   GPIOB->BSRRL=(1)<<4; //  write bits   
   */
 
-    // map ADCs: note all modes are inverted
+  // map ADCs:
 
     // 0: nspd, 1: nlen, 2: nmode
     // 3: lspd, 4: llen, 5: lmode
     // 6: rspd, 7: rlen, 8: rmode // adc6 fixed hw
     // 9: cspd, 10: clen, 11: cmode
 
-  // deal with PWM for normings (always follows speedn - or now we think it should follow DAC out)
-  
-  // double-check inversion of modes? as doesn't seem so!
   // modes are NOT inverted!
   
   //moden
-  temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; //smoothing necessary for higher speeds - TEST!
+  temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; 
   lastlastmoden=lastmoden;
   lastmoden=temp;
   mode[0]=(temp>>6); // 64 modes = 6 bits  
 
   // modec
-  temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3; //smoothing necessary for higher speeds - TEST!
+  temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3; 
   lastlastmodec=lastmodec;
   lastmodec=temp;
   mode[2]=(temp>>6); // 64 modes = 6 bits  
 
   // model
-  temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; //smoothing necessary for higher speeds - TEST!
+  temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; 
   lastlastmodel=lastmodel;
   lastmodel=temp;
   mode[1]=(temp>>6); // 64 modes = 6 bits  
 
   // moder
-  temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3; //smoothing necessary for higher speeds - TEST!
+  temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3; 
   lastlastmoder=lastmoder;
   lastmoder=temp;
   mode[3]=(temp>>6); // 64 modes = 6 bits  
@@ -727,8 +732,6 @@ void TIM4_IRQHandler(void)
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
   speed[2]=logger[temp>>2];
-
-  
   
   // lens from 4 to 32
 
@@ -759,13 +762,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
   ////////////////////////////////////////////////////
-  // ATTEMPTING: generic SR for most basic/nearly all cases
-  // we can still have specialised ones but they should all be repeatable
-  //
-  // so also that each mode then has a code for: speedfrom/inputbit/adctype/route/ - later add in DAC etc.
+  // taking off from GENERIC SR but we need differences
+  // //so also that each mode then has a code for: speedfrom/inputbit/adctype/route/ - later add in DAC etc.
   // so for simple pass through by speed would be: speedfrom=0/inputbit=2/adctype=0/route=last one as bit/
   ////////////////////////////////////////////////////
-  // we need to start with defaults above
 
   // crash detect ++ 32/64 in main.c is 14KHz
   /*       flipper^=1;
@@ -780,55 +780,34 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // cases are interrupt flag, CV, CV+DACroute
 
   counter[w]++;
-  speedfrom[w]=mode[w]>>5; // top bit maybe
 
-    if (w==2 && counter[2]>speed[w] && speedfrom[2]==1){ // 2 is Cspeed - but we have a problem when Cspeed is from an interrupt as this is never generated...FIXED HERE
+  /* // we don't deal with CLKs now!  
+  if (w==2 && counter[2]>speed[w] && speedfrom[2]==1){ // 2 is Cspeed - but we have a problem when Cspeed is from an interrupt as this is never generated...FIXED HERE
       counter[2]=0;
       flipper^=1;
       if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
       // or we can set L and R from an independent SR with only CSR as clocked from here
       else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
     }
-
-  
-  if (speedfrom[w]==1 && intflag[w]==1){ // interrupt flag
-    intflag[w]=0;
-    start=1;
-    param=adc_buffer[lookupadc[w]]; // we can use speed adc as is interrupt TODO
-  }
-  else if (speedfrom[w]==0 && counter[w]>speed[w]){
+  */
+  mode[w]=0;
+  switch(mode[w]){ // but first 15 modes will be routing plus DAC/ADC options
+    // but how do we work this - cases for w, or ifs or more generic?
+  case 0: // TEST mode: start with basic pass through and basic routing - first try pass along as generic structure (no input, fixed routings, DAC out (8 bit)
+    // speed is from cv only
+    // case 0 can go to zero if NSR SR zeroes out
+    
+  if (counter[w]>speed[w]){
       counter[w]=0; 
-      start=1;
       param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
-      flipper^=1;
-      if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
-      // or we can set L and R from an independent SR with only CSR as clocked from here
-      else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
 
-  }
-  else if (speedfrom[w]==2 && counter[w]>(speed[w]+dac[speedfrom_[w]])){ // add means we always slow down - other options (wrap, lookup)
-      counter[w]=0; 
-      start=1;
-      param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
-      flipper^=1;
-      if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
-      // or we can set L and R from an independent SR with only CSR as clocked from here
-      else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
-    }
-  // also more cases eg. for AND with chosen SR bit!  
-  if (start==1){ // all trigger one SR operation
-    //2.1-deal with housekeeping    
-    // speed from C for fake CLKINs
-
-    // copy now to ghost
-  //we need multiple ghosts for each possible shifter: eg. Gshift_rl, Gshift_rn, Gshift_rc (right ones for left, for n and for c)
-  Gshift_[w][0]=shift_[w]; 
-  Gshift_[w][1]=shift_[w]; 
-  Gshift_[w][2]=shift_[w];
-  Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
   
-  // need to catch it
-    if (shift_[w]==0 || shift_[w]==FULL)     shift_[w]=0xff;
+  // need to catch it but this gives us false beats
+      //      if (shift_[w]==0 || shift_[w]==FULL)     shift_[w]=0x01; 
 
   //  cogg[w][0]=0; // if we end up using these...
   //  cogg[w][1]=0;
@@ -836,45 +815,23 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //  cogg[w][3]=0;
 
   //2-where is the input bit from (LFSR, ADC type?)- can also be from another LFSR? ADC types we have in test2.c - or no inputbit
-    if (inputbit[w]==0){ // LFSR from SR in LFSR[w]
-      bitn = ((shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][0])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][1])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][2])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][3]))) & 1u; // we would use this in final...
-    }
-    else if (inputbit[w]==1) {// do input from type of ADC specified
-      // static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type){ // here we use length as number of bits max is 12 bits
-      bitn=ADC_(w,SRlength[w],adctype[w]);
-    }
-    else bitn=0;
+    //    bitn=0;
     
     //2.5-shifting of which bits <<
     shift_[w]=shift_[w]<<1;
   
     //3-what is routing for incoming SR bits, cycling bit
-    // how we do routing table? as binary/
-    route[w]=mode[w]&15; // 4 bits TESTING!
-    tmp=route[w]; // route can also be another SR!
-    // if route to ourself then is cycling bit but we still need to cycle <<1 above!
-    for (x=0;x<4;x++){ //unroll?
-      if (tmp&0x01){  
-	bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum
-	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
-	bitn=logop(bitn,bitrr,logopp[w]); // but what if we want different logical opps for each?
-    }
-    tmp=tmp>>1;
-    }
-    // default route we don't use now...
-    
+    // we have default route here
+    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+    //    bitn=bitn^bitrr; // just XOR now for this mode
+
     //4-what is incoming pulsin bit if any? - incoming pulse will always be ORed in
-    //we have done already    //5-XOR of logic op of all bits and re-insertion
-           
     if (pulsins[w]!=0){
-    xx=!(GPIOC->IDR & pulsins[w]); // OR with 1 turns all to 1s 
-    bitn|=xx;
+    xx=!(GPIOC->IDR & pulsins[w]); 
+    bitn^=xx;
     }
-
-    doit[w]=(mode[w]>>4)&0x01; // top bit maybe
-    if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
-    // can also do other things here?
-
+    
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
@@ -900,8 +857,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     else *pulsoutHI[tmp]=pulsouts[tmp];
     
     
-  }//start
-
+  }// counterw
+  } // switch
   //    } //4x
 
       // DAC output 

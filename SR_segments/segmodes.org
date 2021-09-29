@@ -1,5 +1,19 @@
 * how to sort and classify/generic ideas sept 2021///
 
+29/9/2021:
+
+- possibly we have static routing for R->N L->C and variable for L and R // with ADC/DAC options
+ 
+as first set of modes: what are our modes - DAC/ADC/routings
+
+- for some interrupt/trigger modes we can use CV for routing table...
+
+but there is a problem if CSR CV is normed to speeds of others at the same time...
+
+again question of NSR/PWM (which DAC we use - RDAC by default) and more about normed CLKS (L,R,N)
+
+but as we no have less clk modes we can also use ghost SRs, but at what speed, speed of RDAC???
+
 28/9/2021:
 
 - new speed scheme/cv/dac to test now on speedc/lower one - seems to work well...
