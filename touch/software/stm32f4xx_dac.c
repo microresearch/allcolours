@@ -242,7 +242,7 @@ void DAC_StructInit(DAC_InitTypeDef* DAC_InitStruct)
   /* Initialize the DAC_LFSRUnmask_TriangleAmplitude member */
   DAC_InitStruct->DAC_LFSRUnmask_TriangleAmplitude = DAC_LFSRUnmask_Bit0;
   /* Initialize the DAC_OutputBuffer member */
-  DAC_InitStruct->DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+  DAC_InitStruct->DAC_OutputBuffer = DAC_OutputBuffer_Enable; // >>>>>disabled in main.c
 }
 
 /**

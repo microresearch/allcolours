@@ -64,7 +64,8 @@ GDB = $(PRG_PREFIX)-gdb
 CPFLAGS = --output-target=binary
 ODFLAGS	= -x --syms
 
-FLASH = st-flash
+#FLASH = st-flash
+FLASH = /root/Downloads/stlink-1.4.0/st-flash
 
 # Targets
 all: main.bin

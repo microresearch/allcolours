@@ -1,24 +1,20 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_it.c 
-  * @author  Xavier Halgand
-  * @version
-  * @date
-  * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and 
-  *          peripherals interrupt service routine.
-  ******************************************************************************
-  * @attention
-  *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-  *
-  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
-  ******************************************************************************
+
+Revisiting 30 Sept:
+
+//////////////////////////
+
+TODO: August 30+ 2021:
+
+- new PCB - we have trig on PC6 which needs to go high only when we sense any of trigs (freezers, rec, play, mode)
+
+- basic operations of VCA and voltage with new board (also now we have low pass in hardware)
+- new freezer/trig code and test all
+
+think it is in mode23 but we need to change the output pin here!
+
+- figure out modes, timings, log etc.
+
   */ 
 
 /* Includes ------------------------------------------------------------------*/
@@ -35,10 +31,10 @@
 #include "adc.h"
 
 #define TRG 4 // trigger - was 100 but /8 - these are for freeze
-#define BRK 30 // off hold was 1200 but /8
+#define BRK 8 // off hold was 1200 but /8
 
 #define TRG8 1 // these for rec/play etc
-#define BRK8 17 // 27 is best figure
+#define BRK8 2 // 27 is best figure
 #define DELB 10000 // delay for pin changes in new trigger code
 
 #define MAXMODES 4
@@ -194,8 +190,8 @@ static uint16_t play_cnt[8]={0};
 static uint16_t tgr_cnt[10]={0};
 static uint16_t rec=0, play=0;
 
-static uint16_t shifter[8]={2,2,2,2,1,1,1,1}; // shifter seperates vca from cv
-
+//static uint16_t shifter[8]={2,2,2,2,1,1,1,1}; // shifter seperates vca from cv
+static uint16_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
 /* TODO:
 
 resolve: voltage levels, freezing Qs, toggling timings
@@ -446,59 +442,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 // end of mode selector, each mode needs to take care of everything
     
-    mode=23; // testings
+    mode=0; // testings
     
     switch(mode){
     case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing...
       
-	/////// TOGGLING for freezers	
-	if (daccount==7){
-    // handle GPIOC instead
-
-	if (!(GPIOC->IDR & (freezer[7])) && triggered[7]==0 && breaker[7]>BRK) {
-	  triggered[7]=1;
-	  frozen[7]^=1;
-	  breaker[7]=0;
-	}
-	
-	if ( (GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]++;
-	if ( !(GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]=0; 
-
-	if (triggered[7]==1 && lasttriggered[7]==0) { // new trigger
-	  tgr_cnt[7]=0;
-	  lasttriggered[7]=1;
-	}
-	
-	if (lasttriggered[7]==1) 	tgr_cnt[7]++;
-
-	if (tgr_cnt[7]>TRG){
-	  triggered[7]=0;
-	  lasttriggered[7]=0;
-	}	 	  
-	} // daccount==7
-  else
-    {
-	if (!(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0 && breaker[daccount]>BRK) {
-	  triggered[daccount]=1;
-	  frozen[daccount]^=1;
-	  breaker[daccount]=0;
-	}
-	
-	if ( (GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]++; 
-	if ( !(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]=0;
-	
-	if (triggered[daccount]==1 && lasttriggered[daccount]==0) { // new trigger
-	  tgr_cnt[daccount]=0;
-	  lasttriggered[daccount]=1;
-	}
-	
-	if (lasttriggered[daccount]==1) 	tgr_cnt[daccount]++;
-
-	if (tgr_cnt[daccount]>TRG){
-	  triggered[daccount]=0;
-	  lasttriggered[daccount]=0;
-	}
-    }
 	// this runs always at full speed!
 	// handle playback here too
 	// what happens if play and rec are both ON!?
@@ -578,73 +526,58 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     //  values[daccount]=4095; // 16 bits to 12 
     GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
     //    values[daccount]=4095; // TESTY
+    //    values[daccount]=0;
+    //    if (daccount==0){
     DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
     j = DAC_GetDataOutputValue (DAC_Channel_1);
     GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
-
+    //    }
+    
     daccount++;
     if (daccount==8) {
       daccount=0;
       count++;
-      ADC_SoftwareStartConv(ADC1);
-      //      speed=(adc_buffer[6]>>6); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits 7 bits=128
-      // for frozen speed instead:
-      speed=real[6]>>7; // 12 bits to 5 bits and speed is 4
-      if (speed>31) speed=31;
-      speed=32-(speed); //4 bits=16 256/16=
-      //      speed=32;
-
-      // only toggle rec and play after all dacs
-            
-    	if (!(GPIOB->IDR & (1<<10)) && triggered[8]==0 && breaker[8]>BRK8) {
-	  triggered[8]=1;
-	  rec^=1;
-	  breaker[8]=0;
-	}
-
-	if ( (GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]++;
-	//	if ( !(GPIOB->IDR & (1<<10)) && triggered[8]==0) breaker[8]=0; 
-	
-	if (triggered[8]==1 && lasttriggered[8]==0) { // new trigger
-	  tgr_cnt[8]=0;
-	  lasttriggered[8]=1;
-	}
-	
-	if (lasttriggered[8]==1) 	tgr_cnt[8]++;
-
-	if (tgr_cnt[8]>TRG8){
-	  triggered[8]=0;
-	  lasttriggered[8]=0;
-	}
+      // toggle PC6 to send high trigger and read finger
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
       
-	//play	
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
+	delay(); // seems to work with delay
       
-    	if (!(GPIOB->IDR & (1<<2)) && triggered[9]==0 && breaker[9]>BRK8) {
-	  triggered[9]=1;
-	  play^=1;
-	  breaker[9]=0;
-	}
+            if ((GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in
+            else trigd=0; // finger off
+	    
+	    GPIOC->BSRRH=(1)<<6; //  LOW!
 
-	if ( (GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]++;
-	//	if ( !(GPIOB->IDR & (1<<2)) && triggered[9]==0) breaker[9]=0; 
-	
-	if (triggered[9]==1 && lasttriggered[9]==0) { // new trigger
-	  tgr_cnt[9]=0;
-	  lasttriggered[9]=1;
-	}
-	
-	if (lasttriggered[9]==1) 	tgr_cnt[9]++;
+            if (!(GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in 0 this is rec
+            else trigd=0; // finger off
 
-	if (tgr_cnt[9]>TRG8){
-	  triggered[9]=0;
-	  lasttriggered[9]=0;
-	}
-      
-	tmp=rec;
-	if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
-	if (tmp) play=0;
-    }      
-    break; ///// case 0
+	    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	    //	    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+	    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	    GPIO_Init(GPIOC, &GPIO_InitStructure);
+	    delay();
+
+	    // how to get this as toggle!
+	    
+	    if (trigd==1 && triggered[0]==0) triggered[0]=1;
+
+	    if (!trigd && triggered[0]==1) breaker[0]++;  // finger off
+           if (trigd && triggered[0]==1) breaker[0]=0; // finger on or 50hz
+
+	    if (breaker[0]>BRK8) { // 0 
+	      //	      rec^=1;
+	      frozen[0]^=1; // test code 30/09/2021
+	      breaker[0]=0;
+	      triggered[0]=0;
+	    }
+    }
+      break; ///// case 0
       
     case 1: // basic mode 0 with speed also decreasing
   
@@ -2849,7 +2782,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
     case 23: // mode to test freeze timings on middle and freeze pads // BRK8
       // testing new freeze/trigger code on FR1
-   
+
+      // pc6 is new trigger OUT pin!
+      
       
    GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
     //    values[daccount]=4095; // TESTY
@@ -2869,50 +2804,47 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 
     
-    daccount++;
-    if (daccount==8) {
-      daccount=0;
-      count++;
+    //    daccount++;
+    //    if (daccount==8) {
+      daccount=4;
+      //      count++;
 
       // now we attached 1->15 to outside of first - 1->8 - attached from r49 right hand side but how to test bleed...
       // test toggling of 1->15
       // with this code and no pullup seems to work as we handle both cases...
 
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+      // toggle PC6 to send high trigger and read finger
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
-	//    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
-	//    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	//    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
       
-	GPIOB->BSRRL=(1)<<15; //  HIGH!
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
       //      delay();
       
             if ((GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in
             else trigd=0; // finger off
 	    
-	    GPIOB->BSRRH=(1)<<15; //  LOW!
+	    GPIOB->BSRRH=(1)<<6; //  LOW!
 
-            if (!(GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in
+            if (!(GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in 0 this is rec
             else trigd=0; // finger off
 
-	    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+	    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	    //	    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
 	    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
 	    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	    GPIO_Init(GPIOB, &GPIO_InitStructure);
+	    GPIO_Init(GPIOC, &GPIO_InitStructure);
 	    delay();
 
 	    // how to get this as toggle!
 	    
-	    if (trigd==1 && triggered[8]==0) triggered[8]=1;
+	    if (trigd==1 && triggered[0]==0) triggered[0]=1;
 
-	    if (!trigd && triggered[8]==1) breaker[8]++;  // finger off
-           if (trigd && triggered[8]==1) breaker[8]=0; // finger on or 50hz
+	    if (!trigd && triggered[0]==1) breaker[0]++;  // finger off
+           if (trigd && triggered[0]==1) breaker[0]=0; // finger on or 50hz
 
 	    if (breaker[8]>BRK8) { // 0 
 	      rec^=1;
@@ -2956,7 +2888,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  lasttriggered[8]=0;
 	  }
 	*/      
-    }
+	    //  }
     break; /// end of TEST button mode 23      
       
     } // end of modes switch    

@@ -1,8 +1,43 @@
 * how to sort and classify/generic ideas sept 2021///
 
+30/9/2021:
+
+- possible SR modes adjust/set certain settings which stay that way until they are re-adjusted?
+
+- that incoming bits/plse bits could also be formed in SR which can be used (as DAC, as whatever)
+
+- interrupt/trigger modes with CV as divider!
+
+// question of how to organize/list modes as there are simply too many options even with fixed routings
+
+eg. each has:
+- basic/logic//type of SR eg. simple pass, loop, pass and loop, other logics, probability of bit in, of a flip
+
+- for CSR we have DAC mode!
+- and for NSR we have ADC/LFSR (2 options plus more esoteric options for special cases)
+
+TO RESOLVE then:
+
+1- question of NSR/PWM (which DAC we use - RDAC by default) and more about normed CLKS (L,R,N)
+//RDAC for NSR/PWM and ghostSRs for normed clks (with speed of these from what, from RDAC?)
+
+2- which DAC we use for speedCV+DAC// all the same? selected by what means, fixed but different eg. 
+N-R
+L-R
+C-N
+R-N
+//as this answer also effects next:
+
+3-how we deal with differing DACs across differing modes? do we need to 2x or 3x all modes for all differing DACs?
+//just use basic mode for other DACs so we have a fixed dac table
+
+4-list of modes and format for this for each N.L.C.R. also how we deal with N.L.C.R within cases...
+
+5-special meta-modes for say bus of DACs etc.
+
 29/9/2021:
 
-- possibly we have static routing for R->N L->C and variable for L and R // with ADC/DAC options
+- possibly we have static routing for R->N L->C and variable for L and R // with ADC/DAC options//but as we note above L and R also have DACs which are used...
  
 as first set of modes: what are our modes - DAC/ADC/routings
 

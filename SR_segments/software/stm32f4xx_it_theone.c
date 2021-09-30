@@ -74,6 +74,7 @@ uint16_t mode[4]={0,0,0,0};
 uint8_t clkr=7;
 uint16_t lastmodec, lastmoden, lastmodel, lastmoder;
 uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
+//uint16_t whichDAC=2;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength[4]={31,31,31,31};
@@ -486,9 +487,52 @@ static inline uint32_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
   return (bita ^ bitaa);
   
 }
-  
-static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 types 0,1,2 - but we can also add more types for spacings with array of spacers (which we
-                                                                      // did have somewhere
+
+// w/here was/is array of spacers for DAC code
+static uint32_t shifty_spacers[8]={1,2,3,4,5,6,7,8};
+
+static uint32_t spacers[32][8]={ // for DAC PWM out wider spacings
+      {1,2,3,4,5,6,7,8}, // ignore first 8 lengths then start to space out
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {1,2,3,4,5,6,7,8},
+      {0, 0, 0, 0, 0, 0, 0, 1},//10 bits = length 9
+      {0, 0, 0, 0, 0, 1, 1, 2},//11
+      {0, 0, 0, 0, 1, 1, 2, 3},//12
+      {0, 0, 0, 0, 1, 1, 2, 4},//13
+      {0, 0, 0, 1, 1, 2, 3, 5},//14
+      {0, 0, 0, 1, 1, 2, 4, 6},//15
+      {0, 0, 0, 1, 2, 3, 5, 7},//16
+      {0, 0, 1, 2, 3, 4, 6, 8},//17
+      {0, 0, 1, 2, 3, 5, 7, 9},//18
+      {0, 0, 1, 2, 3, 5, 7, 10},//19
+      {0, 0, 1, 2, 3, 5, 8, 11},//20
+      {0, 0, 1, 2, 3, 6, 9, 12},//21
+      {0, 0, 1, 2, 4, 7, 10, 13},//22
+      {0, 0, 1, 2, 4, 7, 10, 14},//23
+      {0, 0, 1, 2, 5, 8, 11, 15},//24
+      {0, 0, 1, 3, 6, 9, 12, 16},//25
+      {0, 0, 1, 3, 6, 9, 13, 17},//26
+      {0, 0, 1, 3, 6, 10, 14, 18},//27
+      {0, 0, 1, 3, 6, 10, 14, 19},//28
+      {0, 0, 1, 3, 6, 10, 15, 20},// 29
+      {0, 0, 1, 3, 6, 10, 15, 21},// 30
+      {0, 0, 1, 3, 6, 10, 15, 21},// 31
+      {0, 0, 1, 3, 6, 10, 15, 21} // for 32 bits = length=31
+};
+
+//      for lengths <8 we don't do this calculation
+//      DACOUT= ((shift_registerh & 0x01) + ((shift_registerh>>spacers[SRlengthh][1])&0x02) + ((shift_registerh>>spacers[SRlengthh][2])&0x04) // etc 
+
+
+static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 basic types 0,1,2 - but we can also add more types for spacings with array of spacers (which we did have somewhere, can also have shifting spacers arrays
+  // so let's say we have 5 modes (maybe just 2 or 3 basic ones): standard for x bits, equal bits, one bit audio, 8 bit spacers on length, 8 bit shiftyspacers
+  // 3 options->first3
+  // 2 options, one bit and standard
   uint32_t y,x=0;
   static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
 
@@ -793,13 +837,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   mode[w]=0;
   switch(mode[w]){ // but first 15 modes will be routing plus DAC/ADC options
     // but how do we work this - cases for w, or ifs or more generic?
-  case 0: // TEST mode: start with basic pass through and basic routing - first try pass along as generic structure (no input, fixed routings, DAC out (8 bit)
+
+    ///////////////////////////////////////////////////////////////////////// 
+  case 0: // Just passes on/CSR is basic DAC 0 - well they all are which makes question of modes?
+    // TEST mode: start with basic pass through and basic routing - first try pass along as generic structure (no input, fixed routings, DAC out (8 bit)
     // speed is from cv only
     // case 0 can go to zero if NSR SR zeroes out
     
   if (counter[w]>speed[w]){
-      counter[w]=0; 
-      param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
+    dactype[2]=0; // basic DAC out, others are fixed as basic
+    counter[w]=0; 
+    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
 
       Gshift_[w][0]=shift_[w]; 
       Gshift_[w][1]=shift_[w]; 
@@ -816,6 +864,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   //2-where is the input bit from (LFSR, ADC type?)- can also be from another LFSR? ADC types we have in test2.c - or no inputbit
     //    bitn=0;
+      /*
+    if (inputbit[w]==0){ // LFSR from SR in LFSR[w]
+      bitn = ((shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][0])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][1])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][2])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][3]))) & 1u; // we would use this in final...
+    }
+    else if (inputbit[w]==1) {// do input from type of ADC specified
+      // static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type){ // here we use length as number of bits max is 12 bits
+      bitn=ADC_(w,SRlength[w],adctype[w]);
+    }
+    else bitn=0;
+      */
     
     //2.5-shifting of which bits <<
     shift_[w]=shift_[w]<<1;
@@ -836,7 +894,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     
     //6-DAC result for any purposes - do we output in main loop?
     // static inline int DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 types 0,1,2 - but we can also
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); // TODO - add in DACtype..
+    dac[w]=DAC_(w, SRlength[w], dactype[w]); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none
@@ -854,15 +912,26 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     prev_stat[w]=new_stat;	
     tmp++;
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-    
-    
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
   }// counterw
+  break;
+  ///////////////////////////////////////////////////////////////////////// 
+  case 1:
+    // what other simple modes can be: to list:
+
+    //1-cycle round only,
+    //2-pass and cycle, other logics?
+    //3-ADC in, LFSR, different DACs out for CSR
+    // eg. cycle with adc, cycle with lfsr, pass with adc, pass with lfsr, pass and cylce with adc, pass and cycle with lfsr    (only for top)
+    // = 3no,3adc,3lfsr=9modesforNSR
+    break;
+    ///////////////////////////////////////////////////////////////////////// 
   } // switch
   //    } //4x
 
       // DAC output 
       // for the moment we just output from dac[2] ->[0,1,2C,3]=2 is C
+  //  set whichever DAC if there is a special, over-riding mode
       DAC_SetChannel1Data(DAC_Align_12b_R, dac[2]); // 1000/4096 * 3V3 == 0V8 
       int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
 

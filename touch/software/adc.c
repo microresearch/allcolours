@@ -77,7 +77,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	//	      k=adc_buffer[3]>>4; // adc[1]pa1 is dac0, 3pa3 is dac 1, 5pa5 is dac 2, 7pa7 is dac 3 - we can organise this in adc.c
 
 	// all fine - was 480 cycles - faster and might need smoothings
-	
+	// slowest that we can have	
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);//
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 2, ADC_SampleTime_480Cycles);//
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 3, ADC_SampleTime_480Cycles);//
