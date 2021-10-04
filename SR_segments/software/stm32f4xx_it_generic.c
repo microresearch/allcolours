@@ -109,7 +109,7 @@ uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0};
 //          1  1 1 1 1 1 - 6 bits
 
 // 20.9.2021: route is 4 bits - 0->15 try quick mode->route
-
+// inversion is 1 extra bit, speedfrom is one extra bit so 6 bits so far
 
 // so for simple pass through by speed would be: speedfrom=0/inputbit=2/adctype=0/route=last one as bit/
 uint32_t speedfrom[4]={1,0,0,0}; //0 is CV, 1 is interrupt, 2 is DACspeedfrom_ + CV

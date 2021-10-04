@@ -1,4 +1,27 @@
-  // flip PB4 to test interrupt on PB7 -> CSR
+  // need to catch it but this gives us false beats
+      //      if (shift_[w]==0 || shift_[w]==FULL)     shift_[w]=0x01; 
+
+  //  cogg[w][0]=0; // if we end up using these...
+  //  cogg[w][1]=0;
+  //  cogg[w][2]=0;
+  //  cogg[w][3]=0;
+
+  //2-where is the input bit from (LFSR, ADC type?)- can also be from another LFSR? ADC types we have in test2.c - or no inputbit
+    //    bitn=0;
+      /*
+    if (inputbit[w]==0){ // LFSR from SR in LFSR[w]
+      bitn = ((shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][0])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][1])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][2])) ^ (shift_[LFSR[w]] >> (lfsr_taps[SRlength[LFSR[w]]][3]))) & 1u; // we would use this in final...
+    }
+    else if (inputbit[w]==1) {// do input from type of ADC specified
+      // static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type){ // here we use length as number of bits max is 12 bits
+      bitn=ADC_(w,SRlength[w],adctype[w]);
+    }
+    else bitn=0;
+      */
+
+
+
+// flip PB4 to test interrupt on PB7 -> CSR
     flipper^=1;
     if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
     else   GPIOB->BSRRL=(1)<<4; //  write bits   

@@ -1,10 +1,68 @@
 * how to sort and classify/generic ideas sept 2021///
 
-30/9/2021:
+4/10/2021:
+
+First 5 modes done with LR/route/logic options and ADC/DAC options-> these also need new routes and logic
+
+TODO: experiment more with leaky code and timings, triggerings of leaks...
+
+add in DACs into ADC and DAC modes:
+
+//for input modes
+CV+DAC as input
+CV+DAC as comparator for input
+CV+DAC as input spacings
+
+CV+DAC as output spacings
+
+Try to condense what we have here in segmodes into:
+
+- ideas for modes to be implemented/tested.
+- layout eg. speedfrom, routing, ADC/DAC 
+- generic/functional ideas eg. how we count pulsins
+- ideas relating to LFSR, ADC, DAC etc...
+- file under OTHER!
+- esoteric
+
+*INT as signifier for interrupt/trigger modes*
+
+- re-routing is not so important - can be in INT selected from CV/DACplusCV
+so CV/speed is more or less fixed routes only maybe with one exception
+
+Q of more trigger modes?
+
+- can route DAC(+CV if INT) -> ADC inputs
+
+- different ways of counting pulseins (eg. reset generic counter on pulsein) or count gap between pulses = number of pulses in time x
+
+a list:
+
+CV selects routing in INT modes
+CV+DAC selects routing in INT modes
+
+- swap over SRs on pulse in?!!
+
+- INT mode: pulse ins (only have L and R) can toggle SR on/off - eg. hold it even against new CLK/INT
+
+1/10/2021:
+
+- how to collect all these notes into a coherent scheme? PRINT PDF
+
+from below: for 1 or 2 of trigger modes: SR->bit speed (ANDed with CV/trigger) eg. if && bitx//and_train of pulses also (see below)
+
+- idea that CLK pulsins could trigger train of x pulses at speed y
+  (eg. y by CV, by DAC) - descending speed, speed from other SR, train
+  from other SR - how to do this?TRIAL?
+
+
+
+////////////////
+
+30/9/2021//1/10:
 
 - possible SR modes adjust/set certain settings which stay that way until they are re-adjusted?
 
-- that incoming bits/plse bits could also be formed in SR which can be used (as DAC, as whatever)
+- that incoming bits/pulse bits could also be formed in SR which can be used (as DAC, as whatever)
 
 - interrupt/trigger modes with CV as divider!
 
@@ -35,6 +93,15 @@ R-N
 
 5-special meta-modes for say bus of DACs etc.
 
+6-what pulse can do in CV modes eg. PUSH on bits so is like speed plus pulse
+7-what CV can do in pulse modes eg. comparator. as well as each as parameters...
+
+other:
+- pulses/clkin in can toggle entry/no entry of new bits, cycling etc
+- pulses/clkin in can bump up/shift left/right the routing table
+- pulses/clkin in can mask bits as for DAC etc. or SR etc
+- pulses/clkin in can also slip/slow/bump up one CV speeded SR
+
 29/9/2021:
 
 - possibly we have static routing for R->N L->C and variable for L and R // with ADC/DAC options//but as we note above L and R also have DACs which are used...
@@ -53,7 +120,7 @@ but as we no have less clk modes we can also use ghost SRs, but at what speed, s
 
 - new speed scheme/cv/dac to test now on speedc/lower one - seems to work well...
 
-- BOM/pos/quote made 28/9 AM pcbcart
+- BOM/pos/quote made 28/9 AM pcbcart/ordered30/9
 
 27/9/2021/ notes from last days:
 
@@ -142,7 +209,7 @@ notes:
 
 16/9/2021:
 
-- idea that CLK pulsins could trigger train of pulses at speed x
+- idea that CLK pulsins could trigger train of x pulses at speed x
   (eg. x by CV, by DAC) - descending speed, speed from other SR, train
   from other SR
 
