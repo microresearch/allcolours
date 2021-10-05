@@ -57,6 +57,24 @@ so modes always need to pass on: DAC, ghost SRs, COGG/reset if we end up using t
 #include "adc.h"
 
 /////////////////////
+
+uint32_t testmodes[4]={5,0,5,0}; // 5 is spacerbitsDAC and pass on/XOR - ADCxbit 
+// list modes here for easy access:
+//0:
+
+//1:
+
+//2:
+
+//3:
+
+//4:
+
+//5:
+
+/////////////////////
+
+
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
 uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed ????
@@ -137,7 +155,6 @@ uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15
 uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
 uint32_t dacfrom[4]={0,0,0,0};
-uint32_t testmodes[4]={5,0,5,0};
 
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
@@ -507,38 +524,40 @@ static inline uint32_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
 // w/here was/is array of spacers for DAC code
 static uint32_t shifty_spacers[8]={1,2,3,4,5,6,7,8};
 
+// fix this array as seems off...//FIXED 5/10 using code in test.c based on gaps
 static uint32_t pos[32][8]={ // for DAC PWM out wider spacings
-      {1,2,3,4,5,6,7,8}, // ignore first 8 lengths then start to space out
-      {1,2,3,4,5,6,7,8},
-      {1,2,3,4,5,6,7,8},
-      {1,2,3,4,5,6,7,8},
-      {1,2,3,4,5,6,7,8},
-      {1,2,3,4,5,6,7,8},
-      {1,2,3,4,5,6,7,8},
-      {1,2,3,4,5,6,7,8},
-      {0, 0, 0, 0, 0, 0, 0, 1},//10 bits = length 9
-      {0, 0, 0, 0, 0, 1, 1, 2},//11
-      {0, 0, 0, 0, 1, 1, 2, 3},//12
-      {0, 0, 0, 0, 1, 1, 2, 4},//13
-      {0, 0, 0, 1, 1, 2, 3, 5},//14
-      {0, 0, 0, 1, 1, 2, 4, 6},//15
-      {0, 0, 0, 1, 2, 3, 5, 7},//16
-      {0, 0, 1, 2, 3, 4, 6, 8},//17
-      {0, 0, 1, 2, 3, 5, 7, 9},//18
-      {0, 0, 1, 2, 3, 5, 7, 10},//19
-      {0, 0, 1, 2, 3, 5, 8, 11},//20
-      {0, 0, 1, 2, 3, 6, 9, 12},//21
-      {0, 0, 1, 2, 4, 7, 10, 13},//22
-      {0, 0, 1, 2, 4, 7, 10, 14},//23
-      {0, 0, 1, 2, 5, 8, 11, 15},//24
-      {0, 0, 1, 3, 6, 9, 12, 16},//25
-      {0, 0, 1, 3, 6, 9, 13, 17},//26
-      {0, 0, 1, 3, 6, 10, 14, 18},//27
-      {0, 0, 1, 3, 6, 10, 14, 19},//28
-      {0, 0, 1, 3, 6, 10, 15, 20},// 29
-      {0, 0, 1, 3, 6, 10, 15, 21},// 30
-      {0, 0, 1, 3, 6, 10, 15, 21},// 31
-      {0, 0, 1, 3, 6, 10, 15, 21} // for 32 bits = length=31
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,1,1,1,1,1,1,1},
+{0,1,2,2,2,2,2,2},
+{0,1,1,2,2,3,3,3},
+{0,1,2,3,3,4,4,4},
+{0,1,2,3,3,4,4,4},
+{0,1,2,3,3,4,4,4},
+{0,1,2,3,4,5,5,5},
+{0,1,2,3,4,5,6,6},
+{0,1,2,3,4,5,6,7},
+{0,1,3,4,5,6,7,8},
+{0,1,3,5,6,7,8,9},
+{0,1,3,5,6,8,9,10},
+{0,1,3,5,6,8,10,11},
+{0,1,3,6,7,9,11,12},
+{0,1,3,6,7,9,12,13},
+{0,2,4,7,8,10,13,14},
+{0,2,4,7,8,10,13,15},
+{0,2,4,7,9,11,14,16},
+{0,2,5,8,10,12,15,17},
+{0,2,5,8,10,13,16,18},
+{0,3,6,9,11,14,17,19},
+{0,3,6,9,12,15,18,20},
+{0,3,6,9,12,15,18,21},
+{0,4,7,10,13,16,19,22}
 };
 
 //      for lengths <8 we don't do this calculation
@@ -579,8 +598,10 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 
   }
   else { //spacers - how did we do this?
     x = (shift_[reg]&0xFF)<<4; // just the lower 8 bits - no spacings
-    if (length>7){ // real length >9
+    if (length>7){ // real length >8
       x = ((shift_[reg] & 0x01) + ((shift_[reg]>>pos[length][1])&0x02) + ((shift_[reg]>>pos[length][2])&0x04) + ((shift_[reg]>>pos[length][3])&0x08) + ((shift_[reg]>>pos[length][4])&0x10) + ((shift_[reg]>>pos[length][5])&0x20) + ((shift_[reg]>>pos[length][6])&0x40) + ((shift_[reg]>>pos[length][7])&0x80))<<4;
+      //       {0, 0, 1, 3, 6, 10, 15, 21} // for 32 bits = length=31 - check sense of this
+
     }    
 
   }

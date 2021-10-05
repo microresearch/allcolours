@@ -511,8 +511,8 @@ int main(void)
     unsigned char bat;
     unsigned char biit=0x05;
     //    x=0b1111111111101111;
-    uint32_t bits=0b11111111000000000000000000000000, bitzz, adc, res, mask[32], cc;
-    uint32_t emptybits=0b00000000000000000000000000000000;
+    uint32_t bits=0b11111111000000000000000010000000, bitzz, adc, res, mask[32], cc;
+    uint32_t emptybits=0b10000000000000000000000000000000;
     shift_register = (uint8_t *)g_buf;
 
     //    x &= ~0xff;
@@ -711,8 +711,67 @@ in reverse tho for 9->31
     //    }
 
    for (int x=1;x<13;x++){ 
-     printf("%d, ", 4096/x);
+     //     printf("%d, ", 4096/x);
    }
+  //     printf("%d, ", 4096/x);
+   //   *g_buf=bits>>21;
+   //   bits=(emptybits>>24)&0x80;
+   //   print32bits(&bits);
+
+   // we want bits 0,2,5,9,11,14,18,20 of 24 bits - what are necessary shifts
+   // gap is 0,2,3,4,2,3,4,2 start from 0
+   // shift is 0,1,etc...
+   int cd=0;
+   int gap[32][8]={
+     {0,1,1,1,1,1,1,1}, //<8 bits
+     {0,1,1,1,1,1,1,1}, //<8 bits
+     {0,1,1,1,1,1,1,1}, //<8 bits
+     {0,1,1,1,1,1,1,1}, //<8 bits
+     {0,1,1,1,1,1,1,1}, //<8 bits
+     {0,1,1,1,1,1,1,1}, //<8 bits
+     {0,1,1,1,1,1,1,1}, //<8 bits
+     {0,1,1,1,1,1,1,1}, //8 bits
+     {0,2,1,1,1,1,1,1}, //9bits
+     {0,2,2,1,1,1,1,1}, //10bits
+     {0,2,1,2,1,2,1,1}, //11bits
+     {0,2,2,2,1,2,1,1}, //12bits     
+     {0,2,2,2,1,2,1,1}, //13bits
+     {0,2,2,2,1,2,1,1}, //14bits
      
-    return 0;
+     {0,2,2,2,2,2,1,1}, //15bits
+     {0,2,2,2,2,2,2,1}, //16bits
+     {0,2,2,2,2,2,2,2}, //17bits
+     {0,2,3,2,2,2,2,2}, //18bits
+     {0,2,3,3,2,2,2,2}, //19bits
+     {0,2,3,3,2,3,2,2}, //20bits
+     {0,2,3,3,2,3,3,2}, //21bits
+     {0,2,3,4,2,3,3,2}, //22bits
+     {0,2,3,4,2,3,4,2}, //23bits  
+     {0,3,3,4,2,3,4,2}, //24 bits - from electronotes but bit different
+
+     {0,3,3,4,2,3,4,3}, //25bits
+     {0,3,3,4,3,3,4,3}, //26bits
+     {0,3,4,4,3,3,4,3}, //27bits
+     {0,3,4,4,3,4,4,3}, //28bits
+     {0,4,4,4,3,4,4,3}, //29bits
+     {0,4,4,4,4,4,4,3}, //30bits
+     {0,4,4,4,4,4,4,4}, //31bits
+     {0,5,4,4,4,4,4,4}, //32bits
+   };
+     
+
+   //   }
+   //output shifts to 8 bits:   {0, 1, 3, 2, 6, 9, 12, 13}
+   int bitsP[8]={0,2,5,9,11,14,18,20};
+   for (y=0;y<32;y++){
+     cd=0;
+   printf("{");
+     for (x=0;x<8;x++){
+       cd+=gap[y][x];
+       if (x<7)     printf("%d,", (cd-x));
+       else printf("%d},\n", (cd-x));
+}
+   }
+   //   printf("%d",cd);
+     return 0;
 }

@@ -6,14 +6,20 @@ First 5 modes done with LR/route/logic options and ADC/DAC options-> these also 
 
 TODO: experiment more with leaky code and timings, triggerings of leaks...
 
-add in DACs into ADC and DAC modes:
+/////
+
+add in DACs into ADC and DAC modes/INT modes only if we use CV???
 
 //for input modes
-CV+DAC as input
-CV+DAC as comparator for input
-CV+DAC as input spacings
+CV//+DAC as input
+CV//+DAC as comparator for input
+CV//+DAC as input spacings
 
 CV+DAC as output spacings
+
+CV selects routing 
+CV+DAC selects routing
+
 
 Try to condense what we have here in segmodes into:
 
@@ -35,10 +41,6 @@ Q of more trigger modes?
 
 - different ways of counting pulseins (eg. reset generic counter on pulsein) or count gap between pulses = number of pulses in time x
 
-a list:
-
-CV selects routing in INT modes
-CV+DAC selects routing in INT modes
 
 - swap over SRs on pulse in?!!
 
@@ -52,9 +54,7 @@ from below: for 1 or 2 of trigger modes: SR->bit speed (ANDed with CV/trigger) e
 
 - idea that CLK pulsins could trigger train of x pulses at speed y
   (eg. y by CV, by DAC) - descending speed, speed from other SR, train
-  from other SR - how to do this?TRIAL?
-
-
+  from other SR - how to do this?DONE 104/105tested...for INT
 
 ////////////////
 
