@@ -13,10 +13,10 @@ add in DACs into ADC and DAC modes/INT modes only if we use CV???
 //for input modes
 CV//+DAC as input
 CV//+DAC as comparator for input
-CV//+DAC as input spacings
+CV//+DAC as input spacings [where is placed into SR]
+
 
 CV+DAC as output spacings
-
 CV selects routing 
 CV+DAC selects routing
 
@@ -273,10 +273,12 @@ eg.
 0-looping only/aka return only!
 1-pass on only - straight through
 2-pass on and return bitx
+
 3-TM with pass on - trigger mode
 4-TM with loop back
 5-TM in TM pass on
 6-TM in TM loop
+
 7-Rungler XOR pass on
 8-Rungler XOR loop back
 9+Run with different speeds

@@ -2,6 +2,14 @@
 
 Revisiting 30 Sept:
 
+- 30/9 tests: 2 and 3 not closing: 3 was adc issue which fixed
+   somehow, 2 still bleeds at 60mV, we adjusted TIM2 slower to get rid
+   of bleed across VCAs (why now?), still to test new freeze
+   functionality...also got rid of shift as was loud (to check on
+   scope), maybe try different resistor values for closings, testing
+   first freeze and seems to work
+
+
 //////////////////////////
 
 TODO: August 30+ 2021:
