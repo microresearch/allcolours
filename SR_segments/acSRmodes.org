@@ -2,7 +2,7 @@
 
 Turing Machine: cycle bit is noise vs. comp less than 1, otherwise invert cycling bit
 
-Rungler: XOR out of SR with input bit [in benjolin the DAC out effects some parameter of both clock and data] eg. DAC effects speed/clock of SR
+Rungler: XOR out of SR with input bit which comes from oscillator [in benjolin the DAC out effects some parameter of both clock and data] eg. DAC effects speed/clock of SR
 
 Wiard noise ring: noise/comp selects new input or loop back/inverted loop back (jumper)
 

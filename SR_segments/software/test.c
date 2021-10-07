@@ -762,6 +762,7 @@ in reverse tho for 9->31
 
    //   }
    //output shifts to 8 bits:   {0, 1, 3, 2, 6, 9, 12, 13}
+   /*
    int bitsP[8]={0,2,5,9,11,14,18,20};
    for (y=0;y<32;y++){
      cd=0;
@@ -771,7 +772,32 @@ in reverse tho for 9->31
        if (x<7)     printf("%d,", (cd-x));
        else printf("%d},\n", (cd-x));
 }
-   }
+}*/
+
+   //     for (x=3;x<12;x++){
+   //       printf("%d, ",4096/(x));
+   //     }
+   int length=2, otherpar=2,nn=0;
+   n=0;
+     for (x=0;x<64000;x++){
+  
+     if (n>length) { // 0s
+       printf("0");
+       if (nn>otherpar) {
+	 n=0;
+       }
+       nn++;
+     }
+     else {
+       printf("1");
+       n++;
+       nn=0;
+     }         
+   }    
+  
+
+   
+   
    //   printf("%d",cd);
      return 0;
 }

@@ -1,5 +1,16 @@
 * how to sort and classify/generic ideas sept 2021///
 
+7/10/2021:
+
+- modes 6,7,8 are quite destructive noisy with pass&loopback for DAC and ADC - so maybe remove these
+- try counting pulses (12 bits=4096) within length of time for use as parameter...(q of speed...
+
+main.c TIM2 32/16=// period 32, prescaler 8 = toggle of 104 KHz - so 50 KHz
+
+- re-did param code so is now time between pulses...
+
+- DONE/TESTEDtest equiv bits ADC code, add in onebit oscillator
+
 4/10/2021:
 
 First 5 modes done with LR/route/logic options and ADC/DAC options-> these also need new routes and logic
@@ -11,24 +22,24 @@ TODO: experiment more with leaky code and timings, triggerings of leaks...
 add in DACs into ADC and DAC modes/INT modes only if we use CV???
 
 //for input modes
-CV//+DAC as input
-CV//+DAC as comparator for input
-CV//+DAC as input spacings [where is placed into SR]
+CV/param//+DAC as input
+CV/param//+DAC as comparator for input
+CV/param//+DAC as input spacings [where is placed into SR]
 
+CV/param+DAC as output spacings
 
-CV+DAC as output spacings
-CV selects routing 
-CV+DAC selects routing
+CV/param selects routing 
+CV/param+DAC selects routing
 
 
 Try to condense what we have here in segmodes into:
 
-- ideas for modes to be implemented/tested.
-- layout eg. speedfrom, routing, ADC/DAC 
-- generic/functional ideas eg. how we count pulsins
-- ideas relating to LFSR, ADC, DAC etc...
-- file under OTHER!
-- esoteric
+- ideas for modes to be implemented/tested:
+- layout eg. speedfrom, routing, ADC/DAC:
+- generic/functional ideas eg. how we count pulsins:
+- ideas relating to LFSR, ADC, DAC etc...:
+- file under OTHER:
+- esoteric:
 
 *INT as signifier for interrupt/trigger modes*
 
@@ -312,7 +323,7 @@ inline int bits(uint32_t reg, uint32_t length){ // function returns bottom lengt
 and another inline function which returns different kinds of DAC from
 a certain SR eg. standard DAC of x bits, equivalent dac of x bits,
 what about one bit dac (more involved as takes time but we should have
-a pointer to that value
+a pointer to that value????
 
 9/9/2021 
 
@@ -786,7 +797,7 @@ mode 0: basic DAC out
 
 - DAC outs from SR
 
-- electronotes just has standard weighting ADC, uniform (bits x X) from consecutive taps, and sets of spaced taps -> wide spacings)
+- electronotes just has standard weighting DAC, uniform (bits x X) from consecutive taps, and sets of spaced taps -> wide spacings)
 
 what else for 64 modes divided by speedcv/pulsin = 32 still (in pulsin we have bit length for DAC)
 

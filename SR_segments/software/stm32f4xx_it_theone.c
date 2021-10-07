@@ -43,10 +43,10 @@
 #include "adc.h"
 /////////////////////
 
-uint32_t testmodes[4]={8,0,0,0}; // 5 is spacerbitsDAC and pass on/XOR - ADCxbit 
+uint32_t testmodes[4]={9,0,0,9}; // 5 is spacerbitsDAC and pass on/XOR - ADCxbit 
 /* list modes here for easy access:
 
-// - maybe to line up LFSR modes etc
+// - maybe to line up LFSR modes etc so they follow each other in a block
 
 //0: all pass through only
 
@@ -60,11 +60,14 @@ uint32_t testmodes[4]={8,0,0,0}; // 5 is spacerbitsDAC and pass on/XOR - ADCxbit
 
 //5: N: passon/XOR-ADCxbit LR: passonLEAKbits C: XOR-DACspacers
 
+//// maybe remove 678! and add new ADC/DAC options instead
+
 678: N:cycle/pass/XOR-ADCoptions LR: cycleandpasXOR-LOGOPbits C: as N/DACoptions //NOTE: these ones are quite destructive of ADC ins/orDAC?
 6 LFSR
 7 ADC1
 8 ADCxbits
 
+//////9- test code with other ADC and DAC options
 //rung - cycle XOR with pass//=mode2
 
 /////
@@ -73,7 +76,7 @@ TODO: prob modes below as/and basic INT modes
 - probability modes for (DAC, DAC+CV comp to SR,countedclk), prob of bit in/inverted bit in,
   XOR bit in from->[routed//cycled//ADCorLFSR//pulseifwehave], prob of
   bitin OR loopback, prob of bitin or inverted loopback, prob of
-  cycle, new bit from bits/from route -> how many? make this clearer
+  cycle, new bit from bits/from route -> how many? make this clearer:
 
 SR is customSR or RSR(routed SR)
 
@@ -149,6 +152,7 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 //uint16_t whichDAC=2;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
+volatile uint32_t param[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength[4]={31,31,31,31};
 
 // for generic CLK fake puls routing
@@ -168,6 +172,7 @@ static uint32_t clk_route[8]={0,
 // simplest generic shifter without counter and with one route!
 
 static uint32_t shift_[4]={0xffff,0xffff,0xffff,0xffff};
+static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t Gshift_[4][4]={
   {0xff,0xff,0xff,0xff},
   {0xff,0xff,0xff,0xff},
@@ -507,20 +512,35 @@ static uint8_t ghost_tapsR[32][4] = { // right hands path
 
 static uint8_t countbts[4096]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 7, 8, 8, 9, 8, 9, 9, 10, 8, 9, 9, 10, 9, 10, 10, 11, 8, 9, 9, 10, 9, 10, 10, 11, 9, 10, 10, 11, 10, 11, 11, 12};
 
-uint32_t divy[12]={4096, 2048, 1365, 1024, 819, 682, 585, 512, 455, 409, 372, 341};
+uint16_t divy[12]={1365, 1365, 1365, 1024, 819, 682, 585, 512, 455, 409, 372, 341};
 
-// TODO: generic ADC functions for bit insertions into shift registers! - for single bits only we return bit which is to be used here
+// TODO: use DAC from SR->reg
+// CV/param//+//DAC as input
+// CV/param//+//DAC as comparator for input -> comp to a 1 or a 0
+// CV/param//+//DAC as input spacings [where is placed into SR]
 
-static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type){ // here we use length as number of bits max is 12 bits
-  // could also put LFSR in here... as an option as is incomings
-  // also can have other DACs coming in here bit by bit (DACs are x bits long?)
-  static uint8_t n[4]={0,0,0,0}; // counters
+// but how we process DAC - as what bits though - as for the moment we just do sequential bits in
+
+// mix of LFSR and ADCseq bits - but then which LFSR do we use? LFSR each SR which moves here
+// ghostx or runningSR?
+
+// 0: xbits in, 1: 1bit 2: LFSR 3: equivalent bits 4: oscillator/clock 5: DACfrom_reg 6:param_from_reg 7:param as comparator for a single bit
+// 8: seperate LFSR running here with length/length
+
+// then we can have DAC+param etc...and variations of blends with LFSR/real/otherwise: LFSR blanks out incoming ADC bits
+// eg. also osc/clock and the LFSR
+//
+// PLUS to only input on strobe/clock - either as block incoming or as single bits
+// but we need 2 reset bits for each - one here and one for modes or we have extra parameter for trigger passed on
+// or we just do the input bits in the main case itself...
+static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
+  static uint32_t n[4]={0,0,0,0},nn[4]={0,0,0,0}; // counters
   static int32_t integrator=0, oldValue=0;
-
   static uint32_t k; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   int bt;
 
-  if (type==0){ // basic sequential length of bits cycling in
+  switch(type){
+  case 0: // basic sequential length of bits cycling in
   if (length>11) length=11;
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
@@ -528,8 +548,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type){ // here we
     }
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
-  }
-  else if (type==1) { // one bit audio input
+    break;
+  case 1: // one bit audio input
     n[reg]++;
   if (n[reg]>50) {
     k=(adc_buffer[12]); // now 12 bits only // 16 bits to 12 bits - this is now our ADCin!
@@ -547,20 +567,70 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type){ // here we
       oldValue=0;
       bt=0;
    }   
-  }
-   else if (type==2){ // LFSR
+   break;
+  case 2: // LFSR
      // if we never change that default we can replace LFSR[reg] with reg!
-     bt = ((shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
+    bt = ((shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
+    break;
+  case 3: // equivalent bits: TO TEST
+       // lengths upto 11=12 - we need tables for divisions/shifts 
+  if (length>11) length=11;
 
+  if (n[reg]>length) {
+    k=(adc_buffer[12]); //
+    k=k/divy[length];
+    n[reg]=0;
+  }
+  if (k!=0) {
+    bt=1;
+    k--;
+  }
+  else bt=0;
+  n[reg]++;    
+  break;
+  case 4:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits // here we need 2 params...
+     if (n[reg]>length) { // 0s
+       bt=0;
+       if (nn[reg]>otherpar) {
+	 n[reg]=0;
+       }
+       nn[reg]++;
+     }
+     else {
+       bt=1;
+       n[reg]++;
+       nn[reg]=0;
+     }         
+     break;    
+  case 5: 
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(dac[reg])>>(11-length); 
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+  case 6: 
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(param[reg])>>(11-length); // we don;t check otherpar in bounds!
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+  case 7: 
+     bt=0;
+     if ((adc_buffer[12]>>2)>param[reg]) bt=1;
+     break;
+  case 8:// run LFSR-ADCshift and output a bit - again if we don't use redirection of LFSR[reg] then ...
+    bt = ((ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
+    ADCshift_[LFSR[reg]]=(ADCshift_[LFSR[reg]]<<1)+bt;
+    break;
+  }
      
-   }
-
-
-  // other options are: comparator:
-   // equivalent sets of x bits incoming (how to do this cleanly for x number of bits) - how would this work
-   // bits spaced at intervals across sr???
-    
-    return bt;
+  return bt;
 }
 
 uint8_t logtable[4]={0,0,0,0};
@@ -644,13 +714,10 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
   return bita ^ bitaa; // default
 }
 
-
-//      for lengths <8 we don't do this calculation
-//      DACOUT= ((shift_registerh & 0x01) + ((shift_registerh>>spacers[SRlengthh][1])&0x02) + ((shift_registerh>>spacers[SRlengthh][2])&0x04) // etc 
-static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 basic types 0,1,2 - but we can also add more types for spacings with array of spacers (which we did have somewhere, can also have shifting spacers arrays
-  // so let's say we have 5 modes (maybe just 2 or 3 basic ones): standard for x bits, equal bits, one bit audio, 8 bit spacers on length, 8 bit shiftyspacers
-  // 3 options->first3
-  // 2 options, one bit and standard
+// 0: xbit DAC, 1: equiv DAC, 2: 1bit 3: spacers
+// TODO: what we add to this: shifty_spacers, sequential x bit DAC, sequential equiv DAC, seq spaced DAC
+// PLUS to only output on strobe/clock!
+static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ //
   // DAC is 12 bits
   uint32_t y,x=0;
   static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
@@ -665,9 +732,10 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 
       // and we need divide highest but number - eg. for 8 bits we have max 8 (all 1s) - max 12 bits DAC is 4096 4096/8=512 4096/12=341
       // we can have another table for this - but just taking maybe max of 12 bits otherwise lookup is too long (max 12 bits=4096)
     //      if (reg<4){
+    //    length=8;
 	if (length>11) length=11;
 	x=countbts[shift_[reg]&masky[length]]; // lower length bits only
-	y=4096/(length+1);
+	y=divy[length]; // added table for this 7/10
 	  x*=y;
 	  //      }
   }
@@ -762,7 +830,10 @@ void EXTI4_IRQHandler(void){ // working NSR
   uint32_t tmp, tmpp;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   intflag[0]=1; //NSR
-  counter_[0]++; // overflow at 32 bits
+  //  counter_[0]++; // overflow at 32 bits
+  // time from last interrupt
+  param[0]=counter_[0];
+  counter_[0]=0;
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
  }
@@ -778,20 +849,25 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
   
   if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  
     intflag[3]=1; //RSR
-    counter_[3]++; // overflow at 32 bits
+    //    counter_[3]++; // overflow at 32 bits
+    param[3]=counter_[3];
+      counter_[3]=0;
     EXTI_ClearITPendingBit(EXTI_Line5);
  }
 
   if (EXTI_GetITStatus(EXTI_Line6) != RESET) { //LSR
     intflag[1]=1; //LSR
-  counter_[1]++; // overflow at 32 bits
-
+    //  counter_[1]++; // overflow at 32 bits
+    param[1]=counter_[1];
+    counter_[1]=0;
     EXTI_ClearITPendingBit(EXTI_Line6);
  } 
 
   if (EXTI_GetITStatus(EXTI_Line7) != RESET) {// CSR
     intflag[2]=1; //CSR
-    counter_[2]++; // overflow at 32 bits
+    //    counter_[2]++; // overflow at 32 bits
+    param[2]=counter_[2];
+    counter_[2]=0;
     EXTI_ClearITPendingBit(EXTI_Line7);
  } 
 }
@@ -902,8 +978,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 {
   uint32_t lengthbit=15, new_stat;
   uint32_t x, y, q, start=0;
-  uint32_t bitn, bitrr, tmp, param,xx;
-  static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0;
+  uint32_t bitn, bitrr, tmp, xx;
+  uint8_t trigger[4]={0,0,0,0};
+  static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0;
   static uint32_t counter[4]={0,0,0,0};
   static uint32_t train[4]={0,0,0,0};
 
@@ -931,11 +1008,21 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
     }
   */
-  
 
+  // for the time between counts
+  counter_[0]++;  counter_[1]++;  counter_[2]++;  counter_[3]++;
+
+  
   w++;
   if (w>3) w=0;
 
+  // process INT?
+  if (intflag[w]) {
+    trigger[w]=1;
+    intflag[w]=0;
+  }
+  else  trigger[w]=0;
+  
   counter[w]++;
 
   mode[w]=testmodes[w];
@@ -948,10 +1035,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     // speed is from cv only - we don't use CLKIN
     // case 0 can go to zero if NSR SR zeroes out
     
-  if (counter[w]>speed[w]){
+    if (counter[w]>speed[w]){
     dactype[2]=0; // basic DAC out, others are fixed as basic
     counter[w]=0; 
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
+
 
       Gshift_[w][0]=shift_[w]; 
       Gshift_[w][1]=shift_[w]; 
@@ -1001,7 +1088,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (counter[w]>speed[w]){
     dactype[2]=0; // basic DAC out, others are fixed as basic
     counter[w]=0; 
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
 
       Gshift_[w][0]=shift_[w]; 
       Gshift_[w][1]=shift_[w]; 
@@ -1051,7 +1137,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (counter[w]>speed[w]){
     dactype[2]=0; // basic DAC out, others are fixed as basic
     counter[w]=0; 
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
 
       Gshift_[w][0]=shift_[w]; 
       Gshift_[w][1]=shift_[w]; 
@@ -1098,12 +1183,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   break; // case 2
 
   ///// case 3
-  case 3: // let's try to do different routes for NSR and CSR with say LFSR for ADC and equiv bits/dactype1 here
-    // so so far we have done for all, pass, cycle, pass and cycle, now try pass with different logic
-    // THIS is now pass with OR on L,R
-    // pass with XOR and LFSR/NSR, DACequiv/CSRout
-
-    // notation/tags:
+  case 3: 
     // N: ADC/IN, route from/bits in/logic - pass on/XOR - LFSR 
     // L: route from/bits in/logic - pass on/OR
     // C: DAC/OUT, route from/bits in/logic - pass on/XOR - DACequiv
@@ -1116,7 +1196,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
     logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1131,7 +1210,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],2); // XOR with LFSR
+      bitn^=ADC_(w,SRlength[w],2,0); // XOR with LFSR
     }
     else
       {
@@ -1182,7 +1261,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
     logtable[0]=0; logtable[1]=2; logtable[2]=0; logtable[3]=2;
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1197,7 +1275,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],1); // XOR with 1 bit audio
+      bitn^=ADC_(w,SRlength[w],1,0); // XOR with 1 bit audio
     }
     else
       {
@@ -1247,7 +1325,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
     logtable[0]=0; logtable[1]=3; logtable[2]=0; logtable[3]=3; // leaks
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1262,7 +1339,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],1); // XOR with 1 bit audio
+      bitn^=ADC_(w,SRlength[w],1,0); // XOR with 1 bit audio
     }
     else
       {
@@ -1314,7 +1391,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     // logop: 0-XOR, 1-OR, 2-&, 3leaks
     logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1329,7 +1405,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],2); // XOR with LFSR
+      bitn^=ADC_(w,SRlength[w],2,0); // XOR with LFSR
       bitn^=(shift_[w]>>SRlength[w])& 0x01; //cycling bit XOR in     
     }
     else
@@ -1382,7 +1458,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
     logtable[0]=0; logtable[1]=2; logtable[2]=0; logtable[3]=2;
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1397,7 +1472,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],1); // XOR with 1 bit audio
+      bitn^=ADC_(w,SRlength[w],1,0); // XOR with 1 bit audio
       bitn^=(shift_[w]>>SRlength[w])& 0x01; //cycling bit XOR in     
     }
     else
@@ -1449,7 +1524,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
     logtable[0]=0; logtable[1]=3; logtable[2]=0; logtable[3]=3; // leaks
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1464,7 +1538,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],1); // XOR with 1 bit audio
+      bitn^=ADC_(w,SRlength[w],1,0); // XOR with 1 bit audio
       bitn^=(shift_[w]>>SRlength[w])& 0x01; //cycling bit XOR in     
     }
     else
@@ -1503,8 +1577,76 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   }// counterw
   break; // case 8
   
+  case 9: // just for trials with other ADC/DAC options... 
+    // N: ADC/IN, route from/bits in/logic - pass on/XOR - experiment with ADCs
+    // L: route from/bits in/logic - pass on/OR
+    // C: DAC/OUT, route from/bits in/logic - pass on/XOR - DACequiv
+    // R: route from/bits in/logic  - pass on/OR
+
+  if (counter[w]>speed[w]){
+    counter[w]=0; 
+    // here we can set options
+    dactype[2]=1; // equiv DAC out, others are fixed as basic
+    //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
+    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
+    
+    Gshift_[w][0]=shift_[w]; 
+    Gshift_[w][1]=shift_[w]; 
+    Gshift_[w][2]=shift_[w];
+    Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+    //2.5-shifting of which bits <<
+    shift_[w]=shift_[w]<<1;
   
-  /////////////////////////////////////////////////////////////////////////
+    //3-what is routing for incoming SR bits, cycling bit
+    // we have default route here
+    // BUT for LFSR in we have another route
+    if (w==0){// w below can be zeroed...
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;
+      //      bitn=0;
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      //      bitn^=ADC_(w,SRlength[w],3,0); // XOR with: EQUIV BITS-TESTED!
+      //      tmp=SRlength[w]>>1;
+      //      bitn^=ADC_(0,SRlength[w],6,0); // param[0]
+      //      bitn^=ADC_(0,SRlength[w],7,0); // comparator with param[0]
+      bitn^=ADC_(0,SRlength[w],8,0);
+      //      bitn^=ADC_(w,param[0],4,param[0]>>4);
+    }
+    else
+      {
+    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      }
+
+    //4-what is incoming pulsin bit if any? - incoming pulse will always be ORed in
+    if (pulsins[w]!=0){
+    xx=!(GPIOC->IDR & pulsins[w]); 
+    bitn=logop(bitn,xx,logtable[w]); // just for bits in
+    }
+    
+    shift_[w]+=bitn;
+    
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+  }// counterw
+  break; // case 9
+
   /// extra experimental cases // tested
   /////////////////////////////////////////////////////////////////////////
   case 104:  // let's try INT driven one for pulse train mode
@@ -1526,7 +1668,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	//    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
 	//    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1541,7 +1682,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],2); // XOR with LFSR
+      bitn^=ADC_(w,SRlength[w],2,0); // XOR with LFSR
     }
     else
       {
@@ -1603,7 +1744,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	//    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
 	//    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
     
-    param=counter_[w]&masky[11]; // we use pulse counter as param - where to count this - lower 12 bits only as param is just 12 bits
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
     Gshift_[w][2]=shift_[w];
@@ -1618,7 +1758,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      bitn^=ADC_(w,SRlength[w],2); // XOR with lFSR
+      bitn^=ADC_(w,SRlength[w],2,0); // XOR with lFSR
     }
     else
       {

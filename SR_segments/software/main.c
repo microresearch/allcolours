@@ -19,7 +19,7 @@
 
 /*
 
-PROG HEADER: yellow, green, blue, purple
+PROG HEADER: yellow, green, blue, purple//down
 
 *** SEGMENTS 
 
@@ -29,7 +29,7 @@ default/normed clockings (set by speed pot)
 
 or just one timer for all and run at max speed with counters
 
-- ADC input schemes - number of bits, sigma/delta, bit equality (unary - no weighting) with x bits // what else?
+- ADC input schemes - number of bits, sigma/delta, bit equality (unary - no weighting) with x bits
 - 4x pin interrupts, how many timers
 - working with sigma delta ADC, DAC out, digital filter simulator and list first all possible modes and ways of operating
 - clock from speed/cv, clock from external pulse, clock from other

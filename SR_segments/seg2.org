@@ -1,0 +1,49 @@
+* ADC options
+
+older:
+- ADC with LFSR options: that we OR/XOR each incoming ADC bit with
+  LFSR generated bit (from ghost LFSR), cases for parallel ADCs, that
+  we weight incoming LFSR bits, that we use LFSR as DAC to
+  add/subtract from ADC in, that we bulk XOR or just one bit per x
+  incoming ADC bits, comparator of incoming DAC against LFSR/DAC
+
+would only work with ghost LFSR that runs at speed of original SR (or runs only in ADC_) - same length or length of 32?
+
+* TODO
+
+- how we work with probability modes and NSR/CSR if at all...
+
+- leaks
+
+- simulations of: rungler, digital filter, 8 bit cipher//strobe mode in our generic world
+
+key to rungler is setting speed of others/itself/clk
+
+- could we use tables of beckett/gray codes for special mode/s?
+
+- try counter/param codeDONE
+
+- maybe one mode which gates bit entry with CLKIN/on/ADC just to see if that works well for pulsings
+
+//- stopping of SR to implement or notNOT as we have pass modes
+
+* classify
+
+** ideas for modes to be implemented/tested:
+
+** layout eg. speedfrom, routing, ADC/DAC:
+
+** generic/functional ideas eg. how we count pulsins:
+
+** ideas relating to LFSR, ADC, DAC etc...:
+
+** file under OTHER:
+
+** esoteric:
+
+- TM in TM
+- XOR whole ghost reg shifted by another into itself
+
+- ghosts in ghosts and longer revenant SR which can play through... (as ADC option)
+
+cycling/circling array of ghosts which can come back or go forwards/backwards - when these ghosts are copied over (on event)

@@ -2434,7 +2434,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (counterc>=speedc){
     counterc=0;
 
-    if (!(GPIOC->IDR & (1<<4))) {
+    if (!(GPIOC->IDR & (1<<4))) { // strobe
       tmpp=(shift_registerc & 0xff)<<4; // 8 bits and we could also change the number of bits dynamically
       bitc = ((shift_registerc>>SRlengthc) & 0x01) ^  (shift_registerc&0x01); // in 8 bit cipher is XOR with bit0
     }
