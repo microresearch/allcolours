@@ -1,5 +1,73 @@
 * how to sort and classify/generic ideas sept 2021///
 
+11/10/2021:
+
+TODO: print PDF from here +
+
+- what we can salvage from it.c: overlaps, SR in SR, how we could pick up or work with other ghost regs, revenants, various 4 bit in variations
+
+starting to think about 4 bits in/out for different lengths: GENERATE:
+array of masks, 4 values for spacings, SR with 4 bits in needs to
+cycle on those 4 bits...
+
+they need to be spaced out x bits apart depending on length - further array
+
+
+/////////
+
+- from AC: shifting array of ghost taps, otherwise lots of dependency on pulses we don't want
+
+24:	// Insert pulses into SR at points determined by CV or by pulses in - very similar to mode 2 above - TESTED/WORKING!
+
+25:
+	// SR loops within SR at certain points?/sizes determined by CV or pulses in = basic SR of OR with incoming bits - TESTED/WORKING!
+
+// pulse in means a divide/flip flop
+// pulse in means double a step..
+
+uses CV as speed/flipflop/clock divider in INT modes
+
+using clock as on/off gating of functions
+
+// also we can have one bit data with selection of params for BETA/low pass filter!
+
+DONE: sketched out probability modes - to be filled in, further ADC modes and tests...
+
+- how to reconcile multiple modes with multiple ADC/DAC options -
+  reduce number of modes in those cases ...
+
+- working through probability modes - to figure out how ADC options (and DAC) fit with these...
+eg. with adc in mode do we do for all 
+
+- also further question if we have multiple ADC ins? (ie. max one for each register?)
+
+- 4 bits In/out with DAC/ADC
+
+///
+
+1-Basic modes/DAC/ADC modes
+2-experimental modes DAC/ADC too: eg. *set parity points for LFSR or for entry from other SR... (4 parity points or more max?)*
+3-probability modes
+4-routing modes/extra speed modes
+
+DAC and CV, INT and CV -> speeds
+
+8/10/2021:
+
+- adding ADC and DAC modes: some still to test like strobe driven...
+
+- where we place probability code?
+
+question of overall structure now:
+
+speed/where we get speed from?
+
+route/bits/in + modes which manipulate routing or SPEED table (with DACs, CV, INT/CLK options, SRCLK)
+
+ADC/DAC types
+
+special modes/emulations: prob modes
+
 7/10/2021:
 
 - modes 6,7,8 are quite destructive noisy with pass&loopback for DAC and ADC - so maybe remove these
@@ -50,8 +118,7 @@ Q of more trigger modes?
 
 - can route DAC(+CV if INT) -> ADC inputs
 
-- different ways of counting pulseins (eg. reset generic counter on pulsein) or count gap between pulses = number of pulses in time x
-
+- different ways of counting pulseins (eg. reset generic counter on pulsein) or count gap between pulses = number of pulses in time xDONE
 
 - swap over SRs on pulse in?!!
 
@@ -65,7 +132,7 @@ from below: for 1 or 2 of trigger modes: SR->bit speed (ANDed with CV/trigger) e
 
 - idea that CLK pulsins could trigger train of x pulses at speed y
   (eg. y by CV, by DAC) - descending speed, speed from other SR, train
-  from other SR - how to do this?DONE 104/105tested...for INT
+  from other SR - how to do this?DONE 104/105tested...for INT-DONE
 
 ////////////////
 

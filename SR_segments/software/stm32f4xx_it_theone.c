@@ -43,7 +43,8 @@
 #include "adc.h"
 /////////////////////
 
-uint32_t testmodes[4]={9,0,0,9}; // 5 is spacerbitsDAC and pass on/XOR - ADCxbit 
+uint32_t testmodes[4]={9,0,0,0}; // TEST
+
 /* list modes here for easy access:
 
 // - maybe to line up LFSR modes etc so they follow each other in a block
@@ -70,6 +71,8 @@ uint32_t testmodes[4]={9,0,0,9}; // 5 is spacerbitsDAC and pass on/XOR - ADCxbit
 //////9- test code with other ADC and DAC options
 //rung - cycle XOR with pass//=mode2
 
+10 - model for probability modes?
+
 /////
 TODO: prob modes below as/and basic INT modes
 
@@ -86,7 +89,8 @@ SR is customSR or RSR(routed SR)
 4.if sr<CLKCNT // cv mode
 XX
 1. invert cycling bit or not, pulsbit is ORed in (TM)
-2. invert route bit or not, pulsbit is ORed in (TM)
+2. invert routedin bit or not, pulsbit is ORed in (TM)
+3. mix of this?
 
 3. new input (from pulsbit) or cycling bit (wiard and EN)
 4. new input (from route) or cycling bit
@@ -134,7 +138,8 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
-uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed ????
+uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed
+uint32_t dacroute[4]={2,3,2,1}; // DAC routing for probability modes etc...
 
 #define FULL 0b11111111111111111111111111111111 //32 bits full
 #define FROZENSPEED 1024 // 
@@ -168,11 +173,10 @@ static uint32_t clk_route[8]={0,
 			      (1<<12) | (1<<13) | (1<<14)
 };
 
-
-// simplest generic shifter without counter and with one route!
-
+static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t shift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
+static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t Gshift_[4][4]={
   {0xff,0xff,0xff,0xff},
   {0xff,0xff,0xff,0xff},
@@ -514,25 +518,53 @@ static uint8_t countbts[4096]={0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1
 
 uint16_t divy[12]={1365, 1365, 1365, 1024, 819, 682, 585, 512, 455, 409, 372, 341};
 
-// TODO: use DAC from SR->reg
-// CV/param//+//DAC as input
-// CV/param//+//DAC as comparator for input -> comp to a 1 or a 0
-// CV/param//+//DAC as input spacings [where is placed into SR]
+uint8_t logtable[4]={0,0,0,0};
 
-// but how we process DAC - as what bits though - as for the moment we just do sequential bits in
+// w/here was/is array of spacers for DAC code
+static uint32_t shifty_spacers[8]={1,2,3,4,5,6,7,8};
 
-// mix of LFSR and ADCseq bits - but then which LFSR do we use? LFSR each SR which moves here
-// ghostx or runningSR?
+// fix this array as seems off...//FIXED 5/10 using code in test.c based on gaps
+static uint32_t pos[32][8]={ // for DAC PWM out wider spacings
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,1,1,1,1,1,1,1},
+{0,1,2,2,2,2,2,2},
+{0,1,1,2,2,3,3,3},
+{0,1,2,3,3,4,4,4},
+{0,1,2,3,3,4,4,4},
+{0,1,2,3,3,4,4,4},
+{0,1,2,3,4,5,5,5},
+{0,1,2,3,4,5,6,6},
+{0,1,2,3,4,5,6,7},
+{0,1,3,4,5,6,7,8},
+{0,1,3,5,6,7,8,9},
+{0,1,3,5,6,8,9,10},
+{0,1,3,5,6,8,10,11},
+{0,1,3,6,7,9,11,12},
+{0,1,3,6,7,9,12,13},
+{0,2,4,7,8,10,13,14},
+{0,2,4,7,8,10,13,15},
+{0,2,4,7,9,11,14,16},
+{0,2,5,8,10,12,15,17},
+{0,2,5,8,10,13,16,18},
+{0,3,6,9,11,14,17,19},
+{0,3,6,9,12,15,18,20},
+{0,3,6,9,12,15,18,21},
+{0,4,7,10,13,16,19,22}
+};
+
+// TODO:split/spaced bits in
 
 // 0: xbits in, 1: 1bit 2: LFSR 3: equivalent bits 4: oscillator/clock 5: DACfrom_reg 6:param_from_reg 7:param as comparator for a single bit
 // 8: seperate LFSR running here with length/length
 
-// then we can have DAC+param etc...and variations of blends with LFSR/real/otherwise: LFSR blanks out incoming ADC bits
-// eg. also osc/clock and the LFSR
-//
-// PLUS to only input on strobe/clock - either as block incoming or as single bits
-// but we need 2 reset bits for each - one here and one for modes or we have extra parameter for trigger passed on
-// or we just do the input bits in the main case itself...
+// use otherpar as strobe/latch...
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
   static uint32_t n[4]={0,0,0,0},nn[4]={0,0,0,0}; // counters
   static int32_t integrator=0, oldValue=0;
@@ -602,16 +634,16 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
        nn[reg]=0;
      }         
      break;    
-  case 5: 
+  case 5: // dac[otherpar] seq input
   if (length>11) length=11;
       if (n[reg]>length) {
-	k=(dac[reg])>>(11-length); 
+	k=(dac[otherpar])>>(11-length); 
       n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
-  case 6: 
+  case 6: //param[reg] seq input
   if (length>11) length=11;
       if (n[reg]>length) {
 	k=(param[reg])>>(11-length); // we don;t check otherpar in bounds!
@@ -620,7 +652,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
-  case 7: 
+  case 7: //param[reg] as comparator
      bt=0;
      if ((adc_buffer[12]>>2)>param[reg]) bt=1;
      break;
@@ -628,51 +660,68 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     bt = ((ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
     ADCshift_[LFSR[reg]]=(ADCshift_[LFSR[reg]]<<1)+bt;
     break;
+  case 9: // we accumulate bits onto a ghosted register TO TEST
+    // strobe places these onto the shift register in one chunk?
+    // so we don't use returned bt
+      if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    // then bt goes into newghostSR
+    ADCGshift_[reg]=(ADCGshift_[reg]<<1)+bt;
+
+    if (otherpar) { // strobe
+      shift_[reg]&=invmasky[length]; // clear length bits
+      shift_[reg]+=(ADCGshift_[reg]&masky[length]);
+    }
+    break;
+
+  case 10: // basic sequential length of bits cycling in but zeroed by param which is trigger
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+      if (otherpar) bt=0;
+      else bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 11: // CV as comparator - for INT modes ONLY which don't use CV!
+     bt=0;
+     if (adc_buffer[12]>adc_buffer[lookupadc[reg]]) bt=1;
+     break;
+    
+    // dac for one bit input
+  case 12: // one bit audio input
+    n[reg]++;
+  if (n[reg]>50) {
+    k=dac[otherpar];
+    n[reg]=0;
   }
+
+  integrator+=k-oldValue;
+   if(integrator>0)
+  {
+     oldValue=MAXVALUE;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+   break;
+     
+     // spaced bit entry
+     
+      } // switch
      
   return bt;
 }
-
-uint8_t logtable[4]={0,0,0,0};
-
-// w/here was/is array of spacers for DAC code
-static uint32_t shifty_spacers[8]={1,2,3,4,5,6,7,8};
-
-// fix this array as seems off...//FIXED 5/10 using code in test.c based on gaps
-static uint32_t pos[32][8]={ // for DAC PWM out wider spacings
-{0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0},
-{0,1,1,1,1,1,1,1},
-{0,1,2,2,2,2,2,2},
-{0,1,1,2,2,3,3,3},
-{0,1,2,3,3,4,4,4},
-{0,1,2,3,3,4,4,4},
-{0,1,2,3,3,4,4,4},
-{0,1,2,3,4,5,5,5},
-{0,1,2,3,4,5,6,6},
-{0,1,2,3,4,5,6,7},
-{0,1,3,4,5,6,7,8},
-{0,1,3,5,6,7,8,9},
-{0,1,3,5,6,8,9,10},
-{0,1,3,5,6,8,10,11},
-{0,1,3,6,7,9,11,12},
-{0,1,3,6,7,9,12,13},
-{0,2,4,7,8,10,13,14},
-{0,2,4,7,8,10,13,15},
-{0,2,4,7,9,11,14,16},
-{0,2,5,8,10,12,15,17},
-{0,2,5,8,10,13,16,18},
-{0,3,6,9,11,14,17,19},
-{0,3,6,9,12,15,18,20},
-{0,3,6,9,12,15,18,21},
-{0,4,7,10,13,16,19,22}
-};
 
 
 static inline uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who){ // try lazy, stickyt, leaky, decaying logic here... // who is new 20/9 for which SR we take logic from...
@@ -714,19 +763,21 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
   return bita ^ bitaa; // default
 }
 
-// 0: xbit DAC, 1: equiv DAC, 2: 1bit 3: spacers
+// 0: xbit DAC, 1: equiv DAC, 2: 1bit 3: spacers 4: strobed xbit DAC UNTESTED
 // TODO: what we add to this: shifty_spacers, sequential x bit DAC, sequential equiv DAC, seq spaced DAC
-// PLUS to only output on strobe/clock!
-static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ //
+// also we can have pone bit data with selection of params for BETA!
+static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t param){ //
   // DAC is 12 bits
   uint32_t y,x=0;
   static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
+  static uint32_t lastout=0;
 
-  if (type==0){ // standard bit DAC for x bits
+  switch(type){
+  case 0:// standard bit DAC for x bits
     //    if (reg<4 && length>3 && length<32) 
       x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference    
-  }
-  else if (type==1){
+      break;
+  case 1:
       // equivalent bit DAC for x bits - we need a table for this!
       // or more like set of tables for each bit
       // and we need divide highest but number - eg. for 8 bits we have max 8 (all 1s) - max 12 bits DAC is 4096 4096/8=512 4096/12=341
@@ -738,25 +789,30 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type){ //
 	y=divy[length]; // added table for this 7/10
 	  x*=y;
 	  //      }
-  }
-  else if (type==2) { // one bit audio
+	  break;
+  case 2: // one bit audio
     // top bit
     y=(shift_[reg]>>length)&1;
     if (y==1) x=4095;
     else x=0;
     SmoothData[reg] = SmoothData[reg] - (LPF_Beta * (SmoothData[reg] - x)); // how do we adjust beta for speed?
     x=(int)SmoothData[reg];
-  }
-  else { //spacers - how did we do this?
+    break;
+  case 3: //spacers - how did we do this?
     x = (shift_[reg]&0xFF)<<4; // just the lower 8 bits - no spacings
     if (length>7){ // real length >8
       x = ((shift_[reg] & 0x01) + ((shift_[reg]>>pos[length][1])&0x02) + ((shift_[reg]>>pos[length][2])&0x04) + ((shift_[reg]>>pos[length][3])&0x08) + ((shift_[reg]>>pos[length][4])&0x10) + ((shift_[reg]>>pos[length][5])&0x20) + ((shift_[reg]>>pos[length][6])&0x40) + ((shift_[reg]>>pos[length][7])&0x80))<<4;
       //       {0, 0, 1, 3, 6, 10, 15, 21} // for 32 bits = length=31 - check sense of this
-
-    }    
-
-  }
-  
+    }
+    break;
+  case 4: // only output standard DAC on param->strobe/clock! so just maintain lastout
+    if (param) {
+      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+      lastout=x;
+    }
+    else x=lastout;
+    
+  } // switch
   return x;
 }
 
@@ -983,7 +1039,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0;
   static uint32_t counter[4]={0,0,0,0};
   static uint32_t train[4]={0,0,0,0};
-
+  int32_t tmpt;
+  
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
   ////////////////////////////////////////////////////
@@ -1022,6 +1079,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     intflag[w]=0;
   }
   else  trigger[w]=0;
+
+  // genericLFSR
+  tmp= ((LFSR_[w] >> 31) ^ (LFSR_[w] >> 29) ^ (LFSR_[w] >> 25) ^ (LFSR_[w] >> 24)) & 1u; // 32 is 31, 29, 25, 24
+  LFSR_[w] = (LFSR_[w]<<1) + tmp;
   
   counter[w]++;
 
@@ -1037,13 +1098,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     
     if (counter[w]>speed[w]){
     dactype[2]=0; // basic DAC out, others are fixed as basic
+
     counter[w]=0; 
-
-
-      Gshift_[w][0]=shift_[w]; 
-      Gshift_[w][1]=shift_[w]; 
-      Gshift_[w][2]=shift_[w];
-      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+    Gshift_[w][0]=shift_[w]; 
+    Gshift_[w][1]=shift_[w]; 
+    Gshift_[w][2]=shift_[w];
+    Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
       
     //2.5-shifting of which bits <<
     shift_[w]=shift_[w]<<1;
@@ -1054,7 +1114,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
     //    bitn=bitn^bitrr; // just XOR now for this mode
 
-    //4-what is incoming pulsin bit if any? - incoming pulse will always be ORed in
+    //4-what is incoming pulsin bit if any? - incoming pulse will always be XORed in
     if (pulsins[w]!=0){
     xx=!(GPIOC->IDR & pulsins[w]); 
     bitn^=xx;
@@ -1063,7 +1123,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); // TODO - add in DACtype.. basic DAC-0
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1113,7 +1173,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); // TODO - add in DACtype.. basic DAC-0
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1162,7 +1222,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); // TODO - add in DACtype.. basic DAC-0
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1227,7 +1287,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1292,7 +1352,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1356,7 +1416,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1424,7 +1484,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1491,7 +1551,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1557,7 +1617,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1586,7 +1646,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (counter[w]>speed[w]){
     counter[w]=0; 
     // here we can set options
-    dactype[2]=1; // equiv DAC out, others are fixed as basic
+    dactype[2]=4; // equiv DAC out, others are fixed as basic
     //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
     logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
     
@@ -1609,8 +1669,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       //      tmp=SRlength[w]>>1;
       //      bitn^=ADC_(0,SRlength[w],6,0); // param[0]
       //      bitn^=ADC_(0,SRlength[w],7,0); // comparator with param[0]
-      bitn^=ADC_(0,SRlength[w],8,0);
+      //      bitn^=ADC_(0,SRlength[w],8,0);
       //      bitn^=ADC_(w,param[0],4,param[0]>>4);
+      //      bitn^=ADC_(0,SRlength[w],10,trigger[0]); // strobe ADC in
+      bitn^=ADC_(0,SRlength[w],12,3); // one bit DAC in //param is reg to get DAC from
     }
     else
       {
@@ -1627,7 +1689,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],trigger[w]); // question is then if we want to use param other than trigger?
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1647,18 +1709,600 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   }// counterw
   break; // case 9
 
-  /// extra experimental cases // tested
+  /////////////////////////////////////////////////////////////////////
+  
+  case 10: // probability modes to explore here:
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //    1. invert cycling bit or not, pulsbit is ORed in (TM)
+
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit
+      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // 12 bits - which way round is this?
+	// invert cycling bit only, no entry in, 
+	bitn=bitn^1;
+      }
+      bitn|=xx;
+      shift_[w]+=bitn;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+  case 11: // probability modes to explore here:
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //    1. invert routed-in-bit or not, pulsbit is ORed in (TM)
+
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+      
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      
+      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // 12 bits - which way round is this?
+	// invert cycling bit only, no entry in, 
+	bitn=bitn^1;
+      }
+      bitn|=xx;
+      shift_[w]+=bitn;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+  case 12: // probability modes to explore here:
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //    1. invert cycle+routed-in-bit or not, pulsbit is ORed in (TM)
+
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+      
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      bitn^=(shift_[w]>>SRlength[w])& 0x01; //cycling bit XOR in     
+      
+      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // 12 bits - which way round is this?
+	// invert cycling bit only, no entry in, 
+	bitn=bitn^1;
+      }
+      bitn|=xx;
+      shift_[w]+=bitn;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+  case 13: // probability modes to explore here:
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //3. new input (from pulsbit) or cycling bit (wiard and EN)  - if we don't have pulsebit then route
+    
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+            
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // 12 bits - which way round is this?
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit XOR in     
+      }
+      else
+	{
+	  if (pulsins[w]!=0) bitn=!(GPIOC->IDR & pulsins[w]); 
+	  else { // if we don't use pulseins
+	    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
+	    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	  }	  	  
+	}      
+      shift_[w]+=bitn;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+  case 14: // probability modes to explore here:
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //4. new input (from route) or cycling bit - and OR in pulsebit if...    
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+            
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // 12 bits - which way round is this?
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit XOR in     
+      }
+      else{
+	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
+	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	}
+    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+
+      shift_[w]+=bitn|xx;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+  case 15: // probability modes to explore here:
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //4. new input (from route/ADC) or cycling bit - and OR in pulsebit if...
+    /// or in case of w==0 NSR we have ADC/LFSR in depending on type - but THIS is not extra to mode 14 as it will simply repeat those except for NSR
+    // but now we change thi so is inverted routing bit
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+            
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // 12 bits - which way round is this?
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit XOR in     
+      }
+      else{
+	if (w==0){
+	  bitn=ADC_(w,SRlength[w],0,0); // 0 is bits in, 2 is LFSR
+	}
+	else
+	  {
+	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
+	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;
+	bitn^=1;
+	  }
+	}
+    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+
+      shift_[w]+=bitn|xx;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+  case 16: // probability modes to explore here:
+    //1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //6. new input (from ADCtypeX) or route in     
+    // how these match/repeat above when we don't have ADC ??? - maybe do inverted route bit in for others // with cycling bit
+    
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+            
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // 12 bits - which way round is this?
+	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
+	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;
+      }
+      else{
+	if (w==0){
+	  bitn=ADC_(w,SRlength[w],0,0); // 0 is bits in, 2 is LFSR
+	}
+	else
+	  {
+	    bitn=(!(shift_[w]>>SRlength[w])) & 0x01; //
+ 	  }
+	}
+    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+
+      shift_[w]+=bitn|xx;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+    //3. if SR<DAC+CV // int mode from 10-16 repeat with sr<adc+dac[2]
+    
+  case 17: // probability modes to explore here:
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //    1. invert cycling bit or not, pulsbit is ORed in (TM)
+
+    if (trigger[w]==1){ // we don't use intflag!
+      dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit
+      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+      //      tmpt=((dacr>>2)-(1024-speedc)); // dacr is 12 bits, speedc is 10 bits
+      tmpt=dac[dacroute[w]]-(4095-adc_buffer[lookupadc[w]]);
+      if (tmpt<0) tmpt=0; // or just add them      
+      if ((LFSR_[w] & 4095 )<tmpt) { // 12 bits - which way round is this? - we fix now on dac[2]
+	// invert cycling bit only, no entry in, 
+	bitn=bitn^1;
+      }
+      bitn|=xx;
+      shift_[w]+=bitn;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+    // FILL in adc+dac modes TODO::::
+    
+  case 18:
+    //    LFSR<DAC
+    // first for CV modes and prob - copy of 17 which is copy of 10
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //    1. invert cycling bit or not, pulsbit is ORed in (TM)
+
+  if (counter[w]>speed[w]){
+    counter[w]=0; 
+
+    dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit
+      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+      if ((LFSR_[w] & 4095 )<dac[dacroute[w]]) { // 12 bits - which way round is this? - we fix now on dac[2]
+	// invert cycling bit only, no entry in, 
+	bitn=bitn^1;
+      }
+      bitn|=xx;
+      shift_[w]+=bitn;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+
+    // fill in 10-17
+    
+  case 19:
+    // first for CV modes and prob - copy of 17 which is copy of 10
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //    1. invert cycling bit or not, pulsbit is ORed in (TM)
+
+  if (counter[w]>speed[w]){
+    counter[w]=0; 
+
+    dactype[2]=0; // basic DAC out
+
+      Gshift_[w][0]=shift_[w]; 
+      Gshift_[w][1]=shift_[w]; 
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+      //2.5-shifting of which bits <<
+      shift_[w]=shift_[w]<<1;
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit
+      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+      if ((LFSR_[w] & 4095 )<param[w]) { // 12 bits - which way round is this? - we fix now on dac[2]
+	// invert cycling bit only, no entry in, 
+	bitn=bitn^1;
+      }
+      bitn|=xx;
+      shift_[w]+=bitn;
+
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+
+    }
+    break; 
+    
+    // fill in 10-17
+
+  case 20: //as case 3 but for INT modes and with test ADC 11 mode in!
+    // N: ADC/IN, route from/bits in/logic - pass on/XOR - LFSR 
+    // L: route from/bits in/logic - pass on/OR
+    // C: DAC/OUT, route from/bits in/logic - pass on/XOR - DACequiv
+    // R: route from/bits in/logic  - pass on/OR
+
+    
+    //  if (counter[w]>speed[w]){
+    //    counter[w]=0; 
+    // here we can set options
+    if (trigger[w]==1){ // we don't use intflag!
+	  
+    dactype[2]=0; // equiv DAC out, others are fixed as basic
+    //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
+    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
+    
+    Gshift_[w][0]=shift_[w]; 
+    Gshift_[w][1]=shift_[w]; 
+    Gshift_[w][2]=shift_[w];
+    Gshift_[w][3]=shift_[w]; // ghosts for l,c,r only but let's keep one spare
+      
+    //2.5-shifting of which bits <<
+    shift_[w]=shift_[w]<<1;
+  
+    //3-what is routing for incoming SR bits, cycling bit
+    // we have default route here
+    // BUT for LFSR in we have another route
+    if (w==0){
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      bitn^=ADC_(w,SRlength[w],11,0); // XOR with LFSR
+    }
+    else
+      {
+    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      }
+
+    //4-what is incoming pulsin bit if any? - incoming pulse will always be ORed in
+    if (pulsins[w]!=0){
+    xx=!(GPIOC->IDR & pulsins[w]); 
+    bitn=logop(bitn,xx,logtable[w]); // just for bits in
+    }
+    
+    shift_[w]+=bitn;
+    
+    //6-DAC result for any purposes - do we output in main loop?
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
+
+    //7-pulses out if any
+    // L, C and R have 2 clocks out, N has none    
+    tmp=(w<<1);
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
+    else *pulsoutHI[tmp]=pulsouts[tmp];
+
+    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
+    lengthbit=(SRlength[w]>>1); // /2
+    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
+
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
+    prev_stat[w]=new_stat;	
+    tmp++;
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
+    else *pulsoutHI[tmp]=pulsouts[tmp];        
+  }// counterw
+  break; 
+
+    
+
+    
+    /// extra experimental cases // tested
   /////////////////////////////////////////////////////////////////////////
   case 104:  // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
     // INT can also start new train or let old one carry on (now it starts new train...)
-    if (intflag[w]==1){
+    if (intflag[w]==1){ // we don't use intflag!
       intflag[w]=0;
       train[w]=1; // we can use train as counter      
     }
     if (train[w]!=0 && train[w]<(speed[w]+1)){ // number of pulses
       // do train so first we need speed counter
-      if (counter[w]>dac[3]){ // or another dac
+      if (counter[w]>dac[dacroute[w]]){ // or another dac
 	train[w]++;
 	// from DACR now but can be dacfrom!
 	counter[w]=0;
@@ -1699,7 +2343,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
@@ -1728,7 +2372,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
     // INT can also start new train or let old one carry on (now it starts new train...)
-    if (intflag[w]==1){
+    if (intflag[w]==1){ // we don't use intflag!
       intflag[w]=0;
       train[w]=1; // we can use train as counter      
     }
@@ -1775,7 +2419,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
     
     //6-DAC result for any purposes - do we output in main loop?
-    dac[w]=DAC_(w, SRlength[w], dactype[w]); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
     // L, C and R have 2 clocks out, N has none    
