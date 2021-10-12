@@ -31,6 +31,19 @@ key to rungler is setting speed of others/itself/clk
 
 ** ideas for modes to be implemented/tested:
 
+1.CV modes which deal with CLKIN - as a bit // - as a condition // - as a PARAM
+
+also/other:
+- pulses/clkin in can toggle entry/no entry of new bits, cycling etc
+- pulses/clkin in can bump up/shift left/right the routing table
+- pulses/clkin in can mask bits as for DAC etc. or SR etc
+- pulses/clkin in can also slip/slow/bump up one CV speeded SR
+
++
+
+2.Probability modes: CV//PARAM//SRDACx > SRDACx -> result
+
+
 ** layout eg. speedfrom, routing, ADC/DAC:
 
 ** generic/functional ideas eg. how we count pulsins:

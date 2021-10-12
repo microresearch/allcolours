@@ -1,5 +1,35 @@
 * how to sort and classify/generic ideas sept 2021///
 
+12/11/2021:
+
+plainer that input mode NSR is most fixed of all, we can have multiple
+DACs out from anywhere, also everything does not necessarily need to
+be on NSR
+
+
+
+- array of certain values eg. dac for each mode, how to simplify if at all?
+
+*still question of mix of adc/dac and LR modes to stop these repeating*
+
+- probability modes with routing/adc selects for incoming bits
+
+- spaced outTODO
+
+- triadex muse: clocks/divisions/SR bits selected and XOred back in...
+
+- how we select those options -> we need 4 bits back in (so 4 to select from other SRs, bits from own SR)...TODO
+
+or ghost SRs - select 4x bits 0->SRlength from 4x SR? or just stick with itself - variations on parity bits
+
+- inspired mode where we XOR in other SRs. -- and we use static SR or we wind through SRs... or multiple XOrs in -> modes20,21 DONE
+
+//new defroute: uint32_t defroutee[4]={3,0,1,1}; // 0,1,2,3 NLCR - in this one 3 routes from 1 too
+but how do we have this in modes as is same just not for RSR...
+
+one option suggest as clkin flips that routing (or any routing, or advances routing table)... DONE
+
+
 11/10/2021:
 
 TODO: print PDF from here +
