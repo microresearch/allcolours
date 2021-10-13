@@ -795,29 +795,9 @@ uint8_t lfsr_taps[32][4] = {
         {31, 29, 25, 24},
   };
 
- uint32_t bitter;
-// we want bits as zero.
- for (x=0;x<32;x++){
-   bitter=0b11111111111111111111111111111111;
-   int spacing=(x/4);
-   //   bitter^=((1<<(lfsr_taps[x][0]))+(1<<(lfsr_taps[x][1]))+(1<<(lfsr_taps[x][2]))+(1<<(lfsr_taps[x][3])));
-   bitter^=1+(1<<spacing)+(1<<(spacing*2))+(1<<(spacing*3));
-   
-   //   printf("{%d, %d, %d },\n",spacing-1, (spacing*2)-2, (spacing*3)-3);
-   printf("{%d, %d, %d, %d },\n", (spacing-1),(spacing*2)-1, (spacing*3)-1, (spacing*4)-1); // tops
-   //  printf("%d, ",spacing);
-   //   printf("0b");
-   //   print32bits(&bitter);
-   //      printf(",\n");
-	    }
+uint32_t spac[32]={0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7};
 
- uint32_t spac[32]={0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7};
-
- uint32_t spacc[32][4]={
-{0, 0, 0 },
-{0, 0, 0 },
-{0, 0, 0 },
-{0, 0, 0 },
+ uint32_t spacc[32][3]={
 {0, 0, 0 },
 {0, 0, 0 },
 {0, 0, 0 },
@@ -846,7 +826,11 @@ uint8_t lfsr_taps[32][4] = {
 {6, 12, 18 },
 {6, 12, 18 },
 {6, 12, 18 },
-  };
+{7, 14, 21 },
+{7, 14, 21 },
+{7, 14, 21 },
+{7, 14, 21 }
+ };
 
 uint32_t spacmask[32]={
 0b11111111111111111111111111111011,
@@ -881,6 +865,98 @@ uint32_t spacmask[32]={
 0b11111111110111111011111101111110,
 0b11111111110111111011111101111110,
   0b11111111110111111011111101111110};
+
+uint32_t lastspac[32][4]={
+{0, 1, 2, 3 },
+{0, 1, 2, 3 },
+{0, 1, 2, 3 },
+{0, 1, 2, 3 },
+{0, 1, 2, 3 },
+{0, 1, 2, 3 },
+{0, 1, 2, 3 },
+{0, 1, 2, 3 },
+{1, 3, 5, 7 },
+{1, 3, 5, 7 },
+{1, 3, 5, 7 },
+{1, 3, 5, 7 },
+{2, 5, 8, 11 },
+{2, 5, 8, 11 },
+{2, 5, 8, 11 },
+{2, 5, 8, 11 },
+{3, 7, 11, 15 },
+{3, 7, 11, 15 },
+{3, 7, 11, 15 },
+{3, 7, 11, 15 },
+{4, 9, 14, 19 },
+{4, 9, 14, 19 },
+{4, 9, 14, 19 },
+{4, 9, 14, 19 },
+{5, 11, 17, 23 },
+{5, 11, 17, 23 },
+{5, 11, 17, 23 },
+{5, 11, 17, 23 },
+{6, 13, 20, 27 },
+{6, 13, 20, 27 },
+{6, 13, 20, 27 },
+{6, 13, 20, 27 }
+};
+
+ 
+ uint32_t bitter;
+// we want bits as zero.
+/*
+ for (x=0;x<32;x++){
+   bitter=0b11111111111111111111111111111111;
+   int spacing=(x/4);
+   //   bitter^=((1<<(lfsr_taps[x][0]))+(1<<(lfsr_taps[x][1]))+(1<<(lfsr_taps[x][2]))+(1<<(lfsr_taps[x][3])));
+   bitter^=1+(1<<spacing)+(1<<(spacing*2))+(1<<(spacing*3));
+   
+      printf("{%d, %d, %d },\n",spacing, (spacing*2), (spacing*3));
+   //  printf("{%d, %d, %d, %d },\n", (spacing*2)-1, (spacing*3)-2, (spacing*4)-3); // tops
+   //  printf("%d, ",spacing);
+   //   printf("0b");
+   //   print32bits(&bitter);
+   //      printf(",\n");
+	    }
+*/
+
+// we need 2 SRs
+uint32_t xp= 0b11111111111111111111111111111111;
+uint32_t yp= 0b11111111111111111111111111111111;
+
+uint32_t xlength=31;
+uint32_t ylength=31;
+
+ for (x=0;x<32;x++){
+
+	yp&=spacmask[ylength]; //cleared
+
+	// y is the present one into which x comes
+	
+	if (xlength>=ylength){ // need to >> 
+	  //	  tmp=(xlength>>2)-(ylength>>2); // /4
+	  // 0b11111111111111111111111110101010 mask
+	  // {1, 3, 5, 7 } lastspac[11]
+	  // {1, 2, 3 } spac11
+	  yp+=(((xp&(1<<lastspac[xlength][0])) >>(lastspac[xlength][0])) + \
+	  ((xp&(1<<lastspac[xlength][1]))  >> ((lastspac[xlength][1]) - spacc[ylength][0]))  + \
+	    ((xp&(1<<lastspac[xlength][2]))  >>((lastspac[xlength][2]) - spacc[ylength][1]))  + \
+	       ((xp&(1<<lastspac[xlength][3]))  >>((lastspac[xlength][3]) - spacc[ylength][2]))); 
+	}
+	  else // shift up <<
+	    {
+	      yp+=(((xp&(1<<lastspac[xlength][0]))>>(lastspac[xlength][0]))+ \
+		   ((xp&(1<<lastspac[xlength][1]))<< ((spacc[ylength][0]) - lastspac[xlength][1]))  + \
+		    ((xp&(1<<lastspac[xlength][2]))<< ((spacc[ylength][1]) - lastspac[xlength][2]))  + \
+		     ((xp&(1<<lastspac[xlength][3]))<< ((spacc[ylength][2]) - lastspac[xlength][3])));
+	    }
+
+	print32bits(&yp);
+	printf(",\n");
+	//	xp=xp<<1;
+	yp=yp<<1;
+ }
+
  
    
    //   }
