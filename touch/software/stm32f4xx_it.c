@@ -563,8 +563,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    
 	    GPIOC->BSRRH=(1)<<6; //  LOW!
 
-            if (!(GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in 0 this is rec
-            else trigd=0; // finger off
+	    //            if (!(GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in 0 this is rec
+	    //            else trigd=0; // finger off
 
 	    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	    //	    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
@@ -2869,7 +2869,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
       	  
       // test rec button - works fine with TRG8 as 8 and BRK8 as 60!
-      /*      
+
 //      if ((GPIOB->IDR & (1<<8))) {
  //	triggered[8]=1;
 //      }

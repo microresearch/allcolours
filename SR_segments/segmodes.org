@@ -1,9 +1,27 @@
 * how to sort and classify/generic ideas sept 2021///
 
-13/11/2021:
+14/10/2021: for 4 bit spacers maybe also have options for different routings... squashed routings, compacted routings
+
+sketch out modes:
+CVspeed:
+1-15 -LR simple modes/all inc prob
+      N 8xADC x2 - pass in/circle_and_pass
+      C 4xDAC x4 - pass in/circle only/circle and pass/prob
+
+16-31 LR - exp modes
+      NC - any match modes 4xADC, 4xDAC
+
+CV+ADCspeed:
+32-47 LR - modes mixed
+      NC as 1or2
+
+INTspeed:
+48-63 LR - mix using CV params - prob,,,
+      NC 4x ADC/DAC and prob modes    
+
+13/10/2021:
 
 - fixed 4 bit spacers i think... mode 27/28: xor returning, also 4 spaced equiv bits for DAC DONE/TESTED
-
 
 - ADC as seperate condition in each mode, maybe DAC too, subset of basic ADC and DAC modes...
 
@@ -11,7 +29,7 @@ so eg. 4x basic ADC and modes would follow: circle, pass on, circle and pass, ba
 and some more exotics...
 
 
-12/11/2021:
+12/10/2021:
 
 plainer that input mode NSR is most fixed of all, we can have multiple
 DACs out from anywhere, also everything does not necessarily need to

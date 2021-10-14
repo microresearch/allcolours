@@ -1,5 +1,7 @@
 /**
 
+14/10: filled in mode 0 to test all
+
 13/10: TODO: code in freezers, mode switch and rec/play with simple case 0 and test!
 
 11/10: TODO: simplify code sections and test all freezers, rec, mode, playback (basic mode)
@@ -44,12 +46,10 @@ think it is in mode23 but we need to change the output pin here!
 #include "misc.h"
 #include "adc.h"
 
-#define TRG 4 // trigger - was 100 but /8 - these are for freeze
-#define BRK 8 // off hold was 1200 but /8
-
-#define TRG8 1 // these for rec/play etc
-#define BRK8 2 // 27 is best figure
-#define DELB 10000 // delay for pin changes in new trigger code
+// timing is critical
+// and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
+#define BRK8 64 //  is best figure 2-4 for slow ones... if we stick to one we can change the logic
+#define DELB 100 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 
 #define MAXMODES 4
 
@@ -151,86 +151,125 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	   - mode is on: PB6 
 	 */
 
-	////////////// getting modes on count:
-	/*    if (count%(32)==0) { //for xxx HZ?
+	////////////// getting modes on count: // to be tested 
+	if (count%(8)==0) { //for xxx HZ?
 
-      if (!(GPIOB->IDR & (1<<6)) && triggered[10]==0 && breaker[10]>BRK8) {
-	  triggered[10]=1;
-	 mode+=1;
-	 if (mode>=MAXMODES) mode=0;
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
+      
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
+	delay(); // seems to work with delay
+      
+	if (GPIOB->IDR & (1<<6)) trigd=1; // finger on - low out = high in
+	else trigd=0; // finger off
+	    
+	GPIOC->BSRRH=(1)<<6; //  LOW!
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	delay();
+
+	if (trigd==1 && triggered[10]==0) triggered[10]=1;
+	
+	if (!trigd && triggered[10]==1) breaker[10]++;  // finger off
+	if (trigd && triggered[10]==1) breaker[10]=0; // finger on or 50hz
+	
+	if (breaker[10]>BRK8) { // 0 
 	  breaker[10]=0;
-	}
-
-	if ( (GPIOB->IDR & (1<<2)) && triggered[10]==0) breaker[10]++; 
-	
-	if (triggered[10]==1 && lasttriggered[10]==0) { // new trigger
-	  tgr_cnt[10]=0;
-	  lasttriggered[10]=1;
-	}
-	
-	if (lasttriggered[10]==1) 	tgr_cnt[10]++;
-
-	if (tgr_cnt[10]>TRG8){
 	  triggered[10]=0;
-	  lasttriggered[10]=0;
+	  mode+=1;
+	 if (mode>=MAXMODES) mode=0;
 	}
-	} */
+	}
 
 // end of mode selector, each mode needs to take care of everything
     
-    mode=0; // testings
+//    mode=0; // testings
     
     switch(mode){
     case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
+      // or no change of speed?
 
-      // do freezers here
 	/////// TOGGLING for freezers	
-      /*
+      
       if (daccount==7){
-	if (!(GPIOC->IDR & (freezer[7])) && triggered[7]==0 && breaker[7]>BRK) {
-	  triggered[7]=1;
-	  frozen[7]^=1;
+
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
+      
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
+	delay(); // seems to work with delay
+      
+	if (GPIOC->IDR & (freezer[7])) trigd=1; // finger on - low out = high in
+	else trigd=0; // finger off
+	    
+	GPIOC->BSRRH=(1)<<6; //  LOW!
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	delay();
+
+	if (trigd==1 && triggered[7]==0) triggered[7]=1;
+	
+	if (!trigd && triggered[7]==1) breaker[7]++;  // finger off
+	if (trigd && triggered[7]==1) breaker[7]=0; // finger on or 50hz
+
+	if (breaker[7]>BRK8) { // 0 
+	  //	      rec^=1;
+	  frozen[7]^=1; // test code 30/09/2021
 	  breaker[7]=0;
-	}
-	
-	if ( (GPIOB->IDR & (freezer[7])) && triggered[7]==0) breaker[7]++; 
-
-	if (triggered[7]==1 && lasttriggered[7]==0) { // new trigger
-	  tgr_cnt[7]=0;
-	  lasttriggered[7]=1;
-	}
-	
-	if (lasttriggered[7]==1) 	tgr_cnt[7]++;
-
-	if (tgr_cnt[7]>TRG){
 	  triggered[7]=0;
-	  lasttriggered[7]=0;
-	}	 	  
-	} // daccount==7
+	    }
+      }	    
+	     // daccount==7
   else
     {
-	if (!(GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0 && breaker[daccount]>BRK) {
-	  triggered[daccount]=1;
-	  frozen[daccount]^=1;
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
+      
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
+	delay(); // seems to work with delay
+      
+	if (GPIOB->IDR & (freezer[daccount])) trigd=1; // finger on - low out = high in
+	else trigd=0; // finger off
+	    
+	GPIOC->BSRRH=(1)<<6; //  LOW!
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	delay();
+
+	if (trigd==1 && triggered[daccount]==0) triggered[daccount]=1;
+
+	if (!trigd && triggered[daccount]==1) breaker[daccount]++;  // finger off
+	if (trigd && triggered[daccount]==1) breaker[daccount]=0; // finger on or 50hz
+	    
+	if (breaker[daccount]>BRK8) { // 0 
+	  frozen[daccount]^=1; // test code 30/09/2021
 	  breaker[daccount]=0;
-	}
-	
-	if ( (GPIOB->IDR & (freezer[daccount])) && triggered[daccount]==0) breaker[daccount]++; 
-
-	if (triggered[daccount]==1 && lasttriggered[daccount]==0) { // new trigger
-	  tgr_cnt[daccount]=0;
-	  lasttriggered[daccount]=1;
-	}
-	
-	if (lasttriggered[daccount]==1) 	tgr_cnt[daccount]++;
-
-	if (tgr_cnt[daccount]>TRG){
 	  triggered[daccount]=0;
-	  lasttriggered[daccount]=0;
-	}
-    }
-      */
-	/////////
+	    }
+    }    
+
+      /////////
       
   if (frozen[daccount]==0) {
     ADC_SoftwareStartConv(ADC1);
@@ -308,13 +347,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (daccount==8) {
       daccount=0;
       count++;
-
-      // speed increasing?
+   
+      // speed increasing for playback ??? is this it?
+      ADC_SoftwareStartConv(ADC1);
+      speed=(adc_buffer[6]>>6); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits
+      if (speed>32) speed=32;
+      speed=32-(speed); //4 bits=16 256/16=
       /// 
       // do play and rec toggles here:
-
-      
-      // toggle PC6 to send high trigger and read finger
+      // PLAY
         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -323,42 +364,73 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	GPIOC->BSRRL=(1)<<6; //  HIGH!
 	delay(); // seems to work with delay
       
-            if ((GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in
-            else trigd=0; // finger off
+	if (GPIOB->IDR & (1<<2)) trigd=1; // finger on - low out = high in
+	else trigd=0; // finger off
 	    
-	    GPIOC->BSRRH=(1)<<6; //  LOW!
+	GPIOC->BSRRH=(1)<<6; //  LOW!
 
-            if (!(GPIOB->IDR & (1<<8))) trigd=1; // finger on - low out = high in 0 this is rec
-            else trigd=0; // finger off
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	delay();
 
-	    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	    //	    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
-	    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
-	    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	    GPIO_Init(GPIOC, &GPIO_InitStructure);
-	    delay();
+	if (trigd==1 && triggered[9]==0) triggered[9]=1;
+	
+	if (!trigd && triggered[9]==1) breaker[9]++;  // finger off
+	if (trigd && triggered[9]==1) breaker[9]=0; // finger on or 50hz
+	
+	if (breaker[9]>BRK8) { // 0 
+	  breaker[9]=0;
+	  triggered[9]=0;
+	  play^=1;
+	  if (rec && play) rec=0;
+	  	}
 
-	    // how to get this as toggle!
+	// REC!
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
+      
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
+	delay(); // seems to work with delay
+      
+	if (GPIOB->IDR & (1<<10)) trigd=1; // finger on - low out = high in
+	else trigd=0; // finger off
 	    
-	    if (trigd==1 && triggered[0]==0) triggered[0]=1;
+	GPIOC->BSRRH=(1)<<6; //  LOW!
 
-	    if (!trigd && triggered[0]==1) breaker[0]++;  // finger off
-           if (trigd && triggered[0]==1) breaker[0]=0; // finger on or 50hz
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	delay();
 
-	    if (breaker[0]>BRK8) { // 0 
-	      //	      rec^=1;
-	      frozen[0]^=1; // test code 30/09/2021
-	      breaker[0]=0;
-	      triggered[0]=0;
-	    }
-    }
-      break; ///// case 0
+	if (trigd==1 && triggered[8]==0) triggered[8]=1;
+	
+	if (!trigd && triggered[8]==1) breaker[8]++;  // finger off
+	if (trigd && triggered[8]==1) breaker[8]=0; // finger on or 50hz
+	
+	if (breaker[8]>BRK8) { // 0 
+	  breaker[8]=0;
+	  triggered[8]=0;
+	  rec^=1;
+	  if (play && rec) play=0;
+	}
+	//	if (play) rec=0; // how to resolve this - what happens if we press play in record mode?
+	//			if (rec) play=0;
+	// if we go from no play to playing we stop recording
+	// if from no rec to recording we stop playing
+    }       
+          break; ///// case 0
       
       
     } // end of modes switch    
     } 
   }
   
-/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
