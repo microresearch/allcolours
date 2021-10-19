@@ -43,7 +43,7 @@
 #include "adc.h"
 /////////////////////
 
-uint32_t testmodes[4]={28,28,28,28}; // TEST
+uint32_t testmodes[4]={9,9,9,9}; // TEST
 
 /* list modes here for easy access:
 
@@ -178,7 +178,7 @@ static uint32_t shift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t Gshift_[4][4]={
-  {0xff,0xff,0xff,0xff},
+ {0xff,0xff,0xff,0xff},
   {0xff,0xff,0xff,0xff},
   {0xff,0xff,0xff,0xff},
   {0xff,0xff,0xff,0xff}
@@ -682,13 +682,14 @@ uint32_t others[4][3]={ // for triadx style - all but itself
 
 // 0: xbits in, 1: 1bit 2: LFSR 3: equivalent bits 4: oscillator/clock 5: DACfrom_reg 6:param_from_reg 7:param as comparator for a single bit
 // 8: seperate LFSR running here with length/length
-
 // use otherpar as strobe/latch...
+
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
   static uint32_t n[4]={0,0,0,0},nn[4]={0,0,0,0}; // counters
   static int32_t integrator=0, oldValue=0;
-  static uint32_t k; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
-  int bt=0;
+  static uint32_t k, lastbt=0; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
+  static uint8_t toggle=0;
+  uint32_t bt=0;
 
   switch(type){
   case 0: // basic sequential length of upto 12 bits cycling in
@@ -700,6 +701,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
+
   case 1: // one bit audio input
     n[reg]++;
   if (n[reg]>50) {
@@ -765,21 +767,20 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
   case 6: //param[reg] seq input
   if (length>11) length=11;
       if (n[reg]>length) {
-	k=(param[reg])>>(11-length); // we don;t check otherpar in bounds!
+	k=(param[reg])>>(11-length); 
       n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
-  case 7: //param[reg] as comparator
-     bt=0;
-     if ((adc_buffer[12]>>2)>param[reg]) bt=1;
-     break;
-  case 8:// run LFSR-ADCshift and output a bit - again if we don't use redirection of LFSR[reg] then ...
+
+  case 7:// run LFSR-ADCshift and output a bit - again if we don't use redirection of LFSR[reg] then ...
     bt = ((ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
     ADCshift_[LFSR[reg]]=(ADCshift_[LFSR[reg]]<<1)+bt;
     break;
-  case 9: // we accumulate bits onto a ghosted register TO TEST
+    
+  case 8: 
+    // we accumulate bits onto a ghosted register TO TEST
     // strobe places these onto the shift register in one chunk?
     // so we don't use returned bt
       if (length>11) length=11;
@@ -798,7 +799,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     }
     break;
 
-  case 10: // basic sequential length of bits cycling in but zeroed by param which is trigger
+  case 9: // basic sequential length of bits cycling in but zeroed by param which is trigger
   if (length>11) length=11;
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
@@ -808,14 +809,9 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
       else bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
-
-  case 11: // CV as comparator - for INT modes ONLY which don't use CV!
-     bt=0;
-     if (adc_buffer[12]>adc_buffer[lookupadc[reg]]) bt=1;
-     break;
     
     // dac for one bit input
-  case 12: // one bit audio input
+  case 10: // one bit audio input
     n[reg]++;
   if (n[reg]>50) {
     k=dac[otherpar];
@@ -834,15 +830,107 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
       bt=0;
    }   
    break;
-     
-  case 13:  // special case for spaced bit entry depending on length
+
+  case 11:  // special case for spaced bit entry depending on length
     shift_[reg]&=spacmask[length]; //cleared
     k=(adc_buffer[12])>>8; // we want 4 bits
     shift_[reg]+=(k&1)+((k&2)<<spacc[length][0])+((k&4)<<spacc[length][1])+((k&8)<<spacc[length][2]);
     // 4 bits goes in
     // no bt return
     break;   
-      } // switch
+
+    // strobe // latch modes - strobe becomes toggle
+  case 12:     // 1-we keep on cycling ADC bits but only enter new bit on strobe - or vice versa
+    if (otherpar) toggle^=1;
+
+    if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+      if (toggle) {// strobe
+      bt = (k>>n[reg])&0x01;
+      lastbt=bt;
+      }
+      else bt=lastbt;
+    n[reg]++;    
+    break;
+    
+  case 13:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
+    if (otherpar) toggle^=1;
+    if (length>11) length=11;
+
+  if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01;
+
+      if (toggle) {// strobe
+    n[reg]++;    
+      }
+    break;
+
+
+  case 14: // STROBE: 3-one bit entry
+    if (otherpar) toggle^=1;
+    n[reg]++;
+  if (n[reg]>50) {
+    k=(adc_buffer[12]); // now 12 bits only // 16 bits to 12 bits - this is now our ADCin!
+    n[reg]=0;
+  }
+
+  integrator+=k-oldValue;
+   if(integrator>0)
+  {
+     oldValue=MAXVALUE;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+
+      if (toggle) {// strobe
+	lastbt=bt;
+      }
+      else bt=lastbt;
+   break;
+
+     case 15:// STROBE: run LFSR-ADCshift and output a bit - again if we don't use redirection of LFSR[reg] then ..
+       if (otherpar) toggle^=1;
+    bt = ((ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (ADCshift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
+    ADCshift_[LFSR[reg]]=(ADCshift_[LFSR[reg]]<<1)+bt;
+      if (toggle) {// strobe
+	lastbt=bt;
+      }
+      else bt=lastbt;    
+    break;
+
+  case 16: // STROBE for other LFSR too
+     // if we never change that default we can replace LFSR[reg] with reg!
+    if (otherpar) toggle^=1;
+    bt = ((shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
+      if (toggle) {// strobe
+	lastbt=bt;
+      }
+      else bt=lastbt;    
+    break;
+       
+    // INT MODES ONLY
+  case 21: // INT // CV as comparator - for INT modes ONLY which don't use CV!
+     bt=0;
+     if (adc_buffer[12]>adc_buffer[lookupadc[reg]]) bt=1;
+     break;
+  case 22: // INT  //param[reg] as comparator
+     bt=0;
+     if ((adc_buffer[12]>>2)>param[reg]) bt=1;
+     break;
+
+     
+
+  } // switch
      
   return bt;
 }
@@ -895,7 +983,8 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   uint32_t y,x=0;
   static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
   static uint32_t lastout=0;
-
+  static uint8_t toggle=0;
+  
   switch(type){
   case 0:// standard bit DAC for x bits
     //    if (reg<4 && length>3 && length<32) 
@@ -936,12 +1025,30 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     }
     else x=lastout;
     break;
-
-  case 5: // 4 spaced bits out! equiv bits or not - in this case not
+    /*  case 5: // hold last DAC on strobe/clk is inverse of 5
+    if (param) {
+      x=lastout;
+    }
+    else {
+      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+      lastout=x;
+    }      
+    break;*/    
+  case 6: // toggle to hold/release DAC
+    if (param) toggle^=1;
+    if (toggle) {
+      x=lastout;
+    }
+    else {
+      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+      lastout=x;
+    }      
+    break;            
+  case 7: // 4 spaced bits out! equiv bits or not - in this case not
     x= (shift_[reg]& (1<<lastspac[length][0])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1])); 
     break;
 
-  case 6: // 4 spaced bits out! equiv bits
+  case 8: // 4 spaced bits out! equiv bits
     x= (shift_[reg]& (1<<lastspac[length][0])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1]));
     x=countbts[x]*1023;
     break;
@@ -1777,9 +1884,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (counter[w]>speed[w]){
     counter[w]=0; 
     // here we can set options
-    dactype[2]=4; // equiv DAC out, others are fixed as basic
+    // new dac strobe modes: 5 and 6...
+    dactype[2]=0; 
     //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
-    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
+    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=0;
     
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
@@ -1803,7 +1911,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       //      bitn^=ADC_(0,SRlength[w],8,0);
       //      bitn^=ADC_(w,param[0],4,param[0]>>4);
       //      bitn^=ADC_(0,SRlength[w],10,trigger[0]); // strobe ADC in
-      bitn^=ADC_(0,SRlength[w],12,3); // one bit DAC in //param is reg to get DAC from
+      //      bitn^=ADC_(0,SRlength[w],12,3); // one bit DAC in //param is reg to get DAC from
+      // int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
+      // new adc strobe modes: 12,13,14,15,16
+      bitn^=ADC_(0,SRlength[w],15,trigger[0]); // another strobe ADC in
     }
     else
       {
@@ -2547,7 +2658,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]=shift_[w]<<1;
   
     //3-what is routing for incoming SR bits, cycling bit
-    // we have default route here
     bitn = (Gshift_[ourroute[w]][w]>>SRlength[ourroute[w]]) & 0x01; 
     Gshift_[ourroute[w]][w]=(Gshift_[ourroute[w]][w]<<1)+bitn;  
     //    bitn=bitn^bitrr; // just XOR now for this mode
@@ -2898,7 +3008,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   break; 
   
 
-  
+  // INT MODES!
   
   
   
@@ -2908,8 +3018,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   case 104:  // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
     // INT can also start new train or let old one carry on (now it starts new train...)
-    if (intflag[w]==1){ // we don't use intflag!
-      intflag[w]=0;
+    if (trigger[w]==1){ 
       train[w]=1; // we can use train as counter      
     }
     if (train[w]!=0 && train[w]<(speed[w]+1)){ // number of pulses
@@ -2984,8 +3093,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
     // INT can also start new train or let old one carry on (now it starts new train...)
-    if (intflag[w]==1){ // we don't use intflag!
-      intflag[w]=0;
+    if (trigger[w]==1){ 
       train[w]=1; // we can use train as counter      
     }
     if (train[w]!=0 && train[w]<dac[3]){ // number of pulses
@@ -3058,7 +3166,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
 
     /////////////////////////////////////////////////////////////////////////     /////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////// 
+    ///////////////////////////////////////////////////////////////////////// 
     // what other simple modes can be: to list:
 
     //2-pass and cycle with other logics in L and R, other options PLUS-ADC in options, LFSR for NSR, different DACs out for CSR

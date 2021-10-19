@@ -1,5 +1,36 @@
 * how to sort and classify/generic ideas sept 2021///
 
+19/10/2021:
+
+basic modes: pass through or cycle is toggled by clkin bit
+
+TO TEST/adc strobe modes a bit similar...
+
+new adc strobe modes: 12,13,14,15,16 - don't notice so much... maybe replace with toggles TRY THIS!DONE
+
+new dac strobe modes: 5 and 6... - 6 toggle one works ok
+
+
+- hold last DAC value (or ADC/set of bits) on a CLKIN 1
+- toggle hold on a CLKIN 1 
+
+- these are like the strobe? strobe is different in both cases - in DAC case is just inverse of strobe
+
+15/10/2021: how to think about squash and expand routings on level of individual SR
+
+- DAC out from ADC in
+
+route goes N->L->R->L->R so implies sequence - order through a
+sequence, and a length of sequence but does this not need to be agreed
+on across modes as each SR just takes care of WHERE it routes from... but this could for example cycle every X turn 
+
+cycling of in routes!
+
+0123
+eg. for N/0 cycle would be: 3,2,1,3,2,1 (depending if we include itself- 3,2,1,0)
+
+what would squash be? 3,2,1,0 to 3,2,1 to 3,2 to 3(R) and how we signal the squash...
+
 14/10/2021: for 4 bit spacers maybe also have options for different routings... squashed routings, compacted routings
 
 sketch out modes:

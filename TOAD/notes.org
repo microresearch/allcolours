@@ -1,5 +1,23 @@
 * schematic
 
+** 19/10/2021
+
+TOAD test/configurations: bottom ad633 needs replacing,
+sigma-delta-comparator is wrong way round for data return so only
+works with invQ - but why doesn’t work with high freq AC signal - as
+need to raise gnd from clk comparator as in bintic comp...  bintic to
+test still, vca to test fully-works
+
+- we change r68 for x-signum(x) as the signum is very high (-12 to +12v) so we have 1M for the moment and looks better
+
+- we need to test bintic with VCA
+
+sort of works in odd ways but ok with simple set up with 2x switched caps and damping in signum/or inversion
+
+TODO from above/notes: swop sigma-delt comp +- for data return, fix clock comparator in there/test on breadboard maybe
+
+** //////
+
 In progress - from previous filter design but now merge of SIGNUM
 chaos, WASP 4069 filter with extra integrator, and bintic switched
 cap filter:
