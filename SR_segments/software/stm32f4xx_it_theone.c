@@ -135,6 +135,19 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 /////////////////////
 
+#define PULSEOUT {				  \
+  tmp=(w<<1);					  \
+  if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
+  else *pulsoutHI[tmp]=pulsouts[tmp];		  \
+  lengthbit=(SRlength[w]>>1);			      \
+  new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit;   \
+  if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;    \
+  prev_stat[w]=new_stat;			      \
+  tmp++;					      \
+  if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];	      \
+  else *pulsoutHI[tmp]=pulsouts[tmp];		      \
+}
+
 
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
@@ -670,6 +683,50 @@ uint32_t lastspac[32][4]={
 {6, 13, 20, 27 }
 };
 
+uint32_t lastspacbac[32][4]={
+{0, 0, 0, 0 },
+{0, 0, 0, 0 },
+{0, 0, 0, 0 },
+{0, 0, 0, 0 },
+{0, 0, 0, 0 },
+{0, 0, 0, 0 },
+{0, 0, 0, 0 },
+{0, 0, 0, 0 },
+{1, 2, 2, 4 },
+{1, 2, 2, 4 },
+{1, 2, 2, 4 },
+{1, 2, 2, 4 },
+
+{2, 4, 6, 8 },
+{2, 4, 6, 8 },
+{2, 4, 6, 8 },
+{2, 4, 6, 8 },
+
+{3, 6, 8, 12 },
+{3, 6, 8, 12 },
+{3, 6, 8, 12 },
+{3, 6, 8, 12 },
+
+{4, 8, 12, 16 },
+{4, 8, 12, 16 },
+{4, 8, 12, 16 },
+{4, 8, 12, 16 },
+
+{5, 10, 15, 20 },
+{5, 10, 15, 20 },
+{5, 10, 15, 20 },
+{5, 10, 15, 20 },
+
+{6, 12, 18, 24 },
+{6, 12, 18, 24 },
+{6, 12, 18, 24 },
+{6, 12, 18, 24 }
+
+};
+
+
+
+
 uint32_t others[4][3]={ // for triadx style - all but itself
 {1,2,3},
 {0,2,3},
@@ -837,6 +894,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     shift_[reg]+=(k&1)+((k&2)<<spacc[length][0])+((k&4)<<spacc[length][1])+((k&8)<<spacc[length][2]);
     // 4 bits goes in
     // no bt return
+    bt=0;
     break;   
 
     // strobe // latch modes - strobe becomes toggle
@@ -1043,13 +1101,14 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
       x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
       lastout=x;
     }      
-    break;            
+    break;
+    // but we need to space these back TEST AGAIN
   case 7: // 4 spaced bits out! equiv bits or not - in this case not
-    x= (shift_[reg]& (1<<lastspac[length][0])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1])); 
+    x= ( ( (shift_[reg]& (1<<lastspac[length][0]))>>lastspacbac[length][0]) + ((shift_[reg]& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((shift_[reg]& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((shift_[reg]& (1<<lastspac[length][3]))>>lastspacbac[length][3]) )<<8; // 4 bits to 12 bits
     break;
 
   case 8: // 4 spaced bits out! equiv bits
-    x= (shift_[reg]& (1<<lastspac[length][0])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1])) + (shift_[reg]& (1<<lastspac[length][1]));
+    x= ( ((shift_[reg]& (1<<lastspac[length][0]))>>lastspacbac[length][0]) + ((shift_[reg]& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((shift_[reg]& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((shift_[reg]& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
     x=countbts[x]*1023;
     break;
   } // switch
@@ -1368,21 +1427,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+    PULSEOUT;
+    }// counterw
   break; 
 
   ///////////////////////////////////////////////////////////////////////// 
@@ -1418,20 +1464,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
+    PULSEOUT;
   }// counterw
   break; 
 
@@ -1467,20 +1500,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
+    PULSEOUT;
   }// counterw
   break;
 
@@ -1531,20 +1551,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
+    PULSEOUT;
   }// counterw
   break; 
 
@@ -1659,21 +1666,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 6: // 
@@ -1726,21 +1719,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 7: // 
@@ -1792,21 +1771,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
     case 8: // 
@@ -1858,21 +1823,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
   
   case 9: // just for trials with other ADC/DAC options... 
@@ -1884,10 +1835,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (counter[w]>speed[w]){
     counter[w]=0; 
     // here we can set options
-    // new dac strobe modes: 5 and 6...
-    dactype[2]=0; 
-    //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR
-    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=0;
+    dactype[2]=7; 
+    //    logtable[4]={0,1,0,1}; we set L and R to 1 which is OR - just for bits in
+    logtable[0]=0; logtable[1]=0; logtable[2]=0; logtable[3]=0;
     
     Gshift_[w][0]=shift_[w]; 
     Gshift_[w][1]=shift_[w]; 
@@ -1914,7 +1864,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       //      bitn^=ADC_(0,SRlength[w],12,3); // one bit DAC in //param is reg to get DAC from
       // int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
       // new adc strobe modes: 12,13,14,15,16
-      bitn^=ADC_(0,SRlength[w],15,trigger[0]); // another strobe ADC in
+      bitn^=ADC_(0,SRlength[w],0,trigger[0]); // spaced bits in - 11 does not return bits though
     }
     else
       {
@@ -1934,21 +1884,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],trigger[w]); // question is then if we want to use param other than trigger?
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+    PULSEOUT;  }// counterw
   break; 
 
   /////////////////////////////////////////////////////////////////////
@@ -1981,21 +1917,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2030,21 +1952,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2080,21 +1988,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2131,21 +2025,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2179,21 +2059,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2236,21 +2102,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2292,21 +2144,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2342,21 +2180,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2393,21 +2217,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
 
@@ -2443,21 +2253,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-
+PULSEOUT;
     }
     break; 
     
@@ -2513,21 +2309,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 21: // triadex inspired mode where we XOR in bits from the other SRs
@@ -2570,21 +2352,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 22: // triadex inspired mode where we XOR in bits from the other SRs
@@ -2620,21 +2388,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 23: // pass on but trigger bumps on default route
@@ -2674,21 +2428,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 24: // can also be multiple routes in/change to binary routing table
@@ -2735,21 +2475,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 25: // can also be multiple routes in/change to binary routing table
@@ -2797,21 +2523,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,0); // all DACTypes changed here - top bits
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+PULSEOUT;  }// counterw
   break; 
 
   case 26: // multiple routes in/change to binary routing table
@@ -2854,21 +2566,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,0); // all DACTypes changed here - two bits
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }// counterw
+    PULSEOUT;
+    }// counterw
   break; 
 
   case 27:     // w==0 4 bit adc entry on adc_ mode 13
@@ -2917,19 +2616,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     bitn=shift_[w]&1;
     
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
-
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; 
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    lengthbit=(SRlength[w]>>1);
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; 
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }
+    PULSEOUT;
+    }
   break; 
 
   case 28:     // w==0 4 bit adc entry on adc_ mode 13 - pass on 4 bits - this one with feedback into ADC/NSR 0
@@ -2992,19 +2680,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     bitn=shift_[0]&1;
     
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
+    PULSEOUT;
 
-    tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; 
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    lengthbit=(SRlength[w]>>1);
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; 
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-  }
+    }
   break; 
   
 
@@ -3067,22 +2745,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    
-      tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-    
+    PULSEOUT;    
       }
     }
     else train[w]=0; // train ran out
@@ -3142,22 +2805,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
 
     //7-pulses out if any
-    // L, C and R have 2 clocks out, N has none    
-    
-      tmp=(w<<1);
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp]; // N is just B with always zero
-    else *pulsoutHI[tmp]=pulsouts[tmp];
-
-    // follow AC scheme but we do maybe do a divide down of another bit-sofar is same! - make GENERIC    
-    lengthbit=(SRlength[w]>>1); // /2
-    new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit; // so that is not just a simple divide down
-
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;
-    prev_stat[w]=new_stat;	
-    tmp++;
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];
-    else *pulsoutHI[tmp]=pulsouts[tmp];        
-    
+    PULSEOUT;    
       }
     }
     else train[w]=0; // train ran out

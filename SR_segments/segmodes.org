@@ -1,5 +1,17 @@
 * how to sort and classify/generic ideas sept 2021///
 
+1/11/2021:
+
+- DAC_ re-test case 7 and 8 as possibly fixed mistake there...DONE
+
+TODO: 
+
+- print/plan for segmodes and list segments modes/implement/what is left?
+- macro for pulse outs DONE
+
+- what we need to test/implement and list of modes...
+
+
 19/10/2021:
 
 basic modes: pass through or cycle is toggled by clkin bit
@@ -36,7 +48,7 @@ what would squash be? 3,2,1,0 to 3,2,1 to 3,2 to 3(R) and how we signal the squa
 sketch out modes:
 CVspeed:
 1-15 -LR simple modes/all inc prob
-      N 8xADC x2 - pass in/circle_and_pass
+      N 8xADC x2 - pass in/circle_and_pass or 16 ADC modes with pass in only!
       C 4xDAC x4 - pass in/circle only/circle and pass/prob
 
 16-31 LR - exp modes

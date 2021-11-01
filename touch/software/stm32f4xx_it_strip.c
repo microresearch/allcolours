@@ -1,12 +1,14 @@
 /**
 
+18/10: on mode change should we stop rec/playback as this will change reading of data (only in some cases).
+
 14/10: filled in mode 0 to test all
 
 13/10: TODO: code in freezers, mode switch and rec/play with simple case 0 and test!
 
 11/10: TODO: simplify code sections and test all freezers, rec, mode, playback (basic mode)
 
-- what are our modes and where are these defined?
+- what are our modes and where are these defined? in it.c
 
 Revisiting 30 Sept:
 
