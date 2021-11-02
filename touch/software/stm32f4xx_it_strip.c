@@ -1,5 +1,7 @@
 /**
 
+2/11: we have bleed on voltages - small but present and how can we fix this?
+
 18/10: on mode change should we stop rec/playback as this will change reading of data (only in some cases).
 
 14/10: filled in mode 0 to test all
