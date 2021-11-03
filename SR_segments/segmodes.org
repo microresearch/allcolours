@@ -1,12 +1,13 @@
 * plan
 
 - implement/test all new modes and catalogue these
+
 - TODO from below and from theone.c
 - recheck logic of all sections
 
 - implement sketch of all modes as below with DAC and ADC options
 - test/play
-- tweaks for speed, CLK norms, what else? how we handle one bit audio filter?
+- tweaks for slower speed, CLK norms, what else? how we handle one bit audio filter?
 
 * modes sketch
 
@@ -18,9 +19,11 @@ CVspeed:
 16-31 LR - exp modes
       NC - any match modes 4xADC, 4xDAC
 
-CV+ADCspeed:
+CV+DACspeed:
 32-47 LR - modes mixed
       NC as 1or2
+
+also which DAC (can be rerouted too)
 
 INTspeed:
 48-63 LR - mix using CV params - prob,,,
@@ -32,16 +35,30 @@ CV&ADCspeed: -/+/wrapsDAC- tested some...
 
 SR->bit speed (ANDed with CV/trigger) eg. if && bitx
 
-** list from theone.c
+timing from speed-cv, pulse in, top reg(but no bits in), pulse AND
+speedcv (divide, multiply, expect), pulse AND/OR/XOR top (again no
+bits), from ghost registers (which can also be themselves clocked by
+top register and then we can use bits in or?), timing also from SR->DAC
 
-// - maybe to line up LFSR modes etc so they follow each other in a block
+
+** classification
+
+L&R modes...
+
+- basic route/logic modes
+- probability modes
+- use of CLKIN as bit modes/as toggles etc.
+- speedfrom/routings/logic manipulations
+- esoteric
+
+** list from theone.c
 
 //0: all pass through only
 
 //1: cycle round only XORbits - basic 0 DAC out
 
 //2: cycle and pass only XORcycleXOR-bits - basic 0 DAC out
-////
+
 //3: N: passon/XOR-LFSR LR: passonORbits C: XOR-DACequiv  // note that for LR with no bits in these are all the same
 
 //4: N: passon/XOR-ADC1bit LR: passonANDbits C:XOR-DAC1bit
@@ -120,6 +137,8 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 ** ADC modes 
 
+TODO: more comparator modes, adc_in to be compared to what?
+
 ** DAC modes
 
 ** new modes from below
@@ -157,8 +176,6 @@ DONE - multiple DACs - but how we do this as a single mode (add/sub/wrap other D
 - most generic table for all elements which could become itself a SR...
 
 - cycling array of ghosts
-
-- other ways of thinking of modes... (mode as itself shift_register, pulses as incrementing modes or is that all too complicated)
 
 - marking bits which always stay frozen - concept of sieves, masks,
   ghosts, revenants (eg. slow drift or decay of bits from one set to
@@ -200,9 +217,6 @@ trial bits:
 pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
 1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
 
-
-- ports from AC, ports from first tests it.c
-
 eg.
 0-looping only/aka return only!
 1-pass on only - straight through
@@ -229,9 +243,79 @@ seg2 notes and more:
 - clkin in can mask bits as for DAC etc. or SR etc - if we pull it in to a SR for each of N,L,C,R  but bwhen do we do this as can't be in INT
 - clkin in can also slip/slow/bump up one CV speeded SR = slip, freeze or jog SR on CLKin
 
+** AC modes and inspirations
+
+- clkin leaps/flips bits - that we can apply a mask from clkin for
+  whole SR - would be nice to be able to freeze this though
+
+- shifting array of taps/ghost taps/ clksr can also be taps...
+
+- sr loops in sr
+
+// pulse in means a divide/flip flop
+// pulse in means double a step.. ????
+
+** first it.c modes
+
+- TM and other prob modes:  CV in as comparator for SR DAC, CV as comparator for ADC in, ADC as comp for SR DAC
+all the comparison possibilities
+
+- overlaps
+
+- shift x bits
+
+- SR in SR//barriers
+
+- 2 headed SR
+
+
 * diary sept 2021+
 
+PLAN: all new modes, put first draft together
+
+TODO:4/11/->all classic probability modes, comparators for probability and ADC...
+
+3/11/2021:
+
+- DONE: more macros but still need to test/re-test all
+
+*Q* if pulseouts should be after shifts ??? guess so...
+
+- in ADC: why (length-3)? to get down to 1 bit so could also have option for full bits!
+
+- tested speed/stop again for all modes? - TO IMPLEMENT as makes sense
+- fixed case 3adc and case1dac so we can have as many bits as 32 for equivbits setupDONE/TESTED
+///
+- incoming clk bits as further SR in main TIM2 loop (question of speed
+  of this now) - or do we just do this as ADC inputDONE but could also
+  be custom oneDONE - use also as sieve (case 10 in DAC) - what other uses? as comparator for ADC in?
+
+- strobe or copy clksr in // as adc option... question is how to strobe in - on a counter/length? added as adc case 19
+
+maybe list the SRs that we have available...
+
+shift_[x], Gshift[x], LFSR_[x], ADCshift[x], ADCGshift[x]??ghostforadc/strobe, GGshift[x], clksr[x]
+
+how to swop between relevant ones?
+
+- probability modes can also use DAC, clksr etc,,,  what we compare to what???
+
+LFSR<CV(most), LFSR<DAC+CV (17), LFSR<DAC (18), LFSR<PARAM (19)
+
+also mayeb more use of comparator with these in ADC mode
+
+////
+
+- start on first 16 modes/check all ADC/DAC options
+
+- tested speed/stop in case 0! add to templates
+- new full 32 bit ADC mode with padded bits in - also add strobes and other ones using this 
+
 2/11/2021:
+
+bit entry SR (from each CLKIN) can also be used for TRIADEX style thing,
+
+all SRs/and CV can select routing/logic/speed bits
 
 ADC could also be used in probability modesDONE
 

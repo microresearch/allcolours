@@ -789,7 +789,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       // or we can set L and R from an independent SR with only CSR as clocked from here
       else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
     }
-
   
   if (speedfrom[w]==1 && intflag[w]==1){ // interrupt flag
     intflag[w]=0;

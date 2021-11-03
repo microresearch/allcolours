@@ -705,10 +705,9 @@ in reverse tho for 9->31
       //      printbits(&g_buf[0]);
       }*/
 		  //		   }
-    //    for (int x=0;x<4096;x++){ // 12 bits 
-    //      printf("%d, ", countbits(x));
-
-    //    }
+    for (int x=0;x<65536;x++){ // 16 bits 
+      printf("%d, ", countbits(x));
+        }
 
    for (int x=1;x<13;x++){ 
      //     printf("%d, ", 4096/x);
@@ -992,8 +991,8 @@ uint32_t ylength=31;
 		     ((xp&(1<<lastspac[xlength][3]))<< ((spacc[ylength][2]) - lastspac[xlength][3])));
 	    }
 
-	print32bits(&yp);
-	printf(",\n");
+	//	print32bits(&yp);
+	//	printf(",\n");
 	//	xp=xp<<1;
 	yp=yp<<1;
  }
@@ -1037,9 +1036,13 @@ uint32_t ylength=31;
 
 
 
-x= ( ((xp& (1<<lastspac[length][0]))>>lastspacbac[length][0]));// + ((xp& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((xp& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((xp& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
-   
-   
-printf("%d\n",x);
-     return 0;
+//x= ( ((xp& (1<<lastspac[length][0]))>>lastspacbac[length][0]));// + ((xp& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((xp& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((xp& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
+
+/*
+for (cd=1;cd<33;cd++){
+  x=4095/cd;
+  printf("%d, ",x);
+ }
+*/
+return 0;
 }
