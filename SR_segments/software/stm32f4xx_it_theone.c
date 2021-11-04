@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={9,0,0,0}; // TEST!
+uint32_t testmodes[4]={9,41,0,0}; // TEST!
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -56,7 +56,7 @@ uint32_t testmodes[4]={9,0,0,0}; // TEST!
 
 #define BITN_AND_OUT {				\
     shift_[w]+=bitn;					\
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0);		\
+    dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	\
   tmp=(w<<1);					  \
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
@@ -87,6 +87,13 @@ uint32_t testmodes[4]={9,0,0,0}; // TEST!
   if (pulsins[w]!=0){				\
   xx=!(GPIOC->IDR & pulsins[w]);		\
   bitn^=xx;					\
+  }						\
+}
+
+#define PULSIN_OR {				\
+  if (pulsins[w]!=0){				\
+  xx=!(GPIOC->IDR & pulsins[w]);		\
+  bitn|=xx;					\
   }						\
 }
 
@@ -174,7 +181,7 @@ uint32_t dacfrom[4]={0,0,0,0};
 
 uint32_t ourroute[4]={0,0,0,0};
 uint32_t sieve[4]={3,0,1,2}; // previous one...
-
+uint32_t oppose[4]={2,3,0,1};
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
 volatile uint32_t speed[4]={0,0,0,0};
@@ -193,7 +200,8 @@ static inline uint32_t countbits(uint32_t i)
     return( countbts[i&0xFFFF] + countbts[i>>16] );
 }
 
-// 0: xbits in, 1: 1bit 2: LFSR 3: equivalent bits 4: oscillator/clock 5: DACfrom_reg 6:param_from_reg 7:param as comparator for a single bit
+// 0: xbits in, 1: 1bit 2: LFSR 3: equivalent bits 4: oscillator/clock 5: DACfrom_reg 6:param_from_reg
+// 7:param as comparator for a single bit - now 31 with cv
 // 8: seperate LFSR running here with length/length
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
   static uint32_t n[4]={0,0,0,0},nn[4]={0,0,0,0}; // counters
@@ -203,7 +211,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
   uint32_t bt=0;
 
   switch(type){
-  case 0: // basic sequential length of upto 12 bits cycling in
+  case 0: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
   if (length>11) length=11;
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
@@ -266,18 +274,18 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
      }         
      break;    
 
-  case 5: // dac[otherpar] seq input we use otherpar
-    if (length>11) length=11; //XXX
+  case 5: // dac[otherpar] seq input we use otherpar - or just have in otherpar?
+    if (length>11) length=11; //XXX //XXX12 bits or 8 bits -> padded as case 20
       if (n[reg]>length) {
-	k=(dac[otherpar])>>(11-length); 
+	k=(dac[otherpar])>>(11-length); // dac is 12 bits
       n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
 
-  case 6: //param[reg] seq input
-  if (length>11) length=11; //XXX
+  case 6: //param[reg] seq input - what is size of param? /or we can also just feed in otherpar
+      if (length>11) length=11; //XXX12 bits or 8 bits
       if (n[reg]>length) {
 	k=(param[reg])>>(11-length); 
       n[reg]=0;
@@ -294,7 +302,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
   case 8:     // we accumulate bits onto a ghosted register TO TEST
     // STROBE places these onto the shift register in one chunk?
     // so we don't use returned bt
-      if (length>11) length=11;//XXX
+      if (length>11) length=11;//XXXmax12bits
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
       n[reg]=0;
@@ -311,7 +319,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     break;
 
   case 9: // basic sequential length of bits cycling in but zeroed by param which is trigger
-  if (length>11) length=11; //XXX
+  if (length>11) length=11; //XXXmax12bits
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
       n[reg]=0;
@@ -354,7 +362,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
   case 12:     // 1-we keep on cycling ADC bits but only enter new bit on strobe - or vice versa
     if (otherpar) toggle^=1;
 
-    if (length>11) length=11; //XXX
+    if (length>11) length=11; //XXXmax12bits
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
       n[reg]=0;
@@ -369,7 +377,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     
   case 13:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
     if (otherpar) toggle^=1;
-    if (length>11) length=11; //XXX
+    if (length>11) length=11; //XXXmax12bits
 
   if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
@@ -429,19 +437,11 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     break;
 
   case 17: // basic sequential length as in 0 but with padding if >11 bits
-    if (length<12){ 
       if (n[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); //
-      n[reg]=0;
+	if (length<12) k=(adc_buffer[12])>>(11-length); //
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
     }
-    }
-    else // length is 12+
-	{
-      if (n[reg]>length) {
-	k=(adc_buffer[12])<<(length-11); //
-      n[reg]=0;
-    }
-	}
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
@@ -450,7 +450,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     bt=otherpar;
     break;
 
-  case 19: // sequential clksr in
+  case 19: // sequential clksr in TESTED!
     if (n[reg]>length) {
       k=(clksr_[reg])>>(31-length); //
       n[reg]=0;
@@ -459,24 +459,99 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t ot
     n[reg]++;    
     break;
 
+    //// adding these modes 4/11/2021+
+
+  case 20: // case 5 - dac[otherpar] seq input we use otherpar - or just have in otherpar?
+    // padded length version
+    if (n[reg]>length) {
+      if (length<12) k=(dac[otherpar])>>(11-length); //
+      else k=(dac[otherpar])<<(length-11);
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 21: // padded case 8    // we accumulate bits onto a ghosted register TO TEST
+    // STROBE places these onto the shift register in one chunk?
+    // so we don't use returned bt
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); //
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    // then bt goes into newghostSR
+    ADCGshift_[reg]=(ADCGshift_[reg]<<1)+bt;
+
+    if (otherpar) { // strobe
+      shift_[reg]&=invmasky[length]; // clear length bits
+      shift_[reg]+=(ADCGshift_[reg]&masky[length]);
+    }
+    break;
+
+  case 22:     // padded case 13 - 2-we only cycle ADC on strobe/toggle  - or vice versa
+    if (otherpar) toggle^=1;
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); //
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01;
+      if (toggle) {// strobe
+    n[reg]++;    
+      }
+    break;
+
+  case 23: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+        ////// full length regardless of len    
+      if (n[reg]>11) {
+	k=adc_buffer[12]; //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 24: // len is otherpar but there is no shift
+    //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+      if (n[reg]>otherpar) {
+	k=adc_buffer[12]; //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
     break;
     
+  case 25: // len is otherpar but there is shift from otherpar
+    //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+      if (n[reg]>otherpar) {
+	if (otherpar<12) k=(adc_buffer[12])>>(11-otherpar); //
+	else k=(adc_buffer[12])<<(otherpar-11);
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+    /// comparator modes - compare to: CV/INTonly, DAC, CV+DAC/INTonly, to clksr_, to param - feed these into otherpar
+  case 26: // otherpar as comparator - 10 bits standard here
+     bt=0;
+     if ((adc_buffer[12]>>2)>otherpar) bt=1;
+     break;
+        
     ////////    
     // INT MODES ONLY FROM HERE ON!
-  case 21: // INT // CV as comparator - for INT modes ONLY which don't use CV!
-    // we can also use other comparators
+  case 31: // INT // CV as comparator - for INT modes ONLY which don't use CV! can also be CV+DAC
+    // we can also compare to: DAC, CV+DAC, to clksr_, to param - feed these into otherpar or have as options
+    // 10 bits?
      bt=0;
      if (adc_buffer[12]>adc_buffer[lookupadc[reg]]) bt=1;
      break;
-  case 22: // INT  //param[reg] as comparator
-     bt=0;
-     if ((adc_buffer[12]>>2)>param[reg]) bt=1;
-     break;
-
-     // TODO: CV as input
+     
+     // TODO: CV+ADC as input for INT modes perhaps
      
   } // switch
-     
   return bt;
 }
 
@@ -522,11 +597,12 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
 
 // 0: xbit DAC, 1: equiv DAC, 2: 1bit 3: spacers 4: strobed xbit DAC UNTESTED 5: 4 bits spaced dac/no equv 6: 
 // TODO: what we add to this: shifty_spacers, sequential x bit DAC, sequential equiv DAC, seq spaced DAC
-// also we can have one bit data with selection of params for BETA!
+// also we can have one bit data with selection of params for BETA/filter!
 
-static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t param){ //
+static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t param){ //
   // DAC is 12 bits
   uint32_t y,x=0;
+  static uint32_t n[4]={0,0,0,0};
   static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
   static uint32_t lastout=0;
   static uint8_t toggle=0;
@@ -594,17 +670,42 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     x=countbts[x]*1023;
     break;
 
-  case 9: // one SR is sieved out over another? as DAC option. XOR as sieve?
+  case 9: // one SR is sieved out over another? as DAC option. XOR as sieve? AND as mask! TODO
     // which one...
     x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference    
     x=x^(shift_[sieve[reg]] &masky[length-3]); // seived through previous SR
     break;
-  case 10: //  one SR is sieved out over bitsr for that sr. XOR as sieve?
+
+  case 10: //  one SR is sieved out over clksr for that sr. XOR as sieve? 
     x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference    
-    x=x^(clksr_[reg] &masky[length-3]); // seived through bitsr
+    x=x^(clksr_[reg] &masky[length-3]); // seived through bitsr // 
     break;
 
-    ////
+  case 11:// standard bit DAC for x bits     ///bitx length as other param rather than length:
+    // but then we don't really use len? unless is cycle back
+    // bit length can also be CV - how to put this in as DAC is quite fixed in macro?
+    param=param&31; //5 bits
+    x=((shift_[reg] & masky[param])>>(rightshift[param]))<<leftshift[param]; // we want 12 bits but is not really audible difference    
+      break;
+
+      // sequential DACs
+  case 12: // we wait for length bits then output that many bits from the top of the SR (len bit)
+    if (n[reg]>length) {
+      n[reg]=0;
+      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; // we want 12 bits but is not really audible difference    
+    }
+    n[reg]++;              
+    break;
+
+  case 13: // we wait for param bits then output that many bits from the top of the SR (len bit)
+    if (n[reg]>param) {
+      n[reg]=0;
+      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; // we want 12 bits but is not really audible difference    
+    }
+    n[reg]++;              
+    break;
+    //
+    
   } // switch    
   return x;
 }
@@ -715,7 +816,6 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
 }
 
 void TIM4_IRQHandler(void) 
-// HERE we do speed and modes ALL TODO AS ARRAYS ???
 
 {
   uint32_t temp;
@@ -820,14 +920,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 {
   uint32_t lengthbit=15, new_stat;
   uint32_t x, y, q, start=0;
-  uint32_t bitn, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmpp, xx=0;
+  uint32_t bitn, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmpp, xx;
   uint8_t trigger[4]={0,0,0,0};
   static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0;
   static uint32_t counter[4]={0,0,0,0};
   static uint32_t train[4]={0,0,0,0};
   static uint32_t tug[4]={0,0,0,0};
   
-  int32_t tmpt;
+  int32_t tmpt,par=0;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
@@ -874,9 +974,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   case 0: // Just passes on/CSR is basic DAC 0 
     // TEST mode: start with basic pass through and basic routing - first try pass along as generic structure (no input, fixed routings, DAC out (8 bit)
+    par=dac[3]; // TODO: use par for setting DAC parameter now on 4/11/2021
     
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
-      dactype[2]=10; // 1 for equiv bits //10 for clksr sieving
+      dactype[2]=13; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       GSHIFT;
     
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
@@ -1109,7 +1210,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;
       //      bitn=0;
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      //      bitn^=ADC_(w,SRlength[w],3,0); // XOR with: EQUIV BITS-TESTED!
+      bitn^=ADC_(w,SRlength[w],0,0); // XOR with: EQUIV BITS-TESTED!
       //      tmp=SRlength[w]>>1;
       //      bitn^=ADC_(0,SRlength[w],6,0); // param[0]
       //      bitn^=ADC_(0,SRlength[w],7,0); // comparator with param[0]
@@ -1119,7 +1220,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       //      bitn^=ADC_(0,SRlength[w],12,3); // one bit DAC in //param is reg to get DAC from
       // int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
       // new adc strobe modes: 12,13,14,15,16
-      bitn^=ADC_(0,SRlength[w],19,trigger[0]); // spaced bits in - 17 is padded mode// 3 is re-worked equiv bits TO TEST! // 18 is clkin bits
+      /// XXXX MARker
+      //      bitn^=ADC_(0,SRlength[w],25,dac[3]>>7); // 5 bits is 32 for length
+      //      bitn^=ADC_(0,SRlength[w],26,dac[3]>>7); // we want 10 bits for comparator function
+      /// comparator modes - compare to: CV/INTonly, xDAC, CV+DAC/INTonly, to clksr_, to param - feed these into otherpar
+      //      bitn^=ADC_(0,SRlength[w],26,clksr_[0]&1023); // we want 10 bits for comparator function
+      //      bitn^=ADC_(0,SRlength[w],25,param[0]>>8); // we don't know range of param but this is about right
+      // spaced bits in - 17 is padded mode// 3 is re-worked equiv bits TO TEST! // 18 is clkin bits
     }
     else
       {
@@ -1134,7 +1241,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   /////////////////////////////////////////////////////////////////////
   
-  case 10: // probability modes to explore here:
+  case 10: // probability mode 0: TM cycling bit
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert cycling bit or not, pulsbit is ORed in (TM)
 
@@ -1144,20 +1251,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       GSHIFT;
       
       bitn=(shift_[w]>>SRlength[w])& 0x01;
-      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
-      
       if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { 
 	bitn=bitn^1;
       }
-      bitn|=xx;
-      shift_[w]+=bitn;
-
-      dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
-      PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 11: // probability modes to explore here:
+  case 11: // probability mode 1: TM routein bit
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert routed-in-bit or not, pulsbit is ORed in (TM)
 
@@ -1168,20 +1270,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-      
-      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
-      
+            
       if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) {
 	bitn=bitn^1;
       }
-      bitn|=xx;
-      shift_[w]+=bitn;
-      dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
-      PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 12: // probability modes to explore here:
+  case 12: // probability mode 2: TM routein/and cycle
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert cycle+routed-in-bit or not, pulsbit is ORed in (TM)
 
@@ -1194,20 +1292,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
       bitn^=(shift_[w]>>SRlength[w])& 0x01; 
       
-      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
-      
       if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { 
 	bitn=bitn^1;
       }
-      bitn|=xx;
-      shift_[w]+=bitn;
-
-      dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
-      PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 13: // probability modes to explore here:
+  case 13: // probability mode 3: Wiard/EN new input from pulsebit
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //3. new input (from pulsbit) or cycling bit (wiard and EN)  - if we don't have pulsebit then route
     
@@ -1227,14 +1320,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
 	  }	  	  
 	}      
-      shift_[w]+=bitn;
-
-      dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
-      PULSOUT;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 14: // probability modes to explore here:
+  case 14: // probability mode 4: wiard/en
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //4. new input (from route) or cycling bit - and OR in pulsebit if...    
     if (trigger[w]==1){ 
@@ -1249,19 +1339,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
 	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
 	}
-    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
-
-    shift_[w]+=bitn|xx;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
-    PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 15: // probability modes to explore here:
+  case 15: // probability mode 5 for ADC - TODO:match with other LRC modes!
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //4. new input (from route/ADC) or cycling bit - and OR in pulsebit if...
     /// or in case of w==0 NSR we have ADC/LFSR in depending on type - but THIS is not extra to mode 14 as it will simply repeat those except for NSR
-    // but now we change thi so is inverted routing bit
+    // but now we change this so is inverted routing bit
     if (trigger[w]==1){ // we don't use intflag!
       dactype[2]=0; // basic DAC out
 
@@ -1281,16 +1368,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	bitn^=1;
 	  }
 	}
-    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
-
-    shift_[w]+=bitn|xx;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
-
-    PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 16: // probability modes to explore here:
+  case 16: // probability mode 6
     //1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //6. new input (from ADCtypeX) or route in     
     // how these match/repeat above when we don't have ADC ??? - maybe do inverted route bit in for others // with cycling bit
@@ -1313,15 +1396,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	    bitn=(!(shift_[w]>>SRlength[w])) & 0x01; 
  	  }
 	}
-    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
-
-    shift_[w]+=bitn|xx;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
-    PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
     
-  case 17: // probability modes to explore here: if SR<DAC+CV // int mode from 10-16 repeat with sr<adc+dac[2]
+  case 17: // probability mode: 7
+    // if SR<DAC+CV // int mode from 10-16 repeat with sr<adc+dac[2]
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert cycling bit or not, pulsbit is ORed in (TM)
 
@@ -1331,21 +1412,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       GSHIFT;      
 
       bitn=(shift_[w]>>SRlength[w])& 0x01;
-      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
       tmpt=dac[dacroute[w]]-(4095-adc_buffer[lookupadc[w]]);
       if (tmpt<0) tmpt=0; // or just add them      
       if ((LFSR_[w] & 4095 )<tmpt) {
 	bitn=bitn^1;
       }
-      bitn|=xx;
-      shift_[w]+=bitn;
-
-      dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
-      PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 18:
+  case 18: // probability mode
     //    LFSR<DAC
     // first for CV modes and prob - copy of 17 which is copy of 10
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
@@ -1357,19 +1434,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     GSHIFT;      
 
     bitn=(shift_[w]>>SRlength[w])& 0x01;
-    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
     if ((LFSR_[w] & 4095 )<dac[dacroute[w]]) {
 	bitn=bitn^1;
       }
-      bitn|=xx;
-      shift_[w]+=bitn;
-
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
-    PULSOUT;    
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
-  case 19:
+  case 19: // probability mode
     // first for CV modes and prob - copy of 17 which is copy of 10
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert cycling bit or not, pulsbit is ORed in (TM)
@@ -1379,16 +1452,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
     GSHIFT;      
 
-        bitn=(shift_[w]>>SRlength[w])& 0x01;
-      if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
+    bitn=(shift_[w]>>SRlength[w])& 0x01;
+
       if ((LFSR_[w] & 4095 )<param[w]) { 
 	bitn=bitn^1;
       }
-      bitn|=xx;
-      shift_[w]+=bitn;
-      
-      dac[w]=DAC_(w, SRlength[w], dactype[w],0); // TODO - add in DACtype.. basic DAC-0
-      PULSOUT;
+      PULSIN_OR;
+      BITN_AND_OUT;
     }
     break; 
 
@@ -1536,14 +1606,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
 
     PULSIN_XOR;
-    dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,0); // all DACTypes changed here - top bits
+    dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
     PULSOUT;
   }// counterw
   break; 
 
   case 26: // multiple routes in/change to binary routing table
     // implementation of multiple routing table - CV mode with dacrouted dac as source for table...
-
+    // could also be bits from plain SR TODO
       if (counter[w]>speed[w] && speed[w]!=1024){
       //      tmpp=adc_buffer[lookupadc[w]]>>6; // this can also be RSR DAC! 12 bits down to 6 bits
       tmpp=dac[dacroute[w]]>>6;
@@ -1565,7 +1635,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
 
     PULSIN_XOR;
-    dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,0); // all DACTypes changed here - top bits
+    dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
     PULSOUT;
     }// counterw
   break; 
@@ -1605,7 +1675,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       }
     bitn=shift_[w]&1;
     
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); 
     PULSOUT;
     }
   break; 
@@ -1660,7 +1730,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     
     bitn=shift_[0]&1;
     
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0); 
+    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); 
     PULSOUT;
     }
   break;
@@ -1676,11 +1746,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     GSHIFT;
     
     bitn=(shift_[w]>>SRlength[w])& 0x01;
-    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
     if ((LFSR_[w] & 4095 )<adc_buffer[12]) {
       bitn=bitn^1;
     }
-    bitn|=xx;
+    PULSIN_OR;
     BITN_AND_OUT;
   }
   break; 
@@ -1691,11 +1760,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
     GSHIFT;      
     bitn=(shift_[w]>>SRlength[w])& 0x01; 
-    if (pulsins[w]!=0) xx=!(GPIOC->IDR & pulsins[w]); 
     if ((dac[w] )<dac[dacroute[w]]) { 
       bitn=bitn^1;
     }
-    bitn|=xx;
+    PULSIN_OR;
     BITN_AND_OUT;
   }
     break; 
@@ -1744,7 +1812,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
 
     PULSOUT;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0);
+    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]);
     
     }// counterw
   break; 
@@ -1773,7 +1841,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
 
     PULSOUT;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0);
+    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]);
     }// counterw
   break; 
 
@@ -1846,12 +1914,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     
     shift_[w]+=bitn^bitnn;
 
-    dac[w]=DAC_(w, SRlength[w], dactype[w],0);
+    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]);
     PULSOUT;
     }// counterw
   break; 
 
-  case 38: // pass through or cycle is toggled by clkin bit 
+  case 38: // pass through or cycle is toggled by clkin bit
+    // this can also be for ADC - toggle entry of ADC bit or pass through/cycle
     if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=9; // test the sieve 
 
@@ -1869,13 +1938,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   break;
 
   case 39:
-    // additive DACs into DAC2 - excepyt 2 itself? is this done here though?
+    // additive DACs into DAC2 - except 2 itself? is this done here though?
     // = multiple DACs - but how we do this as a single mode (add/sub/wrap other DACS, additive DAC into DAC[2])
     // how could this work as a mode... we do dac[w] here so we don't want to add all...
     // and what if all modes are set to this... mode[w] i am dac out and add all...
     if (w==0) dac[2]==0;
 
-      if (counter[w]>speed[w] && speed[w]!=1024){
+    if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0;
     
     GSHIFT;      
@@ -1888,12 +1957,56 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     shift_[w]+=bitn;
 
     PULSOUT;    
-    dac[2]+=DAC_(w, SRlength[w], dactype[w],0); // additive DAC
+    dac[2]+=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); // additive DAC - TODO: could also be modulus dacs
     dac[2]=dac[2]&4095;
     
     }// counterw    
     break;
 
+  case 40: // swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
+    // do regular pass through and then swop with previous on trigger
+    par=dac[3]; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+    if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+      dactype[2]=13; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      GSHIFT;
+    
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+
+      if (trigger[w]) shift_[w]=shift_[oppose[w]]; // sieve is previous one but could be opposite one
+      
+      PULSIN_XOR;
+      BITN_AND_OUT;
+    }// counterw
+    break; 
+
+  case 41: //  TM in TM: from it.c seems to use 2x comparators - one
+	   //  for inv of cycling bit, one for inv of incoming bit (so
+	   //  could be CV and DAC comped to LFSR/DAC)
+    if (trigger[w]==1){
+      dactype[2]=0;
+
+      GSHIFT;
+      
+      bitn=(shift_[w]>>SRlength[w])& 0x01; 
+      
+      if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // cycling bit
+	bitn^=1;
+      }
+
+      bitnn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitnn;  
+      
+      if ((LFSR_[w] & 4095 )<dac[dacroute[w]]) {
+	bitnn^=1;
+      }
+      bitn|=bitnn;
+      
+      PULSIN_OR;
+      BITN_AND_OUT;
+    }
+    break; 
 
     /////////////////////////////////////////////////////////////////////////
     /// extra experimental cases // tested

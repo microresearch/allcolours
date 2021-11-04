@@ -35,10 +35,10 @@ CV&ADCspeed: -/+/wrapsDAC- tested some...
 
 SR->bit speed (ANDed with CV/trigger) eg. if && bitx
 
-timing from speed-cv, pulse in, top reg(but no bits in), pulse AND
-speedcv (divide, multiply, expect), pulse AND/OR/XOR top (again no
-bits), from ghost registers (which can also be themselves clocked by
-top register and then we can use bits in or?), timing also from SR->DAC
+timing from pulse AND speedcv (divide, multiply, expect), pulse
+AND/OR/XOR top? (again no bits), from ghost registers (which can also
+be themselves clocked by top register and then we can use bits in
+or?), timing also from SR->DAC
 
 
 ** classification
@@ -98,8 +98,7 @@ XX
 
 3. new input (from pulsbit) or cycling bit (wiard and EN)
 4. new input (from route) or cycling bit
-5. new input (from ADC) or cycling bit
-6. new input (from LFSR) or cycling bit
+5. new input (from ADC) or cycling bit//6. new input (from LFSR) or cycling bit
 
 7-10 above with inverted cycling bit
 
@@ -133,11 +132,9 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 - use of clkins for LR to select options in CVmode as in AC
 
-- AC modes, segmodes, ...
-
 ** ADC modes 
 
-TODO: more comparator modes, adc_in to be compared to what?
+TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar
 
 ** DAC modes
 
@@ -164,51 +161,32 @@ DONE- pass through or cycle is toggled by clkin bit - case 38
 
 DONE - multiple DACs - but how we do this as a single mode (add/sub/wrap other DACS, additive DAC into DAC[2]) case 39
 
+DONE- swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
+
+DONE - TM in TM
 
 //////////////////////////////////////////
 
-- swap over SRs on pulse in?!! or swop in only
-
-- TM in TM
-
-- modes which manipulate routing table/speedfrom tables
-
-- most generic table for all elements which could become itself a SR...
-
-- cycling array of ghosts
+- cycling array of ghosts toggle in/how to toggle out
 
 - marking bits which always stay frozen - concept of sieves, masks,
   ghosts, revenants (eg. slow drift or decay of bits from one set to
   another, frozen, prevous or ghosted - so bit by bit they shift back,
   question of how long they take to go back?)
 
-question of recording position and lifetime for decay - we erase on
+*question of recording position and lifetime for decay* - we erase on
 death from the list but list handling is slow (finite sets of arrays
 and garbage collect in one interrupt?) or we can just record and keep one bit max per SR
 
-- TM encoding for SR_as_tape operations
+- instructions shift left or right the associated LFSR (instruction as 1 or 0)... and enter this bit into our SR...
 
-- what pulses might mean - primitive programming language like
-  brainfuck
+- reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn/complicated
 
-//interpret set of bits as instruction on pulse in - say an x bit
-sequence (but how to work with bits rather than bytes)
+////
 
-instructions shift left or right the opposite SR or associates LFSR (can also use bits as
-mask to do this - so we interpret one SR as shifting the other on each
-bit in)
-
-The Infinite Abacus: Brainfuck's "grand-parent" language
-
-A version with explicit memory addressing rather without stack and a
-conditional jump was introduced by Joachim Lambek in 1961 under the
-name of the Infinite Abacus, consisting of an infinite number of
-cells and two instructions:
-
-    X+ (increment cell X)
-    X- else jump T (decrement X if it is positive else jump to T)
-
-- reverse direction of register (what this means?)
+- modes which manipulate routing table/speedfrom tables - DAC/CVetc ... - this is already in modes 24,25,26 to re-examine
+- most generic table for all elements which could become itself a SR//SRx as determiner...
+use DAC, CV or SR as this can be different to DACs (if they are not just default)
 
 ////
 
@@ -224,26 +202,17 @@ eg.
 
 - expand all possible probability modes...
 
-3-TM with pass on - trigger mode
+3-TM with pass on - INT mode
 4-TM with loop back
 5-TM in TM pass on
 6-TM in TM loop
 
 7-Rungler XOR pass on
 8-Rungler XOR loop back
-9+Run with different speeds
-10+Run with bits
+9+Run with different speeds???
+10+Run with bits???
 
-seg2 notes and more:
-
-- CV modes which deal with CLKIN - as a bit // - as a condition // - as a PARAM
-
-- clkin in can toggle entry/no entry of new bits, cycling etc
-- clkin in can bump up/shift left/right the routing table, speedfrom table, logic table, dac/adc table?
-- clkin in can mask bits as for DAC etc. or SR etc - if we pull it in to a SR for each of N,L,C,R  but bwhen do we do this as can't be in INT
-- clkin in can also slip/slow/bump up one CV speeded SR = slip, freeze or jog SR on CLKin
-
-** AC modes and inspirations
+** AC modes and inspirations: TODO TOOO
 
 - clkin leaps/flips bits - that we can apply a mask from clkin for
   whole SR - would be nice to be able to freeze this though
@@ -273,7 +242,91 @@ all the comparison possibilities
 
 PLAN: all new modes, put first draft together
 
-TODO:4/11/->all classic probability modes, comparators for probability and ADC...
+4/11/2021:
+
+- question also if we use dac[3] and this also does feedback in - maybe try dac2 or dac1
+
+- also if we make use of dac[x] where do we set this to be other_than_default otherwise we may as well use SR instead (except in multiple dac mode)
+
+//TODO: fix on multiple DACs and which DAC or SR we use by default for each SR...
+
+- DONE: fixed param in DAC so we set par=param[x] or cv in the case! but we need to remember to always add this if need be!
+
+- DONE: changed DAC_ with extra params, added ADC speed and comp modes, some work on DACs, seq DAC not so exciting...
+
+- bit length can also be CV - how to put this in as DAC is quite fixed in macro
+
+ADC modes:
+
+- that we can use param other than LEN for bit length in some of ADC and DAC modes... (eg. CV also as param in INT modes with these)DONE
+
+so we can have standard 12 bits (len==11) adjusted to length, full
+length (whatever that is) regardless of len, and xbits from otherpar -
+in these cases length doesn't do much...
+
+DONEpadding for seq adc, dac and strobe/adc modes 
+
+*basic routing modes:*
+
+- route in from sr[x] 
+- cycling bit
+- LOGIC (or,and.xor,leaks) - route in from sr[x] and cycling bit // xor one would be rungler in adc mode with dac from other in, or would be CGS
+
+and LOGIC of pulsins
+
+TODO/check: *all classic probability modes:*
+classify:
+
+[prob modes for ADCin/w==0 prob of entry of bits/vs cycle etc, DAC modes can use regular prob mode]
+
+prob to DO:
+invert cycling bit (TM)
+invert incoming bit (ADC or route or both)
+
+take incoming bit (ADC or route or bothLOGIC)/OR/xor it with cycle bit (RUN)
+take incoming bit (ADC or route or bothLOGIC)/OR/LOGIC it with cycle bit
+
+incoming bit(ADC or route or bothLOGIC)/OR/cycling bit (EN/WIARD)
+incoming bit(ADC or route or bothLOGIC)/OR/INVcycling bit
+
+////
+TM: cycle bit is noise vs. comp less than 1, otherwise invert cycling bit
+
+RUN: ==not prob mod but could be made one: XOR cycle bit with input bit which
+comes from oscillator [in benjolin the DAC out effects some parameter
+of both clock and data] eg. DAC effects speed/clock of SR
+
+WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
+
+EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+
+*comparators for probability and ADC depending on INT/CV mode*
+
+/for prob:
+1. if LFSR/SR/DAC<CV  // int mode - as DAC is not necessarily CV!
+2.if LFSR/SR<DAC[x]  // cv/int mode
+3.if LFSR/SR<DAC[x]+CV // int mode
+4.if LFSR/SR/DAC<param[x] // cv mode
+
+can also use comp clksr_ as SR, and adjust routing of SR for comparators
+
+/for adc:
+compare to: CV, DAC, CV+DAC, to clksr_, to param - feed these into otherpar
+
+could it make sense for DACs? DAC could be shifted by CV or by clksr_, other DACs.
+
+*CV modes which deal with CLKIN* - as a bit // - as a condition // - as a PARAM
+
+- clkin in can toggle entry/no entry of new bits, cycling etcDONE do also for ADC
+- clkin in can bump up/shift left/right the routing table, speedfrom table, logic table, dac/adc table?
+- clkin in can mask bits as for DAC etc. or SR etc - if we pull it in to a SR for each of N,L,C,R  but bwhen do we do this as can't be in INT
+- clkin in can also slip/slow/bump up one CV speeded SR = slip, freeze or jog SR on CLKin
+
+*how we use CV in INT modes (as we need to use it):*
+
+- as comparator for ADC in (and for DAC?)
+- for LR modes: as comp. for prob modes, to assign routings, as extra mode selector
+- as modifier for CLKIN speed-divider?
 
 3/11/2021:
 
@@ -830,6 +883,7 @@ a pointer to that value????
 // always do DACs - but how these are handled according to length as we still want fixed number of bits
 
 implementing TM in TM: slowly start to see how to abstract as work through and implement all modes
+
 - TOWARDS: basic framework to use in Vienna! (using one bit DAC out
   tho which we could also include in routing tables and as an always?)
 
