@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={9,41,0,0}; // TEST!
+uint32_t testmodes[4]={9,0,45,0}; // TEST!
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -148,6 +148,7 @@ static uint32_t clk_route[8]={0,
 
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t shift_[4]={0xffff,0xffff,0xffff,0xffff};
+static uint32_t mask[4]={0,0,0,0};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t Gshift_[4][4]={
@@ -176,6 +177,7 @@ uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
 uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15 binary routing table
 uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
+uint32_t revroute[4]={1,2,3,0}; // 0,1,2,3 NLCR - reverse route
 uint32_t defroutee[4]={3,0,1,1}; // 0,1,2,3 NLCR - in this one 3 routes from 1 too
 uint32_t dacfrom[4]={0,0,0,0};
 
@@ -704,6 +706,15 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     }
     n[reg]++;              
     break;
+
+  case 14:// par is mask on standard bit DAC for x bits
+    //    if (reg<4 && length>3 && length<32) 
+    // why (length-3)? to get down to 1 bit so could also have option for full bits!
+    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+    x|=otherpar;
+      break;
+    
+
     //
     
   } // switch    
@@ -2008,6 +2019,136 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
     break; 
 
+  case 42: // - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn/complicated
+    // simple feed through/pass on based on case 0 - we reverse GSR
+    // OPTIONS: devroute or revroute and also maybe just reverse incoming GSR and not itself
+    
+    par=0; 
+    
+    if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+      dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      counter[w]=0;
+      Gshift_[w][0]=shift_[w];
+      Gshift_[w][1]=shift_[w];
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w];
+
+    if (trigger[w]) tug[w]^=1; // tuggle
+    if (tug[w]){
+      shift_[w]=shift_[w]<<1;
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;
+    PULSIN_OR; 
+    BITN_AND_OUT;
+    }
+    else //in reverse - can be defroute or revroute - 2 options but revroute doesn't seem to work so well
+      {
+	shift_[w]=shift_[w]>>1;
+	bitn = (Gshift_[defroute[w]][w] & 0x01); // just the lowest bit 
+	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]>>1);
+	Gshift_[defroute[w]][w] &= ~(1UL << SRlength[defroute[w]]);
+	Gshift_[defroute[w]][w] += (bitn << SRlength[defroute[w]]);
+	PULSIN_OR;
+	shift_[w] &= ~(1UL << SRlength[w]);
+	shift_[w] +=(bitn << SRlength[w]);
+	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+      }
+    PULSOUT;
+    }// counterw
+    break; 
+    ////
+  case 43: // reverse of case 1 - cycle round only - not so exciting...
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    dactype[2]=0; // basic DAC out, others are fixed as basic
+    counter[w]=0;
+    Gshift_[w][0]=shift_[w];
+    Gshift_[w][1]=shift_[w];
+    Gshift_[w][2]=shift_[w];
+    Gshift_[w][3]=shift_[w];
+
+    if (trigger[w]) tug[w]^=1; // tuggle
+    if (tug[w]){
+      shift_[w]=shift_[w]<<1;
+      bitn=(shift_[w]>>SRlength[w])& 0x01; //cycling bit
+      PULSIN_OR; 
+      BITN_AND_OUT;
+    }
+    else //in reverse 
+      {
+	bitn=shift_[w]&0x01; // lowest bit
+	shift_[w]=shift_[w]>>1;
+	PULSIN_OR;
+	shift_[w] &= ~(1UL << SRlength[w]);
+	shift_[w] +=(bitn << SRlength[w]);
+	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+      }
+    PULSOUT;
+    }// counterw
+    break; 
+
+  case 44: // reverse of case 2 - feed in and cycle round
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    dactype[2]=0; // basic DAC out, others are fixed as basic
+    counter[w]=0;
+    Gshift_[w][0]=shift_[w];
+    Gshift_[w][1]=shift_[w];
+    Gshift_[w][2]=shift_[w];
+    Gshift_[w][3]=shift_[w];
+
+    if (trigger[w]) tug[w]^=1; // tuggle
+    if (tug[w]){
+      shift_[w]=shift_[w]<<1;
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      bitn^=(shift_[w]>>SRlength[w])& 0x01; 
+      PULSIN_OR; 
+      BITN_AND_OUT;
+    }
+    else //in reverse 
+      {
+	bitn = (Gshift_[defroute[w]][w] & 0x01); // just the lowest bit 
+	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]>>1);
+	Gshift_[defroute[w]][w] &= ~(1UL << SRlength[defroute[w]]);
+	Gshift_[defroute[w]][w] += (bitn << SRlength[defroute[w]]);
+
+	bitn^=shift_[w]&0x01; // lowest bit
+	shift_[w]=shift_[w]>>1;
+	
+	PULSIN_OR;
+	shift_[w] &= ~(1UL << SRlength[w]);
+	shift_[w] +=(bitn << SRlength[w]);
+	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+      }
+    PULSOUT;
+    }// counterw
+    break; 
+
+  case 45: // as case 0 - toggle/record/keep frozen bits and keep these ORED with the shift register as it cycles or does whatever
+    // for DAC only
+    if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+      dactype[2]=14; // 14 for DAC out
+      GSHIFT;
+    
+      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+
+      PULSIN_XOR;
+      shift_[w]+=bitn;
+      
+      if (trigger[w]) // we record the mask 
+	{
+	  mask[w]=shift_[w];
+	  }
+
+      par=mask[w];
+      dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);  // put the mask on to the DAC  
+      PULSOUT;
+
+    }// counterw
+    break; 
+
+    
+    
     /////////////////////////////////////////////////////////////////////////
     /// extra experimental cases // tested
     /////////////////////////////////////////////////////////////////////////

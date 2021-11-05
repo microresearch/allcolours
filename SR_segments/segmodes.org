@@ -165,7 +165,11 @@ DONE- swap over SRs on pulse in?!! or swop in only (can swop in previous SR or a
 
 DONE - TM in TM
 
+DONE - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn
+
 //////////////////////////////////////////
+
+- toggle/record/keep frozen bits and keep these ORED with the shift register as it cycles or does whatever
 
 - cycling array of ghosts toggle in/how to toggle out
 
@@ -178,9 +182,7 @@ DONE - TM in TM
 death from the list but list handling is slow (finite sets of arrays
 and garbage collect in one interrupt?) or we can just record and keep one bit max per SR
 
-- instructions shift left or right the associated LFSR (instruction as 1 or 0)... and enter this bit into our SR...
-
-- reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn/complicated
+- instructions shift left or right the associated LFSR (instruction as 1 or 0)... and enter this bit into our SR... - TRY THIS!
 
 ////
 
@@ -241,6 +243,14 @@ all the comparison possibilities
 * diary sept 2021+
 
 PLAN: all new modes, put first draft together
+
+5/11/2021:
+
+- reverse SR modes - 42 and 43 DONE 43 is not so good/reverse cycle round/// try combine with 42 -> 44 DONE which is better
+
+- toggle/record/keep frozen bits and keep these ORED with the shift
+  register as it cycles or does whatever - testing now as DAC but it
+  should not mask itself???
 
 4/11/2021:
 
