@@ -705,10 +705,10 @@ in reverse tho for 9->31
       //      printbits(&g_buf[0]);
       }*/
 		  //		   }
-    for (int x=0;x<65536;x++){ // 16 bits 
+    /*    for (int x=0;x<65536;x++){ // 16 bits 
       printf("%d, ", countbits(x));
         }
-
+    */
    for (int x=1;x<13;x++){ 
      //     printf("%d, ", 4096/x);
    }
@@ -961,11 +961,22 @@ uint32_t lastspacbac[32][4]={
 */
 
 // we need 2 SRs
-uint32_t xp= 0b11111111111111111111111111111111;
+uint32_t xp= 0b11111111111111111111111111111101;
 uint32_t yp= 0b11111111111111111111111111111111;
 
-uint32_t xlength=31;
-uint32_t ylength=31;
+uint32_t xlength=7;
+uint32_t ylength=31, bitn;
+
+ for (x=0;x<64;x++){
+	bitn=xp&0x01; // lowest bit
+	xp=xp>>1;
+	//	PULSIN_OR;
+	xp &= ~(1UL << xlength);
+	xp +=(bitn << xlength);
+	//	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+	print32bits(&xp);
+	printf(",\n");
+ }
 
  for (x=0;x<32;x++){
 

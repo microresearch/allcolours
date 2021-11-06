@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={9,0,45,0}; // TEST!
+uint32_t testmodes[4]={9,0,0,0}; // TEST!
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -103,6 +103,13 @@ uint32_t testmodes[4]={9,0,45,0}; // TEST!
       bitn=logop(bitn,xx,logtable[w]);		\
     }						\
 }
+
+#define LROUT {					\
+  bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;	\
+  Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;		\
+  PULSIN_XOR;								\
+  BITN_AND_OUT;								\
+  }
 
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
@@ -638,7 +645,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     break;
   case 4: // only output standard DAC on param->strobe/clock! so just maintain lastout
     if (param) {
-      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
       lastout=x;
     }
     else x=lastout;
@@ -648,7 +655,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
       x=lastout;
     }
     else {
-      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
       lastout=x;
     }      
     break;*/    
@@ -658,7 +665,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
       x=lastout;
     }
     else {
-      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+      x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
       lastout=x;
     }      
     break;
@@ -674,12 +681,12 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
 
   case 9: // one SR is sieved out over another? as DAC option. XOR as sieve? AND as mask! TODO
     // which one...
-    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference    
+    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
     x=x^(shift_[sieve[reg]] &masky[length-3]); // seived through previous SR
     break;
 
   case 10: //  one SR is sieved out over clksr for that sr. XOR as sieve? 
-    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference    
+    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
     x=x^(clksr_[reg] &masky[length-3]); // seived through bitsr // 
     break;
 
@@ -687,14 +694,14 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     // but then we don't really use len? unless is cycle back
     // bit length can also be CV - how to put this in as DAC is quite fixed in macro?
     param=param&31; //5 bits
-    x=((shift_[reg] & masky[param])>>(rightshift[param]))<<leftshift[param]; // we want 12 bits but is not really audible difference    
+    x=((shift_[reg] & masky[param])>>(rightshift[param]))<<leftshift[param]; 
       break;
 
       // sequential DACs
   case 12: // we wait for length bits then output that many bits from the top of the SR (len bit)
     if (n[reg]>length) {
       n[reg]=0;
-      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; // we want 12 bits but is not really audible difference    
+      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; 
     }
     n[reg]++;              
     break;
@@ -702,7 +709,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   case 13: // we wait for param bits then output that many bits from the top of the SR (len bit)
     if (n[reg]>param) {
       n[reg]=0;
-      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; // we want 12 bits but is not really audible difference    
+      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; 
     }
     n[reg]++;              
     break;
@@ -710,13 +717,21 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   case 14:// par is mask on standard bit DAC for x bits
     //    if (reg<4 && length>3 && length<32) 
     // why (length-3)? to get down to 1 bit so could also have option for full bits!
-    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference
+    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
     x|=otherpar;
       break;
-    
 
-    //
+  case 15:/// we record mask and use this to mask the regular DAC... - could also be other-than-standard DACs
+    if (param) // we record the mask 
+	{
+	  mask[reg]=shift_[otherpar]; // or reg can be otherpar/SR
+	  }
+    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
+    x|=mask[reg];
+    break;
+
     
+    ///////
   } // switch    
   return x;
 }
@@ -985,15 +1000,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   case 0: // Just passes on/CSR is basic DAC 0 
     // TEST mode: start with basic pass through and basic routing - first try pass along as generic structure (no input, fixed routings, DAC out (8 bit)
-    par=dac[3]; // TODO: use par for setting DAC parameter now on 4/11/2021
+    par=dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
     
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
-      dactype[2]=13; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
-      GSHIFT;
-    
+      dactype[2]=15; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      GSHIFT;    
+      // do different modes for ADC and DAC here...
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-
       PULSIN_XOR;
       BITN_AND_OUT;
     }// counterw
@@ -2123,6 +2137,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }// counterw
     break; 
 
+    // do this as DAC onlyDONE
+    /*
   case 45: // as case 0 - toggle/record/keep frozen bits and keep these ORED with the shift register as it cycles or does whatever
     // for DAC only
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
@@ -2146,7 +2162,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
     }// counterw
     break; 
-
+    */
     
     
     /////////////////////////////////////////////////////////////////////////

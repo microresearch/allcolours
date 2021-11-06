@@ -244,6 +244,10 @@ all the comparison possibilities
 
 PLAN: all new modes, put first draft together
 
+6/11/2021:
+
+- toggle/record/keep frozen bits and keep these ORED with the shift register as it cycles or does whateverDONE now as DACmode 15-TEST!
+
 5/11/2021:
 
 - reverse SR modes - 42 and 43 DONE 43 is not so good/reverse cycle round/// try combine with 42 -> 44 DONE which is better
