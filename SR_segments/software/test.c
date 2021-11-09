@@ -1045,6 +1045,14 @@ uint32_t ylength=31, bitn;
      }         
      } */   
 
+uint32_t xcc=1<<11;
+printf("%d, ",xcc);
+
+uint32_t ee[32]={3, 3, 3, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
+
+for (x=31;x>0;x--){
+  //  printf("%d, ",ee[x]);
+ }
 
 
 //x= ( ((xp& (1<<lastspac[length][0]))>>lastspacbac[length][0]));// + ((xp& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((xp& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((xp& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 

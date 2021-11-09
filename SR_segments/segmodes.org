@@ -2,6 +2,9 @@
 
 - implement/test all new modes and catalogue these
 
+// need balance of flexibility in modes, access to advanced routing...
+// or at least alt routings altroute
+
 - TODO from below and from theone.c
 - recheck logic of all sections
 
@@ -19,21 +22,18 @@ CVspeed:
 16-31 LR - exp modes
       NC - any match modes 4xADC, 4xDAC
 
-CV+DACspeed:
+CV+DACspeed: // other speed options: speed from clkcnt, speed from CV+clkcnt
 32-47 LR - modes mixed
       NC as 1or2
 
 also which DAC (can be rerouted too)
 
-INTspeed:
-48-63 LR - mix using CV params - prob,,,
-      NC 4x ADC/DAC and prob modes    
+INTspeed: // or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx
+48-63 LR - mix using CV params - probability, comparator, CV+DAC/ADC as modifier
+      NC 4x ADC/DAC and prob modes - special INT modes for ADC/DAC which make use of CV/not trigger
 
-// other speed options: speed from clkcnt, speed from CV+clkcnt, speed from INT divided by CV->TODO!
 
-CV&ADCspeed: -/+/wrapsDAC- tested some...
-
-SR->bit speed (ANDed with CV/trigger) eg. if && bitx
+CV&DACspeed: -/+/wrapsDAC- tested some...
 
 timing from pulse AND speedcv (divide, multiply, expect), pulse
 AND/OR/XOR top? (again no bits), from ghost registers (which can also
@@ -134,7 +134,7 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 ** ADC modes 
 
-TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar
+TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar already
 
 ** DAC modes
 
@@ -167,26 +167,41 @@ DONE - TM in TM
 
 DONE - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn
 
+DONEinDACcase15 - toggle/record/keep frozen bits and keep these ORED with the shift register as it cycles or does whatever
+
+DONE - probability for reverse direction - case 45
+
+DONE - instructions shift left or right the associated LFSR (instruction as 1 or 0)... and enter this bit into our SR... - TRY THIS as ADC mode - case 27
+can also be other shiftings using bits (xSR shifts ySR left or right)
+
+DONE - - cycling array of ghosts toggle in/how to toggle out
+could be keep recording into array and on INT we cycle through (XOR/OR in pass through) until we get to last recorded of max x case 46
+// could also be alternatives but as it is we just replace on INT the revenant SR
+
+- more modes which play with GSRs: GSR as mask for???..., freeze/speed up
+  GSR, GSR runs at CV speed in INT mode (try - and vice versa)DONE, re-routing make use of
+  GSR already. 
+
+swop GSR/SR or /into/ SR (before copy?)????
+
+DONE- GSR doesn't change (becomes a revenant) 48 and 49
+
+// pulse in means double a step.. ????DONE
+
 //////////////////////////////////////////
 
-- toggle/record/keep frozen bits and keep these ORED with the shift register as it cycles or does whatever
-
-- cycling array of ghosts toggle in/how to toggle out
-
-- marking bits which always stay frozen - concept of sieves, masks,
-  ghosts, revenants (eg. slow drift or decay of bits from one set to
-  another, frozen, prevous or ghosted - so bit by bit they shift back,
-  question of how long they take to go back?)
-
-*question of recording position and lifetime for decay* - we erase on
-death from the list but list handling is slow (finite sets of arrays
-and garbage collect in one interrupt?) or we can just record and keep one bit max per SR
-
-- instructions shift left or right the associated LFSR (instruction as 1 or 0)... and enter this bit into our SR... - TRY THIS!
-
-////
-
 - modes which manipulate routing table/speedfrom tables - DAC/CVetc ... - this is already in modes 24,25,26 to re-examine
+
+24: clkin bumps up routing table only
+
+25: INTmode - CV shifts table and lowest 3 bits of DACmode - so total of 6 bits only - *we could expand this* for other bits - added logic table
+
+26: as 25 but with DAC as source - added logic tabl
+
+*TODO: use SR/GSR as bits - other important bits: basic ADC type, multiple DAC out/no DAC, SR-logic_table, routing (includes type of SR)*
+
+*also speedfrom_ table->who/ but can't use cv for that... TODO*
+
 - most generic table for all elements which could become itself a SR//SRx as determiner...
 use DAC, CV or SR as this can be different to DACs (if they are not just default)
 
@@ -202,7 +217,8 @@ eg.
 1-pass on only - straight through
 2-pass on and return bitx
 
-- expand all possible probability modes...
+
+- expand all possible probability modes...???
 
 3-TM with pass on - INT mode
 4-TM with loop back
@@ -223,10 +239,7 @@ eg.
 
 - sr loops in sr
 
-// pulse in means a divide/flip flop
-// pulse in means double a step.. ????
-
-** first it.c modes
+** first it.c modes to port in
 
 - TM and other prob modes:  CV in as comparator for SR DAC, CV as comparator for ADC in, ADC as comp for SR DAC
 all the comparison possibilities
@@ -243,6 +256,42 @@ all the comparison possibilities
 * diary sept 2021+
 
 PLAN: all new modes, put first draft together
+
+
+9/11/2021:
+
+- possible multiple adcs in modes,,,, 
+
+- added case 30: adc | xor TODO with lenght of bits, for INTmode this can also be CV-param
+
+*otherpar can also be CV for intmodes*
+
+- expanded ADC_ function for extra params but should decide on how many bits for otherparam (dac is 12 bits so) and then fix length/restrictions there
+
+- added logic table bits and fixed leaks in logop for modes 25 and 26
+
+- notebook notes: ADC bits choose: what is compared to what, what is source...???
+
+- one INTmode for ADC/DAC could use CV to select 1 of 64 modes - but
+  then we have problem of otherpar being different sizes, sources
+  eg. from strobe, for len bits etc.
+
+- mode also (maybe INTmode) to select different DAC modes for LRN too!
+
+- to think about/test multiple DAC outputs - additive, sequential, what else? and how these are signalled...
+
+
+8/11/2021:
+
+- how to expand and contract routing for each SR. what is contracted=just-to-itself, most expanded= last one..., between=
+
+long routes would be n-l-c-r-n
+
+*Q. of whether to have extra ADC/DAC modes available as CV options on 1 or 2 INT modes - see above - would also need to be another long case/switch*
+
+- INT modes need to use speedCV (see list in notebook)
+- so the 16 INT ADC/DAC modes need to use CV
+- added modes, ADC prob mode...
 
 6/11/2021:
 
