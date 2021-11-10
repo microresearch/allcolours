@@ -194,9 +194,9 @@ DONE- GSR doesn't change (becomes a revenant) 48 and 49
 
 24: clkin bumps up routing table only
 
-25: INTmode - CV shifts table and lowest 3 bits of DACmode - so total of 6 bits only - *we could expand this* for other bits - added logic table
+25: INTmode - CV shifts table and lowest 3 bits of DACmode - so total of 6 bits only - we could expand this for other bits - added logic table
 
-26: as 25 but with DAC as source - added logic tabl
+26: as 25 but with SR as source - added logic table
 
 *TODO: use SR/GSR as bits - other important bits: basic ADC type, multiple DAC out/no DAC, SR-logic_table, routing (includes type of SR)*
 
@@ -257,16 +257,53 @@ all the comparison possibilities
 
 PLAN: all new modes, put first draft together
 
+10/11/2021:
+
+Q is of a new structure
+
+- LARGE notebook notes: possible to use Rmodes as global modes for:
+  global routing changes, multiple DACs out/mix, potential several
+  ADCs ins (in different modes). In CVmodes we would either have fixed
+  modes brought in or param, bump up routes. In INTmodes we could use
+  CV for modes.
+
+- probability also to bump/shift or otherwise modify routing/logic etc. tables (single or global)
+
+prob mods bits/masks bits
+
+defroute is the one which we use generally now - unless we are in multi-routing
+modes? (or DO we make this global default, but is much slower - think about)
+
+pass/cycle/cycle and pass as routing only
+
+- *see if we can program generic routing, probability mode*
+
+////
+
+- TODO/some for finals: more param[x] modes perhaps, 
+
+different speed options for projected CV+DAC modes 32-47, 
+
+new prob modesDONE, 
+check bit routings againDONE and added for testings new bit modes (bits for prob and logop)DONE
+
+try out new routing (eg. bounce back)
+
+can add more mixes in ADC (adc in/lfsr/otherdacs/mult dacs etc)
+
+- removed intcnt but need to fix triadex mode 35 - q is what is range of param? FIXED
+
+- added logopx which can just return our bitn
 
 9/11/2021:
 
-- possible multiple adcs in modes,,,, 
+- possible multiple ADC in modes,,,, 
 
-- added case 30: adc | xor TODO with lenght of bits, for INTmode this can also be CV-param
+- added case 30: adc |(xor TODO) with length of bits, for INTmode this can also be CV-param
 
-*otherpar can also be CV for intmodes*
+*in ADC_ otherpar can also be CV for intmodes*
 
-- expanded ADC_ function for extra params but should decide on how many bits for otherparam (dac is 12 bits so) and then fix length/restrictions there
+- expanded ADC_ function for extra params but should decide on how many bits for otherpar (dac is 12 bits so) and then fix length/restrictions there
 
 - added logic table bits and fixed leaks in logop for modes 25 and 26
 

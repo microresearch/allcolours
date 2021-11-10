@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={9,0,0,0}; // TEST!
+uint32_t testmodes[4]={9,0,57,0}; // TEST!
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -104,6 +104,8 @@ uint32_t testmodes[4]={9,0,0,0}; // TEST!
     }						\
 }
 
+// if we go with singular defroute
+
 #define BITNNN {								\
   bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;	\
   Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;		\
@@ -157,7 +159,6 @@ uint32_t SRlength[4]={31,31,31,31};
 
 uint32_t s[4]={0,0,0,0};
 uint32_t ss[4]={0,0,0,0};
-uint32_t intcnt[4]={0,0,0,0};
 uint32_t clksr_[4]={0,0,0,0};
 
 // for generic CLK fake puls routing
@@ -203,12 +204,33 @@ uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=in
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
 uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15 binary routing table
+
 uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
+//uint32_t prev[4]    ={3,0,1,0}; // previous
 uint32_t revroute[4]={1,2,3,0}; // 0,1,2,3 NLCR - reverse route
 uint32_t defroutee[4]={3,0,1,1}; // 0,1,2,3 NLCR - in this one 3 routes from 1 too
 uint32_t altroute[4]={3,0,0,1}; // 0,1,2,3 NLCR - not binary code but just one! // N->C, N->L, L->R, R->N = 
 uint32_t ourroute[4]={0,0,0,0};
 
+// can also have array of binary or singular routing tables to work through:
+uint32_t binroute[8][4]={ // add more routes, also what seq change of routes makes sense
+  {8,1,2,1}, // 
+  {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
+  {1,2,4,8}, // only loop - this is what is added to get loop too for prob
+  {8,1,2,2}, // as defroutee 3/0/1/1
+  {8,1,1,2}, // as altroute 3/0/0/1
+  {8,9,1,2}, // bounce L and R back and forth
+  {8,1,2,5}, // others
+  {2,4,8,1}, // reverse round route
+};
+
+  uint32_t singroute[4][4]={ // singular table for single routes - old prob modes
+  {3,0,1,0},
+  {3,0,1,0},
+  {3,0,1,0},
+  {3,0,1,0}
+};
+  
 uint32_t dacfrom[4]={0,0,0,0};
 uint32_t sieve[4]={3,0,1,2}; // previous one...
 uint32_t oppose[4]={2,3,0,1};
@@ -230,9 +252,32 @@ static inline uint32_t countbits(uint32_t i)
     return( countbts[i&0xFFFF] + countbts[i>>16] );
 }
 
+static inline uint8_t probableCV(uint32_t reg, uint32_t type){
+  // LFSR<SR // LFSR<otherSR // SR<otherSR // LFSR<PARAM // or CV but we are not in INTmode
+  // prob of cycling bit let's say or ADC bit in or...
+  switch(type){
+  case 0:
+    if ((LFSR_[reg] & 4095 )< shift_[reg])      return 1;
+    break;
+  case 1:
+    if ((LFSR_[reg] & 4095 )< shift_[defroute[reg]])      return 1;
+    break;
+  case 2:
+    if ((shift_[reg] & 4095 )< shift_[defroute[reg]])      return 1;
+    break;
+  case 3:
+    if ((LFSR_[reg] & 4095 )< param[reg])      return 1;
+    break;
+  }
+    
+  return 0;
+}
+
 // 0: xbits in, 1: 1bit 2: LFSR 3: equivalent bits 4: oscillator/clock 5: DACfrom_reg 6:param_from_reg
 // 7:param as comparator for a single bit - now 31 with cv
 // 8: seperate LFSR running here with length/length
+
+// TODO: we need to decide on how many bits long is otherpar and adjust here!
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar){
   static uint32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
   static int32_t integrator=0, oldValue=0;
@@ -689,6 +734,22 @@ static inline uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who
 
 //bitr=logop(bitr,bitrr,logopp[w]); // or other op TODO
 // logop: 0-XOR, 1-OR, 2-&, 3leaks - 0,1,2,3
+// this one can return just bitn 
+static inline uint16_t logopx(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
+  // 0 is XOR< 1 is OR etc
+  uint32_t ty;
+  if (type==0)  return (bita ^ bitaa);
+  else if (type==1) return (bita | bitaa);
+  else if (type==2) return bita;
+  else if (type==3) {
+    ty=leaks(bita, bitaa,3,3);
+    return ty; // leaks using RSR as random // where we get 8 from...
+  }
+  return bita ^ bitaa; // default
+}
+
+//bitr=logop(bitr,bitrr,logopp[w]); // or other op TODO
+// logop: 0-XOR, 1-OR, 2-&, 3leaks - 0,1,2,3
 static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
   // 0 is XOR< 1 is OR etc
   uint32_t ty;
@@ -701,6 +762,7 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
   }
   return bita ^ bitaa; // default
 }
+
 
 // 0: xbit DAC, 1: equiv DAC, 2: 1bit 3: spacers 4: strobed xbit DAC UNTESTED 5: 4 bits spaced dac/no equv 6: 
 // TODO: what we add to this: shifty_spacers, sequential x bit DAC, sequential equiv DAC, seq spaced DAC
@@ -899,8 +961,6 @@ void EXTI4_IRQHandler(void){ // working NSR
   uint32_t tmp, tmpp;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   intflag[0]=1; //NSR
-  intcnt[0]++;
-  if (intcnt[0]>128) intcnt[0]=0;
   param[0]=counter_[0];
   counter_[0]=0;
   EXTI_ClearITPendingBit(EXTI_Line4);
@@ -914,8 +974,6 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
     
   if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  
     intflag[3]=1; //RSR
-    intcnt[3]++;
-    if (intcnt[3]>128) intcnt[0]=0;
     param[3]=counter_[3];
       counter_[3]=0;
     EXTI_ClearITPendingBit(EXTI_Line5);
@@ -923,8 +981,6 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
 
   if (EXTI_GetITStatus(EXTI_Line6) != RESET) { //LSR
     intflag[1]=1; //LSR
-    intcnt[1]++;
-    if (intcnt[1]>128) intcnt[0]=0;
     param[1]=counter_[1];
     counter_[1]=0;
     EXTI_ClearITPendingBit(EXTI_Line6);
@@ -932,8 +988,6 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
 
   if (EXTI_GetITStatus(EXTI_Line7) != RESET) {// CSR
     intflag[2]=1; //CSR
-    intcnt[2]++;
-    if (intcnt[2]>128) intcnt[0]=0;
     param[2]=counter_[2];
     counter_[2]=0;
     EXTI_ClearITPendingBit(EXTI_Line7);
@@ -1745,7 +1799,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     // could also be bits from plain SR TODO
       if (counter[w]>speed[w] && speed[w]!=1024){
 	//      tmpp=dac[dacroute[w]]>>4; 
-	tmpp=shift_[dacroute[w]]&255;
+	tmpp=shift_[dacroute[w]]&255; // 8 bits - we can also interpret bits as single ones... we just seem to use 6 bits here
       GSHIFT;      
       bitn=0;
       tmp=tmpp&15; // bottom 4 bits 
@@ -1972,24 +2026,23 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   break; 
 
   case 35: // TRIADEX 2
-    //    - triadex: we could use counters from clkins as indicator of which bits from which SR to parity-in
+    //    - triadex: we could use params from clkins as indicator of which bits from which SR to parity-in
     // so table would be for 4 bits from 4x maxSRlength=32*4=128 (ignore lengths)
     //    bt = ((shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
-    // 4 bits are each other SR counters: length 128 of counter...
 
       if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; 
 
     GSHIFT;      
-
-    s[0]=intcnt[0]>>5; // select which one... 0,1,2,3
-    ss[0]=intcnt[0]%32; // 32 bits
-    s[1]=intcnt[1]>>5; // select which one... 0,1,2,3
-    ss[1]=intcnt[1]%32; // 32 bits
-    s[2]=intcnt[2]>>5; // select which one... 0,1,2,3
-    ss[2]=intcnt[2]%32; // 32 bits
-    s[3]=intcnt[3]>>5; // select which one... 0,1,2,3
-    ss[3]=intcnt[3]%32; // 32 bits
+     // convert to param - just not sure how many bits param will have - depends?
+    s[0]=(param[0]>>5)&3; // select which one... 0,1,2,3
+    ss[0]=param[0]%32; // 32 bits
+    s[1]=(param[1]>>5)&3; // select which one... 0,1,2,3
+    ss[1]=param[1]%32; // 32 bits
+    s[2]=(param[2]>>5)&3; // select which one... 0,1,2,3
+    ss[2]=param[2]%32; // 32 bits
+    s[3]=(param[3]>>5)&3; // select which one... 0,1,2,3
+    ss[3]=param[3]%32; // 32 bits
 
     bitn = (shift_[s[0]] >> ss[0]) & 0x01;
     bitnn = (shift_[s[1]] >> ss[1]) & 0x01;
@@ -2386,8 +2439,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     break;
 
   case 52: // GSR double move on trigger in and out of main loop
-  
-  if (counter[w]>speed[w] && speed[w]!=1024){
+    if (counter[w]>speed[w] && speed[w]!=1024){
       dactype[2]=0;
       GSHIFT;      
 
@@ -2434,7 +2486,149 @@ case 47: // GSR runs at CV speed in INT mode (try)
       }// counterw
   break; 
     
+  case 54: // as 14 but now SR comped to adc
+    // probability mode 4: wiard/en
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //4. new input (from route) or cycling bit - and OR in pulsebit if...    
+    if (trigger[w]==1){ 
+      dactype[2]=0; 
+
+      GSHIFT;
+      
+      if ((shift_[w] & 4095 )<adc_buffer[lookupadc[w]]) { // can be another routed SR.
+      bitn=(shift_[w]>>SRlength[w])& 0x01; 
+      }
+      else{
+	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
+	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	}
+      PULSIN_OR;
+      BITN_AND_OUT;
+    }
+    break; 
+
+  case 55: // as 14 but now SR comped to next SR
+    // probability mode 4: wiard/en
+    //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
+    //4. new input (from route) or cycling bit - and OR in pulsebit if...    
+    //    if (trigger[w]==1){ 
+  if (counter[w]>speed[w] && speed[w]!=1024){
+      dactype[2]=0; 
+
+      GSHIFT;
+      
+      if ((shift_[w] & 4095 )< (shift_[defroute[w]] & 4095) ) { // can be other routed SRs
+      bitn=(shift_[w]>>SRlength[w])& 0x01; 
+      }
+      else{
+	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
+	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	}
+      PULSIN_OR;
+      BITN_AND_OUT;
+    }
+    break; 
+
+  case 56:
+    // this one adds probability and logopx
+    // was 26 but use for experimenting with routings
+    // multiple routes in/change to binary routing table
+    // implementation of multiple routing table - CV mode with dacrouted dac as source for table...
+    // could also be bits from plain SR TODO
+      if (counter[w]>speed[w] && speed[w]!=1024){
+	tmpp=shift_[dacroute[w]]&255; // 8 bits - we use 8 bits
+	GSHIFT;      
+	bitn=0;
+	// 2 bits for singular routes
+	tmp=tmpp&3;
+	bitn = (Gshift_[tmp][w]>>SRlength[tmp]) & 0x01; 
+	Gshift_[tmp][w]=(Gshift_[tmp][w]<<1)+bitn;  
+	// 2 bits or more for probability
+	tmp=(tmpp>>2)&3;
+	// LFSR<SR // LFSR<otherSR // SR<otherSR // LFSR<PARAM // or CV but we are not in INTmode
+	// prob of cycling bit let's say or ADC bit in or...
+	// prob of change to routes
+	if (probableCV(w,tmp)){
+	  tmp=(tmpp>>4)&3; // 2 bits for logopx
+	  bitn=logopx(bitn, ((shift_[w]>>SRlength[w])& 0x01), tmp);  // just put in cycling bit or we can XOR in etc... could be logic bits now to test
+	}
+	
+      PULSIN_XOR;
+      shift_[w]+=bitn;
+      // 2 bits for DAC
+      dac[w]=DAC_(w, SRlength[w], (tmpp>>6)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
+      PULSOUT;
+      }// counterw
+      break; 
+
+  case 57: // as 56 but try with CV
+    // was 26 but use for experimenting with routings
+    // multiple routes in/change to binary routing table
+    // implementation of multiple routing table - CV mode with dacrouted dac as source for table...
+    // could also be bits from plain SR TODO
+    //      if (counter[w]>speed[w] && speed[w]!=1024){
+        if (trigger[w]==1){ 
+	  tmpp=adc_buffer[lookupadc[w]]>>4; // this can also be RSR DAC! 12 bits down to 6 bits - 9/11 add 2 bits for logopps
+	  
+	GSHIFT;      
+	bitn=0;
+	// 2 bits for singular routes
+	tmp=tmpp&3;
+	bitn = (Gshift_[tmp][w]>>SRlength[tmp]) & 0x01; 
+	Gshift_[tmp][w]=(Gshift_[tmp][w]<<1)+bitn;  
+	// 2 bits or more for probability
+	tmp=(tmpp>>2)&3;
+	// LFSR<SR // LFSR<otherSR // SR<otherSR // LFSR<PARAM // or CV but we are not in INTmode
+	// prob of cycling bit let's say or ADC bit in or...
+	// prob of change to routes
+	if (probableCV(w,tmp)){// do
+	  tmp=(tmpp>>4)&3; // 2 bits for logopp
+	  bitn=logopx(bitn, ((shift_[w]>>SRlength[w])& 0x01), tmp);  // just put in cycling bit or we can XOR in etc... could be logic bits now to test
+	}
+	
+      PULSIN_XOR;
+      shift_[w]+=bitn;
+      // 2 bits for DAC
+      dac[w]=DAC_(w, SRlength[w], (tmpp>>6)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
+      PULSOUT;
+      }// counterw
+      break; 
+
+  case 58: // try for generic probability mode...
+    // what is generic TMetc functions for prob: invert cycling bit, 
+    // 4 bits for routings, 2 bits prob to modify routings (in what way?), 2 bits logic, fixed DAC
+    dactype[2]=0; // basic DAC out    
+    tmpp=0x11111111; // test bits for this SR 
+
+    if (counter[w]>speed[w] && speed[w]!=1024){
+	GSHIFT;      
+	bitn=0;
+
+	tmp=(tmpp>>6)&3; // top 2 bits for probability
+	if (probableCV(w,tmp)){
+	tmpp &= ~(1UL << w); // eg. remove loopback = clear bit w
+	}
+
+      tmp=tmpp&15; // bottom 4 bits 
+      for (x=0;x<4;x++){ //unroll?
+      if (tmp&0x01){  
+	bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum
+	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
+	bitn=logop(bitn,bitrr,(tmpp>>4)&3); // but what if we want different logical opps for each?
+	//	bitn^=bitrr;
+    }
+    tmp=tmp>>1;
+    }	
+      PULSIN_XOR;
+      BITN_AND_OUT;
+      PULSOUT;
+      }// counterw
+      break; 
+
+      
+      
     
+  
     /////////////////////////////////////////////////////////////////////////
     /// extra experimental cases // tested
     /////////////////////////////////////////////////////////////////////////
