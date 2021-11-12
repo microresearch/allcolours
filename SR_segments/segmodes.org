@@ -257,15 +257,29 @@ all the comparison possibilities
 
 PLAN: all new modes, put first draft together
 
+12/11/2021:
+
+- case 58 approx generic mode is workings
+
+- leaks using RSR is a bit odd, but we can have different leaks which could LFSR...
+
+11/11/2021:
+
+- thinking if to have global routes or just individual changes to
+  routing table? could have global if have say 4 R modes multiplied by
+  4 route modes for each section... test global routes...
+
+- *not to have several ADCs in/no multiple DACs - but still keep basic dacs for 12 bit length*
+
 10/11/2021:
 
 Q is of a new structure
 
 - LARGE notebook notes: possible to use Rmodes as global modes for:
-  global routing changes, multiple DACs out/mix, potential several
-  ADCs ins (in different modes). In CVmodes we would either have fixed
-  modes brought in or param, bump up routes. In INTmodes we could use
-  CV for modes.
+  global routing changes, +multiple DACs out/mix+, +potential several  ADCs ins (in different modes)+. 
+
+  In CVmodes we would either have fixed modes brought in or param, bump
+  up routes. In INTmodes we could use CV for modes.
 
 - probability also to bump/shift or otherwise modify routing/logic etc. tables (single or global)
 

@@ -1054,6 +1054,43 @@ for (x=31;x>0;x--){
   //  printf("%d, ",ee[x]);
  }
 
+//xcc=0b11111001; // test bits for this SR ; // test bits for this SR
+//xcc &= ~(1 << 2); // eg. remove loopback = clear bit w
+
+//printf("\n%d, ",xcc);
+
+uint32_t    tmpp=0b11111111; // test bits for this SR 
+
+uint32_t      tmp=tmpp&15; // bottom 4 bits 
+
+/*
+for (x=0;x<4;x++){ //unroll?
+      if (tmp&0x01){  
+	printf("\n%d\n ",x);
+      }
+    tmp=tmp>>1;
+      }	
+*/
+printf("\n\n ",x);
+
+
+uint32_t binroute[8][4]={ // add more routes, also what seq change of routes makes sense
+  {8,1,2,1}, // 3/0/1/0
+  {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
+  {1,2,4,8}, // only loop - this is what is added to get loop too for prob
+  {8,1,2,2}, // as defroutee 3/0/1/1
+  {8,1,1,2}, // as altroute 3/0/0/1
+  {8,9,1,2}, // bounce L and R back and forth
+  {8,1,2,5}, // others
+  {2,4,8,1}, // reverse round route
+};
+
+for (x=0;x<8;x++){
+  tmpp=((binroute[x][0])<<0)+((binroute[x][1])<<4)+((binroute[x][2])<<8)+((binroute[x][3])<<12);
+  //  tmp=(tmpp>>4)&15;
+  printf("%d, ",tmpp);
+ }
+
 
 //x= ( ((xp& (1<<lastspac[length][0]))>>lastspacbac[length][0]));// + ((xp& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((xp& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((xp& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
 
