@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={9,58,58,58}; // TEST!
+uint32_t testmodes[4]={60,60,60,60}; // TEST!
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -104,8 +104,40 @@ uint32_t testmodes[4]={9,58,58,58}; // TEST!
     }						\
 }
 
-// if we go with singular defroute
 
+// for this macro we need   par=0/or whatever for DAC outside and parr is for ADC					\
+// X is adc_type, Y is dac_type
+#define MULTROUTE(X, Y) {			\
+  bitn=0;					\
+  dactype[2]=Y;					\
+  GSHIFT;						\
+  if (w==0)      bitn=ADC_(0,SRlength[0],X,trigger[w],reggs[w],parr);	\
+  tmp=binroute[count][w];						\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  PULSIN_XOR;						\
+  BITN_AND_OUT;						\
+}
+
+#define BINROUTE {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+// if we go with singular defroute
 #define BITNNN {								\
   bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;	\
   Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;		\
@@ -210,6 +242,7 @@ uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
 uint32_t revroute[4]={1,2,3,0}; // 0,1,2,3 NLCR - reverse route
 uint32_t defroutee[4]={3,0,1,1}; // 0,1,2,3 NLCR - in this one 3 routes from 1 too
 uint32_t altroute[4]={3,0,0,1}; // 0,1,2,3 NLCR - not binary code but just one! // N->C, N->L, L->R, R->N = 
+uint32_t reggs[4]={3,3,3,3}; // take DACs all from last feedback reg
 uint32_t ourroute[4]={0,0,0,0};
 
 // can also have array of binary or singular routing tables to work through:
@@ -1104,14 +1137,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 {
   uint32_t lengthbit=15, new_stat;
   uint32_t x, y, q, start=0;
-  uint32_t bitn, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmpp, xx;
+  uint32_t bitn=0, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmpp, xx;
   uint8_t trigger[4]={0,0,0,0};
   static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0;
   static uint32_t counter[4]={0,0,0,0};
   static uint32_t train[4]={0,0,0,0};
   static uint32_t tug[4]={0,0,0,0};
   
-  int32_t tmpt,par=0;
+  int32_t tmpt,par=0, parr=0;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
@@ -1404,7 +1437,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       //      bitn^=ADC_(w,param[0],4,param[0]>>4);
       //      bitn^=ADC_(0,SRlength[w],10,trigger[0]); // strobe ADC in
       //      bitn^=ADC_(0,SRlength[w],12,3); // one bit DAC in //param is reg to get DAC from
-      // int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar){ // here we use length as number of bits max is 12 bits
       // new adc strobe modes: 12,13,14,15,16
       /// XXXX MARker
       //      bitn^=ADC_(0,SRlength[w],25,dac[3]>>7); // 5 bits is 32 for length
@@ -2631,7 +2663,46 @@ case 47: // GSR runs at CV speed in INT mode (try)
       PULSOUT;
       }// counterw
       break; 
-  
+
+  case 59: // NEW generic routing mode including ADC - replaces mode 9
+    par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+    if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+      dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      GSHIFT;    
+
+      // do different modes for ADC and DAC here...
+      if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
+
+      if (w==3) {//change the global route - trigger[3] bumps the route up
+	if (trigger[3]) count++;
+	if (count>7) count=0;
+      }      // TODO: in other modes we can set count to 0 or fix it somewhere else
+      
+      tmp=binroute[count][w]; // was route[w]
+      for (x=0;x<4;x++){ //unroll?
+      if (tmp&0x01){  
+	bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum
+	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
+	//	xx=(tmpp>>4)&3;
+	//	bitn=logop(bitn,bitrr,xx); // but what if we want different logical opps for each?
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1;
+      }	
+	PULSIN_XOR;
+	BITN_AND_OUT;
+    }// counterw
+    break; 
+
+  case 60: // as generic routing but testing use of MACRO with arguments
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    par=0; parr=0;     // for this macro we need   par=0/or whatever for DAC outside and parr is for ADC 
+    MULTROUTE(0, 0);     // X is adc_type, Y is dac_type, REGG is where to take from for adc
+  }
+    break;
+
+    
     /////////////////////////////////////////////////////////////////////////
     /// extra experimental cases // tested
     /////////////////////////////////////////////////////////////////////////

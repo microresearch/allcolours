@@ -257,6 +257,14 @@ all the comparison possibilities
 
 PLAN: all new modes, put first draft together
 
+13/11/2021:
+
+- case 59, generic routing with ADC working // test in case 59 w==3 global route changes...TESTED - in case 59 and works ok...
+
+- check out macros with variables to throw in - test in case 60 now but possibly too generic or we need to add probabilities...
+
+QUESTION of how to manage modes now - first finish ported in modes/all modes // check logicand then start to see how we can draft modes...
+
 12/11/2021:
 
 - case 58 approx generic mode is workings
@@ -269,7 +277,7 @@ PLAN: all new modes, put first draft together
   routing table? could have global if have say 4 R modes multiplied by
   4 route modes for each section... test global routes...
 
-- *not to have several ADCs in/no multiple DACs - but still keep basic dacs for 12 bit length*
+- not to have several ADCs in/no multiple DACs - but still keep basic dacs for 12 bit length
 
 10/11/2021:
 
