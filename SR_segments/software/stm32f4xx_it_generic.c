@@ -805,6 +805,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
 
   }
+  // next is never used as we have one bit only for speedfrom
   else if (speedfrom[w]==2 && counter[w]>(speed[w]+dac[speedfrom_[w]])){ // add means we always slow down - other options (wrap, lookup)
       counter[w]=0; 
       start=1;

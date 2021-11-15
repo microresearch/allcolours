@@ -22,6 +22,8 @@ CVspeed:
 16-31 LR - exp modes
       NC - any match modes 4xADC, 4xDAC
 
+place global CV route modes
+
 CV+DACspeed: // other speed options: speed from clkcnt, speed from CV+clkcnt
 32-47 LR - modes mixed
       NC as 1or2
@@ -32,6 +34,7 @@ INTspeed: // or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with
 48-63 LR - mix using CV params - probability, comparator, CV+DAC/ADC as modifier
       NC 4x ADC/DAC and prob modes - special INT modes for ADC/DAC which make use of CV/not trigger
 
+plus global change routes for INTmodes right at the end,,,
 
 CV&DACspeed: -/+/wrapsDAC- tested some...
 
@@ -188,9 +191,7 @@ DONE- GSR doesn't change (becomes a revenant) 48 and 49
 
 // pulse in means double a step.. ????DONE
 
-//////////////////////////////////////////
-
-- modes which manipulate routing table/speedfrom tables - DAC/CVetc ... - this is already in modes 24,25,26 to re-examine
+- modes which manipulate THEIR OWN SR routing table/speedfrom tables - DAC/CVetc ... - this is already in modes 24,25,26 to re-examine
 
 24: clkin bumps up routing table only
 
@@ -257,9 +258,24 @@ all the comparison possibilities
 
 PLAN: all new modes, put first draft together
 
+14/11/2021:
+
+- for all w==3 modes except route changers we need to set count back to 0
+
+global routings:
+INTmodes: CV as route (CV cycles through list or changes list then binroute would change) + fixed new routes
+
+CVmodes: trigger bumps up binroute + fixed new routes, trigger toggles altroute/regular routes (also prob?)
+
+DONE: fixed otherpar and strobe in DAC...
+
+TODO: port in first it.c modes above// first a few attempts in draftnov
+
 13/11/2021:
 
 - case 59, generic routing with ADC working // test in case 59 w==3 global route changes...TESTED - in case 59 and works ok...
+
+60 very generic routing with MACRO fill in/ 61 speedCV complemented by trigger
 
 - check out macros with variables to throw in - test in case 60 now but possibly too generic or we need to add probabilities...
 

@@ -137,6 +137,22 @@ uint32_t testmodes[4]={60,60,60,60}; // TEST!
   }							\
   }
 
+// macro for alt routes for ADC and DAC
+#define ADCDACETC1(X, Y){			\
+  bitn=0;					\
+  dactype[2]=Y;					\
+  GSHIFT;						\
+  if (w==0)      {					\
+  bitn=ADC_(0,SRlength[0],X,trigger[w],reggs[w],parr);	\
+  BINROUTE;						\
+  }							\
+  if (w==2)      {					\
+  BINROUTE;						\
+  }							\
+}
+// follow with else{ }
+
+
 // if we go with singular defroute
 #define BITNNN {								\
   bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;	\
@@ -282,7 +298,7 @@ volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRR
 //                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
 volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
-
+/// from here
 static inline uint32_t countbits(uint32_t i)
 {
     return( countbts[i&0xFFFF] + countbts[i>>16] );
@@ -374,7 +390,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 4:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits // here we need 2 params... we use otherpar
     // otherpar can also be CV for INTmodes
-    otherpar=otherpar>>8; // how long? it should be?
+    otherpar=otherpar>>4; // how long? it should be?
      if (n[reg]>length) { // 0s
        bt=0;
        if (nn[reg]>otherpar) {
@@ -632,6 +648,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 24: // len is otherpar but there is no shift
     //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
     // maybe restrict otherpar
+    otherpar=otherpar>>7; // 5 bits
       if (n[reg]>otherpar) {
 	k=adc_buffer[12]; //
       n[reg]=0;
@@ -642,6 +659,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     
   case 25: // len is otherpar but there is shift from otherpar
     //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+        otherpar=otherpar>>7; // 5 bits
       if (n[reg]>otherpar) {
 	if (otherpar<12) k=(adc_buffer[12])>>(11-otherpar); //
 	else k=(adc_buffer[12])<<(otherpar-11);
@@ -653,9 +671,9 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
     /// comparator modes - compare to: CV/INTonly, DAC, CV+DAC/INTonly, to clksr_, to param - feed these into otherpar
 
-  case 26: // otherpar as comparator - 10 bits standard here
+  case 26: // otherpar as comparator - 10 bits standard here // now 12 bits
      bt=0;
-     if ((adc_buffer[12]>>2)>otherpar) bt=1;
+     if ((adc_buffer[12])>otherpar) bt=1;
      break;
 
   case 27: // incoming bit switches direction of LFSR
@@ -673,7 +691,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 28:// ADC prob mode using otherpar - 10 bits in this case
       // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-      if ((LFSR_[reg] & 1023 )<otherpar) { 
+      if ((LFSR_[reg] & 4095 ) < otherpar) { 
   if (length>11) length=11;
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
@@ -688,6 +706,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      // we can also use otherpar=CV or otherwise as padding, length of bits which is not LEN!
   case 29:   // as case 17: // basic sequential length as in 0 but with padding if >11 bist
     // maybe restrict otherpar
+    otherpar=otherpar>>7; // 5 bits
       if (n[reg]>length) {
 	if (otherpar<12) {
 	  k=(adc_buffer[12])>>(11-otherpar); //
@@ -708,7 +727,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt = (k>>nnn[reg])&0x01;
     nnn[reg]++;    
 
-    otherpar=otherpar>>8; // how long? it should be?
+    otherpar=otherpar>>4; // how long? it should be?
      if (n[reg]>length) { // 0s
        bt|=0; // XOR TODO
        if (nn[reg]>otherpar) {
@@ -806,7 +825,7 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
 // TODO: what we add to this: shifty_spacers, sequential x bit DAC, sequential equiv DAC, seq spaced DAC
 // also we can have one bit data with selection of params for BETA/filter!
 
-static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t parame){ //
+static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){ //
   // DAC is 12 bits
   uint32_t y,x=0;
   static uint32_t n[4]={0,0,0,0};
@@ -843,7 +862,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     }
     break;
   case 4: // only output standard DAC on param->strobe/clock! so just maintain lastout
-    if (parame) {
+    if (strobe) {
       x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
       lastout=x;
     }
@@ -859,7 +878,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     }      
     break;*/    
   case 6: // toggle to hold/release DAC
-    if (parame) toggle^=1;
+    if (strobe) toggle^=1;
     if (toggle) {
       x=lastout;
     }
@@ -892,8 +911,8 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   case 11:// standard bit DAC for x bits     ///bitx length as other param rather than length:
     // but then we don't really use len? unless is cycle back
     // bit length can also be CV - how to put this in as DAC is quite fixed in macro?
-    parame=parame&31; //5 bits
-    x=((shift_[reg] & masky[parame])>>(rightshift[parame]))<<leftshift[parame]; 
+    otherpar=(otherpar>>7)&31; //5 bits
+    x=((shift_[reg] & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; 
       break;
 
       // sequential DACs
@@ -906,7 +925,8 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     break;
 
   case 13: // we wait for parame bits then output that many bits from the top of the SR (len bit)
-    if (n[reg]>parame) {
+    otherpar=(otherpar>>7)&31; //5 bits
+    if (n[reg]>otherpar) {
       n[reg]=0;
       x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; 
     }
@@ -921,7 +941,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
       break;
 
   case 15:/// we record mask and use this to mask the regular DAC... - could also be other-than-standard DACs
-    if (parame) // we record the mask 
+    if (strobe) // we record the mask 
 	{
 	  mask[reg]=shift_[otherpar]; // or reg can be otherpar/SR
 	  }
@@ -2677,7 +2697,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
       if (w==3) {//change the global route - trigger[3] bumps the route up
 	if (trigger[3]) count++;
 	if (count>7) count=0;
-      }      // TODO: in other modes we can set count to 0 or fix it somewhere else
+      }      // TODO: in other w==3 modes we can set count to 0 or fix it somewhere else
       
       tmp=binroute[count][w]; // was route[w]
       for (x=0;x<4;x++){ //unroll?
@@ -2701,6 +2721,16 @@ case 47: // GSR runs at CV speed in INT mode (try)
     MULTROUTE(0, 0);     // X is adc_type, Y is dac_type, REGG is where to take from for adc
   }
     break;
+
+  case 61: // as generic routing but testing use of MACRO with arguments - speedCV but complimented by trigger
+    if (counter[w]>speed[w] && speed[w]!=1024){
+      if (trigger[w]){
+    par=0; parr=0;     // for this macro we need   par=0/or whatever for DAC outside and parr is for ADC 
+    MULTROUTE(0, 0);     // X is adc_type, Y is dac_type, REGG is where to take from for adc
+      }
+  }
+    break;
+
 
     
     /////////////////////////////////////////////////////////////////////////
