@@ -2146,7 +2146,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // handling overlap with new test code in binary.c
   // but that is not right! as is at top end not length
   // TODO: to fix
-  if (coggn==0)  {
+  if (coggn==0)  { // new one
     // we shift round shift_regn and dump overlapx bits into bottom part of SRL
     if (sl>SRlengthn) sl=SRlengthn;
     tmpt=(SRlengthn-(sl-1)); // again what if sl is longer than lengthn - this is key figure

@@ -45,6 +45,9 @@
 
 uint32_t testmodes[4]={0,0,0,0}; // TEST!
 
+//for INTmodes
+#define CVin (31-(adc_buffer[lookupadc[w]]>>7)); 
+
 #define GSHIFT {				\
   counter[w]=0;					\
   Gshift_[w][0]=shift_[w];			\

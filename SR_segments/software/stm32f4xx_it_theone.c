@@ -43,7 +43,10 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={60,60,60,60}; // TEST!
+uint32_t testmodes[4]={60,60,68,60}; // TEST!
+
+//for INTmodes
+#define CVin (31-(adc_buffer[lookupadc[w]]>>7)); 
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -55,9 +58,9 @@ uint32_t testmodes[4]={60,60,60,60}; // TEST!
 }
 
 #define BITN_AND_OUT {				\
-    shift_[w]+=bitn;					\
+    shift_[w]+=bitn;						\
     dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	\
-  tmp=(w<<1);					  \
+    tmp=(w<<1);							\
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
   lengthbit=(SRlength[w]>>1);			      \
@@ -142,6 +145,7 @@ uint32_t testmodes[4]={60,60,60,60}; // TEST!
   bitn=0;					\
   dactype[2]=Y;					\
   GSHIFT;						\
+  if (w==3) count=0;					\
   if (w==0)      {					\
   bitn=ADC_(0,SRlength[0],X,trigger[w],reggs[w],parr);	\
   BINROUTE;						\
@@ -298,7 +302,7 @@ volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRR
 //                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
 volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
-#include "adcetc.h" // now all of the other functions so can work on modes - but shared by all/othjer it.c
+#include "adcetc.h" // now all of the other functions so can work on modes - but shared by all/other it.c
 
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - how fast can we run this?
 // period 32, prescaler 8 = toggle of 104 KHz
@@ -308,7 +312,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   uint32_t x, y, q, start=0;
   uint32_t bitn=0, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmpp, xx;
   uint8_t trigger[4]={0,0,0,0};
-  static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0;
+  static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0,cw=0;
   static uint32_t counter[4]={0,0,0,0};
   static uint32_t train[4]={0,0,0,0};
   static uint32_t tug[4]={0,0,0,0};
@@ -1867,7 +1871,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
   case 60: // as generic routing but testing use of MACRO with arguments
     if (counter[w]>speed[w] && speed[w]!=1024){
     par=0; parr=0;     // for this macro we need   par=0/or whatever for DAC outside and parr is for ADC 
-    MULTROUTE(31, 0);     // X is adc_type, Y is dac_type
+    MULTROUTE(0, 0);     // X is adc_type, Y is dac_type
   }
     break;
 
@@ -1881,17 +1885,42 @@ case 47: // GSR runs at CV speed in INT mode (try)
     break;
 
     ////// modes from it.c but not using coggn so tricky
-  case 62: // 
+  case 62: // LFSR in routed in SRs
     // NEW generic routing mode including ADC - replaces mode 9
     par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
-
-    if (trigger[w]){ // adc_buffer[lookupadc[w]]
+    if (counter[w]>speed[w] && speed[w]!=1024){
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       GSHIFT;    
 
       // do different modes for ADC and DAC here...
       if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
       if (w==3) count=0; // default route
+      
+      tmp=binroute[count][w]; // was route[w]
+      for (x=0;x<4;x++){ //unroll?
+      if (tmp&0x01){  
+	bitrr = ((Gshift_[x][w] >> (lfsr_taps[SRlength[x]][0])) ^ (Gshift_[x][w] >> (lfsr_taps[SRlength[x]][1])) ^ (Gshift_[x][w] >> (lfsr_taps[SRlength[x]][2])) ^ (Gshift_[x][w] >> (lfsr_taps[SRlength[x]][3]))) & 1u;
+	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1;
+      }	
+	PULSIN_XOR;
+	BITN_AND_OUT;
+    }// counterw
+    break; 
+
+  case 63: // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
+    par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+        if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+    
+      dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      GSHIFT;    
+
+      if (w==3) count=0; // reset count/route
+      // do different modes for ADC and DAC here...
+      if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
       
       tmp=binroute[count][w]; // was route[w]
       for (x=0;x<4;x++){ //unroll?
@@ -1906,6 +1935,170 @@ case 47: // GSR runs at CV speed in INT mode (try)
       }	
 	PULSIN_XOR;
 	BITN_AND_OUT;
+    }// counterw
+    break; 
+
+  case 64:// as 63 but we try INTmode with CV changing length of incoming routes
+    // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
+    par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+    if (trigger[w]){ // adc_buffer[lookupadc[w]]    
+      dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      GSHIFT;    
+
+      if (w==3) count=0; // reset count/route
+      // do different modes for ADC and DAC here...
+      if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
+
+      tmpp=31-(adc_buffer[lookupadc[w]]>>7);// 5 bits for length    
+      tmp=binroute[count][w]; // was route[w]
+      for (x=0;x<4;x++){ //unroll?
+      if (tmp&0x01){  
+	bitrr = (Gshift_[x][w]>>tmpp) & 0x01; // or other logical opp for multiple bits/accum
+	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
+	//	xx=(tmpp>>4)&3;
+	//	bitn=logop(bitn,bitrr,xx); // but what if we want different logical opps for each?
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1;
+      }	
+	PULSIN_XOR;
+	BITN_AND_OUT;
+    }// counterw
+    break; 
+    
+  case 65: // SR in SR with strobe as barrier? only for itself or for incoming/itself
+    // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
+    par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+    if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+      cw++;
+      if (cw>31) cw=0;
+      if (trigger[w]) tmpt=cw;
+      dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      GSHIFT;    
+
+      if (w==3) count=0; // reset count/route
+      // do different modes for ADC and DAC here...
+      if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
+      
+      tmp=binroute[count][w]; // was route[w]
+      for (x=0;x<4;x++){ //unroll?
+	if (tmp&0x01 || x==w){   // if we want self-feedback in route whatever...
+	  bitrr = (Gshift_[x][w]>>tmpt) & 0x01; // or can just keep tmpt for this one and len of previous
+	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1;
+      }	
+	PULSIN_XOR;
+	BITN_AND_OUT;
+    }// counterw
+    break; 
+
+  case 66: // SR in SR with strobe as barrier? only for itself or for incoming/itself - variation on above
+    // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
+    par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+    if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+      cw++;
+      if (cw>31) cw=0;
+      if (trigger[w]) tmpt=cw;
+      dactype[2]=0;
+      GSHIFT;    
+
+      if (w==3) count=0; // reset count/route
+      if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
+      
+      tmp=binroute[count][w]; 
+      for (x=0;x<4;x++){ 
+	if (w==x){
+	  bitrr = (Gshift_[x][w]>>tmpt) & 0x01; 
+	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	bitn^=bitrr;
+      }
+	else if (tmp&0x01){
+	  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01; 
+	Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	bitn^=bitrr;
+      }
+	
+      tmp=tmp>>1;
+      }	
+	PULSIN_XOR;
+	BITN_AND_OUT;
+    }// counterw
+    break; 
+    
+    
+  case 67: // trial for shifter1
+    // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
+    par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+    //        if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+    if (trigger[w]){
+      dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      //      GSHIFT;    
+      tmpp=CVin; //31-(adc_buffer[lookupadc[w]]>>7); // 5 bits for length only
+      counter[w]=0;
+      Gshift_[w][0]=shift_[w];
+      Gshift_[w][1]=shift_[w];
+      Gshift_[w][2]=shift_[w];
+      Gshift_[w][3]=shift_[w];
+      shift_[w]=shift_[w]<<tmpp;
+      
+      if (w==3) count=0; // reset count/route
+      // do different modes for ADC and DAC here...
+      if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
+      
+      tmp=binroute[count][w]; // was route[w]
+      for (x=0;x<4;x++){ //unroll?
+      if (tmp&0x01){
+	if (tmpp>SRlength[x]) tmpp=SRlength[x];
+	if (tmpp!=0){
+	  bitrr=(Gshift_[x][w]&(othermasky[tmpp]>>(31-SRlength[x])))>>(SRlength[x]-(tmpp-1));
+	  Gshift_[x][w]=(Gshift_[x][w]<<tmpp)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
+	bitn^=bitrr;
+	}
+      }
+      tmp=tmp>>1;
+      }	
+	PULSIN_XOR;
+	BITN_AND_OUT;
+    }// counterw
+    break; 
+
+  case 68: // trial for shifter1 - overlap - we just XOR in the Gshift bits but don't move gshift
+    // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
+    par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
+    
+    //        if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
+    if (trigger[w]){
+      dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
+      GSHIFT;    
+      tmpp=CVin; //31-(adc_buffer[lookupadc[w]]>>7); // 5 bits for length only
+      
+      if (w==3) count=0; // reset count/route
+      // do different modes for ADC and DAC here...
+      if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
+      
+      tmp=binroute[count][w]; // was route[w]
+      for (x=0;x<4;x++){ //unroll?
+      if (tmp&0x01){
+	if (tmpp>SRlength[x]) tmpp=SRlength[x];
+	if (tmpp!=0){
+	  bitrr=(Gshift_[x][w]&(othermasky[tmpp]>>(31-SRlength[x])))>>(SRlength[x]-(tmpp-1));
+	  //	  Gshift_[x][w]=(Gshift_[x][w]<<tmpp)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
+	bitn^=bitrr;
+	}
+      }
+      tmp=tmp>>1;
+      }	
+	PULSIN_XOR;
+	//	BITN_AND_OUT;
+    shift_[w]^=bitn;
+    dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]); 
+    PULSOUT;	
     }// counterw
     break; 
 
@@ -1964,9 +2157,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
         if (counter[w]>speed[w] && speed[w]!=1024){ // or another dac
 	train[w]++;
 	dactype[2]=0; // basic DAC out    
-
 	GSHIFT;
-	
 	if (w==0){
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  

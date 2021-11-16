@@ -245,28 +245,36 @@ eg.
 [- TM and other prob modes:  CV in as comparator for SR DAC, CV as comparator for ADC in, ADC as comp for SR DAC
 all the comparison possibilities]
 
-- overlaps
+- overlaps: in overlap we just mask top x bits of previous routed (so only one route or?) in to this one...DONE
 
-- shift x bits
+- shift x bits in DONE
 
-- SR in SR//barriers
-
+- SR in SR//barriersDONEkind of
 
 * diary sept 2021+
 
-PLAN: all new modes, put first draft together
+PLAN: put first draft together
 
 16/11/2021:
 
+- shift x bits in/shift Gshift round DONE mode 67 in theone.c
+
 - tested speed with clk and is fast enough so far (re_check after all switch/cases) - can even go faster:   TIM_TimeBase_InitStructure.TIM_Prescaler = 8 ???
 
-- TODO: fill out adc/dac modes in new draft, maybe port in more modes
-  from it.c and also maybe deal with ghost taps
+- TODO: fill out adc/dac modes in new draft, 
 
-  // try putting LFSR feedback into smaller coggSRs!DONE
-  // also testing LFSR as structure for all... - but this is maybe too noisy
+- maybe port in more modes from it.cDONE
 
+- and also maybe deal with ghost tapsDONE
 
+  // try putting LFSR feedback into smaller coggSRs - mode 62 TESTED
+
+- added  case 64:// as 63 but we try INTmode with CV changing length of incoming routes
+
+65 with strobe as barrier DONE
+
+- question of generic/global routing and feedback into itself????? 	if (tmp&0x01 || x==w){   // if we want self-feedback in route whatever... MAYBE
+and/or variations of this?
 
 15/11/2021:
 
