@@ -147,9 +147,10 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
 #define ADCDACETC1(X, Y){			\
   bitn=0;					\
   dactype[2]=Y;					\
+  if (w==3) count=0;					\
   GSHIFT;						\
   if (w==0)      {					\
-  bitn=ADC_(0,SRlength[0],X,trigger[w],reggs[w],parr);	\
+  bitn=ADC_(0,SRlength[0],X,trigger[0],reggs[0],parr);	\
   BINROUTE;						\
   }							\
   if (w==2)      {					\
@@ -318,11 +319,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
-  // crash detect ++ 32/64 in main.c is 14KHz
-  /*       flipper^=1;
-     if (flipper) GPIOB->BSRRH = (1)<<4;  // clear bits PB2
-     else   GPIOB->BSRRL=(1)<<4; //  write bits   
-  */
+  // crash detect ++ 32/64 in main.c is 14KHz //and/or speed check...
+  flipper^=1;
+  if (flipper) GPIOB->BSRRH = (1)<<12;  // clear bits PB12 - left normed clock I think
+  else   GPIOB->BSRRL=(1)<<12; //  write bits   
+  
 
     /* // we don't deal with CLKs now!  
     //TODO: ghostSRs for normed clks (with speed of these from what, from RDAC?)

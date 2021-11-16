@@ -234,16 +234,16 @@ eg.
 ** AC modes and inspirations: TODO TOOO
 
 - clkin leaps/flips bits - that we can apply a mask from clkin for
-  whole SR - would be nice to be able to freeze this though
+  whole SR - would be nice to be able to freeze this thoughDONE to some extent
 
-- shifting array of taps/ghost taps/ clksr can also be taps...
+- DONE in adc_ - case 31 - TO TEST shifting array of taps/ghost taps/ clksr can also be taps: ghost_tapsL[32][4] = { // left hand path ghost_tapsR
 
 - sr loops in sr
 
 ** first it.c modes to port in
 
-- TM and other prob modes:  CV in as comparator for SR DAC, CV as comparator for ADC in, ADC as comp for SR DAC
-all the comparison possibilities
+[- TM and other prob modes:  CV in as comparator for SR DAC, CV as comparator for ADC in, ADC as comp for SR DAC
+all the comparison possibilities]
 
 - overlaps
 
@@ -251,14 +251,24 @@ all the comparison possibilities
 
 - SR in SR//barriers
 
-- 2 headed SR
-
 
 * diary sept 2021+
 
 PLAN: all new modes, put first draft together
 
-14/11/2021:
+16/11/2021:
+
+- tested speed with clk and is fast enough so far (re_check after all switch/cases) - can even go faster:   TIM_TimeBase_InitStructure.TIM_Prescaler = 8 ???
+
+- TODO: fill out adc/dac modes in new draft, maybe port in more modes
+  from it.c and also maybe deal with ghost taps
+
+  // try putting LFSR feedback into smaller coggSRs!DONE
+  // also testing LFSR as structure for all... - but this is maybe too noisy
+
+
+
+15/11/2021:
 
 - for all w==3 modes except route changers we need to set count back to 0
 
