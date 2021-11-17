@@ -15,20 +15,18 @@
 * modes sketch
 
 CVspeed:
-1-15 -LR simple modes/all inc prob
+1-15 -LR simple modes/all inc. prob
       N 8xADC x2 - pass in/circle_and_pass or 16 ADC modes with pass in only!
-      C 4xDAC x4 - pass in/circle only/circle and pass/prob
+      C 4xDAC x4 //or 8xDAC x2 // or 16x DAC - pass in/circle only/circle and pass/prob
 
-16-31 LR - exp modes
+16-31 LR - exp modes - place global CV route modes
       NC - any match modes 4xADC, 4xDAC
 
-place global CV route modes
+or 31x ADC ???? 8x2
 
 CV+DACspeed: // other speed options: speed from clkcnt, speed from CV+clkcnt
 32-47 LR - modes mixed
       NC as 1or2
-
-also which DAC (can be rerouted too)
 
 INTspeed: // or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx
 48-63 LR - mix using CV params - probability, comparator, CV+DAC/ADC as modifier
@@ -254,6 +252,18 @@ all the comparison possibilities]
 * diary sept 2021+
 
 PLAN: put first draft together
+
+17/11/2021:
+
+[fixing some of generic.c for performance use]
+
+Question of max length bits in or padded bits in ADC
+
+- where we also change logic of incoming pulsin bits? 
+
+- test param in DAC for one bit filter/BETA - DONE DAC mode 15
+
+start to fill in draft modes/organise ADC/DAC modes...
 
 16/11/2021:
 

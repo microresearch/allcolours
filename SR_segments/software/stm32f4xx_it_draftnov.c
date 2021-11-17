@@ -140,6 +140,18 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
   }							\
   }
 
+#define BINROUTEANDCYCLE {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+    if ((tmp&0x01) || (x==w)){				\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
 // if we go with singular defroute
 #define BITNNN {								\
   bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;	\
@@ -361,20 +373,42 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   counter[w]++;
 
   mode[w]=testmodes[w];
-  switch(mode[w]){ 
-  case 0: // start to draft first set of ADc and DAC modes
+
+  switch(mode[w]){
+
+  case 0: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
+    par=0;
+    dactype[2]=0;
+    BINROUTE;
+    PULSIN_XOR;
+    BITN_AND_OUT;
+    break;
+
+  case 1: // for all just cycle - ADC NONE/cycle, LR cycle, DAC 0/cycle
+    par=0;
+    dactype[2]=0;
+    BINROUTEANDCYCLE;
+    PULSIN_XOR;
+    BITN_AND_OUT;
+    break;
+
+    // 2-15 will be most important ADC/DAC modes and basics/global routes/prob modes etc.
+
+  case 2: // start to draft first set of ADC and DAC modes
     if (counter[w]>speed[w] && speed[w]!=1024){
           par=0; parr=0;     // for this macro we need   par=0/or whatever for DAC outside and parr is for ADC 
 	  ADCDACETC1(0, 0);
 	  ///////HERE!
-	  BINROUTE; // fill in L and R modes here
+	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
 	  /////...
     }
   PULSIN_XOR;
   BITN_AND_OUT;
   }
     break;
-    
+
+    // first 16 ADC, 2x8DAC + LR: 0basic pass, 1pass and circle, 2+ various logics, probability options 
+
     ///////////////////////////////////////////////////////////////////////// 
   } // switch
 
