@@ -22,7 +22,7 @@ CVspeed:
 16-31 LR - exp modes - place global CV route modes
       NC - any match modes 4xADC, 4xDAC
 
-or 31x ADC ???? 8x2
+or 31x ADC and 2x16 DACs
 
 CV+DACspeed: // other speed options: speed from clkcnt, speed from CV+clkcnt
 32-47 LR - modes mixed
@@ -252,6 +252,24 @@ all the comparison possibilities]
 * diary sept 2021+
 
 PLAN: put first draft together
+
+18/11/2021: 
+
+QUESTIONS:
+
+- 0-31 all ADC modes - as loopback doesn't make so much sense, only thing would be probability which could be part of modes
+
+(probability of entry or not of ADC bit) - doubles ADC modes though?
+these make more sense in INTmodes (also where we have no strobe modes
+so this reduces list)
+
+arrange and organise
+
+mode 0 adc returns 0 so is just pass through ???
+
+- again if we don't use redirection of LFSR[reg] then in some ADC modes - how we could work with this//? or replace with reggDONE
+
+
 
 17/11/2021:
 

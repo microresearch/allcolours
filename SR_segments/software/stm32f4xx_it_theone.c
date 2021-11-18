@@ -115,7 +115,7 @@ uint32_t testmodes[4]={60,60,69,60}; // TEST!
   bitn=0;					\
   dactype[2]=Y;					\
   GSHIFT;						\
-  if (w==0)      bitn=ADC_(0,SRlength[0],X,trigger[0],reggs[0],parr);	\
+  if (w==0)      bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,parr);	\
   tmp=binroute[count][w];						\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
@@ -161,7 +161,7 @@ uint32_t testmodes[4]={60,60,69,60}; // TEST!
   GSHIFT;						\
   if (w==3) count=0;					\
   if (w==0)      {					\
-  bitn=ADC_(0,SRlength[0],X,trigger[w],reggs[w],parr);	\
+  bitn=ADC_(0,SRlength[0],X,trigger[w],reggg,parr);	\
   BINROUTE;						\
   }							\
   if (w==2)      {					\
@@ -263,7 +263,7 @@ static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt
 //uint32_t speedfrom[4]={0,0,0,0}; //0 is CV, 1 is interrupt, 2 is DACspeedfrom_ + CV // unused so far...
 uint32_t speedfrom_[4]={3,2,1,0}; // who we get dac offset from?
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
-uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from! default is from itself -
+//uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from! default is from itself -
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
 uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
@@ -276,9 +276,9 @@ uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
 uint32_t revroute[4]={1,2,3,0}; // 0,1,2,3 NLCR - reverse route
 uint32_t defroutee[4]={3,0,1,1}; // 0,1,2,3 NLCR - in this one 3 routes from 1 too
 uint32_t altroute[4]={3,0,0,1}; // 0,1,2,3 NLCR - not binary code but just one! // N->C, N->L, L->R, R->N = 
-uint32_t reggs[4]={3,3,3,3}; // take DACs all from last feedback reg
+//uint32_t reggs[4]={3,3,3,3}; // take ADCs all from last feedback reg
 uint32_t ourroute[4]={0,0,0,0};
-
+uint32_t reggg=0;
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[8][4]={ // add more routes, also what seq change of routes makes sense
