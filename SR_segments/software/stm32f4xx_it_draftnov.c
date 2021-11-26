@@ -59,7 +59,7 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
 
 #define BITN_AND_OUT {				\
     shift_[w]+=bitn;					\
-    dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	\
+    dac[w]=DAC_(w, SRlength[w], dactype[w],dacpar,trigger[w]);	\
   tmp=(w<<1);					  \
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
@@ -108,13 +108,13 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
 }
 
 
-// for this macro we need   par=0/or whatever for DAC outside and parr is for ADC					\
+// for this macro we need  dacpar=0/whatever for DAC and adcpar is for ADC - defined outside macro
 // X is adc_type, Y is dac_type
 #define MULTROUTE(X, Y) {			\
   bitn=0;					\
   dactype[2]=Y;					\
   GSHIFT;						\
-  if (w==0)      bitn=ADC_(0,SRlength[0],X,trigger[w],reggg,parr);	\
+  if (w==0)      bitn=ADC_(0,SRlength[0],X,trigger[w],reggg,adcpar);	\
   tmp=binroute[count][w];						\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
@@ -158,6 +158,7 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
   Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;		\
   }
 
+//if w==3 count=0 means just to reset binroute when we are put of modes which altered it
 // macro for alt routes for ADC and DAC
 #define ADCDACETC1(X, Y){			\
   bitn=0;					\
@@ -165,7 +166,7 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
   if (w==3) count=0;					\
   GSHIFT;						\
   if (w==0)      {					\
-  bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,parr);	\
+  bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
   BINROUTE;						\
   }							\
   if (w==2)      {					\
@@ -174,29 +175,6 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
   else {						\
 }
 // follow with else{ }
-
-
-/* // basic mode to test ADC/DAc modes with equiv LR modes
- 
-case x:
-    if (counter[w]>speed[w] && speed[w]!=1024){
-    dactype[2]=0; par=0; // for DAC
-    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1; // logic for ops
-    GSHIFT;
-
-    if (w==0)      {
-    BITNNN;
-    bitn^=ADC_(w,SRlength[w],2,0); // choose mode and params - can return 0 from adc for no effect
-    }
-    else
-    {
-    BITNNN;
-    }
-    PULSIN_LOGOP;    
-    BITN_AND_OUT;
-  }// counterw
-  break; 
-*/
 
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
@@ -331,7 +309,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   static uint32_t train[4]={0,0,0,0};
   static uint32_t tug[4]={0,0,0,0};
   
-  int32_t tmpt,par=0, parr=0;
+  int32_t tmpt, dacpar=0, adcpar=0;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
@@ -377,37 +355,92 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   switch(mode[w]){
 
+    /* // basic mode to test ADC/DAc modes with equiv LR modes
+ 
+case x:
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    dactype[2]=0; par=0; // for DAC
+    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1; // logic for ops
+    GSHIFT;
+
+    if (w==0)      {
+    BITNNN;
+    bitn^=ADC_(w,SRlength[w],2,0); // choose mode and params - can return 0 from adc for no effect
+    }
+    else
+    {
+    BITNNN;
+    }
+    PULSIN_LOGOP;    
+    BITN_AND_OUT;
+  }// counterw
+  break; 
+*/
+    
   case 0: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
-    par=0; parr=0; reggg=0; // params - par for DAC, parr for ADC, reggg is for ADC_
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
     dactype[2]=0;
     BINROUTE;
     PULSIN_XOR;
     BITN_AND_OUT;
+    }
     break;
 
   case 1: // for all just cycle - ADC NONE/cycle, LR cycle, DAC 0/cycle
-    par=0; parr=0; reggg=0; // params - par for DAC, parr for ADC, reggg is for ADC_
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
     dactype[2]=0;
     BINROUTEANDCYCLE;
     PULSIN_XOR;
     BITN_AND_OUT;
+    }
     break;
 
     // 2-15 will be most important ADC/DAC modes and basics/global routes/prob modes etc.
 
   case 2: // start to draft first set of ADC and DAC modes
     if (counter[w]>speed[w] && speed[w]!=1024){
-      par=0; parr=0; reggg=0; // params - par for DAC, parr for ADC, reggg is for ADC
+      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
 	  ADCDACETC1(0, 0);
 	  ///////HERE!
 	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
 	  /////...
-    }
+    } // closes ADC macro's ELSE
   PULSIN_XOR;
   BITN_AND_OUT;
   }
     break;
 
+  case 3: // test mode for all except 0 and 1 with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
+    // not sure if this makes sense
+    // alts are also:
+    // - in strobe copy routed GSR to XGSR and then cycle through with/without shift back in? so they form one long SR now
+    // - copy as enter mode
+    // - length as overlap?
+    if (counter[w]>speed[w] && speed[w]!=1024){
+      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
+	  ADCDACETC1(0, 0);
+	  ///////HERE!
+	  //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
+	  tmp=binroute[count][w];
+	  for (x=0;x<4;x++){
+	    if (tmp&0x01){
+	      bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
+	      //	      Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+	      Gshift_[x][w]=(Gshift_[x][w]<<1) + ((shift_[w]>>SRlength[w]) & 0x01);
+	      bitn^=bitrr;
+	    }
+	    tmp=tmp>>1;
+	  }	  
+	  /////...
+    } // closes ADC macro's ELSE
+  PULSIN_XOR;
+  BITN_AND_OUT;
+  }
+    break;
+
+    
     // first 16 ADC, 2x8DAC + LR: 0basic pass, 1pass and circle, 2+ various logics, probability options 
 
     ///////////////////////////////////////////////////////////////////////// 

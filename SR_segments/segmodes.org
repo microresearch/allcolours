@@ -253,6 +253,10 @@ all the comparison possibilities]
 
 PLAN: put first draft together
 
+26/11/2021: 
+
+- new additive etst mode in drfatnov.c to test and expand...
+
 18/11/2021: 
 
 QUESTIONS:
@@ -268,8 +272,6 @@ arrange and organise
 mode 0 adc returns 0 so is just pass through ???
 
 - again if we don't use redirection of LFSR[reg] then in some ADC modes - how we could work with this//? or replace with reggDONE
-
-
 
 17/11/2021:
 

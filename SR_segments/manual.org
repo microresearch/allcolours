@@ -1,0 +1,22 @@
+* notes towards manual
+
+** Heavens material
+
+https://academic.oup.com/jcmc/article/3/3/JCMC334/4584381
+
+** ascii art/outputs for different SR varieties
+
+** basic description
+
+how we call SR: as rungler?
+
+** modes drawn out - how we notate these eg. symbols for probabilty, how we make a grid?
+
+** layout and panel scan
+
+** other params/ power etc.
+
+20HP, XmA at +12V, XmA at -12V, 0mA at 5v. Multiple inputs, single audio/CV outputs, multiple pulse outputs. Power is red stripe/-12V DOWN.
+
+** any example patches
+
