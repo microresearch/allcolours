@@ -128,6 +128,15 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
   BITN_AND_OUT;						\
 }
 
+// reverse 32 bits for tmp - but how to reverse based on length - reverse lowest srlength bits ?
+#define RETMPERSEE {				\
+  tmp = ((tmp >> 1) & 0x55555555) | ((tmp & 0x55555555) << 1);	\
+  tmp = ((tmp >> 2) & 0x33333333) | ((tmp & 0x33333333) << 2);	\
+  tmp = ((tmp >> 4) & 0x0F0F0F0F) | ((tmp & 0x0F0F0F0F) << 4);	\
+  tmp = ((tmp >> 8) & 0x00FF00FF) | ((tmp & 0x00FF00FF) << 8);	\
+  tmp = ( tmp >> 16             ) | ( tmp               << 16);	\
+  }
+
 #define BINROUTE {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
@@ -229,7 +238,16 @@ static uint32_t Gshift_[4][4]={
   {0xff,0xff,0xff,0xff}
 };
 
-static uint32_t GGshift_[4], cogg[4][4], GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
+static uint32_t GGshift_[4][4]={ // for freezers
+ {0xff,0xff,0xff,0xff},
+  {0xff,0xff,0xff,0xff},
+  {0xff,0xff,0xff,0xff},
+  {0xff,0xff,0xff,0xff}
+};
+
+static uint32_t storedlength[4][4];
+
+static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
 
 // and cycling/circling array of ghosts which can come back or go forwards/backwards - when these ghosts are copied over (on event)
 // with 256 cycles/copies - or we can have variable length of this shifting array
@@ -376,8 +394,18 @@ case x:
   }// counterw
   break; 
 */
+
+  case 0: // for all just cycle - ADC NONE/cycle, LR cycle, DAC 0/cycle
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
+    dactype[2]=0;
+    BINROUTEANDCYCLE;
+    PULSIN_XOR;
+    BITN_AND_OUT;
+    }
+    break;
     
-  case 0: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
+  case 1: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
     if (counter[w]>speed[w] && speed[w]!=1024){
     dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
     dactype[2]=0;
@@ -387,36 +415,102 @@ case x:
     }
     break;
 
-  case 1: // for all just cycle - ADC NONE/cycle, LR cycle, DAC 0/cycle
-    if (counter[w]>speed[w] && speed[w]!=1024){
-    dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
-    dactype[2]=0;
-    BINROUTEANDCYCLE;
-    PULSIN_XOR;
-    BITN_AND_OUT;
-    }
-    break;
-
     // 2-15 will be most important ADC/DAC modes and basics/global routes/prob modes etc.
-
+    //- otherpar modes: 24(len), 25(len), 26(comp), 28(prob), 29(len), 30(lengthforosc), 31 (lengthforosc)
+    //- REGG modes: 2/lfsr, 4/lfsr, 5/lfsr. 6/DAC. 11/lfsr, 12/lfsr, 13/lfsr, 19/dac, 27/lfsr, 
+    
   case 2: // start to draft first set of ADC and DAC modes
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
-	  ADCDACETC1(0, 0);
-	  ///////HERE!
-	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
-	  /////...
+      ADCDACETC1(0, 0);
+      //////////////////////////////////HERE!
+      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      /////////////////////////////////////...
     } // closes ADC macro's ELSE
-  PULSIN_XOR;
-  BITN_AND_OUT;
+    PULSIN_XOR;
+    BITN_AND_OUT;
   }
-    break;
+  break;
 
-  case 3: // test mode for all except 0 and 1 with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
+  case 32:     // draft for CV+DAC and variations 0
+    if (counter[w]>(speed[w]+dac[speedfrom_[w]])){ 
+      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+      ADCDACETC1(0, 0);
+      //////////////////////////////////HERE!
+      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      /////////////////////////////////////...
+    } // closes ADC macro's ELSE
+    PULSIN_XOR;
+    BITN_AND_OUT;	
+}
+break;
+
+case 33:     // draft for CV+DAC and variations 1
+    tmpt=(dac[speedfrom_[w]]>>2)-(1024-speed[w]);
+    if (tmpt<0) tmpt=0; 
+    if (counter[w]>tmpt){
+      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+      ADCDACETC1(0, 0);
+      //////////////////////////////////HERE!
+      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      /////////////////////////////////////...
+      } // closes ADC macro's ELSE
+      PULSIN_XOR;
+      BITN_AND_OUT;	
+}
+break;
+
+    case 34:     // draft for CV+DAC and variations 2
+tmpt= speed[w]-(dac[speedfrom_[w]]>>2);
+if (tmpt<0) tmpt=0; 
+if (counter[w]>tmpt){
+  dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+      ADCDACETC1(0, 0);
+      //////////////////////////////////HERE!
+      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      /////////////////////////////////////...
+      } // closes ADC macro's ELSE
+      PULSIN_XOR;
+      BITN_AND_OUT;	
+      }
+      break;
+
+case 35:     // draft for CV+DAC and variations 3
+if (counter[w]>((dac[speedfrom_[w]]>>2)%speed[w])){ // wrap
+  dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+  ADCDACETC1(0, 0);
+  //////////////////////////////////HERE!
+  BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+  /////////////////////////////////////...
+ } // closes ADC macro's ELSE
+PULSIN_XOR;
+BITN_AND_OUT;	
+}
+break;
+
+// draft for INTmodes
+case 48:	
+if (trigger[w]){ 
+  dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+  ADCDACETC1(0, 0);
+  //////////////////////////////////HERE!
+  BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+  /////////////////////////////////////...
+ } // closes ADC macro's ELSE
+PULSIN_XOR;
+BITN_AND_OUT;
+}
+break;
+
+
+	
+    /// new experimental modes to test
+    
+  case 333: // TEST mode - with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
     // not sure if this makes sense
     // alts are also:
     // - in strobe copy routed GSR to XGSR and then cycle through with/without shift back in? so they form one long SR now
-    // - copy as enter mode
+    // -[ copy as enter mode - we need to flag this and also store length of routed in reg we copied]
     // - length as overlap?
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
@@ -440,6 +534,44 @@ case x:
   }
     break;
 
+  case 334: // TEST mode as 333      //     // - in strobe copy routed GSR to XGSR and then cycle through with/without shift back in? so they form one long SR now
+    if (counter[w]>speed[w] && speed[w]!=1024){
+      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
+	  ADCDACETC1(0, 0);
+	  ///////HERE!
+	  //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
+	  if (trigger[w]) { 
+	    tmp=binroute[count][w];
+	    for (x=0;x<4;x++){
+	      if (tmp&0x01){
+		storedlength[x][w]=SRlength[x];
+		GGshift_[x][w]=Gshift_[x][w];
+		bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
+		GGshift_[x][w]=(Gshift_[x][w]<<1) + ((shift_[w]>>SRlength[w]) & 0x01);
+		bitn^=bitrr;
+	    }
+	    tmp=tmp>>1;
+	  }
+	  }
+	  else
+	    {
+	  tmp=binroute[count][w];
+	  for (x=0;x<4;x++){
+	    if (tmp&0x01){
+	      bitrr = (GGshift_[x][w]>>storedlength[x][w]) & 0x01;
+	      //	      Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+	      GGshift_[x][w]=(GGshift_[x][w]<<1) + ((shift_[w]>>SRlength[w]) & 0x01);
+	      bitn^=bitrr;
+	    }
+	    tmp=tmp>>1;
+	  }	  
+	    }
+	  /////...
+    } // closes ADC macro's ELSE
+  PULSIN_XOR;
+  BITN_AND_OUT;
+  }
+    break;
     
     // first 16 ADC, 2x8DAC + LR: 0basic pass, 1pass and circle, 2+ various logics, probability options 
 

@@ -253,9 +253,42 @@ all the comparison possibilities]
 
 PLAN: put first draft together
 
+29/11/2021:
+
+ADC_:
+- otherpar modes: 24(len), 25(len), 26(comp), 28(prob), 29(len), 30(lengthforosc), 31 (lengthforosc)
+- REGG modes: 2/lfsr, 4/lfsr, 5/lfsr. 6/DAC. 11/lfsr, 12/lfsr, 13/lfsr, 19/dac, 27/lfsr, 
+
+DAC):
+- otherpar modes: 10length, 12-5bits, 13mask, 14mask, 15beta 
+
+
+*for otherpar as len let's use otherpar=otherpar&31 rather than >>*DONE and we restrict in all cases &4095
+
+all otherpar assumed as 12 bits!
+
+- that we don't need seperate modes for int/cv in adc_ or dac_ as they all use otherpar... we just need to decide which modes...
+
+add modes 15 - param as bits 
+
+MAJOR question is how we can constrain param as INTcounter to be 12 bits - *we need to get an idea of range of param as we treat as 12bits?*
+
+  // crash detect ++ 32/64 in main.c is 14KHz //and/or speed check... we have 32 16 which is 4x14=56KHz
+
+so TIM2 loop is 56000 per second - one second is 56000 count to check
+1khz is 56
+
+we need to constrain to 12 bits for otherparDONE
+
+
+TODO: - *modes which manipulate the ghostSRs!* - what those manipulations could be - freeze it, freeze its length, reverse it - but how to reverse based on length - reverse lowest srlength bits
+
+
 26/11/2021: 
 
-- new additive etst mode in drfatnov.c to test and expand...
+- new additive test mode in draftnov.c to test and expand...
+
+/////
 
 18/11/2021: 
 
@@ -268,8 +301,6 @@ these make more sense in INTmodes (also where we have no strobe modes
 so this reduces list)
 
 arrange and organise
-
-mode 0 adc returns 0 so is just pass through ???
 
 - again if we don't use redirection of LFSR[reg] then in some ADC modes - how we could work with this//? or replace with reggDONE
 

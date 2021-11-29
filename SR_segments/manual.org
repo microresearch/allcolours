@@ -4,11 +4,67 @@
 
 https://academic.oup.com/jcmc/article/3/3/JCMC334/4584381
 
+vehicle
+
+ A walk-in can be defined as "an entity who occupies a body that has been vacated by its original soul"
+
+next level
+
+
 ** ascii art/outputs for different SR varieties
+
+** artful description/older
+
+Heavens\ extends the pulse driven shift register schemes of All
+Colours with 4 and more interlocking shift registers or "runglers"
+(each with 64 modes of operation) running at all different speeds. The
+emphasis is on complex CV generation and processing of analogue
+signals, as well as clock and pulse outputs. Release date
+December 2021.
 
 ** basic description
 
-how we call SR: as rungler?
+how we call SR: as rungler, as a walk-in
+
+Heavens\ presents four interlocking or overlapping shift registers, runglers or digital walk-ins.
+
+Each register has a speed, a mode (of 64) and a length (up to 32 cells) which
+can be varied in most cases by control voltage (CV), or by other
+parameters. Each has a clock pulse input which, depending on mode
+determines speed of the register or some other parameter, such as a
+freeze or a strobe.
+
+Each register has 64 modes which can only be selected by the mode
+knob. There are 3 major modes which choose how the speed of the
+register is determined: by speed CV, by speed CV and another shift
+register, or by incoming clock pulses.
+
+The top register is for incoming signals, such as the analogue input
+or internal digital noise. Here the mode largely determines the type
+of input and how it is processed (eg. how many bits).
+
+The lowest register is for outgoing CV and audio rate signals which
+are converted from the digital registers according to various schemes
+set by the mode (eg. how many bits).
+
+The left and right registers are used to delay, process and feed back
+between top and bottom. The routing of the four distinct registers is
+largely fixed as follows (again a few modes can change this fixed
+routing). Top register feeds into left which feeds into both lower and
+right. The right feeds back in to the top. 
+
+Left and right registers have additional pulse in inputs and two pulse
+outs. One of these is half the speed of the other/one division. The
+lower register also has two pulses outs giving a total of six pulse
+outputs and one analaogue CV/audio out.
+
+All registers can run at differing speeds, the slowest speed is a full
+stop which does not advance the register. If a register is running
+faster than it's feed-in register it will cycle through a frozen copy
+of that register (a ghost) which is updated as soon as the feed-in
+runs again. This means that a stopped register will merely repeat its
+contents feeding another faster or unstopped register. Some registers
+further manipulate their own incoming ghost registers.
 
 ** modes drawn out - how we notate these eg. symbols for probabilty, how we make a grid?
 
