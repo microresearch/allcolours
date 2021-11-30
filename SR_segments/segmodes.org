@@ -253,6 +253,10 @@ all the comparison possibilities]
 
 PLAN: put first draft together
 
+30/11/2021: 
+
+*- probability modes for DAC modes are important*
+
 29/11/2021:
 
 ADC_:

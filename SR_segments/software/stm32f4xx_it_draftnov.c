@@ -46,7 +46,7 @@
 uint32_t testmodes[4]={0,0,0,0}; // TEST!
 
 //for INTmodes
-#define CVin (31-(adc_buffer[lookupadc[w]]>>7)); 
+#define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -167,7 +167,7 @@ uint32_t testmodes[4]={0,0,0,0}; // TEST!
   Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;		\
   }
 
-//if w==3 count=0 means just to reset binroute when we are put of modes which altered it
+//if w==3 count=0 means just to reset binroute when we are out of modes which altered it
 // macro for alt routes for ADC and DAC
 #define ADCDACETC1(X, Y){			\
   bitn=0;					\
@@ -509,7 +509,6 @@ break;
   case 333: // TEST mode - with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
     // not sure if this makes sense
     // alts are also:
-    // - in strobe copy routed GSR to XGSR and then cycle through with/without shift back in? so they form one long SR now
     // -[ copy as enter mode - we need to flag this and also store length of routed in reg we copied]
     // - length as overlap?
     if (counter[w]>speed[w] && speed[w]!=1024){
@@ -534,7 +533,7 @@ break;
   }
     break;
 
-  case 334: // TEST mode as 333      //     // - in strobe copy routed GSR to XGSR and then cycle through with/without shift back in? so they form one long SR now
+  case 334: // TEST mode as 333      //     // - in strobe copy routed GSR to GGSR and then cycle through with/without shift back in? so they form one long SR now
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
 	  ADCDACETC1(0, 0);
@@ -554,7 +553,7 @@ break;
 	  }
 	  }
 	  else
-	    {
+	    { // but we must have had a trigger to fill GGshift
 	  tmp=binroute[count][w];
 	  for (x=0;x<4;x++){
 	    if (tmp&0x01){
@@ -573,8 +572,6 @@ break;
   }
     break;
     
-    // first 16 ADC, 2x8DAC + LR: 0basic pass, 1pass and circle, 2+ various logics, probability options 
-
     ///////////////////////////////////////////////////////////////////////// 
   } // switch
 
