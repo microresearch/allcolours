@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={60,60,69,60}; // TEST!
+uint32_t testmodes[4]={0,0,9,0}; // TEST!
 
 //for INTmodes
 #define CVin (31-(adc_buffer[lookupadc[w]]>>7));

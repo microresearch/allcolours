@@ -117,7 +117,7 @@ uint32_t speedfrom_[4]={0,0,0,0}; // who we get dac offset from?
 uint32_t inputbit[4]={1,2,2,2}; //0-LFSR,1-ADC,2-none
 uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from!
 uint32_t adctype[4]={1,0,0,0}; // 0-basic, 1-one bit
-uint32_t dactype[4]={0,0,2,0}; // 0-basic, 1-equiv bits, 2-one bit
+uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={3,3,3,3}; // dac from???
 
@@ -906,7 +906,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
       // DAC output 
       // for the moment we just output from dac[2] ->[0,1,2C,3]=2 is C
-      DAC_SetChannel1Data(DAC_Align_12b_R, dac[2]); // 1000/4096 * 3V3 == 0V8 
+  DAC_SetChannel1Data(DAC_Align_12b_R, dac[2]); // 1000/4096 * 3V3 == 0V8
+  //    DAC_SetChannel1Data(DAC_Align_12b_R, adc_buffer[12]); // 1000/4096 * 3V3 == 0V8 
       int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
 
       // and fake CLKs TODO - top NSR is from R/3

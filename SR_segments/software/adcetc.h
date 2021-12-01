@@ -241,8 +241,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
-
-
     
     // from here as extras - [also tend to put otherpar modes into INTmodes]
   case 16:  // special case for spaced bit entry depending on length
@@ -269,7 +267,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt=strobe;
     break;
 
-  case 19: // sequential clksr in TESTED!
+  case 19: // sequential clksr in TESTED! - lose this one as we have 18 - clkbits in anyways
     if (n[reg]>length) {
       k=(clksr_[reg])>>(31-length); 
       n[reg]=0;

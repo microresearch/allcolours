@@ -253,9 +253,29 @@ all the comparison possibilities]
 
 PLAN: put first draft together
 
+1/12/2021: now draftdec
+
+- *logop in routing too*
+
+summarize: TODO: draft all modes in draftdec but we need 14 modes for DAC (lose 1=mode9)  and 29 (lose 2=modes31and19) for ADC, fill in LR modes for these and test
+
+but possibly mode prob modes in ADC or keep these more for INTmodes? think about
+
+but we don't delete them
+
+- check clksr in adc/dac, clksr is in ADC_ = 19, in DAC_ is 9 sieving out  - maybe dont use clksr/both or use clksr more in LR modes
+
+prob for DAC modes, range of clkin params (how to measure?), 
+
+manipulation of ghostSRs: -> eg. from seg2.org: - XOR whole ghost reg shifted by another into itself
+ 
+- TESTED:full test of latest prototype: audioadc?, ADCsX/CVX, DACX, clkins, pulsoutsX, pulsinsX!
+
 30/11/2021: 
 
 *- probability modes for DAC modes are important*
+
+- 333 and 334 tweaked and working, need to watch that we have GSHIFT already in ADCETCblah
 
 29/11/2021:
 
@@ -275,12 +295,15 @@ all otherpar assumed as 12 bits!
 
 add modes 15 - param as bits 
 
-MAJOR question is how we can constrain param as INTcounter to be 12 bits - *we need to get an idea of range of param as we treat as 12bits?*
+MAJOR question is how we can constrain param as INTcounter to be 12 bits - DONEwe need to get an idea of range of param as we treat as 12bits? - param[]
 
   // crash detect ++ 32/64 in main.c is 14KHz //and/or speed check... we have 32 16 which is 4x14=56KHz
 
-so TIM2 loop is 56000 per second - one second is 56000 count to check
-1khz is 56
+so TIM2 loop is 56000 per second - one second is 56000x2// count to check
+
+1khz is 56 - rather 120 or so...
+
+100hz is 1280 so for 4095 12 bits we have 25Hz
 
 we need to constrain to 12 bits for otherparDONE
 
