@@ -1,5 +1,7 @@
 /**
 
+2/12: re-check freeze etc.logic as seems odd
+
 2/11: we have bleed on voltages - small but present and how can we fix this?
 
 18/10: on mode change should we stop rec/playback as this will change reading of data (only in some cases).
@@ -52,7 +54,7 @@ think it is in mode23 but we need to change the output pin here!
 
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
-#define BRK8 32 // 64 at 4 in INT2 // so for 8 in main.c we need 32
+#define BRK8 (24*8) // 64 at 4 in INT2 // so for 8 in main.c we need 32
 #define DELB 100 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 
 #define MAXMODES 4
@@ -70,9 +72,12 @@ const uint16_t logval[1024]  __attribute__ ((section (".flash"))) = {0, 0, 0, 0,
         GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	GPIOC->BSRRL=(1)<<6; \
 	delay(); \
-	if (GPIOB->IDR & (1<<2)) trigd=1; \
-	else trigd=0; \
-	GPIOC->BSRRH=(1)<<6; \
+	trigd=0;				\
+	for (j=0;j<8;j++){			\
+	  if (!(GPIOB->IDR & (1<<2))) trigd++;	\
+	}					\
+	if (trigd>3) trigd=1;			  \
+	GPIOC->BSRRH=(1)<<6;			  \
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
@@ -95,8 +100,11 @@ const uint16_t logval[1024]  __attribute__ ((section (".flash"))) = {0, 0, 0, 0,
         GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	GPIOC->BSRRL=(1)<<6; \
 	delay(); \
-	if (GPIOB->IDR & (1<<10)) trigd=1; \
-	else trigd=0; \
+	trigd=0;				\
+	for (j=0;j<8;j++){			\
+	  if (!(GPIOB->IDR & (1<<10))) trigd++;	\
+	}					\
+	if (trigd>3) trigd=1;			  \
 	GPIOC->BSRRH=(1)<<6; \
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
@@ -120,8 +128,11 @@ const uint16_t logval[1024]  __attribute__ ((section (".flash"))) = {0, 0, 0, 0,
         GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	GPIOC->BSRRL=(1)<<6; \
 	delay(); \
-	if (GPIOB->IDR & (1<<6)) trigd=1; \
-	else trigd=0; \
+	trigd=0;				\
+	for (j=0;j<8;j++){			\
+	  if (!(GPIOB->IDR & (1<<6))) trigd++;	\
+	}					\
+	if (trigd>3) trigd=1;			  \
 	GPIOC->BSRRH=(1)<<6;\
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
@@ -215,7 +226,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint16_t daccount=0;
     static uint16_t speed=1;
     volatile uint16_t k;
-    uint16_t j;
+    uint16_t j,fing;
     // array to map freeze but exception is FR8 on PC4! 
     uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     uint16_t bits;
@@ -231,44 +242,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_Init(GPIOC, &GPIO_InitStructure);
-      
-	GPIOC->BSRRL=(1)<<6; //  HIGH!
-	delay(); // seems to work with delay
-      
-	if (GPIOB->IDR & (1<<6)) trigd=1; // finger on - low out = high in
-	else trigd=0; // finger off
-	    
-	GPIOC->BSRRH=(1)<<6; //  LOW!
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	delay();
-
-	if (trigd==1 && triggered[10]==0) triggered[10]=1;
-	
-	if (!trigd && triggered[10]==1) breaker[10]++;  // finger off
-	if (trigd && triggered[10]==1) breaker[10]=0; // finger on or 50hz
-	
-	if (breaker[10]>BRK8) { // 0 
-	  breaker[10]=0;
-	  triggered[10]=0;
-	  mode+=1;
-	 if (mode>=MAXMODES) mode=0;
-	}
-
-
-// end of mode selector, each mode needs to take care of everything
+// mode selector is in TOGGLE MACRO
     
 //    mode=0; // testings
-    
+
     switch(mode){
     case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
       // or no change of speed?
@@ -285,9 +263,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	GPIOC->BSRRL=(1)<<6; //  HIGH!
 	delay(); // seems to work with delay
       
-	if (GPIOC->IDR & (freezer[7])) trigd=1; // finger on - low out = high in
-	else trigd=0; // finger off
-	    
+	//	if (GPIOC->IDR & (freezer[7])) trigd=0; // finger OFF HIGH
+	//	else trigd=1; // finger ON
+
+	trigd=0;
+	for (j=0;j<8;j++){
+	  if (!(GPIOB->IDR & (freezer[daccount]))) trigd++; // finger OFF is HIGH, finger ON is low
+	//	else trigd=1; // finger on
+		}
+		if (trigd>3) trigd=1;
+
+	
 	GPIOC->BSRRH=(1)<<6; //  LOW!
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
@@ -321,9 +307,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	GPIOC->BSRRL=(1)<<6; //  HIGH!
 	delay(); // seems to work with delay
       
-	if (GPIOB->IDR & (freezer[daccount])) trigd=1; // finger on - low out = high in
-	else trigd=0; // finger off
-	    
+	//	if (GPIOB->IDR & (freezer[daccount])) trigd=0;  // finger OFF
+	//	else trigd=1; // finger ON
+	trigd=0;
+	for (j=0;j<8;j++){
+	  if (!(GPIOB->IDR & (freezer[daccount]))) trigd++; // finger OFF is HIGH, finger ON is low
+	//	else trigd=1; // finger on
+	}
+	if (trigd>3) trigd=1;
+	
 	GPIOC->BSRRH=(1)<<6; //  LOW!
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
@@ -336,14 +328,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	if (trigd==1 && triggered[daccount]==0) triggered[daccount]=1;
 
-	if (!trigd && triggered[daccount]==1) breaker[daccount]++;  // finger off
-	if (trigd && triggered[daccount]==1) breaker[daccount]=0; // finger on or 50hz
-	    
+	if (!trigd && triggered[daccount]==1) breaker[daccount]++;  // finger ON
+	if (trigd && triggered[daccount]==1) breaker[daccount]=0; // finger OFF
+		    
 	if (breaker[daccount]>BRK8) { // 0 
 	  frozen[daccount]^=1; // test code 30/09/2021
 	  breaker[daccount]=0;
 	  triggered[daccount]=0;
-	    }
+	    }       
+
     }    
 
       /////////
@@ -434,7 +427,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       TOGGLES;      
     }       
           break; ///// case 0
-      
+	       
       
     } // end of modes switch    
     } 

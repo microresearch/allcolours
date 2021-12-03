@@ -232,7 +232,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
 
     // we need to fill in here - otherpar as input
-  case 15: // basic sequential length of upto 12 bits cycling in
+  case 15: // basic sequential length of upto 12 bits cycling in - leave out of cvmodes
   if (length>11) length=11;
       if (n[reg]>length) {
 	k=(otherpar)>>(11-length); //
@@ -441,7 +441,10 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      }         
      break;    
 
-
+  case 32: // 3/12/2021 - 101010 clock at speed
+    lastbt^=1;
+    bt=lastbt;
+    break;
      
     ////////    
     // INT MODES ONLY FROM HERE ON! but these are just copies of some modes above!

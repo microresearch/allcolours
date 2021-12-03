@@ -719,7 +719,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       }
       else
 	{
-	  if (pulsins[w]!=0) bitn=!(GPIOC->IDR & pulsins[w]); 
+	  if (pulsins[w]!=0) bitn=!(GPIOC->IDR & pulsins[w]); //LR have pulsins
 	  else { // if we don't use pulseins
 	    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
 	    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
@@ -1298,7 +1298,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }// counterw
   break; 
 
-  case 37: // pulse triggers un/holding of the ghost
+  case 37: // pulse triggers un/holding of our own ghost
       if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; 
     counter[w]=0;

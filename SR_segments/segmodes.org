@@ -253,11 +253,61 @@ all the comparison possibilities]
 
 PLAN: put first draft together
 
+3/12/2021: listing modes in temp.org to plan out and also check gaps: conclusions:
+
+- question also of modes with global route table or which manipulate their own routetable
+
+- summarise again probability modes and all modes/cv/INT:
+
+1. basic pass/cycle/passandcycle with logops for cycle and for bitsin
+
+2. prob modes: 
+
+- where we get prob from. CV/int, DAC/cv&int, DAC+CV/int, param[x]/cv
+
+- prob of: -invert incoming bit (routed, cycle or pulse-ifwehave) or not
+           -XOR incoming bits (cycle, routed, ADC, pulse-ifwehave) or not/otherlogop (XOR with?)
+           -incoming bit(cycle, routed,ADC,pulse-ifwehave) or cycling bit
+           -as above with inverted cycling bit
+           -changes/manipulations to the ghostSR
+
+3. binary route/prob/etc. tables
+
+look again at binary routing tables and prob bits
+
+4. experimental/overlaps/other functions eg. clock101010
+5. use of strobe in cvmodes - doubles prob modes
+
+so strobe can toggle or straight do: invert, XOR incoming, incoming or cycle, incoming or inverted cycle
+
+6. use of CV in intmodes // these are probmodes so other uses
+7. change global routings
+8. maniplates of GSR // GSR on prob, on strobe
+
+modes to add:
+
+- clock101010-DONEinADC32
+- toggle entry or pass (0)... check in adc? ADD in modes
+- where do we add prob of ADC entry bit - in mode itself - but this doubles up modes//how to deal with taht
+- prob to shift binary/routing tables
+
+2/12/2021: PLAN?
+
+- *fill in modes but we need to plan out // way these look, start drafting these -> re-look at theone modes*
+
+also pulsin_logop  - placed pulsin within adc macrosDONE
+and logop in routing (below) 
+
+ghostSR manipulationsDONE
+
+[[[what those manipulations could be - freeze itX, freeze its lengthX, reverse it - but how to reverse based on length - reverse lowest srlength bits
+in draftdec, XOR it with SR DONE -> these can also be for circular routes too
+
 1/12/2021: now draftdec
 
 - *logop in routing too*
 
-summarize: TODO: draft all modes in draftdec but we need 14 modes for DAC (lose 1=mode9)  and 29 (lose 2=modes31and19) for ADC, fill in LR modes for these and test
+summarize: TODO: *draft all modes in draftdec but we need 14 modes for DAC (lose 1=mode9)  and 29 (lose 3=modes15, 31and19) for ADC, fill in LR modes for these and test*
 
 but possibly mode prob modes in ADC or keep these more for INTmodes? think about
 
@@ -279,11 +329,11 @@ manipulation of ghostSRs: -> eg. from seg2.org: - XOR whole ghost reg shifted by
 
 29/11/2021:
 
-ADC_:
+*ADC_:*
 - otherpar modes: 24(len), 25(len), 26(comp), 28(prob), 29(len), 30(lengthforosc), 31 (lengthforosc)
 - REGG modes: 2/lfsr, 4/lfsr, 5/lfsr. 6/DAC. 11/lfsr, 12/lfsr, 13/lfsr, 19/dac, 27/lfsr, 
 
-DAC):
+*DAC_:*
 - otherpar modes: 10length, 12-5bits, 13mask, 14mask, 15beta 
 
 
@@ -308,7 +358,7 @@ so TIM2 loop is 56000 per second - one second is 56000x2// count to check
 we need to constrain to 12 bits for otherparDONE
 
 
-TODO: - *modes which manipulate the ghostSRs!* - what those manipulations could be - freeze it, freeze its length, reverse it - but how to reverse based on length - reverse lowest srlength bits
+TODO: - modes which manipulate the ghostSRs! - what those manipulations could be - freeze it, freeze its length, reverse it - but how to reverse based on length - reverse lowest srlength bits
 
 
 26/11/2021: 

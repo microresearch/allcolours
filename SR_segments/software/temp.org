@@ -1,0 +1,91 @@
+theone:
+
+0 just pass
+1 just cycle
+2 cycle and pass
+3 pass on //ORpulsin
+4 pass on //ANDpulsin
+5 pass on //leaks_pulsin
+6 cycles/pass //OR - we can also OR in cycle bit
+7 cycles/pass //AND
+8 cycles/pass //leak
+[9 testADCs]
+
+10 prob mode 0 invcycle - intmode 
+11 prob mode 1 invroutedin - intmode
+12 prob mode 2 invcycleandroute - intmode
+13 prob mode 3 pulsinorcycle- intmode
+14 prob mode 4 routeinorcycle- intmode
+15 prob mode 5 ADC or cycling bit in - intmode - as ADCmode but we don't have cycle bit
+16 prob mode 6 SR<CV- intmode
+17 prob mode 7 - intmode???
+18 prob mode 0 -invcycle with dac[dacroute] CV
+19 prob mode 1 -invcycle with param CV
+
+[[20 ]
+21 triadex1
+22 triadex2
+23 trigger bumps on default route but can be routing table // - mods also to prob modes as trigger
+trigger could also change logops table for pulses in
+
+24 trigger changes binary routing table - but these here are route[w] and not global routes
+25 binary routes - intmode
+26 SR as route
+27 4 bit shuffle - match with ADC mode 16 - special mode
+28 4 bit shuffle with feedback - again matches 16 (but how?) - special mode?
+29 adc in prob mode as 19
+30 owndac<dac
+[[31 speedfromDAC]
+[[32missing]
+33 strobecase without looping
+34 strobecase with looping
+35 triadex
+36 pulse triggers exchange ghost and real
+37 pulse triggers unholding of own ghost
+38 pass through or cycle toggled by trigger - can also be for adc, toggle entry or pass (0)... check in adc? ADD to ADC!
+[[39
+40 // swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
+41 TM in TM - intmode
+42 toggle reverse dir or tm
+43 rev1
+44 rev2
+45 prob reverse direction - intmode
+46 cycling array of ghosts
+47 GSR runs at clkspeed
+48 GSR doesn't change - revenant
+49 GSR doesn't change on toggle
+50 GSR masked in on trigger
+51 GSR only moves on trigger - not so exciting
+52 GSR double move on trigger
+[[ 53 trials]
+54 as 14 but SR comped ADC - intmode
+55 // as 14 but now SR comped to next SR
+56 was 26(SR as route) but adds prob and logopx - multiple route table itself
+57 as 56 but CV - intmode
+58 generic prob mode
+59 generic routing mode - trigger bumps the global route array up
+[as 60 but using macro]
+[61 as above]
+ // start modes from it.c 
+62 lfsr in routed in srs
+[63genericrouting]
+64 cv changes length of incomings? - intmode
+65 SRinSR
+66 SRinSR variation
+67 shifter1/overlap? - intmode
+68 shifter1/overlap - intmode
+[69 ]
+
+104 pulse train - intmode
+105 as above - intmode
+
+// plus extra draft exp. modes...
+333 joins SR
+334 as above with strobe
+
+// latest early draft exp modes...
+
+3 strobe advances/freezes GHOST
+4 strobe freezes length of incoming
+5 strobe reverses ghost - can also reverse own SR
+6 strobe XOR shift with ghost

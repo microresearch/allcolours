@@ -1,3 +1,56 @@
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
+      
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
+	delay(); // seems to work with delay
+
+	trigd=0;
+	for (j=0;j<8;j++){
+	  if (!(GPIOB->IDR & (1<<6))) trigd++; // finger OFF is HIGH, finger ON is low
+	//	else trigd=1; // finger on
+		}
+		if (trigd>3) trigd=1;
+	
+	GPIOC->BSRRH=(1)<<6; //  LOW!
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	delay();
+
+	if (trigd==1 && triggered[10]==0) triggered[10]=1;
+	
+	if (!trigd && triggered[10]==1) breaker[10]++;  // finger OFF
+	if (trigd && triggered[10]==1) breaker[10]=0; // finger ON
+	
+	if (breaker[10]>BRK8) { // 0 
+	  breaker[10]=0;
+	  triggered[10]=0;
+	  mode+=1;
+	  if (mode>=MAXMODES) mode=0;
+	  //	  	  mode^=1; // TEST
+	}
+
+	// for testing!
+	/*		
+	GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+       	if (mode)     DAC_SetChannel1Data(DAC_Align_12b_R, 2048); // 1000/4096 * 3V3 == 0V8
+	else     DAC_SetChannel1Data(DAC_Align_12b_R, 0); // 1000/4096 * 3V3 == 0V8  // FINGER DOWN!
+	j = DAC_GetDataOutputValue (DAC_Channel_1);
+	GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
+    	    daccount++;
+	    if (daccount==8) {
+	      daccount=0;
+	      count++;
+	      	    }
+	*/
+
+
 /////////////////////// toggle template
 
 
