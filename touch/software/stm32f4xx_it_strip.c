@@ -1,6 +1,8 @@
 /**
 
-2/12: re-check freeze etc.logic as seems odd
+6/12: try new freeze/toggle logics - working better so test for freezings, tested but try with other fingers before we put into TOGGLE MACRO
+
+2/12: re-check freeze etc.logic as seems odd - was wrong way round so corrected but still not 100% as needs release
 
 2/11: we have bleed on voltages - small but present and how can we fix this?
 
@@ -54,7 +56,8 @@ think it is in mode23 but we need to change the output pin here!
 
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
-#define BRK8 (24*8) // 64 at 4 in INT2 // so for 8 in main.c we need 32
+#define BRK8 (64*8) // 64 at 4 in INT2 // so for 8 in main.c we need 32
+#define BRK 64
 #define DELB 100 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 
 #define MAXMODES 4
@@ -233,8 +236,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint16_t values[8], real[8];
     static uint16_t frozen[8]={0};
     static uint16_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
-    static uint16_t count=0, triggered[11]={0}, lasttriggered[11]={0}, breaker[11]={0}, mode=0, starter[8]={0}, ender[8]={7000}, recsp[8]={0};
-
+    static uint16_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={7000}, recsp[8]={0};
+    static uint16_t lasttriggered[11]={0}, breaker[11]={0};
+    
     uint16_t tmp, trigd;
     int16_t midder;
     
@@ -242,10 +246,57 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
+	/*
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIOC, &GPIO_InitStructure);
+      
+	GPIOC->BSRRL=(1)<<6; //  HIGH!
+	delay(); // seems to work with delay
 
+	if (!(GPIOB->IDR & (1<<6))) {
+	  triggered[10]=1; // finger OFF is HIGH, finger ON is low
+	  lasttriggered[10]=breaker[10];
+	  breaker[10]=0;
+	}
+	else breaker[10]++;
+
+	GPIOC->BSRRH=(1)<<6; //  LOW!
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	delay();
+	
+	if (triggered[10] && lasttriggered[10]>BRK8) { // 0 
+	  mode^=1; // TEST
+	}
+
+	// for testing!
+			
+	GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
+       	if (mode)     DAC_SetChannel1Data(DAC_Align_12b_R, 2048); // 1000/4096 * 3V3 == 0V8
+	else     DAC_SetChannel1Data(DAC_Align_12b_R, 0); // 1000/4096 * 3V3 == 0V8  // FINGER DOWN!
+	j = DAC_GetDataOutputValue (DAC_Channel_1);
+	GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
+    	    daccount++;
+	    if (daccount==8) {
+	      daccount=0;
+	      count++;
+	      	    }
+	
+*/
+
+	
 // mode selector is in TOGGLE MACRO
     
 //    mode=0; // testings
+
+
 
     switch(mode){
     case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
@@ -263,15 +314,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	GPIOC->BSRRL=(1)<<6; //  HIGH!
 	delay(); // seems to work with delay
       
-	//	if (GPIOC->IDR & (freezer[7])) trigd=0; // finger OFF HIGH
-	//	else trigd=1; // finger ON
-
-	trigd=0;
-	for (j=0;j<8;j++){
-	  if (!(GPIOB->IDR & (freezer[daccount]))) trigd++; // finger OFF is HIGH, finger ON is low
-	//	else trigd=1; // finger on
-		}
-		if (trigd>3) trigd=1;
+	if (!(GPIOB->IDR & (freezer[7]))) {
+	  triggered[7]=1; // finger OFF is HIGH, finger ON is low
+	  lasttriggered[7]=breaker[7];
+	  breaker[7]=0;
+	}
+	else breaker[7]++;
 
 	
 	GPIOC->BSRRH=(1)<<6; //  LOW!
@@ -284,19 +332,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	delay();
 
-	if (trigd==1 && triggered[7]==0) triggered[7]=1;
-	
-	if (!trigd && triggered[7]==1) breaker[7]++;  // finger off
-	if (trigd && triggered[7]==1) breaker[7]=0; // finger on or 50hz
+	if (triggered[7] && lasttriggered[7]>BRK) { // 0 
+	  frozen[7]^=1;
+	}
 
-	if (breaker[7]>BRK8) { // 0 
-	  //	      rec^=1;
-	  frozen[7]^=1; // test code 30/09/2021
-	  breaker[7]=0;
-	  triggered[7]=0;
-	    }
-      }	    
-	     // daccount==7
+	
+      }
+	// daccount==7
   else
     {
         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
@@ -309,12 +351,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
       
 	//	if (GPIOB->IDR & (freezer[daccount])) trigd=0;  // finger OFF
 	//	else trigd=1; // finger ON
-	trigd=0;
-	for (j=0;j<8;j++){
-	  if (!(GPIOB->IDR & (freezer[daccount]))) trigd++; // finger OFF is HIGH, finger ON is low
-	//	else trigd=1; // finger on
+	if (!(GPIOB->IDR & (freezer[daccount]))) {
+	  triggered[daccount]=1; // finger OFF is HIGH, finger ON is low
+	  lasttriggered[daccount]=breaker[daccount];
+	  breaker[daccount]=0;
 	}
-	if (trigd>3) trigd=1;
+	else {
+	  breaker[daccount]++;
+	  if (breaker[daccount]>1024) breaker[daccount]=1024;
+	}
 	
 	GPIOC->BSRRH=(1)<<6; //  LOW!
 
@@ -326,18 +371,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	delay();
 
-	if (trigd==1 && triggered[daccount]==0) triggered[daccount]=1;
-
-	if (!trigd && triggered[daccount]==1) breaker[daccount]++;  // finger ON
-	if (trigd && triggered[daccount]==1) breaker[daccount]=0; // finger OFF
-		    
-	if (breaker[daccount]>BRK8) { // 0 
-	  frozen[daccount]^=1; // test code 30/09/2021
-	  breaker[daccount]=0;
-	  triggered[daccount]=0;
-	    }       
-
-    }    
+	if (triggered[daccount] && lasttriggered[daccount]>BRK) { // 0 
+	  frozen[daccount]^=1;
+	}
+    }
 
       /////////
       
@@ -430,6 +467,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	       
       
     } // end of modes switch    
+
     } 
   }
   

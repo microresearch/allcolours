@@ -189,7 +189,6 @@ uint32_t testmodes[4]={17,1,1,1}; // TEST!
   BINROUTE;						\
   PULSIN_XOR;						\
   }							\
-  else {						\
 }
 // follow with else{ }
 
@@ -200,16 +199,17 @@ uint32_t testmodes[4]={17,1,1,1}; // TEST!
 //  else {
 
 // still we have DACtype here
-#define ADCONLY(X, Y){			\
-  bitn=0;					\
-  dactype[2]=Y;					\
-  if (w==3) count=0;					\
-  GSHIFT;						\
-  if (w==0)      {					\
-  bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
-  BINROUTE;						\
-  PULSIN_XOR;						\
-  }							\
+#define ADCONLY(X, Y){						\
+    bitn=0;							\
+    dactype[2]=Y;						\
+    if (w==3) count=0;						\
+    GSHIFT;							\
+    if (w==0)							\
+  {								\
+      bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
+      BINROUTE;							\
+      PULSIN_XOR;						\
+  }								\
 }
 
 
@@ -460,21 +460,23 @@ case x:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(0, 1); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTEANDCYCLE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
     BITN_AND_OUT;
-  }
+      }
+    }
   break;
   ///////////////////////////////////////////////////////////
   // fill in LR modes from here
   /////////////////////////////////////////////////////////// 
   case 3: 
     if (counter[w]>speed[w] && speed[w]!=1024){
-      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
+      dacpar=2048; adcpar=0; reggg=0; // params - reggg is for ADC - dacpar for betaf one bit filter
       ADCDACETC1(1, 2); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       //BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       // exp mode just for trial - XX - strobe advances/freezes incoming GHOSTSR
@@ -489,7 +491,7 @@ case x:
       }
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+      }
     BITN_AND_OUT;
   }
   break;
@@ -498,6 +500,7 @@ case 4:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(2, 3); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       // XX = strobe fixes length
@@ -514,7 +517,7 @@ case 4:
       }
       ///////////////////////      
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -523,6 +526,7 @@ case 4:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(3, 4); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       // XX = strobe reverses ghostSR in - can also use same algo to reverse our own SR
@@ -544,7 +548,7 @@ case 4:
       }      
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -553,6 +557,7 @@ case 6:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(4, 5); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       // XX - we XOR on STROBE our shift with the GHOST
@@ -569,7 +574,7 @@ case 6:
   }
   /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -578,11 +583,12 @@ case 6:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(5, 6); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -591,11 +597,12 @@ case 8:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=3; // params - reggg is for ADC  - here is 3 for previous DAC
       ADCDACETC1(6, 7); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -604,11 +611,12 @@ case 8:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(7, 8); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
       PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -617,11 +625,12 @@ case 10:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(8, 10); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -630,11 +639,12 @@ case 10:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(9, 11); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -643,11 +653,12 @@ case 12:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(10, 12); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -656,11 +667,12 @@ case 12:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(11, 13); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
@@ -669,69 +681,69 @@ case 14:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(12, 14); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
 
 case 15: 
     if (counter[w]>speed[w] && speed[w]!=1024){
-      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
+      dacpar=param[2]; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(13, 15); // ADCETC has GSHIFT
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;
   }
   break;
+
 /////////////////////from here we can't use ADCDACETC1 as we will vary the DAC but we need some macro - ADCONLY
+// DAC back to 0 here
 
 case 16:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
-      ADCONLY(14, 0); // ADCETC has GSHIFT
-      if (w==2)      {
-	BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
+      ADCONLY(14, 0);
+      if (w==2){
+      BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
+      PULSIN_XOR;
+    }
+      else if (w==1 || w==3) {
+	//////////////////////////////////HERE!
+	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	/////////////////////////////////////...
 	PULSIN_XOR;
-      }
-	  else {
-      //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
-      /////////////////////////////////////...
-    PULSIN_XOR;
-    } // closes ADC macro's ELSE
-    BITN_AND_OUT;
-  }
-  break;
+      } 
+      BITN_AND_OUT;
+    }
+break;
 
 case 17:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
-      ADCONLY(32, 0); // ADCETC has GSHIFT - mode 32 clock here
+      ADCONLY(32, 0); 
       if (w==2)      {
 	BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
 	PULSIN_XOR;
       }
-	  else {
-      //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
-      /////////////////////////////////////...
-    PULSIN_XOR;
-    } // closes ADC macro's ELSE
+      else if (w==1 || w==3)
+	{
+	  //////////////////////////////////HERE!
+	  BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	  /////////////////////////////////////...
+	  PULSIN_XOR;
+    } 
     BITN_AND_OUT;
   }
   break;
-
-
-
-
-
 
 
 ///////////////////////////////////////////////////////////   
@@ -739,11 +751,12 @@ case 17:
     if (counter[w]>(speed[w]+dac[speedfrom_[w]])){ 
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
       ADCDACETC1(0, 0);
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
     PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
     BITN_AND_OUT;	
 }
 break;
@@ -754,11 +767,12 @@ case 33:     // draft for CV+DAC and variations 1
     if (counter[w]>tmpt){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
       ADCDACETC1(0, 0);
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
       PULSIN_XOR;
-      } // closes ADC macro's ELSE
+      } 
       BITN_AND_OUT;	
 }
 break;
@@ -769,11 +783,12 @@ if (tmpt<0) tmpt=0;
 if (counter[w]>tmpt){
   dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
       ADCDACETC1(0, 0);
+      if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
       PULSIN_XOR;
-      } // closes ADC macro's ELSE
+      } 
       BITN_AND_OUT;	
       }
       break;
@@ -782,11 +797,12 @@ case 35:     // draft for CV+DAC and variations 3
 if (counter[w]>((dac[speedfrom_[w]]>>2)%speed[w])){ // wrap
   dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
   ADCDACETC1(0, 0);
+  if (w==1 || w==3){
   //////////////////////////////////HERE!
   BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
   /////////////////////////////////////...
 PULSIN_XOR;
- } // closes ADC macro's ELSE
+ } 
 BITN_AND_OUT;	
 }
 break;
@@ -796,11 +812,12 @@ case 48:
 if (trigger[w]){ 
   dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
   ADCDACETC1(0, 0);
+  if (w==1 || w==3){
   //////////////////////////////////HERE!
   BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
   /////////////////////////////////////...
 PULSIN_XOR;
- } // closes ADC macro's ELSE
+ } 
 BITN_AND_OUT;
 }
 break;
@@ -811,11 +828,12 @@ case 49:
       if (trigger[w]){ 
 	dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
 	ADCDACETC1(0, 0);
+	if (w==1 || w==3){
 	//////////////////////////////////HERE!
 	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
 	/////////////////////////////////////...
 	PULSIN_XOR;
-      } // closes ADC macro's ELSE
+      } 
       BITN_AND_OUT;
     }
 }
@@ -833,7 +851,7 @@ break;
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(0, 0);
-      ///////HERE!
+      if (w==1 || w==3){
       //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
@@ -847,7 +865,7 @@ break;
       }	  
       /////...
 PULSIN_XOR;
-    } // closes ADC macro's ELSE
+    } 
 BITN_AND_OUT;
   }
     break;
@@ -857,7 +875,7 @@ BITN_AND_OUT;
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
 	  ADCDACETC1(0, 0);
-	  ///////HERE!
+      if (w==1 || w==3){
 	  //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
 	  if (trigger[w]) { 
 	    tmp=binroute[count][w];
@@ -887,13 +905,13 @@ BITN_AND_OUT;
 	    }
 	  /////...
   PULSIN_XOR;
-     } // closes ADC macro's ELSE
+     } 
  BITN_AND_OUT;
   }
     break;
-    
+ 
     ///////////////////////////////////////////////////////////////////////// 
-  } // switch
+} // switch
 
   if (w==2)  {
     DAC_SetChannel1Data(DAC_Align_12b_R, dac[2]); // 1000/4096 * 3V3 == 0V8 

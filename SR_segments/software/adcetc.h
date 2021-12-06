@@ -580,12 +580,16 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     x*=y;
     break;
 
-  case 2: // one bit audio
-    // top bit
+  case 2: // one bit audio but with beta as param
+    // beta is now (6/12/2021) always param - just if is generated from cv or speed or ... betaf=0.4f is usual value
+    // 0.4=par/4096.0
+    if (otherpar==0) otherpar=1;
+    if (otherpar>4096) otherpar=4096;
+    betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
     y=(shift_[reg]>>length)&1;
     if (y==1) x=4095;
     else x=0;
-    SmoothData[reg] = SmoothData[reg] - (LPF_Beta * (SmoothData[reg] - x)); 
+    SmoothData[reg] = SmoothData[reg] - (betaf * (SmoothData[reg] - x));
     x=(int)SmoothData[reg];
     break;
 
@@ -674,17 +678,6 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
 	  }
     x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
     x|=mask[reg];
-    break;
-
-  case 15: // one bit audio but with beta as param
-    if (otherpar==0) otherpar=1;
-    if (otherpar>4096) otherpar=4096;
-    betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
-    y=(shift_[reg]>>length)&1;
-    if (y==1) x=4095;
-    else x=0;
-    SmoothData[reg] = SmoothData[reg] - (betaf * (SmoothData[reg] - x));
-    x=(int)SmoothData[reg];
     break;
     
     ///////

@@ -253,6 +253,8 @@ all the comparison possibilities]
 
 PLAN: put first draft together
 
+6/12/2021: fixed major problem in MACROS draftdec // if else...
+
 3/12/2021: listing modes in temp.org to plan out and also check gaps: conclusions:
 
 - question also of modes with global route table or which manipulate their own routetable

@@ -6,6 +6,26 @@
 
 //gcc test.c -otest -lm -std=gnu99 
 
+#define ADCONLY(X, Y){						\
+  if (w==0)							\
+    {								\
+      printf("0\n");						\
+    }								\
+  }
+
+#define ADCX(X, Y){			\
+  if (w==0)							\
+    {								\
+      printf("0\n");						\
+    }								\
+  else if (w==2)      {					\
+    printf("2\n");					\
+  }							\
+  else {						\
+}
+
+
+
 
 unsigned char bits[32], head;
 uint32_t *shift_[32];
@@ -1088,8 +1108,21 @@ uint32_t binroute[8][4]={ // add more routes, also what seq change of routes mak
 for (x=0;x<8;x++){
   tmpp=((binroute[x][0])<<0)+((binroute[x][1])<<4)+((binroute[x][2])<<8)+((binroute[x][3])<<12);
   //  tmp=(tmpp>>4)&15;
-  printf("%d, ",tmpp);
+  //  printf("%d, ",tmpp);
  }
+
+
+int w=0;
+/*
+ADCONLY(0,0)
+ else if (w==2){
+   printf("2\n");
+ }
+*/
+
+ADCX(2,2);
+printf("3");
+}
 
 
 //x= ( ((xp& (1<<lastspac[length][0]))>>lastspacbac[length][0]));// + ((xp& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((xp& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((xp& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
