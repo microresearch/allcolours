@@ -253,7 +253,12 @@ all the comparison possibilities]
 
 PLAN: put first draft together
 
-6/12/2021: fixed major problem in MACROS draftdec // if else...
+6/12/2021: 
+
+- fixed major problem in MACROS draftdec // if else...
+- one bit filter DAC always now has param and is mode 2 - so param can
+  be cv/param for variable filter or can be calculated from
+  speed/param
 
 3/12/2021: listing modes in temp.org to plan out and also check gaps: conclusions:
 

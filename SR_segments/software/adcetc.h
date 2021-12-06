@@ -679,6 +679,8 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
     x|=mask[reg];
     break;
+
+    // case 15 was as case 2 but with param for filter - and now always has param
     
     ///////
   } // switch    

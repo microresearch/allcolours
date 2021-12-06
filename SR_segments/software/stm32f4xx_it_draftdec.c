@@ -694,7 +694,7 @@ case 14:
 case 15: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=param[2]; adcpar=0; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(13, 15); // ADCETC has GSHIFT
+      ADCDACETC1(13, 2); // ADCETC has GSHIFT
       if (w==1 || w==3){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
