@@ -1,4 +1,46 @@
-  // need to catch it but this gives us false beats
+
+// how can we abstract these out a bit so is not so many...  - for CV modes just have a few examples of each and work more with strobes
+
+9 prob mode 0 -invcycle with dac[dacroute]
+10 prob mode 1 -invcycle with param 
+
+as above but with routed in bits too
+
+*invcycle is more like ADC mode if is without routein*
+
+11 prob of bitin(which?) or loopback - dac
+12 prob of bitin or loopback - param  
+
+bitins: adc-0,pulse-1,3,routein-all
+
+pulse
+routein
+routein_logop_pulse 
+
+13 inverted versions of above
+14
+
+loaded/notloaded into cycling SR
+15 incoming bit = routed in 
+// w==0 adc in instead of puls below (xor with 0 - mode 28 for ADC we have - XOR against loop, routed in)
+16 incoming bit = pulse in (1,3)
+17 incoming bit = route/
+18 incoming bit = route/pulse
+
+all x2: 2.if SR<DAC  // cv/int mode 4.if sr<CLKCNT // cv mode - we need to trim this down
+
+   - TM: prob of bit in/inverted bit in - above (ORed with incoming bit/s: routed, ADCed, pulsed)
+   - others: prob of bitin or loopback 
+   - prob of bitin or inverted loopback
+   [-electro: incoming bit is loaded/not loaded into cycling SR]
+
++++ as above but with toggles or strobes
+
+- do we already have strobe as incoming adc or not? YES as case 17
+
+
+
+// need to catch it but this gives us false beats
       //      if (shift_[w]==0 || shift_[w]==FULL)     shift_[w]=0x01; 
 
   //  cogg[w][0]=0; // if we end up using these...

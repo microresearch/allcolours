@@ -1,4 +1,148 @@
-theone:
+** all bit bits
+
+from generic we had all modes/options as:
+
+6 bits/64 modes: 1 1 1 1 1 1
+- top bit/speed
+- 4 bits routing in
+- 1 bit do prob of inversion
+
+
+route in and logop bits:
+1111 4 route in bits x 3 logops = 2 bits per... 0, none, 1, xor, 2or, 3leak = 8 bits = 255 too much for CV
+
+
+trial bits:
+pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
+1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
+
+
+adc mode bits(32=5 bits)
+dac mode bits (16=4 bits)
+
+
+5 bits =  16 probabilities
+
+if we just stick to strobe or cv then is: 3 bits = 8
+
+- probs with x/y, strobes, toggles - 11 - 2 bits
+
+4x4
+
+- BITINs: w=0 ADC/routed-both?
+           -1 routed/pulse-both
+           -2 routed/pulse-both
+	   -3 routed/pulse-both - 1 bits // no NONE options?
+
+BITIN: none, routedX, pulse(canbe0), route and puls
+
+if no pulse in then is pointless have extra bit for both - so always both... and can save 1 bit
+ 
+00 1-TM invert cycling bit - OR with BITIN (OR *(routed^pulse)*) // OR (routedORpulse) ??
+01 2-BITIN or loopback
+10 3-INV of above
+11 4- BITIN or not into cycling
+
+** temp/thinking
+
+1-where do I get speed from? if from SR which one and ...
+
+2-where are the input bits from (ADC, pulse, routed in, cycling)?
+
+3-what do I do with my input bit/s - logical operations, probabilities, others?
+
+** start to fill in modes
+
+*** CV 0-31
+0,1 cycle and route nothing else (but we have DAC out)
+
+2-31 all ADC - also prob mode as adc - load adc or not=XOR 0 case 28 - route in... 
+
+2-15 DAC 15-31 DAC - 4x4 for 16-31  so 4 main modes= +1cycle+, 1cycleandroute, 2/3probs, 4-4bitshuffle?
+
+LR:
+0-16 most basic modes/strobe-prob modes
+
+17-31 = 16 esoterica // more or less
+
+Basic modes:
+2- cycle and route 
+
+/// check these ones for interest! TODO!
+3 pass on //ORpulsin
+4 pass on //ANDpulsin
+5 pass on //leaks_pulsin - where we could decide on logop without multiplying modes
+
+6 cycles/pass //ORpuls - we can also OR in cycle bit
+7 cycles/pass //ANDpuls
+8 cycles/pass //leakpuls
+
+Prob/strobe modes - strobe mostly here for CV:
+
+4 strobe probabilities:
+
+00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+01 2-BITIN or loopback
+10 3-INV of above
+11 4- BITIN or not into cycling
+
+4 probs with SR<DAC//SR<param
+
+// so 16 basic modes above and 16 more complex:
+
+say 8 routing/ghosts 8 esoteric or so... use of strobes a plus
+
+other strobe modes/below:
+
+Routing/other tables modes based on SR - own SR, other SR...
+
+Manipulate ghosts:
+
+3 strobe advances/freezes GHOST
+[4 strobe freezes length of incoming GHOST]
+5 strobe reverses ghost - can also reverse own SR
+6 strobe XOR shift with ghost???
+
+Esoteric:
+
+Global routing: trigger bumps global routes
+
+*** CV+DAC 32-47 + // other speed options: speed from CV+clkcnt - wraps etc... - say 4 speed options x 4 here
+
+how do we select which DAC?
+
+4 ADC modes - also prob mode as adc
+
+4 DAC modes
+
+4 basic modes // or 2 basic plus 2 other! or mix and match
+
+*** INT 48-63 or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx - a few of each...
+
+CV can also select where we get our speed from - modifier
+
+16 ADC modes = basic + special intmodes - also prob mode as adc/using CV
+
+4x4 DAC modes
+
+16 LR:
+
+few basic modes:
+
+Prob modes (no strobe):
+
+8 probs with SR<CV
+
+Routing/other tables modes using CV:
+
+Esoteric:
+
+Global changes: CV changes global table
+
+** theone:
+
+total cv modes: 47
+total intmodes: 18
 
 0 just pass
 1 just cycle
@@ -9,31 +153,38 @@ theone:
 6 cycles/pass //OR - we can also OR in cycle bit
 7 cycles/pass //AND
 8 cycles/pass //leak
+
 [9 testADCs]
 
-10 prob mode 0 invcycle - intmode 
-11 prob mode 1 invroutedin - intmode
-12 prob mode 2 invcycleandroute - intmode
-13 prob mode 3 pulsinorcycle- intmode
-14 prob mode 4 routeinorcycle- intmode
-15 prob mode 5 ADC or cycling bit in - intmode - as ADCmode but we don't have cycle bit
-16 prob mode 6 SR<CV- intmode
-17 prob mode 7 - intmode???
+  10 prob mode 0 invcycle - intmode 
+  11 prob mode 1 invroutedin - intmode
+  12 prob mode 2 invcycleandroute - intmode
+  13 prob mode 3 pulsinorcycle- intmode
+  14 prob mode 4 routeinorcycle- intmode
+  15 prob mode 5 ADC or cycling bit in - intmode
+  16 prob mode 6 SR<CV- intmode
+  17 prob mode 7 - intmode???
+
 18 prob mode 0 -invcycle with dac[dacroute] CV
 19 prob mode 1 -invcycle with param CV
 
 [[20 ]
 21 triadex1
 22 triadex2
+
 23 trigger bumps on default route but can be routing table // - mods also to prob modes as trigger
 trigger could also change logops table for pulses in
 
 24 trigger changes binary routing table - but these here are route[w] and not global routes
-25 binary routes - intmode
+
+  25 binary routes - intmode
+
 26 SR as route
+
 27 4 bit shuffle - match with ADC mode 16 - special mode
 28 4 bit shuffle with feedback - again matches 16 (but how?) - special mode?
-29 adc in prob mode as 19
+
+29 adc in prob mode as 19 - uses incoming adc as our probability for inv of cycling bit
 30 owndac<dac
 [[31 speedfromDAC]
 [[32missing]
@@ -42,42 +193,45 @@ trigger could also change logops table for pulses in
 35 triadex
 36 pulse triggers exchange ghost and real
 37 pulse triggers unholding of own ghost
-38 pass through or cycle toggled by trigger - can also be for adc, toggle entry or pass (0)... check in adc? ADD to ADC!
-[[39
+38 pass through or cycle toggled by trigger - can also be for adc, toggle entry or pass (0)... check in adc? ADD to ADC or not as we dont have cycle
+[[39]
 40 // swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
-41 TM in TM - intmode
+  41 TM in TM - intmode
 42 toggle reverse dir or tm
 43 rev1
 44 rev2
-45 prob reverse direction - intmode
+  
+  45 prob reverse direction - intmode
+
 46 cycling array of ghosts
 47 GSR runs at clkspeed
 48 GSR doesn't change - revenant
 49 GSR doesn't change on toggle
 50 GSR masked in on trigger
-51 GSR only moves on trigger - not so exciting
-52 GSR double move on trigger
+[51 GSR only moves on trigger - not so exciting]
+[52 GSR double move on trigger]
+
 [[ 53 trials]
-54 as 14 but SR comped ADC - intmode
+  54 as 14 but SR comped ADC - intmode
 55 // as 14 but now SR comped to next SR
 56 was 26(SR as route) but adds prob and logopx - multiple route table itself
-57 as 56 but CV - intmode
+  57 as 56 but CV - intmode
 58 generic prob mode
-59 generic routing mode - trigger bumps the global route array up
+*59 generic routing mode - trigger bumps the global route array up*
 [as 60 but using macro]
 [61 as above]
- // start modes from it.c 
 62 lfsr in routed in srs
 [63genericrouting]
-64 cv changes length of incomings? - intmode
+
+  64 cv changes length of incomings? - intmode
 65 SRinSR
 66 SRinSR variation
-67 shifter1/overlap? - intmode
-68 shifter1/overlap - intmode
+  67 shifter1/overlap? - intmode
+  68 shifter1/overlap - intmode
 [69 ]
+  104 pulse train - intmode
+  105 as above - intmode
 
-104 pulse train - intmode
-105 as above - intmode
 
 // plus extra draft exp. modes...
 333 joins SR

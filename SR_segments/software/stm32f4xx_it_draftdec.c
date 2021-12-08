@@ -729,7 +729,7 @@ break;
 case 17:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
-      ADCONLY(32, 0); 
+      ADCONLY(15, 1); 
       if (w==2)      {
 	BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
 	PULSIN_XOR;
@@ -838,7 +838,6 @@ case 49:
     }
 }
 break;
-
 
 	
     /// new experimental modes to test

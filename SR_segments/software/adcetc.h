@@ -445,7 +445,30 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     lastbt^=1;
     bt=lastbt;
     break;
-     
+
+  case 33: //  ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
+      // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) { 
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;
+      }
+    else
+      {
+	bt=(shift_[reg]>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+      }
+    break;
+
+  case 34: // prob mode for cycling bits a la TM
+    bt=(shift_[reg]>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) {
+      bt=!bt;// invert cycling bit
+    }
+    break;
     ////////    
     // INT MODES ONLY FROM HERE ON! but these are just copies of some modes above!
      /*

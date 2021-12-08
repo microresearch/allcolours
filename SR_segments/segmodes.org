@@ -22,7 +22,7 @@ CVspeed:
 16-31 LR - exp modes - place global CV route modes
       NC - any match modes 4xADC, 4xDAC
 
-or 31x ADC and 2x16 DACs
+or 31x ADC and 2x16 DACs = now 4x4 DACs
 
 CV+DACspeed: // other speed options: speed from clkcnt, speed from CV+clkcnt
 32-47 LR - modes mixed
@@ -81,10 +81,13 @@ L&R modes...
 /////
 TODO: prob modes below as/and basic INT modes
 
-- probability modes for (DAC, DAC+CV comp to SR,countedclk), prob of bit in/inverted bit in,
-  XOR bit in from->[routed//cycled//ADCorLFSR//pulseifwehave], prob of
-  bitin OR loopback, prob of bitin or inverted loopback, prob of
-  cycle, new bit from bits/from route -> how many? make this clearer:
+- probability modes for (DAC, DAC+CV comp to SR,countedclk): 
+   - prob of bit in/inverted bit in,
+    - XOR bit in from->[cycled//ADCorLFSR//pulseifwehave]->routed in or not
+    - bitin OR loopback, prob of bitin or inverted loopback, 
+
+???prob of cycle, new bit from bits/from route -> how many? make this
+  clearer:
 
 SR is customSR or RSR(routed SR)
 
@@ -99,11 +102,12 @@ XX
 
 3. new input (from pulsbit) or cycling bit (wiard and EN)
 4. new input (from route) or cycling bit
-5. new input (from ADC) or cycling bit//6. new input (from LFSR) or cycling bit
+5. new input (from ADC) or cycling bit//6. new input (from LFSR) or cycling bit - only for 0
 
 7-10 above with inverted cycling bit
 
 so is quite a few modes for all options
+
 ///
 - other modes/to fill in:
 
@@ -216,7 +220,6 @@ eg.
 1-pass on only - straight through
 2-pass on and return bitx
 
-
 - expand all possible probability modes...???
 
 3-TM with pass on - INT mode
@@ -229,7 +232,7 @@ eg.
 9+Run with different speeds???
 10+Run with bits???
 
-** AC modes and inspirations: TODO TOOO
+** AC modes and inspirations: TODO
 
 - clkin leaps/flips bits - that we can apply a mask from clkin for
   whole SR - would be nice to be able to freeze this thoughDONE to some extent
@@ -252,6 +255,41 @@ all the comparison possibilities]
 * diary sept 2021+
 
 PLAN: put first draft together
+from generic we had all modes/options as:
+
+6 bits: 1 1 1 1 1 1
+- top bit/speed
+- 4 bits routing in
+- 1 bit prob of inversion
+
+incoming bit bits summary (4 bits) - eg. prob of:
+
+- pulse (if we have) (1,3)  3 bits- mod below  
+- routed in = all - 2 bits still - none, route, route/loop, loop
+- return/loop = all
+- ADC (0) - 3 bits for 0
+
+route in and logop bits:
+1111 4 route in bits x 3 logops = 2 bits per... 0, none, 1, xor, 2or, 3leak = 8 bits = 255 too much for CV
+
+
+trial bits:
+pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
+1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
+
+
+///////////////////////////////
+
+- idea fo 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
+
+7/12/2021:
+- attempt grand mode with SR and many bits above
+- INTmode: CV fixes bits and prob is against DAC
+- chain of prob modes?
+
+- add cases 33 and 34, adc prob modes with adcpar (invcycle is more like ADC mode if is without routein)
+
+- generic prob/strobe/toggle modes
 
 6/12/2021: 
 
@@ -262,45 +300,84 @@ PLAN: put first draft together
 
 3/12/2021: listing modes in temp.org to plan out and also check gaps: conclusions:
 
+*how we can temporarily fill modes and change these later?* macros but then we have \ always end of line to think of and no comments. maybe...
+
 - question also of modes with global route table or which manipulate their own routetable
 
-- summarise again probability modes and all modes/cv/INT:
+*we need more modes which take cv or dac and use this for routing, for probability tables, for logops*
+
+- summarise again probability modes and all modes/cv/INT: = we have too many
+
+32 CV modes, 16 CV+DAC modes, 16 INT modes (very basic and prob driven)
 
 1. basic pass/cycle/passandcycle with logops for cycle and for bitsin
+
+3x logops: xor, or, leaks...
+
+1-pass in - xor pass, xor puls
+2-cycle only - xor cycle, xor puls
+3-pass and cycle - xor pass, cycle, and puls
+
+4-xor pass in and or puls
+5-xor pass in and leak puls
+6-or pass in and or puls
+7-or pass in and leak puls
+
+8-xor pass in, xor cycle and or puls
+9-xor pass in, xor cycle and leak puls
+10-or pass, or cycle in and or pass
+11-or pass in, or cycle and leak puls
+
+// further permutations of these or just leave to CV/param bits for logops
 
 2. prob modes: 
 
 - where we get prob from. CV/int, DAC/cv&int, DAC+CV/int, param[x]/cv
 
-- prob of: -invert incoming bit (routed, cycle or pulse-ifwehave) or not
-           -XOR incoming bits (cycle, routed, ADC, pulse-ifwehave) or not/otherlogop (XOR with?)
-           -incoming bit(cycle, routed,ADC,pulse-ifwehave) or cycling bit
-           -as above with inverted cycling bit
-           -changes/manipulations to the ghostSR
+prob<DAC:
 
-3. binary route/prob/etc. tables
+1-inv routed bit/ xor puls
+2-inv cycled bit/ xor puls
+3-inv routed and cycled bit/ xor puls
+4-inv routed, puls and cycle bit
+5-inv puls and route in
+
+6-xor cycle in with routed or not
+
+limited selection as above with prob<param
+
+less of pulsins and probs as gets too much
+
+- prob of: -invert incoming bit (ADC/mode0/routed, cycle or pulse-ifwehave) or not
+           - XOR bit in from->[cycled//ADCorLFSR//pulseifwehave]->routed in or not
+           - incoming bit(routed,ADC,pulse-ifwehave) or cycling bit
+           - as above with inverted cycling bit
+           - changes/manipulations to the ghostSR
+
+3. binary route/prob/etc. tables - CV as binary route/prob bits/
 
 look again at binary routing tables and prob bits
 
-4. experimental/overlaps/other functions eg. clock101010
+4. experimental/overlaps/other functions 
 5. use of strobe in cvmodes - doubles prob modes
 
 so strobe can toggle or straight do: invert, XOR incoming, incoming or cycle, incoming or inverted cycle
 
 6. use of CV in intmodes // these are probmodes so other uses
+
 7. change global routings
 8. maniplates of GSR // GSR on prob, on strobe
 
 modes to add:
 
 - clock101010-DONEinADC32
-- toggle entry or pass (0)... check in adc? ADD in modes
-- where do we add prob of ADC entry bit - in mode itself - but this doubles up modes//how to deal with taht
+- toggle ADC entry or pass (0)... check in adc? ADD in modes
+- where do we add prob of ADC entry bit - in mode itself - but this doubles up modes//how to deal with that
 - prob to shift binary/routing tables
 
 2/12/2021: PLAN?
 
-- *fill in modes but we need to plan out // way these look, start drafting these -> re-look at theone modes*
+- *fill in modes but we need to plan out // way these look* start drafting these -> re-look at theone modes
 
 also pulsin_logop  - placed pulsin within adc macrosDONE
 and logop in routing (below) 
@@ -344,7 +421,7 @@ manipulation of ghostSRs: -> eg. from seg2.org: - XOR whole ghost reg shifted by
 - otherpar modes: 10length, 12-5bits, 13mask, 14mask, 15beta 
 
 
-*for otherpar as len let's use otherpar=otherpar&31 rather than >>*DONE and we restrict in all cases &4095
+for otherpar as len let's use otherpar=otherpar&31 rather than >>DONE and we restrict in all cases &4095
 
 all otherpar assumed as 12 bits!
 
@@ -365,7 +442,7 @@ so TIM2 loop is 56000 per second - one second is 56000x2// count to check
 we need to constrain to 12 bits for otherparDONE
 
 
-TODO: - modes which manipulate the ghostSRs! - what those manipulations could be - freeze it, freeze its length, reverse it - but how to reverse based on length - reverse lowest srlength bits
+TODO/DONE: - modes which manipulate the ghostSRs! - what those manipulations could be - freeze it, freeze its length, reverse it - but how to reverse based on length - reverse lowest srlength bits
 
 
 26/11/2021: 
