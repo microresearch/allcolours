@@ -20,10 +20,28 @@ static inline uint8_t probableCV(uint32_t reg, uint32_t type){
   case 3:
     if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
     break;
-  }
-    
+  }    
   return 0;
 }
+
+static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one is 2 bits
+  // LFSR<SR // LFSR<otherSR // SR<otherSR // LFSR<PARAM // or CV but we are not in INTmode
+  // prob of cycling bit let's say or ADC bit in or...
+  switch(type){
+  case 0:
+    if ((LFSR_[reg] & 4095 )< (shift_[reg]& 4095))      return 1;
+    break;
+  case 1:
+    if ((LFSR_[reg] & 4095 )< (shift_[defroute[reg]] & 4095))      return 1;
+    break;
+  case 2:
+    if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
+    break;
+  }    
+  return 0;
+}
+
+
 
 // 0-31 (32)modes +1 INTmode
 // arrange modes now as most important first...
@@ -551,6 +569,15 @@ static inline uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who
     }*/
 }
 
+static inline uint16_t otherleaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who){
+  if (prob>31) prob=31;
+  
+  if (x^y==0) return 0;
+  if ((LFSR_[who]&masky[prob])==0) return 1;
+  return 0;
+}
+
+
 
 //bitr=logop(bitr,bitrr,logopp[w]); // or other op TODO
 // logop: 0-XOR, 1-OR, 2-&, 3leaks - 0,1,2,3
@@ -558,12 +585,12 @@ static inline uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who
 static inline uint16_t logopx(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
   // 0 is XOR< 1 is OR etc
   uint32_t ty;
-  if (type==0)  return (bita ^ bitaa);
+  if (type==3)  return (bita ^ bitaa);
   else if (type==1) return (bita | bitaa);
-  else if (type==2) return bita;
-  else if (type==3) {
-    ty=leaks(bita, bitaa,3,3);
-    return ty; // leaks using RSR as random // where we get 8 from...
+  else if (type==0) return bita;
+  else if (type==2) {return (bita ^ !bitaa);
+    //    ty=otherleaks(bita, bitaa,3,3); // how to change this?
+    //    return ty; // leaks using RSR as random // where we get 8 from...
   }
   return bita ^ bitaa; // default
 }
@@ -575,7 +602,7 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
   uint32_t ty;
   if (type==0)  return (bita ^ bitaa);
   else if (type==1) return (bita | bitaa);
-  else if (type==2) return (bita ^ (!bitaa));
+  else if (type==2) return (bita ^ (!bitaa)); // same as inverted XOR
   else if (type==3) {
     ty=leaks(bita, bitaa,3,3);
     return ty; // leaks using RSR as random 

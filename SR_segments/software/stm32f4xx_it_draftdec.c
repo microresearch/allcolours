@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={17,1,1,1}; // TEST!
+uint32_t testmodes[4]={2,12,1,1}; // TEST!
 
 //for INTmodes
 #define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
@@ -87,45 +87,25 @@ uint32_t testmodes[4]={17,1,1,1}; // TEST!
 
 
 #define PULSIN_XOR {				\
-  if (pulsins[w]!=0){				\
   xx=!(GPIOC->IDR & pulsins[w]);		\
   bitn^=xx;					\
-  }						\
   }
 
 #define PULSIN_OR {				\
-  if (pulsins[w]!=0){				\
   xx=!(GPIOC->IDR & pulsins[w]);		\
   bitn|=xx;					\
-  }						\
 }
+
+// prob is upto 32 // 5 bits
+#define PULSIN_LEAK {				\
+  xx=!(GPIOC->IDR & pulsins[w]);		\
+  bitn=otherleaks(bitn,xx,prob,w);			\
+}
+
 
 #define PULSIN_LOGOP {				\
-    if (pulsins[w]!=0){				\
       xx=!(GPIOC->IDR & pulsins[w]);		\
       bitn=logop(bitn,xx,logtable[w]);		\
-    }						\
-}
-
-
-// for this macro we need  dacpar=0/whatever for DAC and adcpar is for ADC - defined outside macro
-// X is adc_type, Y is dac_type
-#define MULTROUTE(X, Y) {			\
-  bitn=0;					\
-  dactype[2]=Y;					\
-  GSHIFT;						\
-  if (w==0)      bitn=ADC_(0,SRlength[0],X,trigger[w],reggg,adcpar);	\
-  tmp=binroute[count][w];						\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
-  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
-  bitn^=bitrr;						\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  PULSIN_XOR;						\
-  BITN_AND_OUT;						\
 }
 
 // reverse 32 bits for tmpp - but how to reverse based on length - reverse lowest srlength bits ?
@@ -183,11 +163,9 @@ uint32_t testmodes[4]={17,1,1,1}; // TEST!
   if (w==0)      {					\
   bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
   BINROUTE;						\
-  PULSIN_XOR;						\
   }							\
   if (w==2)      {					\
   BINROUTE;						\
-  PULSIN_XOR;						\
   }							\
 }
 // follow with else{ }
@@ -208,7 +186,6 @@ uint32_t testmodes[4]={17,1,1,1}; // TEST!
   {								\
       bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
       BINROUTE;							\
-      PULSIN_XOR;						\
   }								\
 }
 
@@ -236,6 +213,8 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 volatile uint32_t param[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength[4]={31,31,31,31};
+
+uint16_t ADCLR[3]={5,32,30}; // non-adc ADC modes
 
 uint32_t s[4]={0,0,0,0};
 uint32_t ss[4]={0,0,0,0};
@@ -340,6 +319,7 @@ volatile uint32_t dac[4]={0,0,0,0};
 volatile uint32_t adc_[4]={0,0,0,0};
 uint32_t counter_[4]={0,0,0,0};
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
+static uint32_t LR[4]={0,1,0,1};
 static uint32_t pulsouts[8]={0, 0, 1<<2,1<<15, 1<<4,1<<12, 1<<3,1<<11};
 volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
 //                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
@@ -351,7 +331,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  uint32_t lengthbit=15, new_stat;
+  uint32_t lengthbit=15, new_stat, prob;
   uint32_t x, y, q, start=0;
   uint32_t bitn=0, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmpp, xx;
   uint8_t trigger[4]={0,0,0,0};
@@ -435,7 +415,9 @@ case x:
       dactype[2]=0;
       GSHIFT;
       JUSTCYCLE;
-      PULSIN_XOR;
+      if (LR[w]) {
+	PULSIN_XOR;
+      }
       BITN_AND_OUT;
     }
     break;
@@ -446,7 +428,9 @@ case x:
     dactype[2]=0;
     GSHIFT;
     BINROUTE;
-    PULSIN_XOR;
+    if (LR[w]){
+      PULSIN_XOR;
+    }
     BITN_AND_OUT;
     }
     break;
@@ -460,13 +444,13 @@ case x:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(0, 1); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       BINROUTEANDCYCLE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
-    PULSIN_XOR;
-    BITN_AND_OUT;
+      PULSIN_XOR;
       }
+      BITN_AND_OUT;
     }
   break;
   ///////////////////////////////////////////////////////////
@@ -476,9 +460,10 @@ case x:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=2048; adcpar=0; reggg=0; // params - reggg is for ADC - dacpar for betaf one bit filter
       ADCDACETC1(1, 2); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
-      //BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	/*
       // exp mode just for trial - XX - strobe advances/freezes incoming GHOSTSR
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
@@ -488,23 +473,27 @@ case x:
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
-      }
+	}
+	*/
       /////////////////////////////////////...
-    PULSIN_XOR;
+      //      prob=param[w]&31;
+      prob=shift_[w]&31; // this seems to work somehow 8/12/2021
+      PULSIN_LEAK; // try xor vs leak vs or...
       }
     BITN_AND_OUT;
-  }
+    }
   break;
 
 case 4: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(2, 3); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
-      // XX = strobe fixes length
       /////////////////////////////////////...
+	/*
+      // XX = strobe fixes length       
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
@@ -515,7 +504,20 @@ case 4:
 	}
 	tmp=tmp>>1;
       }
-      ///////////////////////      
+	*/
+      ///////////////////////
+	// trial of generic bit options - bits from which SR, from param etc.
+	// route in and logop bits:
+	// 1111 4 route in bits x 3 logopx = 2 bits per... 0, none, 1, xor, 2or, 3inv XOR = 8 bits = 255 too much for CV
+	tmp=shift_[dacroute[w]]&255; // 8 bits - we can also interpret bits as single ones... we just seem to use 6 bits here
+	for (x=0;x<4;x++){ 
+	  if ((tmp&0x03) !=0){  
+	    bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01; 
+	    Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	    bitn=logopx(bitn,bitrr,(tmp)&0x03); 
+	  }
+	  tmp=tmp>>2; // 4 bits
+	}
     PULSIN_XOR;
     } 
     BITN_AND_OUT;
@@ -526,9 +528,9 @@ case 4:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(3, 4); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
-      //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	/*
       // XX = strobe reverses ghostSR in - can also use same algo to reverse our own SR
       // is it fast enough? or just have one route in
       tmp=binroute[count][w];
@@ -545,21 +547,63 @@ case 4:
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
-      }      
+	} */   
       /////////////////////////////////////...
-    PULSIN_XOR;
-    } 
-    BITN_AND_OUT;
-  }
-  break;
+	// next set of generic bit options - this time for probabilities
+	/*
+	  00 1-TM invert cycling bit - OR with BITIN (OR *(routed^pulse)*) // OR (routedORpulse) ??
+	  01 2-BITIN or loopback
+	  10 3-INV of above
+	  11 4- BITIN or not into cycling
+	  
+	  - so is 2 bits for type of prob
+	  - BITN is routed / routed XOR puls so is 1 bit
+	  - where we get prob is 2 bits let's say = 5 bits = 32
+	*/
+	BINROUTE;
+	
+      bitrr = (shift_[w]>>SRlength[x]) & 0x01; 
+
+      tmpp=shift_[dacroute[w]]&31; // 5 bits
+      if ((tmpp>>4)&1) {
+	PULSIN_XOR;
+      }
+
+      if (tmpp==0){ 	  // invert cycling bit and OR with bitn
+	if (otherprobableCV(w, ((tmpp>>2&0x03)))) {
+	  bitn |= !(bitrr);
+	  }
+	else bitn |=bitrr;	
+      }
+      else if (tmpp&1){ // BITN or loopback
+	if (!otherprobableCV(w, ((tmpp>>2&0x03)))) {
+	  bitn=bitrr;
+	}
+      }
+      else if (tmpp&2){ // BITN or INV loopback
+	if (!otherprobableCV(w, ((tmpp>>2&0x03)))) {
+	  bitn=!bitrr;
+	}
+      }
+	else if (tmpp&3) { // 4- BITIN or not into cycling
+	if (otherprobableCV(w, ((tmpp>>2&0x03)))) {
+	  bitn=bitrr^bitn;
+	}
+	else bitn=bitrr;
+	}	
+      } // LR!
+      BITN_AND_OUT;
+    }
+    break;
 
 case 6: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(4, 5); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	/*
       // XX - we XOR on STROBE our shift with the GHOST
   tmp=binroute[count][w];
   for (x=0;x<4;x++){
@@ -572,7 +616,16 @@ case 6:
   }
   tmp=tmp>>1;
   }
-  /////////////////////////////////////...
+	*/
+	// - basic prob mode of entry of routed or not (into cycling). and just xor puls in...
+	if ((LFSR_[w] & 4095 ) < (param[w] & 4095)){
+	  BINROUTE;
+	}
+	else {
+	  bitn=(shift_[w]>>SRlength[x]) & 0x01; 
+	}
+
+	/////////////////////////////////////...
     PULSIN_XOR;
     } 
     BITN_AND_OUT;
@@ -583,10 +636,17 @@ case 6:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(5, 6); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
-      /////////////////////////////////////...
+	// trial toggle/tug of above: entry of routed or not (into cycling). and just xor puls in...
+	if (trigger[w]) tug[w]^=1;
+	if (tug[w]){
+	  BINROUTE;
+	}
+	else {
+	  bitn=(shift_[w]>>SRlength[x]) & 0x01; 
+	}	
+      /////////////////////////////////////...	
     PULSIN_XOR;
     } 
     BITN_AND_OUT;
@@ -597,9 +657,14 @@ case 8:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=3; // params - reggg is for ADC  - here is 3 for previous DAC
       ADCDACETC1(6, 7); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	// as above but without toggle...
+	if (trigger[w]){
+	BINROUTE;	}
+	else {
+	  bitn=(shift_[w]>>SRlength[x]) & 0x01; 
+	}	
       /////////////////////////////////////...
     PULSIN_XOR;
     } 
@@ -611,9 +676,22 @@ case 8:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(7, 8); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	//      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	/*
+	  00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+	  01 2-BITIN or loopback
+	  10 3-INV of above
+	  11 4- BITIN or not into cycling - above
+	*/
+	// trial these with strobe - 00 invert bit here
+	BINROUTE;
+	if (trigger[w]) tug[w]^=1;
+	if (tug[w])	  bitrr=(shift_[w]>>SRlength[x]) & 0x01;
+	else bitrr=!((shift_[w]>>SRlength[x]) & 0x01); 
+	bitn|=bitrr;
+	
       /////////////////////////////////////...
       PULSIN_XOR;
     } 
@@ -625,10 +703,21 @@ case 10:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(8, 10); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
-      /////////////////////////////////////...
+	/*
+	  00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+	  01 2-BITIN or loopback
+	  10 3-INV of above
+	  11 4- BITIN or not into cycling - above
+	*/
+	// trial these with strobe - 01 BITIN or loopback
+	if (trigger[w]) tug[w]^=1;
+	if (tug[w]){
+	  BINROUTE;
+	}
+	else bitn=((shift_[w]>>SRlength[x]) & 0x01); 
+	/////////////////////////////////////...
     PULSIN_XOR;
     } 
     BITN_AND_OUT;
@@ -639,9 +728,21 @@ case 10:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(9, 11); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	/*
+	  00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+	  01 2-BITIN or loopback
+	  10 3-INV of above
+	  11 4- BITIN or not into cycling - above
+	*/
+	// trial these with strobe - 10 BITIN or loopback//INV
+	if (trigger[w]) tug[w]^=1;
+	if (tug[w]){
+	  BINROUTE;
+	}
+	else bitn=!((shift_[w]>>SRlength[x]) & 0x01); 
+	
       /////////////////////////////////////...
     PULSIN_XOR;
     } 
@@ -653,12 +754,17 @@ case 12:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(10, 12); // ADCETC has GSHIFT
-      if (w==1 || w==3){
-      //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
-      /////////////////////////////////////...
-    PULSIN_XOR;
-    } 
+      if (LR[w]){
+	//////////////////////////////////HERE!
+	// trial of non-adc style entry and pass on here;;
+	// which modes of ADC_?: 5:LFSR, 30:1bitOSC, 32: clock
+	reggg=w; adcpar=param[w];
+	// can also bump up type in list with a trigger[w] TODO/TEST - here we just select from 5 and 32 as 30 used param
+	if (trigger[w]) tug[w]^=1;
+	bitn=ADC_(w,SRlength[w],ADCLR[tug[w]],trigger[w],reggg,adcpar);  //5,30,32 as selections - 32 maybe not so interesting
+	BINROUTE;
+	PULSIN_XOR;
+      } 
     BITN_AND_OUT;
   }
   break;
@@ -667,7 +773,7 @@ case 12:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(11, 13); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
@@ -681,7 +787,7 @@ case 14:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(12, 14); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
@@ -695,7 +801,7 @@ case 15:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=param[2]; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(13, 2); // ADCETC has GSHIFT
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
@@ -714,9 +820,8 @@ case 16:
       ADCONLY(14, 0);
       if (w==2){
       BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
-      PULSIN_XOR;
     }
-      else if (w==1 || w==3) {
+      else if (LR[w]) {
 	//////////////////////////////////HERE!
 	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
 	/////////////////////////////////////...
@@ -732,9 +837,8 @@ case 17:
       ADCONLY(15, 1); 
       if (w==2)      {
 	BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
-	PULSIN_XOR;
       }
-      else if (w==1 || w==3)
+      else if (LR[w])
 	{
 	  //////////////////////////////////HERE!
 	  BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
@@ -751,7 +855,7 @@ case 17:
     if (counter[w]>(speed[w]+dac[speedfrom_[w]])){ 
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
       ADCDACETC1(0, 0);
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
@@ -767,7 +871,7 @@ case 33:     // draft for CV+DAC and variations 1
     if (counter[w]>tmpt){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
       ADCDACETC1(0, 0);
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
@@ -778,12 +882,12 @@ case 33:     // draft for CV+DAC and variations 1
 break;
 
     case 34:     // draft for CV+DAC and variations 2
-tmpt= speed[w]-(dac[speedfrom_[w]]>>2);
+      tmpt= speed[w]-(dac[speedfrom_[w]]>>2);
 if (tmpt<0) tmpt=0; 
 if (counter[w]>tmpt){
   dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
       ADCDACETC1(0, 0);
-      if (w==1 || w==3){
+      if (LR[w]){
       //////////////////////////////////HERE!
       BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
       /////////////////////////////////////...
@@ -797,7 +901,7 @@ case 35:     // draft for CV+DAC and variations 3
 if (counter[w]>((dac[speedfrom_[w]]>>2)%speed[w])){ // wrap
   dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
   ADCDACETC1(0, 0);
-  if (w==1 || w==3){
+  if (LR[w]){
   //////////////////////////////////HERE!
   BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
   /////////////////////////////////////...
@@ -812,7 +916,7 @@ case 48:
 if (trigger[w]){ 
   dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
   ADCDACETC1(0, 0);
-  if (w==1 || w==3){
+  if (LR[w]){
   //////////////////////////////////HERE!
   BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
   /////////////////////////////////////...
@@ -828,7 +932,7 @@ case 49:
       if (trigger[w]){ 
 	dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
 	ADCDACETC1(0, 0);
-	if (w==1 || w==3){
+	if (LR[w]){
 	//////////////////////////////////HERE!
 	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
 	/////////////////////////////////////...
@@ -850,7 +954,7 @@ break;
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(0, 0);
-      if (w==1 || w==3){
+      if (LR[w]){
       //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
@@ -874,7 +978,7 @@ BITN_AND_OUT;
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
 	  ADCDACETC1(0, 0);
-      if (w==1 || w==3){
+      if (LR[w]){
 	  //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
 	  if (trigger[w]) { 
 	    tmp=binroute[count][w];

@@ -1,3 +1,24 @@
+// for this macro we need  dacpar=0/whatever for DAC and adcpar is for ADC - defined outside macro
+// X is adc_type, Y is dac_type
+#define MULTROUTE(X, Y) {			\
+  bitn=0;					\
+  dactype[2]=Y;					\
+  GSHIFT;						\
+  if (w==0)      bitn=ADC_(0,SRlength[0],X,trigger[w],reggg,adcpar);	\
+  tmp=binroute[count][w];						\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  PULSIN_XOR;						\
+  BITN_AND_OUT;						\
+}
+//pulsin_xor above would need an if (w==1 || w==3)
+
 
 // how can we abstract these out a bit so is not so many...  - for CV modes just have a few examples of each and work more with strobes
 

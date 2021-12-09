@@ -280,16 +280,46 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 ///////////////////////////////
 
-- idea fo 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
+- idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
+
+9/12/2021:
+
+TODO: list regular and extended modes!
+
+- added toggle/pulse prob modes 7,8,9,10,11
+
+- added mode 12 with non-adc ADC_ in to LR - 3 diff possibilities:
+  ADC-5, pure LFSR on length, 30 1 bit OSC, 32 clock/square (these
+  could also be bits or bumped toggle options)
+
+
+8/12/2021:
+
+- manual idea - we have say ascii layout on dot matrix and then subject this to shift register
+
+- moved the if (w==1 || w==3) // if pulsins[w]!=0) out of the macros as most of the time we don't need to test this - this is now LR[w]!
+
+- for pulsin not so much difference of XOR, OR and we lose AND for zero pulsins... so leaks or xor it is and leaks needs changing probabilities
+
+*we try now with own SR as probability and this seems to work well for pulsins*
+
+?can also use GhostSRs for probs?
+
+- trialing 2 different bit interpretations in draftdec - DONE
+
+- if LR can have non-adc style inputs (eg. LFSR, pulses, clocks etc) XORed with incoming routing - how many options are here?* DONE
+- this could be an INTmode!
+
+- basic prob mode of entry of routed or not (into cycling). and just xor puls in...DONE - mode 6
 
 7/12/2021:
-- attempt grand mode with SR and many bits above
-- INTmode: CV fixes bits and prob is against DAC
-- chain of prob modes?
 
-- add cases 33 and 34, adc prob modes with adcpar (invcycle is more like ADC mode if is without routein)
+- attempt grand mode with SR and many bits above - we have 8 bits route and logop and 5 bits probability DONE
+- *TODO: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys*
 
-- generic prob/strobe/toggle modes
+- in ADC_ added cases 33 and 34, adc prob modes with adcpar (invcycle is more like ADC mode if is without routein)
+
+- TODO: generic prob/strobe/toggle modesDONE
 
 6/12/2021: 
 
@@ -733,7 +763,7 @@ how to swop between relevant ones?
 
 LFSR<CV(most), LFSR<DAC+CV (17), LFSR<DAC (18), LFSR<PARAM (19)
 
-also mayeb more use of comparator with these in ADC mode
+also maybe more use of comparator with these in ADC mode
 
 ////
 

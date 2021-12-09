@@ -1,6 +1,6 @@
 /**
 
-6/12: try new freeze/toggle logics - working better so test for freezings, tested but try with other fingers before we put into TOGGLE MACRO
+6/12: try new freeze/toggle logics - working better so test for freezings, tested but try with other fingers before we put into TOGGLE MACRO TODO!
 
 2/12: re-check freeze etc.logic as seems odd - was wrong way round so corrected but still not 100% as needs release
 

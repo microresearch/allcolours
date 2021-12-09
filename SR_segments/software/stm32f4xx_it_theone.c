@@ -1038,7 +1038,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
 
       PULSIN_XOR;
-      shift_[w]+=bitn;							\
+      shift_[w]+=bitn;
       dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
       PULSOUT;
       }// counterw

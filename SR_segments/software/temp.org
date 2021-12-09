@@ -2,6 +2,11 @@
 
 from generic we had all modes/options as:
 
+trial bits:
+pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
+1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
+
+
 6 bits/64 modes: 1 1 1 1 1 1
 - top bit/speed
 - 4 bits routing in
@@ -11,11 +16,7 @@ from generic we had all modes/options as:
 route in and logop bits:
 1111 4 route in bits x 3 logops = 2 bits per... 0, none, 1, xor, 2or, 3leak = 8 bits = 255 too much for CV
 
-
-trial bits:
-pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
-1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
-
+00, 01, 10, 11
 
 adc mode bits(32=5 bits)
 dac mode bits (16=4 bits)
@@ -61,21 +62,23 @@ if no pulse in then is pointless have extra bit for both - so always both... and
 2-15 DAC 15-31 DAC - 4x4 for 16-31  so 4 main modes= +1cycle+, 1cycleandroute, 2/3probs, 4-4bitshuffle?
 
 LR:
-0-16 most basic modes/strobe-prob modes
+0-11 most basic modes/strobe-prob modes
 
-17-31 = 16 esoterica // more or less
+12-31 = 20 esoterica // more or less
 
 Basic modes:
 2- cycle and route 
 
-/// check these ones for interest! TODO!
-3 pass on //ORpulsin
-4 pass on //ANDpulsin
-5 pass on //leaks_pulsin - where we could decide on logop without multiplying modes
+/// check these ones for interest vs. regular XOR ?! TODO!DONE - just keep leaks!
+[3 pass on //ORpulsin]
+[4 pass on //ANDpulsin - but AND with 0 will give 0]
 
-6 cycles/pass //ORpuls - we can also OR in cycle bit
-7 cycles/pass //ANDpuls
-8 cycles/pass //leakpuls
+3 pass on //leaks_pulsin - where we could decide on logop without multiplying modes
+
+[6 cycles/pass //ORpuls - we can also OR in cycle bit]
+[7 cycles/pass //ANDpuls]
+
+4 cycles/pass //leakpuls
 
 Prob/strobe modes - strobe mostly here for CV:
 
@@ -88,7 +91,7 @@ Prob/strobe modes - strobe mostly here for CV:
 
 4 probs with SR<DAC//SR<param
 
-// so 16 basic modes above and 16 more complex:
+// so 16 or less basic modes above and 16 more complex:
 
 say 8 routing/ghosts 8 esoteric or so... use of strobes a plus
 
