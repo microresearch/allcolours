@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={2,12,1,1}; // TEST!
+uint32_t testmodes[4]={1,1,1,1}; // TEST!
 
 //for INTmodes
 #define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
@@ -55,6 +55,13 @@ uint32_t testmodes[4]={2,12,1,1}; // TEST!
   Gshift_[w][2]=shift_[w];			\
   Gshift_[w][3]=shift_[w];			\
   shift_[w]=shift_[w]<<1;			\
+}
+
+#define GS(X) {					\
+  Gshift_[X][0]=shift_[X];			\
+  Gshift_[X][1]=shift_[X];			\
+  Gshift_[X][2]=shift_[X];			\
+  Gshift_[X][3]=shift_[X];			\
 }
 
 #define BITN_AND_OUT {				\
@@ -168,7 +175,19 @@ uint32_t testmodes[4]={2,12,1,1}; // TEST!
   BINROUTE;						\
   }							\
 }
-// follow with else{ }
+
+#define ADCDACNOGS(X, Y){			\
+  bitn=0;					\
+  dactype[2]=Y;					\
+  if (w==3) count=0;					\
+  if (w==0)      {					\
+  bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
+  BINROUTE;						\
+  }							\
+  if (w==2)      {					\
+  BINROUTE;						\
+  }							\
+}
 
 // we still specify type of DAC here but we leave
 //  if (w==2)      {
@@ -334,11 +353,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   uint32_t lengthbit=15, new_stat, prob;
   uint32_t x, y, q, start=0;
   uint32_t bitn=0, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmpp, xx;
-  uint8_t trigger[4]={0,0,0,0};
+  uint32_t trigger[4]={0,0,0,0};
   static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0;
   static uint32_t counter[4]={0,0,0,0};
-  static uint32_t train[4]={0,0,0,0};
+  static uint32_t which[4]={0,0,0,0};
   static uint32_t tug[4]={0,0,0,0};
+  static uint32_t new[4]={0,0,0,0};
   
   int32_t tmpt, dacpar=0, adcpar=0;
   
@@ -385,6 +405,28 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
    mode[w]=testmodes[w];
 
+   // testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
+   // we need to remove all gshifts also in ADC macros
+
+   if (w==0){
+   if (new[0]){
+     new[0]=0;
+     GS(0);
+   }
+   if (new[1]){
+     new[1]=0;
+     GS(1);
+   }
+   if (new[2]){
+     new[2]=0;
+     GS(2);
+   }
+   if (new[3]){
+     new[3]=0;
+     GS(3);
+   }   
+   }
+   
   switch(mode[w]){
 
     /* // basic mode to test ADC/DAc modes with equiv LR modes
@@ -421,7 +463,8 @@ case x:
       BITN_AND_OUT;
     }
     break;
-    
+
+    /*    
   case 1: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
     if (counter[w]>speed[w] && speed[w]!=1024){
     dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
@@ -434,7 +477,25 @@ case x:
     BITN_AND_OUT;
     }
     break;
+    */
 
+    // trial for new update plan
+  case 1: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
+    if (counter[w]>speed[w] && speed[w]!=1024){
+        counter[w]=0; new[w]=1;
+	shift_[w]=shift_[w]<<1;
+	dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
+	dactype[2]=0;
+	ADCDACNOGS(0, 0);
+	if (LR[w]){
+	BINROUTE;
+	PULSIN_XOR;
+	}
+	BITN_AND_OUT;
+    }
+    break;
+
+    
     // 2-15 will be most important ADC/DAC modes and basics/global routes/prob modes etc.
     //- otherpar modes: 24(len), 25(len), 26(comp), 28(prob), 29(len), 30(lengthforosc), 31 (lengthforosc)
     //- REGG modes: 2/lfsr, 4/lfsr, 5/lfsr. 6/DACX. 11/lfsr, 12/lfsr, 13/lfsr, 19/dac, 27/lfsr, 
@@ -775,12 +836,27 @@ case 12:
       ADCDACETC1(11, 13); // ADCETC has GSHIFT
       if (LR[w]){
       //////////////////////////////////HERE!
-      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	//      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	///	- TODO: mode in which pulse changes which bit ofghostSR we access - pulse moves on bit
+	if (trigger[w]) {
+	    which[w]++;
+	    if (which[w]>SRlength[w]) which[w]=0;
+	  }
+
+	  tmp=binroute[count][w];
+	  for (x=0;x<4;x++){
+	    if (tmp&0x01){
+	      bitrr = (Gshift_[x][w]>>which[w]) & 0x01;
+	      Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+	      bitn^=bitrr;
+	    }
+	    tmp=tmp>>1;
+	  }	  
       /////////////////////////////////////...
     PULSIN_XOR;
-    } 
+      }
     BITN_AND_OUT;
-  }
+    }
   break;
 
 case 14: 

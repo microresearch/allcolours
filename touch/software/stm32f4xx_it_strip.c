@@ -1,5 +1,7 @@
 /**
 
+13/12: changes to freeze/toggle logic which seem to work well, new macros
+
 6/12: try new freeze/toggle logics - working better so test for freezings, tested but try with other fingers before we put into TOGGLE MACRO TODO!
 
 2/12: re-check freeze etc.logic as seems odd - was wrong way round so corrected but still not 100% as needs release
@@ -75,11 +77,14 @@ const uint16_t logval[1024]  __attribute__ ((section (".flash"))) = {0, 0, 0, 0,
         GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	GPIOC->BSRRL=(1)<<6; \
 	delay(); \
-	trigd=0;				\
-	for (j=0;j<8;j++){			\
-	  if (!(GPIOB->IDR & (1<<2))) trigd++;	\
+	if (!(GPIOB->IDR & (1<<2))) {		\
+	lasttriggered[9]=breaker[9];		\
+	breaker[9]=0;				\
 	}					\
-	if (trigd>3) trigd=1;			  \
+	else {					  \
+	breaker[9]++;				  \
+	if (breaker[9]>1024) breaker[9]=1024;	  \
+	}					  \
 	GPIOC->BSRRH=(1)<<6;			  \
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
@@ -88,27 +93,26 @@ const uint16_t logval[1024]  __attribute__ ((section (".flash"))) = {0, 0, 0, 0,
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
 	GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	delay(); \
-	if (trigd==1 && triggered[9]==0) triggered[9]=1; \
-	if (!trigd && triggered[9]==1) breaker[9]++; \
-	if (trigd && triggered[9]==1) breaker[9]=0; \
-	if (breaker[9]>BRK8) { \
-	  breaker[9]=0; \
-	  triggered[9]=0; \
-	  play^=1; \
-	  if (rec && play) rec=0; \
-	  	} \
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	if (lasttriggered[9]>BRK) {	\
+	  lasttriggered[9]=0;				\
+	  play^=1;					\
+	  if (rec && play) rec=0;			\
+	}						\
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
         GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	GPIOC->BSRRL=(1)<<6; \
 	delay(); \
-	trigd=0;				\
-	for (j=0;j<8;j++){			\
-	  if (!(GPIOB->IDR & (1<<10))) trigd++;	\
+	if (!(GPIOB->IDR & (1<<10))) {		\
+	lasttriggered[8]=breaker[8];		\
+	breaker[8]=0;				\
 	}					\
-	if (trigd>3) trigd=1;			  \
-	GPIOC->BSRRH=(1)<<6; \
+	else {					  \
+	breaker[8]++;				  \
+	if (breaker[8]>1024) breaker[8]=1024;	  \
+	}					  \
+	GPIOC->BSRRH=(1)<<6;			  \
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
@@ -116,45 +120,139 @@ const uint16_t logval[1024]  __attribute__ ((section (".flash"))) = {0, 0, 0, 0,
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
 	GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	delay(); \
-	if (trigd==1 && triggered[8]==0) triggered[8]=1; \
-	if (!trigd && triggered[8]==1) breaker[8]++; \
-	if (trigd && triggered[8]==1) breaker[8]=0; \
-	if (breaker[8]>BRK8) { \
-	  breaker[8]=0; \
-	  triggered[8]=0; \
+	if (lasttriggered[8]>BRK) {	\
+	  lasttriggered[8]=0;				\
 	  rec^=1; \
 	  if (play && rec) play=0; \
 	} \
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;     \
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
         GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	GPIOC->BSRRL=(1)<<6; \
 	delay(); \
-	trigd=0;				\
-	for (j=0;j<8;j++){			\
-	  if (!(GPIOB->IDR & (1<<6))) trigd++;	\
+	if (!(GPIOB->IDR & (1<<6))) {		\
+	lasttriggered[10]=breaker[10];		\
+	breaker[10]=0;				\
 	}					\
-	if (trigd>3) trigd=1;			  \
-	GPIOC->BSRRH=(1)<<6;\
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	else {					  \
+	breaker[10]++;				  \
+	if (breaker[10]>1024) breaker[10]=1024;	  \
+	}					     \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;    \
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+        GPIO_Init(GPIOC, &GPIO_InitStructure);			  \
 	delay(); \
-	if (trigd==1 && triggered[10]==0) triggered[10]=1; \
-	if (!trigd && triggered[10]==1) breaker[10]++; \
-	if (trigd && triggered[10]==1) breaker[10]=0; \
-	if (breaker[10]>BRK8) { \
-	  breaker[10]=0; \
-	  triggered[10]=0; \
-	  mode+=1; \
-	 if (mode>=MAXMODES) mode=0; \
-	}		 \
-	}
+	if (lasttriggered[10]>BRK) {	\
+	  lasttriggered[10]=0;				\
+	  mode+=1;					\
+	  if (mode>=MAXMODES) mode=0;			\
+	}						\
+}
 
+#define FREEZERS {					\
+  if (daccount==7){							\
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+    GPIOC->BSRRL=(1)<<6;						\
+    delay();								\
+    if (!(GPIOB->IDR & (freezer[7]))) {					\
+      lasttriggered[7]=breaker[7];					\
+      breaker[7]=0;							\
+    }									\
+    else {								\
+      breaker[7]++;							\
+      if (breaker[7]>1024) breaker[7]=1024;				\
+    }									\
+    GPIOC->BSRRH=(1)<<6;						\
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+    delay();								\
+    if (lasttriggered[7]>BRK) {						\
+      frozen[7]^=1;							\
+      lasttriggered[7]=0;						\
+    }									\
+  }									\
+  else									\
+    {									\
+      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+      GPIOC->BSRRL=(1)<<6;						\
+      delay();								\
+      if (!(GPIOB->IDR & (freezer[daccount]))) {			\
+	lasttriggered[daccount]=breaker[daccount];			\
+	breaker[daccount]=0;						\
+      }									\
+      else {								\
+	breaker[daccount]++;						\
+	if (breaker[daccount]>1024) breaker[daccount]=1024;		\
+      }									\
+      GPIOC->BSRRH=(1)<<6;						\
+      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+      delay();								\
+      if (lasttriggered[daccount]>BRK) {				\
+	frozen[daccount]^=1;						\
+	lasttriggered[daccount]=0;					\
+      }									\
+    }									\
+  }
+
+#define REALADC {						\
+  ADC_SoftwareStartConv(ADC1);					\
+  real[daccount]=adc_buffer[daccount]<<shifter[daccount];	\
+  if (real[daccount]>4095) real[daccount]=4095;			\
+  }
+
+#define LASTPLAY {					\
+    if (lastplay==0) {					\
+      lastplay=1;					\
+      play_cnt[0]=0;					\
+      play_cnt[1]=0;					\
+      play_cnt[2]=0;					\
+      play_cnt[3]=0;					\
+      play_cnt[4]=0;					\
+      play_cnt[5]=0;					\
+      play_cnt[6]=0;					\
+      play_cnt[7]=0;					\
+    }							\
+  }
+
+#define LASTREC {					\
+    if (lastrec==0) {					\
+      lastrec=1;					\
+      rec_cnt[0]=0;					\
+      rec_cnt[1]=0;					\
+      rec_cnt[2]=0;					\
+      rec_cnt[3]=0;					\
+      rec_cnt[4]=0;					\
+      rec_cnt[5]=0;					\
+      rec_cnt[6]=0;					\
+      rec_cnt[7]=0;					\
+    }							\
+  }
+
+#define WRITEDAC {				\
+  GPIOC->BSRRH = 0b1110100000000000;				\
+  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]);	\
+  j = DAC_GetDataOutputValue (DAC_Channel_1);			\
+  GPIOC->BSRRL=(daccount)<<13;					\
+}
 
 void NMI_Handler(void)
 {
@@ -220,254 +318,248 @@ static uint16_t play_cnt[8]={0};
 static uint16_t tgr_cnt[10]={0};
 static uint16_t rec=0, play=0;
 
-//static uint16_t shifter[8]={2,2,2,2,1,1,1,1}; // shifter seperates vca from cv
-static uint16_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
+static uint16_t shifter[8]={2,2,2,2,1,1,1,1}; // shifter seperates vca from cv
+//static uint16_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
 
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   {
-    static uint16_t c=0;
-    static uint16_t daccount=0;
-    static uint16_t speed=1;
-    volatile uint16_t k;
-    uint16_t j,fing;
+    static uint32_t c=0;
+    static uint32_t daccount=0;
+    static uint32_t speed=1;
+    volatile uint32_t k;
+    uint32_t j,fing;
     // array to map freeze but exception is FR8 on PC4! 
-    uint16_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
-    uint16_t bits;
-    static uint16_t values[8], real[8];
-    static uint16_t frozen[8]={0};
-    static uint16_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
-    static uint16_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={7000}, recsp[8]={0};
-    static uint16_t lasttriggered[11]={0}, breaker[11]={0};
+    uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
+    uint32_t bits;
+    static uint32_t values[8], real[8];
+    static uint32_t frozen[8]={0};
+    static uint32_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
+    static uint32_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={7000}, recsp[8]={0};
+    static uint32_t lasttriggered[11]={0}, breaker[11]={0};
     
-    uint16_t tmp, trigd;
-    int16_t midder;
+    uint32_t tmp, trigd;
+    int32_t midder;
     
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	mode=0; // testings
 
-	/*
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_Init(GPIOC, &GPIO_InitStructure);
-      
-	GPIOC->BSRRL=(1)<<6; //  HIGH!
-	delay(); // seems to work with delay
+	switch(mode){
+	case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
+	  // mode could also be no change of speed
+	  FREEZERS;
+      	  if (frozen[daccount]==0) {
+	    REALADC;
+	  }
 
-	if (!(GPIOB->IDR & (1<<6))) {
-	  triggered[10]=1; // finger OFF is HIGH, finger ON is low
-	  lasttriggered[10]=breaker[10];
-	  breaker[10]=0;
-	}
-	else breaker[10]++;
-
-	GPIOC->BSRRH=(1)<<6; //  LOW!
-
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	delay();
-	
-	if (triggered[10] && lasttriggered[10]>BRK8) { // 0 
-	  mode^=1; // TEST
-	}
-
-	// for testing!
-			
-	GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
-       	if (mode)     DAC_SetChannel1Data(DAC_Align_12b_R, 2048); // 1000/4096 * 3V3 == 0V8
-	else     DAC_SetChannel1Data(DAC_Align_12b_R, 0); // 1000/4096 * 3V3 == 0V8  // FINGER DOWN!
-	j = DAC_GetDataOutputValue (DAC_Channel_1);
-	GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
-    	    daccount++;
-	    if (daccount==8) {
-	      daccount=0;
-	      count++;
-	      	    }
-	
-*/
-
-	
-// mode selector is in TOGGLE MACRO
+	  if (play){
+	    LASTPLAY;
+	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
+	    if ((count%speed)==0){ // speed goes from 1 to X what
+	      play_cnt[daccount]++;
+	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+	    }
+	  } // if play
+	  else lastplay=0;
     
-//    mode=0; // testings
+	  ///// recordings
+  	  if (count%(32)==0) { //for xxx HZ?
+	    if (rec){ // we are recording
+	      LASTREC;
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+	    } // if rec
+	    else lastrec=0;
+	  } // count32
 
-
-
-    switch(mode){
-    case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
-      // or no change of speed?
-
-	/////// TOGGLING for freezers	
-      
-      if (daccount==7){
-
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_Init(GPIOC, &GPIO_InitStructure);
-      
-	GPIOC->BSRRL=(1)<<6; //  HIGH!
-	delay(); // seems to work with delay
-      
-	if (!(GPIOB->IDR & (freezer[7]))) {
-	  triggered[7]=1; // finger OFF is HIGH, finger ON is low
-	  lasttriggered[7]=breaker[7];
-	  breaker[7]=0;
-	}
-	else breaker[7]++;
-
-	
-	GPIOC->BSRRH=(1)<<6; //  LOW!
-
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	delay();
-
-	if (triggered[7] && lasttriggered[7]>BRK) { // 0 
-	  frozen[7]^=1;
-	}
-
-	
-      }
-	// daccount==7
-  else
-    {
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // was Mode_IN!
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_Init(GPIOC, &GPIO_InitStructure);
-      
-	GPIOC->BSRRL=(1)<<6; //  HIGH!
-	delay(); // seems to work with delay
-      
-	//	if (GPIOB->IDR & (freezer[daccount])) trigd=0;  // finger OFF
-	//	else trigd=1; // finger ON
-	if (!(GPIOB->IDR & (freezer[daccount]))) {
-	  triggered[daccount]=1; // finger OFF is HIGH, finger ON is low
-	  lasttriggered[daccount]=breaker[daccount];
-	  breaker[daccount]=0;
-	}
-	else {
-	  breaker[daccount]++;
-	  if (breaker[daccount]>1024) breaker[daccount]=1024;
-	}
-	
-	GPIOC->BSRRH=(1)<<6; //  LOW!
-
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; // was Mode_IN!
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	delay();
-
-	if (triggered[daccount] && lasttriggered[daccount]>BRK) { // 0 
-	  frozen[daccount]^=1;
-	}
-    }
-
-      /////////
-      
-  if (frozen[daccount]==0) {
-    ADC_SoftwareStartConv(ADC1);
-
-    real[daccount]=adc_buffer[daccount]<<shifter[daccount];// shift a bit so louder now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
-    if (real[daccount]>4095) real[daccount]=4095;
-
-    // try another log!?
-  }
-
-  if (play){
-    if (lastplay==0) {     // is it a new play?
-      lastplay=1;
-      // zero all of them
-      play_cnt[0]=0;
-      play_cnt[1]=0;
-      play_cnt[2]=0;
-      play_cnt[3]=0;
-      play_cnt[4]=0;
-      play_cnt[5]=0;
-      play_cnt[6]=0;
-      play_cnt[7]=0;
-    }
-
-    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
+	  ////// write to DAC
+	  // if playback add
+	  if (play==1) {
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  }
+	  else values[daccount]=real[daccount];    // otherwise just values
     
-    if ((count%speed)==0){ // speed goes from 1 to X what
-    play_cnt[daccount]++;
-    if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
-    }
-  } // if play
-  else lastplay=0;
+	  WRITEDAC;
+	  
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    // speed only increasing
+	    ADC_SoftwareStartConv(ADC1);
+	    speed=(adc_buffer[6]>>6); // 6 bits on purpose? and we don't freeze speed... 
+	    if (speed>32) speed=32;
+	    speed=32-(speed); 
+	    TOGGLES;      
+	  }       
+	  break; ///// case 0
+	  ///////////////////////////////////////////
 
+	case 1: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all
+	  // speed also decreasings
+	  FREEZERS;
+      	  if (frozen[daccount]==0) {
+	    REALADC;
+	  }
+
+	  if (play){
+	    LASTPLAY;
+	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
+	    if ((count%speed)==0){ // speed goes from 1 to X what
+	      play_cnt[daccount]++;
+	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+	    }
+	  } // if play
+	  else lastplay=0;
     
-  ///// recordings
-  
-    if (count%(32)==0) { //for xxx HZ?
+	  ///// recordings
+  	  if (count%(32)==0) { //for xxx HZ?
+	    if (rec){ // we are recording
+	      LASTREC;
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+	    } // if rec
+	    else lastrec=0;
+	  } // count32
+
+	  ////// write to DAC
+	  // if playback add
+	  if (play==1) {
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  }
+	  else values[daccount]=real[daccount];    // otherwise just values
     
-  if (rec){ // we are recording
-    if (lastrec==0) {     // is it a new recording?
-      lastrec=1;
-      // zero all of them
-      rec_cnt[0]=0; 
-      rec_cnt[1]=0; 
-      rec_cnt[2]=0; 
-      rec_cnt[3]=0; 
-      rec_cnt[4]=0; 
-      rec_cnt[5]=0; 
-      rec_cnt[6]=0; 
-      rec_cnt[7]=0; 
-    }
+	  WRITEDAC;
+	  
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    // speed only increasing
+	    ADC_SoftwareStartConv(ADC1);
+	    speed=(adc_buffer[6]>>4); // 8 bits
+	    if (speed>127) speed=127;
+	    speed=127-(speed); //4 bits=16 256/16=
+	    TOGGLES;      
+	  }       
+	  break; ///// case 1
+	  ///////////////////////////////////////////
 
-    recordings[daccount][rec_cnt[daccount]]=values[daccount];
-    rec_cnt[daccount]++; // 
-    if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
-  } // if rec
-  else lastrec=0;
-    } // count32
+	case 2: //basic mode 0 with overlay as midpoint thing
+	  FREEZERS;
+      	  if (frozen[daccount]==0) {
+	    REALADC;
+	  }
 
-    ////// write to DAC
-    // if playback add
+	  if (play){
+	    LASTPLAY;
+	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
+	    if ((count%speed)==0){ // speed goes from 1 to X what
+	      play_cnt[daccount]++;
+	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+	    }
+	  } // if play
+	  else lastplay=0;
+    
+	  ///// recordings
+  	  if (count%(32)==0) { //for xxx HZ?
+	    if (rec){ // we are recording
+	      LASTREC;
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+	    } // if rec
+	    else lastrec=0;
+	  } // count32
+
+	  ////// write to DAC
+	  // if playback mid
     if (play==1) {
-      values[daccount]+=real[daccount];
-      if (values[daccount]>4095) values[daccount]=4095;
+      //      values[daccount]+=real[daccount]; // to take to the midpoint so 4096/2=2048 is mid
+      midder=values[daccount]+real[daccount]-2048;     
+      if (midder<0) midder=0;
+      if (midder>4095) midder=4095;
+      values[daccount]=midder;
     }
     else values[daccount]=real[daccount];    // otherwise just values
-    
-    GPIOC->BSRRH = 0b1110100000000000;  // clear bits -> PC11 - clear pc11 and top bits -> low
 
-    DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]); // 1000/4096 * 3V3 == 0V8 
-    j = DAC_GetDataOutputValue (DAC_Channel_1);
-    GPIOC->BSRRL=(daccount)<<13; //  write DAC bits
-    
-    daccount++;
-    if (daccount==8) {
-      daccount=0;
-      count++;
-   
-      // speed increasing for playback ??? is this it?
-      ADC_SoftwareStartConv(ADC1);
-      speed=(adc_buffer[6]>>6); // how to handle freezes of speed and how to record speed - 12 bits to 4 bits
-      if (speed>32) speed=32;
-      speed=32-(speed); //4 bits=16 256/16=
-      ///do toggles
-      TOGGLES;      
-    }       
-          break; ///// case 0
-	       
-      
-    } // end of modes switch    
+    WRITEDAC;
+	  
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    // speed only increasing
+	    ADC_SoftwareStartConv(ADC1);
+	    speed=(adc_buffer[6]>>6); // 6 bits on purpose? and we don't freeze speed... 
+	    if (speed>32) speed=32;
+	    speed=32-(speed); 
+	    TOGGLES;      
+	  }       
+	  break; ///// case 2
+	  ///////////////////////////////////////////
 
-    } 
+	case 3: //basic mode 0 with overlay as modulo
+	  FREEZERS;
+      	  if (frozen[daccount]==0) {
+	    REALADC;
+	  }
+
+	  if (play){
+	    LASTPLAY;
+	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
+	    if ((count%speed)==0){ // speed goes from 1 to X what
+	      play_cnt[daccount]++;
+	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
+	    }
+	  } // if play
+	  else lastplay=0;
+    
+	  ///// recordings
+  	  if (count%(32)==0) { //for xxx HZ?
+	    if (rec){ // we are recording
+	      LASTREC;
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+	    } // if rec
+	    else lastrec=0;
+	  } // count32
+
+	  ////// write to DAC
+	  // if playback mid
+    if (play==1) {
+      values[daccount]+=real[daccount];
+      values[daccount]=values[daccount]%4096;
+    }
+    else values[daccount]=real[daccount];    // otherwise just values
+
+    WRITEDAC;
+	  
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    // speed only increasing
+	    ADC_SoftwareStartConv(ADC1);
+	    speed=(adc_buffer[6]>>6); // 6 bits on purpose? and we don't freeze speed... 
+	    if (speed>32) speed=32;
+	    speed=32-(speed); 
+	    TOGGLES;      
+	  }       
+	  break; ///// case 3
+
+	  
+	  
+	  //2 - basic mode 0 with overlay as midpoint thing - what of speed?
+	  //3 - basic mode 0 with overlay as modulo (so these are all the same) - what of speed?
+
+
+	} // end of modes switch    
+    }
   }
-  

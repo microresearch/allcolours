@@ -282,6 +282,19 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 - idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
 
+- *question of simultaneous GSHIFT below!*
+
+13/12/21:
+
+- trial of changing way it updates = if new[w] - not sure which to use
+
+  // testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
+
+
+
+- TODO: mode in which CV/pulse changes which bit ofghostSR we access - mode 13 works fine
+
+
 10/12/21:
 - re-checked logic of ghostSRs and compared in test2.c
 
@@ -290,7 +303,7 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 // order does of course make a difference/depends also on routings
 
 also how we can update/calculate simultaneously (how this works for feedback, or is a delay necessary?)
-- more is that all runs ate different speeds///
+- more is that all runs at different speeds///
 
 9/12/2021:
 

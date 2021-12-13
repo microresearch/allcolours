@@ -1,0 +1,80 @@
+* newer
+
+13/12/21: maybe extra modes which change beginning/end of playback...
+
+* list of modes / some implemented in it.c
+
+Modes redux: say 32 modes and variations - question is different speed approaches which might double this
+
+0 - basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing...
+1 - basic mode 0 with speed also decreasing
+
+2 - basic mode 0 with overlay as midpoint thing - what of speed?TEST
+
+3 - basic mode 0 with overlay as modulo (so these are all the same) - what of speed?
+
+- speed also could not change so 5x modes...
+
+so we have: 3 speed options x 3  = 9 modes for each 
+
+but we want 32 which is not divisible (or 2 speed modes x4)
+
+DONE
+
+4 - with freezers as recording, stopping recording the additions which
+then play back alongside temp additions (and as above variations)
+record sets back to original
+play returns to no playback but can still record additions
+5 
+6 midpoint - seems go to silence??? so maybe lose THIS ONE!
+7 modulo
+
+8 - press freeze and plays back for that section the last x seconds (so always recording) - how do we determine the x seconds? (next freeze sets that?)
+       [ but how does this operate when we enter this mode from nothing and freeze - start recording on entry and max will be length]
+       [ what do rec and play buttons do?]
+- IN TESTING
+9
+10
+11
+
+12 - freezers reverse the last section for playback, and can overlay (no freeze allowed tho) 
+[ so in rec and non-playback freeze also freezes]
+- IMPLEMENTED but needs testings
+
+13
+14
+15
+
+16 - freezers free/detach that section or start playback again in that section... again with overlays (what then does play button do?)
+[ play button plays them all!] DONE
+17
+18
+19
+
+20 - each voltage changes speed of that specific playback section and
+we use freeze, unfreeze to record those changes, overlays also only
+for VCA and for speed. speeds for each sample are set in top 5 or 6 bits?
+- IMPLEMENTED but needs more testings
+
+21
+22
+23
+
+
+others: 
+
+- [voltage controlled speed of all playback from top voltage ????what does this mean? that we can record speed of playback (how?)]
+
+- that we can also attach and detach recordings for each cv (what then does rec do-> reattaches all of them)
+
+24
+25
+26
+27
+28
+
+29
+30
+31
+32
+
