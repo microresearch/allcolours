@@ -282,6 +282,16 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 - idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
 
+10/12/21:
+- re-checked logic of ghostSRs and compared in test2.c
+
+- question of order of SRs (w) - trial changes to tables of orders // test2.c first
+
+// order does of course make a difference/depends also on routings
+
+also how we can update/calculate simultaneously (how this works for feedback, or is a delay necessary?)
+- more is that all runs ate different speeds///
+
 9/12/2021:
 
 TODO: list regular and extended modes!
