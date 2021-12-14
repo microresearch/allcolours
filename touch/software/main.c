@@ -411,13 +411,14 @@ int main(void)
   // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
 
-  // is now 1024 with divider of 4 as there are 8x DACs and this works best for all updates...
+  // 1024 32 is 1KHz so for 256x 1khz (8x32 rec rounds) we need: 1 and 1024/8=128
+  // for 1KHz rec we need 256KHz here...
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Period = 512; // was 1024 divide by 4 should work TEST! = 256 doesn't run
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 64; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   // 4 is orig
   // 48 is too slow...
   // 30/9/3021: changed prescaler to 16 and then 32 to get rid of bleed

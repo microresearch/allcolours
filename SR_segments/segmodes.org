@@ -14,6 +14,10 @@
 
 * modes sketch
 
+newer is 1-31 ADC modes
+1-15 DAC modes
+16-31 4x4 DAC modes...
+
 CVspeed:
 1-15 -LR simple modes/all inc. prob
       N 8xADC x2 - pass in/circle_and_pass or 16 ADC modes with pass in only!
@@ -284,15 +288,29 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 - *question of simultaneous GSHIFT below!*
 
+14/12/21:
+
+- what are 4x4 DAC modes for 16-31: 1cycleandroute, 2/3probs, 4-4bitshuffle? - see temp.org for modes list
+
+- TODO: probability of advance on trigger using CV as probDONE-tested
+
+- organise modes we have in some kind of scheme: 
+
+speed
+incoming: routes, manipulate ghosts, change routes, basic routes
+what we do with it: prob modes, where we get prob from, what logic we use and where we get choice of logic from?
+special modes
+
+or group by way of: strobe in cv, cv in intmodes ???
+
+
 13/12/21:
 
 - trial of changing way it updates = if new[w] - not sure which to use
 
   // testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
 
-
-
-- TODO: mode in which CV/pulse changes which bit ofghostSR we access - mode 13 works fine
+- DONE/TODO: mode in which CV/pulse changes which bit ofghostSR we access - mode 13 works fine
 
 
 10/12/21:

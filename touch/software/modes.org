@@ -1,29 +1,46 @@
 * newer
 
-13/12/21: maybe extra modes which change beginning/end of playback...
+14/12/21: TODO: we need to stop rec and play and all freezers if we change mode!
 
-* list of modes / some implemented in it.c
+Q of linear or exponential scales... at the moment is all linear...
+
+13/12/21: *maybe extra modes which change beginning/end of playback...*
 
 Modes redux: say 32 modes and variations - question is different speed approaches which might double this
+
+- 1-overlay as addition
+[- 2-overlay as midpoint?]
+- 3-overlay as modulo
+
+2 or 3 overlays
+X
+- 1-speed as addition
+- 2-speed as also decreasing
+
+*so let's say 4 options for each* = 8 major modes:
+
+1- basic mode with freezers and speeds
+2- freezers as record additions
+3- freeze plays back last x seconds of that one
+4- freezers reverse section???
+5- freezers play/detach sections?
+6- voltage changes speed each section
+7- attach and detach recordings for each CV?
+8- length of playback changes - can be from voltage or from freezerTODO - for each section or for whole playback - so could be second mode
+
+* list of modes / some implemented in it.c
 
 0 - basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing...
 1 - basic mode 0 with speed also decreasing
 
 2 - basic mode 0 with overlay as midpoint thing - what of speed?TEST
-
 3 - basic mode 0 with overlay as modulo (so these are all the same) - what of speed?
-
-- speed also could not change so 5x modes...
-
-so we have: 3 speed options x 3  = 9 modes for each 
-
-but we want 32 which is not divisible (or 2 speed modes x4)
 
 DONE
 
 4 - with freezers as recording, stopping recording the additions which
 then play back alongside temp additions (and as above variations)
-record sets back to original
+record sets back to original - 14/12 - should be start recording original again
 play returns to no playback but can still record additions
 5 
 6 midpoint - seems go to silence??? so maybe lose THIS ONE!

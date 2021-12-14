@@ -2801,7 +2801,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
    //   else values[daccount]=0;
       if (rec){
     ADC_SoftwareStartConv(ADC1);
-                values[daccount]=logval[adc_buffer[daccount]>>2];// now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
+    //                values[daccount]=logval[adc_buffer[daccount]>>2];// now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
      values[daccount]=adc_buffer[daccount];// shift a bit so louder now 10 bits for logval // was >>4; // 16 bits to 12 - but is it not 12 bits but aligned left
        if (values[daccount]>4095) values[daccount]=4095;
           }

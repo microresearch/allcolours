@@ -1,0 +1,28 @@
+* see also software/modes.org
+
+** question of voltages:
+
+14/12/2021 
+
+- CV out peaks at 6v - 6.6v is our maxium for 4095
+
+- VCA 4.24 VPP for 5v signal (4.6v is 4095 as I guess we close the VCA a bit) but we can ponly get to 4.2v on first VCA
+
+- aliasing always - we need to re-think all speeds as DAC can only run up to 100 Hz
+
+/// reduce capacitor in sample/hold from 47nF
+
+
++input filter is 15nF and 15k so gives cutoff of 700Hz x2=1.4KHz which is fine+
+
+but rec is 32 times slower and eah dac is x8 so that is 32x8=256
+
+in theory is then 8KHz / 256 = 31Hz so aliasing
+
+- so we make everything run faster but really need to resolve all and be very precise of speeds (filters in recording)
+
+- what do we need to get to 1KHz - 256KHz clock
+
+what is max recording again? if say we record at 1 KHz - 7000 samples is 7 seconds...
+
+// need to check we run fast enough for that clock, alternative would be to software filter for recordings

@@ -1,3 +1,26 @@
+    /* // basic mode to test ADC/DAC modes with equiv LR modes
+ 
+case x:
+    if (counter[w]>speed[w] && speed[w]!=1024){
+    dactype[2]=0; par=0; // for DAC
+    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1; // logic for ops
+    GSHIFT;
+
+    if (w==0)      {
+    BITNNN;
+    bitn^=ADC_(w,SRlength[w],2,0); // choose mode and params - can return 0 from adc for no effect
+    }
+    else
+    {
+    BITNNN;
+    }
+    PULSIN_LOGOP;    
+    BITN_AND_OUT;
+  }// counterw
+  break; 
+*/
+
+
 // for this macro we need  dacpar=0/whatever for DAC and adcpar is for ADC - defined outside macro
 // X is adc_type, Y is dac_type
 #define MULTROUTE(X, Y) {			\

@@ -50,7 +50,9 @@ if no pulse in then is pointless have extra bit for both - so always both... and
 
 2-where are the input bits from (ADC, pulse, routed in, cycling)?
 
-3-what do I do with my input bit/s - logical operations, probabilities, others?
+3-what do I do with my input bit/s - logical operations,
+probabilities, others? - where do I find out what to do with my bits?
+ie. where do we get probability from?
 
 ** start to fill in modes
 
@@ -120,7 +122,10 @@ how do we select which DAC?
 
 4 basic modes // or 2 basic plus 2 other! or mix and match
 
-*** INT 48-63 or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx - a few of each...
+*** INT 48-63 or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx - a few of each... other INT speed options
+
+how many speed options here?
+
 
 CV can also select where we get our speed from - modifier
 

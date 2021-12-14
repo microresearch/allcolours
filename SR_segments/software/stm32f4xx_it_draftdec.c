@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={1,1,1,1}; // TEST!
+uint32_t testmodes[4]={2,1,50,1}; // TEST!
 
 //for INTmodes
 #define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
@@ -289,7 +289,7 @@ static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt
 //uint32_t speedfrom[4]={0,0,0,0}; //0 is CV, 1 is interrupt, 2 is DACspeedfrom_ + CV // unused so far...
 uint32_t speedfrom_[4]={3,2,1,0}; // who we get dac offset from?
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
-//uint32_t LFSR[4]={0,1,2,3}; // which SR take the LFSR bits from! default is from itself -
+uint32_t LFSR[4]={3,3,3,3}; // which SR take the LFSR bits from! default is from itself -
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
 uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
@@ -405,9 +405,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
    mode[w]=testmodes[w];
 
-   // testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
+   // TESTY: testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
    // we need to remove all gshifts also in ADC macros
-
+   /*
    if (w==0){
    if (new[0]){
      new[0]=0;
@@ -426,30 +426,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
      GS(3);
    }   
    }
+   */
    
   switch(mode[w]){
-
-    /* // basic mode to test ADC/DAc modes with equiv LR modes
- 
-case x:
-    if (counter[w]>speed[w] && speed[w]!=1024){
-    dactype[2]=0; par=0; // for DAC
-    logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1; // logic for ops
-    GSHIFT;
-
-    if (w==0)      {
-    BITNNN;
-    bitn^=ADC_(w,SRlength[w],2,0); // choose mode and params - can return 0 from adc for no effect
-    }
-    else
-    {
-    BITNNN;
-    }
-    PULSIN_LOGOP;    
-    BITN_AND_OUT;
-  }// counterw
-  break; 
-*/
 
   case 0: // for all just cycle  - ADC NONE/cycle, LR cycle, DAC 0/cycle
     if (counter[w]>speed[w] && speed[w]!=1024){
@@ -464,7 +443,6 @@ case x:
     }
     break;
 
-    /*    
   case 1: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
     if (counter[w]>speed[w] && speed[w]!=1024){
     dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
@@ -477,8 +455,8 @@ case x:
     BITN_AND_OUT;
     }
     break;
-    */
 
+    /*
     // trial for new update plan
   case 1: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
     if (counter[w]>speed[w] && speed[w]!=1024){
@@ -494,7 +472,7 @@ case x:
 	BITN_AND_OUT;
     }
     break;
-
+    */
     
     // 2-15 will be most important ADC/DAC modes and basics/global routes/prob modes etc.
     //- otherpar modes: 24(len), 25(len), 26(comp), 28(prob), 29(len), 30(lengthforosc), 31 (lengthforosc)
@@ -539,7 +517,7 @@ case x:
       /////////////////////////////////////...
       //      prob=param[w]&31;
       prob=shift_[w]&31; // this seems to work somehow 8/12/2021
-      PULSIN_LEAK; // try xor vs leak vs or...
+      PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
       }
     BITN_AND_OUT;
     }
@@ -991,6 +969,7 @@ break;
 case 48:	
 if (trigger[w]){ 
   dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+  param[w]=adc_buffer[lookupadc[w]];
   ADCDACETC1(0, 0);
   if (LR[w]){
   //////////////////////////////////HERE!
@@ -1002,10 +981,11 @@ BITN_AND_OUT;
 }
 break;
 
-// draft for CV with INT - where to place this?
+// draft for CV with INT - where to place this? we can't really use CV as param here!
 case 49:
     if (counter[w]>speed[w] && speed[w]!=1024){
-      if (trigger[w]){ 
+      if (trigger[w]){
+	param[w]=adc_buffer[lookupadc[w]];// ???
 	dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
 	ADCDACETC1(0, 0);
 	if (LR[w]){
@@ -1019,6 +999,23 @@ case 49:
 }
 break;
 
+// draft for INTmodes - - TODO: probability of advance on trigger using CV as prob
+case 50:
+  param[w]=adc_buffer[lookupadc[w]];
+  if (trigger[w] && (shift_[LFSR[w]] & 4095 ) > (param[w] & 4095) ){ // or this could be based on a real: shift_[3] which we try here...
+    dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+    ADCDACETC1(0, 0);
+    if (LR[w]){
+      //////////////////////////////////HERE!
+      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      /////////////////////////////////////...
+      PULSIN_XOR;
+    } 
+    BITN_AND_OUT;
+  }
+  break;
+
+ 
 	
     /// new experimental modes to test
     
