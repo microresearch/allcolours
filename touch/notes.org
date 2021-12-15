@@ -1,6 +1,22 @@
 * see also software/modes.org
 
-** question of voltages:
+15/12/2021:
+
+- need to add overlap flag for rec and playback...
+
+- problems with speeds and aliasing so need to rewrite code without 32 steps
+
+- try without the 32x slowdown for record (and speed will skip samples)
+
+so we need 8x say upwards of 1KHz which is 8KHz in main loop
+
+we have:
+
+  // 1024/4 is 8x 862Hz (toggle speed so 2x that which is fine for us but we need to lower the sample/hold cap...
+
+replaced c9 with 1NF (from 47NF)
+
+1.6k=4 seconds..
 
 14/12/2021 
 
@@ -15,7 +31,7 @@
 
 +input filter is 15nF and 15k so gives cutoff of 700Hz x2=1.4KHz which is fine+
 
-but rec is 32 times slower and eah dac is x8 so that is 32x8=256
+but rec is 32 times slower and each dac is x8 so that is 32x8=256
 
 in theory is then 8KHz / 256 = 31Hz so aliasing
 

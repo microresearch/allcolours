@@ -816,6 +816,9 @@ case 12:
       //////////////////////////////////HERE!
 	//      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
 	///	- TODO: mode in which pulse changes which bit ofghostSR we access - pulse moves on bit
+	// can also be change access bit but not cycling bit! TODO!
+	
+	// also cycling bit version     if ((tmp&0x01) || (x==w)){ 
 	if (trigger[w]) {
 	    which[w]++;
 	    if (which[w]>SRlength[w]) which[w]=0;

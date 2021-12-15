@@ -250,6 +250,10 @@ GPIO_InitTypeDef GPIO_InitStructure;
 
 #define LASTREC {					\
     if (lastrec==0) {					\
+      overlap[0]=0;					\
+      overlap[1]=0;					\
+      overlap[2]=0;					\
+      overlap[3]=0;					\
       lastrec=1;					\
       rec_cnt[0]=0;					\
       rec_cnt[1]=0;					\
@@ -340,7 +344,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   {
     static uint32_t c=0, val=0;
     static uint32_t daccount=0;
-    static uint32_t speed=1;
+    static uint32_t speed=1, overlap[4]={0};
     volatile uint32_t k;
     uint32_t j,fing;
     // array to map freeze but exception is FR8 on PC4! 
@@ -358,7 +362,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=4; // testings
+	mode=0; // testings
 
 	switch(mode){
 	case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
@@ -371,24 +375,28 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (play){
 	    LASTPLAY;
 	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
-	    speed=32;
-	    if ((count%speed)==0){ // speed goes from 1 to X what
+	    //	    speed=32;
+	    //	    if ((count%speed)==0){ // speed goes from 1 to X what
 	      play_cnt[daccount]++;
-	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
-	    }
+	      if (overlap[daccount]) rec_cnt[daccount]=7000;
+	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0; // but what if we overlap then play full...
+	      //	    }
 	  } // if play
 	  else lastplay=0;
     
 	  ///// recordings
-	  if (count%(32)==0) { //for 1 KHZ?
+	  //	  if (count%(32)==0) { //for 1 KHZ?
 	    if (rec){ // we are recording
 	      LASTREC;
 	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
 	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
+	      if (rec_cnt[daccount]>7000) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
 	    } // if rec
 	    else lastrec=0;
-	    	  } // count32
+	    //	  } // count32
 
 	  ////// write to DAC
 	  // if playback add
@@ -397,7 +405,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    if (values[daccount]>4095) values[daccount]=4095;
 	  }
 	  else values[daccount]=real[daccount];    // otherwise just values
-    
+
+	  //	  values[daccount]=4095;
+	  
 	  WRITEDAC;
 	  
 	  daccount++;
@@ -413,162 +423,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }       
 	  break; ///// case 0
 	  ///////////////////////////////////////////
-
-	case 1: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all
-	  // speed also decreasings
-	  FREEZERS;
-      	  if (frozen[daccount]==0) {
-	    REALADC;
-	  }
-
-	  if (play){
-	    LASTPLAY;
-	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
-	    if ((count%speed)==0){ // speed goes from 1 to X what
-	      play_cnt[daccount]++;
-	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
-	    }
-	  } // if play
-	  else lastplay=0;
-    
-	  ///// recordings
-  	  if (count%(32)==0) { //for xxx HZ?
-	    if (rec){ // we are recording
-	      LASTREC;
-	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
-	    } // if rec
-	    else lastrec=0;
-	  } // count32
-
-	  ////// write to DAC
-	  // if playback add
-	  if (play==1) {
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
-	  }
-	  else values[daccount]=real[daccount];    // otherwise just values
-    
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    // speed only increasing
-	    ADC_SoftwareStartConv(ADC1);
-	    speed=(adc_buffer[6]>>4); // 8 bits
-	    if (speed>127) speed=127;
-	    speed=127-(speed); //4 bits=16 256/16=
-	    TOGGLES;      
-	  }       
-	  break; ///// case 1
-	  ///////////////////////////////////////////
-
-	case 2: //basic mode 0 with overlay as midpoint thing
-	  FREEZERS;
-      	  if (frozen[daccount]==0) {
-	    REALADC;
-	  }
-
-	  if (play){
-	    LASTPLAY;
-	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
-	    if ((count%speed)==0){ // speed goes from 1 to X what
-	      play_cnt[daccount]++;
-	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
-	    }
-	  } // if play
-	  else lastplay=0;
-    
-	  ///// recordings
-  	  if (count%(32)==0) { //for xxx HZ?
-	    if (rec){ // we are recording
-	      LASTREC;
-	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
-	    } // if rec
-	    else lastrec=0;
-	  } // count32
-
-	  ////// write to DAC
-	  // if playback mid
-    if (play==1) {
-      //      values[daccount]+=real[daccount]; // to take to the midpoint so 4096/2=2048 is mid
-      midder=values[daccount]+real[daccount]-2048;     
-      if (midder<0) midder=0;
-      if (midder>4095) midder=4095;
-      values[daccount]=midder;
-    }
-    else values[daccount]=real[daccount];    // otherwise just values
-
-    WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    // speed only increasing
-	    ADC_SoftwareStartConv(ADC1);
-	    speed=(adc_buffer[6]>>6); // 6 bits on purpose? and we don't freeze speed... 
-	    if (speed>32) speed=32;
-	    speed=32-(speed); 
-	    TOGGLES;      
-	  }       
-	  break; ///// case 2
-	  ///////////////////////////////////////////
-
-	case 3: //basic mode 0 with overlay as modulo
-	  FREEZERS;
-      	  if (frozen[daccount]==0) {
-	    REALADC;
-	  }
-
-	  if (play){
-	    LASTPLAY;
-	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
-	    if ((count%speed)==0){ // speed goes from 1 to X what
-	      play_cnt[daccount]++;
-	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0;
-	    }
-	  } // if play
-	  else lastplay=0;
-    
-	  ///// recordings
-  	  if (count%(32)==0) { //for xxx HZ?
-	    if (rec){ // we are recording
-	      LASTREC;
-	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>7000) rec_cnt[daccount]=0;
-	    } // if rec
-	    else lastrec=0;
-	  } // count32
-
-	  ////// write to DAC
-	  // if playback mid
-    if (play==1) {
-      values[daccount]+=real[daccount];
-      values[daccount]=values[daccount]%4096;
-    }
-    else values[daccount]=real[daccount];    // otherwise just values
-
-    WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    // speed only increasing
-	    ADC_SoftwareStartConv(ADC1);
-	    speed=(adc_buffer[6]>>6); // 6 bits on purpose? and we don't freeze speed... 
-	    if (speed>32) speed=32;
-	    speed=32-(speed); 
-	    TOGGLES;      
-	  }       
-	  break; ///// case 3
 
 	case 4:
 	  GPIOC->BSRRH = 0b1110100000000000;		       

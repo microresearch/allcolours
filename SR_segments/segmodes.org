@@ -288,6 +288,11 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 - *question of simultaneous GSHIFT below!*
 
+15/12/21:
+
+- // can also be change access bit but not cycling bit! TODO!->DONE/TODO: mode in which CV/pulse changes which bit ofghostSR we access - mode 13 works fine	
+- also test with CV access for these bits
+
 14/12/21:
 
 - what are 4x4 DAC modes for 16-31: 1cycleandroute, 2/3probs, 4-4bitshuffle? - see temp.org for modes list

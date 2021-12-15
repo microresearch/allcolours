@@ -1,8 +1,16 @@
 * newer
 
+15/12/21: 
+
+- add basic mode with no speed changes ...
+
+- problems with speeds and aliasing so need to rewrite code without 32 steps
+
 14/12/21: TODO: we need to stop rec and play and all freezers if we change mode!
 
 Q of linear or exponential scales... at the moment is all linear...
+
+problems with speeds and aliasing so need to rewrite code without 32 steps
 
 13/12/21: *maybe extra modes which change beginning/end of playback...*
 
