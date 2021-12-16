@@ -57,12 +57,14 @@ think it is in mode23 but we need to change the output pin here!
 #include "stm32f4xx_tim.h"
 #include "misc.h"
 #include "adc.h"
+#include "resources.h"
 
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
 #define BRK8 (64*8) // 64 at 4 in INT2 // so for 8 in main.c we need 32
 #define BRK 64
-#define DELB 100 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
+#define DELB 200 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
+#define DELA 64 // for clear DAC
 
 #define MAXMODES 4
 
@@ -176,7 +178,7 @@ GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_Init(GPIOC, &GPIO_InitStructure);				\
     GPIOC->BSRRL=(1)<<6;						\
     delay();								\
-    if (!(GPIOB->IDR & (freezer[7]))) {					\
+    if (!(GPIOC->IDR & (freezer[7]))) {					\
       lasttriggered[7]=breaker[7];					\
       breaker[7]=0;							\
     }									\
@@ -237,14 +239,18 @@ GPIO_InitTypeDef GPIO_InitStructure;
 #define LASTPLAY {					\
     if (lastplay==0) {					\
       lastplay=1;					\
-      play_cnt[0]=0;					\
-      play_cnt[1]=0;					\
-      play_cnt[2]=0;					\
-      play_cnt[3]=0;					\
-      play_cnt[4]=0;					\
-      play_cnt[5]=0;					\
-      play_cnt[6]=0;					\
-      play_cnt[7]=0;					\
+      play_cnt[0]=0.0f;					\
+      play_cnt[1]=0.0f;					\
+      play_cnt[2]=0.0f;					\
+      play_cnt[3]=0.0f;					\
+      play_cnt[4]=0.0f;					\
+      play_cnt[5]=0.0f;					\
+      play_cnt[6]=0.0f;					\
+      play_cnt[7]=0.0f;					\
+      overlap[0]=0;					\
+      overlap[1]=0;					\
+      overlap[2]=0;					\
+      overlap[3]=0;					\
     }							\
   }
 
@@ -266,11 +272,22 @@ GPIO_InitTypeDef GPIO_InitStructure;
     }							\
   }
 
-#define WRITEDAC {				\
-  GPIOC->BSRRH = 0b1110100000000000;				\
+// closest we get - bleed from one to next is minimal
+// BSRRH is low, L is high
+#define CLEARDAC {						\
+      DAC_SetChannel1Data(DAC_Align_12b_R, 0);			\
+      j = DAC_GetDataOutputValue (DAC_Channel_1);		\
+  }
+
+#define WRITEDAC {						\
   DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]);	\
   j = DAC_GetDataOutputValue (DAC_Channel_1);			\
+  GPIOC->BSRRH = 1<<11;						\
+  GPIOC->BSRRH = 0b1110000000000000;				\
   GPIOC->BSRRL=(daccount)<<13;					\
+  delay2();							\
+  GPIOC->BSRRL = 1<<11;						\
+  CLEARDAC;							\
 }
 
 void NMI_Handler(void)
@@ -324,6 +341,13 @@ void PendSV_Handler(void)
       __asm__ __volatile__ ("nop\n\t":::"memory");		\
   } while (0)
 
+#define delay2()						 do {	\
+    register unsigned int ix;					\
+    for (ix = 0; ix < DELA; ++ix)				\
+      __asm__ __volatile__ ("nop\n\t":::"memory");		\
+  } while (0)
+
+
 #define delayy()						 do {	\
     register unsigned int ix;					\
     for (ix = 0; ix < 10000000; ++ix)				\
@@ -331,26 +355,72 @@ void PendSV_Handler(void)
   } while (0)
 
 extern __IO uint16_t adc_buffer[8];
-static uint16_t recordings[8][7000]; // 
+static uint16_t recordings[8][7000]={0}; // 
 static uint16_t rec_cnt[8]={0};
-static uint16_t play_cnt[8]={0};
-static uint16_t tgr_cnt[10]={0};
+static float play_cnt[8]={0.0f};
+//static uint16_t tgr_cnt[10]={0};
 static uint16_t rec=0, play=0;
 
-static uint16_t shifter[8]={2,2,2,2,1,1,1,1}; // shifter seperates vca from cv - VCA comes first
+static uint16_t shifter[8]={2,2,2,2,2,2,2,2}; // shifter seperates vca from cv - VCA comes first
 //static uint16_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
 
+inline static float mod0(float value, float length)
+{
+  while (value > (length-1))
+        value -= length;
+    return value;
+}
+
+
+//	    values[daccount]=speedsample(speed, rec_cnt[daccount], recordings[daccount]);
+// no filtering and we can't slow down here
+uint16_t upspeedsample(uint32_t speedy, uint32_t lengthy, uint16_t dacc, uint16_t *samples){
+  uint16_t value;
+  // test construction in most basic mode
+  /*
+  value=(samples[play_cnt[dacc]])&4095;  // ignore top bits
+	      play_cnt[dacc]++;
+	      if (play_cnt[dacc]>lengthy) play_cnt[dacc]=0; // but what if we overlap then play full...
+  */
+  // speedy is 1-32 ---> 1 is basic speed.
+  speedy+=1;
+  play_cnt[dacc]+=(float)speedy;
+  if (play_cnt[dacc]>lengthy) play_cnt[dacc]=0.0f;
+  value=(samples[(int)(play_cnt[dacc])])&4095;  // ignore top bits
+  return value;
+}
+
+// try now for float and interpolate speedsample - this seems to work but we need to figure out speed range
+// with speed as 0.125 to 4.0f - or use logspeed.
+uint16_t speedsample(float speedy, uint32_t lengthy, uint16_t dacc, uint16_t *samples){
+  int lowerPosition, upperPosition;
+  
+  play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)play_cnt[dacc];
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+
+    //  Return interpolated table value
+      float sample= (samples[lowerPosition] +
+              ((play_cnt[dacc] - lowerPosition) *
+               (samples[upperPosition] - samples[lowerPosition])));
+
+      return (int)sample;
+}
+  
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   {
     static uint32_t c=0, val=0;
     static uint32_t daccount=0;
-    static uint32_t speed=1, overlap[4]={0};
+    static uint32_t speed=1, overlap[8]={0};
     volatile uint32_t k;
     uint32_t j,fing;
     // array to map freeze but exception is FR8 on PC4! 
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
+    uint32_t prev[8]={1,2,3,4,5,6,7,0};
     uint32_t bits;
-    static uint32_t values[8], real[8];
+    uint16_t values[8], real[8]; // not static
     static uint32_t frozen[8]={0};
     static uint32_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
     static uint32_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={7000}, recsp[8]={0};
@@ -368,27 +438,27 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
 	  // mode could also be no change of speed
 	  FREEZERS;
-      	  if (frozen[daccount]==0) {
+
+	  if (frozen[daccount]==0) {
 	    REALADC;
 	  }
 
-	  if (play){
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
 	    LASTPLAY;
-	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
-	    // now we need to do to handle speed
-	    //	    speed=32;
-	    //	    if ((count%speed)==0){ // speed goes from 1 to X what
-	      play_cnt[daccount]++;
-	      if (overlap[daccount]) rec_cnt[daccount]=7000;
-	      if (play_cnt[daccount]>rec_cnt[daccount]) play_cnt[daccount]=0; // but what if we overlap then play full...
-	      //	    }
+	    if (overlap[daccount]) rec_cnt[daccount]=7000;
+	    //	    speed=512;
+	    	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    //	    values[daccount]=speedsample(1.0f, rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
-	  else lastplay=0;
+	  else {
+	    lastplay=0;
+	    play=0;
+	  }
     
 	  ///// recordings
 	  //	  if (count%(32)==0) { //for 1 KHZ?
 	    if (rec){ // we are recording
-	      LASTREC;
+	      LASTREC; // reset all
 	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>7000) {
@@ -396,8 +466,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 		overlap[daccount]=1;
 	      }
 	    } // if rec
-	    else lastrec=0;
-	    //	  } // count32
+	    else {
+	      lastrec=0;
+	      overlap[daccount]=0;
+	    }
+	      //	  } // count32
 
 	  ////// write to DAC
 	  // if playback add
@@ -408,6 +481,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else values[daccount]=real[daccount];    // otherwise just values
 
 	  //	  values[daccount]=4095;
+	  //	  if (daccount==5) values[daccount]=0;
+	  //	  values[daccount]&= ~(3);
 	  
 	  WRITEDAC;
 	  
@@ -417,9 +492,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    count++;
 	    // speed only increasing
 	    ADC_SoftwareStartConv(ADC1);
-	    speed=(adc_buffer[6]>>6); // 6 bits on purpose? and we don't freeze speed... 
-	    if (speed>32) speed=32;
-	    speed=32-(speed); 
+	    //	    speed=(adc_buffer[6]>>6); // old speed no we want 10 bits
+	    speed=(adc_buffer[6])>>1;
+	    if (speed>1023) speed=1023;
+	    //	    speed=32-(speed); 
 	    TOGGLES;      
 	  }       
 	  break; ///// case 0
@@ -430,6 +506,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  DAC_SetChannel1Data(DAC_Align_12b_R, val);
 	  j = DAC_GetDataOutputValue (DAC_Channel_1);		
 	  GPIOC->BSRRL=(daccount)<<13;
+	  //	  CLEARDAC;
 	  daccount++;
 	  if (daccount==8) {
 	    daccount=0;

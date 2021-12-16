@@ -136,10 +136,10 @@ void io_config2 (void) {
        GPIO_InitTypeDef GPIO_InitStructure;
 
        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       //       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+       //       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
        GPIO_Init(GPIOA, &GPIO_InitStructure);
 
        /* DAC channel 1 Configuration */
@@ -412,12 +412,14 @@ int main(void)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
 
   // 1024/4 is 8x 862Hz (toggle speed so 2x that which is fine for us but we need to lower the sample/hold cap...
+
+  // 16/12 stay with 1024/8 for 1.5 KHz I think - check this
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 4; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   // 4 is orig
   // 48 is too slow...
   // 30/9/3021: changed prescaler to 16 and then 32 to get rid of bleed

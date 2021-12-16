@@ -1,8 +1,26 @@
 * see also software/modes.org
 
+16/12/2021:
+
+- 
+
+- speed code is re-written also now with logspeed to try out...
+
+TODO: trial with all caps replaced for bleedthrough etc - 1NF DONE
+
+still bleedthrough but is that anything to do with caps... (see how small we can go with c9 - 100pF?)
+
+TODO:
+
+different fingers for vca, 
+
+also if we can change vca so opens a bit more: values there R52 was adjusted from 47k to 10K maybe trial other values
+
+20k now we have and seems ok
+
 15/12/2021:
 
-- need to add overlap flag for rec and playback...
+- need to add overlap flag for rec and playback...DONE
 
 - problems with speeds and aliasing so need to rewrite code without 32 steps
 
@@ -22,7 +40,7 @@ replaced c9 with 1NF (from 47NF)
 
 - CV out peaks at 6v - 6.6v is our maxium for 4095
 
-- VCA 4.24 VPP for 5v signal (4.6v is 4095 as I guess we close the VCA a bit) but we can ponly get to 4.2v on first VCA
+- VCA 4.24 VPP for 5v signal (4.6v is 4095 as I guess we close the VCA a bit) but we can only get to 4.2v on first VCA
 
 - aliasing always - we need to re-think all speeds as DAC can only run up to 100 Hz
 
