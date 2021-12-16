@@ -2,15 +2,15 @@
 
 15/12/21: 
 
-- add basic mode with no speed changes ...
+- add basic mode with no speed changes ...DONE
 
-- problems with speeds and aliasing so need to rewrite code without 32 steps
+- problems with speeds and aliasing so need to rewrite code without 32 steps-TODO: how to handle slow downs and speed ups?
 
 14/12/21: TODO: we need to stop rec and play and all freezers if we change mode!
 
 Q of linear or exponential scales... at the moment is all linear...
 
-problems with speeds and aliasing so need to rewrite code without 32 steps
+//problems with speeds and aliasing so need to rewrite code without 32 steps
 
 13/12/21: *maybe extra modes which change beginning/end of playback...*
 
@@ -23,7 +23,7 @@ Modes redux: say 32 modes and variations - question is different speed approache
 2 or 3 overlays
 X
 - 1-speed as addition
-- 2-speed as also decreasing
+- 2-speed as also decreasing??
 
 *so let's say 4 options for each* = 8 major modes:
 

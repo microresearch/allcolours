@@ -375,6 +375,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (play){
 	    LASTPLAY;
 	    values[daccount]=(recordings[daccount][play_cnt[daccount]])&4095;  // ignore top bits
+	    // now we need to do to handle speed
 	    //	    speed=32;
 	    //	    if ((count%speed)==0){ // speed goes from 1 to X what
 	      play_cnt[daccount]++;

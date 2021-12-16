@@ -149,10 +149,10 @@ Global changes: CV changes global table
 
 ** theone:
 
-total cv modes: 47
+total cv modes: 47+new ones - interesting ones: 49
 total intmodes: 18
 
-0 just pass
+[0 just pass
 1 just cycle
 2 cycle and pass
 3 pass on //ORpulsin
@@ -160,7 +160,7 @@ total intmodes: 18
 5 pass on //leaks_pulsin
 6 cycles/pass //OR - we can also OR in cycle bit
 7 cycles/pass //AND
-8 cycles/pass //leak
+8 cycles/pass //leak]
 
 [9 testADCs]
 
@@ -251,3 +251,24 @@ trigger could also change logops table for pulses in
 4 strobe freezes length of incoming
 5 strobe reverses ghost - can also reverse own SR
 6 strobe XOR shift with ghost
+
+// new modes recently added! 15/12
+
+00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+01 2-BITIN or loopback
+10 3-INV of above
+11 4- BITIN or not into cycling - above
+
+we have new probability modes: 
+5: generic bit options for prob
+6: basic prob mode of entry of routed or not (into cycling). and just xor puls in... @ 11 above
+7: trial toggle/tug of above: entry of routed or not (into cycling). and just xor puls in...
+8: 	// as above but without toggle...
+9: 00 invert bit with strobe
+10: strobe- 01 above
+11: strobe 10 above
+
+12: non-adc entry into LR
+13: trigger changes which bit of ghostSR we access/ for intmode also using CV, variations: cycling too, don't change cycle bit just extracted bit
+   50: probability of advance on trigger using CV as prob - intmode
+

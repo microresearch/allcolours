@@ -1,0 +1,95 @@
+** modes
+
+// from temp.org to update here
+
+*** CV 0-31
+0,1 cycle and route nothing else (but we have DAC out)
+
+2-31 all ADC - also prob mode as adc - load adc or not=XOR 0 case 28 - route in... 
+
+2-15 DAC 15-31 DAC - 4x4 for 16-31  so 4 main modes= +1cycle+, 1cycleandroute, 2/3probs/or/strobes, 4-4bitshuffle?
+
+LR:
+0-11 most basic modes/strobe-prob modes
+
+12-31 = 20 esoterica // more or less
+
+Basic modes:
+2- cycle and route 
+3 pass on //leaks_pulsin - where we could decide on logop without multiplying modes
+4 cycles/pass //leakpuls
+
+Prob/strobe modes - strobe mostly here for CV:
+
+4 strobe probabilities:
+
+00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+01 2-BITIN or loopback
+10 3-INV of above
+11 4- BITIN or not into cycling
+
+4 probs with SR<DAC//SR<param
+
+other strobe modes/below:
+
+Routing/other tables modes based on SR - own SR, other SR...
+
+Manipulate ghosts:
+
+3 strobe advances/freezes GHOST
+[4 strobe freezes length of incoming GHOST]
+5 strobe reverses ghost - can also reverse own SR
+6 strobe XOR shift with ghost???
+
+Esoteric:
+
+Global routing: trigger bumps global routes
+
+*** CV+DAC 32-47 + // other speed options: speed from CV+clkcnt - wraps etc... - say 4 speed options x 4 here
+
+how do we select which DAC?
+
+4 ADC modes - also prob mode as adc
+
+4 DAC modes
+
+4 basic modes // or 2 basic plus 2 other! or mix and match
+
+*** INT 48-63 or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx - a few of each... other INT speed options
+
+how many speed options here?
+
+
+CV can also select where we get our speed from - modifier
+
+16 ADC modes = basic + special intmodes - also prob mode as adc/using CV
+
+4x4 DAC modes
+
+16 LR:
+
+few basic modes:
+
+Prob modes (no strobe):
+
+8 probs with SR<CV
+
+Routing/other tables modes using CV:
+
+Esoteric:
+
+Global changes: CV changes global table
+
+** classifying
+
+1-where do I get speed from? if from SR which one and ...
+
+2-where are the input bits from (ADC, pulse, routed in, cycling)? = manipulate routes, what are routes=thru+cycle, manipulate own/other ghosts
+
+3-what do I do with my input bit/s - logical operations,
+probabilities, others? - where do I find out what to do with my bits?
+ie. where do we get probability from?
+
+strobe modes in CV/ CV modes in trigger
+
+
