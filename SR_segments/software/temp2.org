@@ -21,7 +21,7 @@ Basic modes:
 
 Prob/strobe modes - strobe mostly here for CV:
 
-4 strobe probabilities:
+4 other/strobe probabilities:
 
 00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
 01 2-BITIN or loopback
@@ -82,7 +82,7 @@ Global changes: CV changes global table
 
 ** classifying
 
-1-where do I get speed from? if from SR which one and ...
+1-where do I get speed from? if from SR which one and ... ---> major modes
 
 2-where are the input bits from (ADC, pulse, routed in, cycling)? = manipulate routes, what are routes=thru+cycle, manipulate own/other ghosts
 
@@ -92,4 +92,27 @@ ie. where do we get probability from?
 
 strobe modes in CV/ CV modes in trigger
 
+*** basic routings
 
+*** probability modes
+
+00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+01 2-BITIN or loopback
+10 3-INV of above
+11 4- BITIN or not into cycling
+
+x where we get prob -> prob as strobe, param, DAC = x3 12 modes
+
+*** ghost modes 
+
+*** strobe modes
+
+*** special modes
+
+- triadex 
+
+*** bit modes
+
+- for probability
+- for routings
+- ???
