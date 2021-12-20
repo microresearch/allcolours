@@ -136,7 +136,7 @@ void io_config2 (void) {
        GPIO_InitTypeDef GPIO_InitStructure;
 
        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
        //       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
        //       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -151,6 +151,8 @@ void io_config2 (void) {
        //       DAC_StructInit(&DAC_InitStructure1);
        /* Enable DAC Channel 1 */
        DAC_Cmd(DAC_Channel_1, ENABLE);
+       DAC_Cmd(DAC_Channel_2, DISABLE);
+
 }
 
 //Initialize clock config
@@ -262,18 +264,55 @@ int main(void)
   unsigned int i, adcr, j, k=0, otherk=0, flipped, prev_state, value, offset;
     i = adcr = j = k = 0;
     unsigned int dacval[8]={};
-
+    GPIO_InitTypeDef GPIO_InitStructure;
     //      SystemClock_Config();
             initClock();
 
     // 8 channels
-    ADC1_Init((uint16_t *)adc_buffer);
+	    //	    ADC1_Init((uint16_t *)adc_buffer);
 
-    GPIO_InitTypeDef GPIO_InitStructure;
+	    
+	    // testing
+
+
+    // Enable clock for ADC1
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+    
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;// as pin 4 is DAC
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // changes nothing
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    
+	    	// adc8 is adc1_10 =pc0
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;// | GPIO_Pin_1; PC10
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    ADC_CommonInitTypeDef ADC_CommonInitStructure;
+  ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
+  ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div8;
+  ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
+  ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_20Cycles;
+  ADC_CommonInit(&ADC_CommonInitStructure);    
+    
+    // Init ADC1
+    ADC_InitTypeDef ADC_InitStruct;
+    ADC_InitStruct.ADC_ContinuousConvMode = DISABLE;
+    ADC_InitStruct.ADC_DataAlign = ADC_DataAlign_Right;
+    ADC_InitStruct.ADC_ExternalTrigConv = DISABLE;
+    ADC_InitStruct.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    ADC_InitStruct.ADC_NbrOfConversion = 1;
+    ADC_InitStruct.ADC_Resolution = ADC_Resolution_12b;
+    ADC_InitStruct.ADC_ScanConvMode = DISABLE;
+    ADC_Init(ADC1, &ADC_InitStruct);
+    ADC_Cmd(ADC1, ENABLE);
+
+    //   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_84Cycles);
 
     //- rec on PB2, play on PB4 - swopped with FR3, push on PB6 
     //- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
-
     
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;

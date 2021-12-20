@@ -1,6 +1,8 @@
 /**
 
-14.12: put in modechanging clearance into macro TOGGLE - still needs to be TESTED!
+20/12+ - see notes.org for changes
+
+14/12: put in modechanging clearance into macro TOGGLE - still needs to be TESTED!
 
 13/12: changes to freeze/toggle logic which seem to work well, new macrosDONE
 
@@ -230,10 +232,83 @@ GPIO_InitTypeDef GPIO_InitStructure;
     }									\
   }
 
+/*
 #define REALADC {						\
-  ADC_SoftwareStartConv(ADC1);					\
   real[daccount]=adc_buffer[daccount]<<shifter[daccount];	\
   if (real[daccount]>4095) real[daccount]=4095;			\
+  }
+*/
+
+
+// channel 5 case 2 doesn't work!
+#define REALADC {						\
+switch(daccount){						\
+  case 0:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[0]=ADC_GetConversionValue(ADC1);				\
+  break;								\
+  case 1:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[1]=ADC_GetConversionValue(ADC1);				\
+  break;								\
+  case 2:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[2]=ADC_GetConversionValue(ADC1);					\
+  break;								\
+  case 3:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[3]=ADC_GetConversionValue(ADC1);				\
+  break;								\
+  case 4:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[4]=ADC_GetConversionValue(ADC1);				\
+  break;								\
+  case 5:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[5]=ADC_GetConversionValue(ADC1);				\
+  break;								\
+  case 6:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[6]=ADC_GetConversionValue(ADC1);				\
+  break;								\
+  case 7:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[7]=ADC_GetConversionValue(ADC1);				\
+  break;								\
+   }									\
+}
+
+#define DOSPEED {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles); \
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  speed=ADC_GetConversionValue(ADC1);					\
+  if (speed>1023) speed=1023;			\
   }
 
 #define LASTPLAY {					\
@@ -364,6 +439,9 @@ static uint16_t rec=0, play=0;
 static uint16_t shifter[8]={2,2,2,2,2,2,2,2}; // shifter seperates vca from cv - VCA comes first
 //static uint16_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
 
+//static uint16_t order[8]={7,6,5,4,3,2,1,0}; // 0-3 is VCA from bottom
+//static uint16_t order[8]={5,5,5,5,5,5,5,5}; // 0-3 is VCA from bottom
+
 inline static float mod0(float value, float length)
 {
   while (value > (length-1))
@@ -438,7 +516,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
 	  // mode could also be no change of speed
 	  FREEZERS;
-
+	  
 	  if (frozen[daccount]==0) {
 	    REALADC;
 	  }
@@ -475,14 +553,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  ////// write to DAC
 	  // if playback add
 	  if (play==1) {
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
+	    if (real[daccount]>1023) real[daccount]=1023;
+	    values[daccount]+=logval[(real[daccount])];
 	  }
-	  else values[daccount]=real[daccount];    // otherwise just values
-
-	  //	  values[daccount]=4095;
-	  //	  if (daccount==5) values[daccount]=0;
-	  //	  values[daccount]&= ~(3);
+	  else {
+	    if (real[daccount]>1023) real[daccount]=1023;
+	    values[daccount]=logval[(real[daccount])];    // otherwise just values
+	  }
+	  //	  if (values[daccount]>4095) values[daccount]=4095;
+	  //	  if (daccount!=5)	  values[daccount]=0;
+	  //	  if (daccount==2) values[daccount]=0;
+	  //	  values[daccount]=0;
 	  
 	  WRITEDAC;
 	  
@@ -491,11 +572,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    daccount=0;
 	    count++;
 	    // speed only increasing
-	    ADC_SoftwareStartConv(ADC1);
-	    //	    speed=(adc_buffer[6]>>6); // old speed no we want 10 bits
-	    speed=(adc_buffer[6])>>1;
-	    if (speed>1023) speed=1023;
-	    //	    speed=32-(speed); 
+	    DOSPEED;
 	    TOGGLES;      
 	  }       
 	  break; ///// case 0

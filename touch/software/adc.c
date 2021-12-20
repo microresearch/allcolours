@@ -62,15 +62,15 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	
 	/* Configure analog input pins ------------------------------------------*/
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;// as pin 4 is DAC
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // changes nothing
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 
 	// adc8 is adc1_10 =pc0
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;// | GPIO_Pin_1; PC10
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	
 	/* ADC1 regular channel configuration -----------------------------------*/

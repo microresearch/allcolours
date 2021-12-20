@@ -23,12 +23,16 @@ Prob/strobe modes - strobe mostly here for CV:
 
 4 other/strobe probabilities:
 
-00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
-01 2-BITIN or loopback
-10 3-INV of above
-11 4- BITIN or not into cycling
+5 00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+6 01 2-BITIN or loopback
+7 10 3-INV of above
+8 11 4- BITIN or not into cycling
 
-4 probs with SR<DAC//SR<param
+9 4 probs with SR<DAC//SR<param
+10
+11
+12
+
 
 other strobe modes/below:
 

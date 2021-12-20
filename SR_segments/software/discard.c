@@ -1,4 +1,46 @@
-    /* // basic mode to test ADC/DAC modes with equiv LR modes
+   // TESTY: testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
+   // we need to remove all gshifts also in ADC macros
+   /*   
+   if (w==0){
+   if (new[0]){
+     new[0]=0;
+     GS(0);
+   }
+   if (new[1]){
+     new[1]=0;
+     GS(1);
+   }
+   if (new[2]){
+     new[2]=0;
+     GS(2);
+   }
+   if (new[3]){
+     new[3]=0;
+     GS(3);
+   }   
+   }
+   */
+
+    /*
+    // trial for new update plan
+  case 1: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
+    if (counter[w]>speed[w] && speed[w]!=1024){
+        counter[w]=0; new[w]=1;
+	shift_[w]=shift_[w]<<1;
+	dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC_
+	dactype[2]=0;
+	ADCDACNOGS(0, 0);
+	if (LR[w]){
+	BINROUTE;
+	PULSIN_XOR;
+	}
+	BITN_AND_OUT;
+    }
+    break;
+    */
+
+
+/* // basic mode to test ADC/DAC modes with equiv LR modes
  
 case x:
     if (counter[w]>speed[w] && speed[w]!=1024){

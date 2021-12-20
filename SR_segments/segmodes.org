@@ -286,13 +286,34 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 - idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
 
-- *question of simultaneous GSHIFT below!*
+*20/12/21:*
+
+0-15 filled - to test ADC and DAC as fixed and also all modes to find weak points
+15-31 modes to fill and rest to figure out this week!
+
+////
+
+- grouping early strobes
+
+proto for SR>DAC is: if ((LFSR_[w] & 4095 ) < dac[LFSR[w]]) // as that is 12 bits and shifted already 
+
+*change modes to use the dac*
+
+
+which strobe=prob modes work best with DACout 4x4 in modes 16-31 // we use 00 and 11
+
+4 bit mode works well but does it always need to coincide eg. all 4 bits - seems fine
+
+- fixed bug with many [x] and not [w] outside loop 
+
+- TODO-   // 4x4 bits prob of routing in GSR  so we need 4 probs of x bits?
+- DONE: decide/ if implement simultaneous shiftsNO! stick with old one as seems most logical and we don't change order...
 
 16/12/21:
 
-- TODO: probability of advancing a GSR, GSRs treated one by one (in cycles)
+- DONE: probability of advancing a GSR - as mode 14 test 
 
-- x bits of sr << y bits of gsr - shifting bits ORed in as/to new SR
+- DONE/not working as no entries...x bits of sr << y bits of gsr - shifting bits ORed in as/to new SR
 
 15/12/21:
 
@@ -353,7 +374,7 @@ TODO: list regular and extended modes!
 
 - for pulsin not so much difference of XOR, OR and we lose AND for zero pulsins... so leaks or xor it is and leaks needs changing probabilities
 
-*we try now with own SR as probability and this seems to work well for pulsins*
+we try now with own SR as probability and this seems to work well for pulsins
 
 ?can also use GhostSRs for probs?
 

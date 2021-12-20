@@ -1,8 +1,28 @@
 * see also software/modes.org
 
-16/12/2021:
+20/12/2021:
 
-- 
+// so we might need to tweak the speed array but bleed is now SORTED!
+
+- so no bleed with freezers as these don't involve the adc - what about on additive playback?TESTED fine 
+
+- DONE:but we need to re-do speed as was for old adc scheme
+
+17/12/2021:
+
+SOLVED with single ADCs and lookup arrays.. 
+
+- remaining bleed is in ADC array ... 
+
+- note that 0 should be 16mV but we have 88mV with << scheme and single ADC
+
+single ADC reduced bleed with <<2 to 88->112mV which is 24mV
+
+single ADC fails to read case 2 channel 5???!!! - FIXED with disabling DAC channel 2
+
+still slight bleed - lookup for values so we keep bottom low (try log too)
+
+16/12/2021:
 
 - speed code is re-written also now with logspeed to try out...
 
