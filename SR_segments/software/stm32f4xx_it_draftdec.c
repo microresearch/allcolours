@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={2,9,1,1}; // TEST!
+uint32_t testmodes[4]={2,0,0,0}; // TEST!
 
 uint32_t neworder[4]={3,2,1,0}; // order backwards
 
@@ -358,7 +358,7 @@ uint32_t binroutex[8]={4632, 38457, 33825, 8728, 8472, 8600, 21016, 6210}; // ab
 };
   
 uint32_t dacfrom[4]={0,0,0,0};
-uint32_t sieve[4]={3,0,1,2}; // previous one...
+uint32_t sieve[4]={3,3,3,3}; // previous one... - changed to R 21/12/2021
 uint32_t oppose[4]={2,3,0,1};
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
@@ -382,9 +382,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   uint32_t lengthbit=15, new_stat, prob;
   uint32_t x, y, q, start=0;
   uint32_t bitn=0, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmp2, tmpp, xx;
-  uint32_t trigger[4]={0,0,0,0};
-  static uint32_t flipd[4]={0,0,0,0}, flipper=1, w=0, count=0;
-  static uint32_t counter[4]={0,0,0,0};
+  static uint32_t trigger[4]={0,0,0,0};
+  static uint32_t flipd[4]={0,0,0,0}, flipper[4]={1}, w=0, count=0;
+  static uint32_t counter[7]={0,0,0,0,0,0,0};  // last counter is for fake clks
   static uint32_t which[4]={0,0,0,0};
   static uint32_t tug[4]={0,0,0,0};
   static uint32_t orde;
@@ -420,7 +420,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     w=0;
   }
 
-  
   if (intflag[w]) { // process INT
     trigger[w]=1;
     intflag[w]=0;
@@ -436,11 +435,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   counter[w]++;
 
-  //  mode[w]=testmodes[w]; // TESTY!
-  if (mode[w]>15)  mode[w]=15;
-
+  mode[w]=testmodes[w]; // TESTY!
+  //  if (mode[w]>19)  mode[w]=19;
+  // trial ADCs 0-15 for now
+  //  mode[0]=11; // 2-where adc is 0
+  //  mode[2]=0; // 2->where dac is 1!
+  
   switch(mode[w]){
-
     // SWAPPED - switch this mode with another eg.1 or possibly prob/TM mode DONE
   case 1: // for all just cycle  - ADC NONE/cycle, LR cycle, DAC 0/cycle
     if (counter[w]>speed[w] && speed[w]!=1024){
@@ -565,7 +566,7 @@ case 6:
   }
   break;
 
-  case 7: 
+  case 7:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(5, 6); // ADCETC has GSHIFT
@@ -587,7 +588,8 @@ case 6:
       dacpar=0; adcpar=0; reggg=3; // params - reggg is for ADC  - here is 3 for previous DAC
       ADCDACETC1(6, 7); // ADCETC has GSHIFT
       if (LR[w]){ //11 4- BITIN or not into cycling
-	if (trigger[w]){
+	if (trigger[w]) tug[w]^=1;
+	if (tug[w]){
 	  BINROUTEANDCYCLE;
 	}
 	else {
@@ -617,10 +619,10 @@ X5 strobe reverses ghost - can also reverse own SR
 6 strobe XOR shift with ghost???
   */
   
-case 10: 
+case 10:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(8, 10); // ADCETC has GSHIFT
+      ADCDACETC1(8, 9); // ADCETC has GSHIFT
       if (LR[w]){
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
@@ -632,7 +634,7 @@ case 10:
 	tmp=tmp>>1;
       }
 	PULSIN_XOR;
-    } 
+      }
     BITN_AND_OUT;
   }
   break;
@@ -640,7 +642,7 @@ case 10:
   case 11: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(9, 11); // ADCETC has GSHIFT
+      ADCDACETC1(9, 10); // ADCETC has GSHIFT
       if (LR[w]){ 
 	      tmp=binroute[count][w];
       for (x=0;x<4;x++){
@@ -665,7 +667,7 @@ case 10:
 
 case 12: 
     if (counter[w]>speed[w] && speed[w]!=1024){
-      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
+      dacpar=param[2]; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(10, 12); // ADCETC has GSHIFT
       if (LR[w]){
       // XX - we XOR on STROBE our shift with the GHOST
@@ -691,7 +693,7 @@ case 12:
   
   case 13: 
     if (counter[w]>speed[w] && speed[w]!=1024){
-      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
+      dacpar=param[2]; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(11, 13); // ADCETC has GSHIFT
       if (LR[w]){//00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ?? -- 9 below
 	BINROUTE;
@@ -702,13 +704,13 @@ case 12:
 	bitn|=bitrr;
     PULSIN_XOR;
       }
-    BITN_AND_OUT;
+      BITN_AND_OUT;
     }
   break;
   
 case 14: 
     if (counter[w]>speed[w] && speed[w]!=1024){
-      dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
+      dacpar=param[2]; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(12, 14); // ADCETC has GSHIFT
       if (LR[w]){	//	01 2-BITIN or loopback
 	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
@@ -725,7 +727,7 @@ case 14:
 
 case 15: 
     if (counter[w]>speed[w] && speed[w]!=1024){
-      dacpar=param[2]; adcpar=0; reggg=0; // params - reggg is for ADC
+      dacpar=4095-(param[2]&4095); adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(13, 2); // ADCETC has GSHIFT - is DAC 2 again but with param for filter!
       if (LR[w]){ // 11 mode //11 4- BITIN or not into cycling
 	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
@@ -799,6 +801,13 @@ break;
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCONLY(17, 0); // has gshift
       if (w==2){
+	if (trigger[w]) tug[w]^=1;
+	if (tug[w]){
+	  BINROUTEANDCYCLE;
+	}
+	else {
+	  bitn=(shift_[w]>>SRlength[w]) & 0x01; 
+	}	
     }
       else if (LR[w]) {
 	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
@@ -876,7 +885,7 @@ break;
     }
 break;
 
-// DAC=1 - as above for next set of 4 DAC modes
+// DAC=1 - as above for next set of 3x4 DAC modes with LR modes to fill in
  
  
   
@@ -1000,20 +1009,41 @@ case 50:
     int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
   }
 
-  // and fake CLKs TODO - top NSR is from R/3
+
       // DAC for normed NSR/PWM
   if (w==3){
       tmp= dac[3]; // right hand
       tmp+=320; 
       TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
       TIM1->CCR1 = tmp/2; // pulse width
-  }
-      //TODO
+
+      // TESTY with INTmodes
+      
       // fake CLKINs for L,R,C are from Cspeed==2 - this needs to be in speeds then but...
-      /*
-      flipper^=1;
-      if (flipper) GPIOB->BSRRH = clk_route[clkr];  // clear bits of fake_one - clkr is 7 so all of them
       // or we can set L and R from an independent SR with only CSR as clocked from here
-      else   GPIOB->BSRRL=clk_route[clkr]; //  write bits       
-      */
+      // then we would need 5,6 counters and more flippers... TRIAL
+
+      if (counter[5]>dac[3]){ // L side
+	counter[5]=0;
+	flipper[0]^=1;
+	if (flipper[0]) GPIOB->BSRRH = clk_route[1];  // clear bits of fake_one - clkr is 7 so all of them - was clkr=7 // all of them
+	else   GPIOB->BSRRL=clk_route[1]; //  write bits
+      }      
+
+      if (counter[6]>dac[1]){ // R side
+	counter[6]=0;
+	flipper[1]^=1;
+	if (flipper[1]) GPIOB->BSRRH = clk_route[2];  // clear bits of fake_one - clkr is 7 so all of them - was clkr=7 // all of them
+	else   GPIOB->BSRRL=clk_route[2]; //  write bits
+      }      
+      
+      if (counter[4]>(speed[2]>>1)){ // changed to >>1 or freezes some strobe modes so is x2 speed
+	counter[4]=0;
+	flipper[2]^=1;
+	if (flipper[2]) GPIOB->BSRRH = clk_route[4];  // clear bits of fake_one - clkr is 7 so all of them - was clkr=7 // all of them
+	else   GPIOB->BSRRL=clk_route[4]; //  write bits
+  }
+      counter[4]++; counter[5]++; counter[6]++;
+
+  }
 }

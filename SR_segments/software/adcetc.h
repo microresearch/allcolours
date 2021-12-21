@@ -63,9 +63,9 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
 
-  case 1: // one bit audio input
+  case 1: // one bit audio input - can also change the 48???
     n[reg]++;
-  if (n[reg]>50) {
+  if (n[reg]>48) {
     k=(adc_buffer[12]); 
     n[reg]=0;
   }
@@ -113,6 +113,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 5:// run true LFSR-ADCshift and output a bit  - REGG!
     bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
     ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+    if (ADCshift_[regg]=0) ADCshift_[regg]=0xff;
     break;
         
   case 6: // one bit audio input from DAC  - REGG!
@@ -171,7 +172,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
     
   case 9:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
-    if (strobe) toggle^=1;
+        if (strobe) toggle^=1;
     if (length>11) length=11; //XXXmax12bits
 
   if (n[reg]>length) {
@@ -183,7 +184,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       if (toggle) {// strobe
     n[reg]++;    
       }
-    break;
+      break;
 
   case 10: // STROBE: 3-one bit entry
     if (strobe) toggle^=1;
@@ -218,6 +219,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	lastbt=bt;
       }
       else bt=lastbt;    
+    if (ADCshift_[regg]=0) ADCshift_[regg]=0xff;
     break;
 
   case 12: // STROBE for other LFSR too - REGG!
@@ -618,6 +620,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   static uint32_t lastout=0;
   static uint8_t toggle=0;
   float betaf=0.4f;
+  int32_t rem;
   
   switch(type){
   case 0:// standard bit DAC for x bits
@@ -628,6 +631,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     x=countbits(shift_[reg]&masky[length]); // lower length bits only
     y=divy[length]; // added table for this 7/10 - updated for 32 bits
     x*=y;
+    if (x>4095) x=4095;
     break;
 
   case 2: // one bit audio but with beta as param
@@ -677,31 +681,37 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   case 7: // 4 spaced bits out! equiv bits
     x= ( ((shift_[reg]& (1<<lastspac[length][0]))>>lastspacbac[length][0]) + ((shift_[reg]& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((shift_[reg]& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((shift_[reg]& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
     x=countbts[x]*1023;
+    if (x>4095) x=4095;
     break;
 
   case 8: // one SR is sieved out over another? as DAC option. XOR as sieve? AND as mask! TODO
     x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
-    x=x^(shift_[sieve[reg]] &masky[length-3]); // seived through previous SR
+    x=x^(((shift_[sieve[reg]] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]); // seived through previous SR
     break;
 
-  case 9: //  one SR is sieved out over clksr for that sr. XOR as sieve? 
+  case 9: //  one SR is sieved out over clksr for that sr. XOR as sieve?  - SKIPPED/retry instead of 11
     x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
-    x=x^(clksr_[reg] &masky[length-3]); // seived through bitsr // 
+    x=x^((clksr_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
     break;
 
   case 10:// standard bit DAC for x bits     ///bitx length as other param rather than length:
     // but then we don't really use len? unless is cycle back
+    // try now 21/12/2021 using length
     // bit length can also be CV - how to put this in as DAC is quite fixed in macro?
     otherpar=otherpar&31; //5 bits
-    x=((shift_[reg] & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; 
+    rem=length-otherpar;
+    if (rem<0) rem=0;
+    x=((shift_[reg] & masky[rem])>>(rightshift[rem]))<<leftshift[rem]; 
       break;
 
       // sequential DACs
-  case 11: // we wait for length bits then output that many bits from the top of the SR (len bit)
+  case 11: // we wait for length bits then output that many bits from the top of the SR (len bit) - not really working
     if (n[reg]>length) {
-      n[reg]=0;
-      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; 
+      n[reg]=0;      
+      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
+      lastout=x;
     }
+    x=lastout;
     n[reg]++;              
     break;
 
@@ -709,8 +719,10 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
     otherpar=otherpar&31; //5 bits
     if (n[reg]>otherpar) {
       n[reg]=0;
-      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; 
+      x=((shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
+      lastout=x;
     }
+    x=lastout;
     n[reg]++;              
     break;
 

@@ -853,6 +853,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     route[w]=mode[w]&15; // 4 bits TESTING!
     tmp=route[w]; // route can also be another SR!
     // if route to ourself then is cycling bit but we still need to cycle <<1 above!
+    if (tmp==0) tmp=(1<<w); // added to avoid 0 // no route
     for (x=0;x<4;x++){ //unroll?
       if (tmp&0x01){  
 	bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01; // or other logical opp for multiple bits/accum

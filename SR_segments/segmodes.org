@@ -286,7 +286,42 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 - idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
 
-*20/12/21:*
+*21/12/21:*
+
+- check each ADC/DAC in turn - note that modes in adcetc.h don't match the case!
+
+ADC (0-19 now):
+
+  *TODO: new adc with x bits ADC in subjected to LFSR*
+
+*0 should have adc in and another mode no in with pass through so all 0s still runs*
+
+tested up to 11 (12-19 todo), fixes trigger as static
+
+DACs:
+
+*DAC: 2 (is a bit muffly at long lengths - can change divy to fix this in resources.c*)
+
+mode 18: toggle is more exciting for 11prob mode/// whether to change that toggle in LR modes? we did!
+
+changes to case 10 in dac, 11 doesn't really work - replaced with 9, and we had to add missing param[2] in draftdec
+
+
+///////////////////////////////////////
+
+- DONE: added in normedd L,R,C clocks from Cspeed2 - using new count5 - seems to work// *can also have LR as DACs?? maybeDONE-TOTESTwiythINTMODES*
+
+*we could also have mode to decide on which clks from where?*
+
+- idea of major modes on R (say 4) - for different ways interpreting bits // different probs // as we have multiple dacs 
+
+// base some on generic but we need to fix 0 no routes/in to default to 1
+
+but problem is we cannot mix and match these... and we can kind of implement similar bit interpretations anyways
+
+TODO: 
+
+20/12/21:
 
 0-15 filled - to test ADC and DAC as fixed and also all modes to find weak points
 15-31 modes to fill and rest to figure out this week!
@@ -297,7 +332,7 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 proto for SR>DAC is: if ((LFSR_[w] & 4095 ) < dac[LFSR[w]]) // as that is 12 bits and shifted already 
 
-*change modes to use the dac*
+*change all modes to use the dac[LFSR[w]] above rather than SR*
 
 
 which strobe=prob modes work best with DACout 4x4 in modes 16-31 // we use 00 and 11
