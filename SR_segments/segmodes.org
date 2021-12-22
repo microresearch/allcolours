@@ -284,19 +284,53 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 ///////////////////////////////
 
-- idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback?
+- idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback/fixed
+- or major/minor modes from left side???
 
-*21/12/21:*
+TODO: re-test ADCs, fill in CV/DAC modes for DAC and decide/port new LR modes
+
+*22/12/21:*
+
+-ADC remove cycle and replace with no pass thru//finish DONE-changed modes 0 and 1 for ADC!
+re-ordering ADCs but re-check which ones need parameters - put param[0] for all...
+
+- drafted minor/major mode structure in extramodes.c
+
+*TODO: re-test all ADC or/esp11, classify LR modes*
+
+- for INTMODES: how many speed options here? just keep as pure option so can have 16x INT modes and 3x4 DAC
+
+- *where do we put strictly Right hand modes? - eg. change routings, change where normed clks come from*
+
+/////
+
+-removed case 15 from adc cv modes, 10,11,12,13 strobe modes as also boring
+
+thought of only having 16 adc modes but makes no sense for routings - back to 31 but re-ordered and need to re-check params
+
+7-13 are all strobe modes, 17 too - reduce number of strobe modes
+
+15,19,24,25,28,29,33,34 not in CV modes
+
+ADC group by:
+
+-type of input (ADCbits?, LFSR, clock etc)
+-strobes/otherparam
+
+Important adc: xbits, one bit, 4bits in (case 16), padded + LFSR etc...
+
+
+21/12/21:
 
 - check each ADC/DAC in turn - note that modes in adcetc.h don't match the case!
 
 ADC (0-19 now):
 
-  *TODO: new adc with x bits ADC in subjected to LFSR*
+TODO: new adc with x bits ADC in subjected to LFSR - doesn't work but added versions of these
 
-*0 should have adc in and another mode no in with pass through so all 0s still runs*
+0 should have adc in and another mode no in with pass through so all 0s still runsDONE
 
-tested up to 11 (12-19 todo), fixes trigger as static
+tested up to 11 (12-19 todo), fixes trigger as static/is it needed?NO/replaced
 
 DACs:
 
@@ -309,7 +343,7 @@ changes to case 10 in dac, 11 doesn't really work - replaced with 9, and we had 
 
 ///////////////////////////////////////
 
-- DONE: added in normedd L,R,C clocks from Cspeed2 - using new count5 - seems to work// *can also have LR as DACs?? maybeDONE-TOTESTwiythINTMODES*
+- DONE: added in normedd L,R,C clocks from Cspeed2 - using new count5 - seems to work// *can also have LR as DACs?? maybeDONE-TOTESTwithINTMODES*
 
 *we could also have mode to decide on which clks from where?*
 

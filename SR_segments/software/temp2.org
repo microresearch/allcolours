@@ -59,9 +59,9 @@ how do we select which DAC?
 
 4 basic modes // or 2 basic plus 2 other! or mix and match
 
-*** INT 48-63 or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx - a few of each... other INT speed options
+*** INT 48-63 
 
-how many speed options here?
+how many speed options here? just keep as pure option so can have 16x INT modes and 3x4 DAC
 
 
 CV can also select where we get our speed from - modifier

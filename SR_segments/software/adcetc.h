@@ -50,7 +50,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   static int32_t integrator=0, oldValue=0;
   static uint32_t k, lastbt=0; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   static uint8_t toggle=0, lc=0;
-  uint32_t bt=0;
+  uint32_t bt=0, bit=0;
 
   switch(type){
   case 0: // basic sequential length of upto 12 bits cycling in
@@ -82,11 +82,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    }   
    break;
 
-  case 2: // LFSR runs on own SR so not true LFSR - REGG!
-    bt = ((shift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
-    break;
-
-  case 3: // equivalent bits: we don't need limit on number of bits
+  case 2: // equivalent bits: we don't need limit on number of bits
     if (n[reg]>length) {
       k=(adc_buffer[12]); //
       k=k/divy[length];
@@ -100,42 +96,126 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
 
-  case 4: // dac[regg] seq input  - REGG!
-    if (length>11) length=11; 
+  case 3: // basic sequential length as in 0 but with padding if >11 bits **
       if (n[reg]>length) {
-	k=(dac[regg])>>(11-length);
+	if (length<12) k=(adc_buffer[12])>>(11-length); //
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 4:  // special case for spaced bit entry depending on length
+    shift_[reg]&=spacmask[length]; //cleared
+    k=(adc_buffer[12])>>8; // we want 4 bits
+    shift_[reg]+=(k&1)+((k&2)<<spacc[length][0])+((k&4)<<spacc[length][1])+((k&8)<<spacc[length][2]);
+    // 4 bits goes in
+    // no bt return
+    bt=0;
+    break;   
+    
+  case 5: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+        ////// full length regardless of len    
+      if (n[reg]>11) {
+	k=adc_buffer[12];
       n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
 
-  case 5:// run true LFSR-ADCshift and output a bit  - REGG!
-    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
-    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
-    if (ADCshift_[regg]=0) ADCshift_[regg]=0xff;
+  case 6:   //cycling SR of bitsin
+    ADCshift_[reg]=(adc_buffer[12]);
+    bt=(ADCshift_[reg]>>length)&0x01;
+    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
     break;
-        
-  case 6: // one bit audio input from DAC  - REGG!
-    n[reg]++;
-  if (n[reg]>50) {
-    k=dac[regg];
-    n[reg]=0;
-  }
-  integrator+=k-oldValue;
-   if(integrator>0)
-  {
-     oldValue=MAXVALUE;
-     bt=1;
-  }
-   else
-   {
-      oldValue=0;
-      bt=0;
-   }   
-   break;
 
-  case 7:     // we accumulate bits onto a ghosted register
+  case 7: // timed version of SR bitsin above
+    if (length>11) length=11;
+    if (n[reg]>length) {
+    ADCshift_[reg]=(adc_buffer[12]);
+    n[reg]=0;
+    }
+    n[reg]++;
+    bt=(ADCshift_[reg]>>length)&0x01;
+    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
+    break;
+
+  case 8: // padded version of SR of bitsin
+      if (n[reg]>length) {
+	if (length<12) ADCshift_[reg]=(adc_buffer[12])>>(11-length); 
+	else ADCshift_[reg]=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+    n[reg]++;
+    bt=(ADCshift_[reg]>>length)&0x01;
+    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
+    break;
+    ///
+    
+  case 9: //  now strobe - ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
+      // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    if (strobe) { 
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;
+      }
+    else
+      {
+	bt=(shift_[reg]>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+      }
+    break;
+
+  case 10: // basic sequential length of bits cycling in but zeroed by strobe
+  if (length>11) length=11; //XXXmax12bits
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    } 
+     if (strobe) bt=0;
+      else bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 11: // padded case 8    // we accumulate bits onto a ghosted register **
+    // STROBE places these onto the shift register in one chunk?
+    // so we don't use returned bt - but how can we fix that
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); 
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    // then bt goes into newghostSR
+    ADCGshift_[reg]=(ADCGshift_[reg]<<1)+bt;
+
+    if (strobe) { 
+      shift_[reg]&=invmasky[length]; // clear length bits
+      shift_[reg]+=(ADCGshift_[reg]&masky[length]);
+    }
+    //bt=0; // leave orf
+    break;
+    
+  case 12:     // padded case 13 - 2-we only cycle ADC on strobe/toggle  - or vice versa **
+    if (strobe) toggle^=1;
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length);
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01;
+      if (toggle) {
+    n[reg]++;    
+      }
+    break;
+
+  case 13:     // we accumulate bits onto a ghosted register
     // STROBE places these onto the shift register in one chunk?
     // so we don't use returned bt
       if (length>11) length=11;//XXXmax12bits
@@ -152,10 +232,10 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       shift_[reg]&=invmasky[length]; // clear length bits
       shift_[reg]+=(ADCGshift_[reg]&masky[length]);
     }
+    bt=0;
     break;
 
-    // strobe // latch modes - strobe becomes toggle
-  case 8:     // 1-we keep on cycling ADC bits but only enter new bit on strobe - or vice versa
+  case 14:     // 1-we keep on cycling ADC bits but only enter new bit on strobe - or vice versa
     if (strobe) toggle^=1;
 
     if (length>11) length=11; //XXXmax12bits
@@ -171,7 +251,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
     
-  case 9:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
+  case 15:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
         if (strobe) toggle^=1;
     if (length>11) length=11; //XXXmax12bits
 
@@ -186,7 +266,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
       break;
 
-  case 10: // STROBE: 3-one bit entry
+  case 16: // STROBE: 3-one bit entry
     if (strobe) toggle^=1;
     n[reg]++;
   if (n[reg]>50) {
@@ -211,155 +291,19 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       else bt=lastbt;
    break;
 
-     case 11:// STROBE: run LFSR-ADCshift and output a bit - REGG!
-       if (strobe) toggle^=1;
-    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
-    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
-      if (toggle) {// strobe
-	lastbt=bt;
-      }
-      else bt=lastbt;    
-    if (ADCshift_[regg]=0) ADCshift_[regg]=0xff;
+  case 17: // timed version from otherpar
+    if (length>11) length=11;
+    if (n[reg]>otherpar) {
+    ADCshift_[reg]=(adc_buffer[12]);
+    n[reg]=0;
+    }
+    n[reg]++;
+    bt=(ADCshift_[reg]>>length)&0x01;
+    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
     break;
 
-  case 12: // STROBE for other LFSR too - REGG!
-    if (strobe) toggle^=1;
-    bt = ((shift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
-      if (toggle) {// strobe
-	lastbt=bt;
-      }
-      else bt=lastbt;    
-    break;
-
-  case 13: // strobe moves up next LFSR ghostL tap - REGG!
-    if (strobe){
-      lc+=1; // or we can make this depend on...???
-      if (lc>3) lc=1; 
-	  ghost_tapsL[length][lc]+=1;
-	  ghost_tapsL[length][lc]%=31;
-	}           
-    bt = ((shift_[regg] >> (ghost_tapsL[SRlength[regg]][0])) ^ (shift_[regg] >> (ghost_tapsL[SRlength[regg]][1])) ^ (shift_[regg] >> (ghost_tapsL[SRlength[regg]][2])) ^ (shift_[regg] >> (ghost_tapsL[SRlength[regg]][3]))) & 1u;    
-    break;
     
-  case 14: // basic sequential length as in 0 but with padding if >11 bits
-      if (n[reg]>length) {
-	if (length<12) k=(adc_buffer[12])>>(11-length); //
-	else k=(adc_buffer[12])<<(length-11);
-	n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-
-    // we need to fill in here - otherpar as input
-  case 15: // basic sequential length of upto 12 bits cycling in - leave out of cvmodes
-  if (length>11) length=11;
-      if (n[reg]>length) {
-	k=(otherpar)>>(11-length); //
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-    
-    // from here as extras - [also tend to put otherpar modes into INTmodes]
-  case 16:  // special case for spaced bit entry depending on length
-    shift_[reg]&=spacmask[length]; //cleared
-    k=(adc_buffer[12])>>8; // we want 4 bits
-    shift_[reg]+=(k&1)+((k&2)<<spacc[length][0])+((k&4)<<spacc[length][1])+((k&8)<<spacc[length][2]);
-    // 4 bits goes in
-    // no bt return
-    bt=0;
-    break;   
-
-  case 17: // basic sequential length of bits cycling in but zeroed by strobe
-  if (length>11) length=11; //XXXmax12bits
-      if (n[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); //
-      n[reg]=0;
-    } 
-     if (strobe) bt=0;
-      else bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-    
-  case 18: // clkbit as bits in
-    bt=strobe;
-    break;
-
-  case 19: // sequential clksr in TESTED! - lose this one as we have 18 - clkbits in anyways
-    if (n[reg]>length) {
-      k=(clksr_[reg])>>(31-length); 
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-
-  case 20: // case 5 - dac[regg] seq input     // padded length version ** - REGG!
-    if (n[reg]>length) {
-      if (length<12) k=(dac[regg])>>(11-length); 
-      else k=(dac[regg])<<(length-11);
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-
-  case 21: // padded case 8    // we accumulate bits onto a ghosted register **
-    // STROBE places these onto the shift register in one chunk?
-    // so we don't use returned bt
-      if (n[reg]>length) {
-	if (length<12) k=(adc_buffer[12])>>(11-length); 
-	else k=(adc_buffer[12])<<(length-11);
-	n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    // then bt goes into newghostSR
-    ADCGshift_[reg]=(ADCGshift_[reg]<<1)+bt;
-
-    if (strobe) { 
-      shift_[reg]&=invmasky[length]; // clear length bits
-      shift_[reg]+=(ADCGshift_[reg]&masky[length]);
-    }
-    break;
-
-  case 22:     // padded case 13 - 2-we only cycle ADC on strobe/toggle  - or vice versa **
-    if (strobe) toggle^=1;
-      if (n[reg]>length) {
-	if (length<12) k=(adc_buffer[12])>>(11-length);
-	else k=(adc_buffer[12])<<(length-11);
-	n[reg]=0;
-    }
-      bt = (k>>n[reg])&0x01;
-      if (toggle) {
-    n[reg]++;    
-      }
-    break;
-    
-  case 23: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-        ////// full length regardless of len    
-      if (n[reg]>11) {
-	k=adc_buffer[12];
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-    
-  case 24: // len is otherpar but there is no shift - OTHERPAR! 12 bits
-    //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-    otherpar=otherpar&31; // 5 bits
-      if (n[reg]>otherpar) {
-	k=adc_buffer[12]; //
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-    
-  case 25: // len is otherpar but there is shift from otherpar  - OTHERPAR! 12 bits
+  case 18: // len is otherpar but there is shift from otherpar  - OTHERPAR! 12 bits
     //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
         otherpar=otherpar&31; // 5 bits
       if (n[reg]>otherpar) {
@@ -371,42 +315,9 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
 
-    /// comparator modes - compare to: CV/INTonly, DAC, CV+DAC/INTonly, to clksr_, to param - feed these into otherpar
-
-  case 26: // otherpar as comparator - 10 bits standard here // now 12 bits  - OTHERPAR! 12 bits
-     bt=0;
-     if ((adc_buffer[12])>(otherpar&4095)) bt=1;
-     break;
-
-  case 27: // incoming bit switches direction of LFSR - REGG!
-    //      case 7:// run LFSR-ADCshift and output a bit - again if we don't use redirection of regg then ...
-    if (strobe) toggle^=1;
-    if (toggle){
-    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
-    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
-    }
-    else {
-    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
-    ADCshift_[regg]=(ADCshift_[regg]>>1)+(bt<<31);
-    }
-    break;
-
-  case 28:// ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits
-      // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) { 
-  if (length>11) length=11;
-      if (n[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); //
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;
-      }
-    break;
-
     // we use otherpar to determine number of bits - equal or otherwise  - OTHERPAR! 12 bits
      // we can also use otherpar=CV or otherwise as padding, length of bits which is not LEN!
-  case 29:   // as case 17: // basic sequential length as in 0 but with padding if >11 bist
+  case 19:   // as case 17: // basic sequential length as in 0 but with padding if >11 bist
     // maybe restrict otherpar
     otherpar=otherpar&31; // 5 bits
       if (n[reg]>length) {
@@ -420,7 +331,107 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
 
-  case 30:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits  - OTHERPAR! 12 bits
+  case 20: // otherpar as comparator - 10 bits standard here // now 12 bits  - OTHERPAR! 12 bits
+     bt=0;
+     if ((adc_buffer[12])>(otherpar&4095)) bt=1;
+     break;
+
+  case 21: // XOR or OR of case 4 - 1 bit oscillator and input bits  - OTHERPAR! 12 bits
+  if (length>11) length=11;
+      if (nnn[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); 
+      nnn[reg]=0;
+    }
+    bt = (k>>nnn[reg])&0x01;
+    nnn[reg]++;    
+
+    otherpar=otherpar&255; // how long? it should be?
+     if (n[reg]>length) { // 0s
+       bt|=0; // XOR TODO
+       if (nn[reg]>otherpar) {
+	 n[reg]=0;
+       }
+       nn[reg]++;
+     }
+     else {
+       bt|=1; // XOR TODO
+       n[reg]++;
+       nn[reg]=0;
+     }         
+     break;    
+
+    
+    //// no entry
+
+        
+  case 22: // LFSR runs on own SR so not true LFSR - REGG!
+    bt = ((shift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    break;
+
+  case 23:// run true LFSR-ADCshift and output a bit  - REGG!
+    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+    if (ADCshift_[regg]=0) ADCshift_[regg]=0xff;
+    break;
+
+  case 24: // incoming bit switches direction of LFSR - REGG! 
+    //      case 7:// run LFSR-ADCshift and output a bit - again if we don't use redirection of regg then ...
+    if (strobe) toggle^=1;
+    if (toggle){
+    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+    }
+    else {
+    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    ADCshift_[regg]=(ADCshift_[regg]>>1)+(bt<<31);
+    }
+    if (ADCshift_[regg]==0) ADCshift_[regg]=0xff;
+    break;
+
+  case 25: // dac[regg] seq input  - REGG!
+    if (length>11) length=11; 
+      if (n[reg]>length) {
+	k=(dac[regg])>>(11-length);
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+        
+  case 26: // one bit audio input from DAC  - REGG!
+    n[reg]++;
+  if (n[reg]>50) {
+    k=dac[regg];
+    n[reg]=0;
+  }
+  integrator+=k-oldValue;
+   if(integrator>0)
+  {
+     oldValue=MAXVALUE;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+   break;
+
+  case 27: // case 5 - dac[regg] seq input     // padded length version ** - REGG!
+    if (n[reg]>length) {
+      if (length<12) k=(dac[regg])>>(11-length); 
+      else k=(dac[regg])<<(length-11);
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+    
+  case 28: // clkbit as bits in
+    bt=strobe;
+    break;
+
+  case 29:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits  - OTHERPAR! 12 bits
     // otherpar can also be CV for INTmodes - was 4
     otherpar=otherpar&255; // how long? it should be?
      if (n[reg]>length) { // 0s
@@ -437,111 +448,28 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      }         
      break;    
 
-  case 31: // XOR or OR of case 4 - 1 bit oscillator and input bits  - OTHERPAR! 12 bits
-  if (length>11) length=11;
-      if (nnn[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); 
-      nnn[reg]=0;
-    }
-    bt = (k>>nnn[reg])&0x01;
-    nnn[reg]++;    
-
-    otherpar=otherpar&255; // how long? it should be?
-     if (n[reg]>length) { // 0s
-       bt|=0; // XOR TODO
-       if (nn[reg]>otherpar) {
-	 n[reg]=0;
-       }
-       nn[reg]++;
-     }
-     else {
-       bt|=1; // XOR TODO
-       n[reg]++;
-       nn[reg]=0;
-     }         
-     break;    
-
-  case 32: // 3/12/2021 - 101010 clock at speed
+  case 30: // 3/12/2021 - 101010 clock at speed
     lastbt^=1;
     bt=lastbt;
     break;
 
-  case 33: //  ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
-      // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) { 
-  if (length>11) length=11;
-      if (n[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); //
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;
-      }
-    else
-      {
-	bt=(shift_[reg]>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
-      }
-    break;
-
-  case 34: // prob mode for cycling bits a la TM
+  case 31: // strobe mode for cycling bits a la TM - no input
     bt=(shift_[reg]>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
-    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) {
+    if (strobe){
       bt=!bt;// invert cycling bit
     }
     break;
-    ////////    
-    // INT MODES ONLY FROM HERE ON! but these are just copies of some modes above!
-     /*
-  case 60: // INT // CV as comparator - for INT modes ONLY which don't use CV! can also be CV+DAC
-    // we can also compare to: DAC, CV+DAC, to clksr_, to param - feed these into otherpar or have as options
-     bt=0;
-         if (adc_buffer[12]>adc_buffer[lookupadc[reg]]) bt=1; // can also be otherpar to make cleaner = then is same as mode 26!
-     break;
-
-  case 61:  // was case 6 //param[reg] seq input - what is size of param? /or we can also just feed in otherpar = CV in
-    otherpar=otherpar>>7; // 5 bits
-      if (length>11) length=11; //XXX12 bits or 8 bits
-      if (n[reg]>length) {
-	k=(otherpar])>>(11-length); 
-      n[reg]=0;
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]++;    
-    break;
-
-  case 63: // XOR or OR of case 4 - 1 bit oscillator and input bits  - OTHERPAR! 12 bits
-  if (length>11) length=11;
-      if (nnn[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); 
-      nnn[reg]=0;
-    }
-    bt = (k>>nnn[reg])&0x01;
-    nnn[reg]++;    
-
-    otherpar=otherpar>>4; // how long? it should be?
-     if (n[reg]>length) { // 0s
-       bt|=0; // XOR TODO
-       if (nn[reg]>otherpar) {
-	 n[reg]=0;
-       }
-       nn[reg]++;
-     }
-     else {
-       bt|=1; // XOR TODO
-       n[reg]++;
-       nn[reg]=0;
-     }         
-     break;    
-     */
-     
-     
-     // TODO: CV+ADC as input for some of the INT modes perhaps
-     // CV can modulus ADC input
+    
+    //INTMODES - how many to have?
 
     
+    ///////////////////////
   } // switch
   return bt;
 }
+
+
+
 
 
 static inline uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who){ // try lazy, stickyt, leaky, decaying logic here... // who is new 20/9 for which SR we take logic from...

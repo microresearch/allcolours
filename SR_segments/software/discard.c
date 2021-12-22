@@ -1,4 +1,345 @@
-   // TESTY: testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
+
+// draft for INTmodes - - TODO: probability of advance on trigger using CV as prob
+case 50:
+  param[w]=adc_buffer[lookupadc[w]];
+  if (trigger[w] && (shift_[LFSR[w]] & 4095) > (param[w] & 4095) ){ // or this could be based on a real: shift_[3] which we try here for better effect
+    dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+    ADCDACETC1(0, 0);
+    if (LR[w]){
+      //////////////////////////////////HERE!
+      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      /////////////////////////////////////...
+      PULSIN_XOR;
+    } 
+    BITN_AND_OUT;
+  }
+  break;
+
+// draft for CV with INT - where to place this? and we can't really use CV as param here!
+case 49:
+    if (counter[w]>speed[w] && speed[w]!=1024){
+      if (trigger[w]){
+	param[w]=adc_buffer[lookupadc[w]];// ??? use another param eg.
+	dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC // adcpar=adc_buffer[lookupadc[w]] - 12 bits
+	ADCDACETC1(0, 0);
+	if (LR[w]){
+	//////////////////////////////////HERE!
+	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	/////////////////////////////////////...
+	PULSIN_XOR;
+      } 
+      BITN_AND_OUT;
+    }
+}
+break;
+
+
+
+/// intmodes
+
+  case 24: // len is otherpar but there is no shift - OTHERPAR! 12 bits
+    //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    otherpar=otherpar&31; // 5 bits
+      if (n[reg]>otherpar) {
+	k=adc_buffer[12]; //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+    
+  case 25: // len is otherpar but there is shift from otherpar  - OTHERPAR! 12 bits
+    //basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+        otherpar=otherpar&31; // 5 bits
+      if (n[reg]>otherpar) {
+	if (otherpar<12) k=(adc_buffer[12])>>(11-otherpar); 
+	else k=(adc_buffer[12])<<(otherpar-11);
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 28:// ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits
+      // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) { 
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;
+      }
+    break;
+
+    // we use otherpar to determine number of bits - equal or otherwise  - OTHERPAR! 12 bits
+     // we can also use otherpar=CV or otherwise as padding, length of bits which is not LEN!
+  case 29:   // as case 17: // basic sequential length as in 0 but with padding if >11 bist
+    // maybe restrict otherpar
+    otherpar=otherpar&31; // 5 bits
+      if (n[reg]>length) {
+	if (otherpar<12) {
+	  k=(adc_buffer[12])>>(11-otherpar); //
+	}
+	else k=(adc_buffer[12])<<(otherpar-11);
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 33: //  ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
+      // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) { 
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;
+      }
+    else
+      {
+	bt=(shift_[reg]>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+      }
+    break;
+
+  case 34: // prob mode for cycling bits a la TM
+    bt=(shift_[reg]>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+    if ((LFSR_[reg] & 4095 ) < (otherpar&4095)) {
+      bt=!bt;// invert cycling bit
+    }
+    break;
+    ////////    
+    // INT MODES ONLY FROM HERE ON! but these are just copies of some modes above!
+     /*
+  case 60: // INT // CV as comparator - for INT modes ONLY which don't use CV! can also be CV+DAC
+    // we can also compare to: DAC, CV+DAC, to clksr_, to param - feed these into otherpar or have as options
+     bt=0;
+         if (adc_buffer[12]>adc_buffer[lookupadc[reg]]) bt=1; // can also be otherpar to make cleaner = then is same as mode 26!
+     break;
+
+  case 61:  // was case 6 //param[reg] seq input - what is size of param? /or we can also just feed in otherpar = CV in
+    otherpar=otherpar>>7; // 5 bits
+      if (length>11) length=11; //XXX12 bits or 8 bits
+      if (n[reg]>length) {
+	k=(otherpar])>>(11-length); 
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+  case 63: // XOR or OR of case 4 - 1 bit oscillator and input bits  - OTHERPAR! 12 bits
+  if (length>11) length=11;
+      if (nnn[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); 
+      nnn[reg]=0;
+    }
+    bt = (k>>nnn[reg])&0x01;
+    nnn[reg]++;    
+
+    otherpar=otherpar>>4; // how long? it should be?
+     if (n[reg]>length) { // 0s
+       bt|=0; // XOR TODO
+       if (nn[reg]>otherpar) {
+	 n[reg]=0;
+       }
+       nn[reg]++;
+     }
+     else {
+       bt|=1; // XOR TODO
+       n[reg]++;
+       nn[reg]=0;
+     }         
+     break;    
+     */
+
+
+     // TODO: CV+ADC as input for some of the INT modes perhaps
+     // CV can modulus ADC input
+
+
+
+
+case 15: // basic sequential length of upto 12 bits cycling in - leave out of cvmodes!!
+  if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(otherpar)>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+// discard
+
+  case 19: // sequential clksr in TESTED! - lose this one as we have 18 - clkbits in anyways
+    if (n[reg]>length) {
+      k=(clksr_[reg])>>(31-length); 
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+
+/// strobes
+
+  case 17: // basic sequential length of bits cycling in but zeroed by strobe
+  if (length>11) length=11; //XXXmax12bits
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    } 
+     if (strobe) bt=0;
+      else bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+
+case 7:     // we accumulate bits onto a ghosted register
+    // STROBE places these onto the shift register in one chunk?
+    // so we don't use returned bt
+      if (length>11) length=11;//XXXmax12bits
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    // then bt goes into newghostSR
+    ADCGshift_[reg]=(ADCGshift_[reg]<<1)+bt;
+
+    if (strobe) { // strobe
+      shift_[reg]&=invmasky[length]; // clear length bits
+      shift_[reg]+=(ADCGshift_[reg]&masky[length]);
+    }
+    break;
+
+  case 8:     // 1-we keep on cycling ADC bits but only enter new bit on strobe - or vice versa
+    if (strobe) toggle^=1;
+
+    if (length>11) length=11; //XXXmax12bits
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+      if (toggle) {// strobe
+      bt = (k>>n[reg])&0x01;
+      lastbt=bt;
+      }
+      else bt=lastbt;
+    n[reg]++;    
+    break;
+    
+  case 9:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
+        if (strobe) toggle^=1;
+    if (length>11) length=11; //XXXmax12bits
+
+  if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01;
+
+      if (toggle) {// strobe
+    n[reg]++;    
+      }
+      break;
+
+  case 10: // STROBE: 3-one bit entry
+    if (strobe) toggle^=1;
+    n[reg]++;
+  if (n[reg]>50) {
+    k=(adc_buffer[12]);
+    n[reg]=0;
+  }
+  integrator+=k-oldValue;
+   if(integrator>0)
+  {
+     oldValue=MAXVALUE;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+
+   if (toggle) {
+	lastbt=bt;
+      }
+      else bt=lastbt;
+   break;
+
+     case 11:// STROBE: run LFSR-ADCshift and output a bit - REGG!
+       if (strobe) toggle^=1;
+    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+      if (toggle) {// strobe
+	lastbt=bt;
+      }
+      else bt=lastbt;    
+    if (ADCshift_[regg]==0) ADCshift_[regg]=0xff;
+    break;
+
+  case 12: // STROBE for other LFSR too - REGG!
+    if (strobe) toggle^=1;
+    bt = ((shift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+      if (toggle) {// strobe
+	lastbt=bt;
+      }
+      else bt=lastbt;    
+    break;
+
+  case 13: // strobe moves up next LFSR ghostL tap - REGG!
+    if (strobe){
+      lc+=1; // or we can make this depend on...???
+      if (lc>3) lc=1; 
+	  ghost_tapsL[length][lc]+=1;
+	  ghost_tapsL[length][lc]%=31;
+	}           
+    bt = ((shift_[regg] >> (ghost_tapsL[SRlength[regg]][0])) ^ (shift_[regg] >> (ghost_tapsL[SRlength[regg]][1])) ^ (shift_[regg] >> (ghost_tapsL[SRlength[regg]][2])) ^ (shift_[regg] >> (ghost_tapsL[SRlength[regg]][3]))) & 1u;    
+    break;
+
+  case 21: // padded case 8    // we accumulate bits onto a ghosted register **
+    // STROBE places these onto the shift register in one chunk?
+    // so we don't use returned bt
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); 
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    // then bt goes into newghostSR
+    ADCGshift_[reg]=(ADCGshift_[reg]<<1)+bt;
+
+    if (strobe) { 
+      shift_[reg]&=invmasky[length]; // clear length bits
+      shift_[reg]+=(ADCGshift_[reg]&masky[length]);
+    }
+    break;
+
+  case 22:     // padded case 13 - 2-we only cycle ADC on strobe/toggle  - or vice versa **
+    if (strobe) toggle^=1;
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length);
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01;
+      if (toggle) {
+    n[reg]++;    
+      }
+    break;
+
+
+
+// TESTY: testing for simultaneous shifter - but what of modes where we hold back the gshift eg. modes: 37, 48, 49
    // we need to remove all gshifts also in ADC macros
    /*   
    if (w==0){

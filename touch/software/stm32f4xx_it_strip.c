@@ -521,12 +521,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    REALADC;
 	  }
 
+	  // playback
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
 	    LASTPLAY;
 	    if (overlap[daccount]) rec_cnt[daccount]=7000;
-	    //	    speed=512;
 	    	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	    //	    values[daccount]=speedsample(1.0f, rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
 	  else {
 	    lastplay=0;
@@ -534,7 +533,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }
     
 	  ///// recordings
-	  //	  if (count%(32)==0) { //for 1 KHZ?
 	    if (rec){ // we are recording
 	      LASTREC; // reset all
 	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
@@ -548,9 +546,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      lastrec=0;
 	      overlap[daccount]=0;
 	    }
-	      //	  } // count32
 
-	  ////// write to DAC
+	    ////// write to DAC
 	  // if playback add
 	  if (play==1) {
 	    if (real[daccount]>1023) real[daccount]=1023;
@@ -560,11 +557,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    if (real[daccount]>1023) real[daccount]=1023;
 	    values[daccount]=logval[(real[daccount])];    // otherwise just values
 	  }
-	  //	  if (values[daccount]>4095) values[daccount]=4095;
-	  //	  if (daccount!=5)	  values[daccount]=0;
-	  //	  if (daccount==2) values[daccount]=0;
-	  //	  values[daccount]=0;
-	  
 	  WRITEDAC;
 	  
 	  daccount++;
@@ -578,7 +570,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  break; ///// case 0
 	  ///////////////////////////////////////////
 
-	case 4:
+	case 4: // speed test ONLY
 	  GPIOC->BSRRH = 0b1110100000000000;		       
 	  DAC_SetChannel1Data(DAC_Align_12b_R, val);
 	  j = DAC_GetDataOutputValue (DAC_Channel_1);		

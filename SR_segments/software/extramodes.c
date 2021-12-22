@@ -1,6 +1,31 @@
+// test logic for minor major modes
+// say 4 major modes
 
- 
-	
+// but how we can split modes?
+major=mode[3]>>4; // from 64=6bits to 2 bits 
+
+if (w!=3){
+switch(major){
+ case 0:
+   // we do all modes for all except 3
+   switch(mode[w]{ // or this would be a bit interpretation and we have no switch
+       case 0:
+	 break;
+     }
+   break;
+     }
+ }//major
+ }//w!=3
+ else {
+   // w==3 modes
+   switch(mode[3]){// here we have 16 (x4-64) minor modes for the right side...
+   case 0: 
+     break;
+   }
+ }//w==3
+
+
+
   case 333: // TEST mode - with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
     // not sure if this makes sense
     // alts are also:

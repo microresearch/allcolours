@@ -1,5 +1,14 @@
 * schematic
 
+** 22/12/2021
+
+- if we think of a simple switching analogue comp - with several 4066
+  switch points which can be switched by hand (a switch, touch/toggle)
+  or by CV->comparator
+
+what voltage can 4066 handle/what is its max power? as on touch toggle
+we use +-9v to power - i think is 18v so we need to design around this
+
 ** 19/10/2021
 
 TOAD test/configurations: bottom ad633 needs replacing,

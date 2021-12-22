@@ -633,4 +633,25 @@ uint16_t divy[32]={4095, 2047, 1365, 1023, 819, 682, 585, 511, 455, 409, 372, 34
   
   print32bits(shift_registerl);
     */
+
+  static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
+
+
+  
+  uint32_t toggle=1, bt, regg=1;
+  for (x=0;x<102400;x++){
+    SRlength[regg]=(rand()%27)+4;
+    if ((rand()%2)==1) toggle^=1;
+    if (toggle){
+    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+    }
+    else {
+    bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    ADCshift_[regg]=(ADCshift_[regg]>>1)+(bt<<31);
+    }
+    if (ADCshift_[regg]==0) ADCshift_[regg]=0xff;
+    printf("%d",bt);
+  }
+
 }
