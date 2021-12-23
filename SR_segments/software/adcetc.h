@@ -53,17 +53,32 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   uint32_t bt=0, bit=0;
 
   switch(type){
-  case 0: // basic sequential length of upto 12 bits cycling in
-  if (length>11) length=11;
+  case 0: // basic sequential length of upto 12 bits cycling in    
+      if (length>11) length=11;
       if (n[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); //
+	k=(adc_buffer[12])>>(11-length);
       n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
 
-  case 1: // one bit audio input - can also change the 48???
+  case 1: // equivalent bits: we don't need limit on number of bits
+    if (n[reg]>length) {
+      k=(adc_buffer[12]); //
+      k=k/divy[length];
+      n[reg]=0;
+    }
+    if (k!=0) {
+      bt=1;
+      k--;
+    }
+    else bt=0;
+    n[reg]++;    
+    break;
+
+    /*
+  case 2: // one bit audio input - can also change the 48??? - this one makes wierd phase effects
     n[reg]++;
   if (n[reg]>48) {
     k=(adc_buffer[12]); 
@@ -81,25 +96,33 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt=0;
    }   
    break;
-
-  case 2: // equivalent bits: we don't need limit on number of bits
-    if (n[reg]>length) {
-      k=(adc_buffer[12]); //
-      k=k/divy[length];
-      n[reg]=0;
-    }
-    if (k!=0) {
-      bt=1;
-      k--;
-    }
-    else bt=0;
-    n[reg]++;    
-    break;
+    */
+    
+  case 2: // variations on one bit audio - also phasey
+    /*
+    n[reg]++;
+  if (n[reg]>48) {
+    k=(adc_buffer[12])-2048;  // 12 bits
+    n[reg]=0;
+    }*/
+    k=(adc_buffer[12]); // from 0 to 4095 but where is the middle?
+    integrator+=(k-oldValue);
+   if(integrator>2048)
+  {
+     oldValue=4095;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+   break;    
 
   case 3: // basic sequential length as in 0 but with padding if >11 bits **
       if (n[reg]>length) {
 	if (length<12) k=(adc_buffer[12])>>(11-length); //
-	else k=(adc_buffer[12])<<(length-11);
+	else k=(adc_buffer[12])<<(length-11); // should be -11
 	n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
@@ -420,7 +443,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 27: // case 5 - dac[regg] seq input     // padded length version ** - REGG!
     if (n[reg]>length) {
       if (length<12) k=(dac[regg])>>(11-length); 
-      else k=(dac[regg])<<(length-11);
+      else k=(dac[regg])<<(length-11 );
       n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
@@ -542,17 +565,47 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
 
 //0-15 so 16 modes
 static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
-  uint32_t y,x=0;
+  static uint32_t x=0;
   static uint32_t n[4]={0,0,0,0};
+  static uint32_t nom[4]={0,0,0,0};
   static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
   static uint32_t lastout=0;
   static uint8_t toggle=0;
   float betaf=0.4f;
   int32_t rem;
+  uint32_t y;
   
   switch(type){
-  case 0:// standard bit DAC for x bits
-    x=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference    
+
+  case 0:
+    if (length==3){
+      if (shift_[reg]&4) x=4095;
+      else x=0;
+    }
+    else     x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
+    break;
+    
+  case 33:// standard bit DAC for x bits - new mode here
+
+    if (n[reg]>length) {
+      n[reg]=0;
+    if (length==3){
+      if (shift_[reg]&4) nom[reg]=4095;
+      else nom[reg]=0;
+    }
+    else nom[reg]=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference //Q of least bits
+    }
+    n[reg]++;
+    x=nom[reg];
+
+    //    x=rand()%4095;
+     /*
+    if (length==3){
+      if (shift_[reg]&4) x=4095;
+      else x=0;
+    }
+    else     x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
+    */
     break;
 
   case 1:// equivalent bit DAC for x bits - 3/11 - 32 bits max now
@@ -870,5 +923,4 @@ void TIM4_IRQHandler(void)
 
   temp=(adc_buffer[10]>>7); // 12 bits to 5 bits 
   SRlength[2]=lookuplenall[temp];
-
 }

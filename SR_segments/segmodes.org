@@ -289,7 +289,29 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 TODO: re-test ADCs, fill in CV/DAC modes for DAC and decide/port new LR modes
 
-*22/12/21:*
+[possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
+
+*23/12/21:*
+
+still need to test all ADCs and think on steppiness of DAC
+
+add more binroutes///
+
+[- add right hand mode 0 where it sets own GSR to 0! so no feed through...DONE/TESTED fine...but skews modes]
+
+Run through of ADCs:
+
+-  length-11 was correct
+
+- mode 2/one bit audio ADC still has phasing despite a few changes...
+
+- fixed dac mode 0 for shortest one bit length - still steppy and added one more dac mode
+
+[why doesn't length of intermediate SR change much/anything - changes nothing if run at same speed // because gshoft is always new]
+
+TODO: clkroutes for normed clock routing
+
+22/12/21:
 
 -ADC remove cycle and replace with no pass thru//finish DONE-changed modes 0 and 1 for ADC!
 re-ordering ADCs but re-check which ones need parameters - put param[0] for all...

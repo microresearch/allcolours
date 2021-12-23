@@ -9,6 +9,13 @@ static uint8_t rightshift[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, // first 12 bits
 static uint8_t leftshift[32]= {11,10,9, 8,7,6,5, 4,3,2,1,
 				0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 
+//static uint8_t rightshift[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, // first 12 bits
+//				1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16, 17,18,19,20};
+
+//static uint8_t leftshift[32]= {0,0,0,8, 7,6,5,4, 3,2,1,0,
+//				0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
+
+
 // fixed masks 31/8/2021
 
 static uint32_t invmasky[32]={//0,0,0, // skip all zeroes or all ones ??? skip all ones

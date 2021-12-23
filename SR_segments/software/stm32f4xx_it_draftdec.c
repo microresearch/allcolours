@@ -43,7 +43,7 @@
 #include "adc.h"
 #include "resources.h"
 
-uint32_t testmodes[4]={2,0,0,0}; // TEST!
+uint32_t testmodes[4]={0,0,0,0}; // TEST!
 
 uint32_t neworder[4]={3,2,1,0}; // order backwards
 
@@ -94,9 +94,9 @@ uint32_t neworders[24][4]={
 }
 
 #define BITN_AND_OUT {				\
-    shift_[w]+=bitn;					\
+    shift_[w]+=bitn;						\
     dac[w]=DAC_(w, SRlength[w], dactype[w],dacpar,trigger[w]);	\
-  tmp=(w<<1);					  \
+    tmp=(w<<1);							\
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
   lengthbit=(SRlength[w]>>1);			      \
@@ -325,8 +325,8 @@ uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=in
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
 uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15 binary routing table
-
 uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
+//uint32_t defroute[4]={0,0,0,0}; // 0,1,2,3 NLCR - not binary code but just one!
 //uint32_t prev[4]    ={3,0,1,0}; // previous
 uint32_t revroute[4]={1,2,3,0}; // 0,1,2,3 NLCR - reverse route
 uint32_t defroutee[4]={3,0,1,1}; // 0,1,2,3 NLCR - in this one 3 routes from 1 too
@@ -338,7 +338,8 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[8][4]={ // add more routes, also what seq change of routes makes sense
-  {8,1,2,1}, // 
+  //    {8,1,2,1}, // default
+  {8,1,2,4}, // route in one big circle
   {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
   {1,2,4,8}, // only loop - this is what is added to get loop too for prob
   {8,1,2,2}, // as defroutee 3/0/1/1
@@ -374,6 +375,8 @@ volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRR
 volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
 #include "adcetc.h" // now all of the other functions so can work on modes
+
+int32_t oldValue, integrator, k, bt;
 
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - how fast can we run this?
 // period 32, prescaler 8 = toggle of 104 KHz
@@ -437,10 +440,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   mode[w]=testmodes[w]; // TESTY!
   //  if (mode[w]>19)  mode[w]=19;
-  // trial ADCs 0-15 for now
-    mode[0]=17; // 2-where adc is 0
-  //  mode[2]=0; // 2->where dac is 1!
-  
+  // trial ADCs 0-17 for now
+    mode[0]=3; 
+    mode[2]=3; 
+
   switch(mode[w]){
     // for ADC in we just have/no route in!
   case 0: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
@@ -449,12 +452,18 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dactype[2]=0;
     GSHIFT;
     if (w==0){// ADC just IN no route in
-      bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar);
+      bitn=ADC_(1,SRlength[0],0,trigger[0],reggg,adcpar);
     }
-    else BINROUTE;
+    BINROUTE;
     if (LR[w]){
       PULSIN_XOR;
     }
+    /*    if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
+      Gshift_[3][0]=0;
+      Gshift_[3][1]=0;
+      Gshift_[3][2]=0;
+      Gshift_[3][3]=0;
+      }*/
     BITN_AND_OUT;
     }
     break;
@@ -505,7 +514,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   case 2: // start to draft first set of ADC and DAC modes 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(0, 1); // ADCETC has GSHIFT - we start DAC at 1 as we had 0 above
+      ADCDACETC1(1, 1); // ADCETC has GSHIFT - we start DAC at 1 as we had 0 above
       if (LR[w]){
       BINROUTEANDCYCLE; 
       PULSIN_XOR;
@@ -517,7 +526,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   case 3: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=2048; adcpar=param[0]; reggg=0; // params - reggg is for ADC - dacpar for betaf one bit filter
-      ADCDACETC1(1, 2); // ADCETC has GSHIFT
+      ADCDACETC1(2, 2); // ADCETC has GSHIFT
       if (LR[w]){
       BINROUTE;
       prob=shift_[w]&31; // this seems to work somehow 8/12/2021
@@ -530,7 +539,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   case 4: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(2, 3); // ADCETC has GSHIFT
+      ADCDACETC1(3, 3); // ADCETC has GSHIFT
       if (LR[w]){
       BINROUTEANDCYCLE;
       prob=shift_[w]&31; // this seems to work somehow 8/12/2021
@@ -543,7 +552,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   case 5: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(3, 4); // ADCETC has GSHIFT
+      ADCDACETC1(4, 4); // ADCETC has GSHIFT
       if (LR[w]){ 	//00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) 
 	BINROUTE;
 	if (trigger[w])	  bitrr=(shift_[w]>>SRlength[w]) & 0x01;
@@ -558,7 +567,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 case 6: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(4, 5); // ADCETC has GSHIFT
+      ADCDACETC1(5, 5); // ADCETC has GSHIFT
       if (LR[w]){ 	//	01 2-BITIN or loopback
 	if (trigger[w]){
 	  BINROUTE;
@@ -575,7 +584,7 @@ case 6:
   case 7:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(5, 6); // ADCETC has GSHIFT
+      ADCDACETC1(6, 6); // ADCETC has GSHIFT
       if (LR[w]){ 	//10 3-INV of above
 	if (trigger[w]){
 	  BINROUTE;
@@ -592,7 +601,7 @@ case 6:
   case 8: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=3; // params - reggg is for ADC  - here is 3 for previous DAC
-      ADCDACETC1(6, 7); // ADCETC has GSHIFT
+      ADCDACETC1(7, 7); // ADCETC has GSHIFT
       if (LR[w]){ //11 4- BITIN or not into cycling
 	if (trigger[w]) tug[w]^=1;
 	if (tug[w]){
@@ -610,7 +619,7 @@ case 6:
   case 9: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(7, 8); // ADCETC has GSHIFT
+      ADCDACETC1(8, 8); // ADCETC has GSHIFT
       if (LR[w]){ 
 	//
 	PULSIN_XOR;
@@ -628,7 +637,7 @@ X5 strobe reverses ghost - can also reverse own SR
 case 10:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(8, 9); // ADCETC has GSHIFT
+      ADCDACETC1(9, 9); // ADCETC has GSHIFT
       if (LR[w]){
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
@@ -648,7 +657,7 @@ case 10:
   case 11: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(9, 10); // ADCETC has GSHIFT
+      ADCDACETC1(10, 10); // ADCETC has GSHIFT
       if (LR[w]){ 
 	      tmp=binroute[count][w];
       for (x=0;x<4;x++){
@@ -674,7 +683,7 @@ case 10:
 case 12: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=param[2]; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(10, 12); // ADCETC has GSHIFT
+      ADCDACETC1(11, 12); // ADCETC has GSHIFT - DAC loses case 11
       if (LR[w]){
       // XX - we XOR on STROBE our shift with the GHOST
   tmp=binroute[count][w];
@@ -700,7 +709,7 @@ case 12:
   case 13: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=param[2]; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(11, 13); // ADCETC has GSHIFT
+      ADCDACETC1(12, 13); // ADCETC has GSHIFT
       if (LR[w]){//00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ?? -- 9 below
 	BINROUTE;
 	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
@@ -717,7 +726,7 @@ case 12:
 case 14: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=param[2]; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(12, 14); // ADCETC has GSHIFT
+      ADCDACETC1(13, 14); // ADCETC has GSHIFT
       if (LR[w]){	//	01 2-BITIN or loopback
 	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
 	  BINROUTE;
@@ -734,7 +743,7 @@ case 14:
 case 15: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=4095-(param[2]&4095); adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(13, 2); // ADCETC has GSHIFT - is DAC 2 again but with param for filter!
+      ADCDACETC1(14, 2); // ADCETC has GSHIFT - is DAC 2 again but with param for filter!
       if (LR[w]){ // 11 mode //11 4- BITIN or not into cycling
 	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
 	  BINROUTEANDCYCLE;
@@ -770,7 +779,7 @@ what are the next 16x LR modes
 case 16:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCONLY(14, 0); // has gshift
+      ADCONLY(15, 0); // has gshift
       if (w==2){
       BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
     }
@@ -785,7 +794,7 @@ break;
   case 17: 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCONLY(11,0);  // leave out 15 // was 17
+      ADCONLY(16,0); 
       if (w==2)      { // 1st trigger=prob 00 TM
 	BINROUTE;
 	if (trigger[w])	  bitrr=(shift_[w]>>SRlength[w]) & 0x01;
@@ -806,7 +815,7 @@ break;
   case 18: //2nd trigger=prob 11 ENOTES 
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCONLY(18, 0); // has gshift
+      ADCONLY(17, 0); // has gshift
       if (w==2){
 	if (trigger[w]) tug[w]^=1;
 	if (tug[w]){
@@ -974,12 +983,41 @@ BITN_AND_OUT;
 }
 break;
 
+  case 121: // test case for DAC thru...
+    if (counter[w]>speed[w] && speed[w]!=1024){
+      counter[w]=0;
+    //    dac[2]=(adc_buffer[12]);
+    /*        k=(adc_buffer[12]); // from 0 to 4095 but where is the middle?
+    integrator+=(k-oldValue);
+   if(integrator>2048)
+  {
+     oldValue=4095;
+     bt=4095;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+   dac[2]=bt;
+    */
+
+    //    bt = ((ADCshift_[0] >> (lfsr_taps[SRlength[0]][0])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][1])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][2])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][3]))) & 1u;
+            bt^=1;
+      //          if (rand()%4) bt^=1;
+
+      ADCshift_[0]=(ADCshift_[0]<<1)+(bt&1);
+      x=(((ADCshift_[0] & masky[SRlength[2]])<<8));//<<leftshift[SRlength[2]])&4095);//>>(rightshift[length]))<<leftshift[length];
+      dac[2]=x;//(bt*4095);
+    }
+    break;
  
     ///////////////////////////////////////////////////////////////////////// 
 } // switch
 
+  //  dac[2]=4095;
   if (w==2)  {
-    DAC_SetChannel1Data(DAC_Align_12b_R, dac[2]); // 1000/4096 * 3V3 == 0V8 
+    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-dac[2]); // 1000/4096 * 3V3 == 0V8 
     int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
   }
 
