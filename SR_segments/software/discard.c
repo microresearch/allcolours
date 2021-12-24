@@ -1,3 +1,29 @@
+    //    dac[2]=(adc_buffer[12]);
+    /*        k=(adc_buffer[12]); // from 0 to 4095 but where is the middle?
+    integrator+=(k-oldValue);
+   if(integrator>2048)
+  {
+     oldValue=4095;
+     bt=4095;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+   dac[2]=bt;
+    */
+
+    //    bt = ((ADCshift_[0] >> (lfsr_taps[SRlength[0]][0])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][1])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][2])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][3]))) & 1u;
+      //            bt^=1;
+      //          if (rand()%4) bt^=1;
+
+      //      ADCshift_[0]=(ADCshift_[0]<<1)+(bt&1);
+      //      x=(((ADCshift_[0] & masky[SRlength[2]])<<8));//<<leftshift[SRlength[2]])&4095);//>>(rightshift[length]))<<leftshift[length];
+      //      dac[2]=x;//(bt*4095);
+
+
+
 
 // draft for INTmodes - - TODO: probability of advance on trigger using CV as prob
 case 50:

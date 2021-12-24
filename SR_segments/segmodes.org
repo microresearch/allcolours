@@ -291,13 +291,25 @@ TODO: re-test ADCs, fill in CV/DAC modes for DAC and decide/port new LR modes
 
 [possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
 
-*23/12/21:*
+24/12/21:
+
+- think steppiness is from nature of SRs, implementing few other adc, dacs and also MSB dac for MSB first out so is first in and gets shifted right
+- sigma delta also makes sense so phasing i guess is normal
+
+
+*- how to get 8 bit spaced out from DAC?*
+
+- thinking length for L and C is not so active but depends on modes, speeds and what they are used for...
+
+how to have that extra no route in mode for Right side - just leave it in as there are enough options
+
+23/12/21:
 
 still need to test all ADCs and think on steppiness of DAC
 
-add more binroutes///
+*add more binroutes///*
 
-[- add right hand mode 0 where it sets own GSR to 0! so no feed through...DONE/TESTED fine...but skews modes]
+[- add right hand mode 0 where it sets own GSR to 0! so no feed through...DONE/TESTED fine...but skews modes/left in anyways]
 
 Run through of ADCs:
 
@@ -309,7 +321,7 @@ Run through of ADCs:
 
 [why doesn't length of intermediate SR change much/anything - changes nothing if run at same speed // because gshoft is always new]
 
-TODO: clkroutes for normed clock routing
+*TODO: clkroutes for normed clock routing*
 
 22/12/21:
 

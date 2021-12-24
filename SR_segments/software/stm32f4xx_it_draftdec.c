@@ -338,8 +338,9 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[8][4]={ // add more routes, also what seq change of routes makes sense
-  //    {8,1,2,1}, // default
-  {8,1,2,4}, // route in one big circle
+    {8,1,2,1}, // default
+  //  {8,1,2,4}, // route in one big circle
+  //  {0,1,2,4},
   {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
   {1,2,4,8}, // only loop - this is what is added to get loop too for prob
   {8,1,2,2}, // as defroutee 3/0/1/1
@@ -441,8 +442,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   mode[w]=testmodes[w]; // TESTY!
   //  if (mode[w]>19)  mode[w]=19;
   // trial ADCs 0-17 for now
-    mode[0]=3; 
-    mode[2]=3; 
+    mode[0]=9; 
+    mode[2]=0; 
 
   switch(mode[w]){
     // for ADC in we just have/no route in!
@@ -452,18 +453,19 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     dactype[2]=0;
     GSHIFT;
     if (w==0){// ADC just IN no route in
-      bitn=ADC_(1,SRlength[0],0,trigger[0],reggg,adcpar);
+      bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar);
     }
     BINROUTE;
     if (LR[w]){
       PULSIN_XOR;
     }
-    /*    if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
-      Gshift_[3][0]=0;
+    if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
+      // live with it as we have the leaky pulse in
+      Gshift_[3][0]=0; // so we never feed back in from 3 to anywhere but can use the pulses still
       Gshift_[3][1]=0;
       Gshift_[3][2]=0;
       Gshift_[3][3]=0;
-      }*/
+      }
     BITN_AND_OUT;
     }
     break;
@@ -532,7 +534,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       prob=shift_[w]&31; // this seems to work somehow 8/12/2021
       PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
       }
-    BITN_AND_OUT;
+       if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
+      Gshift_[3][0]=0;
+      Gshift_[3][1]=0;
+      Gshift_[3][2]=0;
+      Gshift_[3][3]=0;
+      }
+
+
+      BITN_AND_OUT;
     }
   break;
 
@@ -986,29 +996,22 @@ break;
   case 121: // test case for DAC thru...
     if (counter[w]>speed[w] && speed[w]!=1024){
       counter[w]=0;
-    //    dac[2]=(adc_buffer[12]);
-    /*        k=(adc_buffer[12]); // from 0 to 4095 but where is the middle?
+      // test 1 bit audio straight through
+      k=(adc_buffer[12]); // from 0 to 4095 but where is the middle?
+      //      k=0;
     integrator+=(k-oldValue);
    if(integrator>2048)
   {
      oldValue=4095;
-     bt=4095;
+     bt=1;
   }
    else
    {
       oldValue=0;
       bt=0;
    }   
-   dac[2]=bt;
-    */
 
-    //    bt = ((ADCshift_[0] >> (lfsr_taps[SRlength[0]][0])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][1])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][2])) ^ (ADCshift_[0] >> (lfsr_taps[SRlength[0]][3]))) & 1u;
-            bt^=1;
-      //          if (rand()%4) bt^=1;
-
-      ADCshift_[0]=(ADCshift_[0]<<1)+(bt&1);
-      x=(((ADCshift_[0] & masky[SRlength[2]])<<8));//<<leftshift[SRlength[2]])&4095);//>>(rightshift[length]))<<leftshift[length];
-      dac[2]=x;//(bt*4095);
+   dac[2]=oldValue;
     }
     break;
  

@@ -46,23 +46,38 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
 // 0-31 (32)modes +1 INTmode
 // arrange modes now as most important first...
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar){
-  static uint32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
-  static int32_t integrator=0, oldValue=0;
+  static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
+  static float integrator=0.0f, oldValue=0.0f;
   static uint32_t k, lastbt=0; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   static uint8_t toggle=0, lc=0;
   uint32_t bt=0, bit=0;
+  float inb;
 
+  
   switch(type){
+    /* // LSB first
   case 0: // basic sequential length of upto 12 bits cycling in    
       if (length>11) length=11;
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length);
       n[reg]=0;
     }
-    bt = (k>>n[reg])&0x01;
+      bt = (k>>n[reg])&0x01; // this means that LSB comes out first
     n[reg]++;    
     break;
+    */
 
+  case 0: // basic sequential length of upto 12 bits cycling in    
+      if (length>11) length=11;
+      if (n[reg]<0) {
+	k=(adc_buffer[12])>>(11-length);
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+
+    
   case 1: // equivalent bits: we don't need limit on number of bits
     if (n[reg]>length) {
       k=(adc_buffer[12]); //
@@ -97,14 +112,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    }   
    break;
     */
-    
+        
   case 2: // variations on one bit audio - also phasey
-    /*
-    n[reg]++;
-  if (n[reg]>48) {
-    k=(adc_buffer[12])-2048;  // 12 bits
-    n[reg]=0;
-    }*/
     k=(adc_buffer[12]); // from 0 to 4095 but where is the middle?
     integrator+=(k-oldValue);
    if(integrator>2048)
@@ -118,6 +127,24 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt=0;
    }   
    break;    
+
+
+    /*
+  case 2: // try with float but this is the same with phasings
+    inb=(((float)adc_buffer[12])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+    integrator+=(inb-oldValue);
+   if(integrator>0.0f)
+  {
+     oldValue=1.0f;
+     bt=1;
+  }
+   else
+   {
+      oldValue=-1.0f;
+      bt=0;
+   }   
+   break;    
+    */     
 
   case 3: // basic sequential length as in 0 but with padding if >11 bits **
       if (n[reg]>length) {
@@ -148,21 +175,35 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
 
-  case 6:   //cycling SR of bitsin
-    ADCshift_[reg]=(adc_buffer[12]);
-    bt=(ADCshift_[reg]>>length)&0x01;
-    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
-    break;
-
-  case 7: // timed version of SR bitsin above
-    if (length>11) length=11;
-    if (n[reg]>length) {
-    ADCshift_[reg]=(adc_buffer[12]);
+  case 6: // timed version of SR bitsin -
+    //    if (length>11) length=11;
+    if (n[reg]) {
+      if (length>11){
+      ADCshift_[reg]=(adc_buffer[12]<<(length-11));
+      }
+      else ADCshift_[reg]=(adc_buffer[12]);
     n[reg]=0;
     }
     n[reg]++;
     bt=(ADCshift_[reg]>>length)&0x01;
     ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
+    break;
+
+  case 7: // timed version of SR bitsin - reversed
+    //if (length>11) length=11;
+    if (n[reg]>length) {
+      if (length>11){
+	ADCshift_[reg]=(adc_buffer[12]<<(length-11));
+      }
+      else ADCshift_[reg]=(adc_buffer[12]);
+      //    ADCshift_[reg]=(adc_buffer[12]);
+    n[reg]=0;
+    }
+    n[reg]++;
+    bt=(ADCshift_[reg]&(1<<length));
+    // clear bit
+    ADCshift_[reg]&=~(1<<length);	
+    ADCshift_[reg]=(ADCshift_[reg]>>1)+bt;
     break;
 
   case 8: // padded version of SR of bitsin
@@ -577,14 +618,16 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   
   switch(type){
 
-  case 0:
+  case 0: // length doesn't change much except at slow speeds as we just 
     if (length==3){
       if (shift_[reg]&4) x=4095;
       else x=0;
     }
-    else     x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
+    else     x=( (shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
     break;
     
+
+
   case 33:// standard bit DAC for x bits - new mode here
 
     if (n[reg]>length) {
