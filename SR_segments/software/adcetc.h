@@ -218,16 +218,18 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
     ///
     
-  case 9: //  now strobe - ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
+  case 9: //  now strobe - was! ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
       // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    // testing now for msb out 
     if (strobe) { 
-  if (length>11) length=11;
-      if (n[reg]>length) {
-	k=(adc_buffer[12])>>(11-length); //
-      n[reg]=0;
+      if (length>11) length=11;
+      //      if (n[reg]>length) {
+            if (n[reg]<0) {
+	      k=(adc_buffer[12])>>(11-length); //
+	      n[reg]=length;
     }
     bt = (k>>n[reg])&0x01;
-    n[reg]++;
+    n[reg]--;
       }
     else
       {
@@ -236,7 +238,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
 
   case 10: // basic sequential length of bits cycling in but zeroed by strobe
-  if (length>11) length=11; //XXXmax12bits
+    if (length>11) length=11; //XXXmax12bits
       if (n[reg]>length) {
 	k=(adc_buffer[12])>>(11-length); //
       n[reg]=0;
@@ -249,7 +251,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 11: // padded case 8    // we accumulate bits onto a ghosted register **
     // STROBE places these onto the shift register in one chunk?
     // so we don't use returned bt - but how can we fix that
-      if (n[reg]>length) {
+    //      if (n[reg]>length) {
+          if (n[reg]<0) {
 	if (length<12) k=(adc_buffer[12])>>(11-length); 
 	else k=(adc_buffer[12])<<(length-11);
 	n[reg]=0;

@@ -291,6 +291,10 @@ TODO: re-test ADCs, fill in CV/DAC modes for DAC and decide/port new LR modes
 
 [possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
 
+26/12/2021:
+
+- think in ADC of reversing for MSB or at least doubling a few modes - we already try a few, also think more about size and padding
+
 24/12/21:
 
 - think steppiness is from nature of SRs, implementing few other adc, dacs and also MSB dac for MSB first out so is first in and gets shifted right

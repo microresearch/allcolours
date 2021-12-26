@@ -442,7 +442,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   mode[w]=testmodes[w]; // TESTY!
   //  if (mode[w]>19)  mode[w]=19;
   // trial ADCs 0-17 for now
-    mode[0]=9; 
+    mode[0]=18; 
     mode[2]=0; 
 
   switch(mode[w]){
@@ -459,6 +459,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (LR[w]){
       PULSIN_XOR;
     }
+
     if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
       // live with it as we have the leaky pulse in
       Gshift_[3][0]=0; // so we never feed back in from 3 to anywhere but can use the pulses still
@@ -466,6 +467,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       Gshift_[3][2]=0;
       Gshift_[3][3]=0;
       }
+    
     BITN_AND_OUT;
     }
     break;
