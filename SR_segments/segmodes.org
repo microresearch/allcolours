@@ -282,14 +282,30 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
 
 
-///////////////////////////////
+*\\\\\\\\\\\\\\\\\\*
 
 - idea for 1 or 2 versions with different modes... also why generic version is silent on early/first modes - no incoming bits or loopback/fixed
 - or major/minor modes from left side???
 
-TODO: re-test ADCs, fill in CV/DAC modes for DAC and decide/port new LR modes
+*TODO: re-test ADCs, fill in CV/DAC modes for DAC and decide/port new LR modes*
 
 [possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
+
+28/12/2021:
+
+- speed seems to be a big issue now...
+
+// also fake clk for lower sometimes gets stuck
+
+- still working/testing ADC and DAC!
+
+- confirming that for striaght through length (above 11) doesn't change anything (also length of left pass through) - becomes one long sr
+
+- re-check paddingsDONE- doesn;t seem to effect much as we still have freq of padding?
+
+- how 8 or 12 bit spacers could work
+
+// some problems programming, also had to slow down main.c TIM2 to 10 prescaler - not sure why?
 
 26/12/2021:
 

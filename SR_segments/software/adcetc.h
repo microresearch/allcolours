@@ -67,7 +67,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
     */
 
-  case 0: // basic sequential length of upto 12 bits cycling in    
+  case 0: // basic sequential length of upto 12 bits cycling in MSB first    
       if (length>11) length=11;
       if (n[reg]<0) {
 	k=(adc_buffer[12])>>(11-length);
@@ -76,7 +76,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt = (k>>n[reg])&0x01; // this means that MSB comes out first
     n[reg]--;    
     break;
-
     
   case 1: // equivalent bits: we don't need limit on number of bits
     if (n[reg]>length) {
@@ -146,15 +145,78 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;    
     */     
 
+   /*      
   case 3: // basic sequential length as in 0 but with padding if >11 bits **
       if (n[reg]>length) {
 	if (length<12) k=(adc_buffer[12])>>(11-length); //
-	else k=(adc_buffer[12])<<(length-11); // should be -11
+	else {
+	  k=(adc_buffer[12]);//<<(length-11); // should be -11 // pads with 0s at the bottom LSB first
+	  //	  k+=((k>>length-11)&masky[length-11]); // pad with a repeat?
+	  //	  k+=padding[length-11]; // TESTY! - padding with 1s
+	}
 	n[reg]=0;
     }
     bt = (k>>n[reg])&0x01;
     n[reg]++;    
     break;
+   */
+
+
+  case 3: // basic sequential length as in 0 but with padding if >11 bits **
+    // as above but closer to 5
+    // also try as MSB
+    if (n[reg]<0) { // 12 bits
+      if (length<12) {
+	k=(adc_buffer[12])>>(11-length);
+	n[reg]=length;
+      }
+      else {
+	k=(adc_buffer[12]);
+	n[reg]=11;
+      }
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]--;    
+    break;
+
+   /*
+  case 3: // basic sequential length as in 0 but with padding if >11 bits **
+    // REVERSAL again doesn't change much
+      if (n[reg]<0) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); //
+	else {
+	  k=(adc_buffer[12])<<(length-11); // should be -11 // pads with 0s at the bottom LSB first
+	  // double up
+	  //  k+=((k>>length-11)&masky[length-11]); // pad with a repeat?
+	  //	  k+=padding[length-11]; // TESTY! - padding with 1s - doesn't change much
+	}
+	n[reg]=length;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]--;    
+    break;
+   */
+   /*
+  case 3: // basic sequential length of upto 12 bits cycling in MSB first    
+        if (n[reg]<0) {
+	  //	  k=pow(2,length)+1;
+	  k++;
+	  if (k>4095) k=0;
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+   */
+   /*  case 3: // basic sequential length of upto 12 bits cycling in MSB first    
+        if (n[reg]<0) {
+	  k=adc_buffer[12];
+	  n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+   */   
 
   case 4:  // special case for spaced bit entry depending on length
     shift_[reg]&=spacmask[length]; //cleared
@@ -526,6 +588,30 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt=!bt;// invert cycling bit
     }
     break;
+
+  case 32: // test mode for spaced sequential entry of 12 bits
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); // fill so no spacings
+	else {
+	  // try for reverse
+	  k=(adc_buffer[12]); // below for LSB first so reverse for MSB
+	  k=(k&0x01) + ((k&space[length-11][0])<<spaceshift[0][length-11]) + ((k&space[1][length-11])<<spaceshift[1][length-11]) + \
+	    ((k&space[2][length-11])<<spaceshift[2][length-11]) + ((k&space[3][length-11])<<spaceshift[3][length-11]) + \
+	    ((k&space[4][length-11])<<spaceshift[4][length-11]) + ((k&space[5][length-11])<<spaceshift[5][length-11]) + \
+	    ((k&space[6][length-11])<<spaceshift[6][length-11]) + ((k&space[7][length-11])<<spaceshift[7][length-11]) + \
+	    ((k&space[8][length-11])<<spaceshift[8][length-11]) + ((k&space[9][length-11])<<spaceshift[9][length-11]) + \
+	    ((k&space[10][length-11])<<spaceshift[10][length-11]) + ((k&space[11][length-11])<<spaceshift[11][length-11]);
+
+	}
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+
+
+
+    ///
     
     //INTMODES - how many to have?
 
@@ -621,22 +707,45 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   
   switch(type){
 
-  case 0: // length doesn't change much except at slow speeds as we just 
+        
+  case 0: // length doesn't change much except at slow speeds - ADC x bits out
     if (length==3){
-      if (shift_[reg]&4) x=4095;
+      if ((shift_[reg]&4)==4) x=4095; // changed 28/12
       else x=0;
     }
-    else     x=( (shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
+    //    else     x=( (shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
+    else  x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; // doublecheck
+    //    else x=(shift_[reg]&masky[length])&4095;
     break;
+
+
+    /*
+  case 0: // ADc x bits out but only 12/8/4/2/1 bits
+    if (length<8){ // 1 bit
+      if ((shift_[reg]&(1<<length))==(1<<length)) x=4095;
+      else x=0;
+    }
+    else x=(shift_[reg]&masky[length])>>newr[length])<<news[length];
+    break;
+    */
+    /*
+  case 0: // testing 12 bits out
+    if (n[reg]>length) { // slow...
+      n[reg]=0;
+      //      nom[reg]=shift_[reg]&4095;
+      nom[reg]=((shift_[reg]&masky[length])>>newr[length])<<news[length];
+    }
+    n[reg]++;
+    x=nom[reg];
+    break;
+    */
     
-
-
   case 33:// standard bit DAC for x bits - new mode here
 
     if (n[reg]>length) {
       n[reg]=0;
     if (length==3){
-      if (shift_[reg]&4) nom[reg]=4095;
+      if ((shift_[reg]&4)==4) x=4095;
       else nom[reg]=0;
     }
     else nom[reg]=((shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference //Q of least bits
@@ -960,6 +1069,7 @@ void TIM4_IRQHandler(void)
 
   temp=(adc_buffer[1]>>7); // 12 bits to 5 bits 
   SRlength[0]=lookuplenall[temp];
+  //  SRlength[0]=11; // TESTY
 
   temp=(adc_buffer[4]>>7); // 12 bits to 5 bits 
   SRlength[1]=lookuplenall[temp];

@@ -41,6 +41,7 @@
 #include "stm32f4xx_tim.h"
 #include "misc.h"
 #include "adc.h"
+#include <math.h>
 #include "resources.h"
 
 uint32_t testmodes[4]={0,0,0,0}; // TEST!
@@ -439,11 +440,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   counter[w]++;
 
-  mode[w]=testmodes[w]; // TESTY!
-  //  if (mode[w]>19)  mode[w]=19;
+  //  mode[w]=testmodes[w]; // TESTY!
+  if (mode[w]>19)  mode[w]=19;
   // trial ADCs 0-17 for now
-    mode[0]=18; 
-    mode[2]=0; 
+  //    mode[0]=0; 
+  //    mode[2]=0; 
 
   switch(mode[w]){
     // for ADC in we just have/no route in!
@@ -1021,10 +1022,10 @@ break;
 } // switch
 
   //  dac[2]=4095;
-  if (w==2)  {
+    if (w==2)  {
     DAC_SetChannel1Data(DAC_Align_12b_R, 4095-dac[2]); // 1000/4096 * 3V3 == 0V8 
     int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-  }
+          }
 
 
       // DAC for normed NSR/PWM
