@@ -291,9 +291,27 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 [possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
 
-28/12/2021:
+*28/12/2021:*
 
-- speed seems to be a big issue now...
+- speed seems to be a big issue now...// how to speed up?
+
+- but there will always be a slowest round of options so doesn't make sense just to speed up some of it if not all
+
+-2. what is in main loop?
+-1. how fast are other interrupts
+0. are we running as fast as we can 180MHz or so...
+1. not execute all DACs but just use SR (and what of shifting?)
+2. different structure so all in one go w0-3 and slow down all...
+3. faster ADC., different structure
+4. generally faster codes, ifs, swicthes, leave out some things
+5. speed of generic code
+6, mix of slower and faster modes
+7. idea of major and minor modes still and mix between and how we can achieve this...
+
+issue in general to resolve: 
+- length as parameter for output (then we need to fix on length as 12/DAC or ignored, or CV so that parameter can have different functions in DAC).
+- arbitrariness of modes and positions (L, R etc), again question of being between generic code and very specific modes...
+- fake clocks
 
 // also fake clk for lower sometimes gets stuck
 
@@ -420,7 +438,7 @@ TODO:
 
 proto for SR>DAC is: if ((LFSR_[w] & 4095 ) < dac[LFSR[w]]) // as that is 12 bits and shifted already 
 
-*change all modes to use the dac[LFSR[w]] above rather than SR*
+*change all modes to use the dac[LFSR[w]] above rather than SR or both & 4095 but is SR is small...*
 
 
 which strobe=prob modes work best with DACout 4x4 in modes 16-31 // we use 00 and 11
