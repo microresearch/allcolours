@@ -339,9 +339,9 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[8][4]={ // add more routes, also what seq change of routes makes sense
-    {8,1,2,1}, // default
+      {8,1,2,1}, // default
   //  {8,1,2,4}, // route in one big circle
-  //  {0,1,2,4},
+  //{0,1,2,4},
   {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
   {1,2,4,8}, // only loop - this is what is added to get loop too for prob
   {8,1,2,2}, // as defroutee 3/0/1/1
@@ -400,10 +400,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
   // crash detect ++ 32/64 in main.c is 14KHz //and/or speed check...
-  //  flipper^=1;
+  //    flipper^=1;
   //  if (param[0]>4090){
-  //  if (flipper) GPIOB->BSRRH = (1)<<12;  // clear bits PB12 - left normed clock I think
-  //  else   GPIOB->BSRRL=(1)<<12; //  write bits   
+  //    if (flipper) GPIOB->BSRRH = (1)<<12;  // clear bits PB12 - left normed clock I think
+  //    else   GPIOB->BSRRL=(1)<<12; //  write bits   
   //  }
 
     /* // we don't deal with CLKs now!  
@@ -443,8 +443,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //  mode[w]=testmodes[w]; // TESTY!
   if (mode[w]>19)  mode[w]=19;
   // trial ADCs 0-17 for now
-  //    mode[0]=0; 
-  //    mode[2]=0; 
+  //  mode[0]=1; 
+  //  mode[3]=0; 
 
   switch(mode[w]){
     // for ADC in we just have/no route in!
@@ -460,7 +460,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     if (LR[w]){
       PULSIN_XOR;
     }
-
+    
+      // maybe lose this or not - is useful if we need no feed through but to run SR
     if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
       // live with it as we have the leaky pulse in
       Gshift_[3][0]=0; // so we never feed back in from 3 to anywhere but can use the pulses still
@@ -468,12 +469,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       Gshift_[3][2]=0;
       Gshift_[3][3]=0;
       }
-    
+
     BITN_AND_OUT;
     }
     break;
 
-  case 1: // just cycle  - ADC NONE/and route in
+  case 1: // just cycle  - ADC NONE/and route in - where to place this as is confusing and if we have 0/0R nothing happens
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC_
       dactype[2]=0;
@@ -852,30 +853,13 @@ break;
       //      ADCONLY(16, 0); // has gshift - 4 bit mode matches 16
       // special mode for spaced entry so needs to be handled differently
       bitn=0;							
-      dactype[2]=0;					       
+      dactype[2]=6;					       
     if (w==3) count=0;					
     GSHIFT;						
     if (w==0)						
   {							
     bitn=ADC_(0,SRlength[0],4,trigger[0],reggg,adcpar); // this is now adc mode 4
-	if (SRlength[defroute[w]]>=SRlength[w]){ // need to >> 
-	  //	  tmp=(SRlength[defroute[w]]>>2)-(SRlength[w]>>2); // /4
-	  shift_[w]+=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
-		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
-		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
-		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
-	  }
-	  else // shift up <<
-	    {
-	      shift_[w]+=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
-			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
-			   ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
-			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
-	    }
-  }							            
-    else if (w==2){
-	shift_[w]&=spacmask[SRlength[w]]; //cleared
-	
+    if (mode[3]!=0){ /// no route in TESTY FIXED!
 	if (SRlength[defroute[w]]>=SRlength[w]){ // need to >> 
 	  //	  tmp=(SRlength[defroute[w]]>>2)-(SRlength[w]>>2); // /4
 	  shift_[w]+=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
@@ -891,6 +875,25 @@ break;
 			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
 	    }
     }
+  }							            
+    else if (w==2){ // DAC out
+      	shift_[w]&=spacmask[SRlength[w]]; //cleared
+	
+	if (SRlength[defroute[w]]>=SRlength[w]){ // need to >> 
+	  //	  tmp=(SRlength[defroute[w]]>>2)-(SRlength[w]>>2); // /4
+	  shift_[w]+=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
+		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
+		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
+	  }
+	  else // shift up <<
+	    {
+	      shift_[w]+=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
+			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
+			   ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
+			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
+			  }
+    } // w==2
       else if (LR[w]) { // we have 4 bit mode here to match
 	shift_[w]&=spacmask[SRlength[w]]; //cleared
 	
@@ -909,8 +912,11 @@ break;
 			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
 	    }
 	PULSIN_XOR;
-      } 
-      BITN_AND_OUT;
+      }
+    bitn=shift_[w]&1; // fixed this 29/12/2021
+    shift_[w]+=bitn;				
+    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); 
+    PULSOUT;
     }
 break;
 
@@ -1055,7 +1061,8 @@ break;
 	else   GPIOB->BSRRL=clk_route[2]; //  write bits
       }      
       
-      if (counter[4]>(speed[2]>>1)){ // changed to >>1 or freezes some strobe modes so is x2 speed
+      //      if (counter[4]>(speed[2]>>1)){ // changed to >>1 or freezes some strobe modes so is x2 speed
+      if (counter[4]>(dac[3])){ // now trying DAC 29/12/2021
 	counter[4]=0;
 	flipper[2]^=1;
 	if (flipper[2]) GPIOB->BSRRH = clk_route[4];  // clear bits of fake_one - clkr is 7 so all of them - was clkr=7 // all of them

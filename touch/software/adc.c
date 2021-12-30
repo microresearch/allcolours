@@ -6,7 +6,9 @@
 - ADC4 on PC0
 
 */
- 
+
+// WE don't use this now...
+
 #include "adc.h"
 
 void ADC1_Init(uint16_t *ADC_Buffer)

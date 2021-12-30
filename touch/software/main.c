@@ -266,8 +266,16 @@ int main(void)
     unsigned int dacval[8]={};
     GPIO_InitTypeDef GPIO_InitStructure;
     //      SystemClock_Config();
-            initClock();
+    //            initClock();
 
+    // instead: 29/12/2021 - 180 MHz we should have from HSE external 8 MHz clock
+    // as in SEG but do we need to update timings
+    //Enable HSE clock
+    RCC_HSEConfig(RCC_HSE_ON);
+    //Wait for clock to stabilize
+    while (!RCC_WaitForHSEStartUp());
+
+    
     // 8 channels
 	    //	    ADC1_Init((uint16_t *)adc_buffer);
 

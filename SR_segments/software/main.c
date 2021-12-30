@@ -284,8 +284,13 @@ int main(void)
   unsigned int i, adcr, j, k=0, otherk=0, flipped, prev_state, value, offset;
     i = adcr = j = k = 0;
 
-    initClock();
-
+    //    initClock();
+    // instead: 29/12/2021 - 180 MHz we should have from HSE external 8 MHz clock
+    //Enable HSE clock
+    RCC_HSEConfig(RCC_HSE_ON);
+    //Wait for clock to stabilize
+    while (!RCC_WaitForHSEStartUp());
+    
     // 13 channels now
     ADC1_Init((uint16_t *)adc_buffer);
 
@@ -461,13 +466,15 @@ int main(void)
 
   // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
-// 32 and 8 is 100 KHz but why can't we sample so fast...
+  // 32 and 8 is 100 KHz but why can't we sample so fast...
+
+  // 29/12/2021: this has changed: now for 32/16 we have 80 KHz and all seems to run well, but we could still make speedups
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 32; // was 8, now 12 for other interruot
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // was 8//16 before// but check it what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 16; // was 8//16 before// but check it what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
@@ -483,8 +490,8 @@ int main(void)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 256; 
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 2; 
+  TIM_TimeBase_InitStructure.TIM_Period = 256; // was 256/2 but maybe is too fast... at 50KHz pulse
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 128; 
   TIM_TimeBaseInit(TIM4, &TIM_TimeBase_InitStructure);
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
