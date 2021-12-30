@@ -291,20 +291,55 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 
 [possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
 
-*28/12/2021:*
+30/12/2021:
+
+TODO:
+- DONE change default dac for all except w==2 to simpler (but we can't just & 4095 for shorter lengths)
+
+- ONLY works for some so removed->try OR in of RIGHT side to top (logic in routings) - in mode 0 and ADCDACETC macro, add to ADCONLY
+[OR in at top gives more natural effects but fails too many times - how can we keep as an option? with bits, as one ADC mode]
+
+- DONEtrial of another approach to fake clocks (but would be better as own ghosts)
+
+question if right hand has more limited trigger or toggle modes
+
+again clash generic LRupdown and more individual...
+
+8 or 12 bit spacers CODE at home
+
+- DONE: bump and toggle routes via trigger as LR case 16
+- modulo? // addition of overlapping registers
+
+case 19 to retest on 0 for incomingsDONE
+
+*REMEMBER extramodes.c*
+
+looking at generic code and inputbit there which is not used - more suited to patterns/abstract
+
+resolve split personality of patterns and cv//audio filter/crusher
+
+generic: topbit is speedfrom, 4 bits route and 1 bit doit as prob mode or not!
+
+29/12/2021:
+
+- clk is now HSE and should be 180, we run with 32/16 divider and seems fine
+- other small changes and fixes
+
+28/12/2021:
 
 - speed seems to be a big issue now...// how to speed up?
 
 - but there will always be a slowest round of options so doesn't make sense just to speed up some of it if not all
 
--2. what is in main loop?
+-2. what is in main interrupt loop?
 -1. how fast are other interrupts
-0. are we running as fast as we can 180MHz or so...
-1. not execute all DACs but just use SR (and what of shifting?)
+DONE-0. are we running as fast as we can 180MHz or so... clk is now HSE and should be 180, we run with 32/16 divider and seems fine
+1. not execute all DACs but just use SR (and what of shifting? - we simplify to new mode 66)
+
 2. different structure so all in one go w0-3 and slow down all...
-3. faster ADC., different structure
+3. faster ADC, different structure//one by one? what does sampletime change?
 4. generally faster codes, ifs, swicthes, leave out some things
-5. speed of generic code
+5. check speed of generic code
 6, mix of slower and faster modes
 7. idea of major and minor modes still and mix between and how we can achieve this...
 

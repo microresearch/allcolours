@@ -18,6 +18,9 @@ OBJECTS = 	startup_stm32f4xx.o system_stm32f4xx.o main.o adc.o \
 				stm32f4xx_gpio.o stm32f4xx_i2c.o stm32f4xx_rcc.o stm32f4xx_dac.o \
 				stm32f4xx_spi.o stm32f4xx_dma.o stm32f4xx_adc.o misc.o stm32f4xx_it_draftdec.o
 
+#stm32f4xx_it_generic.o
+
+
 
 # Linker script
 LDSCRIPT = stm32_flash.ld
@@ -65,7 +68,7 @@ CPFLAGS = --output-target=binary
 ODFLAGS	= -x --syms
 
 #FLASH = st-flash
-FLASH = /root/Downloads/stlink-1.4.0/st-flash
+FLASH = /root/Downloads/stlink-1.4.0/st-flash --reset
 
 # Targets
 all: main.bin
@@ -77,6 +80,9 @@ flash: gdb_flash
 
 stlink_flash: main.bin
 	$(FLASH) write main.bin 0x08000000
+
+openocd: main.bin
+	openocd -s tcl -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program /root/projects/ERD_MODULES/all_colours/SR_segments/software/main.bin verify reset exit 0x08000000"
 
 gdb_flash: main.elf
 	$(GDB) -x flash_cmd.gdb -batch

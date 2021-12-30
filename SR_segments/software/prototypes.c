@@ -1,4 +1,15 @@
-  tmp=binroute[count][w];
+	tmp=binroute[count][w];
+	for (x=0;x<4;x++){
+	  if (tmp&0x01){
+	    bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
+	    Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+	    bitn^=bitrr;
+	  }	
+	  tmp=tmp>>1;
+	}
+
+
+tmp=binroute[count][w];
   for (x=0;x<4;x++){
   if (tmp&0x01){
   bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;

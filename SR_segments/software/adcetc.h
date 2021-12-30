@@ -489,10 +489,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      }         
      break;    
 
-    
-    //// no entry
-
-        
+     // 22->31 = no ADC IN just LFSR/DAC etc
+     
   case 22: // LFSR runs on own SR so not true LFSR - REGG!
     bt = ((shift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (shift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
     break;
@@ -621,10 +619,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   return bt;
 }
 
-
-
-
-
 static inline uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who){ // try lazy, stickyt, leaky, decaying logic here... // who is new 20/9 for which SR we take logic from...
   //  static uint16_t timer=0;
   //  uint16_t z;
@@ -707,6 +701,10 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   
   switch(type){
 
+  case 66: // default for all other DACs
+    x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
+    //    x=shift_[reg]&4095;
+    break;
         
   case 0: // length doesn't change much except at slow speeds - ADC x bits out
     if (length==3){
@@ -714,7 +712,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
       else x=0;
     }
     //    else     x=( (shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
-    else  x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length]; // doublecheck
+    else  x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
     //    else x=(shift_[reg]&masky[length])&4095;
     break;
 

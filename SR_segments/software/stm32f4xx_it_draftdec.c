@@ -154,17 +154,44 @@ uint32_t neworders[24][4]={
   tmpp = ( tmpp >> 16             ) | ( tmpp               << 16);	\
   }
 
+// how we can OR in for route 0 - below but doesn't work so well
 #define BINROUTE {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
   Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
-  bitn^=bitrr;						\
+  bitn^=bitrr;					\
   }							\
   tmp=tmp>>1;						\
   }							\
   }
+
+//unused
+#define BINROUTEOR {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn|=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+#define BINROUTELOGOP {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn=logop(bitn,bitrr,logtable[w]);			\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
 
 #define BINROUTEANDCYCLE {				\
   tmp=binroute[count][w];				\
@@ -192,6 +219,7 @@ uint32_t neworders[24][4]={
 
 //if w==3 count=0 means just to reset binroute when we are out of modes which altered it
 // macro for alt routes for ADC and DAC
+// try with binrouteOR
 #define ADCDACETC1(X, Y){			\
   bitn=0;					\
   dactype[2]=Y;					\
@@ -321,7 +349,7 @@ uint32_t speedfrom_[4]={3,2,1,0}; // who we get dac offset from?
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
 uint32_t LFSR[4]={3,3,3,1}; // which SR take the LFSR bits from! default is from itself - but could be opposites eg. {2,3,0,1}
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
-uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
+uint32_t dactype[4]={66,66,0,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
@@ -443,8 +471,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //  mode[w]=testmodes[w]; // TESTY!
   if (mode[w]>19)  mode[w]=19;
   // trial ADCs 0-17 for now
-  //  mode[0]=1; 
-  //  mode[3]=0; 
+  //XXXXX
+  // mode[0]=0;
+  //  mode[2]=5;
+  //  mode[3]=11; 
 
   switch(mode[w]){
     // for ADC in we just have/no route in!
@@ -455,6 +485,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     GSHIFT;
     if (w==0){// ADC just IN no route in
       bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar);
+      //      BINROUTE;
     }
     BINROUTE;
     if (LR[w]){
@@ -538,14 +569,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       prob=shift_[w]&31; // this seems to work somehow 8/12/2021
       PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
       }
-       if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
-      Gshift_[3][0]=0;
-      Gshift_[3][1]=0;
-      Gshift_[3][2]=0;
-      Gshift_[3][3]=0;
-      }
-
-
       BITN_AND_OUT;
     }
   break;
@@ -588,7 +611,8 @@ case 6:
 	}
 	else {
 	  bitn=(shift_[w]>>SRlength[w]) & 0x01; 
-	}	
+	}
+	
 	PULSIN_XOR;
     } 
     BITN_AND_OUT;
@@ -673,7 +697,7 @@ case 10:
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
       ADCDACETC1(10, 10); // ADCETC has GSHIFT
       if (LR[w]){ 
-	      tmp=binroute[count][w];
+	tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  if (trigger[w]){
@@ -798,7 +822,22 @@ case 16:
       BINROUTEANDCYCLE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31 
     }
       else if (LR[w]) {
-	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	//	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	// trial for bump up our route by trigger:
+	if (trigger[w]) which[w]++;
+	if (which[w]>8) which[w]=0;
+	
+	tmp=binroute[which[w]][w];
+	for (x=0;x<4;x++){
+	  if (tmp&0x01){
+	    bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
+	    Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+	    bitn^=bitrr;
+	  }	
+	  tmp=tmp>>1;
+	}
+
+	
 	PULSIN_XOR;
       } 
       BITN_AND_OUT;
@@ -858,23 +897,25 @@ break;
     GSHIFT;						
     if (w==0)						
   {							
-    bitn=ADC_(0,SRlength[0],4,trigger[0],reggg,adcpar); // this is now adc mode 4
-    if (mode[3]!=0){ /// no route in TESTY FIXED!
+    bitn=ADC_(0,SRlength[0],4,trigger[0],reggg,adcpar); // this is now adc mode 4 - we don't use bitn and do spacmask in adc
+
+        if (mode[3]!=0){ /// no route in TESTY FIXED!
 	if (SRlength[defroute[w]]>=SRlength[w]){ // need to >> 
 	  //	  tmp=(SRlength[defroute[w]]>>2)-(SRlength[w]>>2); // /4
-	  shift_[w]+=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
+	  // changed to OR and not ADD in 30/12/2021 to test
+	  shift_[w]|=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
 		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
 		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
 		      ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
 	  }
 	  else // shift up <<
 	    {
-	      shift_[w]+=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
+	      shift_[w]|=(((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
 			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
 			   ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
 			  ((shift_[defroute[w]]&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
 	    }
-    }
+	    }
   }							            
     else if (w==2){ // DAC out
       	shift_[w]&=spacmask[SRlength[w]]; //cleared
@@ -1050,24 +1091,29 @@ break;
       if (counter[5]>dac[3]){ // L side
 	counter[5]=0;
 	flipper[0]^=1;
-	if (flipper[0]) GPIOB->BSRRH = clk_route[1];  // clear bits of fake_one - clkr is 7 so all of them - was clkr=7 // all of them
+	if (flipper[0]) GPIOB->BSRRH = clk_route[1];  // clear bits of fake_one
 	else   GPIOB->BSRRL=clk_route[1]; //  write bits
       }      
 
       if (counter[6]>dac[1]){ // R side
 	counter[6]=0;
 	flipper[1]^=1;
-	if (flipper[1]) GPIOB->BSRRH = clk_route[2];  // clear bits of fake_one - clkr is 7 so all of them - was clkr=7 // all of them
+	if (flipper[1]) GPIOB->BSRRH = clk_route[2];  
 	else   GPIOB->BSRRL=clk_route[2]; //  write bits
       }      
       
       //      if (counter[4]>(speed[2]>>1)){ // changed to >>1 or freezes some strobe modes so is x2 speed
+      
       if (counter[4]>(dac[3])){ // now trying DAC 29/12/2021
 	counter[4]=0;
 	flipper[2]^=1;
-	if (flipper[2]) GPIOB->BSRRH = clk_route[4];  // clear bits of fake_one - clkr is 7 so all of them - was clkr=7 // all of them
+	if (flipper[2]) GPIOB->BSRRH = clk_route[4];  
 	else   GPIOB->BSRRL=clk_route[4]; //  write bits
-  }
+	}
+      // trial just using lowest bit 30/12/2021
+      if ((shift_[3]>>SRlength[3])&0x01) GPIOB->BSRRH = clk_route[4];
+      else GPIOB->BSRRL=clk_route[4]; //  write bits
+      
       counter[4]++; counter[5]++; counter[6]++;
 
   }

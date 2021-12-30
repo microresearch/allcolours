@@ -154,7 +154,8 @@ BITN_AND_OUT;
 	reggg=w; adcpar=param[w];
 	// can also bump up type in list with a trigger[w] TODO/TEST - here we just select from 5 and 32 as 30 used param
 	if (trigger[w]) tug[w]^=1;
-	bitn=ADC_(w,SRlength[w],ADCLR[tug[w]],trigger[w],reggg,adcpar);  //5,30,32 as selections - 32 maybe not so interesting
+        // ADCLR is now changed as we changed modes
+        bitn=ADC_(w,SRlength[w],ADCLR[tug[w]],trigger[w],reggg,adcpar);  //5,30,32 as selections - 32 maybe not so interesting
 	BINROUTE;
 
 
