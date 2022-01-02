@@ -88,7 +88,7 @@ Global changes: CV changes global table
 
 1-where do I get speed from? if from SR which one and ... ---> major modes
 
-2-where are the input bits from (ADC, pulse, routed in, cycling)? = manipulate routes, what are routes=thru+cycle, manipulate own/other ghosts
+2-where are the potential input bits from (ADC, pulse, routed in, cycling)? = manipulate routes, what are routes=thru+cycle, manipulate own/other ghosts
 
 3-what do I do with my input bit/s - logical operations,
 probabilities, others? - where do I find out what to do with my bits?

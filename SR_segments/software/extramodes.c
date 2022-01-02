@@ -115,7 +115,7 @@ BITN_AND_OUT;
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
-	  if ((LFSR_[w] & 4095 ) < (shift_[LFSR[w]] & 4095)) Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	  if ((LFSR_[w] & 4095 ) < (dac[LFSR[w]])) Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -241,7 +241,7 @@ BITN_AND_OUT;
   }
 	*/
 	// - basic prob mode of entry of routed or not (into cycling). and just xor puls in...
-	if ((LFSR_[w] & 4095 ) < (param[w] & 4095)){
+	if (dac[LFSR[w]]) < (param[w] & 4095)){
 	  BINROUTEANDCYCLE;
 	}
 	else {

@@ -649,6 +649,16 @@ uint16_t divy[32]={4095, 2047, 1365, 1023, 819, 682, 585, 511, 455, 409, 372, 34
 
   
   uint32_t toggle=1, bt, btt, regg=1;
+
+  for (x=0;x<102400;x++){
+
+      bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
+    ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+
+    printf("%d",bt);
+  }
+
+
   /*
   for (x=0;x<102400;x++){
     SRlength[regg]=(rand()%27)+4;

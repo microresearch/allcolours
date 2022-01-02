@@ -498,7 +498,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 23:// run true LFSR-ADCshift and output a bit  - REGG!
     bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
     ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
-    if (ADCshift_[regg]=0) ADCshift_[regg]=0xff;
+    
+    if (ADCshift_[regg]==0) ADCshift_[regg]=0xff;
     break;
 
   case 24: // incoming bit switches direction of LFSR - REGG! 
@@ -575,7 +576,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      }         
      break;    
 
-  case 30: // 3/12/2021 - 101010 clock at speed
+  case 30: // 3/12/2021 - 101010 clock at speed - ultrasonic at fastest speeds
     lastbt^=1;
     bt=lastbt;
     break;
@@ -587,7 +588,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     }
     break;
 
-  case 32: // test mode for spaced sequential entry of 12 bits
+  case 32: // In progress  test mode for spaced sequential entry of 12 bits
       if (n[reg]>length) {
 	if (length<12) k=(adc_buffer[12])>>(11-length); // fill so no spacings
 	else {

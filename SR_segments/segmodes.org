@@ -12,7 +12,7 @@
 - test/play
 - tweaks for slower speed, CLK norms, what else? how we handle one bit audio filter?
 
-* modes sketch
+* older modes sketch
 
 newer is 1-31 ADC modes
 1-15 DAC modes
@@ -268,7 +268,7 @@ from generic we had all modes/options as:
 
 incoming bit bits summary (4 bits) - eg. prob of:
 
-- pulse (if we have) (1,3)  3 bits- mod below  
+- pulse (if we have) (1,3)  3 bits- mod below?
 - routed in = all - 2 bits still - none, route, route/loop, loop
 - return/loop = all
 - ADC (0) - 3 bits for 0
@@ -280,7 +280,9 @@ route in and logop bits:
 trial bits:
 pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
 1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
+[11 bits]
 
+speed from DAC/which DAC?
 
 *\\\\\\\\\\\\\\\\\\*
 
@@ -294,17 +296,36 @@ pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3
 - major/minor modes from right hand side
 - OR into top/ADC
 - generic logics/ all/ logic bits
-- if each SR is quite different? or stay generic? ADC and DAC are already different, maybe LR should be or can also be swopped, re-routed, more routing options on those sides perhaps as extra modes
+
+- if each SR is quite different? or stay generic? ADC and DAC are
+  already different, maybe LR should be or can also be swopped,
+  re-routed, more routing options on those sides perhaps as extra
+  modes
 
 L as delay/entry, R as feedback and DAC - what makes sense for each?
+
+but then ADC and DAC become just about input and output??? ADC in is fine (but we need options to OR in sometimes for pure ADC style modes...)
+
+// re-check generic bit options above
+
 
 - resolve split personality of patterns and cv//audio filter/crusher (split of modes at top cleanly? or but then what of speeds...)
 
 
 
-*TODO: re-test ADCs, fill in CV/DAC modes for DAC and decide/port new LR modes*
+TODO: re-test ADCs, *fill in CV/DAC modes for DAC and decide/port new LR modes*
 
 [possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
+
+31/12/2021:
+
+- back to testing with OR in on ADC modes (*use XOR for logical/nonadc ADC in modes*)
+
+- tested all ADCs and DACs now - DAC section is a bit samey...
+
+- if we use DAC3 for DAC modes input in ADC is very easy for feedback to run to 0...
+
+    // maybe lose just cycle mode
 
 30/12/2021:
 
@@ -418,7 +439,7 @@ re-ordering ADCs but re-check which ones need parameters - put param[0] for all.
 
 - drafted minor/major mode structure in extramodes.c
 
-*TODO: re-test all ADC or/esp11, classify LR modes*
+TODO: re-test all ADC or/esp11, *classify LR modes*
 
 - for INTMODES: how many speed options here? just keep as pure option so can have 16x INT modes and 3x4 DAC
 
@@ -488,7 +509,7 @@ TODO:
 
 proto for SR>DAC is: if ((LFSR_[w] & 4095 ) < dac[LFSR[w]]) // as that is 12 bits and shifted already 
 
-*change all modes to use the dac[LFSR[w]] above rather than SR or both & 4095 but is SR is small...*
+change/d all modes in extramodes.c to use the dac[LFSR[w]] above rather than SR or both & 4095 but if SR is small... *CHECK*
 
 
 which strobe=prob modes work best with DACout 4x4 in modes 16-31 // we use 00 and 11
@@ -685,7 +706,7 @@ in draftdec, XOR it with SR DONE -> these can also be for circular routes too
 
 - *logop in routing too*
 
-summarize: TODO: *draft all modes in draftdec but we need 14 modes for DAC (lose 1=mode9)  and 29 (lose 3=modes15, 31and19) for ADC, fill in LR modes for these and test*
+summarize: TODO: draft all modes in draftdec but we need 14 modes for DAC (lose 1=mode9)  and 29 (lose 3=modes15, 31and19) for ADC, fill in LR modes for these and test
 
 but possibly mode prob modes in ADC or keep these more for INTmodes? think about
 

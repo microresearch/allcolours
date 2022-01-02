@@ -227,7 +227,7 @@ uint32_t neworders[24][4]={
   GSHIFT;						\
   if (w==0)      {					\
   bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
-  BINROUTE;						\
+  BINROUTEOR;						\
   }							\
   if (w==2)      {					\
   BINROUTE;						\
@@ -262,7 +262,7 @@ uint32_t neworders[24][4]={
     if (w==0)							\
   {								\
       bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
-      BINROUTE;						\
+      BINROUTEOR;						\
   }								\
 }
 
@@ -469,29 +469,31 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   counter[w]++;
 
   //  mode[w]=testmodes[w]; // TESTY!
-  if (mode[w]>19)  mode[w]=19;
+    if (mode[w]>19)  mode[w]=19;
   // trial ADCs 0-17 for now
   //XXXXX
-  // mode[0]=0;
+    //    mode[0]=7;
+    //    mode[1]=17; // 17-ADC input into left
   //  mode[2]=5;
   //  mode[3]=11; 
 
+  
   switch(mode[w]){
     // for ADC in we just have/no route in!
   case 0: // for all just pass through - ADC NONE/pass, LR pass, DAC 0/pass
     if (counter[w]>speed[w] && speed[w]!=1024){
-    dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC_
+    dacpar=0; adcpar=param[0]; reggg=3; // params - reggg is for ADC_ // chooses DAC
     dactype[2]=0;
     GSHIFT;
     if (w==0){// ADC just IN no route in
-      bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar);
-      //      BINROUTE;
+      bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar); 
+      //      BINROUTEOR;
     }
-    BINROUTE;
+    else BINROUTE;
     if (LR[w]){
       PULSIN_XOR;
     }
-    
+    /*
       // maybe lose this or not - is useful if we need no feed through but to run SR
     if (w==3){    // R hand side set GSR to 0 so no pass thru - but then we need extra w==3 mode to pass through
       // live with it as we have the leaky pulse in
@@ -500,20 +502,23 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       Gshift_[3][2]=0;
       Gshift_[3][3]=0;
       }
-
+    */
     BITN_AND_OUT;
     }
     break;
 
-  case 1: // just cycle  - ADC NONE/and route in - where to place this as is confusing and if we have 0/0R nothing happens
+    // maybe lose just cycle mode - replace with
+  case 1: // CHANGED//just cycle  - ADC NONE/and route in - where to place this as is confusing and if we have 0/0R nothing happens
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC_
       dactype[2]=0;
       GSHIFT;
       if (w==0){
-	BINROUTE;
+	// or we have ADC 0 in
+	bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar);
+	BINROUTEOR;
       }
-      else JUSTCYCLE;
+      else BINROUTE;
       if (LR[w]) {
 	PULSIN_XOR;
       }
@@ -622,7 +627,7 @@ case 6:
   case 7:
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      ADCDACETC1(6, 6); // ADCETC has GSHIFT
+      ADCDACETC1(6, 6); // ADCETC has GSHIFT - for adc in 6 there is no route in with larger lengths
       if (LR[w]){ 	//10 3-INV of above
 	if (trigger[w]){
 	  BINROUTE;
@@ -857,8 +862,16 @@ break;
       else if (LR[w])
 	{
 	  //////////////////////////////////HERE!
-	  BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
-	  /////////////////////////////////////...
+	  //	  BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	  // test for ADC in to LR also from extramodes.c
+	  // which modes of ADC_?: from 22 is non_adc style entries eg, 29 1 bit osc
+	reggg=w; adcpar=param[w];
+	// can also bump up type in list with a trigger[w]: 
+	//	if (trigger[w]) tug[w]^=1;
+        // ADCLR is now changed as we changed modes
+        bitn=ADC_(w,SRlength[w],0,trigger[w],reggg,adcpar);  //
+	BINROUTE;
+	/////////////////////////////////////...
 	  PULSIN_XOR;
     } 
     BITN_AND_OUT;
@@ -879,7 +892,7 @@ break;
 	}	
     }
       else if (LR[w]) {
-	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	//	BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
 	PULSIN_XOR;
       } 
       BITN_AND_OUT;
