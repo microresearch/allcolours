@@ -67,6 +67,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
     */
 
+    
   case 0: // basic sequential length of upto 12 bits cycling in MSB first    
       if (length>11) length=11;
       if (n[reg]<0) {
@@ -76,7 +77,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt = (k>>n[reg])&0x01; // this means that MSB comes out first
     n[reg]--;    
     break;
-    
+
   case 1: // equivalent bits: we don't need limit on number of bits
     if (n[reg]>length) {
       k=(adc_buffer[12]); //
@@ -1036,7 +1037,9 @@ void TIM4_IRQHandler(void)
   if (nn>=SMOOTHINGS) nn=0;
   temp=totn/SMOOTHINGS;  
   speed[0]=logger[temp>>2];
-
+  // new speed attempts TESTY
+  speedf_[0]=logspeed[temp>>2];
+  
   // speedl
   totl=totl-smoothl[ll];
   smoothl[ll]=adc_buffer[3];
@@ -1045,7 +1048,8 @@ void TIM4_IRQHandler(void)
   if (ll>=SMOOTHINGS) ll=0;
   temp=totl/SMOOTHINGS;  
   speed[1]=logger[temp>>2];
-
+  speedf_[1]=logspeed[temp>>2];
+  
   // speedr
   totr=totr-smoothr[rr];
   smoothr[rr]=adc_buffer[6];
@@ -1054,7 +1058,8 @@ void TIM4_IRQHandler(void)
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
   speed[3]=logger[temp>>2];
-
+  speedf_[3]=logspeed[temp>>2];
+  
     // speedc
   totc=totc-smoothc[cc];
   smoothc[cc]=adc_buffer[9];
@@ -1063,6 +1068,7 @@ void TIM4_IRQHandler(void)
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
   speed[2]=logger[temp>>2];
+  speedf_[2]=logspeed[temp>>2];
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!
 

@@ -317,6 +317,21 @@ TODO: re-test ADCs, *fill in CV/DAC modes for DAC and decide/port new LR modes*
 
 [possibly reduce volume of final dacout amplifier as is 10vpp - but leave so!]
 
+2/1/2022:
+
+new approaches: function pointers, try speed scheme from WORM so also oversampling  and interpolation - draftspeed2.c
+
+trial with oversample etc (now divider is 32/32 or 32/64)... seems work fine but we don't get slow enough for CV speeds...
+(for cv/dac modes - but that means fullspeed pulse modes will be slower by default??? or we slow down cv modes???)
+
+
+how to implement function pointers...??? as bit selects???
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 31/12/2021:
 
 - back to testing with OR in on ADC modes (*use XOR for logical/nonadc ADC in modes*)

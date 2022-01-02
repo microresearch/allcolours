@@ -1,4 +1,33 @@
-    //    dac[2]=(adc_buffer[12]);
+// worm speed
+
+if (time_now>32768){
+    int_time=0; 
+    time_now-=32768.0f;
+    }
+
+alpha = time_now - (float)int_time;
+
+outt = ((float)delay_buffer[DELAY_SIZE-5] * alpha) + ((float)delay_buffer[DELAY_SIZE-6] * (1.0f - alpha)); // interpol but is just last and before last
+if (outt>LIMIN) outt=LIMIN;
+ else if (outt<-LIMIN) outt=-LIMIN;
+out[ii]=outt;
+
+  time_now += factor;
+  last_time = int_time;
+  int_time = time_now;
+
+while(last_time<int_time)      {
+    doadc();
+    int16_t val=getsample();
+    new_data(val);
+    last_time += 1;
+  }
+ }
+}
+
+
+
+//    dac[2]=(adc_buffer[12]);
     /*        k=(adc_buffer[12]); // from 0 to 4095 but where is the middle?
     integrator+=(k-oldValue);
    if(integrator>2048)
