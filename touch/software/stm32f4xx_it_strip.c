@@ -549,7 +549,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	    ////// write to DAC
 	  // if playback add
-	  if (play==1) {
+	    if (play==1 && daccount!=6) { //TEST: don't add for speed!
 	    if (real[daccount]>1023) real[daccount]=1023;
 	    values[daccount]+=logval[(real[daccount])];
 	  }
