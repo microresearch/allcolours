@@ -256,6 +256,40 @@ all the comparison possibilities]
 
 - SR in SR//barriersDONEkind of
 
+
+* 2022++
+
+** 9/1/2022:
+
+- DONE: no speed more than 1.0f - how we generate this? increase main.c speed accordingly
+
+xx=numpy.logspace(0, 10, num=1024, endpoint=True, base=2.0) # num is now many we want // in misc/log_gen.py
+
+- simulate fracctional speeds and test
+
+DONE.
+
+- interpolate or not? as in just keep last value or interpolate
+
+INTERPOLATE
+
+//////
+
+- draft new structure mode: what we need here... we will need to
+  change trigger code, clkouts and will need clean up all but just
+  test now...
+
+we changed dac out but will need to change adc for pointer as some
+modes change it in place...
+
+*TODO: we also need to include stop! in speeds!!!*
+
+- Right and Left are now seperate 
+- Right with mode DAC action, more influence. character as routings, DAC and feedback, other INS into right side too (can be more TRIADEX style_
+- do we only use DAC2 as out so this can be incorporated...
+- jump modes << or slow down, out per every x shifts... 
+
+
 * diary sept 2021+
 
 PLAN: put first draft together
@@ -308,10 +342,7 @@ but then ADC and DAC become just about input and output??? ADC in is fine (but w
 
 // re-check generic bit options above
 
-
 - resolve split personality of patterns and cv//audio filter/crusher (split of modes at top cleanly? or but then what of speeds...)
-
-
 
 TODO: re-test ADCs, *fill in CV/DAC modes for DAC and decide/port new LR modes*
 

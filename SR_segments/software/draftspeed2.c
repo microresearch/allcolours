@@ -44,6 +44,8 @@
 #include <math.h>
 #include "resources.h"
 
+static uint32_t count=0;
+
 uint32_t testmodes[4]={0,0,0,0}; // TEST!
 
 uint32_t neworder[4]={3,2,1,0}; // order backwards
@@ -146,6 +148,8 @@ static uint32_t storedlength[4][4]={
   {31,31,31,31}
 };
 
+
+
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
 
 // and cycling/circling array of ghosts which can come back or go forwards/backwards - when these ghosts are copied over (on event)
@@ -211,6 +215,7 @@ volatile uint32_t adc_[4]={0,0,0,0};
 uint32_t counter_[4]={0,0,0,0};
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
 static uint32_t LR[4]={0,1,0,1};
+static uint32_t flipd[4]={0,0,0,0};
 static uint32_t pulsouts[8]={0, 0, 1<<2,1<<15, 1<<4,1<<12, 1<<3,1<<11};
 volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
 //                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
@@ -238,28 +243,111 @@ static void new_data(uint32_t data, uint32_t ww)
 enum which {N,L,C,R};
 
 typedef struct heavens_ { // fill out with trigger, routes, types, bits and other attributes,,,
-  uint8_t which;
-  uint8_t mode;
   uint8_t trigger;  
-  uint8_t adcmode;
-  uint8_t dacmode;
+  uint8_t adctype, adcpar;
+  uint8_t dactype, dacpar;
   uint8_t routein;
-  uint8_t length;
-  uint32_t gshift[4];
+  //  uint8_t length;
+  uint32_t Gshift_[4];
   uint32_t shift_;
-  //  uint32_t(*dofunc)(void);
-  uint32_t (*dofunc[64])(void); // or each has its own modes???
+  uint32_t lastdac; // speed stuff
+  uint32_t dac;
+  float time_now;
+  long last_time;
+  long int_time;
+  uint32_t (*dofunc[64])(uint16_t w); // or each has its own modes??? // what we need for each of modes though or do we just take global structure..
 } heavens;
 
 heavens gate[4];
 
-uint32_t testing(){
-  uint16_t which=2;
+uint32_t testing(uint16_t which){
   static uint32_t flipd[4]={0};
   flipd[which]^=1;
   if (flipd[which]) return 4095;
   else return 0;    
 }
+
+uint32_t testN(uint16_t w){ 
+  float alpha;
+  uint32_t bitn, bitrr, tmp, val, x, lengthbit=15, new_stat; 
+  if (gate[w].time_now>32768){
+      gate[w].int_time=0; 
+      gate[w].time_now-=32768.0f;
+    }
+  
+  alpha = gate[w].time_now - (float)gate[w].int_time;
+  gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); // interpol but is just last and before last
+  if (gate[w].dac>4095) gate[w].dac=4095;
+  else if (gate[w].dac<0) gate[w].dac=0;
+
+  gate[w].time_now += speedf_[w];
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar); 
+    BINROUTE_;
+    BITN_AND_OUTV_; // special version for this in macros.h  - could have diff versions as N has no pulse out
+
+    new_data(val,w);
+    gate[w].last_time += 1;
+  } // lasttime  
+}
+
+uint32_t testL(uint16_t w){ 
+  float alpha;
+  uint32_t bitn=0, bitrr, tmp, val, x, lengthbit=15, new_stat, xx; 
+  if (gate[w].time_now>32768){
+      gate[w].int_time=0; 
+      gate[w].time_now-=32768.0f;
+    }
+  
+  alpha = gate[w].time_now - (float)gate[w].int_time;
+  gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); // interpol but is just last and before last
+  if (gate[w].dac>4095) gate[w].dac=4095;
+  else if (gate[w].dac<0) gate[w].dac=0;
+
+  gate[w].time_now += speedf_[w];
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // special version for this in macros.h  - could have diff versions as N has no pulse out
+    new_data(val,w);
+    gate[w].last_time += 1;
+  } // lasttime  
+}
+
+uint32_t testC(uint16_t w){ 
+  float alpha;
+  uint32_t bitn=0, bitrr, tmp, val, x, lengthbit=15, new_stat; 
+  if (gate[w].time_now>32768){
+      gate[w].int_time=0; 
+      gate[w].time_now-=32768.0f;
+    }
+  
+  alpha = gate[w].time_now - (float)gate[w].int_time;
+  gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); // interpol but is just last and before last
+  if (gate[w].dac>4095) gate[w].dac=4095;
+  else if (gate[w].dac<0) gate[w].dac=0;
+
+  gate[w].time_now += speedf_[w];
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTV_; // special version for this in macros.h  - could have diff versions as N has no pulse out
+    new_data(val,w);
+    gate[w].last_time += 1;
+  } // lasttime  
+}
+
 
 
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - how fast can we run this?
@@ -269,18 +357,24 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   uint32_t lengthbit=15, new_stat, prob;
   uint32_t x, y, q, start=0;
   uint32_t bitn=0, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmp2, tmpp, xx;
-  uint32_t trigger[4]={0,0,0,0};
-  static uint32_t flipd[4]={0,0,0,0}, flipper[4]={1}, w=0, count=0;
+  //  uint32_t trigger[4]={0,0,0,0};
+  static uint32_t flipper[4]={1}, w=0;
   static uint32_t counter[7]={0,0,0,0,0,0,0};  // last counter is for fake clks
   static uint32_t which[4]={0,0,0,0};
   static uint32_t tug[4]={0,0,0,0};
 
   // testing
-  gate[L].which=L;
-  gate[L].gshift[3]=18;
-
-  //  uint32_t (*dofunc[8])(uint8_t which)={testing};
-  gate[L].dofunc[0]=testing;
+  gate[N].adctype=0;
+  
+  gate[C].dactype=0;
+  gate[L].dactype=0;
+  gate[R].dactype=0;
+  gate[N].dactype=0;
+  
+  gate[N].dofunc[0]=testN;
+  gate[L].dofunc[0]=testL; // as these all have same function
+  gate[R].dofunc[0]=testL;
+  gate[C].dofunc[0]=testC;
   
   // speed stuff
 
@@ -322,46 +416,47 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   }
 
   if (intflag[w]) { // process INT
-    trigger[w]=1;
+    gate[w].trigger=1;
     intflag[w]=0;
     clksr_[w]=(clksr_[w]<<1)+1;     // shift on to CLKSR
   }
   else  {
-    trigger[w]=0;
+    gate[w].trigger=0;
     clksr_[w]=(clksr_[w]<<1);
   }
   // genericLFSR for all probability modes
   tmp= ((LFSR_[w] >> 31) ^ (LFSR_[w] >> 29) ^ (LFSR_[w] >> 25) ^ (LFSR_[w] >> 24)) & 1u; // 32 is 31, 29, 25, 24
   LFSR_[w] = (LFSR_[w]<<1) + tmp;
 
-  // generic or for each mode
-  dacpar=0; adcpar=param[0]; reggg=3; // params - reggg is for ADC_ // chooses DAC
-  dactype[2]=0;
-  
-    // simple trial of WORM overspeed here
-      
+  // do the modes
+  //
+  mode[w]=testmodes[w];
+  (*gate[w].dofunc[mode[w]])(w);
+
+  /*
   if (time_now[w]>32768){
-    int_time[w]=0; 
-    time_now[w]-=32768.0f;
-  }
+      int_time[w]=0; 
+      time_now[w]-=32768.0f;
+    }
 
   // fixed interpol
-    alpha = time_now[w] - (float)int_time[w];
-    dac[w] = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); // interpol but is just last and before last
-   if (dac[w]>4095) dac[w]=4095;
-    else if (dac[w]<0) dac[w]=0;
-  //    dac[w]=lastdac[w];
+      alpha = time_now[w] - (float)int_time[w];
+      dac[w] = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); // interpol but is just last and before last
+      if (dac[w]>4095) dac[w]=4095;
+      else if (dac[w]<0) dac[w]=0;
+      //      dac[w]=lastdac[w];
 
   time_now[w] += speedf_[w];
   last_time[w] = int_time[w];
   int_time[w] = time_now[w];
 
-  while(last_time[w]<int_time[w])      {
+  if(last_time[w]<int_time[w])      {
     // do all
     // test as a function pointer
-    mode[w]=testmodes[w];
+    //    mode[w]=testmodes[w];
     //    val=(*dofunc[mode[w]])(w); // this seems to work
-    /*
+    //    val=(*gate[L].dofunc[0])(w);
+    
     GSHIFT;
     if (w==0){
       bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar); 
@@ -371,19 +466,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       PULSIN_XOR;
     }
     BITN_AND_OUTV; // special version for this in macros.h  
-    */
     new_data(val,w);
+    //    lastdac[w]=val;
     last_time[w] += 1;
-
+    
   } // lasttime
-
-
-    //}
-
-      // this runs at full speed?
-      if (w==2)  {
-	DAC_SetChannel1Data(DAC_Align_12b_R, 4095-dac[2]); // 1000/4096 * 3V3 == 0V8 
+  */
+  
+      // this runs at full speed? - can also be in functions/modes
+  if (w==2)  {
+    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8 
     int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-      }      
+  }      
 
 }

@@ -1,6 +1,45 @@
 //for INTmodes
 #define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
 
+// redefining for struct
+
+#define GSHIFT_ {				\
+    gate[w].Gshift_[0]=gate[w].shift_;			\
+    gate[w].Gshift_[1]=gate[w].shift_;			\
+    gate[w].Gshift_[2]=gate[w].shift_;			\
+    gate[w].Gshift_[3]=gate[w].shift_;			\
+    gate[w].shift_=gate[w].shift_<<1;			\
+}
+
+#define BINROUTE_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+// this one is for fractional speeds/interpol
+#define BITN_AND_OUTV_ {						\
+    gate[w].shift_+=bitn;						\
+    val=DAC_(gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);	\
+    tmp=(w<<1);								\
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    lengthbit=(SRlength[w]>>1);					\
+    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    prev_stat[w]=new_stat;					\
+    tmp++;							\
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+}
+
+//// older
 
 #define GSHIFT {				\
   counter[w]=0;					\
@@ -36,7 +75,7 @@
 // this one is for fractional speeds/interpol
 #define BITN_AND_OUTV {				\
     shift_[w]+=bitn;						\
-    val=DAC_(w, SRlength[w], dactype[w],dacpar,trigger[w]);	\
+    val=DAC_(shift_[w], SRlength[w], dactype[w],dacpar,trigger[w]);	\
     tmp=(w<<1);							\
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
@@ -54,7 +93,7 @@
   tmp=(w<<1);					  \
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
-  lengthbit=(SRlength[w]>>1);			      \
+gg  lengthbit=(SRlength[w]>>1);			      \
   new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit;   \
   if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;    \
   prev_stat[w]=new_stat;			      \

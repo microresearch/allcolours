@@ -690,7 +690,7 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
 }
 
 //0-15 so 16 modes
-static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
+static inline uint32_t DAC_(uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
   static uint32_t x=0;
   static uint32_t n[4]={0,0,0,0};
   static uint32_t nom[4]={0,0,0,0};
@@ -698,7 +698,7 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
   static uint32_t lastout=0;
   static uint8_t toggle=0;
   float betaf=0.4f;
-  int32_t rem;
+  int32_t rem, reg;
   uint32_t y;
   
   switch(type){
@@ -710,11 +710,11 @@ static inline uint32_t DAC_(uint32_t reg, uint32_t length, uint32_t type, uint32
         
   case 0: // length doesn't change much except at slow speeds - ADC x bits out
     if (length==3){
-      if ((shift_[reg]&4)==4) x=4095; // changed 28/12
+      if ((shift&4)==4) x=4095; // changed 28/12
       else x=0;
     }
     //    else     x=( (shift_[reg] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
-    else  x=( (shift_[reg] & masky[length])>>(rightshift[length]))<<leftshift[length];
+    else  x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
     //    else x=(shift_[reg]&masky[length])&4095;
     break;
 
