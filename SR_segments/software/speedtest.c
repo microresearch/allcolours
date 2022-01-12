@@ -43,13 +43,9 @@
 #include "adc.h"
 #include <math.h>
 #include "resources.h"
-#include "modes.h"
 
-heavens gate[4]; 
+uint32_t testmodes[4]={0,0,0,0}; // TEST!
 
-
-
-static uint32_t count=0;
 uint32_t neworder[4]={3,2,1,0}; // order backwards
 
 uint32_t neworders[24][4]={
@@ -78,8 +74,170 @@ uint32_t neworders[24][4]={
   {3,2,1,0},
   {3,2,0,1}  
 };
+  
+//for INTmodes
+#define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
 
-#include "macros.h"
+#define GSHIFT {				\
+  counter[w]=0;					\
+  Gshift_[w][0]=shift_[w];			\
+  Gshift_[w][1]=shift_[w];			\
+  Gshift_[w][2]=shift_[w];			\
+  Gshift_[w][3]=shift_[w];			\
+  shift_[w]=shift_[w]<<1;			\
+}
+
+#define GS(X) {					\
+  Gshift_[X][0]=shift_[X];			\
+  Gshift_[X][1]=shift_[X];			\
+  Gshift_[X][2]=shift_[X];			\
+  Gshift_[X][3]=shift_[X];			\
+}
+
+#define BITN_AND_OUT {				\
+    shift_[w]+=bitn;						\
+    dac[w]=DAC_(w, SRlength[w], dactype[w],dacpar,trigger[w]);	\
+    tmp=(w<<1);							\
+  if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
+  else *pulsoutHI[tmp]=pulsouts[tmp];		  \
+  lengthbit=(SRlength[w]>>1);			      \
+  new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit;   \
+  if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;    \
+  prev_stat[w]=new_stat;			      \
+  tmp++;					      \
+  if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];	      \
+  else *pulsoutHI[tmp]=pulsouts[tmp];		      \
+}
+
+#define PULSOUT {				  \
+  tmp=(w<<1);					  \
+  if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
+  else *pulsoutHI[tmp]=pulsouts[tmp];		  \
+  lengthbit=(SRlength[w]>>1);			      \
+  new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit;   \
+  if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;    \
+  prev_stat[w]=new_stat;			      \
+  tmp++;					      \
+  if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];	      \
+  else *pulsoutHI[tmp]=pulsouts[tmp];		      \
+}
+
+
+#define PULSIN_XOR {				\
+  xx=!(GPIOC->IDR & pulsins[w]);		\
+  bitn^=xx;					\
+  }
+
+#define PULSIN_OR {				\
+  xx=!(GPIOC->IDR & pulsins[w]);		\
+  bitn|=xx;					\
+}
+
+// prob is upto 32 // 5 bits
+#define PULSIN_LEAK {				\
+  xx=!(GPIOC->IDR & pulsins[w]);		\
+  bitn=otherleaks(bitn,xx,prob,w);			\
+}
+
+
+#define PULSIN_LOGOP {				\
+      xx=!(GPIOC->IDR & pulsins[w]);		\
+      bitn=logop(bitn,xx,logtable[w]);		\
+}
+
+// reverse 32 bits for tmpp - but how to reverse based on length - reverse lowest srlength bits ?
+#define REV32 {				\
+  tmpp = ((tmpp >> 1) & 0x55555555) | ((tmpp & 0x55555555) << 1);	\
+  tmpp = ((tmpp >> 2) & 0x33333333) | ((tmpp & 0x33333333) << 2);	\
+  tmpp = ((tmpp >> 4) & 0x0F0F0F0F) | ((tmpp & 0x0F0F0F0F) << 4);	\
+  tmpp = ((tmpp >> 8) & 0x00FF00FF) | ((tmpp & 0x00FF00FF) << 8);	\
+  tmpp = ( tmpp >> 16             ) | ( tmpp               << 16);	\
+  }
+
+#define BINROUTE {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+#define BINROUTEANDCYCLE {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+    if ((tmp&0x01) || (x==w)){				\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+#define JUSTCYCLE {				\
+  bitrr = (shift_[w]>>SRlength[w]) & 0x01;		\
+  bitn^=bitrr;						\
+  }
+
+
+// if we go with singular defroute
+#define BITNNN {								\
+  bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;	\
+  Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;		\
+  }
+
+//if w==3 count=0 means just to reset binroute when we are out of modes which altered it
+// macro for alt routes for ADC and DAC
+#define ADCDACETC1(X, Y){			\
+  bitn=0;					\
+  dactype[2]=Y;					\
+  if (w==3) count=0;					\
+  GSHIFT;						\
+  if (w==0)      {					\
+  bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
+  BINROUTE;						\
+  }							\
+  if (w==2)      {					\
+  BINROUTE;						\
+  }							\
+}
+
+#define ADCDACNOGS(X, Y){			\
+  bitn=0;					\
+  dactype[2]=Y;					\
+  if (w==3) count=0;					\
+  if (w==0)      {					\
+  bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
+  BINROUTE;						\
+  }							\
+  if (w==2)      {					\
+  BINROUTE;						\
+  }							\
+}
+
+// we still specify type of DAC here but we leave
+//  if (w==2)      {
+//  BINROUTE; // TODO: substitute alt routes here for DAC. eg cycle, probability etc. 4x4 for 16-31
+//  }
+//  else {
+
+// still we have DACtype here
+#define ADCONLY(X, Y){						\
+    bitn=0;							\
+    dactype[2]=Y;						\
+    if (w==3) count=0;						\
+    GSHIFT;							\
+    if (w==0)							\
+  {								\
+      bitn=ADC_(0,SRlength[0],X,trigger[0],reggg,adcpar);	\
+      BINROUTE;						\
+  }								\
+}
+
 
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
@@ -131,9 +289,9 @@ static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t Gshift_[4][4]={
  {0xff,0xff,0xff,0xff},
- {0xff,0xff,0xff,0xff},
- {0xff,0xff,0xff,0xff},
- {0xff,0xff,0xff,0xff}
+  {0xff,0xff,0xff,0xff},
+  {0xff,0xff,0xff,0xff},
+  {0xff,0xff,0xff,0xff}
 };
 
 static uint32_t GGshift_[4][4]={ // for freezers
@@ -159,11 +317,11 @@ static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt
 
 // so for simple pass through by speed would be: speedfrom=0/inputbit=2/adctype=0/route=last one as bit/
 //uint32_t speedfrom[4]={0,0,0,0}; //0 is CV, 1 is interrupt, 2 is DACspeedfrom_ + CV // unused so far...
-uint32_t speedfrom_[4]={3,3,3,3}; // who we get dac speed offset from?
+uint32_t speedfrom_[4]={3,2,1,0}; // who we get dac offset from?
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
 uint32_t LFSR[4]={3,3,3,1}; // which SR take the LFSR bits from! default is from itself - but could be opposites eg. {2,3,0,1}
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
-uint32_t dactype[4]={66,66,0,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
+uint32_t dactype[4]={0,0,0,0}; // 0-basic, 1-equiv bits, 2-one bit
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
@@ -181,9 +339,9 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[8][4]={ // add more routes, also what seq change of routes makes sense
-        {8,1,2,1}, // default
-  //    {8,1,2,4}, // route in one big circle
-  //{0,1,2,4},
+    {8,1,2,1}, // default
+  //  {8,1,2,4}, // route in one big circle
+  //  {0,1,2,4},
   {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
   {1,2,4,8}, // only loop - this is what is added to get loop too for prob
   {8,1,2,2}, // as defroutee 3/0/1/1
@@ -195,7 +353,7 @@ uint32_t binroute[8][4]={ // add more routes, also what seq change of routes mak
 
 uint32_t binroutex[8]={4632, 38457, 33825, 8728, 8472, 8600, 21016, 6210}; // above routes generated by test.c as sets of 4 bits values with first route as lowest 
 
-uint32_t singroute[4][4]={ // singular table for single routes - old prob modes
+  uint32_t singroute[4][4]={ // singular table for single routes - old prob modes
   {3,0,1,0},
   {3,0,1,1},
   {3,0,0,1},
@@ -208,160 +366,41 @@ uint32_t oppose[4]={2,3,0,1};
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
 static volatile uint32_t speed[4]={0,0,0,0};
-static volatile float speedf_[4]={0,0,0,0};
-
 volatile uint32_t dac[4]={0,0,0,0};
 volatile uint32_t adc_[4]={0,0,0,0};
 uint32_t counter_[4]={0,0,0,0};
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
 static uint32_t LR[4]={0,1,0,1};
-static uint32_t flipd[4]={0,0,0,0};
 static uint32_t pulsouts[8]={0, 0, 1<<2,1<<15, 1<<4,1<<12, 1<<3,1<<11};
 volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
 //                                  0              0              PB2            PC15           PB4            PA12           PB3            PA11 
 volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
-int32_t oldValue, integrator, k, bt;
-
-static uint32_t counter[7]={0,0,0,0, 0,0,0};  // last 3 for fake clks
-
-
-// new speed stuff
-
-#define DELAY_SIZE 6 // was 40 --- 3*width=16 = 3*16=48-5=43 - use 7 for simplea
-static int32_t delay_buffer[4][2] = { 0 }; // was 48 but it doesn't need to be so big
-
-void new_data(uint32_t data, uint32_t ww)
-{
-  //    for (u8 ii=0;ii<DELAY_SIZE-5;ii++)	
-  delay_buffer[ww][0] = delay_buffer[ww][1];
-    delay_buffer[ww][1] = data;
-}
-
 #include "adcetc.h" // now all of the other functions so can work on modes
-#include "modeN.h"
-#include "modeL.h"
-#include "modeR.h"
-#include "modeC.h"
 
-
-void testnull(void){
-}
-
-uint32_t testmodes[4]={1,1,1,1}; // TEST!
-
-// we list our modes here...
-void (*dofunc[4][3])(void)=
-{
-  {N0, N1, N0},
-  {L0, L2, L0},
-  {C0, C1, C1},
-  {R0, R0, R1}
-};
-
-void mode_init(void){
-  uint32_t y;
-
-  gate[0].shift_=0x15;
-  gate[1].shift_=0x15;
-  gate[2].shift_=0x15;
-  gate[3].shift_=0x15;
-  
-  gate[0].adctype=0;
-
-  gate[2].dactype=0; // set for out
-  gate[1].dactype=66; // default simpler version
-  gate[3].dactype=66;
-  gate[0].dactype=66;  
-}
-
+int32_t oldValue, integrator, k, bt;
 
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - how fast can we run this?
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  uint32_t tmp;
-  static uint32_t flipper[4]={1}, www=0, kk=0;
+  uint32_t lengthbit=15, new_stat, prob;
+  uint32_t x, y, q, start=0;
+  uint32_t bitn=0, bitnn, bitnnn, bitnnnn, bitrr, tmp, tmp2, tmpp, xx;
+  uint32_t trigger[4]={0,0,0,0};
+  static uint32_t flipd[4]={0,0,0,0}, flipper[4]={1}, w=0, count=0, flippr=0;
+  static uint32_t counter[7]={0,0,0,0,0,0,0};  // last counter is for fake clks
+  static uint32_t which[4]={0,0,0,0};
+  static uint32_t tug[4]={0,0,0,0};
+  static uint32_t orde;
 
+  
+  int32_t tmpt, dacpar=0, adcpar=0;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
-  
-  // for the time between counts
-  counter_[0]++;  counter_[1]++;  counter_[2]++;  counter_[3]++;
-  
-  www++;
-  if (www>3) {
-    www=0;
-  }
 
-  if (intflag[www]) { // process INT
-    gate[www].trigger=1;
-    intflag[www]=0;
-    clksr_[www]=(clksr_[www]<<1)+1;     // shift on to CLKSR
-  }
-  else  {
-    gate[www].trigger=0;
-    clksr_[www]=(clksr_[www]<<1);
-  }
-  // genericLFSR for all probability modes
-  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 29) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 29, 25, 24
-  LFSR_[www] = (LFSR_[www]<<1) + tmp;
-
-  // do the modes
-  
-  mode[www]=testmodes[www];
-  //    (*gate[www].dofunc[mode[www]])();
-  //  mode[0]=18;
-  (*dofunc[www][mode[www]])();
-  
-  // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
-  if (www==2)  {
-    //    kk^=1; // test code
-    //    if (kk)    gate[2].dac=4095;
-    //    else gate[2].dac=0;
-    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8 
-    int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-  }      
-
-  // DAC for normed NSR/PWM
-  if (www==3){
-      tmp= gate[3].dac; // right hand
-      tmp+=320; 
-      TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
-      TIM1->CCR1 = tmp/2; // pulse width
-
-      // TESTY with INTmodes
-      
-      if (counter[4]>gate[3].dac){ // L side
-	counter[4]=0;
-	flipper[0]^=1;
-	if (flipper[0]) GPIOB->BSRRH = clk_route[1];  // clear bits of fake_one
-	else   GPIOB->BSRRL=clk_route[1]; //  write bits
-      }      
-
-      if (counter[5]>gate[1].dac){ // R side
-	counter[5]=0;
-	flipper[1]^=1;
-	if (flipper[1]) GPIOB->BSRRH = clk_route[2];  
-	else   GPIOB->BSRRL=clk_route[2]; //  write bits
-      }      
-
-      /*
-      if (counter[2]>(gate[3].dac)){ // now trying DAC 29/12/2021 - // C side!
-	counter[2]=0;
-	flipper[2]^=1;
-	if (flipper[2]) GPIOB->BSRRH = clk_route[4];  
-	else   GPIOB->BSRRL=clk_route[4]; //  write bits
-	}
-      */
-
-      // trial just using lowest bit 30/12/2021 ??? TEST????
-      // - DONEtrial of another approach to fake clocks (but would be better as own ghosts???) - NOTEfrom segmodes but not sure what that means?
-      if ((gate[3].shift_>>SRlength[3])&0x01) GPIOB->BSRRH = clk_route[4];
-      else GPIOB->BSRRL=clk_route[4]; //  write bits
-      
-      counter[4]++; counter[5]++; counter[6]++;
-
-  }
-  
+  // crash detect ++ 32/64 in main.c is 14KHz //and/or speed check...
+    flippr^=1;
+    if (flippr) GPIOB->BSRRH = (1)<<4;  // clear bits PB4
+    else   GPIOB->BSRRL=(1)<<4; //  write bits   
 }

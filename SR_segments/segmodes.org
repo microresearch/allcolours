@@ -259,30 +259,50 @@ all the comparison possibilities]
 
 * 2022++
 
-** 9/1/2022:
+** 12/1/2021:
+
+- dac+cv modes to resolve with new scheme - a lot depends on where we get dac from (cannot all be same but nice to choose - 4 options = 2 bits)
+
+
+test adc pointerDONE, fill in modes and testings 
+
+FIXED bug in macro HEAD withiun another macro...
+
+1 bit audio is still odd - and length does nothing here *again length issue in adc and adc*
+
+** 10/1/2021:
+
+*TODO: test best fake clk scenario - later when have tidied and basic outlines*
+
+test trigger codeDONE, test multiple ADC and DACS, new macros
+
+problem with init of function pointers from outside file... -> pulled function pointers out of the struct and all fine now, we init them in draftspeed.c
+
+** TODO: Latest notebook notes:
+
+- bump speeds (clock bumped speeds, clock shifts it on one, CV bumps in INT modes (HOW?) )
+- bump own routes by trigger (do we do this?) yes in case 16 in draftdec/port!
+- more DAC driven routes, use of SR bits for routing/what else, more of RH
+- modulo - how that would work? one SR/DAC modulo another?
+
+** 9/1/2022 +:
 
 - DONE: no speed more than 1.0f - how we generate this? increase main.c speed accordingly
 
 xx=numpy.logspace(0, 10, num=1024, endpoint=True, base=2.0) # num is now many we want // in misc/log_gen.py
 
-- simulate fracctional speeds and test
+- simulate fractional speeds and testDONE.
 
-DONE.
-
-- interpolate or not? as in just keep last value or interpolate
-
-INTERPOLATE
-
-//////
+- interpolate or not? as in just keep last value or interpolateDONE -> INTERPOLATE
 
 - draft new structure mode: what we need here... we will need to
-  change trigger code, clkouts and will need clean up all but just
-  test now...
+  change trigger codeDONE/tested, clkoutsDONE/tested 
 
-we changed dac out but will need to change adc for pointer as some
-modes change it in place...
+- will need clean up all but just test now...
 
-*TODO: we also need to include stop! in speeds!!!*
+we changed dac out but will need to change adc for pointer as some modes change it in place...DONE/to test!
+
+TODO/DONE/TESTED: we also need to include stop! in speeds - even now for C modes...
 
 - Right and Left are now seperate 
 - Right with mode DAC action, more influence. character as routings, DAC and feedback, other INS into right side too (can be more TRIADEX style_
@@ -381,7 +401,7 @@ TODO:
 - ONLY works for some so removed->try OR in of RIGHT side to top (logic in routings) - in mode 0 and ADCDACETC macro, add to ADCONLY
 [OR in at top gives more natural effects but fails too many times - how can we keep as an option? with bits, as one ADC mode]
 
-- DONEtrial of another approach to fake clocks (but would be better as own ghosts)
+- DONEtrial of another approach to fake clocks (but would be better as own ghosts???)
 
 question if right hand has more limited trigger or toggle modes
 

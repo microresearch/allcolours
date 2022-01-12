@@ -16,6 +16,8 @@
 #include "misc.h"
 #include "adc.h"
 #include "stm32f4xx_conf.h"
+#include "modes.h"
+
 
 /*
 
@@ -23,118 +25,12 @@ PROG HEADER: yellow, green, blue, purple//down
 
 *** SEGMENTS 
 
-older: fast interrupt (TIM?) for all shift registers with counters,
-interrupt for ADCs (TIM?), interrupt for pulsed SR, PWM for
-default/normed clockings (set by speed pot)
-
-or just one timer for all and run at max speed with counters
-
-- ADC input schemes - number of bits, sigma/delta, bit equality (unary - no weighting) with x bits
-- 4x pin interrupts, how many timers
-- working with sigma delta ADC, DAC out, digital filter simulator and list first all possible modes and ways of operating
-- clock from speed/cv, clock from external pulse, clock from other
-  shift register // combos of thse so could be ext pulse AND/XOR/OR
-  other shift reg or clocked speed pulse etc.
-- bitdsp library borrowings?
-- fakes, ghosts, SR_IN_SR, overlaps
-- add artificial drift and dropped bits
-
-Sigma/delta out as pulses and as DAC (low pass?)
-
-
-/////
-
-TODO: new notes, collect all notes, modes and speed/basic tests
-
-Questions: how we use the 5 fake pulse outs normed to pulse ins: PB10-PB15 ! 
-
-Newest PCB (14/5/2021) with new ADC(ADC12//on pin PC3) TESTED ALL FINE
-
-9/7/2021: ADC in and DAC tested correctly with 11vPP for 0-4095
-
-14/7/2021 - retested allFINE: 
-
-all ADC ins: mode, spd and len x4
-
-  // map ADCs: note all modes are inverted
-
-  // 0: nspd, 1: nlen, 2: nmode
-  // 3: lspd, 4: llen, 5: lmode
-  // 6: rspd, 7: rlen, 8: rmode
-  // 9: cspd, 10: , 11: cmode
-
-/ pulse ins: PC7 is RSRIN, PC8 is LSRIN XDONE
-
-/ interrupt ins: LSR, RSR, CSR, NSR -DONE / PWM outX, pulse outsXDONE
-
-CSRCLKIN moved from PC3 to PB7
-
-///
-
-Newest PCB: all working 19/4 but we will need to re-work ADC entry -
-test now with lower cap on say ADC0 - nspeedin c30->100pf//33k, removed cap (but leave on schematic)
-and increased ADC speed, changed to continuous mode and we have a high
-sample rate in 100kHZ
- 
-16/4/2021->19/4/2021:
-
-- what needs testing? DAC outDONE, ADCs inDONE, 
-
-- all pulses in //(and volts knob for ADC pulsed in: PC9->PC14-REDO)DONE
-
-- pulses outDONE
-
-TIM1-CH1 normings WORKING - so is TIM1 normed to top clock/NSR
-
-----> could do with organizing all a bit better with arrays
-
-///
-
-
-TESTED/WORKING: ADC all tested, DAC out tested, pulses out all tested, TIM1-CH1 norming to top clock, volts knob/primitive ADC, pulse ins, interrupt pulse ins 
-
-/////////
-
-// copied over from TOUCH so we need to change ADCsDONE, DAC out is the same, add timers and change interrupt timing, add external interrupts, PWMS.
-
-TODO: list our new I/O here, check interrupts and PWM
-
-- general scheme of things
-
-///// OLDER
-
-Testing on STM32F446 NUCLEO. Prog header is same as TOUCH. STM is same as touch
-
-This was copied from TOUCH so some things will need to change: 
-
-But we can keep DAC on PA4
-
-
-fast interrupt (TIM?) for all shift registers with counters, interrupt for ADCs (TIM?), interrupt for pulsed SR, PWM for default/normed clockings (set by speed pot)
-
-I/O:
-
-- pulse ins: PC3-5 + PB6 clkins(interrupts), PC7/8 pulsein, PC9-MSB, to PC14-LSB of 6 bits
-- ADC 0-11 see adc.c
-- DAC out PA4
-- TIM1-CH1 drived normed top LFSR - and we need 2 extra internal timers! 
-- 11 pulse outs: PB2,3,4,10,12,13,14 = 5 fakes and 6 real out + now we have changed for schematic: PA11=pulse6, PA12=pulse4, PC15=pulse5, PB15=pulse7
-
-apparently there are 12x 16bit and 2x 32 bit timers (TIM2, TIM5) 
-
- */
-
-/// Copied 23/2/2021 from TOUCH code...
-
-/*
-void TIM2_IRQHandler(void) {
-  // flash on update event
-  if (TIM2->SR & TIM_SR_UIF) GPIOA->ODR ^= (1 << 5);
-   
-  TIM2->SR = 0x0; // reset the status register
-  }*/
+*/
 
 /* DMA buffer for ADC  & copy */
+
+//extern heavens gate[4];
+
 __IO uint16_t adc_buffer[13];
 
 #define delay()						 do {	\
@@ -148,6 +44,10 @@ __IO uint16_t adc_buffer[13];
     for (ix = 0; ix < 10000000; ++ix)				\
       __asm__ __volatile__ ("nop\n\t":::"memory");		\
   } while (0)
+
+extern void (*testN)(), (*testL)(), (*testR)(), (*testC)(), (*Nnoroute0)(), (*N0)(), (*N1)();
+
+extern void mode_init();  
 
 
 void io_config2 (void) {
@@ -560,7 +460,7 @@ int main(void)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
  
-  
+  mode_init();
   
   
     while(1) {

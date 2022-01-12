@@ -1,5 +1,59 @@
-//for INTmodes
-#define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
+// for new struct sets of modes:
+
+#define CVOPEN {				\
+    if (gate[w].time_now>32768){				\
+      gate[w].int_time=0;					\
+      gate[w].time_now-=32768.0f;				\
+    }									\
+    alpha = gate[w].time_now - (float)gate[w].int_time;			\
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \
+    if (gate[w].dac>4095) gate[w].dac=4095;				\
+    else if (gate[w].dac<0) gate[w].dac=0;				\
+    gate[w].time_now += speedf_[w];					\
+    gate[w].last_time = gate[w].int_time;				\
+    gate[w].int_time = gate[w].time_now;				\
+  }
+
+#define CVOPENNOINTERPOL {				\
+    if (gate[w].time_now>32768){				\
+      gate[w].int_time=0;					\
+      gate[w].time_now-=32768.0f;				\
+    }									\
+    alpha = gate[w].time_now - (float)gate[w].int_time;			\
+    gate[w].dac = delay_buffer[w][1];					\
+    if (gate[w].dac>4095) gate[w].dac=4095;				\
+    else if (gate[w].dac<0) gate[w].dac=0;				\
+    gate[w].time_now += speedf_[w];					\
+    gate[w].last_time = gate[w].int_time;				\
+    gate[w].int_time = gate[w].time_now;				\
+  }
+
+
+#define CVOPENDAC {				\
+    if (gate[w].time_now>32768){				\
+      gate[w].int_time=0;					\
+      gate[w].time_now-=32768.0f;				\
+    }									\
+    alpha = gate[w].time_now - (float)gate[w].int_time;			\
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \
+    if (gate[w].dac>4095) gate[w].dac=4095;				\
+    else if (gate[w].dac<0) gate[w].dac=0;				\
+    gate[w].time_now += speedf__;					\
+    gate[w].last_time = gate[w].int_time;				\
+    gate[w].int_time = gate[w].time_now;				\
+  }
+
+// we cannot place this inside other macros! fixed 12/1/2021
+
+#define HEAD
+float alpha;								\
+uint32_t bitn, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;		\
+
+#define ENDER {					\
+    new_data(val,w);				\
+    gate[w].last_time += 1;			\
+  }
+
 
 // redefining for struct
 
@@ -23,6 +77,32 @@
   }							\
   }
 
+#define BINROUTEANDCYCLE_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+    if (tmp&0x01 || (x==w)){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+
+#define BINROUTEOR_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn|=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+
 // this one is for fractional speeds/interpol
 #define BITN_AND_OUTV_ {						\
     gate[w].shift_+=bitn;						\
@@ -38,6 +118,35 @@
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
 }
+
+#define BITN_AND_OUTVINT_ {						\
+    gate[w].shift_+=bitn;						\
+    gate[w].dac=DAC_(gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);	\
+    tmp=(w<<1);								\
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    lengthbit=(SRlength[w]>>1);					\
+    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    prev_stat[w]=new_stat;					\
+    tmp++;							\
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+}
+
+
+#define BITN_AND_OUTVN_ {						\
+    gate[w].shift_+=bitn;						\
+    val=DAC_(gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+}
+
+// for int modes as no interpol
+#define BITN_AND_OUTNINT_ {						\
+    gate[w].shift_+=bitn;						\
+    gate[w].dac=DAC_(gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+}
+
+
 
 //// older
 
@@ -93,7 +202,7 @@
   tmp=(w<<1);					  \
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
-gg  lengthbit=(SRlength[w]>>1);			      \
+  lengthbit=(SRlength[w]>>1);			      \
   new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit;   \
   if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;    \
   prev_stat[w]=new_stat;			      \
@@ -102,29 +211,26 @@ gg  lengthbit=(SRlength[w]>>1);			      \
   else *pulsoutHI[tmp]=pulsouts[tmp];		      \
 }
 
+// these all had     if (w==3) count=0; 10/1/2021				\
 
 #define PULSIN_XOR {				\
-  if (w==3) count=0;				\
   xx=!(GPIOC->IDR & pulsins[w]);		\
   bitn^=xx;					\
   }
 
 #define PULSIN_OR {				\
-    if (w==3) count=0;				\
   xx=!(GPIOC->IDR & pulsins[w]);		\
   bitn|=xx;					\
 }
 
 // prob is upto 32 // 5 bits
 #define PULSIN_LEAK {				\
-    if (w==3) count=0;				\
     xx=!(GPIOC->IDR & pulsins[w]);			\
     bitn=otherleaks(bitn,xx,prob,w);			\
 }
 
 
 #define PULSIN_LOGOP {				\
-    if (w==3) count=0;				\
       xx=!(GPIOC->IDR & pulsins[w]);		\
       bitn=logop(bitn,xx,logtable[w]);		\
 }
@@ -247,4 +353,7 @@ gg  lengthbit=(SRlength[w]>>1);			      \
       BINROUTEOR;						\
   }								\
 }
+
+//for INTmodes ???
+#define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
 

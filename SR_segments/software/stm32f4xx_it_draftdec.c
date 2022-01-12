@@ -279,8 +279,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   counter[w]++;
 
-  //  mode[w]=testmodes[w]; // TESTY!
-    if (mode[w]>19)  mode[w]=19;
+    mode[w]=testmodes[w]; // TESTY!
+    //  if (mode[w]>19)  mode[w]=19;
   // trial ADCs 0-17 for now
   //XXXXX
     //    mode[0]=7;
@@ -713,7 +713,7 @@ break;
   case 19: // trial 4 bit shuffle MODE
     if (counter[w]>speed[w] && speed[w]!=1024){
       dacpar=0; adcpar=param[0]; reggg=0; // params - reggg is for ADC
-      //      ADCONLY(16, 0); // has gshift - 4 bit mode matches 16
+      //      ADCONLY(16, 0); // has gshift - 4 bit mode matches 16 - now 4
       // special mode for spaced entry so needs to be handled differently
       bitn=0;							
       dactype[2]=6;					       
@@ -786,7 +786,7 @@ break;
 break;
 
 // DAC=1 - as above for next set of 3x4 DAC modes with LR modes to fill in
- 
+///////////////// 
  
   
 
