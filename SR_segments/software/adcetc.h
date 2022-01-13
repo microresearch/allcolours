@@ -1044,8 +1044,7 @@ void TIM4_IRQHandler(void)
   nn++;
   if (nn>=SMOOTHINGS) nn=0;
   temp=totn/SMOOTHINGS;  
-  //  speed[0]=logger[temp>>2];
-  // new speed attempts TESTY
+  CV[0]=temp;
   speedf_[0]=logspeed[temp>>2];
   
   // speedl
@@ -1055,7 +1054,7 @@ void TIM4_IRQHandler(void)
   ll++;
   if (ll>=SMOOTHINGS) ll=0;
   temp=totl/SMOOTHINGS;  
-  //  speed[1]=logger[temp>>2];
+  CV[1]=temp;
   speedf_[1]=logspeed[temp>>2];
   
   // speedr
@@ -1065,7 +1064,7 @@ void TIM4_IRQHandler(void)
   rr++;
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
-  //  speed[3]=logger[temp>>2];
+  CV[3]=temp;
   speedf_[3]=logspeed[temp>>2];
   
     // speedc
@@ -1075,7 +1074,7 @@ void TIM4_IRQHandler(void)
   cc++;
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
-  //  speed[2]=logger[temp>>2];
+  CV[2]=temp;
   speedf_[2]=logspeed[temp>>2];
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!

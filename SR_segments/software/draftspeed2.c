@@ -83,11 +83,10 @@ uint32_t neworders[24][4]={
 
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
-uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed to use in INTmodes
+uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed to use in INTmodes and other modes
 uint32_t dacroute[4]={2,3,3,1}; // DAC routing for probability modes etc...
 
 #define FULL 0b11111111111111111111111111111111 //32 bits full
-#define FROZENSPEED 1024 // 
 #define MAXVALUE 4095
 #define SMOOTHINGS 512 // we can hold 65536 of our 16 bit ADC values...speed
 uint32_t cc=0, totc=0, smoothc[SMOOTHINGS];
@@ -207,7 +206,7 @@ uint32_t sieve[4]={3,3,3,3}; // previous one... - changed to R 21/12/2021
 uint32_t oppose[4]={2,3,0,1};
 
 volatile uint32_t prev_stat[4]={0,0,0,0};
-static volatile uint32_t speed[4]={0,0,0,0};
+static volatile uint32_t CV[4]={0,0,0,0};
 static volatile float speedf_[4]={0,0,0,0};
 
 volatile uint32_t dac[4]={0,0,0,0};
@@ -248,12 +247,12 @@ void new_data(uint32_t data, uint32_t ww)
 void testnull(void){
 }
 
-uint32_t testmodes[4]={1,1,1,1}; // TEST!
+uint32_t testmodes[4]={0,0,0,0};
 
 // we list our modes here...
-void (*dofunc[4][3])(void)=
+void (*dofunc[4][64])(void)=
 {
-  {N0, N1, N0},
+  {Ndacspeedminus0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, L0},
   {C0, C1, C1},
   {R0, R0, R1}
@@ -309,9 +308,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do the modes
   
-  mode[www]=testmodes[www];
+    mode[www]=testmodes[www];
+    //  mode[1]=0;mode[2]=0;mode[3]=0;
+  //  if (mode[0]>31) mode[0]=31;
   //    (*gate[www].dofunc[mode[www]])();
-  //  mode[0]=18;
+  //  mode[0]=;
   (*dofunc[www][mode[www]])();
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?

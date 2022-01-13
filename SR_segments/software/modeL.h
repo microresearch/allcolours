@@ -10,19 +10,6 @@ INTmodes: route from CV, prob from CV, others?
 
 */
 
-
-void Lnofrac0(void){
-  uint8_t w=1;
-  HEAD;
-  if (counter[1]>speed[1] && speed[1]!=1024){
-    counter[1]=0;				
-    GSHIFT_;
-    BINROUTE_;
-    PULSIN_XOR;
-    BITN_AND_OUTVINT_; 
-    }
-}
-
 void Lno(void){
 }
 

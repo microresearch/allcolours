@@ -72,17 +72,6 @@ void testN(void){ // speed template
   }									\
   }
 
-void Nnofrac0(void){
-  uint8_t w=0;
-  HEAD;
-  if (counter[0]>speed[0] && speed[0]!=1024){
-    counter[0]=0;			      
-    GSHIFT_;
-    bitn=ADC_(0,SRlength[0],0,gate[0].trigger,3,param[0], &gate[w].shift_);    
-    BITN_AND_OUTVINT_; 
-  }
-}
-
 void Nnoroute0(void){ // basic ADC in with no route in
   uint8_t w=0;
   HEAD;
@@ -274,20 +263,116 @@ if (speedf__[0]>1.0f) speedf__[0]=1.0f;
 
  */
 
-// TODO: top bits select which DAC to take from
+// DONE: top bits of CV/speed select which DAC to take from - implement and test this, but we need access to bits/CV and smoothed
+// but for ADC in is probably best just to have fixed DAC as 3
 
-void Ndac0(void){
+void Ndacsel0(void){
+  HEAD;
   uint8_t w=0;
   float speedf__;
-  if (speedf_[0]==2.0f) speedf_[0]=0.000990f;
-  //  speedf__= (speedf_[0]-logspeed[1024-(gate[speedfrom_[0]].dac>>2)]);
-//  speedf__= logspeed[1024-(gate[speedfrom_[0]].dac>>2)];
+  uint8_t whic=(CV[0]>>9)&3; //12 bits
+  //  if (speedf_[0]==2.0f) speedf_[0]=0.000990f;
+  //  speedf__= (speedf_[0]-logspeed[1023-(gate[which].dac>>2)]);
+  speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)];
+//  speedf__= logspeed[1023-(gate[speedfrom_[0]].dac>>2)];
 //  speedf__=(speedf_[0] -((4095-gate[speedfrom_[0]].dac)/4095.0f));
-  speedf__=speedf_[0];
+//  speedf__=speedf_[0];
   //  if (speedf__>1.0f) speedf__=1.0f;
-  if (speedf__<0.000990f) speedf__=0.000990f;
+  // if (speedf__<0.000990f) speedf__=0.000990f;
   //  speedf__=1.0f;
+  if (speedf__==2.0f) speedf__=0.000990f;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,3, param[0], &gate[w].shift_); 
+    //    BINROUTEOR_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ndacadd0(void){
   HEAD;
+  uint8_t w=0;
+  float speedf__;
+  speedf__=logspeed[(CV[0]&511)+(gate[3].dac>>3)];
+  if (speedf__==2.0f) speedf__=0.000990f;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,3, param[0], &gate[w].shift_); 
+    //    BINROUTEOR_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ndacaddmax0(void){
+  HEAD;
+  uint8_t w=0;
+  int32_t cv;
+  float speedf__;
+  cv=(CV[0]>>2)+(gate[3].dac>>2);
+  if (cv>1023) cv=1023;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=0.000990f;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,3, param[0], &gate[w].shift_); 
+    //    BINROUTEOR_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ndacminus0(void){
+  HEAD;
+  uint8_t w=0;
+  int32_t cv;
+  float speedf__;
+  cv=(gate[3].dac>>2)-(1024-(CV[0]>>2));
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=0.000990f;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,3, param[0], &gate[w].shift_); 
+    //    BINROUTEOR_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ndacspeedminus0(void){
+  HEAD;
+  uint8_t w=0;
+  int32_t cv;
+  float speedf__;
+  cv=(CV[0]>>2)-(gate[3].dac>>2);
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=0.000990f;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,3, param[0], &gate[w].shift_); 
+    //    BINROUTEOR_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+
+void Ndacmod0(void){
+  HEAD;
+  uint8_t w=0;
+  int32_t cv;
+  float speedf__;
+  cv=((CV[0]>>2)+1); // modulo code
+  speedf__=logspeed[(gate[3].dac>>2)%cv];
+  if (speedf__==2.0f) speedf__=0.000990f;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;

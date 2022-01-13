@@ -766,5 +766,6 @@ heavens gate[4];
     last_time[w] += 1;
   } // lasttime
   }
- 
+  printf("%d\n",1024%1);
+  
 }

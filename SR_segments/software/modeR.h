@@ -12,20 +12,6 @@ above, different kinds of DAC out
 
 */
 
-
-void Rnofrac0(void){
-  uint8_t w=3;
-  HEAD;
-  if (counter[3]>speed[3] && speed[3]!=1024){
-    counter[3]=0;			       
-    GSHIFT_;
-    BINROUTE_;
-    PULSIN_XOR;
-    BITN_AND_OUTVINT_; 
-  }
-}
-
-
 void R0(void){ // basic route in
   uint8_t w=3;
   HEAD;

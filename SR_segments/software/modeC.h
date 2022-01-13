@@ -8,6 +8,8 @@ DACmodes: 16 - 4x4 as above or???
 
 INTmodes: 16 - CV as param
 
+other ideas: other dac outs, mix of dac outs, add dacs, modulo
+
 */
 
 
@@ -45,19 +47,6 @@ what are the next 16x LR modes
       ENDER;						\
     }							\
   }							\
-}
-
-
-void Cnofrac0(void){
-  gate[2].dactype=0; gate[2].dacpar=param[2];
-  uint8_t w=2;
-  HEAD;
-  if (counter[2]>speed[2] && speed[2]!=1024){
-    counter[2]=0;				
-    GSHIFT_;
-    BINROUTE_;
-    BITN_AND_OUTVINT_; 
-  }
 }
 
 // run through DAC modes with correct params set if necessary

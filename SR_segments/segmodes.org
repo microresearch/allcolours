@@ -261,13 +261,15 @@ all the comparison possibilities]
 
 ** 13/1/2021:
 
-- HEAD macro should be fixed but check this...
+- HEAD macro should be fixed but check this DONE
+- methods for DAC speed modes: (and now we use CV[w] instead) -> we have now in modeN, to test and to port to other modes TESTED bit maybe no addmax
+
 
 ** 12/1/2021:
 
 - dac+cv modes to resolve with new scheme - a lot depends on where we get dac from (cannot all be same but nice to choose - 4 options = 2 bits)
 
-*TODO: ADC_for_our_speed - top bits//rest bits as speed/mod for DAC?*
+TODO: ADC_for_our_speed - top bits//rest bits as speed/mod for DAC? - DONE in modeN but don't use there
 
 test adc pointerDONE, fill in modes and testings->ADC, DAC, all modes from draftdec, theone, earlier... 
 

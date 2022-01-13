@@ -1,3 +1,37 @@
+
+/* options here:
+1. 9 bit speed +dac ->   speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)];
+
+2. speed+dac with max:
+cv=(CV[0]>>2)+(gate[3].dac>>2);
+if (cv>1023) cv=1023;
+speedf__=logspeed[cv];
+
+3. DAC - (1024-speed) // so if speed is 0-fastest 
+cv=(gate[3].dac>>2)-(1024-(CV[0]>>2));
+if (cv<0) cv=0;
+speedf__=logspeed[cv];
+
+4. speed-dac
+cv=(CV[0]>>2)-(gate[3].dac>>2)-
+if (cv<0) cv=0;
+speedf__=logspeed[cv];
+
+
+5. DAC % speed we have below
+ */
+
+//  if (speedf_[0]==2.0f) speedf_[0]=0.000990f;
+  //  speedf__= (speedf_[0]-logspeed[1023-(gate[speedfrom_[0]].dac>>2)]);
+//  speedf__= logspeed[1023-(gate[speedfrom_[0]].dac>>2)];
+//  speedf__=(speedf_[0] -((4095-gate[speedfrom_[0]].dac)/4095.0f));
+//  speedf__=speedf_[0];
+  //  if (speedf__>1.0f) speedf__=1.0f;
+  //  if (speedf__<0.000990f) speedf__=0.000990f;
+  //  speedf__=1.0f;
+  //  speedf__=logspeed[(CV[0]>>3)+(gate[3].dac>>3)];
+
+
 void trial(void){
   static uint32_t xxxx=0;
   xxxx^=1;
@@ -178,6 +212,58 @@ void TIM2_IRQHandler(void) {
     //    val=(*gate[L].dofunc[0])(w);
     
     GSHIFT;
+
+
+void Rnofrac0(void){
+  uint8_t w=3;
+  HEAD;
+  if (counter[3]>speed[3] && speed[3]!=1024){
+    counter[3]=0;			       
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTVINT_; 
+  }
+}
+
+
+void Cnofrac0(void){
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  uint8_t w=2;
+  HEAD;
+  if (counter[2]>speed[2] && speed[2]!=1024){
+    counter[2]=0;				
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVINT_; 
+  }
+}
+
+void Lnofrac0(void){
+  uint8_t w=1;
+  HEAD;
+  if (counter[1]>speed[1] && speed[1]!=1024){
+    counter[1]=0;				
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTVINT_; 
+    }
+}
+
+void Nnofrac0(void){
+  uint8_t w=0;
+  HEAD;
+  if (counter[0]>speed[0] && speed[0]!=1024){
+    counter[0]=0;			      
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[0],0,gate[0].trigger,3,param[0], &gate[w].shift_);    
+    BITN_AND_OUTVINT_; 
+  }
+}
+
+
+
     if (w==0){
       bitn=ADC_(0,SRlength[0],0,trigger[0],reggg,adcpar); 
     }
