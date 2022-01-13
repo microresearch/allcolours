@@ -1,9 +1,16 @@
 // lowest modes as functions.... DAC output
 
 /*
-Characters: 
 
- */
+CVmodes: 16xDAC could be reduced, followed by 4x4 DAC modes below, XOR/OR in to test, speeds << >>
+
+DACmodes: 16 - 4x4 as above or???
+
+INTmodes: 16 - CV as param
+
+*/
+
+
 
 // TODO: we need to focus on what length does and cut down number of DAC modes...
 // in draftdec.c 16DAC followed by
@@ -42,7 +49,7 @@ what are the next 16x LR modes
 
 
 void Cnofrac0(void){
-  gate[2].dactype=0; gate[2].dacpar=param[0];
+  gate[2].dactype=0; gate[2].dacpar=param[2];
   uint8_t w=2;
   HEAD;
   if (counter[2]>speed[2] && speed[2]!=1024){
@@ -53,17 +60,84 @@ void Cnofrac0(void){
   }
 }
 
+// run through DAC modes with correct params set if necessary
+
 void C0(void){
-  gate[2].dactype=0; gate[2].dacpar=param[0];
+  gate[2].dactype=0; gate[2].dacpar=param[2];
   DACOUT;
 }
 
 void C1(void){
-  gate[2].dactype=1; gate[2].dacpar=param[0];
+  gate[2].dactype=1; gate[2].dacpar=param[2];
   DACOUT;
 }
 
 void C2(void){ // one bit audio - set beta with param so fix now as: 2048
   gate[2].dactype=2; gate[2].dacpar=2048;
+  DACOUT;
+}
+
+void C3(void){
+  gate[2].dactype=3; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C4(void){
+  gate[2].dactype=4; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C5(void){
+  gate[2].dactype=5; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C6(void){
+  gate[2].dactype=6; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C7(void){
+  gate[2].dactype=7; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C8(void){
+  gate[2].dactype=8; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C9(void){
+  gate[2].dactype=9; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C10(void){
+  gate[2].dactype=10; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C11(void){
+  gate[2].dactype=11; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C12(void){
+  gate[2].dactype=12; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C13(void){
+  gate[2].dactype=13; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C14(void){
+  gate[2].dactype=14; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+void C15(void){ // one bit audio with param as filter
+  gate[2].dactype=2; gate[2].dacpar=4095-(param[2]&4095);
   DACOUT;
 }

@@ -1,9 +1,16 @@
 // TOP modes as functions.... ADC/other inputs
 
 /*
-Characters:
 
- */
+CVmodes: 16x2 (OR/XOR) or 32x1 and select on casebycase (all logical ones as XOR maybe)
+
+DACmodes: test top bits as selecting which DAC
+
+INTmodes: use CV as param: list
+
++ across all prob of feedback in ...
+
+*/
 
 // TODO: cut down number of ADC modes so we can have speed bumps maybe
 // OR for analogue modes and XOR for digital modes (trial but easily dies on OR!)
@@ -227,6 +234,35 @@ void N31(void){
   ADCXORIN(31);
 }
 
+
+void N32(void){ // multiple bits in as case 19 in draftdec
+  uint8_t w=0;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    //  bitn=ADC_(0,SRlength[0],4,trigger[0],reggg,adcpar); // this is now adc mode 4 - we don't use bitn and do spacmask in adc
+    bitn=ADC_(0,SRlength[w],4,gate[w].trigger,3, param[0], &gate[w].shift_); 
+    if (SRlength[defroute[w]]>=SRlength[w]){
+    gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
+  }
+  else // shift up <<
+    {
+      gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
+    }
+    BITN_AND_OUTVN_;
+    ENDER;
+  }    
+  }
+}
+
 /// CV and ADC modes
 /*
 - now if we add speeds then it gets faster!
@@ -237,6 +273,8 @@ speedf__[0]= (speedf_[0]+logspeed[1024-(dac[speedfrom_[w]]>>2)])
 if (speedf__[0]>1.0f) speedf__[0]=1.0f;
 
  */
+
+// TODO: top bits select which DAC to take from
 
 void Ndac0(void){
   uint8_t w=0;

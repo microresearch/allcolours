@@ -605,7 +605,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	    ((k&space[6][length-11])<<spaceshift[6][length-11]) + ((k&space[7][length-11])<<spaceshift[7][length-11]) + \
 	    ((k&space[8][length-11])<<spaceshift[8][length-11]) + ((k&space[9][length-11])<<spaceshift[9][length-11]) + \
 	    ((k&space[10][length-11])<<spaceshift[10][length-11]) + ((k&space[11][length-11])<<spaceshift[11][length-11]);
-
 	}
 	n[reg]=0;
     }

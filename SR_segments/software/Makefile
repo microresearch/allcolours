@@ -40,7 +40,6 @@ CFLAGS  =  -I. -IInclude -Iinc -std=gnu99 \
 	-mcpu=cortex-m4 \
 	-mfloat-abi=hard \
 	-fsingle-precision-constant -fsigned-char -Wdouble-promotion -ffunction-sections -fdata-sections
-	
 
 
 AFLAGS  = -mlittle-endian -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -mfloat-abi=hard

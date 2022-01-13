@@ -259,16 +259,23 @@ all the comparison possibilities]
 
 * 2022++
 
+** 13/1/2021:
+
+- HEAD macro should be fixed but check this...
+
 ** 12/1/2021:
 
 - dac+cv modes to resolve with new scheme - a lot depends on where we get dac from (cannot all be same but nice to choose - 4 options = 2 bits)
 
+*TODO: ADC_for_our_speed - top bits//rest bits as speed/mod for DAC?*
 
-test adc pointerDONE, fill in modes and testings 
+test adc pointerDONE, fill in modes and testings->ADC, DAC, all modes from draftdec, theone, earlier... 
 
-FIXED bug in macro HEAD withiun another macro...
+FIXED bug in macro as HEAD CANNOT BE within another macro...( note -E is to show macro expansion, do we need to fix for modeN.h macros?)
 
 1 bit audio is still odd - and length does nothing here *again length issue in adc and adc*
+
+- question of slowest speed as we already have 2^10 for 5v (0.5v octave)
 
 ** 10/1/2021:
 

@@ -45,9 +45,7 @@
 
 // we cannot place this inside other macros! fixed 12/1/2021
 
-#define HEAD
-float alpha;								\
-uint32_t bitn, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;		\
+#define HEAD float alpha; uint32_t bitn, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;		\
 
 #define ENDER {					\
     new_data(val,w);				\

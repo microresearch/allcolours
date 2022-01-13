@@ -1,9 +1,15 @@
 // left hand functions
 
 /*
-Characters:
 
- */
+CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC, what else?
+
+DACmodes: basics, esoterics
+
+INTmodes: route from CV, prob from CV, others?
+
+*/
+
 
 void Lnofrac0(void){
   uint8_t w=1;
@@ -67,9 +73,6 @@ void L2(void){ // test double/bump speed/sr on trigger
   }
   }
 }
-
-
-
 
 // test - speedCV-speedDAC 
 void Ldac0(void){

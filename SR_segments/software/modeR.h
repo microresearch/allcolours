@@ -1,13 +1,17 @@
 // right hand functions
 
-// copy from left and then add/subtract for new modes focus on change
-// global routes, fake clks, use as DAC, enry of non-adc bits from
-// above, different kinds of DAC out
-
 /*
-Characters:
 
- */
+CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC
+
+DACmodes: basics, esoterics
+
+INTmodes: route from CV, prob from CV, others? + change global routes, fake clks, use as DAC, enry of non-adc bits from
+
+above, different kinds of DAC out
+
+*/
+
 
 void Rnofrac0(void){
   uint8_t w=3;
