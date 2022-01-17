@@ -88,7 +88,7 @@ TODO: prob modes below as/and basic INT modes
 - probability modes for (DAC, DAC+CV comp to SR,countedclk): 
    - prob of bit in/inverted bit in,
     - XOR bit in from->[cycled//ADCorLFSR//pulseifwehave]->routed in or not
-    - bitin OR loopback, prob of bitin or inverted loopback, 
+b    - bitin OR loopback, prob of bitin or inverted loopback, 
 
 ???prob of cycle, new bit from bits/from route -> how many? make this
   clearer:
@@ -259,6 +259,16 @@ all the comparison possibilities]
 
 * 2022++
 
+** 17/1/2021:
+
+TODO: all ADC modes: prob of entry, prob of return for abstract modes, INTmodes-speedasCV/prob/comp
+
+- think about inverting CV for param/int modes as now 0 is top
+
+modulo LR modes to test
+
+
+
 ** 13/1/2021:
 
 - HEAD macro should be fixed but check this DONE
@@ -275,7 +285,7 @@ test adc pointerDONE, fill in modes and testings->ADC, DAC, all modes from draft
 
 FIXED bug in macro as HEAD CANNOT BE within another macro...( note -E is to show macro expansion, do we need to fix for modeN.h macros?)
 
-1 bit audio is still odd - and length does nothing here *again length issue in adc and adc*
+1 bit audio is still odd - and length does nothing here *again length issue in adc and adc* - *re-test*
 
 - question of slowest speed as we already have 2^10 for 5v (0.5v octave)
 
@@ -675,7 +685,7 @@ we try now with own SR as probability and this seems to work well for pulsins
 7/12/2021:
 
 - attempt grand mode with SR and many bits above - we have 8 bits route and logop and 5 bits probability DONE
-- *TODO: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys*
+- *TODO: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means*
 
 - in ADC_ added cases 33 and 34, adc prob modes with adcpar (invcycle is more like ADC mode if is without routein)
 

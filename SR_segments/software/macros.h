@@ -63,6 +63,12 @@
     gate[w].shift_=gate[w].shift_<<1;			\
 }
 
+#define JUSTCYCLE_ {					\
+  bitrr = (gate[w].shift_>>SRlength[w]) & 0x01;		\
+  bitn^=bitrr;						\
+  }
+
+
 #define BINROUTE_ {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
@@ -86,6 +92,7 @@
   tmp=tmp>>1;						\
   }							\
   }
+
 
 
 #define BINROUTEOR_ {				\

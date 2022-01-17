@@ -1,5 +1,7 @@
 // right hand functions
 
+// **REMEMBER to set count=0 in relevant modes
+
 /*
 
 CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC
@@ -14,6 +16,7 @@ above, different kinds of DAC out
 
 void R0(void){ // basic route in
   uint8_t w=3;
+  count=0;
   HEAD;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
@@ -29,6 +32,7 @@ void R0(void){ // basic route in
 
 void R1(void){ // route and cycle
   uint8_t w=3;
+  count=0;
   HEAD;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;

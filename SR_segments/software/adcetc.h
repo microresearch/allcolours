@@ -426,10 +426,17 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;
 
   case 17: // timed version from otherpar
-    if (length>11) length=11;
+    //    if (length>11) length=11;
+    //    otherpar+=32;
+    otherpar+=3;
     if (n[reg]>otherpar) {
-    ADCshift_[reg]=(adc_buffer[12]);
-    n[reg]=0;
+      //      ADCshift_[reg]=(adc_buffer[12])>>(31-length);
+      if (length<12) {
+	ADCshift_[reg]=(adc_buffer[12])>>(11-length); 
+      }
+      else ADCshift_[reg]=(adc_buffer[12])<<(length-11);
+
+      n[reg]=0;
     }
     n[reg]++;
     bt=(ADCshift_[reg]>>length)&0x01;
@@ -453,16 +460,19 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      // we can also use otherpar=CV or otherwise as padding, length of bits which is not LEN!
   case 19:   // as case 17: // basic sequential length as in 0 but with padding if >11 bist
     // maybe restrict otherpar
+    // try with MSB or loads 0s after shift
+    // doesn't work if length shorter than otherpar
     otherpar=otherpar&31; // 5 bits
-      if (n[reg]>length) {
+    if (length<otherpar) length=otherpar;
+      if (n[reg]<0) {
 	if (otherpar<12) {
 	  k=(adc_buffer[12])>>(11-otherpar); //
 	}
 	else k=(adc_buffer[12])<<(otherpar-11);
-	n[reg]=0;
+	n[reg]=length;
     }
     bt = (k>>n[reg])&0x01;
-    n[reg]++;    
+    n[reg]--;    
     break;
 
   case 20: // otherpar as comparator - 10 bits standard here // now 12 bits  - OTHERPAR! 12 bits
@@ -479,7 +489,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt = (k>>nnn[reg])&0x01;
     nnn[reg]++;    
 
-    otherpar=otherpar&255; // how long? it should be?
+    otherpar=otherpar>>2; // how long? it should be?
      if (n[reg]>length) { // 0s
        bt|=0; // XOR TODO
        if (nn[reg]>otherpar) {
@@ -566,8 +576,9 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 29:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits  - OTHERPAR! 12 bits
     // otherpar can also be CV for INTmodes - was 4
-    otherpar=otherpar&255; // how long? it should be?
-     if (n[reg]>length) { // 0s
+    // can also be other way round
+    otherpar=otherpar>>2; // how long? it should be? 10 or 8 bits?
+     if (n[reg]>length) {
        bt=0;
        if (nn[reg]>otherpar) {
 	 n[reg]=0;
@@ -612,12 +623,131 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
 
+  case 33: //  was 9 back to ADC - was! ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
+      // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...    
+    // testing now for msb out
+    if (((LFSR_[reg] & 4095 ) < otherpar)){
+      if (length>11) length=11;
+      //      if (n[reg]>length) {
+            if (n[reg]<0) {
+	      k=(adc_buffer[12])>>(11-length); //
+	      n[reg]=length;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]--;
+      }
+    else
+      {
+	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+      }
+    break;
 
+  case 34:// swapped // 1 bit oscillator - train of length 1 bits followed by y 0 bits  - OTHERPAR! 12 bits
+    // otherpar can also be CV for INTmodes - was 4
+    // can also be other way round
+    otherpar=otherpar>>2; // how long? it should be? 10 or 8 bits?
+     if (n[reg]>length) {
+       bt=1;
+       if (nn[reg]>otherpar) {
+	 n[reg]=0;
+       }
+       nn[reg]++;
+     }
+     else {
+       bt=0;
+       n[reg]++;
+       nn[reg]=0;
+     }         
+     break;    
 
-    ///
+// prob instead of strobe: 12,13,14,15,16 -> re-work NOW/here in ADC_
+//     if (((LFSR_[reg] & 4095 ) < otherpar)){
+     
+  case 35:     // padded case 13 - 2-we only cycle ADC on strobe/toggle  - or vice versa **
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length);
+	else k=(adc_buffer[12])<<(length-11);
+	n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01;
+     if (((LFSR_[reg] & 4095 ) < otherpar)){
+    n[reg]++;    
+      }
+    break;
+
+  case 36:     // we accumulate bits onto a ghosted register
+    // STROBE places these onto the shift register in one chunk?
+    // so we don't use returned bt
+      if (length>11) length=11;//XXXmax12bits
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    // then bt goes into newghostSR
+    ADCGshift_[reg]=(ADCGshift_[reg]<<1)+bt;
+
+     if (((LFSR_[reg] & 4095 ) < otherpar)){
+      *SR&=invmasky[length]; // clear length bits
+      *SR+=(ADCGshift_[reg]&masky[length]);
+    }
+    bt=0;
+    break;
+
+  case 37:     // 1-we keep on cycling ADC bits but only enter new bit on strobe - or vice versa
+
+    if (length>11) length=11; //XXXmax12bits
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+     if (((LFSR_[reg] & 4095 ) < otherpar)){
+      bt = (k>>n[reg])&0x01;
+      lastbt=bt;
+      }
+      else bt=lastbt;
+    n[reg]++;    
+    break;
     
-    //INTMODES - how many to have?
+  case 38:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
 
+    if (length>11) length=11; //XXXmax12bits
+
+  if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length); //
+      n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01;
+
+     if (((LFSR_[reg] & 4095 ) < otherpar)){
+    n[reg]++;    
+      }
+      break;
+
+  case 39: // STROBE: 3-one bit entry
+    n[reg]++;
+  if (n[reg]>50) {
+    k=(adc_buffer[12]);
+    n[reg]=0;
+  }
+  integrator+=k-oldValue;
+   if(integrator>0)
+  {
+     oldValue=MAXVALUE;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+
+   if (((LFSR_[reg] & 4095 ) < otherpar)){
+	lastbt=bt;
+      }
+      else bt=lastbt;
+   break;
     
     ///////////////////////
   } // switch
@@ -667,8 +797,10 @@ static inline uint16_t otherleaks(uint16_t x, uint16_t y, uint16_t prob, uint16_
 static inline uint16_t logopx(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
   // 0 is XOR< 1 is OR etc
   uint32_t ty;
-  if (type==3)  return (bita ^ bitaa);
-  else if (type==1) return (bita | bitaa);
+  // 
+   if (type==3)  return (bita ^ bitaa);
+   //  else if (type==1) return (bita | bitaa);
+   else if (type==1) return (otherleaks(bita, bitaa,3,3));
   else if (type==0) return bita;
   else if (type==2) {return (bita ^ !bitaa);
     //    ty=otherleaks(bita, bitaa,3,3); // how to change this?
