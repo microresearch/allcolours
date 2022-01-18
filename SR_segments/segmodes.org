@@ -88,7 +88,7 @@ TODO: prob modes below as/and basic INT modes
 - probability modes for (DAC, DAC+CV comp to SR,countedclk): 
    - prob of bit in/inverted bit in,
     - XOR bit in from->[cycled//ADCorLFSR//pulseifwehave]->routed in or not
-b    - bitin OR loopback, prob of bitin or inverted loopback, 
+    - bitin OR loopback, prob of bitin or inverted loopback, 
 
 ???prob of cycle, new bit from bits/from route -> how many? make this
   clearer:
@@ -117,14 +117,14 @@ so is quite a few modes for all options
 
 - Rungler:
 
-Original: SR bit out XOR with OSC1 out (OSC1 speed/freq) is determined by SR (itself)
+Original: SR bit out XOR with OSC1 out AND OSC1 speed/freq is determined by SR (itself)
 
 translated: cycling bit XOR with other SR out bit which is clocked by
 SR/or DACspeed from itself (bit clock options are set BY SR itself) 
 
 or:
 
-cycling bit XOR with DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT
+*cycling bit XOR with DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT*
 
 ///
 
@@ -143,7 +143,7 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 ** ADC modes 
 
-TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar already
+*TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar already*
 
 ** DAC modes
 
@@ -153,7 +153,7 @@ DONEProbability modes: CV//PARAM//SRDACx > SRDACx -> result - case 30 with dacy<
 
 DONE+ADC could also be used in probability modes+ - case 29 now
 
-DONE- 8 bit cipher code --> we have in ADC_ mode 8 ,, but could also be used for modes case 32,33
+DONE- *8 bit cipher code* --> we have in ADC_ mode 8 ,, but could also be used for modes case 32,33
 accumulate into ggsr and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
 4094 - on STROBE signal, SR is transferred to the storage register...
 
@@ -259,23 +259,67 @@ all the comparison possibilities]
 
 * 2022++
 
-** 17/1/2021:
+** 18/1/2022:
+
+- generic ADCg_ function to TEST but mostly keep other ADC_ ...
+- *new ADC_ cases 63, 64, 65/also int65 to test, other tests in modeN.h*
+
+*theone, it.c, draftdec, extramodes to all be checked for adcmodes, see also temp.org*
+
+*for LRC modes we can also have prob using generic top ADC_buffer[12]*
+
+*test: ADC-prob can also be against DAC rather than LFSR - but always CV against - other prob options in CV modes*
+
+- *in progress: can we have one intmode with CV selecting non-param ADC input modes...*
+- *TODO/test/in progress adc_66: ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]*
+
+
+** 17/1/2022:
 
 TODO: all ADC modes: prob of entry, prob of return for abstract modes, INTmodes-speedasCV/prob/comp
 
-- think about inverting CV for param/int modes as now 0 is top
+- *think about inverting CV for param/int modes as now 0 is top TODO! DONE - to test and do we need to invert for prob intmodes?*
 
-modulo LR modes to test
+*TEST dacspeed from itself?*
+
+*TRY: cycling bit XOR with DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???*
+
+*modulo LR modes to code/test*
+
+TODO: define probability modes, define all bit patterns, ADC modes from all files inc. extramodes, 
+
+prob modes for ADC/ignore cycling:
+
+- invert ADC bit -and- xor/or in routed
+- invert [ADC/xor/or/routed) 
+
+- select ADC bit in or routed in
+- select ADC bit in or [ADC/xor/or/routed)  
+
+- select ADC bit in or INVrouted in
+- select ADC bit in or INV[ADC/xor/or/routed)  
+
+for others/L, R, C:
+
+00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+01 2-BITIN or loopback
+10 3-INV of above
+11 4- BITIN or not into cycling
 
 
+bit patterns: 
 
-** 13/1/2021:
+-- where we get bit from=routing, subjected to type of SR inc prob modes, what we do with routed in bits
+
+still LR modulo to test: https://github.com/TuesdayNightMachines/CGS-Serge-Modular-Synth/blob/master/CGS%20Modulo%20Magic/CGS%20Modulo%20Magic%20Guide.md
+
+
+** 13/1/2022:
 
 - HEAD macro should be fixed but check this DONE
-- methods for DAC speed modes: (and now we use CV[w] instead) -> we have now in modeN, to test and to port to other modes TESTED bit maybe no addmax
+- methods for DAC speed modes: (and now we use CV[w] instead) -> we have now in modeN, to test and to port to other modes TESTED bit *maybe no addmax*
 
-
-** 12/1/2021:
+** 12/1/2022:
 
 - dac+cv modes to resolve with new scheme - a lot depends on where we get dac from (cannot all be same but nice to choose - 4 options = 2 bits)
 
@@ -289,7 +333,7 @@ FIXED bug in macro as HEAD CANNOT BE within another macro...( note -E is to show
 
 - question of slowest speed as we already have 2^10 for 5v (0.5v octave)
 
-** 10/1/2021:
+** 10/1/2022:
 
 *TODO: test best fake clk scenario - later when have tidied and basic outlines*
 

@@ -47,7 +47,32 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
 // 0-31 (32)modes +1 INTmode
 // arrange modes now as most important first...
 
-// 10/2/21 - changes to SR in place now for draftspeed.c
+
+// 18/1/22
+// more generic ADC_ in = so income is passed in function and can be LFSR so we have different handlings
+static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR, uint32_t *income){
+  static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
+  static int32_t integrator=0.0f, oldValue=0.0f;
+  static uint32_t k, lastbt=0; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
+  static uint8_t toggle=0, lc=0;
+  uint32_t bt=0, bit=0;
+  float inb;
+
+  switch(type){
+    
+  case 0: // basic sequential length of upto 12 bits cycling in MSB first    
+      if (length>11) length=11;
+      if (n[reg]<0) {
+	k=(*income)>>(11-length);
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+  }
+}
+  
+// 10/12/21 - changes to SR in place now for draftspeed.c
 
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR){
   static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
@@ -169,7 +194,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 3: // basic sequential length as in 0 but with padding if >11 bits **
     // as above but closer to 5
-    // also try as MSB
+    // also try as MSB - now...
     if (n[reg]<0) { // 12 bits
       if (length<12) {
 	k=(adc_buffer[12])>>(11-length);
@@ -748,7 +773,46 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
       else bt=lastbt;
    break;
+
+    /////////////////////// add modes
+   
+  case 63: // =- input regardless of length - basic sequential length as in 0 but with padding if >11 bits **
+    // as above but closer to 5
+    // also try as MSB - now...
+    if (n[reg]<0) { // 12 bits = can also be 8 bits or less
+	k=(adc_buffer[12]);
+	n[reg]=11;
+    }
+    bt = (k>>n[reg])&0x01; // top bit first
+    n[reg]--;    
+    break;
+
+  case 64: // was strobe mode for cycling bits a la TM - no input but now uses ADC input as probability! - cvmode
+    bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+    if (((LFSR_[reg] & 4095 ) < adc_buffer[12])){
+      bt=!bt;// invert cycling bit
+    }
+    break;
     
+  case 65: // was strobe mode for cycling bits a la TM - no input but now uses otherpar as probability! - can be intmode and cvmode
+    bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+     if (((LFSR_[reg] & 4095 ) < otherpar)){
+      bt=!bt;// invert cycling bit
+    }
+    break;
+
+  case 66: // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
+      if (length>11) length=11;
+      if (n[reg]<0) {
+	k=(adc_buffer[12]%otherpar)>>(11-length);
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+
+    
+   
     ///////////////////////
   } // switch
   return bt;
