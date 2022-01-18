@@ -79,7 +79,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   static int32_t integrator=0.0f, oldValue=0.0f;
   static uint32_t k, lastbt=0; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   static uint8_t toggle=0, lc=0;
-  uint32_t bt=0, bit=0;
+  uint32_t bt=0, tmp=0;
   float inb;
 
   
@@ -776,8 +776,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
     /////////////////////// add modes
    
-  case 63: // =- input regardless of length - basic sequential length as in 0 but with padding if >11 bits **
-    // as above but closer to 5
+  case 63: // =- input regardless of length
     // also try as MSB - now...
     if (n[reg]<0) { // 12 bits = can also be 8 bits or less
 	k=(adc_buffer[12]);
@@ -811,6 +810,29 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]--;    
     break;
 
+  case 67: // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
+      if (length>11) length=11;
+      if (n[reg]<0) {
+	tmp=adc_buffer[12]+otherpar;
+	if (tmp>4095) tmp=0;
+	k=(tmp)>>(11-length); // now we have 12 bits
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+
+  case 68: // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
+      if (length>11) length=11;
+      if (n[reg]<0) {
+	k=(adc_buffer[12]&otherpar)>>(11-length);
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+    
+    
     
    
     ///////////////////////
@@ -879,7 +901,7 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
   // 0 is XOR< 1 is OR etc
   uint32_t ty;
   if (type==0)  return (bita ^ bitaa);
-  else if (type==1) return (bita | bitaa);
+  else if (type==1) return (bita);
   else if (type==2) return (bita ^ (!bitaa)); // same as inverted XOR
   else if (type==3) {
     ty=leaks(bita, bitaa,3,3);

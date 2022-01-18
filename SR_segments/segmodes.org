@@ -261,28 +261,34 @@ all the comparison possibilities]
 
 ** 18/1/2022:
 
+*what are the basic ADC modes?*
+
+
 - generic ADCg_ function to TEST but mostly keep other ADC_ ...
-- *new ADC_ cases 63, 64, 65/also int65 to test, other tests in modeN.h*
 
-*theone, it.c, draftdec, extramodes to all be checked for adcmodes, see also temp.org*
+- new ADC_ cases 63, 64, 65/also int65, int66 tested - 64 not so exciting.
+- tested/in progress adc_66,67,68: ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]*
+- tested: ADC-prob can also be against DAC rather than LFSR - but always CV against - Nintprobdac1_0
 
-*for LRC modes we can also have prob using generic top ADC_buffer[12]*
+- TESTED: in progress: can we have one intmode with CV selecting non-param ADC input modes, can have another mode list or shorter mode list with route bits
 
-*test: ADC-prob can also be against DAC rather than LFSR - but always CV against - other prob options in CV modes*
 
-- *in progress: can we have one intmode with CV selecting non-param ADC input modes...*
-- *TODO/test/in progress adc_66: ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]*
+
+- *can also have mix of dac[3] and adc in plain cv/int adc_ modes...*
+- *theone, it.c, draftdec, extramodes to all be checked for adcmodes, see also temp.org*
+
+- *for LRC modes we can also have prob using generic top ADC_buffer[12]*
 
 
 ** 17/1/2022:
 
-TODO: all ADC modes: prob of entry, prob of return for abstract modes, INTmodes-speedasCV/prob/comp
+TODO: ADC modes: *prob of entry, prob of return for abstract modes* 22-31 and some others now/new ones...
 
-- *think about inverting CV for param/int modes as now 0 is top TODO! DONE - to test and do we need to invert for prob intmodes?*
+- DONE: inverting CV for param/int modes as now 0 is top TODO! DONE - to test, but not all work so, changed, and do we need to invert for prob intmodes? no
 
-*TEST dacspeed from itself?*
+TESTed/ok dacspeed from itself - Ndacadditself - can also be other variants
 
-*TRY: cycling bit XOR with DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???*
+*TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
 
 *modulo LR modes to code/test*
 
@@ -744,7 +750,7 @@ we try now with own SR as probability and this seems to work well for pulsins
 
 3/12/2021: listing modes in temp.org to plan out and also check gaps: conclusions:
 
-*how we can temporarily fill modes and change these later?* macros but then we have \ always end of line to think of and no comments. maybe...
+how we can temporarily fill modes and change these later? macros but then we have \ always end of line to think of and no comments. maybe...
 
 - question also of modes with global route table or which manipulate their own routetable
 
@@ -819,9 +825,7 @@ modes to add:
 - where do we add prob of ADC entry bit - in mode itself - but this doubles up modes//how to deal with that
 - prob to shift binary/routing tables
 
-2/12/2021: PLAN?
-
-- *fill in modes but we need to plan out // way these look* start drafting these -> re-look at theone modes
+2/12/2021: 
 
 also pulsin_logop  - placed pulsin within adc macrosDONE
 and logop in routing (below) 
@@ -1023,7 +1027,7 @@ can add more mixes in ADC (adc in/lfsr/otherdacs/mult dacs etc)
 
 - added case 30: adc |(xor TODO) with length of bits, for INTmode this can also be CV-param
 
-*in ADC_ otherpar can also be CV for intmodes*
+in ADC_ otherpar can also be CV for intmodes
 
 - expanded ADC_ function for extra params but should decide on how many bits for otherpar (dac is 12 bits so) and then fix length/restrictions there
 
@@ -1046,7 +1050,7 @@ can add more mixes in ADC (adc in/lfsr/otherdacs/mult dacs etc)
 
 long routes would be n-l-c-r-n
 
-*Q. of whether to have extra ADC/DAC modes available as CV options on 1 or 2 INT modes - see above - would also need to be another long case/switch*
+Q. of whether to have extra ADC/DAC modes available as CV options on 1 or 2 INT modes - see above - would also need to be another long case/switchDONE
 
 - INT modes need to use speedCV (see list in notebook)
 - so the 16 INT ADC/DAC modes need to use CV

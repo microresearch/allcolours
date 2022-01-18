@@ -235,10 +235,12 @@ void N63(void){ // // =- input regardless of length - basic sequential length as
   ADCXORIN(63);
 }
 
+// no adc
 void N64(void){ // // was strobe mode for cycling bits a la TM - no input but now uses ADC input as probability! - cvmode
   ADCXORIN(64);
 }
 
+// no adc
 void N65(void){ // was strobe mode for cycling bits a la TM - no input but now uses otherpar as probability! - can be intmode and cvmode
   ADCXORIN(65);
 }
@@ -288,7 +290,7 @@ if (speedf__[0]>1.0f) speedf__[0]=1.0f;
 // DONE: top bits of CV/speed select which DAC to take from - implement and test this, but we need access to bits/CV and smoothed
 // but for ADC in is probably best just to have fixed DAC as 3
 
-void Ndacadd_itself(void){ // TEST: trial itself as DAC
+void Ndacadditself0(void){ // tested//trial itself as DAC - can also be other variants TODO
   HEAD;
   uint8_t w=0;
   float speedf__;
@@ -456,7 +458,7 @@ void Nint17(void){ //  case 17: // otherpar as timed adc entry
   HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    bitn=ADC_(0,SRlength[w],17,gate[w].trigger,3,255-(CV[0]>>4), &gate[w].shift_); 
+    bitn=ADC_(0,SRlength[w],17,gate[w].trigger,3,(CV[0]>>4), &gate[w].shift_); 
     BINROUTE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
@@ -501,7 +503,7 @@ void Nintosc29(void){//  case 29:// // 1 bit oscillator - train of length 1 bits
   HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    bitn=ADC_(0,SRlength[w],29,gate[w].trigger,3,4095-CV[0], &gate[w].shift_); 
+    bitn=ADC_(0,SRlength[w],29,gate[w].trigger,3,CV[0], &gate[w].shift_); 
     BINROUTE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
@@ -512,14 +514,14 @@ void Nintosc34(void){//  case 34:// // 1 bit oscillator - train of length 0 bits
   HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    bitn=ADC_(0,SRlength[w],34,gate[w].trigger,3,4095-CV[0], &gate[w].shift_); 
+    bitn=ADC_(0,SRlength[w],34,gate[w].trigger,3,CV[0], &gate[w].shift_); 
     BINROUTE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
 }
 
 
-// prob instead of strobe: 12,13,14,15,16 -> re-worked in ADC_ as 35-39 TESTING->
+// prob instead of strobe: 12,13,14,15,16 -> re-worked in ADC_ as 35-39 TESTING/DONE->
 
 void Nint35(void){//  case 35
   uint8_t w=0;				       
@@ -576,7 +578,8 @@ void Nint39(void){//  case 39
   } 
 }
 
-void Nint65(void){// TEST@ was strobe mode for cycling bits a la TM - no input but now uses otherpar as probability! - can be intmode and cvmode
+// no adc in
+void Nint65(void){// TEST - was strobe mode for cycling bits a la TM - no input but now uses otherpar as probability! - can be intmode and cvmode
   uint8_t w=0;				       
   HEAD;  
   if (gate[w].trigger)      {
@@ -587,16 +590,44 @@ void Nint65(void){// TEST@ was strobe mode for cycling bits a la TM - no input b
   } 
 }
 
-void Nint66(void){ // // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
+// adc in
+void Nint66(void){ // mod // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
   uint8_t w=0;				       
   HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    bitn=ADC_(0,SRlength[w],65,gate[w].trigger,3,4095-CV[0], &gate[w].shift_); 
+    bitn=ADC_(0,SRlength[w],66,gate[w].trigger,3,4095-CV[0], &gate[w].shift_); 
     BINROUTE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
 }
+
+// adc in
+void Nint67(void){ // as above add // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
+  uint8_t w=0;				       
+  HEAD;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],67,gate[w].trigger,3,CV[0], &gate[w].shift_); 
+    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+// adc in
+void Nint68(void){ // mod // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
+  uint8_t w=0;				       
+  HEAD;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],68,gate[w].trigger,3,4095-CV[0], &gate[w].shift_); 
+    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+
+
 
 // what other bits we could have?
 
@@ -625,13 +656,25 @@ void Nintroute0(void){ // CV: 4 bits for route in... other bits for logop
 //// TESTIN PROGRESS
 void NintselADC(void){ // use CV to select adc type: only those which don't use CV or strobe LIST:
   // we could also us top bits to do something with? 16 modes=4 bits, top bits logop/route?
-  //0,1,2,3,4,5,6,7,8 - adc logical-22,23,24,25,26,27,30,32inprogress 63,64,65 to test
+  //0,1,2,3,4,5,6,7,8 - adc logical-22,23,25,26,27,30,63,64,65 to test - 27 dies out but...
+  uint8_t choice[16]={0,1,2,3,4,5,6,7,8, 22, 23, 25, 26, 27, 30, 63};//leave off -inprogress 63,64,65 to test
   uint8_t w=0;				       
   HEAD;  
   if (gate[w].trigger)      {
+    val=63-(CV[0]>>6); // 6 bits say
     GSHIFT_;
-    bitn=ADC_(0,SRlength[w],tmp,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); 
-    BINROUTE_;
+    bitn=ADC_(0,SRlength[w],choice[13],gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_);
+    val=(val&0x03);// lowest 2 bits for logop
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn=logop(bitn,bitrr,val);
+  }
+  tmp=tmp>>1;
+    }			     
+     //    BINROUTE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
 }
@@ -754,13 +797,13 @@ void Nintprob4_0(void){ // prob of adc/X/ORroute or just cycling
   } 
 }
 
-void Nintprobdac1_0(void){ // TO TEST!  // example - as prob1 above but against DAC3
+void Nintprobdac1_0(void){ // example - as prob1 above but against DAC3
   // prob is choice of ADC or ADC XOR routed in bit
   uint8_t w=0;				       
   HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    if (dac[3]<CV[0]) {
+    if ((gate[3].dac)<CV[0]) {
     bitn=ADC_(0,SRlength[w],0,gate[w].trigger,3,CV[0], &gate[w].shift_); 
     }
     else

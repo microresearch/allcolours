@@ -246,7 +246,7 @@ uint32_t testmodes[4]={0,0,0,0};
 // we list our modes here...
 void (*dofunc[4][64])(void)=
 {
-  {Nint39, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {NintselADC, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, L0},
   {C0, C1, C1},
   {R0, R0, R1}
