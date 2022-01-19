@@ -231,9 +231,6 @@ void N31(void){
 
 // add modes
 
-void N63(void){ // // =- input regardless of length - basic sequential length as in 0 but with padding if >11 bits ** 
-  ADCXORIN(63);
-}
 
 // no adc
 void N64(void){ // // was strobe mode for cycling bits a la TM - no input but now uses ADC input as probability! - cvmode
@@ -243,6 +240,25 @@ void N64(void){ // // was strobe mode for cycling bits a la TM - no input but no
 // no adc
 void N65(void){ // was strobe mode for cycling bits a la TM - no input but now uses otherpar as probability! - can be intmode and cvmode
   ADCXORIN(65);
+}
+
+// adc in
+void N66(void){ // mixes with dac
+  param[0]=gate[3].dac;
+  ADCXORIN(66);
+}
+
+
+// adc in
+void N67(void){ // mixes with dac
+  param[0]=gate[3].dac;
+  ADCXORIN(67);
+}
+
+// adc in
+void N68(void){ // mixes with dac
+  param[0]=gate[3].dac;
+  ADCXORIN(68);
 }
 
 

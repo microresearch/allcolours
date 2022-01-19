@@ -261,28 +261,50 @@ all the comparison possibilities]
 
 ** 18/1/2022:
 
+*TODO19* - retest 6, 10, 12, 13, 14, 15, 16, 18, 21, 27, 35, 36, 37, 38, 39
+
+-  new DAC modes: 71, 72, 73, 74 
+
+66, 67, 68 to test
+
+- XOR strobe = 80,81,82,83,84,85
+
+add from adc_ into modeN TODO
+
+////////////////////////////
+
 *what are the basic ADC modes?*
 
+  case 0: // basic sequential length of upto 12 bits cycling in MSB first    
+  case 1: // equivalent bits: we don't need limit on number of bits
+  case 2: // variations on one bit audio - also phasey
+  case 3: // basic sequential length as in 0 but with padding if >11 bits **
+  case 4:  // special case for spaced bit entry depending on length
+  case 5: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+  case 8: // padded version of SR of bitsin ???
 
-- generic ADCg_ function to TEST but mostly keep other ADC_ ...
+- +generic ADCg_ function to implement/TEST (as above) but mostly keep other ADC+ = we get rid of as is only useful for DAC which we have - add modes/MSB there DONE see above
 
-- new ADC_ cases 63, 64, 65/also int65, int66 tested - 64 not so exciting.
+- new ADC_ cases +63+, 64, 65/also int65, int66 tested - 64 not so exciting.
 - tested/in progress adc_66,67,68: ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]*
 - tested: ADC-prob can also be against DAC rather than LFSR - but always CV against - Nintprobdac1_0
 
 - TESTED: in progress: can we have one intmode with CV selecting non-param ADC input modes, can have another mode list or shorter mode list with route bits
 
+- TESTcan also have mix of dac[3] and adc in cv adc_ modes... 66, 67, 68
 
+///TODO:
 
-- *can also have mix of dac[3] and adc in plain cv/int adc_ modes...*
+ADC modes: *prob of entry, prob of return for abstract modes* 22-31 and some others now/new ones... in modeN.h
+
 - *theone, it.c, draftdec, extramodes to all be checked for adcmodes, see also temp.org*
+
+/////////////////////////////////////
 
 - *for LRC modes we can also have prob using generic top ADC_buffer[12]*
 
 
 ** 17/1/2022:
-
-TODO: ADC modes: *prob of entry, prob of return for abstract modes* 22-31 and some others now/new ones...
 
 - DONE: inverting CV for param/int modes as now 0 is top TODO! DONE - to test, but not all work so, changed, and do we need to invert for prob intmodes? no
 

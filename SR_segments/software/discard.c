@@ -1,3 +1,164 @@
+// from adcetc
+
+// 0-31 (32)modes +1 INTmode
+// arrange modes now as most important first...
+
+   
+   /*  case 63: // =- input regardless of length - this was same as 5 but MSB 
+    // also try as MSB - now...
+    if (n[reg]<0) { // 12 bits = can also be 8 bits or less
+	k=(adc_buffer[12]);
+	n[reg]=11;
+    }
+    bt = (k>>n[reg])&0x01; // top bit first
+    n[reg]--;    
+    break;
+   */
+
+   /*
+  case 64: // was strobe mode for cycling bits a la TM - no input but now uses ADC input as probability! - cvmode
+    bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+    if (((LFSR_[reg] & 4095 ) < adc_buffer[12])){
+      bt=!bt;// invert cycling bit
+    }
+    break;
+   */    
+
+
+// 18/1/22 but we don't use this
+// more generic ADC_ in = so income is passed in function and can be LFSR so we have different handlings
+static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR, uint32_t *income){
+  static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
+  static int32_t integrator=0.0f, oldValue=0.0f;
+  static uint32_t k, lastbt=0; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
+  static uint8_t toggle=0, lc=0;
+  uint32_t bt=0, bit=0;
+  float inb;
+
+  switch(type){
+    
+  case 0: // basic sequential length of upto 12 bits cycling in MSB first    
+      if (length>11) length=11;
+      if (n[reg]<0) {
+	k=(*income)>>(11-length);
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+  }
+}
+
+
+    /* // LSB first
+  case 0: // basic sequential length of upto 12 bits cycling in    
+      if (length>11) length=11;
+      if (n[reg]>length) {
+	k=(adc_buffer[12])>>(11-length);
+      n[reg]=0;
+    }
+      bt = (k>>n[reg])&0x01; // this means that LSB comes out first
+    n[reg]++;    
+    break;
+    */
+
+
+    /*
+  case 2: // one bit audio input - can also change the 48??? - this one makes wierd phase effects
+    n[reg]++;
+  if (n[reg]>48) {
+    k=(adc_buffer[12]); 
+    n[reg]=0;
+  }
+  integrator+=k-oldValue;
+   if(integrator>0)
+  {
+     oldValue=MAXVALUE;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+   break;
+    */
+        
+
+
+    /*
+  case 2: // try with float but this is the same with phasings
+    inb=(((float)adc_buffer[12])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+    integrator+=(inb-oldValue);
+   if(integrator>0.0f)
+  {
+     oldValue=1.0f;
+     bt=1;
+  }
+   else
+   {
+      oldValue=-1.0f;
+      bt=0;
+   }   
+   break;    
+    */     
+
+   /*      
+  case 3: // basic sequential length as in 0 but with padding if >11 bits **
+      if (n[reg]>length) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); //
+	else {
+	  k=(adc_buffer[12]);//<<(length-11); // should be -11 // pads with 0s at the bottom LSB first
+	  //	  k+=((k>>length-11)&masky[length-11]); // pad with a repeat?
+	  //	  k+=padding[length-11]; // TESTY! - padding with 1s
+	}
+	n[reg]=0;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]++;    
+    break;
+   */
+
+   /*
+  case 3: // basic sequential length as in 0 but with padding if >11 bits **
+    // REVERSAL again doesn't change much
+      if (n[reg]<0) {
+	if (length<12) k=(adc_buffer[12])>>(11-length); //
+	else {
+	  k=(adc_buffer[12])<<(length-11); // should be -11 // pads with 0s at the bottom LSB first
+	  // double up
+	  //  k+=((k>>length-11)&masky[length-11]); // pad with a repeat?
+	  //	  k+=padding[length-11]; // TESTY! - padding with 1s - doesn't change much
+	}
+	n[reg]=length;
+    }
+    bt = (k>>n[reg])&0x01;
+    n[reg]--;    
+    break;
+   */
+   /*
+  case 3: // basic sequential length of upto 12 bits cycling in MSB first    
+        if (n[reg]<0) {
+	  //	  k=pow(2,length)+1;
+	  k++;
+	  if (k>4095) k=0;
+	n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+   */
+   /*  case 3: // basic sequential length of upto 12 bits cycling in MSB first    
+        if (n[reg]<0) {
+	  k=adc_buffer[12];
+	  n[reg]=length;
+    }
+      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+   */   
+
+
 
 /* options here:
 1. 9 bit speed +dac ->   speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)];
