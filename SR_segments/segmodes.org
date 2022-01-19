@@ -259,21 +259,86 @@ all the comparison possibilities]
 
 * 2022++
 
+** 19/1/2022
+
+*question of 32/32 split of speedcv/dac // int across all modes as gives more param control
+
+- routing and dac control is most important, also which modes use strobe and which not
+
+*question also is if we use right DAC for lowest fake clkin - this also feeds back in to top when it is running:*
+
+- *wider question of multi functions of right hand dac and how this could be otherwise: functions as feed through, as fake clk, as dac feedback input*
+
+--- answer is maybe to have different dac options (where we take from) set in modeR
+
+Still working on modeN.h modes:
+
+- DONEput generic one back in so we can do ADC+DAC opsDONE - to fill out in modeN - what variations do we have? 7 bits
+
+- route could also be N->C N->L L->R R->N which is 8,1,1,2 test
+
+thinking also how it could be to have 2 speeds - one for entry into R feedback and another into L, DAC:
+
+so 2 branch speeds??? how could this work??? depends on routings and if we mean primary speeds then we would need to run one SR twice
+
+
+
+//////////////////////////////
+
+how to choose modeN modes now...
+
+we have:
+
+*- 16x or 32x CV modes*
+
+DACin makes sense with mix or is just like normed feedback - but interesting if we can change type of gate[3].dac DONE Nint70
+
+0-7adc basics with XOR
+
+other ADC in
+
+strobe ADCs in
+
+abstract ones
+
+DAC/ADC mixes in
+
+*- 16x DAC+CV to work out -> what makes most sense?*
+
+0-7adc basics with XOR
+
+*- 16x or 32x INTmodes all must use CV! we have two many*
+
+prob modes
+special modes-params eg, route, selects
+
+/// *or shall we have 32 INTmodes and reduce CV modes*
+
+//////////////////////////////
+
+- DONEin modeN.h but need to check all/fix modes: for modes which don't use strobe we stop normalled clock and use strobe pulse as input - try OR or XOR
+- check if is inverted - is interrupt on falling edge so not inv
+
+*question if for modes which use DAC in ADC if we should NOT route in DAC or at least have both options - tested in N27 and can work/run out*
+
+*question also if LR pulses in should be XOR or OR?*
+
 ** 18/1/2022:
 
-*TODO19* - retest 6, 10, 12, 13, 14, 15, 16, 18, 21, 27, 35, 36, 37, 38, 39
+TESTED on 19th:
+//*TODO19* - retest 6x, 10, 12*, 13, 14, 15, 16*, 18*, 21*, 27*, 35, 36, 37, 38, 39
+//-  new ADC modes: 71, 72*, 73, 74,-DAC ins have tendency run out...
+// 66, 67, 68 to test-DAC
 
--  new DAC modes: 71, 72, 73, 74 
+//- +XOR strobe = 80,81,82,83,84,85+ - now we have strobe scheme so we don't need add modes
 
-66, 67, 68 to test
-
-- XOR strobe = 80,81,82,83,84,85
-
-add from adc_ into modeN TODO
+add new ones from adc_ into modeN TODO
 
 ////////////////////////////
 
 *what are the basic ADC modes?*
+
+-7 here:
 
   case 0: // basic sequential length of upto 12 bits cycling in MSB first    
   case 1: // equivalent bits: we don't need limit on number of bits
@@ -281,7 +346,7 @@ add from adc_ into modeN TODO
   case 3: // basic sequential length as in 0 but with padding if >11 bits **
   case 4:  // special case for spaced bit entry depending on length
   case 5: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-  case 8: // padded version of SR of bitsin ???
+  case 6: // padded version of SR of bitsin ??? - now is 6 - was 8
 
 - +generic ADCg_ function to implement/TEST (as above) but mostly keep other ADC+ = we get rid of as is only useful for DAC which we have - add modes/MSB there DONE see above
 

@@ -2,6 +2,8 @@
 
 /*
 
+arrange also a bit better in adcetc with order and strobes in
+
 CVmodes: 16xDAC could be reduced, followed by 4x4 DAC modes below, XOR/OR in to test, speeds << >>
 
 DACmodes: 16 - 4x4 as above or???

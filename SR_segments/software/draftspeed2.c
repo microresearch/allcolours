@@ -79,6 +79,14 @@ uint32_t neworders[24][4]={
   {3,2,0,1}  
 };
 
+// 1 means its used so do normed clocks - all one for testing
+uint8_t strobey[4][64]={
+  {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
+  {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
+  {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
+  {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
+};
+  
 #include "macros.h"
 
 extern __IO uint16_t adc_buffer[12];
@@ -243,12 +251,13 @@ void testnull(void){
 
 uint32_t testmodes[4]={0,0,0,0};
 
+
 // we list our modes here...
 void (*dofunc[4][64])(void)=
 {
-  {NintselADC, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, L0},
-  {C0, C1, C1},
+  {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
 
@@ -302,11 +311,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do the modes
   
-    mode[www]=testmodes[www];
-    //  mode[1]=0;mode[2]=0;mode[3]=0;
-  //  if (mode[0]>31) mode[0]=31;
+  //      mode[www]=testmodes[www];
+  //  mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
+      mode[0]=0;mode[1]=0;mode[3]=0; // test dac
+  //
+      if (mode[2]>15) mode[2]=15;
   //    (*gate[www].dofunc[mode[www]])();
-  //  mode[0]=;
+      //      mode[2]=5;
   (*dofunc[www][mode[www]])();
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
@@ -316,31 +327,40 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     //    else gate[2].dac=0;
     DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8 
     int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-  }      
+  }
 
   // DAC for normed NSR/PWM
-  if (www==3){
+  if (www==3 && strobey[0][mode[0]]){
       tmp= gate[3].dac; // right hand
       tmp+=320; 
       TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
       TIM1->CCR1 = tmp/2; // pulse width
-
-      // TESTY with INTmodes
+  }
+  else // we need to test this
+    {
+      TIM1->ARR =0; 
+      TIM1->CCR1 = 0;
+    }
+  // else we need to generate 0 pulse/
+  // TESTY with INTmodes
       
       if (counter[4]>gate[3].dac){ // L side
 	counter[4]=0;
+	if (strobey[1][mode[1]]){
 	flipper[0]^=1;
 	if (flipper[0]) GPIOB->BSRRH = clk_route[1];  // clear bits of fake_one
 	else   GPIOB->BSRRL=clk_route[1]; //  write bits
+	}
       }      
 
       if (counter[5]>gate[1].dac){ // R side
 	counter[5]=0;
+	if (strobey[3][mode[3]]){
 	flipper[1]^=1;
 	if (flipper[1]) GPIOB->BSRRH = clk_route[2];  
 	else   GPIOB->BSRRL=clk_route[2]; //  write bits
       }      
-
+      }
       /*
       if (counter[2]>(gate[3].dac)){ // now trying DAC 29/12/2021 - // C side!
 	counter[2]=0;
@@ -350,13 +370,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	}
       */
 
-      // trial just using lowest bit 30/12/2021 ??? TEST????
+      // trial just using lowest bit 30/12/2021 ??? TEST???? C side
       // - DONEtrial of another approach to fake clocks (but would be better as own ghosts???) - NOTEfrom segmodes but not sure what that means?
-      if ((gate[3].shift_>>SRlength[3])&0x01) GPIOB->BSRRH = clk_route[4];
-      else GPIOB->BSRRL=clk_route[4]; //  write bits
+            if (strobey[2][mode[2]]){
+	      if ((gate[3].shift_>>SRlength[3])&0x01) GPIOB->BSRRH = clk_route[4];
+	      else GPIOB->BSRRL=clk_route[4]; //  write bits
+	    }
       
       counter[4]++; counter[5]++; counter[6]++;
 
-  }
-  
 }
+ 

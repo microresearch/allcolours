@@ -4,6 +4,8 @@
 
 /*
 
+and global set routes, set which dacs is dac for adc, set fake clkins
+
 CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC
 
 DACmodes: basics, esoterics
