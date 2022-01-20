@@ -28,7 +28,7 @@
     gate[w].int_time = gate[w].time_now;				\
   }
 
-
+// this one is used for DACspeed modes
 #define CVOPENDAC {				\
     if (gate[w].time_now>32768){				\
       gate[w].int_time=0;					\
@@ -46,9 +46,9 @@
 // we cannot place this inside other macros! fixed 12/1/2021
 // HEADN for modesN
 
-#define HEADN float alpha; uint32_t bitn, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
+#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
 
-#define HEAD float alpha; uint32_t bitn, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+#define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
 
 #define ENDER {					\
     new_data(val,w);				\
@@ -154,12 +154,12 @@
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
 }
 
-#define PULSOUT {				  \
+#define PULSOUT_ {				  \
   tmp=(w<<1);					  \
   if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
   else *pulsoutHI[tmp]=pulsouts[tmp];		  \
   lengthbit=(SRlength[w]>>1);			      \
-  new_stat=(shift_[w] & (1<<lengthbit))>>lengthbit;   \
+  new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;   \
   if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;    \
   prev_stat[w]=new_stat;			      \
   tmp++;					      \

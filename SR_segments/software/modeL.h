@@ -8,6 +8,8 @@ DACmodes: basics, esoterics
 
 INTmodes: route from CV, prob from CV, others?
 
+- how we work with length param as it doesn't change so much?
+
 */
 
 void Lno(void){

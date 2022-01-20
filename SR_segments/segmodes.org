@@ -259,6 +259,21 @@ all the comparison possibilities]
 
 * 2022++
 
+** 20/1/2022
+
+- last of all intmodes selects type of ADC/DAC (except those which use strobe or use param). For LR selects functions with no params or strobe/so no intmodes
+
+- fix for pulse out on C1 (bitn initialised as 0)
+
+R- for CV modes add in bump up global routes, SR as global routing table
+
+L,N,C - // for CV modes add in bump up local routes, SR/ghostSR/DAC as
+local routing table - we have some of these in modeN to model from, we
+also have a CV intmode router there
+
+- we can also have modes in all cases which use (mix/xor etc in) their own ghosts (as run by the following SR)
+
+
 ** 19/1/2022
 
 *question of 32/32 split of speedcv/dac // int across all modes as gives more param control

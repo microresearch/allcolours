@@ -39,10 +39,10 @@ what are the next 16x LR modes
 #define DACOUT {				\
   uint8_t w=2;					\
   float alpha;								\
-  uint32_t bitn, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;	\
-  if (speedf_[w]!=2.0f){						\
+  uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;	\
+  if (speedf_[2]!=2.0f){						\
     CVOPEN;						\
-    if (gate[w].last_time<gate[w].int_time)      {	\
+    if (gate[2].last_time<gate[2].int_time)      {	\
       GSHIFT_;						\
       BINROUTE_;					\
       BITN_AND_OUTV_;					\
@@ -131,4 +131,46 @@ void C14(void){
 void C15(void){ // one bit audio with param as filter
   gate[2].dactype=2; gate[2].dacpar=4095-(param[2]&4095);
   DACOUT;
+}
+
+// CV+DAC speed modes
+
+// INTmodes
+
+void Cint0(void){ // INTmode 0 no interpolation and no use of CV
+  uint8_t w=2;				       
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  HEAD;  
+  if (gate[2].trigger)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVINT_; // we have pulse out
+  } 
+}
+
+
+// last intmode - select any DAC which doesn't use param/strobe:
+// list of these: 0,1,2(gate[2].dacpar=2048;),3,6,7,8,11,15 = 9 mode - maybe reduce to 8 and have other bits for route
+// so is 3 bits for choice and 4 for route = 7 bits total = 128
+void CintselDAC_63(void){ 
+  uint8_t choice[8]={0,1,2,3, 6,7,11,15};
+  gate[2].dacpar=2048;
+  uint8_t w=2;				       
+  HEAD;
+  if (gate[2].trigger)      {
+    val=127-(CV[2]>>5); // 7 bits say
+    GSHIFT_;
+    tmp=(val>>4); // 3 bits
+    gate[2].dactype=choice[tmp];
+    tmp=(val&15);// lowest 4 bits for routing
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[2]>>SRlength[x]) & 0x01;
+	gate[x].Gshift_[2]=(gate[x].Gshift_[2]<<1)+bitrr;
+	bitn^=bitrr;
+  }
+      tmp=tmp>>1;
+    }			     
+    BITN_AND_OUTVINT_; // pulse out
+  } 
 }
