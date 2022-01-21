@@ -1,3 +1,47 @@
+// how we can OR in for route 0 - below but doesn't work so well
+#define BINROUTE {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
+  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+
+
+// test logic for minor major modes
+// say 4 major modes
+
+// but how we can split modes?
+major=mode[3]>>4; // from 64=6bits to 2 bits 
+
+if (w!=3){
+switch(major){
+ case 0:
+   // we do all modes for all except 3
+   switch(mode[w]{ // or this would be a bit interpretation and we have no switch
+       case 0:
+	 break;
+     }
+   break;
+     }
+ }//major
+ }//w!=3
+ else {
+   // w==3 modes
+   switch(mode[3]){// here we have 16 (x4-64) minor modes for the right side...
+   case 0: 
+     break;
+   }
+ }//w==3
+
+
+
+
 //unused
 #define BINROUTEOR {				\
   tmp=binroute[count][w];				\

@@ -1,30 +1,5 @@
-// test logic for minor major modes
-// say 4 major modes
-
-// but how we can split modes?
-major=mode[3]>>4; // from 64=6bits to 2 bits 
-
-if (w!=3){
-switch(major){
- case 0:
-   // we do all modes for all except 3
-   switch(mode[w]{ // or this would be a bit interpretation and we have no switch
-       case 0:
-	 break;
-     }
-   break;
-     }
- }//major
- }//w!=3
- else {
-   // w==3 modes
-   switch(mode[3]){// here we have 16 (x4-64) minor modes for the right side...
-   case 0: 
-     break;
-   }
- }//w==3
-
-
+// DONE: Gshift_[x][w] becomes gate[x].Gshift_[w]
+// shift_[w] becomes gate[w].shift_
 
   case 333: // TEST mode - with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
     // not sure if this makes sense
@@ -39,9 +14,9 @@ switch(major){
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
-	  //	      Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
-	  Gshift_[x][w]=(Gshift_[x][w]<<1) + ((shift_[w]>>SRlength[w]) & 0x01);
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  //	      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -65,9 +40,9 @@ BITN_AND_OUT;
 	    for (x=0;x<4;x++){
 	      if (tmp&0x01){
 		storedlength[x][w]=SRlength[x];
-		GGshift_[x][w]=Gshift_[x][w];
-		bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
-		GGshift_[x][w]=(Gshift_[x][w]<<1) + ((shift_[w]>>SRlength[w]) & 0x01);
+		Ggate[x].Gshift_[w]=gate[x].Gshift_[w];
+		bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+		Ggate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 		bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -78,9 +53,9 @@ BITN_AND_OUT;
 	  tmp=binroute[count][w];
 	  for (x=0;x<4;x++){
 	    if (tmp&0x01){
-	      bitrr = (GGshift_[x][w]>>storedlength[x][w]) & 0x01;
-	      //	      Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
-	      GGshift_[x][w]=(GGshift_[x][w]<<1) + ((shift_[w]>>SRlength[w]) & 0x01);
+	      bitrr = (Ggate[x].Gshift_[w]>>storedlength[x][w]) & 0x01;
+	      //	      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+	      Ggate[x].Gshift_[w]=(Ggate[x].Gshift_[w]<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 	      bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -100,8 +75,8 @@ BITN_AND_OUT;
 	tmp=LFSR_[w]; tmpp=shift_[LFSR[w]]; // try with CV too
 	for (x=0;x<4;x++){
 	  if ((tmp&255)<(tmpp&255)){// replace with 12 bits /4 = 3 bits prob = 7 (LFSR_[w] & 4095 ) < (shift_[LFSR[w]] & 4095)
-	  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
-	  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>8; tmpp=tmpp>>8;
@@ -114,8 +89,8 @@ BITN_AND_OUT;
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
-	  if ((LFSR_[w] & 4095 ) < (dac[LFSR[w]])) Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  if ((LFSR_[w] & 4095 ) < (dac[LFSR[w]])) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -137,8 +112,8 @@ BITN_AND_OUT;
 	  tmp=binroute[count][w];
 	  for (x=0;x<4;x++){
 	    if (tmp&0x01){
-	      bitrr = (Gshift_[x][w]>>which[w]) & 0x01;
-	      Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+	      bitrr = (gate[x].Gshift_[w]>>which[w]) & 0x01;
+	      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
 	      bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -165,7 +140,7 @@ BITN_AND_OUT;
 	if (tug[w]){
 	  BINROUTE;
 	}
-	else bitn=!((shift_[w]>>SRlength[w]) & 0x01); 
+	else bitn=!((gate[w].shift_>>SRlength[w]) & 0x01); 
 	
       /////////////////////////////////////...
 
@@ -179,7 +154,7 @@ BITN_AND_OUT;
 	if (tug[w]){
 	  BINROUTE;
 	}
-	else bitn=((shift_[w]>>SRlength[w]) & 0x01); 
+	else bitn=((gate[w].shift_>>SRlength[w]) & 0x01); 
 	/////////////////////////////////////...
 
 
@@ -189,8 +164,8 @@ BITN_AND_OUT;
 	// trial these with strobe - 00 invert bit here
 	BINROUTE;
 	if (trigger[w]) tug[w]^=1;
-	if (tug[w])	  bitrr=(shift_[w]>>SRlength[w]) & 0x01;
-	else bitrr=!((shift_[w]>>SRlength[w]) & 0x01); 
+	if (tug[w])	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+	else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
 	bitn|=bitrr;
 	
       /////////////////////////////////////...
@@ -203,7 +178,7 @@ BITN_AND_OUT;
 	if (trigger[w]){
 	BINROUTEANDCYCLE;	}
 	else {
-	  bitn=(shift_[w]>>SRlength[w]) & 0x01; 
+	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}	
       /////////////////////////////////////...
 
@@ -216,7 +191,7 @@ BITN_AND_OUT;
 	  BINROUTEANDCYCLE;
 	}
 	else {
-	  bitn=(shift_[w]>>SRlength[w]) & 0x01; 
+	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}	
       /////////////////////////////////////...	
 
@@ -231,10 +206,10 @@ BITN_AND_OUT;
   tmp=binroute[count][w];
   for (x=0;x<4;x++){
   if (tmp&0x01){
-    if (trigger[w]) Gshift_[x][w]^=shift_[w];
-    bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
+    if (trigger[w]) gate[x].Gshift_[w]^=gate[w].shift_;
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
     if (trigger[w]) 
-      Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;
+      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
     bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -245,7 +220,7 @@ BITN_AND_OUT;
 	  BINROUTEANDCYCLE;
 	}
 	else {
-	  bitn=(shift_[w]>>SRlength[w]) & 0x01; 
+	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}
 
 	/////////////////////////////////////...
@@ -302,13 +277,13 @@ bitn=(shift_[w]>>SRlength[w]) & 0x01;
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  if (trigger[w]){
-	    tmpp=Gshift_[x][w];
+	    tmpp=gate[x].Gshift_[w];
 	    REV32; // reverse 32 bits
 	    tmpp=tmpp&othermasky[SRlength[x]]; // mask the top length bits
-	    Gshift_[x][w]=tmpp>>(31-SRlength[x]); // and shift 31-length bits
+	    gate[x].Gshift_[w]=tmpp>>(31-SRlength[x]); // and shift 31-length bits
 	  }
-	  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
-	  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; // 
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; // 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -327,7 +302,7 @@ bitn=(shift_[w]>>SRlength[w]) & 0x01;
 	*/
 	BINROUTE;
 	
-      bitrr = (shift_[w]>>SRlength[w]) & 0x01; 
+      bitrr = (gate[w].shift_>>SRlength[w]) & 0x01; 
 
       tmpp=shift_[dacroute[w]]&31; // 5 bits
       if ((tmpp>>4)&1) {
@@ -369,8 +344,8 @@ bitn=(shift_[w]>>SRlength[w]) & 0x01;
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  if (trigger[w]) storedlength[x][w]=SRlength[x];
-	  bitrr = (Gshift_[x][w]>>storedlength[x][w]) & 0x01;
-	  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	  bitrr = (gate[x].Gshift_[w]>>storedlength[x][w]) & 0x01;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -383,8 +358,8 @@ bitn=(shift_[w]>>SRlength[w]) & 0x01;
 	tmp=shift_[dacroute[w]]&255; // 8 bits - we can also interpret bits as single ones... we just seem to use 6 bits here
 	for (x=0;x<4;x++){ 
 	  if ((tmp&0x03) !=0){  
-	    bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01; 
-	    Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	    bitn=logopx(bitn,bitrr,(tmp)&0x03); 
 	  }
 	  tmp=tmp>>2; // 4 bits
@@ -398,8 +373,8 @@ bitn=(shift_[w]>>SRlength[w]) & 0x01;
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;
-	  if (trigger[w]) Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr; 
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  if (trigger[w]) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;

@@ -259,6 +259,28 @@ all the comparison possibilities]
 
 * 2022++
 
+port in to LR modes from draftdec? and theone, extramodes
+
+// Gshift_[x][w] becomes gate[x].Gshift_[w]
+// shift_[w] becomes gate[w].shift_
+
+done in extramodes
+
+** 21/2/2022
+
+- *maybe makes sense only have DAC speed modes in LR!* else becomes too confusing/noisy and we keep NC as more mode selections and prob for C
+
+- Tested Rdacspeed modes: *problem again is that if we use DAC1 to set it also effects speed of outgoing (unless we route differently 8,1,1,1) but that doesn't make sense*
+
+- added Rmode which bumps on ghosts - variations of this and can also be intmode and dacspeed mode
+
+- *some way to untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv*
+
+- *ghosts of ghosts* - strobe records a ghost of incoming ghost and holds this till next strobe/advances it, records new one, holds for length time?
+
+TODO: when we use dac this should be from a table which can also be bumped around by modeR *dacfrom* which also uses/matches count or should it be otherwise?
+DONE- but we need to test this thoroughly - clkroutes also follow the same logic
+
 ** 20/1/2022
 
 - last of all intmodes selects type of ADC/DAC (except those which use strobe or use param). For LR selects functions with no params or strobe/so no intmodes
@@ -336,7 +358,7 @@ special modes-params eg, route, selects
 
 *question if for modes which use DAC in ADC if we should NOT route in DAC or at least have both options - tested in N27 and can work/run out*
 
-*question also if LR pulses in should be XOR or OR?*
+*question also if LR pulses in should be XOR or OR? - or seems better TODO*
 
 ** 18/1/2022:
 
@@ -392,7 +414,7 @@ TESTed/ok dacspeed from itself - Ndacadditself - can also be other variants
 
 *TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
 
-*modulo LR modes to code/test*
+modulo LR modes to code/test - done in Lmod and Rmod
 
 TODO: define probability modes, define all bit patterns, ADC modes from all files inc. extramodes, 
 

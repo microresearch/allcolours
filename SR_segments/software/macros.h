@@ -82,6 +82,7 @@
   }							\
   tmp=tmp>>1;						\
   }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 #define BINROUTEANDCYCLE_ {				\
@@ -92,8 +93,9 @@
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
   bitn^=bitrr;					\
   }							\
-  tmp=tmp>>1;						\
+    tmp=tmp>>1;						\
   }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 
@@ -108,6 +110,7 @@
   }							\
   tmp=tmp>>1;						\
   }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 //DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
@@ -127,6 +130,7 @@
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
 }
 
+// for pulse outs
 #define BITN_AND_OUTVINT_ {						\
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
@@ -198,19 +202,6 @@
   tmpp = ((tmpp >> 4) & 0x0F0F0F0F) | ((tmpp & 0x0F0F0F0F) << 4);	\
   tmpp = ((tmpp >> 8) & 0x00FF00FF) | ((tmpp & 0x00FF00FF) << 8);	\
   tmpp = ( tmpp >> 16             ) | ( tmpp               << 16);	\
-  }
-
-// how we can OR in for route 0 - below but doesn't work so well
-#define BINROUTE {				\
-  tmp=binroute[count][w];				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (Gshift_[x][w]>>SRlength[x]) & 0x01;		\
-  Gshift_[x][w]=(Gshift_[x][w]<<1)+bitrr;		\
-  bitn^=bitrr;					\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
   }
 
 
