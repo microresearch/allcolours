@@ -266,16 +266,19 @@ port in to LR modes from draftdec? and theone, extramodes
 
 done in extramodes
 
+TODO: in draftdec/list modes ther, theone
+
 ** 24/1/2022
 
 - TODOcheck new notebook Qs:
 
 - DONE: added dac comparator mode, compare with itself DONE/TESTED
-- DAC as param for abstract ADC modes 22-31 checkDONE
+- DAC as param for some abstract ADC modes (22-31) checkDONE
 - all modes have local route in to change - from strobe/bump, from CV. from DAC is already done or? - in modeN, R, L, C tested///DOE
 - added Ndacghostincoming0 using incoming ghost for speed in modeN.h
-- +fixed speed thing in macro.h a bit/back+ changed adc for each so can have multiple w
-- added ADC choices in intmode: LintselADC_63
+- +fixed speed thing in macro.h a bit/back+ fixed some of adc so can have multiple w (eg. for oldbt etc)
+- added ADC choices in intmode: LintselADC_63, RintselADC_63
+- added binroute NOG macros to macros.h to test in modes (in modeN.h for now): no movement of GSRs....
 
 Benjolin style patch: 
 
@@ -304,6 +307,7 @@ doesn't seem to really work out!
 - added Rmode which bumps on ghosts - variations of this and can also be intmode and dacspeed mode
 
 - *some way to untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv*
+eg. pass on speed/gshift etc, dac speed ????
 
 - *ghosts of ghosts* - strobe records a ghost of incoming ghost and holds this till next strobe/advances it, records new one, holds for length time?
 
@@ -387,7 +391,7 @@ special modes-params eg, route, selects
 
 *question if for modes which use DAC in ADC if we should NOT route in DAC or at least have both options - tested in N27 and can work/run out*
 
-*question also if LR pulses in should be XOR or OR? - or seems better TODO*
+*question also if LR pulses in should be XOR or OR? - OR seems better TODO*
 
 ** 18/1/2022:
 

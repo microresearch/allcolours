@@ -69,7 +69,7 @@
 }
 
 #define JUSTCYCLE_ {					\
-  bitrr = (gate[w].shift_>>SRlength[w]) & 0x01;		\
+  bitrr = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;		\
   bitn^=bitrr;						\
   }
 
@@ -100,14 +100,48 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
-
-
 #define BINROUTEOR_ {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn|=bitrr;							\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+#define BINROUTENOG_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;							\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+#define BINROUTEANDCYCLENOG_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+    if (tmp&0x01 || (x==w)){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;					\
+  }							\
+    tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+#define BINROUTEORNOG_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
   bitn|=bitrr;							\
   }							\
   tmp=tmp>>1;						\

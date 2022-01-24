@@ -40,9 +40,9 @@ BITN_AND_OUT;
 	    for (x=0;x<4;x++){
 	      if (tmp&0x01){
 		storedlength[x][w]=SRlength[x];
-		Ggate[x].Gshift_[w]=gate[x].Gshift_[w];
+		gate[x].Gshift_[w]=gate[x].Gshift_[w];
 		bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
-		Ggate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
+		gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 		bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -53,9 +53,9 @@ BITN_AND_OUT;
 	  tmp=binroute[count][w];
 	  for (x=0;x<4;x++){
 	    if (tmp&0x01){
-	      bitrr = (Ggate[x].Gshift_[w]>>storedlength[x][w]) & 0x01;
+	      bitrr = (gate[x].Gshift_[w]>>storedlength[x][w]) & 0x01;
 	      //	      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
-	      Ggate[x].Gshift_[w]=(Ggate[x].Gshift_[w]<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
+	      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 	      bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -90,7 +90,7 @@ BITN_AND_OUT;
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
-	  if ((LFSR_[w] & 4095 ) < (dac[LFSR[w]])) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	  if ((LFSR_[w] & 4095 ) < (gate[LFSR[w]].dac)) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -216,7 +216,7 @@ BITN_AND_OUT;
   }
 	*/
 	// - basic prob mode of entry of routed or not (into cycling). and just xor puls in...
-	if (dac[LFSR[w]]) < (param[w] & 4095)){
+	if (gate[LFSR[w]].dac) < (param[w] & 4095)){
 	  BINROUTEANDCYCLE;
 	}
 	else {
@@ -304,7 +304,7 @@ bitn=(shift_[w]>>SRlength[w]) & 0x01;
 	
       bitrr = (gate[w].shift_>>SRlength[w]) & 0x01; 
 
-      tmpp=shift_[dacroute[w]]&31; // 5 bits
+      tmpp=shift_[dacfrom[count][w]]&31; // 5 bits
       if ((tmpp>>4)&1) {
 	PULSIN_XOR;
       }
@@ -355,7 +355,7 @@ bitn=(shift_[w]>>SRlength[w]) & 0x01;
 	// trial of generic bit options - bits from which SR, from param etc.
 	// route in and logop bits:
 	// 1111 4 route in bits x 3 logopx = 2 bits per... 0, none, 1, xor, 2or, 3inv XOR = 8 bits = 255 too much for CV
-	tmp=shift_[dacroute[w]]&255; // 8 bits - we can also interpret bits as single ones... we just seem to use 6 bits here
+	tmp=shift_[dacfrom[count][w]]&255; // 8 bits - we can also interpret bits as single ones... we just seem to use 6 bits here
 	for (x=0;x<4;x++){ 
 	  if ((tmp&0x03) !=0){  
 	    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 

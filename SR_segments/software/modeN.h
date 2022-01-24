@@ -54,6 +54,21 @@ INTmodes 16 or 32 maybe: use CV as param
   }									\
   }
 
+#define ADCXORINNOG(X){				\
+  uint8_t w=0;					\
+  HEADN;						\
+  if (speedf_[w]!=2.0f){			\
+  CVOPEN;					\
+  if(gate[0].last_time<gate[0].int_time)      {	\
+  GSHIFT_;								\
+  bitn=ADC_(0,SRlength[0],X,gate[0].trigger,dacfrom[count][0],param[0], &gate[0].shift_);	\
+  BINROUTENOG_;								\
+  BITN_AND_OUTVN_;							\
+  ENDER;								\
+  }									\
+  }									\
+  }
+
 #define ADCXORIN_NOROUTE(X){				\
   uint8_t w=0;					\
   HEADN;						\
@@ -134,6 +149,10 @@ void Nnoroute0(void){ // basic ADC in with no route in
 
 void N0(void){ // basic ADC in with XOR route in
   ADCXORIN(0);
+}
+
+void N0nog(void){ // basic ADC in with XOR route in
+  ADCXORINNOG(0);
 }
 
 void N1(void){ // equivalent bits

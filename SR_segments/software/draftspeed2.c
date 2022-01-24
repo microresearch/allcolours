@@ -92,7 +92,7 @@ uint8_t strobey[4][64]={
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
 uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed to use in INTmodes and other modes
-uint32_t dacroute[4]={2,3,3,1}; // DAC routing for probability modes etc...
+///uint32_t dacroute[4]={2,3,3,1}; // DAC routing for probability modes etc...
 
 #define FULL 0b11111111111111111111111111111111 //32 bits full
 #define MAXVALUE 4095
