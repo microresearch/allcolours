@@ -182,7 +182,8 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[16][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
-        {8,1,2,1}, // default 8121
+    {8,1,2,1}, // default 8121
+  //  {0,0,1,0}, //  test
 	{8,1,2,2}, // expanding
 	{8,1,2,4}, // expanding
 	{8,1,2,8}, // expanding
@@ -190,6 +191,7 @@ uint32_t binroute[16][4]={ // add more routes, also what seq change of routes ma
 	{8,1,2,11}, // expanding
 	{8,1,2,12}, // expanding
 	{8,1,2,4}, // route in one big circle
+
 	{0,1,2,4},
 	{9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
 	{1,2,4,8}, // only loop - this is what is added to get loop too for prob
@@ -200,9 +202,47 @@ uint32_t binroute[16][4]={ // add more routes, also what seq change of routes ma
 	{2,4,8,1}, // reverse round route
 }; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
 
+uint32_t inroute[16][4]={ // who we have main incoming route from 0-3 - from above
+        {3,0,1,0}, // default 8121
+	{3,0,1,1}, // expanding
+	{3,0,1,2}, // expanding
+	{3,0,1,3}, // expanding
+	{3,0,1,3}, // expanding
+	{3,0,1,1}, // expanding
+	{3,0,1,2}, // expanding
+	{3,0,1,2}, // route in one big circle	
+	{0,0,1,2},
+	{3,2,2,0}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
+	{0,1,2,3}, // only loop - this is what is added to get loop too for prob
+	{3,0,1,1}, // as defroutee 3/0/1/1
+	{3,0,0,1}, // as altroute 3/0/0/1
+	{3,3,0,1}, // bounce L and R back and forth
+	{3,0,1,2}, // others
+	{1,2,3,0}, // reverse round route
+}; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
+
+uint32_t routeto[16][4]={ // as above but who we route TO! and as single routes - first one/major
+  {1,2,2,0}, // default 8121
+  {1,2,2,0}, // expanding
+  {1,2,3,0}, // expanding ok
+  {1,2,2,0}, // expanding
+  {1,2,2,0}, // expanding
+  {1,2,2,0}, // expanding
+  {1,2,2,0}, // expanding
+  {1,2,3,0}, // route in one big circle
+  {1,2,3,3},
+  {1,2,2,1}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
+  {0,1,2,3}, // only loop - this is what is added to get loop too for prob
+  {1,2,3,0}, // as defroutee 3/0/1/1
+  {1,3,2,0}, // as altroute 3/0/0/1
+  {1,4,3,0}, // bounce L and R back and forth
+  {1,3,3,0}, // others
+  {3,0,1,2}, // reverse round route
+}; 
+
 uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!
   {3,3,3,1},
-  {3,3,3,1},
+  {1,3,1,1}, // new one for rungling 24/1/2022
   {3,3,3,1},
   {3,3,3,1},
   {3,3,3,1},
@@ -218,8 +258,6 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!
   {3,3,3,1},
   {3,3,3,1}
 };
-
-  
 
 // can also have lists for each one to bump along
 uint32_t myroute[4][16]={
@@ -293,7 +331,7 @@ void (*dofunc[4][64])(void)=
   {N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, L0},
   {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
-  {R0, R0, R1}
+  {Rosc0, R0, R1}
 };
 
 void mode_init(void){
@@ -307,9 +345,9 @@ void mode_init(void){
   gate[0].adctype=0;
 
   gate[2].dactype=0; // set for out
-  gate[1].dactype=66; // default simpler version
-  gate[3].dactype=66;
-  gate[0].dactype=66;  
+  gate[1].dactype=67; // default simpler version - now 4 bit version 
+  gate[3].dactype=67;
+  gate[0].dactype=67;  
 }
 
 
@@ -346,26 +384,26 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do the modes
   
-  //  mode[www]=testmodes[www];
+  mode[www]=testmodes[www];
   //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
   //    mode[0]=0;mode[1]=0;mode[3]=0; // test dac
   //
     //            if (mode[2]>15) mode[2]=15;
   //    (*gate[www].dofunc[mode[www]])();
       //      mode[2]=5;
-  (*dofunc[www][mode[www]])();
+    (*dofunc[www][mode[www]])();
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
   if (www==2)  {
-    //    kk^=1; // test code
-    //    if (kk)    gate[2].dac=4095;
-    //    else gate[2].dac=0;
+    //      kk^=1; // test code
+    //       if (kk)    gate[2].dac=4095;
+    //        else gate[2].dac=0;
     DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8 
     int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
   }
 
   // DAC for normed NSR/PWM
-  if (www==dacfrom[count][0] && strobey[0][mode[0]]){
+    if (www==dacfrom[count][0] && strobey[0][mode[0]]){
       tmp= gate[dacfrom[count][0]].dac; // now is set by count/array
       tmp+=320; 
       TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
@@ -396,14 +434,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	else   GPIOB->BSRRL=clk_route[2]; //  write bits
       }      
       }
-      /*
-      if (counter[2]>(gate[3].dac)){ // now trying DAC 29/12/2021 - // C side!
-	counter[2]=0;
-	flipper[2]^=1;
-	if (flipper[2]) GPIOB->BSRRH = clk_route[4];  
-	else   GPIOB->BSRRL=clk_route[4]; //  write bits
-	}
-      */
+
+//      if (counter[2]>(gate[3].dac)){ // now trying DAC 29/12/2021 - // C side!
+//	counter[2]=0;
+//	flipper[2]^=1;
+//	if (flipper[2]) GPIOB->BSRRH = clk_route[4];  
+//	else   GPIOB->BSRRL=clk_route[4]; //  write bits
+//	}
+
 
       // trial just using lowest bit 30/12/2021 ??? TEST???? C side
       // - DONEtrial of another approach to fake clocks (but would be better as own ghosts???) - NOTEfrom segmodes but not sure what that means?

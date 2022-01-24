@@ -225,7 +225,7 @@ trigger could also change logops table for pulses in
 56 was 26(SR as route) but adds prob and logopx - multiple route table itself
   57 as 56 but CV - intmode
 58 generic prob mode
-*59 generic routing mode - trigger bumps the global route array up*
+59 generic routing mode - trigger bumps the global route array up
 [as 60 but using macro]
 [61 as above]
 62 lfsr in routed in srs

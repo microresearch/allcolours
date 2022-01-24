@@ -266,9 +266,38 @@ port in to LR modes from draftdec? and theone, extramodes
 
 done in extramodes
 
+** 24/1/2022
+
+- TODOcheck new notebook Qs:
+
+- DONE: added dac comparator mode, compare with itself DONE/TESTED
+- DAC as param for abstract ADC modes 22-31 checkDONE
+- all modes have local route in to change - from strobe/bump, from CV. from DAC is already done or? - in modeN, R, L, C tested///DOE
+- added Ndacghostincoming0 using incoming ghost for speed in modeN.h
+- +fixed speed thing in macro.h a bit/back+ changed adc for each so can have multiple w
+- added ADC choices in intmode: LintselADC_63
+
+Benjolin style patch: 
+
+R-OSC mode -> N-OSC mode ->L-route in->Nout, R clocks L, L is dacspeed for N and R // multiple OSCs, ADC in L and R... (not in C)
+
+doesn't seem to really work out!
+
+- *modeR/where - change dactypes for 0, 1,2,3 (inc. itself)*, [or intmode in each to change own dactype 0-15 (but no strobe so 3 bits) - but then rest is fixed]
+// where we set this? where we reset to defaults... is it necessary to change this
+
+
+////////////////////
+
+- changed some of modeN to avoid interrupt disturbance for dac incomings
+
+- also dacfrom array is tied to count and gives dac and fake clks... change for new rungling scheme 
+
+- should have array of what we route into - added routeto array with count to use for some Gshift modes
+
 ** 21/2/2022
 
-- *maybe makes sense only have DAC speed modes in LR!* else becomes too confusing/noisy and we keep NC as more mode selections and prob for C
+- +maybe makes sense only have DAC speed modes in LR!* else becomes too confusing/noisy and we keep NC as more mode selections and prob for+
 
 - Tested Rdacspeed modes: *problem again is that if we use DAC1 to set it also effects speed of outgoing (unless we route differently 8,1,1,1) but that doesn't make sense*
 

@@ -81,6 +81,23 @@ void Rmod(void){ // modulo route in
   }
 }
 
+void Rosc0(void){ // basic route in with oscillator
+  uint8_t w=3;
+  HEAD;
+  if (speedf_[3]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[count][3],gate[w].adcpar, &gate[w].shift_); // oscillator
+    //    BINROUTE_; //
+    PULSIN_OR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 void Raccelghosts0(void){ // route in // exp mode to accelerate/bump on all ghosts except own - could also select which ones for intmode
   uint8_t w=3;
   count=0;
@@ -153,6 +170,59 @@ void Rglobaldac0(void){ // dac as global route table or could be SR as route bit
   }
 }
 
+// TODO: just bump within a restricted range or array which make sense?
+// locals
+void Rbumproute0(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
+  uint8_t w=3;
+  HEADN;
+  if (speedf_[3]!=2.0f){
+  CVOPEN;
+  if(gate[3].last_time<gate[3].int_time)      {
+  GSHIFT_;
+  // no strobe bit in
+  //  BINROUTE_; // new routing in here.
+  if (gate[3].trigger) gate[3].route++;
+  if (gate[3].route>15) gate[3].route=0;
+  tmp=myroute[3][gate[3].route];
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[3]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[3]=(gate[x].Gshift_[3]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+void RDACroute0(void){ 
+  uint8_t w=3;
+  HEADN;
+  if (speedf_[3]!=2.0f){
+  CVOPEN;
+  if(gate[3].last_time<gate[3].int_time)      {
+  GSHIFT_;
+  if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
+  //  BINROUTE_; // new routing in here.
+  tmp=gate[dacfrom[count][3]].dac&15;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[3]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[3]=(gate[x].Gshift_[3]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+
 
 // DACspeed modes?
 
@@ -161,13 +231,6 @@ void Rglobaldac0(void){ // dac as global route table or could be SR as route bit
 refine and figure out dac modes as dac is too fast
 
  */
-
-// DONE: top bits of CV/speed select which DAC to take from - implement and test this, but we need access to bits/CV and smoothed
-
-// which DAC we use? our own? dac1 left side for right?
-
-// so far we have 7 modes and all just use adc mode 0 so this needs to be trimmed - DAC modes also more suited for abstract modes
-// can also have BINROUTE in or not???
 
 void Rdacadditself0(void){ // tested//trial itself as DAC - can also be other variants TODO
   HEAD;
@@ -247,6 +310,29 @@ void Rdacadd0(void){
     ENDER;
   }
 }
+
+void RB0(void){// with oscillator
+  HEAD;
+  count=0;
+  uint8_t w=3;
+  int32_t cv;
+  float speedf__;
+  cv=(gate[dacfrom[count][3]].dac>>2)-(1024-(CV[3]>>2));
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=0.000990f;
+
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[count][3],gate[w].adcpar, &gate[w].shift_); // oscillator
+    //    BINROUTE_; // no route in now
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
 
 void Rdacaddmax0(void){ // REMOVE?
   HEAD;
@@ -380,10 +466,59 @@ void Raccelint0(void){ // TESTING but...
   } 
 }
 
-// INTmodes: route from CV, prob from CV, others? + change global routes, fake clks, use as DAC, entry of adc/non-adc bits from top
+////
+
+void Rintroute0(void){ // CV: 4 bits for route in... other bits for logop
+  uint8_t w=3;				       
+  HEADN;  
+  if (gate[3].trigger)      {
+    GSHIFT_;
+    tmp=255-(CV[3]>>4); // 8 bits
+    for (x=0;x<4;x++){ 
+      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
+	//	bitn=logopx(bitn,bitrr, 2); 
+      }
+      tmp=tmp>>2; // 4 bits
+    }
+    // no binroute needed
+    BITN_AND_OUTVINT_; // for pulse out
+  } 
+}
+
+void RintselADC_63(void){ // use CV to select adc type: only those which don't use CV or strobe LIST:
+  // we could also us top bits to do something with? 16 modes=4 bits, top bits logop/route?
+  //0,1,2,3,4,5,6,7,8 - adc logical-22,23,25,26,27,30,63,64,65 to test - 27 dies out but...
+  uint8_t choice[16]={0,1,2,3,4,5,6,7,8, 22, 23, 25, 26, 27, 30, 63};//leave off -inprogress 63,64,65 to test - TODO: expand this with new abstract and dac modes...
+    // DAC inputs 25,26,27,71,72,73,74
+  uint8_t w=3;				       
+  HEADN;  
+  if (gate[3].trigger)      {
+    val=63-(CV[3]>>6); // 6 bits say
+    GSHIFT_;
+    bitn=ADC_(3,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[count][3],gate[w].adcpar, &gate[w].shift_);
+    val=(val&0x03);// lowest 2 bits for logop
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn=logop(bitn,bitrr,val);
+  }
+  tmp=tmp>>1;
+    }			     
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+
+// INTmodes: global route from CV, prob from CV, others? + change global routes, fake clks, use as DAC, entry of adc/non-adc bits from top
 
 /* // what bits we have again?///////////////////////////////////////////
 
+dactype=4x4 bits = 16 bits (reduce to 3 bits each = 12 bits)
 
 route=4 bits, what we do=2 bits, logops=2 bits, probability=2bits
 

@@ -53,6 +53,22 @@ what are the next 16x LR modes
 
 // run through DAC modes with correct params set if necessary
 
+void Cosc0(void){ // test oscillator
+  uint8_t w=2;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(2,SRlength[w],30,gate[w].trigger,dacfrom[count][2],gate[w].adcpar, &gate[w].shift_); // oscillator
+    //    BINROUTE_;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 void C0(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
   DACOUT;
@@ -133,7 +149,72 @@ void C15(void){ // one bit audio with param as filter
   DACOUT;
 }
 
-// CV+DAC speed modes
+void C67(void){ // stock 4 bit DAC
+  gate[2].dactype=67; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
+void C66(void){ // stock 4 bit DAC
+  gate[2].dactype=66; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
+
+
+
+// TODO: just bump within a restricted range or array which make sense?
+void Cbumproute0(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
+  uint8_t w=2;
+  HEADN;
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  if (speedf_[2]!=2.0f){
+  CVOPEN;
+  if(gate[2].last_time<gate[2].int_time)      {
+  GSHIFT_;
+  // no strobe bit in
+  //  BINROUTE_; // new routing in here.
+  if (gate[2].trigger) gate[2].route++;
+  if (gate[2].route>15) gate[2].route=0;
+  tmp=myroute[2][gate[2].route];
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[2]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[2]=(gate[x].Gshift_[2]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+void CDACroute0(void){ 
+  uint8_t w=2;
+  HEADN;
+  if (speedf_[2]!=2.0f){
+  CVOPEN;
+  if(gate[2].last_time<gate[2].int_time)      {
+  GSHIFT_;
+  if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
+  //  BINROUTE_; // new routing in here.
+  tmp=gate[dacfrom[count][2]].dac&15;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[2]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[2]=(gate[x].Gshift_[2]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+// CV+DAC speed modes TODO:
 
 // INTmodes
 
@@ -145,6 +226,26 @@ void Cint0(void){ // INTmode 0 no interpolation and no use of CV
     GSHIFT_;
     BINROUTE_;
     BITN_AND_OUTVINT_; // we have pulse out
+  } 
+}
+
+void Cintroute0(void){ // CV: 4 bits for route in... other bits for logop
+  uint8_t w=2;				       
+  HEADN;  
+  if (gate[2].trigger)      {
+    GSHIFT_;
+    tmp=255-(CV[2]>>4); // 8 bits
+    for (x=0;x<4;x++){ 
+      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
+	//	bitn=logopx(bitn,bitrr, 2); 
+      }
+      tmp=tmp>>2; // 4 bits
+    }
+    // no binroute needed
+    BITN_AND_OUTVINT_; // for pulse out
   } 
 }
 
