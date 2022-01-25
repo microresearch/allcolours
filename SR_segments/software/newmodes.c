@@ -8,48 +8,47 @@
 // from draftdec
 
 //3
-BINROUTE;
+BINROUTE_;
 prob=gate[w].shift_&31; // this seems to work somehow 8/12/2021
 PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
 
 //4
-      BINROUTEANDCYCLE;
+      BINROUTEANDCYCLE_;
       prob=gate[w].shift_&31; // this seems to work somehow 8/12/2021
       PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
 
 //5
 //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) 
-	BINROUTE;
-	if (trigger[w])	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+	BINROUTE_;
+	if (gate[w].trigger)	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
 	else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
 	bitn|=bitrr;
 	PULSIN_XOR;
 
-
+/// here
 //6
-	if (trigger[w]){
-	  BINROUTE;
+	if (gate[w].trigger){
+	  BINROUTE_;
 	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}
-	
 	PULSIN_XOR;
 
 //7
-	if (trigger[w]){
-	  BINROUTE;
+	if (gate[w].trigger){
+	  BINROUTE_;
 	}
 	else {
 	  bitn=!(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}	
 	PULSIN_XOR;
-    } 
+    
 
 //8
-	if (trigger[w]) tug[w]^=1;
+	if (gate[w].trigger) tug[w]^=1;
 	if (tug[w]){
-	  BINROUTEANDCYCLE;
+	  BINROUTEANDCYCLE_;
 	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
@@ -61,7 +60,7 @@ PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
-	  if (trigger[w]) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	  if (gate[w].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -72,7 +71,7 @@ PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
 	tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  if (trigger[w]){
+	  if (gate[w].trigger){
 	    tmpp=gate[x].Gshift_[w];
 	    REV32; // reverse 32 bits
 	    tmpp=tmpp&othermasky[SRlength[x]]; // mask the top length bits
@@ -91,9 +90,9 @@ PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
   tmp=binroute[count][w];
   for (x=0;x<4;x++){
   if (tmp&0x01){
-    if (trigger[w]) gate[x].Gshift_[w]^=gate[w].shift_;
+    if (gate[w].trigger) gate[x].Gshift_[w]^=gate[w].shift_;
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
-    if (trigger[w]) 
+    if (gate[w].trigger) 
       gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
     bitn^=bitrr;
   }
@@ -103,8 +102,8 @@ PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
 
 //13
 //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ?? -- 9 below
-	BINROUTE;
-	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
+	BINROUTE_;
+	if (((LFSR_[w] & 4095 ) < gate[dacfrom[count][w]].dac)){
 	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
 	}
 	else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
@@ -113,8 +112,8 @@ PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
 
 //14
 //	01 2-BITIN or loopback
-	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
-	  BINROUTE;
+	if (((LFSR_[w] & 4095 ) < gate[dacfrom[count][w]].dac)){
+	  BINROUTE_;
 	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
@@ -122,31 +121,31 @@ PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
 	PULSIN_XOR;
 
 //15
-	if (((LFSR_[w] & 4095 ) < dac[LFSR[w]])){
-	  BINROUTEANDCYCLE;
+	if (((LFSR_[w] & 4095 ) < gate[dacfrom[count][w]].dac)){
+	  BINROUTEANDCYCLE_;
 	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}	
     PULSIN_XOR;
-
+////here
 //17 for modeC
 // 1st trigger=prob 00 TM
-	BINROUTE;
-	if (trigger[w])	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+	BINROUTE_;
+	if (gate[w].trigger)	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
 	else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
 	bitn|=bitrr;
 
 //18 for mode C
 //2nd trigger=prob 11 ENOTES 
-if (trigger[w]) tug[w]^=1;
+if (gate[w].trigger) tug[w]^=1;
 	if (tug[w]){
-	  BINROUTEANDCYCLE;
+	  BINROUTEANDCYCLE_;
 	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}	
-
+///here
 // 4x4 DAC modes
   /*
 1-cycle and route 16 below
@@ -166,7 +165,7 @@ if (trigger[w]) tug[w]^=1;
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert cycling bit or not, pulsbit is ORed in (TM)
 
-    if (trigger[w]==1){
+    if (gate[w].trigger==1){
       dactype[2]=0;
 
       GSHIFT;
@@ -184,7 +183,7 @@ if (trigger[w]) tug[w]^=1;
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert routed-in-bit or not, pulsbit is ORed in (TM)
 
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       dactype[2]=0; 
 
       GSHIFT;
@@ -204,7 +203,7 @@ if (trigger[w]) tug[w]^=1;
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert cycle+routed-in-bit or not, pulsbit is ORed in (TM)
 
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       dactype[2]=0;
 
       GSHIFT;
@@ -225,7 +224,7 @@ if (trigger[w]) tug[w]^=1;
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //3. new input (from pulsbit) or cycling bit (wiard and EN)  - if we don't have pulsebit then route
     
-    if (trigger[w]==1){
+    if (gate[w].trigger==1){
       dactype[2]=0;
 
       GSHIFT;
@@ -248,7 +247,7 @@ if (trigger[w]) tug[w]^=1;
   case 14: // probability mode 4: wiard/en
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //4. new input (from route) or cycling bit - and OR in pulsebit if...    
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       dactype[2]=0; 
 
       GSHIFT;
@@ -270,7 +269,7 @@ if (trigger[w]) tug[w]^=1;
     //4. new input (from route/ADC) or cycling bit - and OR in pulsebit if...
     /// or in case of w==0 NSR we have ADC/LFSR in depending on type - but THIS is not extra to mode 14 as it will simply repeat those except for NSR
     // but now we change this so is inverted routing bit
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       dactype[2]=0; // basic DAC out
 
       GSHIFT;      
@@ -299,7 +298,7 @@ if (trigger[w]) tug[w]^=1;
     //6. new input (from ADCtypeX) or route in     
     // how these match/repeat above when we don't have ADC ??? - maybe do inverted route bit in for others // with cycling bit
     
-    if (trigger[w]==1){
+    if (gate[w].trigger==1){
       dactype[2]=0; 
 
       GSHIFT;      
@@ -327,13 +326,13 @@ if (trigger[w]) tug[w]^=1;
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //    1. invert cycling bit or not, pulsbit is ORed in (TM)
 
-    if (trigger[w]==1){
+    if (gate[w].trigger==1){
       dactype[2]=0;
 
       GSHIFT;      
 
       bitn=(gate[w].shift_>>SRlength[w])& 0x01;
-      tmpt=dac[dacroute[w]]-(4095-adc_buffer[lookupadc[w]]);
+      tmpt=gate[dacfrom[count][w]].dac-(4095-adc_buffer[lookupadc[w]]);
       if (tmpt<0) tmpt=0; // or just add them      
       if ((LFSR_[w] & 4095 )<tmpt) {
 	bitn=bitn^1;
@@ -355,7 +354,7 @@ if (trigger[w]) tug[w]^=1;
     GSHIFT;      
 
     bitn=(gate[w].shift_>>SRlength[w])& 0x01;
-    if ((LFSR_[w] & 4095 )<dac[dacroute[w]]) {
+    if ((LFSR_[w] & 4095 )<gate[dacfrom[count][w]].dac) {
 	bitn=bitn^1;
       }
       PULSIN_OR;
@@ -389,7 +388,7 @@ if (trigger[w]) tug[w]^=1;
     // C: DAC/OUT, route from/bits in/logic - pass on/XOR - DACequiv
     // R: route from/bits in/logic  - pass on/OR
 
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       dactype[2]=0; 
       logtable[0]=0; logtable[1]=1; logtable[2]=0; logtable[3]=1;
     
@@ -410,6 +409,8 @@ if (trigger[w]) tug[w]^=1;
     }// counterw
   break; 
 
+/// here
+
   case 21: // triadex inspired mode where we XOR in bits from the other SRs
     // but which bits and do we use static SR or shift ghostSRs round...
     // try ghosted SRs...
@@ -417,11 +418,13 @@ if (trigger[w]) tug[w]^=1;
     dactype[2]=0; // basic DAC out, others are fixed as basic
 
     GSHIFT;
-    
-    bitn = (Gshift_[others[w][0]][w]>>SRlength[others[w][0]]) & 0x01; 
-    Gshift_[others[w][0]][w]=(Gshift_[others[w][0]][w]<<1)+bitn;
 
-    bitnn = (Gshift_[others[w][1]][w]>>SRlength[others[w][1]]) & 0x01; 
+    // gate[w].Gshift_[0]
+    
+    bitn = (gate[others[w][0]].Gshift_[w]>>SRlength[others[w][0]]) & 0x01; 
+    gate[others[w][0]].Gshift_[w]=(Gshift_[others[w][0]][w]<<1)+bitn;
+    //////
+    bitnn = (gate[others[w][1]][w]>>SRlength[others[w][1]]) & 0x01; 
     Gshift_[others[w][1]][w]=(Gshift_[others[w][1]][w]<<1)+bitnn;
 
     bitnnn = (Gshift_[others[w][2]][w]>>SRlength[others[w][2]]) & 0x01; 
@@ -434,6 +437,8 @@ if (trigger[w]) tug[w]^=1;
   }// counterw
   break; 
 
+///here
+
   case 22: // triadex inspired mode where we XOR in bits from the other SRs
     // but which bits and do we use static SR or shift ghostSRs round...
     // this one with static SR!
@@ -442,7 +447,7 @@ if (trigger[w]) tug[w]^=1;
 
     GSHIFT;      
   
-    bitn = (shift_[others[w][0]]>>SRlength[others[w][0]]) & 0x01; 
+    bitn = (gate[others[w][0]].shift_>>SRlength[others[w][0]]) & 0x01; 
     bitnn = (shift_[others[w][1]]>>SRlength[others[w][1]]) & 0x01; 
     bitnnn = (shift_[others[w][2]]>>SRlength[others[w][2]]) & 0x01; 
     bitn^=((gate[w].shift_>>SRlength[w])& 0x01)^bitnn^bitnnn; 
@@ -458,7 +463,7 @@ if (trigger[w]) tug[w]^=1;
       if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; // basic DAC out, others are fixed as basic
 
-    if (trigger[w]){
+    if (gate[w].trigger){
       ourroute[w]++;
       if (ourroute[w]>3) ourroute[w]=0;
     }
@@ -477,7 +482,7 @@ if (trigger[w]) tug[w]^=1;
           if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; // basic DAC out, others are fixed as basic
 
-    if (trigger[w]){ // bump up binary routing table which is route[]
+    if (gate[w].trigger){ // bump up binary routing table which is route[]
       route[w]++;
       if (route[w]>15) route[w]=0; // 15 is all routes, 8,4,2,1
     }
@@ -509,7 +514,7 @@ if (trigger[w]) tug[w]^=1;
     // how this works with ADC in or we don't route that one - default route in...
     // and use bits to select types there... TRY THIS
 
-    if (trigger[w]){ 
+    if (gate[w].trigger){ 
 
       tmpp=adc_buffer[lookupadc[w]]>>4; // this can also be RSR DAC! 12 bits down to 6 bits - 9/11 add 2 bits for logopps
 
@@ -529,7 +534,7 @@ if (trigger[w]) tug[w]^=1;
 
     PULSIN_XOR;
     gate[w].shift_+=bitn;  
-    dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
+    gate[w].dac=DAC_(w, SRlength[w], (tmpp>>4)&3,param[w],gate[w].trigger); // all DACTypes changed here - top bits
     PULSOUT;
   }// counterw
   break; 
@@ -538,7 +543,7 @@ if (trigger[w]) tug[w]^=1;
     // implementation of multiple routing table - CV mode with dacrouted dac as source for table...
     // could also be bits from plain SR TODO
       if (counter[w]>speed[w] && speed[w]!=1024){
-	//      tmpp=dac[dacroute[w]]>>4; 
+	//      tmpp=gate[dacfrom[count][w]].dac>>4; 
 	tmpp=shift_[dacroute[w]]&255; // 8 bits - we can also interpret bits as single ones... we just seem to use 6 bits here
       GSHIFT;      
       bitn=0;
@@ -555,7 +560,7 @@ if (trigger[w]) tug[w]^=1;
 
       PULSIN_XOR;
       gate[w].shift_+=bitn;
-      dac[w]=DAC_(w, SRlength[w], (tmpp>>4)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
+      gate[w].dac=DAC_(w, SRlength[w], (tmpp>>4)&3,param[w],gate[w].trigger); // all DACTypes changed here - top bits
       PULSOUT;
       }// counterw
       break; 
@@ -595,7 +600,7 @@ if (trigger[w]) tug[w]^=1;
       }
     bitn=gate[w].shift_&1;
     gate[w].shift_+=bitn;				
-    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); 
+    gate[w].dac=DAC_(w, SRlength[w], dactype[w],param[w],gate[w].trigger); 
     PULSOUT;
     }
   break; 
@@ -650,7 +655,7 @@ if (trigger[w]) tug[w]^=1;
     
     bitn=shift_[0]&1;
     gate[w].shift_+=bitn;			        
-    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); 
+    gate[w].dac=DAC_(w, SRlength[w], dactype[w],param[w],gate[w].trigger); 
     PULSOUT;
     }
   break;
@@ -658,8 +663,9 @@ if (trigger[w]) tug[w]^=1;
   /////////////////////////////////////////////////////////////////////////
   /// new modes testings from 2/11/2021+
   /////////////////////////////////////////////////////////////////////////
+/// here
 
-  case 29: // copy of 19 trial for ADC in probablity modes - adc_buffer[12] 12 bits
+case 29: // copy of 19 trial for ADC in probablity modes - adc_buffer[12] 12 bits
     if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; 
     
@@ -680,7 +686,7 @@ if (trigger[w]) tug[w]^=1;
 
     GSHIFT;      
     bitn=(gate[w].shift_>>SRlength[w])& 0x01; 
-    if ((dac[w] )<dac[dacroute[w]]) { 
+    if ((gate[w].dac)<gate[dacfrom[count][w]].dac) { 
       bitn=bitn^1;
     }
     PULSIN_OR;
@@ -689,7 +695,7 @@ if (trigger[w]) tug[w]^=1;
     break; 
 
  case 31: // speedfrom/CV.DAC template to test - 4 options here to test...
-      if (counter[w]>(speed[w]+dac[speedfrom_[w]])){// add means we always slow down - other options (wrap, lookup) //1//
+//      if (counter[w]>(speed[w]+dac[speedfrom_[w]])){// add means we always slow down - other options (wrap, lookup) //1//
   
     //2//    tmpt=(dac[speedfrom_[w]]>>2)-(1024-speed[w]);
    //    if (tmpt<0) tmpt=0; 
@@ -717,22 +723,22 @@ if (trigger[w]) tug[w]^=1;
     dactype[2]=0; 
 
     GSHIFT;      
-    GGGgate[w].shift_=GGGgate[w].shift_<<1;
+    gate[w].shift_=gate[w].shift_<<1;
     
     bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
     Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
 
     PULSIN_XOR;
     
-    GGGgate[w].shift_+=bitn;
+    gate[w].shift_+=bitn;
    
-    if (trigger[w]==1) { // strobe
+    if (gate[w].trigger==1) { // strobe
       gate[w].shift_&=invmasky[SRlength[w]]; 
-      gate[w].shift_+=(GGGgate[w].shift_&masky[SRlength[w]]);
+      gate[w].shift_+=(gate[w].shift_&masky[SRlength[w]]);
     }
 
     PULSOUT;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]);
+    gate[w].dac=DAC_(w, SRlength[w], dactype[w],param[w],gate[w].trigger);
     
     }// counterw
   break; 
@@ -743,7 +749,7 @@ if (trigger[w]) tug[w]^=1;
       if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; 
     GSHIFT;      
-    GGGgate[w].shift_=GGGgate[w].shift_<<1;
+    gate[w].shift_=gate[w].shift_<<1;
 
     tmp=(gate[w].shift_>>SRlength[w])& 0x01;
     gate[w].shift_+=tmp;
@@ -753,15 +759,15 @@ if (trigger[w]) tug[w]^=1;
 
     PULSIN_XOR;
     
-    GGGgate[w].shift_+=bitn;
+    gate[w].shift_+=bitn;
    
-    if (trigger[w]==1) { // strobe
+    if (gate[w].trigger==1) { // strobe
       gate[w].shift_&=invmasky[SRlength[w]]; 
-      gate[w].shift_+=(GGGgate[w].shift_&masky[SRlength[w]]);
+      gate[w].shift_+=(gate[w].shift_&masky[SRlength[w]]);
     }
 
     PULSOUT;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]);
+    gate[w].dac=DAC_(w, SRlength[w], dactype[w],param[w],gate[w].trigger);
     }// counterw
   break; 
 
@@ -800,8 +806,8 @@ if (trigger[w]) tug[w]^=1;
       if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; 
 
-    if (trigger[w]==1) { // at start we place it...
-      gate[w].shift_=Ggate[w].shift_[w];
+    if (gate[w].trigger==1) { // at start we place it...
+      gate[w].shift_=gate[w].shift_[w];
     }
     
     GSHIFT;      
@@ -814,30 +820,6 @@ if (trigger[w]) tug[w]^=1;
     }// counterw
   break; 
 
-  case 37: // pulse triggers un/holding of our own ghost
-      if (counter[w]>speed[w] && speed[w]!=1024){
-    dactype[2]=0; 
-    counter[w]=0;
-    
-    if (trigger[w]==1) {
-      GSHIFT;
-    }
-      
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-
-    bitnn = (Ggate[w].shift_[w]>>SRlength[w]) & 0x01; 
-    Ggate[w].shift_[w]=(Ggate[w].shift_[w]<<1)+bitnn;  
-
-    PULSIN_XOR;
-    
-    gate[w].shift_+=bitn^bitnn;
-
-    dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]);
-    PULSOUT;
-    }// counterw
-  break; 
-
   case 38: // pass through or cycle is toggled by clkin bit
     // this can also be for ADC - toggle entry of ADC bit or pass through/cycle
     if (counter[w]>speed[w] && speed[w]!=1024){
@@ -845,7 +827,7 @@ if (trigger[w]) tug[w]^=1;
 
     GSHIFT;      
 
-    if (trigger[w]) tug[w]^=1; // tuggle
+    if (gate[w].trigger) tug[w]^=1; // tuggle
     
     bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  // route in
     Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;
@@ -877,7 +859,7 @@ if (trigger[w]) tug[w]^=1;
     gate[w].shift_+=bitn;
 
     PULSOUT;    
-    dac[2]+=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); // additive DAC - TODO: could also be modulus dacs
+    dac[2]+=DAC_(w, SRlength[w], dactype[w],param[w],gate[w].trigger); // additive DAC - TODO: could also be modulus dacs
     dac[2]=dac[2]&4095;
     
     }// counterw    
@@ -886,7 +868,7 @@ if (trigger[w]) tug[w]^=1;
   
   case 40: // swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
     // do regular pass through and then swop with previous on trigger
-    par=dac[3]; // TODO: use par for setting DAC parameter now on 4/11/2021
+//    par=g; // TODO: use par for setting DAC parameter now on 4/11/2021
     
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
       dactype[2]=13; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
@@ -895,7 +877,7 @@ if (trigger[w]) tug[w]^=1;
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
 
-      if (trigger[w]) gate[w].shift_=shift_[oppose[w]]; // sieve is previous one but could be opposite one
+      if (gate[w].trigger) gate[w].shift_=shift_[oppose[w]]; // sieve is previous one but could be opposite one
       
       PULSIN_XOR;
       BITN_AND_OUT;
@@ -905,7 +887,7 @@ if (trigger[w]) tug[w]^=1;
   case 41: //  TM in TM: from it.c seems to use 2x comparators - one
 	   //  for inv of cycling bit, one for inv of incoming bit (so
 	   //  could be CV and DAC comped to LFSR/DAC)
-    if (trigger[w]==1){
+    if (gate[w].trigger==1){
       dactype[2]=0;
 
       GSHIFT;
@@ -919,7 +901,7 @@ if (trigger[w]) tug[w]^=1;
       bitnn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitnn;  
       
-      if ((LFSR_[w] & 4095 )<dac[dacroute[w]]) {
+      if ((LFSR_[w] & 4095 )<gate[dacfrom[count][w]].dac) {
 	bitnn^=1;
       }
       bitn|=bitnn;
@@ -938,12 +920,12 @@ if (trigger[w]) tug[w]^=1;
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       counter[w]=0;
-      Ggate[w].shift_[0]=gate[w].shift_;
-      Ggate[w].shift_[1]=gate[w].shift_;
-      Ggate[w].shift_[2]=gate[w].shift_;
-      Ggate[w].shift_[3]=gate[w].shift_;
+      gate[w].shift_[0]=gate[w].shift_;
+      gate[w].shift_[1]=gate[w].shift_;
+      gate[w].shift_[2]=gate[w].shift_;
+      gate[w].shift_[3]=gate[w].shift_;
 
-    if (trigger[w]) tug[w]^=1; // tuggle
+    if (gate[w].trigger) tug[w]^=1; // tuggle
     if (tug[w]){
       gate[w].shift_=gate[w].shift_<<1;
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
@@ -961,7 +943,7 @@ if (trigger[w]) tug[w]^=1;
 	PULSIN_OR;
 	gate[w].shift_ &= ~(1UL << SRlength[w]);
 	gate[w].shift_ +=(bitn << SRlength[w]);
-	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+	gate[w].dac=DAC_(w, SRlength[w], dactype[w],par,gate[w].trigger);	
       }
     PULSOUT;
     }// counterw
@@ -971,12 +953,12 @@ if (trigger[w]) tug[w]^=1;
     if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; // basic DAC out, others are fixed as basic
     counter[w]=0;
-    Ggate[w].shift_[0]=gate[w].shift_;
-    Ggate[w].shift_[1]=gate[w].shift_;
-    Ggate[w].shift_[2]=gate[w].shift_;
-    Ggate[w].shift_[3]=gate[w].shift_;
+    gate[w].shift_[0]=gate[w].shift_;
+    gate[w].shift_[1]=gate[w].shift_;
+    gate[w].shift_[2]=gate[w].shift_;
+    gate[w].shift_[3]=gate[w].shift_;
 
-    if (trigger[w]) tug[w]^=1; // tuggle
+    if (gate[w].trigger) tug[w]^=1; // tuggle
     if (tug[w]){
       gate[w].shift_=gate[w].shift_<<1;
       bitn=(gate[w].shift_>>SRlength[w])& 0x01; //cycling bit
@@ -990,7 +972,7 @@ if (trigger[w]) tug[w]^=1;
 	PULSIN_OR;
 	gate[w].shift_ &= ~(1UL << SRlength[w]);
 	gate[w].shift_ +=(bitn << SRlength[w]);
-	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+	gate[w].dac=DAC_(w, SRlength[w], dactype[w],par,gate[w].trigger);	
       }
     PULSOUT;
     }// counterw
@@ -1000,12 +982,12 @@ if (trigger[w]) tug[w]^=1;
     if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; // basic DAC out, others are fixed as basic
     counter[w]=0;
-    Ggate[w].shift_[0]=gate[w].shift_;
-    Ggate[w].shift_[1]=gate[w].shift_;
-    Ggate[w].shift_[2]=gate[w].shift_;
-    Ggate[w].shift_[3]=gate[w].shift_;
+    gate[w].shift_[0]=gate[w].shift_;
+    gate[w].shift_[1]=gate[w].shift_;
+    gate[w].shift_[2]=gate[w].shift_;
+    gate[w].shift_[3]=gate[w].shift_;
 
-    if (trigger[w]) tug[w]^=1; // tuggle
+    if (gate[w].trigger) tug[w]^=1; // tuggle
     if (tug[w]){
       gate[w].shift_=gate[w].shift_<<1;
       bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
@@ -1027,7 +1009,7 @@ if (trigger[w]) tug[w]^=1;
 	PULSIN_OR;
 	gate[w].shift_ &= ~(1UL << SRlength[w]);
 	gate[w].shift_ +=(bitn << SRlength[w]);
-	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+	gate[w].dac=DAC_(w, SRlength[w], dactype[w],par,gate[w].trigger);	
       }
     PULSOUT;
     }// counterw
@@ -1037,13 +1019,13 @@ if (trigger[w]) tug[w]^=1;
     // simple feed through/pass on based on case 0 - we reverse GSR
     // OPTIONS: devroute or revroute and also maybe just reverse incoming GSR and not itself
     par=0; 
-    if (trigger[w]==1){
+    if (gate[w].trigger==1){
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       counter[w]=0;
-      Ggate[w].shift_[0]=gate[w].shift_;
-      Ggate[w].shift_[1]=gate[w].shift_;
-      Ggate[w].shift_[2]=gate[w].shift_;
-      Ggate[w].shift_[3]=gate[w].shift_;
+      gate[w].shift_[0]=gate[w].shift_;
+      gate[w].shift_[1]=gate[w].shift_;
+      gate[w].shift_[2]=gate[w].shift_;
+      gate[w].shift_[3]=gate[w].shift_;
 
       if ((LFSR_[w] & 4095 )<adc_buffer[lookupadc[w]]) { 
       gate[w].shift_=gate[w].shift_<<1;
@@ -1062,7 +1044,7 @@ if (trigger[w]) tug[w]^=1;
 	PULSIN_OR;
 	gate[w].shift_ &= ~(1UL << SRlength[w]);
 	gate[w].shift_ +=(bitn << SRlength[w]);
-	dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]);	
+	gate[w].dac=DAC_(w, SRlength[w], dactype[w],par,gate[w].trigger);	
       }
     PULSOUT;
     }// counterw
@@ -1085,7 +1067,7 @@ if (trigger[w]) tug[w]^=1;
       Gshift_revcnt[w]++;
       if (Gshift_revcnt[w]>255) Gshift_revcnt[w]=0;
 
-      if (trigger[w]){
+      if (gate[w].trigger){
       gate[w].shift_=Gshift_rev[w][Gshift_revrevcnt[w]]; 
       Gshift_revrevcnt[w]++;
       if (Gshift_revrevcnt[w]>255) Gshift_revrevcnt[w]=0;
@@ -1096,7 +1078,7 @@ if (trigger[w]) tug[w]^=1;
 case 47: // GSR runs at CV speed in INT mode (try)
   // or vice versa NOW - GSR is on trigger
   bitn=0;
-  if (trigger[w]==1){
+  if (gate[w].trigger==1){
     bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
     Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
   }
@@ -1130,7 +1112,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
   case 49: // GSR doesn't change (becomes a revenant) on TOGGLE
     if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; 
-    if (trigger[w]) tug[w]^=1; // tuggle
+    if (gate[w].trigger) tug[w]^=1; // tuggle
     if (tug[w]){
         GSHIFT;
     }
@@ -1153,7 +1135,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
     Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
     //    bitn^=(gate[w].shift_>>SRlength[w])& 0x01; 
-    if (trigger[w]) gate[w].shift_&=Gshift_[defroute[w]][w];
+    if (gate[w].trigger) gate[w].shift_&=Gshift_[defroute[w]][w];
 
     PULSIN_XOR;    
     BITN_AND_OUT;    
@@ -1167,7 +1149,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
       dactype[2]=0;
       GSHIFT;      
 
-      if (trigger[w]==1){
+      if (gate[w].trigger==1){
 	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
 	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
       }
@@ -1183,7 +1165,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
       dactype[2]=0;
       GSHIFT;      
 
-      if (trigger[w]==1){
+      if (gate[w].trigger==1){
 	bitnn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
 	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitnn;  
       }
@@ -1204,7 +1186,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // C: DAC/OUT, route from/bits in/logic - pass on/XOR - DACequiv
     // R: route from/bits in/logic  - pass on/OR
 
-    if (trigger[w]==1){
+    if (gate[w].trigger==1){
     dactype[2]=0; 
     logtable[0]=0; logtable[1]=0; logtable[2]=0; logtable[3]=0;
     GSHIFT;
@@ -1230,7 +1212,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // probability mode 4: wiard/en
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //4. new input (from route) or cycling bit - and OR in pulsebit if...    
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       dactype[2]=0; 
 
       GSHIFT;
@@ -1251,7 +1233,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // probability mode 4: wiard/en
     //    1. if SR<CV  // int mode --- SR is customSR or RSR(routed SR)
     //4. new input (from route) or cycling bit - and OR in pulsebit if...    
-    //    if (trigger[w]==1){ 
+    //    if (gate[w].trigger==1){ 
   if (counter[w]>speed[w] && speed[w]!=1024){
       dactype[2]=0; 
 
@@ -1296,7 +1278,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
       PULSIN_XOR;
       gate[w].shift_+=bitn;
       // 2 bits for DAC
-      dac[w]=DAC_(w, SRlength[w], (tmpp>>6)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
+      gate[w].dac=DAC_(w, SRlength[w], (tmpp>>6)&3,param[w],gate[w].trigger); // all DACTypes changed here - top bits
       PULSOUT;
       }// counterw
       break; 
@@ -1307,7 +1289,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // implementation of multiple routing table - CV mode with dacrouted dac as source for table...
     // could also be bits from plain SR TODO
     //      if (counter[w]>speed[w] && speed[w]!=1024){
-        if (trigger[w]==1){ 
+        if (gate[w].trigger==1){ 
 	  tmpp=adc_buffer[lookupadc[w]]>>4; // this can also be RSR DAC! 12 bits down to 6 bits - 9/11 add 2 bits for logopps
 	  
 	GSHIFT;      
@@ -1329,7 +1311,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
       PULSIN_XOR;
       gate[w].shift_+=bitn;
       // 2 bits for DAC
-      dac[w]=DAC_(w, SRlength[w], (tmpp>>6)&3,param[w],trigger[w]); // all DACTypes changed here - top bits
+      gate[w].dac=DAC_(w, SRlength[w], (tmpp>>6)&3,param[w],gate[w].trigger); // all DACTypes changed here - top bits
       PULSOUT;
       }// counterw
       break; 
@@ -1407,7 +1389,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
 
   case 61: // as generic routing but testing use of MACRO with arguments - speedCV but complimented by trigger
     if (counter[w]>speed[w] && speed[w]!=1024){
-      if (trigger[w]){
+      if (gate[w].trigger){
     par=0; parr=0;     // for this macro we need   par=0/or whatever for DAC outside and parr is for ADC 
     MULTROUTE(0, 0);     // X is adc_type, Y is dac_type, REGG is where to take from for adc
       }
@@ -1472,7 +1454,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
     par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
     
-    if (trigger[w]){ // adc_buffer[lookupadc[w]]    
+    if (gate[w].trigger){ // adc_buffer[lookupadc[w]]    
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       GSHIFT;    
 
@@ -1504,7 +1486,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
       cw++;
       if (cw>31) cw=0;
-      if (trigger[w]) tmpt=cw;
+      if (gate[w].trigger) tmpt=cw;
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       GSHIFT;    
 
@@ -1533,7 +1515,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
       cw++;
       if (cw>31) cw=0;
-      if (trigger[w]) tmpt=cw;
+      if (gate[w].trigger) tmpt=cw;
       dactype[2]=0;
       GSHIFT;    
 
@@ -1566,15 +1548,15 @@ case 47: // GSR runs at CV speed in INT mode (try)
     par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
     
     //        if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
-    if (trigger[w]){
+    if (gate[w].trigger){
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       //      GSHIFT;    
       tmpp=CVin; //31-(adc_buffer[lookupadc[w]]>>7); // 5 bits for length only
       counter[w]=0;
-      Ggate[w].shift_[0]=gate[w].shift_;
-      Ggate[w].shift_[1]=gate[w].shift_;
-      Ggate[w].shift_[2]=gate[w].shift_;
-      Ggate[w].shift_[3]=gate[w].shift_;
+      gate[w].shift_[0]=gate[w].shift_;
+      gate[w].shift_[1]=gate[w].shift_;
+      gate[w].shift_[2]=gate[w].shift_;
+      gate[w].shift_[3]=gate[w].shift_;
       gate[w].shift_=gate[w].shift_<<tmpp;
       
       if (w==3) count=0; // reset count/route
@@ -1603,7 +1585,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
     
     //        if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
-    if (trigger[w]){
+    if (gate[w].trigger){
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       GSHIFT;    
       tmpp=CVin; //31-(adc_buffer[lookupadc[w]]>>7); // 5 bits for length only
@@ -1627,13 +1609,13 @@ case 47: // GSR runs at CV speed in INT mode (try)
 	PULSIN_XOR;
 	//	BITN_AND_OUT;
     gate[w].shift_^=bitn;
-    dac[w]=DAC_(w, SRlength[w], dactype[w],par,trigger[w]); 
+    gate[w].dac=DAC_(w, SRlength[w], dactype[w],par,gate[w].trigger); 
     PULSOUT;	
     }// counterw
     break; 
 
   case 69: // INTMODE as generic routing but testing use of MACRO with arguments - for testing mode 15 / filter of one bit DAC
-    if (trigger[w]){
+    if (gate[w].trigger){
     par=CVinfull;
     parr=0;     // for this macro we need   par=0/or whatever for DAC outside and parr is for ADC 
     MULTROUTE(0, 15);     // X is adc_type, Y is dac_type
@@ -1649,12 +1631,12 @@ case 47: // GSR runs at CV speed in INT mode (try)
   case 104:  // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
     // INT can also start new train or let old one carry on (now it starts new train...)
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       train[w]=1; // we can use train as counter      
     }
     if (train[w]!=0 && train[w]<(speed[w]+1)){ // number of pulses
       // do train so first we need speed counter
-      if (counter[w]>dac[dacroute[w]]){ // or another dac
+      if (counter[w]>gate[dacfrom[count][w]].dac){ // or another dac
 	train[w]++;
 	// from DACR now but can be dacfrom!
 	counter[w]=0;
@@ -1686,10 +1668,10 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
     // INT can also start new train or let old one carry on (now it starts new train...)
-    if (trigger[w]==1){ 
+    if (gate[w].trigger==1){ 
       train[w]=1; // we can use train as counter      
     }
-    if (train[w]!=0 && train[w]<dac[3]){ // number of pulses
+    if (train[w]!=0 && train[w]<gate[dacroute[count][w]].dac){ // number of pulses
       // do train so first we need speed counter
         if (counter[w]>speed[w] && speed[w]!=1024){ // or another dac
 	train[w]++;
@@ -1714,7 +1696,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
 
 // extramodes
 
-// DONE: Gshift_[x][w] becomes gate[x].Ggate[w].shift_
+// DONE: Gshift_[x][w] becomes gate[x].gate[w].shift_
 // gate[w].shift_ becomes gate[w].shift_
 
   case 333: // TEST mode - with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
@@ -1726,13 +1708,13 @@ case 47: // GSR runs at CV speed in INT mode (try)
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
       ADCDACETC1(0, 0);
       if (LR[w]){
-      //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
+      //	  BINROUTE_; // fill in L and R modes here - BINROUTE_ is standard routings
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01;
-	  //	      gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr;
-	  gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
+	  bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
+	  //	      gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr;
+	  gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -1750,15 +1732,15 @@ BITN_AND_OUT;
       dacpar=0; adcpar=0; reggg=0; // params - reggg is for ADC
 	  ADCDACETC1(0, 0);
       if (LR[w]){
-	  //	  BINROUTE; // fill in L and R modes here - BINROUTE is standard routings
-	  if (trigger[w]) { 
+	  //	  BINROUTE_; // fill in L and R modes here - BINROUTE_ is standard routings
+	  if (gate[w].trigger) { 
 	    tmp=binroute[count][w];
 	    for (x=0;x<4;x++){
 	      if (tmp&0x01){
 		storedlength[x][w]=SRlength[x];
-		gate[x].Ggate[w].shift_=gate[x].Ggate[w].shift_;
-		bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01;
-		gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
+		gate[x].gate[w].shift_=gate[x].gate[w].shift_;
+		bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
+		gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 		bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -1769,9 +1751,9 @@ BITN_AND_OUT;
 	  tmp=binroute[count][w];
 	  for (x=0;x<4;x++){
 	    if (tmp&0x01){
-	      bitrr = (gate[x].Ggate[w].shift_>>storedlength[x][w]) & 0x01;
-	      //	      gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr;
-	      gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
+	      bitrr = (gate[x].gate[w].shift_>>storedlength[x][w]) & 0x01;
+	      //	      gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr;
+	      gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1) + ((gate[w].shift_>>SRlength[w]) & 0x01);
 	      bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -1791,8 +1773,8 @@ BITN_AND_OUT;
 	tmp=LFSR_[w]; tmpp=shift_[LFSR[w]]; // try with CV too
 	for (x=0;x<4;x++){
 	  if ((tmp&255)<(tmpp&255)){// replace with 12 bits /4 = 3 bits prob = 7 (LFSR_[w] & 4095 ) < (shift_[LFSR[w]] & 4095)
-	  bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01;
-	  gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr; 
+	  bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
+	  gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>8; tmpp=tmpp>>8;
@@ -1805,8 +1787,8 @@ BITN_AND_OUT;
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01;
-	  if ((LFSR_[w] & 4095 ) < (gate[LFSR[w]].dac)) gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr; 
+	  bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
+	  if ((LFSR_[w] & 4095 ) < (gate[LFSR[w]].dac)) gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -1815,12 +1797,12 @@ BITN_AND_OUT;
 
 // was 13
 
-	//      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+	//      BINROUTE_; // TODO: fill in L and R modes here - BINROUTE_ is standard routings
 	///	- TODO: mode in which pulse changes which bit ofghostSR we access - pulse moves on bit
 	// can also be change access bit but not cycling bit! TODO!
 	
 	// also cycling bit version     if ((tmp&0x01) || (x==w)){ 
-	if (trigger[w]) {
+	if (gate[w].trigger) {
 	    which[w]++;
 	    if (which[w]>SRlength[w]) which[w]=0;
 	  }
@@ -1828,8 +1810,8 @@ BITN_AND_OUT;
 	  tmp=binroute[count][w];
 	  for (x=0;x<4;x++){
 	    if (tmp&0x01){
-	      bitrr = (gate[x].Ggate[w].shift_>>which[w]) & 0x01;
-	      gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr;
+	      bitrr = (gate[x].gate[w].shift_>>which[w]) & 0x01;
+	      gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr;
 	      bitn^=bitrr;
 	    }
 	    tmp=tmp>>1;
@@ -1843,18 +1825,18 @@ BITN_AND_OUT;
 	// trial of non-adc style entry and pass on here;;
 	// which modes of ADC_?: 5:LFSR, 30:1bitOSC, 32: clock
 	reggg=w; adcpar=param[w];
-	// can also bump up type in list with a trigger[w] TODO/TEST - here we just select from 5 and 32 as 30 used param
-	if (trigger[w]) tug[w]^=1;
+	// can also bump up type in list with a gate[w].trigger TODO/TEST - here we just select from 5 and 32 as 30 used param
+	if (gate[w].trigger) tug[w]^=1;
         // ADCLR is now changed as we changed modes
-        bitn=ADC_(w,SRlength[w],ADCLR[tug[w]],trigger[w],reggg,adcpar);  //5,30,32 as selections - 32 maybe not so interesting
-	BINROUTE;
+        bitn=ADC_(w,SRlength[w],ADCLR[tug[w]],gate[w].trigger,reggg,adcpar);  //5,30,32 as selections - 32 maybe not so interesting
+	BINROUTE_;
 
 
 // was 11
 
-	if (trigger[w]) tug[w]^=1;
+	if (gate[w].trigger) tug[w]^=1;
 	if (tug[w]){
-	  BINROUTE;
+	  BINROUTE_;
 	}
 	else bitn=!((gate[w].shift_>>SRlength[w]) & 0x01); 
 	
@@ -1866,9 +1848,9 @@ BITN_AND_OUT;
 
       //////////////////////////////////HERE!
 	// trial these with strobe - 01 BITIN or loopback
-	if (trigger[w]) tug[w]^=1;
+	if (gate[w].trigger) tug[w]^=1;
 	if (tug[w]){
-	  BINROUTE;
+	  BINROUTE_;
 	}
 	else bitn=((gate[w].shift_>>SRlength[w]) & 0x01); 
 	/////////////////////////////////////...
@@ -1878,8 +1860,8 @@ BITN_AND_OUT;
 // was 9
 
 	// trial these with strobe - 00 invert bit here
-	BINROUTE;
-	if (trigger[w]) tug[w]^=1;
+	BINROUTE_;
+	if (gate[w].trigger) tug[w]^=1;
 	if (tug[w])	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
 	else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
 	bitn|=bitrr;
@@ -1891,8 +1873,8 @@ BITN_AND_OUT;
 // was 8
       //////////////////////////////////HERE!
 	// as above but without toggle...
-	if (trigger[w]){
-	BINROUTEANDCYCLE;	}
+	if (gate[w].trigger){
+	BINROUTEANDCYCLE_;	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
 	}	
@@ -1902,9 +1884,9 @@ BITN_AND_OUT;
 // was 7
       //////////////////////////////////HERE!
 	// trial toggle/tug of above: entry of routed or not (into cycling). and just xor puls in...
-	if (trigger[w]) tug[w]^=1;
+	if (gate[w].trigger) tug[w]^=1;
 	if (tug[w]){
-	  BINROUTEANDCYCLE;
+	  BINROUTEANDCYCLE_;
 	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
@@ -1915,17 +1897,17 @@ BITN_AND_OUT;
 // was 6
 
       //////////////////////////////////HERE!
-      //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      //      BINROUTE_; // TODO: fill in L and R modes here - BINROUTE_ is standard routings
 	/*
 // USED
       // XX - we XOR on STROBE our shift with the GHOST
   tmp=binroute[count][w];
   for (x=0;x<4;x++){
   if (tmp&0x01){
-    if (trigger[w]) gate[x].Ggate[w].shift_^=gate[w].shift_;
-    bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01;
-    if (trigger[w]) 
-      gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr;
+    if (gate[w].trigger) gate[x].gate[w].shift_^=gate[w].shift_;
+    bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
+    if (gate[w].trigger) 
+      gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr;
     bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -1933,7 +1915,7 @@ BITN_AND_OUT;
 	*/
 	// - basic prob mode of entry of routed or not (into cycling). and just xor puls in...
 	if (gate[LFSR[w]].dac) < (param[w] & 4095)){
-	  BINROUTEANDCYCLE;
+	  BINROUTEANDCYCLE_;
 	}
 	else {
 	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
@@ -1946,15 +1928,15 @@ BITN_AND_OUT;
 
 00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ?? -- 9 below
 
-BINROUTE;
-if (trigger[w])	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+BINROUTE_;
+if (gate[w].trigger)	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
 else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
 bitn|=bitrr;
 
 01 2-BITIN or loopback
 
-if (trigger[w]){
-BINROUTE;
+if (gate[w].trigger){
+BINROUTE_;
 }
 else {
 bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
@@ -1962,8 +1944,8 @@ bitn=(gate[w].shift_>>SRlength[w]) & 0x01;
 
 10 3-INV of above
 
-if (trigger[w]){
-BINROUTE;
+if (gate[w].trigger){
+BINROUTE_;
 }
 else {
 bitn=!(gate[w].shift_>>SRlength[w]) & 0x01; 
@@ -1971,8 +1953,8 @@ bitn=!(gate[w].shift_>>SRlength[w]) & 0x01;
 
 //11 4- BITIN or not into cycling
 
-if (trigger[w]){
-BINROUTEANDCYCLE;
+if (gate[w].trigger){
+BINROUTEANDCYCLE_;
 }
 else {
 bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
@@ -1992,14 +1974,14 @@ bitn=(gate[w].shift_>>SRlength[w]) & 0x01;
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  if (trigger[w]){
-	    tmpp=gate[x].Ggate[w].shift_;
+	  if (gate[w].trigger){
+	    tmpp=gate[x].gate[w].shift_;
 	    REV32; // reverse 32 bits
 	    tmpp=tmpp&othermasky[SRlength[x]]; // mask the top length bits
-	    gate[x].Ggate[w].shift_=tmpp>>(31-SRlength[x]); // and shift 31-length bits
+	    gate[x].gate[w].shift_=tmpp>>(31-SRlength[x]); // and shift 31-length bits
 	  }
-	  bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01;
-	  gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr; // 
+	  bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
+	  gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr; // 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -2016,7 +1998,7 @@ bitn=(gate[w].shift_>>SRlength[w]) & 0x01;
 	  - BITN is routed / routed XOR puls so is 1 bit
 	  - where we get prob is 2 bits let's say = 5 bits = 32
 	*/
-	BINROUTE;
+	BINROUTE_;
 	
       bitrr = (gate[w].shift_>>SRlength[w]) & 0x01; 
 
@@ -2052,16 +2034,16 @@ bitn=(gate[w].shift_>>SRlength[w]) & 0x01;
 // was 4
 
 //////////////////////////////////HERE!
-      //      BINROUTE; // TODO: fill in L and R modes here - BINROUTE is standard routings
+      //      BINROUTE_; // TODO: fill in L and R modes here - BINROUTE_ is standard routings
       /////////////////////////////////////...
 	/*
       // XX = strobe fixes length       
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  if (trigger[w]) storedlength[x][w]=SRlength[x];
-	  bitrr = (gate[x].Ggate[w].shift_>>storedlength[x][w]) & 0x01;
-	  gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr; 
+	  if (gate[w].trigger) storedlength[x][w]=SRlength[x];
+	  bitrr = (gate[x].gate[w].shift_>>storedlength[x][w]) & 0x01;
+	  gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;
@@ -2074,8 +2056,8 @@ bitn=(gate[w].shift_>>SRlength[w]) & 0x01;
 	tmp=shift_[dacfrom[count][w]]&255; // 8 bits - we can also interpret bits as single ones... we just seem to use 6 bits here
 	for (x=0;x<4;x++){ 
 	  if ((tmp&0x03) !=0){  
-	    bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01; 
-	    gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr; 
+	    bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01; 
+	    gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr; 
 	    bitn=logopx(bitn,bitrr,(tmp)&0x03); 
 	  }
 	  tmp=tmp>>2; // 4 bits
@@ -2089,8 +2071,8 @@ bitn=(gate[w].shift_>>SRlength[w]) & 0x01;
       tmp=binroute[count][w];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
-	  bitrr = (gate[x].Ggate[w].shift_>>SRlength[x]) & 0x01;
-	  if (trigger[w]) gate[x].Ggate[w].shift_=(gate[x].Ggate[w].shift_<<1)+bitrr; 
+	  bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
+	  if (gate[w].trigger) gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr; 
 	  bitn^=bitrr;
 	}
 	tmp=tmp>>1;

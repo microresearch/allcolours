@@ -85,6 +85,66 @@ void Cosc0(void){ // test oscillator
   }
 }
 
+// template for newmodes 
+void CN(void){ 
+  uint8_t w=2;
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void CN17_0(void){ 
+  uint8_t w=2;
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    BINROUTE_;
+    if (gate[w].trigger)	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+    else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
+    bitn|=bitrr;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void CN18_0(void){ 
+  uint8_t w=2; static uint8_t tug[4]={0};
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    if (gate[w].trigger) tug[w]^=1;
+    if (tug[w]){
+      BINROUTEANDCYCLE_;
+    }
+    else {
+      bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
+    }	    
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
+
 
 void C0(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
@@ -177,7 +237,7 @@ void C67(void){ // stock 4 bit DAC
   DACOUT;
 }
 
-void C66(void){ // stock 4 bit DAC
+void C66(void){ // default basic dac
   gate[2].dactype=66; gate[2].dacpar=4095-(param[2]&4095);
   DACOUT;
 }

@@ -29,13 +29,14 @@ void R0(void){
   if(gate[3].last_time<gate[3].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    PULSIN_OR;
+    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
   }
 }
 
+// no << gshift
 void R0nog(void){ 
   uint8_t w=3;
   count=0;
@@ -45,14 +46,12 @@ void R0nog(void){
   if(gate[3].last_time<gate[3].int_time)      {
     GSHIFT_;
     BINROUTENOG_;
-    PULSIN_OR;
+    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
   }
 }
-
-// no << gshift
 
 void R1(void){ // route and cycle
   uint8_t w=3;

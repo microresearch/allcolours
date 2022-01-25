@@ -271,9 +271,13 @@ see newmodes.c - port in...
 - from notebook - how we could have multiple/split speeds (leave one/length as set and update others on entry?, or use strobe also which maybe we have already)
 
 1. shifting/SR speed <<
-2. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes
+2. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes - L3 in modeL - in/outside loop as optionsDONE
 3. advance incoming GSR speed - slidings
 4. DAC out speed  - slipping
+
+-- porting in from newmodes.c, 4 bit shuffle to come in from modeN.h
+
+*check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
 
 ** 24/1/2022
 
@@ -285,7 +289,7 @@ see newmodes.c - port in...
 - added Ndacghostincoming0 using incoming ghost for speed in modeN.h
 - +fixed speed thing in macro.h a bit/back+ fixed some of adc so can have multiple w (eg. for oldbt etc)
 - added ADC choices in intmode: LintselADC_63, RintselADC_63
-- added binroute NOG macros to macros.h to test in modes (in all modeX.h): no movement of GSRs....
+- added binroute NOG macros to macros.h to test in modes (in all modeX.h): no movement of GSRs....DONE/TESTED
 
 Benjolin style patch: 
 

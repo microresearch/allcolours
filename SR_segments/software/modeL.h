@@ -14,12 +14,431 @@ INTmodes: route from CV, prob from CV, others?
 
 // TODO: check we have     PULSIN_XOR;!!!!!!!!!!!!!!1
 
+// template
+void LN(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// port in from newmodes.c
+
+void LN3(void){ // match newmodes numbers
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    BINROUTE_;
+    prob=gate[w].shift_&31; // this seems to work somehow 8/12/2021
+    PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN4(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    BINROUTEANDCYCLE_;
+    prob=gate[w].shift_&31; // this seems to work somehow 8/12/2021
+    PULSIN_LEAK; // try xor vs leak vs or... - uses prob as param
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN5(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) 
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    BINROUTE_;
+    if (gate[w].trigger)	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+    else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
+    bitn|=bitrr;
+    PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN6(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    if (gate[w].trigger){
+      BINROUTE_;
+    }
+    else {
+      bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
+    }
+    PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN7(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    if (gate[w].trigger){
+      BINROUTE_;
+    }
+    else {
+      bitn=!(gate[w].shift_>>SRlength[w]) & 0x01; 
+    }	
+    PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN8(void){
+  uint8_t w=1; uint8_t prob; static uint8_t tug[4]={0};
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    if (gate[w].trigger) tug[w]^=1;
+    if (tug[w]){
+      BINROUTEANDCYCLE_;
+    }
+    else {
+      bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
+    }	
+    PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+// there is no 9 there
+void LN10(void){ // **
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	if (gate[w].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1;
+    }
+    PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN11(void){
+  uint8_t w=1; uint8_t prob; uint32_t tmpp;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+	tmp=binroute[count][w];
+      for (x=0;x<4;x++){
+	if (tmp&0x01){
+	  if (gate[w].trigger){
+	    tmpp=gate[x].Gshift_[w];
+	    REV32; // reverse 32 bits
+	    tmpp=tmpp&othermasky[SRlength[x]]; // mask the top length bits
+	    gate[x].Gshift_[w]=tmpp>>(31-SRlength[x]); // and shift 31-length bits
+	  }
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; // 
+	  bitn^=bitrr;
+	}
+	tmp=tmp>>1;
+      }
+	PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN12(void){       // XX - we XOR on STROBE our shift with the GHOST
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+  tmp=binroute[count][w];
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+    if (gate[w].trigger) gate[x].Gshift_[w]^=gate[w].shift_;
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+    if (gate[w].trigger) 
+      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+    bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN13(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ?? -- 9 below
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+	BINROUTE_;
+	if (((LFSR_[w] & 4095 ) < gate[dacfrom[count][w]].dac)){
+	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+	}
+	else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
+	bitn|=bitrr;
+    PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN14(void){ //	01 2-BITIN or loopback
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+	if (((LFSR_[w] & 4095 ) < gate[dacfrom[count][w]].dac)){
+	  BINROUTE_;
+	}
+	else {
+	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
+	}		//
+	PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN15(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+	if (((LFSR_[w] & 4095 ) < gate[dacfrom[count][w]].dac)){
+	  BINROUTEANDCYCLE_;
+	}
+	else {
+	  bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
+	}	
+    PULSIN_XOR;
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN21(void){ // triadex inspired mode where we XOR in bits from the other SRs CASE 21
+  uint8_t w=1; uint32_t bitnn, bitnnn; 
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    bitn = (gate[others[w][0]].Gshift_[w]>>SRlength[others[w][0]]) & 0x01; 
+    gate[others[w][0]].Gshift_[w]=(gate[others[w][0]].Gshift_[w]<<1)+bitn;
+
+    bitnn = (gate[others[w][1]].Gshift_[w]>>SRlength[others[w][1]]) & 0x01; 
+    gate[others[w][1]].Gshift_[w]=(gate[others[w][1]].Gshift_[w]<<1)+bitnn;
+
+    bitnnn = (gate[others[w][2]].Gshift_[w]>>SRlength[others[w][2]]) & 0x01; 
+    gate[others[w][2]].Gshift_[w]=(gate[others[w][2]].Gshift_[w]<<1)+bitnnn;
+    
+    //    bitn^=((gate[w].shift_>>SRlength[w])& 0x01)^bitnn^bitnnn;
+    bitn^=bitnn^bitnnn; 
+    PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN22(void){// as above
+  uint8_t w=1; uint8_t prob; uint32_t bitnn, bitnnn; 
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    bitn = (gate[others[w][0]].shift_>>SRlength[others[w][0]]) & 0x01;
+    bitnn = (gate[others[w][1]].shift_>>SRlength[others[w][0]]) & 0x01;
+    bitnnn = (gate[others[w][2]].shift_>>SRlength[others[w][0]]) & 0x01;
+
+    //    bitn^=((gate[w].shift_>>SRlength[w])& 0x01)^bitnn^bitnnn;
+    bitn^=bitnn^bitnnn; 
+    PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN23(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN24(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN25(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void LN26(void){
+  uint8_t w=1; uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Lno(void){
 }
 
 void L0(void){ // basic route in
-  uint8_t w=1;
+  uint8_t w=1; 
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -81,6 +500,42 @@ void L2(void){ // test double/bump speed/sr on trigger
   }
   }
 }
+
+void L3(void){ // test gshift on trigger
+  uint8_t w=1;
+  HEAD;
+  if (gate[w].trigger) { // outside or inside loop?
+    GSHIFT_;
+  }
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void L4(void){ // test gshift on trigger
+  uint8_t w=1;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  if (gate[w].trigger) { // outside or inside loop?
+    GSHIFT_;
+  }
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 
 void Losc0(void){ // basic route in with oscillator
   uint8_t w=1;
@@ -202,6 +657,7 @@ void Ldac0(void){
 }
 
 // intmodes
+// add in and check all probability modes
 
 // prototype INTmode 0 no interpolation and no use of CV - cycles though
 void Lint0(void){ 
