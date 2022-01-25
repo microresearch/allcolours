@@ -36,6 +36,24 @@ void R0(void){
   }
 }
 
+void R0nog(void){ 
+  uint8_t w=3;
+  count=0;
+  HEAD;
+  if (speedf_[3]!=2.0f){ 
+  CVOPEN;
+  if(gate[3].last_time<gate[3].int_time)      {
+    GSHIFT_;
+    BINROUTENOG_;
+    PULSIN_OR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+// no << gshift
+
 void R1(void){ // route and cycle
   uint8_t w=3;
   count=0;

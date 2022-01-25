@@ -151,7 +151,7 @@ void N0(void){ // basic ADC in with XOR route in
   ADCXORIN(0);
 }
 
-void N0nog(void){ // basic ADC in with XOR route in
+void N0nog(void){ // basic ADC in with XOR route in and no gshifting <<
   ADCXORINNOG(0);
 }
 

@@ -33,6 +33,22 @@ void L0(void){ // basic route in
   }
 }
 
+void L0nog(void){ // basic route in no GSHIFT<<
+  uint8_t w=1;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTENOG_;
+    PULSIN_OR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 void L1(void){ // route and cycle
   uint8_t w=1;
   HEAD;

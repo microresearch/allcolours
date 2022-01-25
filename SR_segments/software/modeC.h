@@ -51,6 +51,23 @@ what are the next 16x LR modes
   }							\
 }
 
+// no << in gshift
+#define DACOUTNOG {				\
+  uint8_t w=2;					\
+  float alpha;								\
+  uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;	\
+  if (speedf_[2]!=2.0f){						\
+    CVOPEN;						\
+    if (gate[2].last_time<gate[2].int_time)      {	\
+      GSHIFT_;						\
+      BINROUTENOG_;					\
+      BITN_AND_OUTV_;					\
+      ENDER;						\
+    }							\
+  }							\
+}
+
+
 // run through DAC modes with correct params set if necessary
 
 void Cosc0(void){ // test oscillator
@@ -73,6 +90,12 @@ void C0(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
   DACOUT;
 }
+
+void C0nog(void){
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  DACOUTNOG;
+}
+
 
 void C1(void){
   gate[2].dactype=1; gate[2].dacpar=param[2];

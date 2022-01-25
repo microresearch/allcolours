@@ -264,9 +264,7 @@ port in to LR modes from draftdec? and theone, extramodes
 // Gshift_[x][w] becomes gate[x].Gshift_[w]
 // shift_[w] becomes gate[w].shift_
 
-done in extramodes
-
-TODO: in draftdec/list modes ther, theone
+see newmodes.c - port in...
 
 ** 24/1/2022
 
@@ -278,7 +276,7 @@ TODO: in draftdec/list modes ther, theone
 - added Ndacghostincoming0 using incoming ghost for speed in modeN.h
 - +fixed speed thing in macro.h a bit/back+ fixed some of adc so can have multiple w (eg. for oldbt etc)
 - added ADC choices in intmode: LintselADC_63, RintselADC_63
-- added binroute NOG macros to macros.h to test in modes (in modeN.h for now): no movement of GSRs....
+- added binroute NOG macros to macros.h to test in modes (in all modeX.h): no movement of GSRs....
 
 Benjolin style patch: 
 
