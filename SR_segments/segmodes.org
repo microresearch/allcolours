@@ -266,6 +266,15 @@ port in to LR modes from draftdec? and theone, extramodes
 
 see newmodes.c - port in...
 
+** 25/1/2022
+
+- from notebook - how we could have multiple/split speeds (leave one/length as set and update others on entry?, or use strobe also which maybe we have already)
+
+1. shifting/SR speed <<
+2. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes
+3. advance incoming GSR speed - slidings
+4. DAC out speed  - slipping
+
 ** 24/1/2022
 
 - TODOcheck new notebook Qs:
