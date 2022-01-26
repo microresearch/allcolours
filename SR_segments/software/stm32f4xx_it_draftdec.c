@@ -778,7 +778,7 @@ break;
 	    }
 	PULSIN_XOR;
       }
-    bitn=shift_[w]&1; // fixed this 29/12/2021
+    bitn=shift_[w]&1; // fixed this 29/12/2021 - bu
     shift_[w]+=bitn;				
     dac[w]=DAC_(w, SRlength[w], dactype[w],param[w],trigger[w]); 
     PULSOUT;

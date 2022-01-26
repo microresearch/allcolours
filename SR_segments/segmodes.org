@@ -266,6 +266,23 @@ port in to LR modes from draftdec? and theone, extramodes
 
 see newmodes.c - port in...
 
+*check strobey, pulsins for all mode.h modes*
+
+** 26/1/2022
+
+*porting into Lmodes but need to resolve basics of: speed ranges and CV, probabilities, routings, basic modes for all sides*
+
+- thinking on scale/speeds - at the moment we have 0-5v CV input and
+  covers 2^10 - so 10 octaves...we want say 13 or 14 octaves - 0.1Hz
+  to 5K for 14 octaves/doublings
+
+can we have knob covering this and 0-10v as 1v/OCT - not sure as they are both adding...
+
+100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)
+
+- how to scale and offset DACs for DACspeeds...(two controls - leave length as is maybe)
+
+
 ** 25/1/2022
 
 - from notebook - how we could have multiple/split speeds (leave one/length as set and update others on entry?, or use strobe also which maybe we have already)
@@ -275,7 +292,7 @@ see newmodes.c - port in...
 3. advance incoming GSR speed - slidings
 4. DAC out speed  - slipping
 
--- porting in from newmodes.c, 4 bit shuffle to come in from modeN.h
+-- porting in from newmodes.c, DONE:4 bit shuffle to come in from modeN.h
 
 *check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
 
@@ -309,7 +326,7 @@ doesn't seem to really work out!
 
 - should have array of what we route into - added routeto array with count to use for some Gshift modes
 
-** 21/2/2022
+** 21/1/2022
 
 - +maybe makes sense only have DAC speed modes in LR!* else becomes too confusing/noisy and we keep NC as more mode selections and prob for+
 
@@ -317,7 +334,7 @@ doesn't seem to really work out!
 
 - added Rmode which bumps on ghosts - variations of this and can also be intmode and dacspeed mode
 
-- *some way to untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv*
+- *some way to untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above*
 eg. pass on speed/gshift etc, dac speed ????
 
 - *ghosts of ghosts* - strobe records a ghost of incoming ghost and holds this till next strobe/advances it, records new one, holds for length time?
@@ -388,7 +405,7 @@ DAC/ADC mixes in
 
 0-7adc basics with XOR
 
-*- 16x or 32x INTmodes all must use CV! we have two many*
+*- 16x or 32x INTmodes all must use CV! we have too many*
 
 prob modes
 special modes-params eg, route, selects
@@ -402,7 +419,7 @@ special modes-params eg, route, selects
 
 *question if for modes which use DAC in ADC if we should NOT route in DAC or at least have both options - tested in N27 and can work/run out*
 
-*question also if LR pulses in should be XOR or OR? - OR seems better TODO*
+*question also if LR pulses in should be XOR or OR? - OR seems better TODO/test*
 
 ** 18/1/2022:
 

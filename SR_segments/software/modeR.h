@@ -239,8 +239,38 @@ void RDACroute0(void){
   }  
 }
 
+void R32(void){ // multiple bits in as case 19 in draftdec
+  uint8_t w=3;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    gate[w].shift_&=spacmask[SRlength[w]]; //cleared
+    if (SRlength[defroute[w]]>=SRlength[w]){
+    gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
+  }
+  else // shift up <<
+    {
+      gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
+    }
+    bitn=gate[w].shift_&1; // fixed this 29/12/2021
+    if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }    
+  }
+}
 
 
+/////////////////////////////////////////////////////////////////////////
 // DACspeed modes?
 
 /*
@@ -255,7 +285,7 @@ void Rdacadditself0(void){ // tested//trial itself as DAC - can also be other va
   uint8_t w=3;
   float speedf__;
   speedf__=logspeed[(CV[3]&511)+(gate[3].dac>>3)];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -272,7 +302,7 @@ void Rdacghostitself0(void){ // own ghost from next 1 - could also select incomi
   uint8_t w=3;
   float speedf__;
   speedf__=logspeed[(CV[3]&511)+((gate[3].Gshift_[1])&511)];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -291,16 +321,16 @@ void Rdacseladd0(void){
   uint8_t w=3;
   float speedf__;
   uint8_t whic=(CV[3]>>9)&3; //12 bits -> 2 bits
-  //  if (speedf_[0]==2.0f) speedf_[0]=0.000990f;
+  //  if (speedf_[0]==2.0f) speedf_[0]=LOWEST;
   //  speedf__= (speedf_[0]-logspeed[1023-(gate[which].dac>>2)]);
   speedf__=logspeed[(CV[3]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit
 //  speedf__= logspeed[1023-(gate[speedfrom_[0]].dac>>2)];
 //  speedf__=(speedf_[0] -((4095-gate[speedfrom_[0]].dac)/4095.0f));
 //  speedf__=speedf_[0];
   //  if (speedf__>1.0f) speedf__=1.0f;
-  // if (speedf__<0.000990f) speedf__=0.000990f;
+  // if (speedf__<LOWEST) speedf__=LOWEST;
   //  speedf__=1.0f;
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -317,7 +347,7 @@ void Rdacadd0(void){
   uint8_t w=3;
   float speedf__;
   speedf__=logspeed[(CV[3]&511)+(gate[dacfrom[count][3]].dac>>3)];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -337,7 +367,7 @@ void RB0(void){// with oscillator
   cv=(gate[dacfrom[count][3]].dac>>2)-(1024-(CV[3]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -360,7 +390,7 @@ void Rdacaddmax0(void){ // REMOVE?
   cv=(CV[3]>>2)+(gate[dacfrom[count][3]].dac>>2);
   if (cv>1023) cv=1023;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -380,7 +410,7 @@ void Rdacminus0(void){
   cv=(gate[dacfrom[count][3]].dac>>2)-(1024-(CV[3]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -400,7 +430,7 @@ void Rdacspeedminus0(void){
   cv=(CV[3]>>2)-(gate[dacfrom[count][3]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -419,7 +449,7 @@ void Rdacmod0(void){
   float speedf__;
   cv=((CV[3]>>2)+1); // modulo code
   speedf__=logspeed[(gate[dacfrom[count][3]].dac>>2)%cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;

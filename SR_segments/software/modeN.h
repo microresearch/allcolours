@@ -1,4 +1,6 @@
 // TOP modes as functions.... ADC/other inputs
+// check all for strobey binroute has strobey
+
 
 /*
 
@@ -507,14 +509,15 @@ void N32(void){ // multiple bits in as case 19 in draftdec
 			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
 			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
     }
-    BITN_AND_OUTVN_;
+  if (!strobey[0][mode[0]]) bitn|=gate[0].trigger;
+  BITN_AND_OUTVN_; // no pulse ins/outs
     ENDER;
   }    
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// CV and DAC modes - move these to LR!
+/// CV and DAC modes - move these to LR! ???
 /*
 
 refine and figure out dac modes as dac is too fast
@@ -532,7 +535,7 @@ void Ndacadditself0(void){ // tested//trial itself as DAC - can also be other va
   uint8_t w=0;
   float speedf__;
   speedf__=logspeed[(CV[0]&511)+(gate[0].dac>>3)];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -548,7 +551,7 @@ void Ndacghostitself0(void){ // own ghost from next 1 - could also select incomi
   uint8_t w=0;
   float speedf__;
   speedf__=logspeed[(CV[0]&511)+((gate[0].Gshift_[routeto[count][0]])&511)];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -564,7 +567,7 @@ void Ndacghostincoming0(void){ // own ghost from next 1 - could also select inco
   uint8_t w=0;
   float speedf__;
   speedf__=logspeed[(CV[0]&511)+((gate[0].Gshift_[inroute[count][0]])&511)];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -582,16 +585,16 @@ void Ndacseladd0(void){
   uint8_t w=0;
   float speedf__;
   uint8_t whic=(CV[0]>>9)&3; //12 bits -> 2 bits
-  //  if (speedf_[0]==2.0f) speedf_[0]=0.000990f;
+  //  if (speedf_[0]==2.0f) speedf_[0]=LOWEST;
   //  speedf__= (speedf_[0]-logspeed[1023-(gate[which].dac>>2)]);
   speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit
 //  speedf__= logspeed[1023-(gate[speedfrom_[0]].dac>>2)];
 //  speedf__=(speedf_[0] -((4095-gate[speedfrom_[0]].dac)/4095.0f));
 //  speedf__=speedf_[0];
   //  if (speedf__>1.0f) speedf__=1.0f;
-  // if (speedf__<0.000990f) speedf__=0.000990f;
+  // if (speedf__<LOWEST) speedf__=LOWEST;
   //  speedf__=1.0f;
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -607,7 +610,7 @@ void Ndacadd0(void){
   uint8_t w=0;
   float speedf__;
   speedf__=logspeed[(CV[0]&511)+(gate[dacfrom[count][0]].dac>>3)];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -626,7 +629,7 @@ void Ndacaddmax0(void){ // REMOVE?
   cv=(CV[0]>>2)+(gate[dacfrom[count][0]].dac>>2);
   if (cv>1023) cv=1023;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -645,7 +648,7 @@ void Ndacminus0(void){
   cv=(gate[dacfrom[count][0]].dac>>2)-(1024-(CV[0]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -664,7 +667,7 @@ void Ndacspeedminus0(void){
   cv=(CV[0]>>2)-(gate[dacfrom[count][0]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -682,7 +685,7 @@ void Ndacmod0(void){
   float speedf__;
   cv=((CV[0]>>2)+1); // modulo code
   speedf__=logspeed[(gate[dacfrom[count][0]].dac>>2)%cv];
-  if (speedf__==2.0f) speedf__=0.000990f;
+  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -702,7 +705,7 @@ void NB0(void){// with oscillator
   cv=(CV[0]>>2)-(gate[dacfrom[count][0]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=0.000990f;  
+  if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;

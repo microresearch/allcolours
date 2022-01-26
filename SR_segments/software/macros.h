@@ -68,6 +68,14 @@
     gate[w].shift_=gate[w].shift_<<1;			\
 }
 
+#define GSHIFTNOS_ {				\
+    gate[w].Gshift_[0]=gate[w].shift_;			\
+    gate[w].Gshift_[1]=gate[w].shift_;			\
+    gate[w].Gshift_[2]=gate[w].shift_;			\
+    gate[w].Gshift_[3]=gate[w].shift_;			\
+}
+
+
 #define JUSTCYCLE_ {					\
   bitrr = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;		\
   bitn^=bitrr;						\
@@ -165,6 +173,21 @@
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
 }
+
+#define BITN_AND_OUTVNOSHIFT_ {						\
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+    tmp=(w<<1);								\
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    lengthbit=(SRlength[w]>>1);					\
+    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    prev_stat[w]=new_stat;					\
+    tmp++;							\
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+}
+
 
 // for pulse outs
 #define BITN_AND_OUTVINT_ {						\

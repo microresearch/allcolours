@@ -143,9 +143,6 @@ void CN18_0(void){
   }
 }
 
-
-
-
 void C0(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
   DACOUT;
@@ -297,6 +294,37 @@ void CDACroute0(void){
   }  
 }
 
+void C32(void){ // multiple bits in as case 19 in draftdec
+  uint8_t w=2;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    gate[w].shift_&=spacmask[SRlength[w]]; //cleared
+    if (SRlength[defroute[w]]>=SRlength[w]){
+    gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
+  }
+  else // shift up <<
+    {
+      gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
+			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
+    }
+    bitn=gate[w].shift_&1; // fixed this 29/12/2021
+    if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
+    BITN_AND_OUTV_;
+    ENDER;
+  }    
+  }
+}
+
+
+///////////////////////////////////////////////////////////////////////////
 // CV+DAC speed modes TODO:
 
 // INTmodes

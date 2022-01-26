@@ -694,47 +694,24 @@ case 29: // copy of 19 trial for ADC in probablity modes - adc_buffer[12] 12 bit
   }
     break; 
 
- case 31: // speedfrom/CV.DAC template to test - 4 options here to test...
-//      if (counter[w]>(speed[w]+dac[speedfrom_[w]])){// add means we always slow down - other options (wrap, lookup) //1//
-  
-    //2//    tmpt=(dac[speedfrom_[w]]>>2)-(1024-speed[w]);
-   //    if (tmpt<0) tmpt=0; 
-
-   //3//tmpt= speed[w]-(dac[speedfrom_[w]]>>2);
-   //   if (tmpt<0) tmpt=0; 
-
-   //4//   if (counter[w]>((dac[speedfrom_[w]]>>2)%speed[w])){ // wrap
-
-     //2/3  if (counter[w]>tmpt){
-	dactype[2]=0; 
-
-	GSHIFT;
-     
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
-    PULSIN_XOR;
-    BITN_AND_OUT;
-    }// counterw
-  break; 
 
   case 33: // strobe case withOUT looping option
-    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
-      if (counter[w]>speed[w] && speed[w]!=1024){
-    dactype[2]=0; 
 
-    GSHIFT;      
-    gate[w].shift_=gate[w].shift_<<1;
     
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
+    GSHIFT;      
+    GGGshift_[w]=GGGshift_[w]<<1;
+    
+bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; // replace with binroute
     Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
 
     PULSIN_XOR;
-    
-    gate[w].shift_+=bitn;
-   
+//binroute etc
+
+    GGGshift_[w]+=bitn;
+
     if (gate[w].trigger==1) { // strobe
       gate[w].shift_&=invmasky[SRlength[w]]; 
-      gate[w].shift_+=(gate[w].shift_&masky[SRlength[w]]);
+      gate[w].shift_+=(GGGshift_&masky[SRlength[w]]);// to check again
     }
 
     PULSOUT;
@@ -771,8 +748,10 @@ case 29: // copy of 19 trial for ADC in probablity modes - adc_buffer[12] 12 bit
     }// counterw
   break; 
 
+
   case 35: // TRIADEX 2
     //    - triadex: we could use params from clkins as indicator of which bits from which SR to parity-in
+// also use cv fdor this
     // so table would be for 4 bits from 4x maxSRlength=32*4=128 (ignore lengths)
     //    bt = ((shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][0])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][1])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][2])) ^ (shift_[LFSR[reg]] >> (lfsr_taps[SRlength[LFSR[reg]]][3]))) & 1u;
 
@@ -790,10 +769,10 @@ case 29: // copy of 19 trial for ADC in probablity modes - adc_buffer[12] 12 bit
     s[3]=(param[3]>>5)&3; // select which one... 0,1,2,3
     ss[3]=param[3]%32; // 32 bits
 
-    bitn = (shift_[s[0]] >> ss[0]) & 0x01;
-    bitnn = (shift_[s[1]] >> ss[1]) & 0x01;
-    bitnnn = (shift_[s[2]] >> ss[2]) & 0x01; 	
-    bitnnnn = (shift_[s[3]] >> ss[3]) & 0x01; 
+    bitn = (gate[s[0]].shift_ >> ss[0]) & 0x01;
+    bitnn = (gate[s[1]].shift_ >> ss[1]) & 0x01;
+    bitnnn = (gate[s[2]].shift_ >> ss[2]) & 0x01; 	
+    bitnnnn = (gate[s[3]].shift_ >> ss[3]) & 0x01; 
     
     bitn^=((gate[w].shift_>>SRlength[w])& 0x01)^bitnn^bitnnn^bitnnnn; 
 
@@ -807,7 +786,7 @@ case 29: // copy of 19 trial for ADC in probablity modes - adc_buffer[12] 12 bit
     dactype[2]=0; 
 
     if (gate[w].trigger==1) { // at start we place it...
-      gate[w].shift_=gate[w].shift_[w];
+      gate[w].shift_=gate[w].Gshift_[w];
     }
     
     GSHIFT;      
@@ -819,6 +798,8 @@ case 29: // copy of 19 trial for ADC in probablity modes - adc_buffer[12] 12 bit
     BITN_AND_OUT;
     }// counterw
   break; 
+
+//HERE!
 
   case 38: // pass through or cycle is toggled by clkin bit
     // this can also be for ADC - toggle entry of ADC bit or pass through/cycle
