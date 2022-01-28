@@ -23,7 +23,7 @@ above, different kinds of DAC out
 void R0(void){ 
   uint8_t w=3;
   count=0;
-  HEAD;
+  HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -40,7 +40,7 @@ void R0(void){
 void R0nog(void){ 
   uint8_t w=3;
   count=0;
-  HEAD;
+  HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -56,7 +56,7 @@ void R0nog(void){
 void R1(void){ // route and cycle
   uint8_t w=3;
   count=0;
-  HEAD;
+  HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -72,7 +72,7 @@ void R1(void){ // route and cycle
 void Rmod(void){ // modulo route in 
   uint8_t w=3;
   count=0;
-  HEAD;
+  HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -100,7 +100,7 @@ void Rmod(void){ // modulo route in
 
 void Rosc0(void){ // basic route in with oscillator
   uint8_t w=3;
-  HEAD;
+  HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -118,7 +118,7 @@ void Rosc0(void){ // basic route in with oscillator
 void Raccelghosts0(void){ // route in // exp mode to accelerate/bump on all ghosts except own - could also select which ones for intmode
   uint8_t w=3;
   count=0;
-  HEAD;
+  HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -150,7 +150,7 @@ void Raccelghosts0(void){ // route in // exp mode to accelerate/bump on all ghos
 void Rglobalbump0(void){ 
   uint8_t w=3;
   //  count=0;
-  HEAD;
+  HEADR;
 
   if (gate[3].trigger) // outside speed?
     {
@@ -173,7 +173,7 @@ void Rglobalbump0(void){
 void Rglobaldac0(void){ // dac as global route table or could be SR as route bits but we need to fix that
   uint8_t w=3;
   //  count=0;
-  HEAD;
+  HEADR;
   if (speedf_[3]!=2.0f){ 
     CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -191,7 +191,7 @@ void Rglobaldac0(void){ // dac as global route table or could be SR as route bit
 // locals
 void Rbumproute0(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
   uint8_t w=3;
-  HEADN;
+  HEADR;
   if (speedf_[3]!=2.0f){
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -217,7 +217,7 @@ void Rbumproute0(void){ // trigger bumps up our local route - add one to this (w
 
 void RDACroute0(void){ 
   uint8_t w=3;
-  HEADN;
+  HEADR;
   if (speedf_[3]!=2.0f){
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
@@ -241,24 +241,24 @@ void RDACroute0(void){
 
 void R32(void){ // multiple bits in as case 19 in draftdec
   uint8_t w=3;
-  HEAD;
+  HEADR;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     gate[w].shift_&=spacmask[SRlength[w]]; //cleared
-    if (SRlength[defroute[w]]>=SRlength[w]){
-    gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
-		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
-		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
-		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
+    if (SRlength[inroute[count][w]]>=SRlength[w]){
+    gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0])) >>(lastspac[SRlength[inroute[count][w]]][0]))+ \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))          >> ((lastspac[SRlength[inroute[count][w]]][1]) - spacc[SRlength[w]][0]))  + \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))         >>((lastspac[SRlength[inroute[count][w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))         >>((lastspac[SRlength[inroute[count][w]]][3]) - spacc[SRlength[w]][2]))); 
   }
   else // shift up <<
     {
-      gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
-			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
-			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
-			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
+      gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0]))>>(lastspac[SRlength[inroute[count][w]]][0])) + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[inroute[count][w]]][1]))  + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[inroute[count][w]]][2]))  + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
     }
     bitn=gate[w].shift_&1; // fixed this 29/12/2021
     if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
@@ -280,7 +280,7 @@ refine and figure out dac modes as dac is too fast
  */
 
 void Rdacadditself0(void){ // tested//trial itself as DAC - can also be other variants TODO
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   float speedf__;
@@ -297,7 +297,7 @@ void Rdacadditself0(void){ // tested//trial itself as DAC - can also be other va
 }
 
 void Rdacghostitself0(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   float speedf__;
@@ -316,7 +316,7 @@ void Rdacghostitself0(void){ // own ghost from next 1 - could also select incomi
 
 
 void Rdacseladd0(void){
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   float speedf__;
@@ -342,7 +342,7 @@ void Rdacseladd0(void){
 }
 
 void Rdacadd0(void){
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   float speedf__;
@@ -359,7 +359,7 @@ void Rdacadd0(void){
 }
 
 void RB0(void){// with oscillator
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   int32_t cv;
@@ -382,7 +382,7 @@ void RB0(void){// with oscillator
 
 
 void Rdacaddmax0(void){ // REMOVE?
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   int32_t cv;
@@ -402,7 +402,7 @@ void Rdacaddmax0(void){ // REMOVE?
 }
 
 void Rdacminus0(void){
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   int32_t cv;
@@ -422,7 +422,7 @@ void Rdacminus0(void){
 }
 
 void Rdacspeedminus0(void){
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   int32_t cv;
@@ -442,7 +442,7 @@ void Rdacspeedminus0(void){
 }
 
 void Rdacmod0(void){
-  HEAD;
+  HEADR;
   count=0;
   uint8_t w=3;
   int32_t cv;
@@ -467,7 +467,7 @@ void Rdacmod0(void){
 // prototype INTmode 0 no interpolation and no use of CV
 void Rint0(void){ 
   uint8_t w=3;
-  HEAD;  
+  HEADR;  
   count=0;
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -479,7 +479,7 @@ void Rint0(void){
 
 void Rglobalint0(void){ 
   uint8_t w=3;				       
-  HEAD;
+  HEADR;
   //  count=0;
   if (gate[w].trigger)      {
     count=CV[3]>>8; //16 is 4 bits - we could have more
@@ -492,7 +492,7 @@ void Rglobalint0(void){
 
 void Raccelint0(void){ // TESTING but...
   uint8_t w=3;				       
-  HEAD;  
+  HEADR;  
   count=0;
   if (gate[w].trigger)      {
     GSHIFT_; // testing or?
@@ -517,7 +517,7 @@ void Raccelint0(void){ // TESTING but...
 
 void Rintroute0(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=3;				       
-  HEADN;  
+  HEADR;  
   if (gate[3].trigger)      {
     GSHIFT_;
     tmp=255-(CV[3]>>4); // 8 bits
@@ -541,7 +541,7 @@ void RintselADC_63(void){ // use CV to select adc type: only those which don't u
   uint8_t choice[16]={0,1,2,3,4,5,6,7,8, 22, 23, 25, 26, 27, 30, 63};//leave off -inprogress 63,64,65 to test - TODO: expand this with new abstract and dac modes...
     // DAC inputs 25,26,27,71,72,73,74
   uint8_t w=3;				       
-  HEADN;  
+  HEADR;  
   if (gate[3].trigger)      {
     val=63-(CV[3]>>6); // 6 bits say
     GSHIFT_;

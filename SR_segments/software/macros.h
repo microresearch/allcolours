@@ -48,9 +48,16 @@
 
 //#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
 
-#define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;  SRlength[0]=SRlength_[0]; \
 
-#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+#define HEADL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[1]=SRlength_[1]; \
+
+#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; \
+
+#define HEADR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; \
+
+// this one is for NO SRlength - stays as is and we can use CVL 12 bits
+#define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
 
 #define ENDER {					\
     new_data(val,w);				\
@@ -121,6 +128,19 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
+// only advance incomings
+#define BINROUTEADV_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+}
+
+// we don't cycle incoming ghost just get bits
 #define BINROUTENOG_ {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
@@ -211,7 +231,7 @@
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
 }
 
-// for int modes as no interpol
+// for int modes as no interpol, no pulse
 #define BITN_AND_OUTNINT_ {						\
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \

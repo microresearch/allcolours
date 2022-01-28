@@ -1,3 +1,14 @@
+  //  if (speedf_[0]==2.0f) speedf_[0]=LOWEST;
+  //  speedf__= (speedf_[0]-logspeed[1023-(gate[which].dac>>2)]);
+
+//  speedf__= logspeed[1023-(gate[speedfrom_[0]].dac>>2)];
+//  speedf__=(speedf_[0] -((4095-gate[speedfrom_[0]].dac)/4095.0f));
+//  speedf__=speedf_[0];
+  //  if (speedf__>1.0f) speedf__=1.0f;
+  // if (speedf__<LOWEST) speedf__=LOWEST;
+  //  speedf__=1.0f;
+
+
 // how we can OR in for route 0 - below but doesn't work so well
 #define BINROUTE {				\
   tmp=binroute[count][w];				\

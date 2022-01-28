@@ -110,7 +110,8 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 volatile uint32_t param[4]={0,0,0,0}; // interrupt flag...
-uint32_t SRlength[4]={31,31,31,31};
+uint32_t SRlength_[4]={4,31,31,31};
+uint32_t SRlength[4]={4,31,31,31};
 
 uint16_t ADCLR[3]={29,30,31}; // non-adc ADC modes - this has changedDONE
 
@@ -152,6 +153,7 @@ static uint32_t storedlength[4][4]={
 };
 
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
+//static uint32_t ghostof[4]; //
 
 // and cycling/circling array of ghosts which can come back or go forwards/backwards - when these ghosts are copied over (on event)
 // with 256 cycles/copies - or we can have variable length of this shifting array
@@ -281,11 +283,13 @@ uint32_t oppose[4]={2,3,0,1};
 
 static uint32_t prev_stat[4]={0,0,0,0};
 static volatile uint32_t CV[4]={0,0,0,0};
+static volatile uint32_t CVL[4]={0,0,0,0};
 static volatile float speedf_[4]={0,0,0,0};
 
 volatile uint32_t dac[4]={0,0,0,0};
 volatile uint32_t adc_[4]={0,0,0,0};
 uint32_t counter_[4]={0,0,0,0};
+
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
 static uint32_t LR[4]={0,1,0,1};
 static uint8_t flipd[4]={0,0,0,0};
@@ -298,7 +302,7 @@ volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRR
 int32_t oldValue, integrator, k, bt;
 
 static uint32_t counter[7]={0,0,0,0, 0,0,0};  // last 3 for fake clks
-
+static uint32_t counterr=0, counterl=0;
 
 // new speed stuff
 
@@ -324,12 +328,13 @@ void testnull(void){
 
 uint32_t testmodes[4]={0,0,0,0};
 
+//uint32_t adcchoice[32]={
 
 // we list our modes here...
 void (*dofunc[4][64])(void)=
 {
   {N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
-  {LN36, L2, L0},
+  {LNsr35, L2, LX0},
   {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
@@ -451,8 +456,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	    }
       
       counter[4]++; counter[5]++; counter[6]++;
+      counter[0]++; counter[1]++; counter[2]++; counter[3]++;
+      counterl++; counterr++;
 
-      // fake clks now is 
-      
 }
  

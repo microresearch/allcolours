@@ -865,7 +865,7 @@ bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; // replace with 
     }// counterw
     break; 
 
-  case 41: //  TM in TM: from it.c seems to use 2x comparators - one
+  case 41: //  TM in TM: from it.c seems to use 2x comparators - one - INTMODE
 	   //  for inv of cycling bit, one for inv of incoming bit (so
 	   //  could be CV and DAC comped to LFSR/DAC)
     if (gate[w].trigger==1){
@@ -901,10 +901,10 @@ bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; // replace with 
     if (counter[w]>speed[w] && speed[w]!=1024){ // speed stoppageDONE
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       counter[w]=0;
-      gate[w].shift_[0]=gate[w].shift_;
-      gate[w].shift_[1]=gate[w].shift_;
-      gate[w].shift_[2]=gate[w].shift_;
-      gate[w].shift_[3]=gate[w].shift_;
+      gate[w].Gshift_[0]=gate[w].shift_;
+      gate[w].Gshift_[1]=gate[w].shift_;
+      gate[w].Gshift_[2]=gate[w].shift_;
+      gate[w].Gshift_[3]=gate[w].shift_;
 
     if (gate[w].trigger) tug[w]^=1; // tuggle
     if (tug[w]){
@@ -930,7 +930,8 @@ bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; // replace with 
     }// counterw
     break; 
     ////
-  case 43: // reverse of case 1 - cycle round only - not so exciting...
+/*
+case 43: // reverse of case 1 - cycle round only - not so exciting...
     if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; // basic DAC out, others are fixed as basic
     counter[w]=0;
@@ -958,7 +959,7 @@ bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; // replace with 
     PULSOUT;
     }// counterw
     break; 
-
+*/
   case 44: // reverse of case 2 - feed in and cycle round
     if (counter[w]>speed[w] && speed[w]!=1024){
     dactype[2]=0; // basic DAC out, others are fixed as basic
@@ -1031,6 +1032,8 @@ bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; // replace with 
     }// counterw
     break; 
 
+/// here!
+
   case 46: //- cycling array of ghosts toggle in/how to toggle out
 //could be keep recording into array and on INT we cycle through (XOR/OR in pass through) until we get to last recorded of max x
 //uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0};
@@ -1043,7 +1046,8 @@ bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; // replace with 
       Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
       bitn^=(gate[w].shift_>>SRlength[w])& 0x01; 
       PULSIN_XOR;    
-      BITN_AND_OUT;    
+      BITN_AND_OUT;
+      
       Gshift_rev[w][Gshift_revcnt[w]]=gate[w].shift_; // record
       Gshift_revcnt[w]++;
       if (Gshift_revcnt[w]>255) Gshift_revcnt[w]=0;
@@ -1122,7 +1126,8 @@ case 47: // GSR runs at CV speed in INT mode (try)
     BITN_AND_OUT;    
     }// counterw
   break;
-  
+
+///here
   case 51: // GSR only moves on trigger - not so exciting
   bitn=0;
 
@@ -1131,8 +1136,8 @@ case 47: // GSR runs at CV speed in INT mode (try)
       GSHIFT;      
 
       if (gate[w].trigger==1){
-	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01; 
+	gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
       }
       bitn^=(gate[w].shift_>>SRlength[w])& 0x01; 
 
@@ -1147,12 +1152,12 @@ case 47: // GSR runs at CV speed in INT mode (try)
       GSHIFT;      
 
       if (gate[w].trigger==1){
-	bitnn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitnn;  
+	bitnn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01; 
+	gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitnn;  
       }
       
-      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01; 
+      gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
       //      bitn^=bitnn;
       //      bitn^=(gate[w].shift_>>SRlength[w])& 0x01; 
 
@@ -1173,15 +1178,15 @@ case 47: // GSR runs at CV speed in INT mode (try)
     GSHIFT;
       
     if (w==0){// w below can be zeroed...
-      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;
-      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;
+      bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01;
+      gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;
       tmp=lookuplenall[(adc_buffer[lookupadc[w]]>>7)];// // 12 bits to 5 bits 
       bitn^=ADC_(w,SRlength[w],29,0,0,tmp); // otherpar for length from 12 -> 5 bits
     }
     else
       {
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+    bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01; 
+    gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
       }
 
     PULSIN_LOGOP;    
@@ -1202,8 +1207,8 @@ case 47: // GSR runs at CV speed in INT mode (try)
       bitn=(gate[w].shift_>>SRlength[w])& 0x01; 
       }
       else{
-	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
-	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01;  
+	gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
 	}
       PULSIN_OR;
       BITN_AND_OUT;
@@ -1220,12 +1225,12 @@ case 47: // GSR runs at CV speed in INT mode (try)
 
       GSHIFT;
       
-      if ((gate[w].shift_ & 4095 )< (shift_[defroute[w]] & 4095) ) { // can be other routed SRs
+      if ((gate[w].shift_ & 4095 )< (shift_[inroute[count][w]] & 4095) ) { // can be other routed SRs
       bitn=(gate[w].shift_>>SRlength[w])& 0x01; 
       }
       else{
-	bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
-	Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01;  
+	gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
 	}
       PULSIN_OR;
       BITN_AND_OUT;
@@ -1376,7 +1381,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
       }
   }
     break;
-
+//here
     ////// modes from it.c but not using coggn so tricky
   case 62: // LFSR in routed in SRs
     // NEW generic routing mode including ADC - replaces mode 9
@@ -1628,14 +1633,14 @@ case 47: // GSR runs at CV speed in INT mode (try)
 	GSHIFT;
 
 	if (w==0){
-	  bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
-      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+	  bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01;  
+      gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
       bitn^=ADC_(w,SRlength[w],2,0,0,0); // XOR with LFSR
     }
     else
       {
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+    bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01; 
+    gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
       }
 
     PULSIN_XOR;    
@@ -1659,14 +1664,14 @@ case 47: // GSR runs at CV speed in INT mode (try)
 	dactype[2]=0; // basic DAC out    
 	GSHIFT;
 	if (w==0){
-      bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01;  
-      Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+      bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01;  
+      gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
       bitn^=ADC_(w,SRlength[w],2,0,0,0); // XOR with lFSR
     }
     else
       {
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+    bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01; 
+    gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
       }
 
 	PULSIN_XOR;    
@@ -1680,6 +1685,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
 // DONE: Gshift_[x][w] becomes gate[x].gate[w].shift_
 // gate[w].shift_ becomes gate[w].shift_
 
+/*
   case 333: // TEST mode - with new cumulative/adding mode which joins in previous SR 26/11 from notebook/pages
     // not sure if this makes sense
     // alts are also:
@@ -1746,7 +1752,9 @@ BITN_AND_OUT;
  BITN_AND_OUT;
   }
     break;
+*/
 
+// from extramodes.c 
 
 // was 15
 
@@ -1798,20 +1806,6 @@ BITN_AND_OUT;
 	    tmp=tmp>>1;
 	  }	  
       /////////////////////////////////////...
-
-
-// was 12
-
-	//////////////////////////////////HERE!
-	// trial of non-adc style entry and pass on here;;
-	// which modes of ADC_?: 5:LFSR, 30:1bitOSC, 32: clock
-	reggg=w; adcpar=param[w];
-	// can also bump up type in list with a gate[w].trigger TODO/TEST - here we just select from 5 and 32 as 30 used param
-	if (gate[w].trigger) tug[w]^=1;
-        // ADCLR is now changed as we changed modes
-        bitn=ADC_(w,SRlength[w],ADCLR[tug[w]],gate[w].trigger,reggg,adcpar);  //5,30,32 as selections - 32 maybe not so interesting
-	BINROUTE_;
-
 
 // was 11
 

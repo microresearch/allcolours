@@ -259,14 +259,121 @@ all the comparison possibilities]
 
 * 2022++
 
-port in to LR modes from draftdec? and theone, extramodes
+*check strobey, pulsins for all modeX.h modes*
 
-// Gshift_[x][w] becomes gate[x].Gshift_[w]
-// shift_[w] becomes gate[w].shift_
+** 28/1/2022
 
-see newmodes.c - port in...
+*which way round probs should be?*
 
-*check strobey, pulsins for all mode.h modes*
++test if we should put speed calc inside loop+ outside as we use in CVOPENing
+
+*again Q of using DAC from 3 when 3 routes in to 0 - how to seperate or did we solve this?* lack of routeins/option of route in...
+
+- DONEdetach length and place assign in headn,l,c,r - TESTed, so we can use CVL if we like... and leave length as is...
+- DONEnew mode 82 in adc/moden with incoming bit as comp
+
+- DONEcombine routing and probability modes - to some extent in
+  LDACroutestrobe0 but tricky, also prob can be speed, prob of advancing the SR-DONE, or one aspect of the SR-DONE - could be more
+
+new sets of modes where we keep old length and use a new CVL for:
+- prob and routings, double speeds/slippage (can also be with DAC), possible triadex mode, how to scale and offset DACs for DACspeeds -  define more of these
+-eg. for adc choose adc in cvspeed, dac same, or probs of adc etc... - DONE to some extent in modeN and modeL, modeC for dacsels
+
+- DONEthink how Triadex could use 2 CVs///port to SR
+
+- DONEprob of changing local routing table - in LintDACroute0 and some strobe version in modeN
+
+- TODO: port newmodes from L to N, figure out calc for filter speeds
+  (once we settle on speeds), define all bits, start to organise each set of modes...
+
+*question also if LR pulses in should be XOR or OR? - OR seems better TODO/test/change*
+
+*TODO:*
+*TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
+*TODO: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+*notation system and define/implement all prob modes:*
+
+prob taken from [X] of [Y] bit [LOGIC_WITH] [Z]
+
+eg. TO expand
+
+for ADC:
+
+[CV, DAC, SR] against DAC, LRC: ADC_buffer[12], CV, and combinations (ADD, XOR etc) of these
+
+STROBE - invert ADC BIT - XOR/OR routed
+       - invert [ADC/xor/or/routed] - NONE
+       - ADC BIT vs routed - NONE
+       - ADC BIT vs [ADC/xor/or/routed] - NONE
+       - ADC BIT vs invert [routed] - NONE
+       - ADC BIT vs invert[ADC/xor/or/routed] - NONE
+
+for abstract ADCs we can also have RETURNbit
+       - ADC bits vs RETURNbit - XOR/OR routed
+       - ADC bits vs [routed/xor/or/RETURNbit]
+	 [and inv of 2 above possibly]
+
+for others/L, R, C:
+
+- invert RETURNbit - XOR/OR routed
+- RETURNbit vs routed - NONE
+- invertRETURNbit vs routed - NONE
+- routed versus 0 - RETURNbit
+
+take from here and also *check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
+
+[prob modes for ADCin/w==0 prob of entry of bits/vs cycle etc, DAC modes can use regular prob mode]
+
+prob to DO:
+invert cycling bit (TM)
+invert incoming bit (ADC or route or both)
+
+take incoming bit (ADC or route or bothLOGIC)/OR/xor it with cycle bit (RUN)
+take incoming bit (ADC or route or bothLOGIC)/OR/LOGIC it with cycle bit
+
+incoming bit(ADC or route or bothLOGIC)/OR/cycling bit (EN/WIARD)
+incoming bit(ADC or route or bothLOGIC)/OR/INVcycling bit
+
+////
+TM: cycle bit is noise vs. comp less than 1, otherwise invert cycling bit
+
+RUN: ==not prob mod but could be made one: XOR cycle bit with input bit which
+comes from oscillator [in benjolin the DAC out effects some parameter
+of both clock and data] eg. DAC effects speed/clock of SR
+
+WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
+
+EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+
+comparators for probability and ADC depending on INT/CV mode
+
+/for prob:
+1. if LFSR/SR/DAC<CV  // int mode - as DAC is not necessarily CV!
+2.if LFSR/SR<DAC[x]  // cv/int mode
+3.if LFSR/SR<DAC[x]+CV // int mode
+4.if LFSR/SR/DAC<param[x] // cv mode
+
+
+** 27/1/2022
+
+try to categorise and clear up modes:
+
+  probability/if_strobe/toggle modes
+
+  ghosts/reflections/walkins
+
+  route modes/bit modes
+
+  what are outs/ins
+
+- how can we detach SRlength as is used everywhere as length?DONE
+
+- ported in all newmodes. TODO: intmodes, 41, 47, 64, 67, 68, 69, 104, 105, 
+
+check prob/routes 54-61, was15,14 and was11,10etc (strobes)
 
 ** 26/1/2022
 
@@ -280,12 +387,14 @@ can we have knob covering this and 0-10v as 1v/OCT - not sure as they are both a
 
 100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)
 
-- how to scale and offset DACs for DACspeeds...(two controls - leave length as is maybe)
+- *how to scale and offset DACs for DACspeeds*...(two controls - leave length as is maybe)
 
 
 ** 25/1/2022
 
-- from notebook - how we could have multiple/split speeds (leave one/length as set and update others on entry?, or use strobe also which maybe we have already)
+- from notebook - DONE:how we could have multiple/split speeds (leave one/length as set and update others on entry?, or use strobe also which maybe we have already)
+
+2x CV, strobe, dacs
 
 1. shifting/SR speed <<
 2. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes - L3 in modeL - in/outside loop as optionsDONE
@@ -293,8 +402,6 @@ can we have knob covering this and 0-10v as 1v/OCT - not sure as they are both a
 4. DAC out speed  - slipping
 
 -- porting in from newmodes.c, DONE:4 bit shuffle to come in from modeN.h
-
-*check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
 
 ** 24/1/2022
 
@@ -337,7 +444,7 @@ doesn't seem to really work out!
 - *some way to untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above*
 eg. pass on speed/gshift etc, dac speed ????
 
-- *ghosts of ghosts* - strobe records a ghost of incoming ghost and holds this till next strobe/advances it, records new one, holds for length time?
+- DONEghosts of ghosts - strobe records a ghost of incoming ghost and holds this till next strobe/advances it, records new one, holds for length time?
 
 TODO: when we use dac this should be from a table which can also be bumped around by modeR *dacfrom* which also uses/matches count or should it be otherwise?
 DONE- but we need to test this thoroughly - clkroutes also follow the same logic
@@ -419,8 +526,6 @@ special modes-params eg, route, selects
 
 *question if for modes which use DAC in ADC if we should NOT route in DAC or at least have both options - tested in N27 and can work/run out*
 
-*question also if LR pulses in should be XOR or OR? - OR seems better TODO/test*
-
 ** 18/1/2022:
 
 TESTED on 19th:
@@ -460,7 +565,7 @@ add new ones from adc_ into modeN TODO
 
 ADC modes: *prob of entry, prob of return for abstract modes* 22-31 and some others now/new ones... in modeN.h
 
-- *theone, it.c, draftdec, extramodes to all be checked for adcmodes, see also temp.org*
+- theone, it.c, draftdec, extramodes to all be checked for adcmodes, see also temp.org
 
 /////////////////////////////////////
 
@@ -473,7 +578,6 @@ ADC modes: *prob of entry, prob of return for abstract modes* 22-31 and some oth
 
 TESTed/ok dacspeed from itself - Ndacadditself - can also be other variants
 
-*TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
 
 modulo LR modes to code/test - done in Lmod and Rmod
 
@@ -920,7 +1024,6 @@ we try now with own SR as probability and this seems to work well for pulsins
 7/12/2021:
 
 - attempt grand mode with SR and many bits above - we have 8 bits route and logop and 5 bits probability DONE
-- *TODO: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means*
 
 - in ADC_ added cases 33 and 34, adc prob modes with adcpar (invcycle is more like ADC mode if is without routein)
 

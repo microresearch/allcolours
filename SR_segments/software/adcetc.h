@@ -930,8 +930,13 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
     n[reg]--;    
     break;
-     
-     
+    
+  case 82: // how we could use entry bit as comparator - but then we don't want any binroute
+     bt=0;
+     tmp = (gate[inroute[count][0]].Gshift_[0]>>SRlength[inroute[count][0]]) & 0x01;
+     tmp=tmp<<11; // upto 2048
+     if (adc_buffer[12]> tmp) bt=1;
+     break;
      
   case 101: // speed bump based on 0 skip bits
       if (length>11) length=11;
@@ -1385,16 +1390,23 @@ void TIM4_IRQHandler(void)
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!
 
-  temp=(adc_buffer[1]>>7); // 12 bits to 5 bits 
-  SRlength[0]=lookuplenall[temp];
-  //  SRlength[0]=11; // TESTY
+  temp=(adc_buffer[1]); 
+  CVL[0]=temp;
+  temp=temp>>7; // 12 bits to 5 bits
+  SRlength_[0]=lookuplenall[temp];
 
-  temp=(adc_buffer[4]>>7); // 12 bits to 5 bits 
-  SRlength[1]=lookuplenall[temp];
+  temp=(adc_buffer[4]);
+  CVL[1]=temp;
+  temp=temp>>7; 
+  SRlength_[1]=lookuplenall[temp];
 
-  temp=(adc_buffer[7]>>7); // 12 bits to 5 bits 
-  SRlength[3]=lookuplenall[temp];
+  temp=(adc_buffer[7]);
+  CVL[3]=temp;
+  temp=temp>>7; 
+  SRlength_[3]=lookuplenall[temp];
 
-  temp=(adc_buffer[10]>>7); // 12 bits to 5 bits 
-  SRlength[2]=lookuplenall[temp];
+  temp=(adc_buffer[10]);
+  CVL[2]=temp;
+  temp=temp>>7; 
+  SRlength_[2]=lookuplenall[temp];
 }

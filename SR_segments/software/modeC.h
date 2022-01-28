@@ -38,9 +38,8 @@ what are the next 16x LR modes
 
 #define DACOUT {				\
   uint8_t w=2;					\
-  float alpha;								\
-  uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;	\
-  if (speedf_[2]!=2.0f){						\
+  HEADC;						\
+  if (speedf_[2]!=2.0f){				\
     CVOPEN;						\
     if (gate[2].last_time<gate[2].int_time)      {	\
       GSHIFT_;						\
@@ -51,12 +50,26 @@ what are the next 16x LR modes
   }							\
 }
 
+#define DACOUTX {				\
+  uint8_t w=2;					\
+  HEADSIN;						\
+  if (speedf_[2]!=2.0f){				\
+    CVOPEN;						\
+    if (gate[2].last_time<gate[2].int_time)      {	\
+      GSHIFT_;						\
+      BINROUTE_;					\
+      BITN_AND_OUTV_;					\
+      ENDER;						\
+    }							\
+  }							\
+}
+
+
 // no << in gshift
 #define DACOUTNOG {				\
   uint8_t w=2;					\
-  float alpha;								\
-  uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;	\
-  if (speedf_[2]!=2.0f){						\
+  HEADC;						\
+  if (speedf_[2]!=2.0f){				\
     CVOPEN;						\
     if (gate[2].last_time<gate[2].int_time)      {	\
       GSHIFT_;						\
@@ -72,7 +85,7 @@ what are the next 16x LR modes
 
 void Cosc0(void){ // test oscillator
   uint8_t w=2;
-  HEAD;
+  HEADC;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -89,7 +102,7 @@ void Cosc0(void){ // test oscillator
 void CN(void){ 
   uint8_t w=2;
   gate[2].dactype=0; gate[2].dacpar=param[2];
-  HEAD;
+  HEADC;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -105,7 +118,7 @@ void CN(void){
 void CN17_0(void){ 
   uint8_t w=2;
   gate[2].dactype=0; gate[2].dacpar=param[2];
-  HEAD;
+  HEADC;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -124,7 +137,7 @@ void CN17_0(void){
 void CN18_0(void){ 
   uint8_t w=2; static uint8_t tug[4]={0};
   gate[2].dactype=0; gate[2].dacpar=param[2];
-  HEAD;
+  HEADC;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -142,6 +155,13 @@ void CN18_0(void){
   }
   }
 }
+
+void CLDACSEL0(void){
+  uint8_t mmm=CVL[2]>>8; // to 4 bits
+  gate[2].dactype=mmm; gate[2].dacpar=param[2];
+  DACOUTX;
+}
+
 
 void C0(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
@@ -245,7 +265,7 @@ void C66(void){ // default basic dac
 // TODO: just bump within a restricted range or array which make sense?
 void Cbumproute0(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
   uint8_t w=2;
-  HEADN;
+  HEADC;
   gate[2].dactype=0; gate[2].dacpar=param[2];
   if (speedf_[2]!=2.0f){
   CVOPEN;
@@ -272,7 +292,7 @@ void Cbumproute0(void){ // trigger bumps up our local route - add one to this (w
 
 void CDACroute0(void){ 
   uint8_t w=2;
-  HEADN;
+  HEADC;
   if (speedf_[2]!=2.0f){
   CVOPEN;
   if(gate[2].last_time<gate[2].int_time)      {
@@ -296,24 +316,24 @@ void CDACroute0(void){
 
 void C32(void){ // multiple bits in as case 19 in draftdec
   uint8_t w=2;
-  HEAD;
+  HEADC;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     gate[w].shift_&=spacmask[SRlength[w]]; //cleared
-    if (SRlength[defroute[w]]>=SRlength[w]){
-    gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0])) >>(lastspac[SRlength[defroute[w]]][0]))+ \
-		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))          >> ((lastspac[SRlength[defroute[w]]][1]) - spacc[SRlength[w]][0]))  + \
-		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))         >>((lastspac[SRlength[defroute[w]]][2]) - spacc[SRlength[w]][1]))  + \
-		      ((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))         >>((lastspac[SRlength[defroute[w]]][3]) - spacc[SRlength[w]][2]))); 
+    if (SRlength[inroute[count][w]]>=SRlength[w]){
+    gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0])) >>(lastspac[SRlength[inroute[count][w]]][0]))+ \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))          >> ((lastspac[SRlength[inroute[count][w]]][1]) - spacc[SRlength[w]][0]))  + \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))         >>((lastspac[SRlength[inroute[count][w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))         >>((lastspac[SRlength[inroute[count][w]]][3]) - spacc[SRlength[w]][2]))); 
   }
   else // shift up <<
     {
-      gate[w].shift_ |=(((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][0]))>>(lastspac[SRlength[defroute[w]]][0])) + \
-			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[defroute[w]]][1]))  + \
-			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[defroute[w]]][2]))  + \
-			((gate[defroute[w]].shift_&(1<<lastspac[SRlength[defroute[w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[defroute[w]]][3])));
+      gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0]))>>(lastspac[SRlength[inroute[count][w]]][0])) + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[inroute[count][w]]][1]))  + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[inroute[count][w]]][2]))  + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
     }
     bitn=gate[w].shift_&1; // fixed this 29/12/2021
     if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
@@ -332,7 +352,7 @@ void C32(void){ // multiple bits in as case 19 in draftdec
 void Cint0(void){ // INTmode 0 no interpolation and no use of CV
   uint8_t w=2;				       
   gate[2].dactype=0; gate[2].dacpar=param[2];
-  HEAD;  
+  HEADC;  
   if (gate[2].trigger)      {
     GSHIFT_;
     BINROUTE_;
@@ -342,7 +362,7 @@ void Cint0(void){ // INTmode 0 no interpolation and no use of CV
 
 void Cintroute0(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=2;				       
-  HEADN;  
+  HEADC;  
   if (gate[2].trigger)      {
     GSHIFT_;
     tmp=255-(CV[2]>>4); // 8 bits
@@ -368,7 +388,7 @@ void CintselDAC_63(void){
   uint8_t choice[8]={0,1,2,3, 6,7,11,15};
   gate[2].dacpar=2048;
   uint8_t w=2;				       
-  HEAD;
+  HEADC;
   if (gate[2].trigger)      {
     val=127-(CV[2]>>5); // 7 bits say
     GSHIFT_;
