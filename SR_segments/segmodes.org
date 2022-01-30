@@ -139,8 +139,6 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 - modes from original it.c ported to generic form
 
-- use of clkins for LR to select options in CVmode as in AC
-
 ** ADC modes 
 
 *TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar already*
@@ -283,14 +281,19 @@ new sets of modes where we keep old length and use a new CVL for:
 
 - DONEprob of changing local routing table - in LintDACroute0 and some strobe version in modeN
 
-- TODO: port newmodes from L to N, figure out calc for filter speeds
+- TODO: finish new intmodes in L, port newmodes from L to R, figure out calc for filter speeds
   (once we settle on speeds), define all bits, start to organise each set of modes...
 
-*question also if LR pulses in should be XOR or OR? - OR seems better TODO/test/change*
+*question also if LR pulses in should be XOR or OR? - OR seems better TODO/test/change - or options*
 
-*TODO:*
+*FINAL TODO:*
 *TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
 *TODO: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
+*untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above eg. pass on speed/gshift etc, dac speed*
+*use other SR bits to determine length of SR* 
+*check all bot/route and prob modes*
+*port in extra intmodes marked below from newmodes*
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -302,7 +305,9 @@ eg. TO expand
 
 for ADC:
 
-[CV, DAC, SR] against DAC, LRC: ADC_buffer[12], CV, and combinations (ADD, XOR etc) of these
+[LFSR, CV, DAC, SR] against DAC, LRC: ADC_buffer[12], CV, and combinations (ADD, XOR etc) of these
+
+otherDAC, ownDAC
 
 STROBE - invert ADC BIT - XOR/OR routed
        - invert [ADC/xor/or/routed] - NONE
@@ -325,28 +330,7 @@ for others/L, R, C:
 
 take from here and also *check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
 
-[prob modes for ADCin/w==0 prob of entry of bits/vs cycle etc, DAC modes can use regular prob mode]
-
-prob to DO:
-invert cycling bit (TM)
-invert incoming bit (ADC or route or both)
-
-take incoming bit (ADC or route or bothLOGIC)/OR/xor it with cycle bit (RUN)
-take incoming bit (ADC or route or bothLOGIC)/OR/LOGIC it with cycle bit
-
-incoming bit(ADC or route or bothLOGIC)/OR/cycling bit (EN/WIARD)
-incoming bit(ADC or route or bothLOGIC)/OR/INVcycling bit
-
-////
-TM: cycle bit is noise vs. comp less than 1, otherwise invert cycling bit
-
-RUN: ==not prob mod but could be made one: XOR cycle bit with input bit which
-comes from oscillator [in benjolin the DAC out effects some parameter
-of both clock and data] eg. DAC effects speed/clock of SR
-
-WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
-
-EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches). *prob is sourced from LFSR ANDed with CV/DAC*
 
 comparators for probability and ADC depending on INT/CV mode
 
@@ -377,17 +361,17 @@ check prob/routes 54-61, was15,14 and was11,10etc (strobes)
 
 ** 26/1/2022
 
-*porting into Lmodes but need to resolve basics of: speed ranges and CV, probabilities, routings, basic modes for all sides*
-
 - thinking on scale/speeds - at the moment we have 0-5v CV input and
   covers 2^10 - so 10 octaves...we want say 13 or 14 octaves - 0.1Hz
   to 5K for 14 octaves/doublings
 
-can we have knob covering this and 0-10v as 1v/OCT - not sure as they are both adding...
+*can we have knob covering this and 0-10v as 1v/OCT*
 
 100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)
 
-- *how to scale and offset DACs for DACspeeds*...(two controls - leave length as is maybe)
+ 14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
+
+- how to scale and offset DACs for DACspeeds...(two controls - leave length as is maybe)
 
 
 ** 25/1/2022
@@ -396,7 +380,7 @@ can we have knob covering this and 0-10v as 1v/OCT - not sure as they are both a
 
 2x CV, strobe, dacs
 
-1. shifting/SR speed <<
+1. shifting/SR speed << (but if is not aligned with bitin?)
 2. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes - L3 in modeL - in/outside loop as optionsDONE
 3. advance incoming GSR speed - slidings
 4. DAC out speed  - slipping
@@ -409,7 +393,7 @@ can we have knob covering this and 0-10v as 1v/OCT - not sure as they are both a
 
 - DONE: added dac comparator mode, compare with itself DONE/TESTED
 - DAC as param for some abstract ADC modes (22-31) checkDONE
-- all modes have local route in to change - from strobe/bump, from CV. from DAC is already done or? - in modeN, R, L, C tested///DOE
+- all modes have local route in to change - from strobe/bump, from CV. from DAC is already done or? - in modeN, R, L, C tested///DONE
 - added Ndacghostincoming0 using incoming ghost for speed in modeN.h
 - +fixed speed thing in macro.h a bit/back+ fixed some of adc so can have multiple w (eg. for oldbt etc)
 - added ADC choices in intmode: LintselADC_63, RintselADC_63
@@ -441,8 +425,6 @@ doesn't seem to really work out!
 
 - added Rmode which bumps on ghosts - variations of this and can also be intmode and dacspeed mode
 
-- *some way to untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above*
-eg. pass on speed/gshift etc, dac speed ????
 
 - DONEghosts of ghosts - strobe records a ghost of incoming ghost and holds this till next strobe/advances it, records new one, holds for length time?
 
@@ -772,8 +754,6 @@ again clash generic LRupdown and more individual...
 
 case 19 to retest on 0 for incomingsDONE
 
-*REMEMBER extramodes.c*
-
 looking at generic code and inputbit there which is not used - more suited to patterns/abstract
 
 resolve split personality of patterns and cv//audio filter/crusher
@@ -854,8 +834,6 @@ Run through of ADCs:
 
 [why doesn't length of intermediate SR change much/anything - changes nothing if run at same speed // because gshoft is always new]
 
-*TODO: clkroutes for normed clock routing*
-
 22/12/21:
 
 -ADC remove cycle and replace with no pass thru//finish DONE-changed modes 0 and 1 for ADC!
@@ -863,11 +841,10 @@ re-ordering ADCs but re-check which ones need parameters - put param[0] for all.
 
 - drafted minor/major mode structure in extramodes.c
 
-TODO: re-test all ADC or/esp11, *classify LR modes*
+TODO: re-test all ADC or/esp11, classify LR modes
 
 - for INTMODES: how many speed options here? just keep as pure option so can have 16x INT modes and 3x4 DAC
 
-- *where do we put strictly Right hand modes? - eg. change routings, change where normed clks come from*
 
 /////
 
@@ -901,7 +878,7 @@ tested up to 11 (12-19 todo), fixes trigger as static/is it needed?NO/replaced
 
 DACs:
 
-*DAC: 2 (is a bit muffly at long lengths - can change divy to fix this in resources.c*)
+*DAC: 2 (is a bit muffly at long lengths - can change divy to fix this in resources.c*) RETEST
 
 mode 18: toggle is more exciting for 11prob mode/// whether to change that toggle in LR modes? we did!
 
@@ -912,7 +889,6 @@ changes to case 10 in dac, 11 doesn't really work - replaced with 9, and we had 
 
 - DONE: added in normedd L,R,C clocks from Cspeed2 - using new count5 - seems to work// *can also have LR as DACs?? maybeDONE-TOTESTwithINTMODES*
 
-*we could also have mode to decide on which clks from where?*
 
 - idea of major modes on R (say 4) - for different ways interpreting bits // different probs // as we have multiple dacs 
 
@@ -933,7 +909,7 @@ TODO:
 
 proto for SR>DAC is: if ((LFSR_[w] & 4095 ) < dac[LFSR[w]]) // as that is 12 bits and shifted already 
 
-change/d all modes in extramodes.c to use the dac[LFSR[w]] above rather than SR or both & 4095 but if SR is small... *CHECK*
+change/d all modes in extramodes.c to use the dac[LFSR[w]] above rather than SR or both & 4095 but if SR is small...
 
 
 which strobe=prob modes work best with DACout 4x4 in modes 16-31 // we use 00 and 11
@@ -1290,8 +1266,6 @@ modes? (or DO we make this global default, but is much slower - think about)
 
 pass/cycle/cycle and pass as routing only
 
-- *see if we can program generic routing, probability mode*
-
 ////
 
 - TODO/some for finals: more param[x] modes perhaps, 
@@ -1429,7 +1403,7 @@ compare to: CV, DAC, CV+DAC, to clksr_, to param - feed these into otherpar
 
 could it make sense for DACs? DAC could be shifted by CV or by clksr_, other DACs.
 
-*CV modes which deal with CLKIN* - as a bit // - as a condition // - as a PARAM
+CV modes which deal with CLKIN - as a bit // - as a condition // - as a PARAM
 
 - clkin in can toggle entry/no entry of new bits, cycling etcDONE do also for ADC
 - clkin in can bump up/shift left/right the routing table, speedfrom table, logic table, dac/adc table?
@@ -1446,7 +1420,7 @@ could it make sense for DACs? DAC could be shifted by CV or by clksr_, other DAC
 
 - DONE: more macros but still need to test/re-test all
 
-*Q* if pulseouts should be after shifts ??? guess so...
+- if pulseouts should be after shifts ??? guess so...
 
 - in ADC: why (length-3)? to get down to 1 bit so could also have option for full bits!
 
@@ -1711,7 +1685,7 @@ Try to condense what we have here in segmodes into:
 - file under OTHER:
 - esoteric:
 
-*INT as signifier for interrupt/trigger modes*
+INT as signifier for interrupt/trigger modes
 
 - re-routing is not so important - can be in INT selected from CV/DACplusCV
 so CV/speed is more or less fixed routes only maybe with one exception
@@ -1923,7 +1897,7 @@ options/ideas: DAC out runs at full speed and is changed by all/any, clkin inter
 
   // we can still have specialised SRs but they should all be repeatable
   // so can be placed in a loop!
-  SEE:  *generic.c*
+  SEE:  generic.c
 
 ////////////////
 how to resolve clock norming?
@@ -2121,7 +2095,7 @@ proof of concept generic routing in test2.c
 
 default or not: CSR DAC out->top PWM/TIM1 which is normed to clock pulse for NSR
 
-*[we need to trial if this makes sense with routing]*
+[we need to trial if this makes sense with routing]
 
 // what bits make sense for SR definition to be changed by other processes?
 
@@ -2159,13 +2133,13 @@ unless we have other ways of thinking of modes... (mode as itself shift_register
 
 
 
-*thinking to have special modes - at end of mode dial which implement this kind of thinking: even 3 or 4 last turns which inc bits*
+thinking to have special modes - at end of mode dial which implement this kind of thinking: even 3 or 4 last turns which inc bits
 
 ** how to make modes more generic/independent whilst keeping routing options and open-ness?*
 
 - feedback thru RSR makes more sense for ADC in modes and less for LFSR so maybe this decides routing?
 
-- *what if each of the 4 SRs is totally generic* (in/out can be from
+- what if each of the 4 SRs is totally generic (in/out can be from
   anywhere, routing is unfixed and modifiable in runtime,
   self-modifying) - so there could be multiple ins, mixed outs
   (busses)... how to test this as proof of concept?
@@ -2178,8 +2152,6 @@ unless we have other ways of thinking of modes... (mode as itself shift_register
 but also means we can have routings maybe switchable from pulses or from CV
 
 eg. switch routing on certain conditions...
-
-*or can mix of generic and otherwise work - as long as all are independent and share any necessary information. eg. new cogg/reset function*
 
 as in we can mix use of arrays of (pointers)/srs and shiftregs with names which point to these...
 
@@ -2240,11 +2212,6 @@ bitr=(*Gshift_[g][b]>>SRlength[b]) & 0x01;
 
 //also we can make bit access (eg. GPIOC->IDR & 0x0010 - can we access register as pointer TEST??? WORKS!, counters speed etc. all arrays 0,1,2,3
 
-** classify AC SR modes (did we attempt that there?)
-
-in separate file
-
-note that some modes deal with types of pulses out
 
 * general //16/7/2021+
 
@@ -2256,15 +2223,12 @@ maybe with/without coggs as further option becomes 16 modes
 
 NO freeze: freezing is not so interesting as just locks and gives continuous tone...
 
-*[note for SEG - electronotes wheel thing is passing down of bits so this could also be probability based (based on CV)!]*
+[note for SEG - electronotes wheel thing is passing down of bits so this could also be probability based (based on CV)!]
 
 /// LOTS TO RESOLVE:
-
-*questions to resolve: routing and feedback, coggs and/or micro-registers, in or out number of bits vs. length of register* 
-
 /////
 
-- *thinking also that coggs are a bit like small shift registers* -
+- thinking also that coggs are a bit like small shift registers
   what could be done with these - rotating/looping SRs handle
   feedthrough of registers TODO! - also that this is more like overlap
   we had in mind - this seems to work
@@ -2288,8 +2252,8 @@ as we have it is NSR->LSR->CSR->RSR->NSR
 eg. NSR->LSR->CSR
             ->RSR->NSR
 
-*NSR->LSR->CSR* // *could be default routing but then we need to see about use of SRlengthc but length is important if we re-circulate???*
-*///->RSR->NSR*
+NSR->LSR->CSR // could be default routing but then we need to see about use of SRlengthc but length is important if we re-circulate???
+///->RSR->NSR
 
 NSR->LSR->CSR  ->NSR/or not
    ->RSR->CSR  ->NSR
@@ -2305,7 +2269,6 @@ routing can be array of shiftregs
 
 so routing table for each incoming SR would be 4 bits 1 1 1 1 N,L,C,R - excluding itself (try version which includes itself and doesn't shift)
 
-*ghost shift registers (GSR) within GSRs - if itself is treated as a ghost revenanting/coming into itself*
 
 //////
 
@@ -2314,8 +2277,6 @@ so routing table for each incoming SR would be 4 bits 1 1 1 1 N,L,C,R - excludin
   redundant)... Q is how to signal different routing across independent modes:
 
 if (routex==1) do this... // or pointers to entries - but we don;t really need pointers
-
-*so we can list routings but how are these selected - by the top mode maybe?*
 
 /////
 
@@ -2340,7 +2301,6 @@ variable stopping bits/zeroes
 
 - how we deal with overlaps? some test code already but need to think through, could connect to length?
 
-- *use other SR bits to determine length of other SR* then free up length cv for something else? 
 
 also pulse clock or cv advances number/x once eg for cycling ghost sr
 or length of ghost sr, or we can have smaller degrees of that advance,
@@ -2353,8 +2313,6 @@ say 1/10 so is not such a big jump
   could decide how to route bits to left or right (but we use right
   for feedback but could still be interesting - general idea of
   routing bits eg ADC to one side, LFSR to other)
-
-- *test with/withouts coggs running - how this works - seems to work so how to deal with this option in modes*
 
 - for overlap: what comes out is only one bit (of course there could be pulses from earlier bits)
   try overlap with multiple << shift (same as or differing from overlap size)
@@ -2378,7 +2336,7 @@ say 1/10 so is not such a big jump
 
 mode 0 is straight LFSR (or with ADC or)
 
-- 1-LFSRnoise/2-ADC in/3-mix of LFSR and ADC //4-comparator? -to-LSR/or/RSR or both (do we decide that here *BUT* RSR is now designated as feedback)
+- 1-LFSRnoise/2-ADC in/3-mix of LFSR and ADC //4-comparator? -to-LSR/or/RSR or both (do we decide that here = RSR is now designated as feedback)
 
 [so that gives us 8 or so modes for each one - or 4 with new coggs setup]
 
@@ -2395,8 +2353,6 @@ comp in as one bit only ADC in comped with CV?
 - pulse in/or speedCV and what CV does when pulse in/vice versa! (eg. number of bits, LFSR length if we have as extra)
 
 - can also be clocked by CSR and/or ghosted noise SR 
-
-- *look at AC SRs and see what can be adapted for ADC as incoming bits and cycling bit or RSR return bit (or combinations of these)*
 
 - can be set of parallel SRs which feed into CSR, or just x bits from ADC go straight into CSR
 
@@ -2417,7 +2373,7 @@ mode 0: feedthrough only - straight shift through with no return
 LSR has entry from NSR and feeds into CSR
 RSR has entry from CSR and feeds into NSR (so is the feedback register)
 
-*but now we look into different paths!*
+but now we look into different paths!
 
 dark/light sides, left and right hand paths, mirrors (moon and sun), tree of life (Kenneth Grant - Nightside of Eden)
 
@@ -2427,7 +2383,7 @@ or other logic ops)
 
 List leaky/decay possibilities...
 
-- *look at AC SRs and see what can be adapted for NSR/CSR as incoming bits and cycling bit or pulse in bit (or combinations of these)*
+- look at AC SRs and see what can be adapted for NSR/CSR as incoming bits and cycling bit or pulse in bit (or combinations of these)
 
 - how we handle entry and overlap from NSR or CSR (logical ops, length of overlap)
 
@@ -2460,8 +2416,6 @@ mode 0: basic DAC out
 - overlays, masks for DAC bits
 
 - how we handle the pulseouts so this can also be extra/doubling up of modes
-
-- *look at AC SRs and see what can be adapted for CSR as incoming bits and cycling bit (or combinations of these)*
 
 - DAC outs from SR
 

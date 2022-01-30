@@ -156,7 +156,7 @@ void CN18_0(void){
   }
 }
 
-void CLDACSEL0(void){
+void CLDACSEL0(void){ // no STROBE as some DACs use strobe???
   uint8_t mmm=CVL[2]>>8; // to 4 bits
   gate[2].dactype=mmm; gate[2].dacpar=param[2];
   DACOUTX;

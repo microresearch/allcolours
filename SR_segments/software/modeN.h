@@ -149,7 +149,7 @@ void Nnoroute0(void){ // basic ADC in with no route in
 
 // 0-7 is basic 8 modes
 
-void NLSEL0(void){ // basic ADC in with XOR route in - select ADC
+void NLSEL0(void){ // basic ADC in with XOR route in - select ADC // no STROBE as some ADCins use strobe
   uint8_t w=0;
   HEADSIN;
   if (speedf_[w]!=2.0f){
