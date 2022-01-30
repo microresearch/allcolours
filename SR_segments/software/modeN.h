@@ -149,7 +149,7 @@ void Nnoroute0(void){ // basic ADC in with no route in
 
 // 0-7 is basic 8 modes
 
-void NLSEL0(void){ // basic ADC in with XOR route in - select ADC // no STROBE as some ADCins use strobe
+void NLSEL(void){ // basic ADC in with XOR route in - select ADC // no STROBE as some ADCins use strobe
   uint8_t w=0;
   HEADSIN;
   if (speedf_[w]!=2.0f){
@@ -165,11 +165,60 @@ void NLSEL0(void){ // basic ADC in with XOR route in - select ADC // no STROBE a
   }
 }
 
+void NLSRlengthsel(void){ //use other SR bits to determine length of SR, eg. can be modded or...*
+  // in this case we select ADC as above and use SR as length 
+  uint8_t w=0;
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+
+    tmp=gate[dacfrom[count][0]].shift_&15;    
+    SRlength[0]=lookuplenall[tmp]; // 5 bits
+
+    GSHIFT_;
+  tmp=(CVL[0]>>7); // 5 bits = 32
+  bitn=ADC_(0,SRlength[0],tmp,gate[0].trigger,dacfrom[count][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
+  //  BINROUTE_; // with or without route in
+  if (!strobey[0][mode[0]]) bitn|=gate[0].trigger;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+// adc0
+void NLSRlengthsel0(void){ //use other SR bits to determine length of SR, eg. can be modded or...*
+  uint8_t w=0;
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+
+    tmp=gate[dacfrom[count][0]].shift_&15;    
+    SRlength[0]=lookuplenall[tmp%((CVL[0]>>7)+1)]; // 5 bits
+    //    SRlength[0]=lookuplenall[CVL[0]>>7]; // 5 bits
+    GSHIFT_;
+
+  bitn=ADC_(0,SRlength[0],0,gate[0].trigger,dacfrom[count][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
+  //  BINROUTE_; // with or without route in
+  if (!strobey[0][mode[0]]) bitn|=gate[0].trigger;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
 
 
 void N0(void){ // basic ADC in with XOR route in
   ADCXORIN(0);
 }
+
+void Noroute0(void){ // basic ADC in with XOR route in
+  ADCXORIN_NOROUTE(0);
+}
+
 
 void N0nog(void){ // basic ADC in with XOR route in and no gshifting <<
   ADCXORINNOG(0);
@@ -312,6 +361,10 @@ void N81(void){ // 4 bits in
 void N82(void){ // comparator as incoming bit ***
   ADCXORIN_NOROUTE(82);
 }
+
+//TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
+// comps in adc for dac are: 75, 76
+
 
 
 // 22->31 = no ADC IN just LFSR/DAC etc
@@ -1012,6 +1065,49 @@ void Nint72(void){ // as above but how can we do mix of adc/dac according to CV,
     if (tmp>4095) tmp=4095;
     bitn=ADCg_(0, SRlength[0], 0 , &gate[0].shift_, tmp);  // 4 bits for type  66=modulo, 67=add, 68=and
     //BINROUTE_; // no route in in this case but could be
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+void Nint84(void){ // own dac as comparator against DAC+CV // ***
+  // can also detach length and have this as prob mode too
+  uint8_t w=0;				       
+  HEADN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],84,gate[w].trigger,dacfrom[count][0],CV[0], &gate[w].shift_); 
+    JUSTCYCLE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+/*
+void NLintprob084(void){ // own dac as comparator against DAC+CV 
+  // can also detach length and have this as prob mode too - prob of cycle or ADC. prob of cycle or routein
+  uint8_t w=0;				       
+  HEADSIN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    if (((LFSR_[0] & 4095 ) > CVL[0])){   // thsi way round
+    bitn=ADC_(0,SRlength[w],84,gate[w].trigger,dacfrom[count][0],CV[0], &gate[w].shift_);
+    }
+    else JUSTCYCLE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+*/
+
+void NLintprob184(void){ // own dac as comparator against DAC+CV // ***
+  // can also detach length and have this as prob mode too - prob of cycle or ADC. prob of cycle or routein
+  uint8_t w=0;				       
+  HEADSIN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],84,gate[w].trigger,dacfrom[count][0],CV[0], &gate[w].shift_);
+    if (((LFSR_[0] & 4095 ) > CVL[0])){   // thsi way round
+    BINROUTE_;
+    }
+    else JUSTCYCLE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
 }

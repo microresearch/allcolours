@@ -28,7 +28,7 @@
     gate[w].int_time = gate[w].time_now;				\
   }
 
-// this one is used for DACspeed modes
+// this one is used for DACspeed modes and others
 #define CVOPENDAC {				\
     if (gate[w].time_now>32768){				\
       gate[w].int_time=0;					\
@@ -58,6 +58,8 @@
 
 // this one is for NO SRlength - stays as is and we can use CVL 12 bits
 #define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+
+//
 
 #define ENDER {					\
     new_data(val,w);				\

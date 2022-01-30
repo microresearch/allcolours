@@ -1284,8 +1284,6 @@ void LLprobroute0(void){ // CV: 4 bits for route in... other bits for logop
   } 
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// DAC speeds
 
@@ -1457,3 +1455,41 @@ void LLNint35(void){ // TRIADEX 2 - TODO: version using CV or SR for these bits
   }
 }
 
+//PROBABILITY
+//INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
+void Lintprobfixed0(void){ 
+  uint8_t w=1;
+  HEADL;  
+  count=0;
+  if (gate[w].trigger)      {
+    GSHIFT_;
+
+    BINROUTE_;
+    if (( ((LFSR_[w] & 4095 )&(4095-CV[1])) < gate[dacfrom[count][w]].dac)){ // prob of inversion of cycling bit - other probs are possible
+      bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
+    }
+    else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
+    bitn|=bitrr;
+    
+    PULSIN_XOR;
+    BITN_AND_OUTVINT_; // for pulse out
+  } 
+}
+
+void Lintprobfixed1(void){ // as above prob cycling vs routein
+  uint8_t w=1;
+  HEADL;  
+  count=0;
+  if (gate[w].trigger)      {
+    GSHIFT_;
+
+    if (( ((LFSR_[w] & 4095 )&(4095-CV[1])) < gate[dacfrom[count][w]].dac)){ // prob of inversion of cycling bit - other probs are possible
+      BINROUTE_;      
+    }
+    else JUSTCYCLE_;
+
+    
+    PULSIN_XOR;
+    BITN_AND_OUTVINT_; // for pulse out
+  } 
+}

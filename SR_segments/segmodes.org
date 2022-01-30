@@ -259,6 +259,12 @@ all the comparison possibilities]
 
 *check strobey, pulsins for all modeX.h modes*
 
+** 30/1/2022
+
+- *if binroute and dacfrom follow same count or we move these differently*
+
+// some DONE from below... question of detach speed or not...
+
 ** 28/1/2022
 
 *which way round probs should be?*
@@ -287,13 +293,19 @@ new sets of modes where we keep old length and use a new CVL for:
 *question also if LR pulses in should be XOR or OR? - OR seems better TODO/test/change - or options*
 
 *FINAL TODO:*
-*TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
-*TODO: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
-*untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above eg. pass on speed/gshift etc, dac speed*
-*use other SR bits to determine length of SR* 
-*check all bot/route and prob modes*
-*port in extra intmodes marked below from newmodes*
+DONE: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???] - N84 and some variations
 
+DONE: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means - ?prob is our LFSR - so we fix bits of this one...
+Lintprobfixed0/1
+
+*untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above eg. pass on speed/gshift etc, dac speed*
+- would need same scheme as for length
+
+DONE: use other SR bits to determine length of SR, eg. can be modded or...  NLSRlengthselL0 and companions
+
+*check all bit/route and prob modes*
+*port in extra intmodes marked below from newmodes*
+*port from L to R new modes*
 
 /////////////////////////////////////////////////////////////////////////////////////
 

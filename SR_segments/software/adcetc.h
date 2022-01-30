@@ -165,7 +165,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   static uint32_t k[4]={0}, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   static uint8_t lc=0;
   static uint32_t toggle[4]={0,0,0,0};
-  uint32_t bt=0, tmp=0;
+  uint32_t bt=0;
+  int32_t tmp=0;
 
   
   switch(type){    
@@ -937,7 +938,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      tmp=tmp<<11; // upto 2048
      if (adc_buffer[12]> tmp) bt=1;
      break;
-     
+    
   case 101: // speed bump based on 0 skip bits
       if (length>11) length=11;
       if (n[reg]<0) {
@@ -949,7 +950,15 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       n[reg]--;
     break;
 
-    
+    //TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
+
+  case 84: // own dac as comparator against DAC+CV
+    tmp=gate[0].dac-(otherpar);
+    if (tmp<0) tmp=0;
+     bt=0;
+     if ((adc_buffer[12])>tmp) bt=1;
+     break;
+     
     ///////////////////////
   } // switch
   return bt;
