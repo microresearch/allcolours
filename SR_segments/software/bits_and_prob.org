@@ -1,0 +1,82 @@
+* to define and maybe place in files as sep parts
+
+*notation system and define/implement all prob modes: prob taken from [X] of [Y] bit [LOGIC_WITH] [Z]*
+
+for ADC:
+
+[LFSR, CV, DAC, SR] against DAC, LRC: ADC_buffer[12], CV, and combinations (ADD, XOR etc) of these - see EN below]
+
+otherDAC, ownDAC
+
+STROBE - invert ADC BIT - XOR/OR routed
+       - invert [ADC/xor/or/routed] - NONE
+       - ADC BIT vs routed - NONE
+       - ADC BIT vs [ADC/xor/or/routed] - NONE
+
+[
+       - ADC BIT vs invert [routed] - NONE
+       - ADC BIT vs invert[ADC/xor/or/routed] - NONE
+]
+
+for abstract ADCs we can also have RETURNbit
+       - ADC bits vs RETURNbit - XOR/OR routed
+       - ADC bits vs [routed/xor/or/RETURNbit]
+	 [and inv of 2 above possibly]
+
+////
+
+for others/L, R, C:
+
+- invert RETURNbit - XOR/OR routed/puls
+- RETURNbit vs routed/puls - NONE
+- invertRETURNbit vs routed/puls - NONE
+- routed versus 0 - RETURNbit
+
+
+and what about PULSIN - as part of routed or pull into outside XOR
+
+comparators for probability and ADC depending on INT/CV mode
+
+/for prob:
+1. if LFSR/SR/DAC[x]<CV  // int mode - which SR?
+2.if LFSR/SR<DAC[x]  // cv/int mode
+3.if LFSR/SR<DAC[x]+CV // int mode
+
+or prob is sourced from LFSR bits ORed with CV/DAC: in Electronotes when all 8 inputs are high - DONE in modeN.h
+
+EN: cycling - prob of entry of new bits - route inXORpulsesADC  /no cycle
+
+* what we already have in each
+
+** newmodes/older
+
+*check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
+check prob/routes 54-61, was15,14 and was11,10etc (strobes)
+
+** modeC
+
+
+
+** modeL
+
+** modeN
+
+** modeR
+
+* sketches
+
+* bits
+
+TODO: use SR/GSR as bits - other important bits: basic ADC type, multiple DAC out/no DAC, SR-logic_table, routing (includes type of SR)
+
+	// next set of generic bit options - this time for probabilities
+	/*
+	  00 1-TM invert cycling bit - OR with BITIN (OR *(routed^pulse)*) // OR (routedORpulse) ??
+	  01 2-BITIN or loopback
+	  10 3-INV of above
+	  11 4- BITIN or not into cycling
+	  
+	  - so is 2 bits for type of prob
+	  - BITN is routed / routed XOR puls so is 1 bit
+	  - where we get prob is 2 bits let's say = 5 bits = 32
+	*/

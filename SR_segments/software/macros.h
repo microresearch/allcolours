@@ -48,16 +48,36 @@
 
 //#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
 
-#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat;  SRlength[0]=SRlength_[0]; \
+#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[0]=SRlength_[0]; speedf_[0]=speedf[0]; \
 
-#define HEADL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[1]=SRlength_[1]; \
+#define HEADL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[1]=SRlength_[1]; speedf_[1]=speedf[1]; \
 
-#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; \
+#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; speedf_[2]=speedf[2]; \
 
-#define HEADR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; \
+#define HEADR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; count=0; daccount=0; speedf_[3]=speedf[3]; \
 
-// this one is for NO SRlength - stays as is and we can use CVL 12 bits
-#define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+// this one for when we set count and daccount
+#define HEADRN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; speedf_[3]=speedf[3]; \
+
+
+// these ones are for NO SRlength - stays as is and we can use CVL 12 bits
+#define HEADSINN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[0]=speedf[0]; \
+
+#define HEADSINL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[1]=speedf[1]; \
+
+#define HEADSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[2]=speedf[2]; \
+
+#define HEADSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[3]=speedf[3]; \
+
+// these ones are for no speed changes
+
+#define HEADSSINN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[0]=SRlength_[0]; \
+
+#define HEADSSINL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[1]=SRlength_[1]; \
+
+#define HEADSSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; \
+
+#define HEADSSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; \
 
 //
 
@@ -214,6 +234,20 @@
 // for pulse outs
 #define BITN_AND_OUTVINT_ {						\
     gate[w].shift_+=bitn;						\
+    gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+    tmp=(w<<1);								\
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    lengthbit=(SRlength[w]>>1);					\
+    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    prev_stat[w]=new_stat;					\
+    tmp++;							\
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+}
+
+#define BITN_AND_OUTVINTNO_ {						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     tmp=(w<<1);								\
     if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\

@@ -98,7 +98,7 @@ SR is customSR or RSR(routed SR)
 1. if SR<CV  // int mode
 2.if SR<DAC  // cv/int mode
 3.if SR<DAC+CV // int mode
-4.if sr<CLKCNT // cv mode
++4.if sr<CLKCNT // cv mode+
 XX
 1. invert cycling bit or not, pulsbit is ORed in (TM)
 2. invert routedin bit or not, pulsbit is ORed in (TM)
@@ -124,7 +124,7 @@ SR/or DACspeed from itself (bit clock options are set BY SR itself)
 
 or:
 
-*cycling bit XOR with DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT*
+cycling bit XOR with DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT
 
 ///
 
@@ -141,7 +141,7 @@ bit position x which has not changed... FIFO ... we have list of transitions (wh
 
 ** ADC modes 
 
-*TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar already*
+TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar already
 
 ** DAC modes
 
@@ -203,9 +203,7 @@ DONE- GSR doesn't change (becomes a revenant) 48 and 49
 
 26: as 25 but with SR as source - added logic table
 
-*TODO: use SR/GSR as bits - other important bits: basic ADC type, multiple DAC out/no DAC, SR-logic_table, routing (includes type of SR)*
-
-*also speedfrom_ table->who/ but can't use cv for that... TODO*
+also speedfrom_ table->who/ but can't use cv for that... TODO
 
 - most generic table for all elements which could become itself a SR//SRx as determiner...
 use DAC, CV or SR as this can be different to DACs (if they are not just default)
@@ -234,7 +232,7 @@ eg.
 9+Run with different speeds???
 10+Run with bits???
 
-** AC modes and inspirations: TODO
+** AC modes and inspirations:
 
 - clkin leaps/flips bits - that we can apply a mask from clkin for
   whole SR - would be nice to be able to freeze this thoughDONE to some extent
@@ -257,17 +255,38 @@ all the comparison possibilities]
 
 * 2022++
 
+** 31/1/2022
+
+- if binroute and dacfrom follow same count or we move these differently - have 4 bits binroute (16 options) and 4 bits dacfrom (16)
+
+and SR also onto both routes//from DAC - these are done TOTEST - //but what of clkcnt - follows dacfrom/daccount
+
+DONE in L:untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above eg. pass on speed/gshift etc, dac speed*
+
+DONE: port in extra intmodes, 41, 47, 64, 67, 68, 69, 104, 105
+
+added electronotes modes in N
+
+*FINAL TODO:*
+
+*check all bit/route and prob modes/see below*
+*check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
+check prob/routes 54-61, was15,14 and was11,10etc (strobes)
+
+*port from N, L to R and C maybe new modes* also multiple speed modes are in L - some for R only, some for C
 *check strobey, pulsins for all modeX.h modes*
 
-** 30/1/2022
+*settle speeds and test new CV scheme*
+*figure out calc for filter speeds (once we settle on speeds)*
 
-- *if binroute and dacfrom follow same count or we move these differently*
+
+** 30/1/2022
 
 // some DONE from below... question of detach speed or not...
 
 ** 28/1/2022
 
-*which way round probs should be?*
+*which way round probs should be?* depends on mode!
 
 +test if we should put speed calc inside loop+ outside as we use in CVOPENing
 
@@ -292,20 +311,13 @@ new sets of modes where we keep old length and use a new CVL for:
 
 *question also if LR pulses in should be XOR or OR? - OR seems better TODO/test/change - or options*
 
-*FINAL TODO:*
+
 DONE: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???] - N84 and some variations
 
 DONE: INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means - ?prob is our LFSR - so we fix bits of this one...
 Lintprobfixed0/1
 
-*untether/leave at set speed of entry (also same for length) - run at that set speed but have dac at other speed/cv - see above eg. pass on speed/gshift etc, dac speed*
-- would need same scheme as for length
-
 DONE: use other SR bits to determine length of SR, eg. can be modded or...  NLSRlengthselL0 and companions
-
-*check all bit/route and prob modes*
-*port in extra intmodes marked below from newmodes*
-*port from L to R new modes*
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -317,7 +329,7 @@ eg. TO expand
 
 for ADC:
 
-[LFSR, CV, DAC, SR] against DAC, LRC: ADC_buffer[12], CV, and combinations (ADD, XOR etc) of these
+[LFSR, CV, DAC, SR] against DAC, LRC: ADC_buffer[12], CV, and combinations (ADD, XOR etc) of these - see EN below]
 
 otherDAC, ownDAC
 
@@ -340,9 +352,8 @@ for others/L, R, C:
 - invertRETURNbit vs routed - NONE
 - routed versus 0 - RETURNbit
 
-take from here and also *check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
-
-EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches). *prob is sourced from LFSR ANDed with CV/DAC*
+EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches). 
+*prob is sourced from LFSR ANDed with CV/DAC*
 
 comparators for probability and ADC depending on INT/CV mode
 
@@ -367,9 +378,7 @@ try to categorise and clear up modes:
 
 - how can we detach SRlength as is used everywhere as length?DONE
 
-- ported in all newmodes. TODO: intmodes, 41, 47, 64, 67, 68, 69, 104, 105, 
-
-check prob/routes 54-61, was15,14 and was11,10etc (strobes)
+- ported in all newmodes. 
 
 ** 26/1/2022
 
@@ -894,7 +903,7 @@ tested up to 11 (12-19 todo), fixes trigger as static/is it needed?NO/replaced
 
 DACs:
 
-*DAC: 2 (is a bit muffly at long lengths - can change divy to fix this in resources.c*) RETEST
+DAC: 2 (is a bit muffly at long lengths - can change divy to fix this in resources.c) RETEST
 
 mode 18: toggle is more exciting for 11prob mode/// whether to change that toggle in LR modes? we did!
 
@@ -996,7 +1005,7 @@ TODO: list regular and extended modes!
 
 8/12/2021:
 
-- manual idea - we have say ascii layout on dot matrix and then subject this to shift register
+- *manual idea - we have say ascii layout on dot matrix and then subject this to shift register*
 
 - moved the if (w==1 || w==3) // if pulsins[w]!=0) out of the macros as most of the time we don't need to test this - this is now LR[w]!
 

@@ -52,7 +52,7 @@ what are the next 16x LR modes
 
 #define DACOUTX {				\
   uint8_t w=2;					\
-  HEADSIN;						\
+  HEADSINC;						\
   if (speedf_[2]!=2.0f){				\
     CVOPEN;						\
     if (gate[2].last_time<gate[2].int_time)      {	\
@@ -90,7 +90,7 @@ void Cosc0(void){ // test oscillator
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(2,SRlength[w],30,gate[w].trigger,dacfrom[count][2],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(2,SRlength[w],30,gate[w].trigger,dacfrom[daccount][2],gate[w].adcpar, &gate[w].shift_); // oscillator
     //    BINROUTE_;
     BITN_AND_OUTV_; 
     ENDER;
@@ -299,7 +299,7 @@ void CDACroute0(void){
   GSHIFT_;
   if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
   //  BINROUTE_; // new routing in here.
-  tmp=gate[dacfrom[count][2]].dac&15;
+  tmp=gate[dacfrom[daccount][2]].dac&15;
   for (x=0;x<4;x++){
   if (tmp&0x01){
   bitrr = (gate[x].Gshift_[2]>>SRlength[x]) & 0x01;
@@ -405,4 +405,55 @@ void CintselDAC_63(void){
     }			     
     BITN_AND_OUTVINT_; // pulse out
   } 
+}
+
+void CLNint104(void){ // let's try INT driven one for pulse train mode
+  // INT triggers train of CV pulses at speed DAC - and can also be vice versa
+  // INT can also start new train or let old one carry on (now it starts new train...)
+  uint8_t w=2;
+  HEADC;  
+  if (gate[w].trigger)      {
+    train[w]=1;
+  }
+  
+  //  if (counter[w]>CV[1]){
+  if (train[w]!=0){
+
+    if (train[w]<(1024-(CV[w]>>2))){ // number of pulses
+	if (counter[w]>(gate[dacfrom[count][w]].dac>>2) ){ // or another dac
+	counter[w]=0;
+	train[w]++;
+	GSHIFT_;
+	BINROUTE_;
+	PULSIN_XOR;    
+	BITN_AND_OUTVINT_;    
+      }
+    }
+  else train[w]=0; // train ran out
+}
+}
+
+  void CLNint105(void){ // let's try INT driven one for pulse train mode
+  // INT triggers train of CV pulses at speed DAC - and can also be vice versa
+  // INT can also start new train or let old one carry on (now it starts new train...)
+  uint8_t w=2;
+  HEADC;  
+  if (gate[w].trigger)      {
+    train[w]=1;
+  }
+  
+  //  if (counter[w]>CV[1]){
+  if (train[w]!=0){
+    if (train[w]<(gate[dacfrom[count][w]].dac>>2)){ // number of pulses
+      if (counter[w]>((CV[w]>>2))){ // or another dac
+	counter[w]=0;
+	train[w]++;
+	GSHIFT_;
+	BINROUTE_;
+	PULSIN_XOR;    
+	BITN_AND_OUTVINT_;    
+      }
+    }
+  else train[w]=0; // train ran out
+}
 }

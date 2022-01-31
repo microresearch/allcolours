@@ -1,6 +1,6 @@
 // right hand functions
 
-// **REMEMBER to set count=0 in relevant modes // TODO: check we have     PULSIN_XOR;!!!!!!!!!!!!!!1
+// **REMEMBER to set count=0 in relevant modes - HEAD // TODO: check we have     PULSIN_XOR;!!!!!!!!!!!!!!1
 
 /*
 
@@ -22,7 +22,6 @@ above, different kinds of DAC out
 // basic route in prototype
 void R0(void){ 
   uint8_t w=3;
-  count=0;
   HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
@@ -39,7 +38,6 @@ void R0(void){
 // no << gshift
 void R0nog(void){ 
   uint8_t w=3;
-  count=0;
   HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
@@ -55,7 +53,6 @@ void R0nog(void){
 
 void R1(void){ // route and cycle
   uint8_t w=3;
-  count=0;
   HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
@@ -71,7 +68,6 @@ void R1(void){ // route and cycle
 
 void Rmod(void){ // modulo route in 
   uint8_t w=3;
-  count=0;
   HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
@@ -105,7 +101,7 @@ void Rosc0(void){ // basic route in with oscillator
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[count][3],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[daccount][3],gate[w].adcpar, &gate[w].shift_); // oscillator
     //    BINROUTE_; //
     PULSIN_OR;
     BITN_AND_OUTV_; 
@@ -117,7 +113,6 @@ void Rosc0(void){ // basic route in with oscillator
 
 void Raccelghosts0(void){ // route in // exp mode to accelerate/bump on all ghosts except own - could also select which ones for intmode
   uint8_t w=3;
-  count=0;
   HEADR;
   if (speedf_[3]!=2.0f){ 
   CVOPEN;
@@ -147,15 +142,15 @@ void Raccelghosts0(void){ // route in // exp mode to accelerate/bump on all ghos
 
 // for CV modes add in bump up global routes, SR as global routing table
 
-void Rglobalbump0(void){ 
+void Rglobalbump0(void){ // bump dacroute and binroute 
   uint8_t w=3;
-  //  count=0;
-  HEADR;
+  HEADRN;
 
   if (gate[3].trigger) // outside speed?
     {
       count++;
       if (count>15) count=0; // we have 16 so far, but can add more
+      daccount=count;
     }
     
   if (speedf_[3]!=2.0f){ 
@@ -172,12 +167,12 @@ void Rglobalbump0(void){
 
 void Rglobaldac0(void){ // dac as global route table or could be SR as route bits but we need to fix that
   uint8_t w=3;
-  //  count=0;
   HEADR;
   if (speedf_[3]!=2.0f){ 
     CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
     count=(gate[3].dac)>>8; // 4 bits now    from ITSELF
+    daccount=(gate[3].dac>>4)&15;
     GSHIFT_;
     BINROUTE_;
     PULSIN_XOR;
@@ -224,7 +219,7 @@ void RDACroute0(void){
   GSHIFT_;
   if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
   //  BINROUTE_; // new routing in here.
-  tmp=gate[dacfrom[count][3]].dac&15;
+  tmp=gate[dacfrom[daccount][3]].dac&15;
   for (x=0;x<4;x++){
   if (tmp&0x01){
   bitrr = (gate[x].Gshift_[3]>>SRlength[x]) & 0x01;
@@ -281,7 +276,6 @@ refine and figure out dac modes as dac is too fast
 
 void Rdacadditself0(void){ // tested//trial itself as DAC - can also be other variants TODO
   HEADR;
-  count=0;
   uint8_t w=3;
   float speedf__;
   speedf__=logspeed[(CV[3]&511)+(gate[3].dac>>3)];
@@ -298,7 +292,6 @@ void Rdacadditself0(void){ // tested//trial itself as DAC - can also be other va
 
 void Rdacghostitself0(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
   HEADR;
-  count=0;
   uint8_t w=3;
   float speedf__;
   speedf__=logspeed[(CV[3]&511)+((gate[3].Gshift_[1])&511)];
@@ -317,7 +310,6 @@ void Rdacghostitself0(void){ // own ghost from next 1 - could also select incomi
 
 void Rdacseladd0(void){
   HEADR;
-  count=0;
   uint8_t w=3;
   float speedf__;
   uint8_t whic=(CV[3]>>9)&3; //12 bits -> 2 bits
@@ -343,10 +335,9 @@ void Rdacseladd0(void){
 
 void Rdacadd0(void){
   HEADR;
-  count=0;
   uint8_t w=3;
   float speedf__;
-  speedf__=logspeed[(CV[3]&511)+(gate[dacfrom[count][3]].dac>>3)];
+  speedf__=logspeed[(CV[3]&511)+(gate[dacfrom[daccount][3]].dac>>3)];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -360,11 +351,10 @@ void Rdacadd0(void){
 
 void RB0(void){// with oscillator
   HEADR;
-  count=0;
   uint8_t w=3;
   int32_t cv;
   float speedf__;
-  cv=(gate[dacfrom[count][3]].dac>>2)-(1024-(CV[3]>>2));
+  cv=(gate[dacfrom[daccount][3]].dac>>2)-(1024-(CV[3]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -372,7 +362,7 @@ void RB0(void){// with oscillator
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[count][3],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[daccount][3],gate[w].adcpar, &gate[w].shift_); // oscillator
     //    BINROUTE_; // no route in now
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -383,11 +373,10 @@ void RB0(void){// with oscillator
 
 void Rdacaddmax0(void){ // REMOVE?
   HEADR;
-  count=0;
   uint8_t w=3;
   int32_t cv;
   float speedf__;
-  cv=(CV[3]>>2)+(gate[dacfrom[count][3]].dac>>2);
+  cv=(CV[3]>>2)+(gate[dacfrom[daccount][3]].dac>>2);
   if (cv>1023) cv=1023;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -403,11 +392,10 @@ void Rdacaddmax0(void){ // REMOVE?
 
 void Rdacminus0(void){
   HEADR;
-  count=0;
   uint8_t w=3;
   int32_t cv;
   float speedf__;
-  cv=(gate[dacfrom[count][3]].dac>>2)-(1024-(CV[3]>>2));
+  cv=(gate[dacfrom[daccount][3]].dac>>2)-(1024-(CV[3]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -423,11 +411,10 @@ void Rdacminus0(void){
 
 void Rdacspeedminus0(void){
   HEADR;
-  count=0;
   uint8_t w=3;
   int32_t cv;
   float speedf__;
-  cv=(CV[3]>>2)-(gate[dacfrom[count][3]].dac>>2);
+  cv=(CV[3]>>2)-(gate[dacfrom[daccount][3]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -443,12 +430,11 @@ void Rdacspeedminus0(void){
 
 void Rdacmod0(void){
   HEADR;
-  count=0;
   uint8_t w=3;
   int32_t cv;
   float speedf__;
   cv=((CV[3]>>2)+1); // modulo code
-  speedf__=logspeed[(gate[dacfrom[count][3]].dac>>2)%cv];
+  speedf__=logspeed[(gate[dacfrom[daccount][3]].dac>>2)%cv];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -468,7 +454,6 @@ void Rdacmod0(void){
 void Rint0(void){ 
   uint8_t w=3;
   HEADR;  
-  count=0;
   if (gate[w].trigger)      {
     GSHIFT_;
     BINROUTE_;
@@ -477,12 +462,12 @@ void Rint0(void){
   } 
 }
 
-void Rglobalint0(void){ 
+void Rglobalint0(void){ // now use 8 bits - 4 for each count and daccount->dacfrom
   uint8_t w=3;				       
-  HEADR;
-  //  count=0;
+  HEADRN;
   if (gate[w].trigger)      {
     count=CV[3]>>8; //16 is 4 bits - we could have more
+    daccount=(CV[3]>>4)&15;
     GSHIFT_;
     BINROUTE_;
     PULSIN_XOR;
@@ -493,7 +478,6 @@ void Rglobalint0(void){
 void Raccelint0(void){ // TESTING but...
   uint8_t w=3;				       
   HEADR;  
-  count=0;
   if (gate[w].trigger)      {
     GSHIFT_; // testing or?
     //    gate[3].shift_=gate[3].shift_<<1;    
@@ -545,7 +529,7 @@ void RintselADC_63(void){ // use CV to select adc type: only those which don't u
   if (gate[3].trigger)      {
     val=63-(CV[3]>>6); // 6 bits say
     GSHIFT_;
-    bitn=ADC_(3,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[count][3],gate[w].adcpar, &gate[w].shift_);
+    bitn=ADC_(3,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[daccount][3],gate[w].adcpar, &gate[w].shift_);
     val=(val&0x03);// lowest 2 bits for logop
     tmp=binroute[count][w];
     for (x=0;x<4;x++){

@@ -4,7 +4,7 @@ static inline uint32_t countbits(uint32_t i)
     return( countbts[i&0xFFFF] + countbts[i>>16] );
 }
 
-/*
+
 static inline uint8_t probableCV(uint32_t reg, uint32_t type){
   // LFSR<SR // LFSR<otherSR // SR<otherSR // LFSR<PARAM // or CV but we are not in INTmode
   // prob of cycling bit let's say or ADC bit in or...
@@ -13,10 +13,10 @@ static inline uint8_t probableCV(uint32_t reg, uint32_t type){
     if ((LFSR_[reg] & 4095 )< (shift_[reg]& 4095))      return 1;
     break;
   case 1:
-    if ((LFSR_[reg] & 4095 )< (shift_[defroute[reg]] & 4095))      return 1;
+    if ((LFSR_[reg] & 4095 )< (shift_[dacfrom[daccount][reg]] & 4095))      return 1;
     break;
   case 2:
-    if ((shift_[reg] & 4095 )< (shift_[defroute[reg]] & 4095))      return 1;
+    if ((shift_[reg] & 4095 )< (shift_[dacfrom[daccount][reg]] & 4095))      return 1;
     break;
   case 3:
     if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
@@ -33,7 +33,7 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
     if ((LFSR_[reg] & 4095 )< (shift_[reg]& 4095))      return 1;
     break;
   case 1:
-    if ((LFSR_[reg] & 4095 )< (shift_[defroute[reg]] & 4095))      return 1;
+    if ((LFSR_[reg] & 4095 )< (shift_[dacfrom[daccount][reg]] & 4095))      return 1;
     break;
   case 2:
     if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
@@ -41,7 +41,7 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
   }    
   return 0;
 }
-*/
+
 
 
 // 19/1/22 return of more generic ADC_ in = so income is passed in function and can be DAC+ADC etc so we have different handlings
@@ -1363,7 +1363,7 @@ void TIM4_IRQHandler(void)
   if (nn>=SMOOTHINGS) nn=0;
   temp=totn/SMOOTHINGS;  
   CV[0]=temp;
-  speedf_[0]=logspeed[temp>>2];
+  speedf[0]=logspeed[temp>>2];
   //  speedf_[0]=0.1f;
   
   // speedl
@@ -1374,7 +1374,7 @@ void TIM4_IRQHandler(void)
   if (ll>=SMOOTHINGS) ll=0;
   temp=totl/SMOOTHINGS;  
   CV[1]=temp;
-  speedf_[1]=logspeed[temp>>2];
+  speedf[1]=logspeed[temp>>2];
   
   // speedr
   totr=totr-smoothr[rr];
@@ -1384,7 +1384,7 @@ void TIM4_IRQHandler(void)
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
   CV[3]=temp;
-  speedf_[3]=logspeed[temp>>2];
+  speedf[3]=logspeed[temp>>2];
   
     // speedc
   totc=totc-smoothc[cc];
@@ -1394,7 +1394,7 @@ void TIM4_IRQHandler(void)
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
   CV[2]=temp;
-  speedf_[2]=logspeed[temp>>2];
+  speedf[2]=logspeed[temp>>2];
   //  speedf_[2]=1.0f;
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!

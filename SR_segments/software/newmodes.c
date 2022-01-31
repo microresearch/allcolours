@@ -1085,8 +1085,8 @@ case 47: // GSR runs at CV speed in INT mode (try)
     //    GSHIFT;      
     gate[w].shift_=gate[w].shift_<<1;
   
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+    bitn = (gate[defroute[w]].gshift_[w]>>SRlength[defroute[w]]) & 0x01; 
+    gate[defroute[w]].gshift_[w]=(gate[defroute[w]].gshift_[w]<<1)+bitn;  
     bitn^=(gate[w].shift_>>SRlength[w])& 0x01; 
 
     PULSIN_XOR;    
@@ -1103,8 +1103,8 @@ case 47: // GSR runs at CV speed in INT mode (try)
     }
     else    gate[w].shift_=gate[w].shift_<<1;
   
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+    bitn = (gate[defroute[w]].gshift_[w]>>SRlength[defroute[w]]) & 0x01; 
+    gate[defroute[w]].gshift_[w]=(gate[defroute[w]].gshift_[w]<<1)+bitn;  
     bitn^=(gate[w].shift_>>SRlength[w])& 0x01; 
 
     PULSIN_XOR;    
@@ -1117,10 +1117,10 @@ case 47: // GSR runs at CV speed in INT mode (try)
     dactype[2]=0; 
     GSHIFT;
     // do we do bitn even if is ANDed in
-    bitn = (Gshift_[defroute[w]][w]>>SRlength[defroute[w]]) & 0x01; 
-    Gshift_[defroute[w]][w]=(Gshift_[defroute[w]][w]<<1)+bitn;  
+    bitn = (gate[defroute[w]].gshift_[w]>>SRlength[defroute[w]]) & 0x01; 
+    gate[defroute[w]].gshift_[w]=(gate[defroute[w]].gshift_[w]<<1)+bitn;  
     //    bitn^=(gate[w].shift_>>SRlength[w])& 0x01; 
-    if (gate[w].trigger) gate[w].shift_&=Gshift_[defroute[w]][w];
+    if (gate[w].trigger) gate[w].shift_&=gate[defroute[w]].gshift_[w];
 
     PULSIN_XOR;    
     BITN_AND_OUT;    
@@ -1448,7 +1448,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
       // do different modes for ADC and DAC here...
       if (w==0)      bitn=ADC_(0,SRlength[0],0,0,0,0); 
 
-      tmpp=31-(adc_buffer[lookupadc[w]]>>7);// 5 bits for length    
+      tmpp=31-(CV[1]>>7);// 5 bits for length    
       tmp=binroute[count][w]; // was route[w]
       for (x=0;x<4;x++){ //unroll?
       if (tmp&0x01){  
@@ -1600,13 +1600,6 @@ case 47: // GSR runs at CV speed in INT mode (try)
     }// counterw
     break; 
 
-  case 69: // INTMODE as generic routing but testing use of MACRO with arguments - for testing mode 15 / filter of one bit DAC
-    if (gate[w].trigger){
-    par=CVinfull;
-    parr=0;     // for this macro we need   par=0/or whatever for DAC outside and parr is for ADC 
-    MULTROUTE(0, 15);     // X is adc_type, Y is dac_type
-  }
-    break;
     
     
 
@@ -2038,21 +2031,6 @@ bitn=(gate[w].shift_>>SRlength[w]) & 0x01;
 	  tmp=tmp>>2; // 4 bits
 	}
 
-
-
-// was 3-USED
-/*
-      // exp mode just for trial - XX - strobe advances/freezes incoming GHOSTSR
-      tmp=binroute[count][w];
-      for (x=0;x<4;x++){
-	if (tmp&0x01){
-	  bitrr = (gate[x].gate[w].shift_>>SRlength[x]) & 0x01;
-	  if (gate[w].trigger) gate[x].gate[w].shift_=(gate[x].gate[w].shift_<<1)+bitrr; 
-	  bitn^=bitrr;
-	}
-	tmp=tmp>>1;
-	}
-	*/
 
 
 

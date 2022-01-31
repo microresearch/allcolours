@@ -477,8 +477,8 @@ int main(void)   // try to re-learn pointer arrays
 //  } 
   
   shift_[b]+= bitr;// & bitr;// ^ (!(GPIOC->IDR & 0x0010)); // or goes to 1s, xor is risky, AND works... and clockbit PC4
-    printf("%d: ",b);
-    print32bits(shift_[b]);
+  //    printf("%d: ",b);
+  //    print32bits(shift_[b]);
   //  print32bits(Gshift_[0][0]);
   //  printf("\n");
 
@@ -656,7 +656,7 @@ uint16_t divy[32]={4095, 2047, 1365, 1023, 819, 682, 585, 511, 455, 409, 372, 34
       bt = ((ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][0])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][1])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][2])) ^ (ADCshift_[regg] >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
     ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
 
-    printf("%d",bt);
+    //    printf("%d",bt);
   }
 
 
@@ -702,7 +702,7 @@ uint16_t divy[32]={4095, 2047, 1365, 1023, 819, 682, 585, 511, 455, 409, 372, 34
   for (x=0;x<31;x++){
   
   uint32_t k=pow(2,x);
-    printf("%d\n",k);
+  //    printf("%d\n",k);
   }
 
 
@@ -754,7 +754,7 @@ heavens gate[4];
   //   if (dac[w]>4095) dac[w]=4095;
   //    else if (dac[w]<0) dac[w]=0;
       dac[w]=lastdac[w];
-      printf("%d\n",dac[w]);
+      //      printf("%d\n",dac[w]);
       
   time_now[w] += speedf_[w];
   last_time[w] = int_time[w];
@@ -766,6 +766,14 @@ heavens gate[4];
     last_time[w] += 1;
   } // lasttime
   }
-  printf("%d\n",1<<11);
+  //  printf("%d\n",1<<11);
+
+  uint8_t elf[8]={1, 3, 6, 19, 15, 18, 20, 22};
+  
+   for (x=0;x<8;x++){
+     printf("(LFSR[0]&%d)>>%d) + ",(1<<(elf[x]-1)), (elf[x]-(x+1))  );
+   }
+   printf("\n");
+ 
   
 }
