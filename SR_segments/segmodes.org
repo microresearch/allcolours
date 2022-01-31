@@ -383,6 +383,10 @@ check prob/routes 54-61, was15,14 and was11,10etc (strobes)
 
  14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
 
+http://lushprojects.com/circuitjs/circuitjs.html?ctz=CQAgjCAMB0l3BWcMBMcUHYMGZIA4UA2ATmIxAUgoqoQFMBaMMAKACVwU9wwURCALDz5UIA2lEkwELAIYgUCQp24DsfXt27Zo2EAx16w8ePpgnMkBMQQoU4-Bkgoyk4yZYAnFcIX5foiaQ7D4C3MTKYVIg4vrG0dJeodxoqtxUTvAsAO5+3Mx8isoFUElF-EJqfIKSKLhwLADGCkog6jHt7VQC0JlB-WCMxPoovVZkxC4RkMRqkOTmkKy55SXlNcErrTXlUZstkSn+ezkHMSmtXadVbXw3G9ftNTeapQDmZ2ACQuWpUo8aLgxCI+YIAe0kG3OhHI8UWcDIhCUilqkmwLAhYCQULUCCQSHhMwwSMIKIgGiQ6KAA
+
+or 100k cv in, 23k feedback, and -10v is 70k
+
 - how to scale and offset DACs for DACspeeds...(two controls - leave length as is maybe)
 
 
