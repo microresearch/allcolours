@@ -332,7 +332,7 @@ if (gate[w].trigger) tug[w]^=1;
       GSHIFT;      
 
       bitn=(gate[w].shift_>>SRlength[w])& 0x01;
-      tmpt=gate[dacfrom[count][w]].dac-(4095-adc_buffer[lookupadc[w]]);
+      tmpt=gate[dacfrom[count][w]].dac-(4095-CV[w]);
       if (tmpt<0) tmpt=0; // or just add them      
       if ((LFSR_[w] & 4095 )<tmpt) {
 	bitn=bitn^1;
@@ -1203,7 +1203,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
 
       GSHIFT;
       
-      if ((gate[w].shift_ & 4095 )<adc_buffer[lookupadc[w]]) { // can be another routed SR.
+      if ((gate[w].shift_ & 4095 )<CV[w]) { // can be another routed SR.
       bitn=(gate[w].shift_>>SRlength[w])& 0x01; 
       }
       else{
@@ -1276,7 +1276,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // could also be bits from plain SR TODO
     //      if (counter[w]>speed[w] && speed[w]!=1024){
         if (gate[w].trigger==1){ 
-	  tmpp=adc_buffer[lookupadc[w]]>>4; // this can also be RSR DAC! 12 bits down to 6 bits - 9/11 add 2 bits for logopps
+	  tmpp=CV[w]>>4; // this can also be RSR DAC! 12 bits down to 6 bits - 9/11 add 2 bits for logopps
 	  
 	GSHIFT;      
 	bitn=0;
@@ -1440,7 +1440,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     // NEW generic routing mode including ADC - replaces mode 9 - as 59 but no bump
     par=0;//dac[3]&0x03; // TODO: use par for setting DAC parameter now on 4/11/2021
     
-    if (gate[w].trigger){ // adc_buffer[lookupadc[w]]    
+    if (gate[w].trigger){ // CV[w]    
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       GSHIFT;    
 
@@ -1537,7 +1537,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     if (gate[w].trigger){
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       //      GSHIFT;    
-      tmpp=CVin; //31-(adc_buffer[lookupadc[w]]>>7); // 5 bits for length only
+      tmpp=CVin; //31-(CV[w]>>7); // 5 bits for length only
       counter[w]=0;
       gate[w].shift_[0]=gate[w].shift_;
       gate[w].shift_[1]=gate[w].shift_;
@@ -1574,7 +1574,7 @@ case 47: // GSR runs at CV speed in INT mode (try)
     if (gate[w].trigger){
       dactype[2]=0; // 1 for equiv bits //10 for clksr sieving//11 for param bits//12 for sequential
       GSHIFT;    
-      tmpp=CVin; //31-(adc_buffer[lookupadc[w]]>>7); // 5 bits for length only
+      tmpp=CVin; //31-(CV[w]>>7); // 5 bits for length only
       
       if (w==3) count=0; // reset count/route
       // do different modes for ADC and DAC here...

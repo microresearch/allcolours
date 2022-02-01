@@ -255,6 +255,41 @@ all the comparison possibilities]
 
 * 2022++
 
+** 1/2/2022
+
+*FINAL TODO:*
+
+DONE: prob modes implemented - added probability.h for all sides
+
+DONE: for modeN.h we can select ADC mode (adc or abstract) and use probs, *TEST* probability.h
+
+DONE: port prob_bits mode over to N
+
+cleaning, organising, testings!
+
+//// adding strobe modes in adc/modeN.h - *TODO: these could also be toggles*
+
+*check all bit/route options and any implementations*
+*define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
+*port dacspeed modes from modeN.h*
+*port from N, L to R and C maybe new modes* also multiple speed modes are in L - some for R only, some for C
+*check strobey, pulsins, outs for all modeX.h modes*
+
+*settle speeds and test new CV scheme*
+*figure out calc for filter speeds (once we settle on speeds)*
+
+- fixed major bug in new modesL modes - as we already gshifted out the cycling bit
+
+notebook notes:
+- DONEin modeN: how to mix between CV control of bits and SR/DAC control - as we need 2 CVs (mix and CV) - detach both (in CV mode or one in intmode)
+
+- NLBURST0: bursts of DACin/ADCin to spawn/seed feedback - so trigger
+  means CV length of ADC bits in, no trigger is ROUTEin at otherCV
+  speed, +can also be prob of entry vs. no entry/route in - this is already in Nintprob2_0+
+
+- can also be burst outs in modeCDONE
+
+
 ** 31/1/2022
 
 - if binroute and dacfrom follow same count or we move these differently - have 4 bits binroute (16 options) and 4 bits dacfrom (16)
@@ -266,18 +301,6 @@ DONE in L:untether/leave at set speed of entry (also same for length) - run at t
 DONE: port in extra intmodes, 41, 47, 64, 67, 68, 69, 104, 105
 
 added electronotes modes in N
-
-*FINAL TODO:*
-
-*check all bit/route and prob modes/see below*
-*check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
-check prob/routes 54-61, was15,14 and was11,10etc (strobes)
-
-*port from N, L to R and C maybe new modes* also multiple speed modes are in L - some for R only, some for C
-*check strobey, pulsins for all modeX.h modes*
-
-*settle speeds and test new CV scheme*
-*figure out calc for filter speeds (once we settle on speeds)*
 
 
 ** 30/1/2022

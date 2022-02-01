@@ -115,6 +115,34 @@ void CN(void){
   }
 }
 
+void CLBURST0(void){ 
+  // DETACH LENGTH
+  uint8_t w=2;
+  HEADSINC;
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[2].last_time<gate[2].int_time)      {
+  GSHIFT_;
+  if (gate[w].trigger){
+    train[w]=1;
+  }
+  if (train[w]!=0 && train[w]< (1024-(CVL[w]>>2))){
+  train[w]++;
+    BINROUTE_;
+  }
+  else {
+    train[w]=0;
+    bitn=0;
+  }
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
 void CN17_0(void){ 
   uint8_t w=2;
   gate[2].dactype=0; gate[2].dacpar=param[2];
@@ -125,8 +153,8 @@ void CN17_0(void){
     GSHIFT_;
     // INSERT!
     BINROUTE_;
-    if (gate[w].trigger)	  bitrr=(gate[w].shift_>>SRlength[w]) & 0x01;
-    else bitrr=!((gate[w].shift_>>SRlength[w]) & 0x01); 
+    if (gate[w].trigger)	  bitrr=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+    else bitrr=!((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
     bitn|=bitrr;
     BITN_AND_OUTV_; 
     ENDER;
@@ -148,7 +176,7 @@ void CN18_0(void){
       BINROUTEANDCYCLE_;
     }
     else {
-      bitn=(gate[w].shift_>>SRlength[w]) & 0x01; 
+      bitn=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01; 
     }	    
     BITN_AND_OUTV_; 
     ENDER;

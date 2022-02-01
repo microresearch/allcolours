@@ -1,4 +1,8 @@
-* to define and maybe place in files as sep parts
+* PROBS - to define and maybe place in files as sep parts
+
+*modeN: prob modes done, port electronotes and probability modes to R and C*
+
++question if routed includes cycle in its route? but only if we change table...+
 
 *notation system and define/implement all prob modes: prob taken from [X] of [Y] bit [LOGIC_WITH] [Z]*
 
@@ -8,8 +12,8 @@ for ADC:
 
 otherDAC, ownDAC
 
-STROBE - invert ADC BIT - XOR/OR routed
-       - invert [ADC/xor/or/routed] - NONE
+prob/STROBE - invert ADC BIT - XOR/OR routed
+       - +invert [ADC/xor/or/routed] - NONE+ as above
        - ADC BIT vs routed - NONE
        - ADC BIT vs [ADC/xor/or/routed] - NONE
 
@@ -21,17 +25,52 @@ STROBE - invert ADC BIT - XOR/OR routed
 for abstract ADCs we can also have RETURNbit
        - ADC bits vs RETURNbit - XOR/OR routed
        - ADC bits vs [routed/xor/or/RETURNbit]
-	 [and inv of 2 above possibly]
+       - ADCBIT xor routed vs returnbit
 
-////
+*prob/STROBE for CLN: invert routed*
+                *routed vs cycling*
+		*routed vs [routed^cycling]*
 
-for others/L, R, C:
+
+
+////// bits/options for probabilities:
+
+1ADCBIT, 2ROUTED, 3RETURN, 4NADA and inversion of first three: x bits XOR/OR/LOGOP x bits
+
+X vs Y: options
+
+1 vs 2, 3, 4, 2^1, 3^1, 3^2, 1^2^3 // and can be XOR or OR // and inv of each above
+2 vs 3, 4, 2^1, 3^1, 3^2, 1^2^3 // 
+3 vs 4, 2^1, 3^1, 3^2, 1^2^3 // 
+= 18 options/leaving out inv/xor/or options
+//// and combinations of below?
+CVmodes:
+strobe
+toggle
+
+INTmodes:
+LFSR<CV
+LFSR<DAC
+LFSR<DAC+CV
+LFSR<ADC_buffer[12]
+
+SRown<CV - own ghost SR: gate[w].Gshift_[w] 
+SRown<DAC
+SRown<CV_DAC
+SRown<SRincoming
+
+
+///
+for L, R
+
+1ROUTED, 2RETURN, 3PULSBIT, 4NADA - as above
 
 - invert RETURNbit - XOR/OR routed/puls
 - RETURNbit vs routed/puls - NONE
 - invertRETURNbit vs routed/puls - NONE
 - routed versus 0 - RETURNbit
 
+return/routed/pulse/nada
 
 and what about PULSIN - as part of routed or pull into outside XOR
 
@@ -50,18 +89,83 @@ EN: cycling - prob of entry of new bits - route inXORpulsesADC  /no cycle
 
 ** newmodes/older
 
-*check all probability modes from newmodes.c case 17-20, check later binary routing table modes 24-26*
-check prob/routes 54-61, was15,14 and was11,10etc (strobes)
+00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
+01 2-BITIN or cycling
+10 3-INV of above
+11 4- BITIN or not into cycling
 
-** modeC
 
+ported to LN13,14,15
+13: 00TM lfsr<dac
+14: 01 binroute or loopback
+15: binrouteandcycle or loopback
 
+not cases:
+17: 00TM loop/invertloop XORroutein
+18: 11Enotes: toggle binrouteandcycle/cycle [but enotes is binroute/cycle]
 
-** modeL
+17-19cases:
+17: LFSR<CV_DAC: invert cycling, no route in, pulse ORed in TM
+18: LFSR<DAC: as above
+19: LFSR<CV: as above
+
+was11: toggle binroute or inv cycling bit
+was10: toggle binroute or cycling bit
+was 9: toggleinv or not cycling
+was 8: as above no toggle
+was 7: toggle routed or not into cycling 
+was 6: lfsr<param - binrouteandcycle/cycle
+
+cases54-61: intmodes
+54: ownSR<CV - cycle or route // OR pulsin
+55: ownSR<routedinSR - as above
+
 
 ** modeN
 
+CV:
+some probs are in adc_:
+9: trigger xbits in or cycle out
+33: lfsr<otherpar as above 
+65: lfsr>otherpar inv or not cycling bit TM
+
+INT:
+invert ADC BIT - XOR/OR routed 3
+       - ADC BIT vs routed - NONE 2
+       - ADC BIT vs [ADC/xor/or/routed] - NONE 1
+
+4 only for abstract modes
+
+prob184: mode84 and adc/binroute vs. justcycle
+prob1: lfsr<cv: adc vs adc/binroute
+2:            : adc vs binroute
+3:            : adc/bin vs invadc/bin
+4:            : adc/bin vs justcycle
+
+5 is electronotes draft with CV/lFSR - adc/binroute vs justcycle 
+6                                    - adc vs justcycle
+7                                    - adc vs binroute
+
+probdac1 - as prob1 above but dac<cv
+
+** modeL
+
+LNprob: bits for probs
+LNwas15: 4x4 probs of routing in - both can also use CV
+LintDACroute: prob LFSR<CV if we change route
+
+
+Lintprobfixed0: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
+//inv cycling bit
+1: cycle vs routein
+
+** modeC
+
+none
+
 ** modeR
+
+none
 
 * sketches
 
@@ -80,3 +184,42 @@ TODO: use SR/GSR as bits - other important bits: basic ADC type, multiple DAC ou
 	  - BITN is routed / routed XOR puls so is 1 bit
 	  - where we get prob is 2 bits let's say = 5 bits = 32
 	*/
+
+/* // what bits we have again?///////////////////////////////////////////
+
+dactype=4x4 bits = 16 bits (reduce to 3 bits each = 12 bits)
+
+route=4 bits, what we do=2 bits, logops=2 bits, probability=2bits
+
+eg.what we do
+0-looping only/aka return only!
+1-pass on only - straight through
+2-pass on and return bitx
+
+5 bits: 1 1 1 1 1 1
+- top bit/speed
+- 4 bits routing in
+- 1 bit prob of inversion
+
+incoming bit bits summary (3 bits) - eg. prob of: + type of prob (2 bits)
+- routed in 
+- cycled 
+- inversion of routed
+- inv cycles
+- cycle and route
+- inv of cycle and route
+[can be more options eg. adc in]
+
+route in and logop bits:
+1111 4 route in bits x 3 logops = 2 bits per... 0, none, 1, xor, 2or, 3leak = 8 bits = 255 too much for CV
+ 
+00 1-TM invert cycling bit - OR with BITIN (OR *(routed^pulse)*) // OR (routedORpulse) ??
+01 2-BITIN or loopback
+10 3-INV of above
+11 4- BITIN or not into cycling
+
+** newmodes
+
+- check later binary routing table modes 24-26 routes 56-61
+
+** L, R, C, N what we have?

@@ -308,7 +308,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
     else
       {
-	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it - or is always 0 
       }
     break;
 
@@ -639,7 +639,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
     else
       {
-	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it or is always 0!
       }
     break;
 

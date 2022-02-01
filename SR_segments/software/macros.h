@@ -1,5 +1,7 @@
 // for new struct sets of modes:
 
+#define DACFROM (gate[dacfrom[daccount][w]].dac)
+
 #define CVOPEN {				\
     if (gate[w].time_now>32768){				\
       gate[w].int_time=0;					\
@@ -78,6 +80,10 @@
 #define HEADSSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; \
 
 #define HEADSSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; \
+
+// and for NADA
+#define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+
 
 //
 
@@ -261,13 +267,13 @@
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
 }
 
-
+// val and no pulse outs
 #define BITN_AND_OUTVN_ {						\
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
 }
 
-// for int modes as no interpol, no pulse
+// for int modes as no interpol, no pulse outs
 #define BITN_AND_OUTNINT_ {						\
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
