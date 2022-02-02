@@ -155,7 +155,7 @@ void Lintgenericprob0(void){ // TODO: can also be on trigger!
   } 
 }
 
-//left side: LFSR, SRown,  
+//left side: LFSR, SRown, SRany  
 //right side: CV, CV+DAC
 
 void Lintgenericprobx(void){ // TODO: can also be on trigger!
