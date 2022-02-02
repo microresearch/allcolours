@@ -10,7 +10,6 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   float time_now;
   long last_time;
   long int_time;
-  
 } heavens;
 
 

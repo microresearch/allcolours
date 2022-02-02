@@ -176,6 +176,52 @@ none
 
 * bits
 
+*each shiftregister: // bits can come from sr/dac/cv and mix of these/mask of these - how to render this more generic?*
+
+adding new modes into model
+
+our length: 5 bits [speed? 7 bits]
+bits come from: adctype: 3 bits
+               route from: 4 bits
+what we do: 3 bits
+logic for each
+
+generic prob is between 2 bits and 7 bits and uses x bits for the decision x2 each side...
+*Lintgenericprobx uses 7 bits for probability x against y of z* and this just uses binroute
+
+*dactype: 3 bits*
+
+*where we get our dacfrom: 2 bits [recursion eg. dac[dacfrom] selects dacfrom* - but is not an extra 2 bits as we switch dacs...
+
+maybe divide and see to what we can add local dacfrom bits...
+dacfrom[dacfrom[dacfrom]]]??? how we handles this as first dacfrom is
+always from a fixed one??
+
+- route and logop - 8 bits + 2 from other dac: LSRroutelogxx and LSRroutelogxxx
+
+- route and what we do
+0-looping only/aka return only!
+1-pass on only - straight through
+2-pass on and return bitx
+
+- route and prob/just prob with basic route
+
+- length and dactype - basic route
+ 
+////
+
+governing bits from: CV, CV+DAC/whichDAC, whichDAC // if we have CV access? - whichDAC is 2 bits
+
+bits for: length(5), speed total(7bits from 10 bits) 12 bits
+
+speedfromdac - which dac bits we have
+
+route and logop: LLcv/srroute 8 cv bits for routein and logop 
+
+probability: Lintgenericprobx - how to combine with route? = 7 bits and 4 bits - combined in xxx
+
+////////////////////////
+
 TODO: use SR/GSR as bits - other important bits: basic ADC type, multiple DAC out/no DAC, SR-logic_table, routing (includes type of SR)
 
 	// next set of generic bit options - this time for probabilities
@@ -227,4 +273,50 @@ route in and logop bits:
 
 - check later binary routing table modes 24-26 routes 56-61
 
+25: cv as routing table
+26: sr as routing table
+
+56: 2 bits for single routes in, 2 bits for probableCV function, 2 bits for logopx, 2 bits for type of DAC = 8 bits from dac/sr
+57: as 56 but for CV
+
+58: tests for generic prob mode????
+
 ** L, R, C, N what we have?
+
+*** N
+
+*NLSRlengthsel0(void){ //use other SR bits to determine length of SR*
+
+DACroute - route from dac 
+SRroute - from SR
+introute
+
+*** L
+
+*Lintgenericprobx uses 7 bits for probability x against y of z*
+
+*LNprob has bits for probableCV function*
+
+*LNwas15 4x4 bits prob of routing in GSR  so we need 4 probs of x bits?*
+
+DACroute - route from dac 
+SRroute - from SR
+
+*LLcv/srroute 8 cv bits for routein and logop - do we have straight sr/dac version - yes now we have - port to others*
+LBITMIX - cv/dac mix of above
+Lintroute - cv bits for routein and logop
+Lintdacroute - cv prob of changed table sans logop
+
+
+
+*** C
+
+DACroute - route from dac 
+SRroute - from SR
+introute
+
+*** R
+
+DACroute - route from dac 
+SRroute - from SR
+introute

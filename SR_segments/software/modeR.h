@@ -234,6 +234,31 @@ void RDACroute0(void){
   }  
 }
 
+void RSRroute0(void){ 
+  uint8_t w=3;
+  HEADR;
+  if (speedf_[3]!=2.0f){
+  CVOPEN;
+  if(gate[3].last_time<gate[3].int_time)      {
+  GSHIFT_;
+  if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
+  //  BINROUTE_; // new routing in here.
+  tmp=gate[dacfrom[daccount][3]].Gshift_[3]&15;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[3]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[3]=(gate[x].Gshift_[3]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+
 void R32(void){ // multiple bits in as case 19 in draftdec
   uint8_t w=3;
   HEADR;
@@ -264,15 +289,73 @@ void R32(void){ // multiple bits in as case 19 in draftdec
   }
 }
 
+///// thinking on bit modes
+
+void RBITlengthdac(void){ 
+  uint8_t w=3;
+  uint32_t bits;
+  HEADR;  
+ if (speedf_[3]!=2.0f){
+  CVOPEN;
+  if(gate[3].last_time<gate[3].int_time)      {
+
+    bits=SRFROM&255; // length is 5 bits, dactype can be from 3 to 5 bits
+    SRlength[3]=lookuplenall[bits&31]; // 5 bits
+    tmp=(bits>>5); // 3 bits
+    GSHIFT_;
+
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTVDACT_; // for pulse out and local dactype in tmp
+    ENDER;
+  }
+  } 
+}
+
+void RLBITlengthdac(void){ // detach length and just have dactype 
+  uint8_t w=3;
+  uint32_t bits;
+  HEADSINR;  
+ if (speedf_[3]!=2.0f){
+  CVOPEN;
+  if(gate[3].last_time<gate[3].int_time)      {
+
+    bits=CVL[3]>>4; // 8 bits - length is 5 bits, dactype can be from 3 to 5 bits
+    SRlength[3]=lookuplenall[bits&31]; // 5 bits
+    tmp=(bits>>5); // 3 bits
+    GSHIFT_;
+
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTVDACT_; // for pulse out and local dactype in tmp
+    ENDER;
+  }
+  } 
+}
+
 
 /////////////////////////////////////////////////////////////////////////
 // DACspeed modes?
 
-/*
+void Rdacoffset0(void){
+  uint8_t w=3;
+  float speedf__;
+  float mmm=(float)(1024-(CVL[3]>>2))/1024.0f;
+  HEADSINR;
+  tmp=(1024-(CV[3]>>2)) + (int)((float)(gate[dacfrom[daccount][3]].dac>>2)*mmm);
+  if (tmp>1023) tmp=1023;
+  speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  if (speedf__==2.0f) speedf__=LOWEST;
 
-refine and figure out dac modes as dac is too fast
-
- */
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
 
 void Rdacadditself0(void){ // tested//trial itself as DAC - can also be other variants TODO
   HEADR;
@@ -305,8 +388,6 @@ void Rdacghostitself0(void){ // own ghost from next 1 - could also select incomi
     ENDER;
   }
 }
-
-
 
 void Rdacseladd0(void){
   HEADR;
@@ -370,26 +451,6 @@ void RB0(void){// with oscillator
   }
 }
 
-
-void Rdacaddmax0(void){ // REMOVE?
-  HEADR;
-  uint8_t w=3;
-  int32_t cv;
-  float speedf__;
-  cv=(CV[3]>>2)+(gate[dacfrom[daccount][3]].dac>>2);
-  if (cv>1023) cv=1023;
-  speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
-  CVOPENDAC;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    BINROUTE_;
-    PULSIN_XOR;
-    BITN_AND_OUTV_;
-    ENDER;
-  }
-}
-
 void Rdacminus0(void){
   HEADR;
   uint8_t w=3;
@@ -446,8 +507,7 @@ void Rdacmod0(void){
   }
 }
 
-
-
+/////////////////////////////////////////////////////////////////
 // INTmodes - start to prototype bit modes
 
 // prototype INTmode 0 no interpolation and no use of CV

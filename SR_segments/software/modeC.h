@@ -196,6 +196,8 @@ void C0(void){
   DACOUT;
 }
 
+
+
 void C0nog(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
   DACOUTNOG;
@@ -287,6 +289,23 @@ void C66(void){ // default basic dac
   DACOUT;
 }
 
+void Ctest(void){ // for speed 1hz to 20hz triangle here...
+  // but why do we lose it ????
+  uint8_t w=2;
+  static uint32_t togg=0;
+  HEADC;
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  CVOPEN;
+  if (gate[2].last_time<gate[2].int_time)      {
+    GSHIFT_;
+    togg^=1;
+    bitn=togg;
+    BITN_AND_OUTV_; // with pulses
+    ENDER;
+  }
+  }  
+
+
 
 
 
@@ -342,6 +361,30 @@ void CDACroute0(void){
   }  
 }
 
+void CSRroute0(void){ 
+  uint8_t w=2;
+  HEADC;
+  if (speedf_[2]!=2.0f){
+  CVOPEN;
+  if(gate[2].last_time<gate[2].int_time)      {
+  GSHIFT_;
+  if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
+  //  BINROUTE_; // new routing in here.
+  tmp=gate[dacfrom[daccount][2]].Gshift_[2]&15;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[2]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[2]=(gate[x].Gshift_[2]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
 void C32(void){ // multiple bits in as case 19 in draftdec
   uint8_t w=2;
   HEADC;
@@ -374,6 +417,175 @@ void C32(void){ // multiple bits in as case 19 in draftdec
 
 ///////////////////////////////////////////////////////////////////////////
 // CV+DAC speed modes TODO:
+
+void Cdacadditself0(void){ // tested//trial itself as DAC - can also be other variants TODO
+  HEADC;
+  uint8_t w=2;
+  float speedf__;
+  speedf__=logspeed[(CV[2]&511)+(gate[2].dac>>3)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Cdacghostitself0(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
+  HEADC;
+  uint8_t w=2;
+  float speedf__;
+  speedf__=logspeed[(CV[2]&511)+((gate[2].Gshift_[routeto[count][2]])&511)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Cdacghostincoming0(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
+  HEADC;
+  uint8_t w=2;
+  float speedf__;
+  speedf__=logspeed[(CV[2]&511)+((gate[2].Gshift_[inroute[count][2]])&511)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Cdacseladd0(void){
+  HEADC;
+  uint8_t w=2;
+  float speedf__;
+  uint8_t whic=(CV[2]>>9)&3; //12 bits -> 2 bits
+  speedf__=logspeed[(CV[2]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Cdacadd0(void){
+  HEADC;
+  uint8_t w=2;
+  float speedf__;
+  speedf__=logspeed[(CV[2]&511)+(gate[dacfrom[daccount][2]].dac>>3)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Cdacminus0(void){
+  HEADC;
+  uint8_t w=2;
+  int32_t cv;
+  float speedf__;
+  cv=(gate[dacfrom[daccount][2]].dac>>2)-(1024-(CV[2]>>2));
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Cdacspeedminus0(void){
+  HEADC;
+  uint8_t w=2;
+  int32_t cv;
+  float speedf__;
+  cv=(CV[2]>>2)-(gate[dacfrom[daccount][2]].dac>>2); 
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Cdacmod0(void){
+  HEADC;
+  uint8_t w=2;
+  int32_t cv;
+  float speedf__;
+  cv=((CV[2]>>2)+1); // modulo code
+  speedf__=logspeed[(gate[dacfrom[daccount][2]].dac>>2)%cv];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void CB0(void){// with oscillator
+  HEADC;
+  uint8_t w=2;
+  int32_t cv;
+  float speedf__;
+  cv=(CV[2]>>2)-(gate[dacfrom[daccount][2]].dac>>2);
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;  
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],gate[w].adcpar, &gate[w].shift_); // oscillator
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+void Cdacoffset0(void){
+  uint8_t w=2;
+  float speedf__;
+  float mmm=(float)(1024-(CVL[2]>>2))/1024.0f;
+  HEADSINC;
+  tmp=(1024-(CV[2]>>2)) + (int)((float)(gate[dacfrom[daccount][2]].dac>>2)*mmm);
+  if (tmp>1023) tmp=1023;
+  speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  if (speedf__==2.0f) speedf__=LOWEST;
+
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
 
 // INTmodes
 

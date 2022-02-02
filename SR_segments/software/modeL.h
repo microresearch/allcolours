@@ -112,7 +112,7 @@ void LNprob(void){ // from end of extramodes - TODO: port for CV use maybe/as in
 }
 
 
-void LNwas15(void){//TODO: cv versions
+void LNwas15(void){
   uint8_t w=1;
   uint32_t tmpp;
   HEADL;
@@ -140,6 +140,29 @@ void LNwas15(void){//TODO: cv versions
   }
 }
 
+
+///// thinking on bit modes
+
+void LBITlengthdac(void){ 
+  uint8_t w=1;
+  uint32_t bits;
+  HEADL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+
+    bits=SRFROM&255; // length is 5 bits, dactype can be from 3 to 5 bits
+    SRlength[1]=lookuplenall[bits&31]; // 5 bits
+    tmp=(bits>>5); // 3 bits
+    GSHIFT_;
+
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTVDACT_; // for pulse out and local dactype in tmp
+    ENDER;
+  }
+  } 
+}
 
 
 
@@ -1000,7 +1023,7 @@ void L4(void){ // test gshift on trigger inside loop
   }
 }
 
-void Losc0(void){ // basic route in with oscillator
+void Losc(void){ // basic route in with oscillator
   uint8_t w=1;
   HEADL;
   if (speedf_[w]!=2.0f){ 
@@ -1046,7 +1069,7 @@ void Lmod(void){ // modulo route in SR
 
 // TODO: just bump within a restricted range or array which make sense?
 // where do we get that range from? start/end - need 2x CVs - if we detach both but...
-void Lbumproute0(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
+void Lbumproute(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
   uint8_t w=1;
   HEADL;
   if (speedf_[1]!=2.0f){
@@ -1113,8 +1136,7 @@ void LLLbumproute(void){ // trigger bumps up our local route - add one to this (
   }  
 }
 
-
-void LDACroute0(void){ 
+void LDACroute(void){ 
   uint8_t w=1;
   HEADL;
   if (speedf_[1]!=2.0f){
@@ -1139,7 +1161,32 @@ void LDACroute0(void){
   }  
 }
 
-void LDACroutestrobe0(void){ // strobe decides if we change local routing table 
+void LSRroute(void){ 
+  uint8_t w=1;
+  HEADL;
+  if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+  GSHIFT_;
+  if (!strobey[1][mode[1]]) bitn|=gate[1].trigger;
+  //  BINROUTE_; // new routing in here.
+  tmp=gate[dacfrom[daccount][1]].Gshift_[w]&15;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }
+  PULSIN_XOR;
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+void LDACroutestrobe(void){ // strobe decides if we change local routing table 
   uint8_t w=1;
   HEADL;
   if (speedf_[1]!=2.0f){
@@ -1206,7 +1253,7 @@ void L32(void){ // multiple bits in as case 19 in draftdec
 4. DAC out speed  - slipping - this is main loop as we need interpol
 */
 
-void Lmultiplespeed0_0(void){ // NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultiplespeed0(void){ // NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSINL;
 
@@ -1230,7 +1277,7 @@ void Lmultiplespeed0_0(void){ // NO LENGTH - speeds of gshift, incoming gsr and 
 }
 
 // variations on this below
-void Lmultiplespeed1_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultiplespeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSINL;
 
@@ -1253,7 +1300,7 @@ void Lmultiplespeed1_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr an
   }
 }
 
-void Lmultiplespeed2_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultiplespeed2(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSINL;
 
@@ -1275,7 +1322,7 @@ void Lmultiplespeed2_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr an
   }
 }
 
-void Lmultiplespeed3_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultiplespeed3(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   // no trigger advance
   uint8_t w=1;
   HEADSINL;
@@ -1300,7 +1347,7 @@ void Lmultiplespeed3_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr an
 }
 
 // we can also have multiplespeeds that also use DAC and some don't need CVL in that case
-void Lmultiplespeeddac0_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultiplespeeddac0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSINL;
 
@@ -1329,7 +1376,7 @@ void Lmultiplespeeddac0_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr
 }
 
 // version with DAC and speed so no CVL
-void Lmultiplespeeddac1_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultiplespeeddac1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADL;
 
@@ -1352,7 +1399,7 @@ void Lmultiplespeeddac1_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr
   }
 }
 
-void Lmultspeed0_0(void){ // TEST: detach speed!!!- NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultspeed0(void){ // TEST: detach speed!!!- NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSSINL; // detach speed here
 
@@ -1375,7 +1422,7 @@ void Lmultspeed0_0(void){ // TEST: detach speed!!!- NO LENGTH - speeds of gshift
   }
 }
 
-void Lmultspeed1_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lmultspeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSSINL;
 
@@ -1398,7 +1445,7 @@ void Lmultspeed1_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bi
   }
 }
 
-void Lmultspeed2_0(void){ // speeds of gshift, incoming gsr and bits/dac
+void Lmultspeed2(void){ // speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSSINL;
 
@@ -1420,7 +1467,7 @@ void Lmultspeed2_0(void){ // speeds of gshift, incoming gsr and bits/dac
   }
 }
 
-void Lmultspeed3_0(void){ //  speeds of gshift, incoming gsr and bits/dac
+void Lmultspeed3(void){ //  speeds of gshift, incoming gsr and bits/dac
   // no trigger advance
   uint8_t w=1;
   HEADSSINL;
@@ -1445,7 +1492,7 @@ void Lmultspeed3_0(void){ //  speeds of gshift, incoming gsr and bits/dac
 }
 
 // we can also have multiplespeeds that also use DAC and some don't need CVL in that case // FOR R OR L: counterl//counterr
-void Lmultspeeddac0_0(void){ // speeds of gshift, incoming gsr and bits/dac
+void Lmultspeeddac0(void){ // speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSSINL;
 
@@ -1475,7 +1522,7 @@ void Lmultspeeddac0_0(void){ // speeds of gshift, incoming gsr and bits/dac
 }
 
 // speed as probability (from?)
-void Lprobcvspeed0(void){ 
+void Lprobcvspeed(void){ 
   uint8_t w=1;
   HEADL;  
   if (((LFSR_[1] & 4095 ) > CV[1])){ 
@@ -1486,7 +1533,7 @@ void Lprobcvspeed0(void){
   } 
 }
 
-void Lprobcvdacspeed0(void){ 
+void Lprobcvdacspeed(void){ 
   uint8_t w=1;
   HEADL;  
   if ( (LFSR_[1] & 4095 ) < ((CV[1]>>1)+(gate[dacfrom[daccount][1]].dac>>1))) { //DAC etc also compared here
@@ -1497,7 +1544,7 @@ void Lprobcvdacspeed0(void){
   } 
 }
 
-void Lprobmultiplespeed3_0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void Lprobmultiplespeed3(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   // no trigger advance
   uint8_t w=1;
   HEADL;
@@ -1526,7 +1573,7 @@ void Lprobmultiplespeed3_0(void){ // - NO LENGTH - speeds of gshift, incoming gs
 *- prob and routings
 */
 
-void LLroute0(void){ // CV: 4 bits for route in... other bits for logop
+void LLcvroute(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=1;				       
   HEADSINL;  
  if (speedf_[1]!=2.0f){
@@ -1552,8 +1599,95 @@ void LLroute0(void){ // CV: 4 bits for route in... other bits for logop
   } 
 }
 
+void LSRroutelog(void){ // SR: 4 bits for route in... other bits for logop
+  uint8_t w=1;				       
+  HEADL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+
+    GSHIFT_;
+    tmp=(SRFROM)&255; // 8 bits
+    for (x=0;x<4;x++){ 
+      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
+	//	bitn=logopx(bitn,bitrr, 2); 
+      }
+      tmp=tmp>>2; // 4 bits
+    }
+    // no binroute needed
+
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+  } 
+}
+
+void LSRroutelogxx(void){ // SR: 4 bits for route in... other bits for logop - try changing srfrom
+  uint8_t w=1, tmpp;
+  HEADL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+
+    GSHIFT_;
+    tmpp=(SRFROM)&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
+    tmp=(gate[tmpp].Gshift_[w])&255; // 8 bits
+    
+    for (x=0;x<4;x++){ 
+      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
+	//	bitn=logopx(bitn,bitrr, 2); 
+      }
+      tmp=tmp>>2; // 4 bits
+    }
+    // no binroute needed
+
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+  } 
+}
+
+void LSRroutelogxxx(void){ // recursive use of dacfrom SR: 4 bits for route in... other bits for logop - try changing srfrom
+  uint8_t w=1, tmpp;
+  static uint32_t lastdacfrom=0;
+  HEADL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+
+    GSHIFT_;
+    tmpp=(gate[lastdacfrom].Gshift_[w])&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
+    tmp=(gate[tmpp].Gshift_[w])&255; // 8 bits
+    lastdacfrom=tmpp;
+    
+    for (x=0;x<4;x++){ 
+      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
+	//	bitn=logopx(bitn,bitrr, 2); 
+      }
+      tmp=tmp>>2; // 4 bits
+    }
+    // no binroute needed
+
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+  } 
+}
+
 // keep this one as a template for DETACH SPEED AND LENGTH both 
-void LNADA0_0(void){ // NO LENGTH NOR SPEEDS
+void LNADA0(void){ // NO LENGTH NOR SPEEDS
   uint8_t w=1;
   HEADSSINNADA;
     
@@ -1605,7 +1739,7 @@ void LBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV cont
 //////////////////////// DAC speeds
 
 // test - speedCV-speedDAC 
-void Ldac0(void){
+void Ldac(void){
   uint8_t w=1;
   float speedf__;
   HEADL;
@@ -1624,7 +1758,7 @@ void Ldac0(void){
 
 // how to do offset and scale 0- CV[1] is offset, CVL[1] is scale...
 // test - speedCV-speedDAC 
-void Ldacoffset0(void){
+void Ldacoffset(void){
   uint8_t w=1;
   float speedf__;
   float mmm=(float)(1024-(CVL[1]>>2))/1024.0f;
@@ -1644,14 +1778,163 @@ void Ldacoffset0(void){
   }
 }
 
+// these ones are ported from modeN.h
 
+void Ldacadditself(void){ // tested//trial itself as DAC - can also be other variants TODO
+  HEADL;
+  uint8_t w=1;
+  float speedf__;
+  speedf__=logspeed[(CV[1]&511)+(gate[1].dac>>3)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ldacghostitself(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
+  HEADL;
+  uint8_t w=1;
+  float speedf__;
+  speedf__=logspeed[(CV[1]&511)+((gate[1].Gshift_[routeto[count][1]])&511)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ldacghostincoming(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
+  HEADL;
+  uint8_t w=1;
+  float speedf__;
+  speedf__=logspeed[(CV[1]&511)+((gate[1].Gshift_[inroute[count][1]])&511)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ldacseladd(void){
+  HEADL;
+  uint8_t w=1;
+  float speedf__;
+  uint8_t whic=(CV[1]>>9)&3; //12 bits -> 2 bits
+  speedf__=logspeed[(CV[1]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ldacadd(void){
+  HEADL;
+  uint8_t w=1;
+  float speedf__;
+  speedf__=logspeed[(CV[1]&511)+(gate[dacfrom[daccount][1]].dac>>3)];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ldacminus(void){
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  cv=(gate[dacfrom[daccount][1]].dac>>2)-(1024-(CV[1]>>2));
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ldacspeedminus(void){
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  cv=(CV[1]>>2)-(gate[dacfrom[daccount][1]].dac>>2); 
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void Ldacmod(void){
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  cv=((CV[1]>>2)+1); // modulo code
+  speedf__=logspeed[(gate[dacfrom[daccount][1]].dac>>2)%cv];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void LB(void){// with oscillator
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  cv=(CV[1]>>2)-(gate[dacfrom[daccount][1]].dac>>2);
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;  
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],gate[w].adcpar, &gate[w].shift_); // oscillator
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // intmodes
 // add in and check all probability modes
 
 // prototype INTmode 0 no interpolation and no use of CV - cycles though
-void Lint0(void){ 
+void Lint(void){ 
   uint8_t w=1;
   HEADL;  
   if (gate[w].trigger)      {
@@ -1674,7 +1957,7 @@ void Lint1(void){ // route in
 }
 
 
-void Lintroute0(void){ // CV: 4 bits for route in... other bits for logop
+void Lintroute(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=1;				       
   HEADL;  
   if (gate[1].trigger)      {
@@ -1695,14 +1978,15 @@ void Lintroute0(void){ // CV: 4 bits for route in... other bits for logop
   } 
 }
 
-void LintDACroute(void){ // dacroute version with prob/CV deciding if we change table or not  ****
+void LintDACroute(void){ // dacroute version with prob/CV deciding if we change table or not 
   uint8_t w=1;
   HEADL;
   GSHIFT_;
   if (gate[1].trigger){
+
     if (((LFSR_[1] & 4095 ) < CV[1])){  
-  tmp=gate[dacfrom[daccount][1]].dac&15;
-  for (x=0;x<4;x++){
+      tmp=gate[dacfrom[daccount][1]].dac&15;
+    for (x=0;x<4;x++){
   if (tmp&0x01){
   bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
   gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
@@ -1715,9 +1999,33 @@ void LintDACroute(void){ // dacroute version with prob/CV deciding if we change 
   
   PULSIN_XOR;
   BITN_AND_OUTVINT_; // with pulses
-
-  }  
+  }
 }
+
+void Lintprobroute1(void){ // prob/CV deciding if we increment local binroute count
+  uint8_t w=1;
+  static uint8_t ourcount=0;
+  HEADL;
+  GSHIFT_;
+  if (gate[1].trigger){
+    if (((LFSR_[1] & 4095 ) < CV[1])){  
+      ourcount++;
+      if (ourcount>15) ourcount=0;
+    }
+    tmp=binroute[ourcount][w];
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  
+  PULSIN_XOR;
+  BITN_AND_OUTVINT_; // with pulses
+  }
+  }  
 
 void LintselADC_63(void){ // use CV to select adc type: only those which don't use CV or strobe LIST:
   // we could also us top bits to do something with? 16 modes=4 bits, top bits logop/route?
@@ -1780,7 +2088,7 @@ void LLNint35(void){ // TRIADEX 2 - TODO: version using CV or SR for these bits
   }
 }
 
-void LLNint0(void){ 
+void LLNint(void){ 
   uint8_t w=1;
   HEADL;  
   if (gate[w].trigger)      {
@@ -1928,8 +2236,6 @@ void LLNint64(void){ // as 63 but we try INTmode with CV changing length of inco
   } 
 }
 
-
-
 void LLNint47(void){ // case 47: // GSR runs at CV speed in INT mode (try)
   // or vice versa NOW - GSR is on trigger
   uint8_t w=1;
@@ -1975,7 +2281,6 @@ void LLNint41(void){ //  TM in TM: from it.c seems to use 2x comparators - one -
   } 
 }
       
-
 // version for intmode with only CVL/detached length
 void LINTBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV control of bits and SR/DAC control - as we need 2 CVs (mix and CV) - detach both (in CV mode or one in intmode)
   uint8_t w=1; float mixer;
@@ -2006,7 +2311,7 @@ void LINTBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV c
 
 //PROBABILITY
 //INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
-void Lintprobfixed0(void){ 
+void Lintprobfixed(void){ 
   uint8_t w=1;
   HEADL;  
 
@@ -2036,7 +2341,6 @@ void Lintprobfixed1(void){ // as above prob cycling vs routein
       BINROUTE_;      
     }
     else JUSTCYCLE_;
-
     
     PULSIN_XOR;
     BITN_AND_OUTVINT_; // for pulse out

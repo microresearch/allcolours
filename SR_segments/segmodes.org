@@ -255,6 +255,34 @@ all the comparison possibilities]
 
 * 2022++
 
+*define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
+*re-check strobey, pulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR.h*
+*settle speeds and test new voltage/CV scheme*
+*figure out calc for filter speeds (once we settle on speeds)*
+*cleaning, organising, testings!*
+
+** 2/2/2022
+
+- do we have prob of bumping up local route: in modeL yes
+
+- TODO: generic versions of major modes, start to classify eg. generic version of electronotes with different bits
+- routes tagged with NOT/inversion bits
+
+DONEport dacspeed modes from modeN.h // and one xtra one
+
+DONEmodeN: prob modes done, port electronotes and probability modes to L as template
+
+*port from L to R and C maybe new modes* also multiple speed modes are in L - some for R only, some for C
+also maybe some new modes across N->
+
+*TODO: port generic ones into R and C from L in probability.h - done for L!!!!*
+
+- various detached modes for probabilities and generic probs esp. in ADC
+
+*where do we change dacmode for NLR?*
+
+*can also have XOR opps for routing tables, where do we get dac/sr from - how to change this, mixes of DACs, all recursions*
+
 ** 1/2/2022
 
 In modeN (also modeC bit nor so critical there) we can't have so many ADC/DAC select modes for each possibility:
@@ -271,19 +299,9 @@ DONE: for modeN.h we can select ADC mode (adc or abstract) and use probs, *TEST*
 
 DONE: port prob_bits mode over to N, added Lintgenericprobx in prob
 
-*cleaning, organising, testings!*
+- added strobe modes in adc/modeN.h - DONE: these could also be toggles toggle entry/no entry
 
-- added strobe modes in adc/modeN.h - *TODO: these could also be toggles*
-
-*check all bit/route options and any implementations*
-*define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
-
-*port dacspeed modes from modeN.h*
-*port from N, L to R and C maybe new modes* also multiple speed modes are in L - some for R only, some for C
-*check strobey, pulsins, pulsouts for all modeX.h modes*
-
-*settle speeds and test new voltage/CV scheme*
-*figure out calc for filter speeds (once we settle on speeds)*
+DONEcheck all bit/route options and any implementations
 
 - fixed major bug in new modesL modes - as we already gshifted out the cycling bit
 

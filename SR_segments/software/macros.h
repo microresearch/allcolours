@@ -2,6 +2,8 @@
 
 #define DACFROM (gate[dacfrom[daccount][w]].dac)
 
+#define SRFROM (gate[dacfrom[daccount][w]].Gshift_[w])
+
 #define CVOPEN {				\
     if (gate[w].time_now>32768){				\
       gate[w].int_time=0;					\
@@ -69,7 +71,7 @@
 
 #define HEADSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[2]=speedf[2]; \
 
-#define HEADSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[3]=speedf[3]; \
+#define HEADSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[3]=speedf[3]; count=0; \
 
 // these ones are for no speed changes
 
@@ -79,7 +81,7 @@
 
 #define HEADSSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; \
 
-#define HEADSSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; \
+#define HEADSSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; count=0; \
 
 // and for NADA
 #define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
@@ -221,6 +223,23 @@
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
 }
+
+// for local changes to dactype 
+#define BITN_AND_OUTVDACT_ {						\
+    gate[w].shift_+=bitn;						\
+    val=DAC_(w, gate[w].shift_, SRlength[w], tmp, gate[w].dacpar, gate[w].trigger); \
+    tmp=(w<<1);								\
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    lengthbit=(SRlength[w]>>1);					\
+    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    prev_stat[w]=new_stat;					\
+    tmp++;							\
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+}
+
 
 #define BITN_AND_OUTVNOSHIFT_ {						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \

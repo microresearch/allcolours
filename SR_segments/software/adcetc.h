@@ -1312,7 +1312,7 @@ void TIM4_IRQHandler(void)
 
 {
   uint32_t temp;
-  volatile static uint16_t tmp;
+  //  volatile static uint16_t tmp;
 
   TIM_ClearITPendingBit(TIM4, TIM_IT_Update); 
 
@@ -1394,7 +1394,9 @@ void TIM4_IRQHandler(void)
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
   CV[2]=temp;
-  speedf[2]=logspeed[temp>>2];
+  //  speedf[2]=logspeed[temp>>2];
+  if (CV[2]>512)   speedf[2]=0.0002f;
+  else   speedf[2]=1.0f;
   //  speedf_[2]=1.0f;
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!
