@@ -1547,7 +1547,7 @@ void NLintgenericprob(void){ // detach length and use to select ADC
     GSHIFT_;
 
     BINROUTE_;
-    prob[0]=ADC_(0,SRlength[w],(adclist[CVL[0]>>7)],gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_);; // route
+    prob[0]=ADC_(0,SRlength[w],(adclist[CVL[0]>>7]),gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_);; // route
     prob[1]=bitn; // route
     prob[2]=gate[w].Gshift_[w]>>SRlength[w]; // ret
     prob[3]=0;

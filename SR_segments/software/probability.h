@@ -84,6 +84,9 @@ void Lstrobe3(void){
 //////////////////////////////////////////////////////////////
 
 /*
+left side: LFSR, SRown,  
+right side: CV, CV+DAC
+
 LFSR<CV
   LFSR<DAC
 LFSR<DAC+CV
@@ -123,7 +126,7 @@ X vs Y: options
     };
 */
 
-void Lintgenericprob0(void){
+void Lintgenericprob0(void){ // TODO: can also be on trigger!
   uint8_t w=1;
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
@@ -151,6 +154,42 @@ void Lintgenericprob0(void){
     BITN_AND_OUTVINT_; // for pulse out
   } 
 }
+
+//left side: LFSR, SRown,  
+//right side: CV, CV+DAC
+
+void Lintgenericprobx(void){ // TODO: can also be on trigger!
+  uint8_t w=1;
+  uint32_t tmpp, bit, lower;
+  uint32_t prob[4]={0};
+  uint32_t left[2]={0}; uint32_t right[2]={0};
+  HEADL;  
+
+  if (gate[w].trigger)      {
+    GSHIFT_;
+
+    BINROUTE_;
+    prob[0]=bitn; // route
+    prob[1]=gate[w].Gshift_[w]>>SRlength[w]; // ret
+    prob[2]=!(GPIOC->IDR & pulsins[w]); // pulse but this is not in C - we don't use generic mode there
+    prob[3]=0;
+
+    left[0]=LFSR_[w]&4095; left[1]=gate[w].Gshift_[w]&4095; 
+    right[0]=4095-CV[w]; right[1]=right[0]+gate[dacfrom[daccount][w]].dac&4095;
+    if (right[1]>4095) right[1]=4095;
+    // bit is 8 x 3 - 5 bits + 2 bits
+    bit=gate[dacfrom[daccount][w]].dac&127; // 2+5 bits //- could also be extra bits for logical ops
+    lower=bit&0x03;
+    tmp=(bitn>>2)&1;
+    tmpp=(bitn>>3)&1;
+    bit=(bit>>4)*3;
+
+    if (left[tmp]<right[tmpp]) bitn=prob[lower]; // lowest 2 bits
+    else bitn=prob[options[lower][bit]] ^prob[options[lower][(bit+1)]]^prob[options[lower][(bit+2)]];
+    BITN_AND_OUTVINT_; // for pulse out
+  } 
+}
+
 
 void Lintgenericprob1(void){ // reverse so dac is prob and cv is bits
   uint8_t w=1;

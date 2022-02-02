@@ -257,25 +257,32 @@ all the comparison possibilities]
 
 ** 1/2/2022
 
+In modeN (also modeC bit nor so critical there) we can't have so many ADC/DAC select modes for each possibility:
+
+so:
+
+- start with 8 total basic ADC/abstract modes in. further mode on Cv select lines only - with probs, other modes...
+
 *FINAL TODO:*
 
 DONE: prob modes implemented - added probability.h for all sides
 
 DONE: for modeN.h we can select ADC mode (adc or abstract) and use probs, *TEST* probability.h
 
-DONE: port prob_bits mode over to N
+DONE: port prob_bits mode over to N, added Lintgenericprobx in prob
 
-cleaning, organising, testings!
+*cleaning, organising, testings!*
 
-//// adding strobe modes in adc/modeN.h - *TODO: these could also be toggles*
+- added strobe modes in adc/modeN.h - *TODO: these could also be toggles*
 
 *check all bit/route options and any implementations*
 *define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
+
 *port dacspeed modes from modeN.h*
 *port from N, L to R and C maybe new modes* also multiple speed modes are in L - some for R only, some for C
-*check strobey, pulsins, outs for all modeX.h modes*
+*check strobey, pulsins, pulsouts for all modeX.h modes*
 
-*settle speeds and test new CV scheme*
+*settle speeds and test new voltage/CV scheme*
 *figure out calc for filter speeds (once we settle on speeds)*
 
 - fixed major bug in new modesL modes - as we already gshifted out the cycling bit

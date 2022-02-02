@@ -48,17 +48,20 @@ CVmodes:
 strobe
 toggle
 
+define as:
+left side: LFSR, SRown,  
+right side: CV, CV+DAC
+
 INTmodes:
 LFSR<CV
 LFSR<DAC
 LFSR<DAC+CV
-LFSR<ADC_buffer[12]
+wildcard: LFSR<ADC_buffer[12]
 
 SRown<CV - own ghost SR: gate[w].Gshift_[w] 
-SRown<DAC
 SRown<CV_DAC
-SRown<SRincoming
 
+Electronotes versions of... use SR, LFSR and CV
 
 ///
 for L, R
@@ -95,7 +98,7 @@ EN: cycling - prob of entry of new bits - route inXORpulsesADC  /no cycle
 11 4- BITIN or not into cycling
 
 
-ported to LN13,14,15
+[ported to LN13,14,15]
 13: 00TM lfsr<dac
 14: 01 binroute or loopback
 15: binrouteandcycle or loopback
@@ -141,6 +144,8 @@ prob1: lfsr<cv: adc vs adc/binroute
 2:            : adc vs binroute
 3:            : adc/bin vs invadc/bin
 4:            : adc/bin vs justcycle
+
+*now we have these with free CV selecting ADC type*
 
 5 is electronotes draft with CV/lFSR - adc/binroute vs justcycle 
 6                                    - adc vs justcycle
