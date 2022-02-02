@@ -91,7 +91,6 @@
 
 #define ENDER {					\
     new_data(val,w);				\
-    gate[w].last_time += 1;			\
   }
 
 

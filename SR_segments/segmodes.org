@@ -263,6 +263,8 @@ all the comparison possibilities]
 
 ** 2/2/2022
 
+- hit problem with slower speeds and float - fix from test2.c - either reset at 8 or 1024 or reset in ENDER?! test...
+
 - do we have prob of bumping up local route: in modeL yes
 
 - TODO: generic versions of major modes, start to classify eg. generic version of electronotes with different bits
