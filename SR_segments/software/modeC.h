@@ -184,9 +184,18 @@ void CN18_0(void){
   }
 }
 
-void CLDACSEL0(void){ // no STROBE as some DACs use strobe???
+void CLDACSEL0(void){
+  uint8_t w=2;
   uint8_t mmm=CVL[2]>>8; // to 4 bits
   gate[2].dactype=mmm; gate[2].dacpar=param[2];
+  DACOUTX;
+}
+
+void CLDACSRSEL0(void){
+  uint8_t w=2;
+  uint8_t mmm=CVL[2]>>8; // to 4 bits
+  gate[2].dactype=(mmm)&(DACFROM&15);
+  gate[2].dacpar=param[2]; // other logical opps
   DACOUTX;
 }
 
@@ -571,7 +580,7 @@ void Cdacoffset0(void){
   uint8_t w=2;
   float speedf__;
   float mmm=(float)(1024-(CVL[2]>>2))/1024.0f;
-  HEADSINC;
+  HEADSSINNADA;
   tmp=(1024-(CV[2]>>2)) + (int)((float)(gate[dacfrom[daccount][2]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...

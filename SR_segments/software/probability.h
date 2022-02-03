@@ -4,7 +4,7 @@
 //                *routed vs cycling*
 //		*routed vs [routed^cycling]*
 
-// from modeN port in probs and electronotes for these...
+// from modeN port in probs and electronotes for these...DONE
 
 void Lintprob1(void){  // 1invert routed
   uint8_t w=1;				       
@@ -357,7 +357,7 @@ void Lintgenericprob0(void){ // TODO: can also be on trigger!
     prob[3]=0;
     
     // bit is 8 x 3 - 5 bits
-    bit=gate[dacfrom[daccount][w]].dac&31; // 5 bits - could also be extra bits for logical ops
+    bit=gate[dacfrom[daccount][w]].dac&31; // 5 bits - could also be extra bits for logical ops - can also be SRFROM
     lower=bit&0x03;
     bit=(bit>>2)*3;
 
@@ -498,7 +498,7 @@ void Lintgenericprob1(void){ // reverse so dac is prob and cv is bits
     
     // bit is 8 x 3 - 5 bits
     //    bit=gate[dacfrom[daccount][w]].dac&31; // 5 bits
-    bit=CV[w]&31; // 5 bits
+    bit=CV[w]>>7; // 5 bits
     lower=bit&0x03;
     bit=(bit>>2)*3;
 
@@ -528,7 +528,7 @@ void Lintgenericprob2(void){ // adc[12] is prob and cv is bits
     
     // bit is 8 x 3 - 5 bits
     //    bit=gate[dacfrom[daccount][w]].dac&31; // 5 bits
-    bit=CV[w]&31; // 5 bits
+    bit=CV[w]>>7; // 5 bits
     lower=bit&0x03;
     bit=(bit>>2)*3;
 

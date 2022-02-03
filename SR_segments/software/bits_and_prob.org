@@ -197,16 +197,6 @@ maybe divide and see to what we can add local dacfrom bits...
 dacfrom[dacfrom[dacfrom]]]??? how we handles this as first dacfrom is
 always from a fixed one??
 
-- route and logop - 8 bits + 2 from other dac: LSRroutelogxx and LSRroutelogxxx
-
-- route and what we do
-0-looping only/aka return only!
-1-pass on only - straight through
-2-pass on and return bitx
-
-- route and prob/just prob with basic route
-
-- length and dactype - basic route
  
 ////
 

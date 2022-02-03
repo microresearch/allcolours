@@ -741,7 +741,7 @@ heavens gate[4];
   speedf_[0]=logspeed[1023];
   
   //  for (x=0;x<128000;x++){
-  while(1){
+  //  while(1){
     /*
     ff++;
     if (ff>10230) {
@@ -777,17 +777,16 @@ heavens gate[4];
 	printf("now: %f\n", time_now[w]);
 	//	printf("xx ");
 	time_now[w]=time_now[w]-1.0f; // trial
-	//	printf("now-1: %f\n", time_now[w]);
 	int_time[w]-=1; // int_time[w]=0;
 	//	printf("int-1: %d\n", int_time[w]);
 
     //    last_time[w] += 1;
     } // lasttime*/
-  }
-  //  printf("%d\n",1<<11);
+	    //  }
+
 
   uint8_t elf[8]={1, 3, 6, 19, 15, 18, 20, 22};
-  
+  printf("%ud\n",(~elf[3]&255));  
   /*   for (x=0;x<8;x++){
      printf("(LFSR[0]&%d)>>%d) + ",(1<<(elf[x]-1)), (elf[x]-(x+1))  );
    }

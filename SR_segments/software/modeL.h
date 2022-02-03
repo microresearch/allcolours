@@ -140,32 +140,6 @@ void LNwas15(void){
   }
 }
 
-
-///// thinking on bit modes
-
-void LBITlengthdac(void){ 
-  uint8_t w=1;
-  uint32_t bits;
-  HEADL;  
- if (speedf_[1]!=2.0f){
-  CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
-
-    bits=SRFROM&255; // length is 5 bits, dactype can be from 3 to 5 bits
-    SRlength[1]=lookuplenall[bits&31]; // 5 bits
-    tmp=(bits>>5); // 3 bits
-    GSHIFT_;
-
-    BINROUTE_;
-    PULSIN_XOR;
-    BITN_AND_OUTVDACT_; // for pulse out and local dactype in tmp
-    ENDER;
-  }
-  } 
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // port in from newmodes.c
 
@@ -1599,15 +1573,15 @@ void LLcvroute(void){ // CV: 4 bits for route in... other bits for logop
   } 
 }
 
-void LSRroutelog(void){ // SR: 4 bits for route in... other bits for logop
+void LLcvSRmaskroute(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=1;				       
-  HEADL;  
+  HEADSINL;  
  if (speedf_[1]!=2.0f){
   CVOPEN;
   if(gate[1].last_time<gate[1].int_time)      {
 
     GSHIFT_;
-    tmp=(SRFROM)&255; // 8 bits
+    tmp=(255-(CVL[1]>>4)) & DACFROM; // other logics // 8 bits
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -1618,7 +1592,6 @@ void LSRroutelog(void){ // SR: 4 bits for route in... other bits for logop
       tmp=tmp>>2; // 4 bits
     }
     // no binroute needed
-
     PULSIN_XOR;
     BITN_AND_OUTV_; // for pulse out
     ENDER;
@@ -1626,65 +1599,6 @@ void LSRroutelog(void){ // SR: 4 bits for route in... other bits for logop
   } 
 }
 
-void LSRroutelogxx(void){ // SR: 4 bits for route in... other bits for logop - try changing srfrom
-  uint8_t w=1, tmpp;
-  HEADL;  
- if (speedf_[1]!=2.0f){
-  CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
-
-    GSHIFT_;
-    tmpp=(SRFROM)&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
-    tmp=(gate[tmpp].Gshift_[w])&255; // 8 bits
-    
-    for (x=0;x<4;x++){ 
-      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
-	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
-	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
-	bitn=logopx(bitn,bitrr,(tmp)&0x03);
-	//	bitn=logopx(bitn,bitrr, 2); 
-      }
-      tmp=tmp>>2; // 4 bits
-    }
-    // no binroute needed
-
-    PULSIN_XOR;
-    BITN_AND_OUTV_; // for pulse out
-    ENDER;
-  }
-  } 
-}
-
-void LSRroutelogxxx(void){ // recursive use of dacfrom SR: 4 bits for route in... other bits for logop - try changing srfrom
-  uint8_t w=1, tmpp;
-  static uint32_t lastdacfrom=0;
-  HEADL;  
- if (speedf_[1]!=2.0f){
-  CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
-
-    GSHIFT_;
-    tmpp=(gate[lastdacfrom].Gshift_[w])&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
-    tmp=(gate[tmpp].Gshift_[w])&255; // 8 bits
-    lastdacfrom=tmpp;
-    
-    for (x=0;x<4;x++){ 
-      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
-	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
-	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
-	bitn=logopx(bitn,bitrr,(tmp)&0x03);
-	//	bitn=logopx(bitn,bitrr, 2); 
-      }
-      tmp=tmp>>2; // 4 bits
-    }
-    // no binroute needed
-
-    PULSIN_XOR;
-    BITN_AND_OUTV_; // for pulse out
-    ENDER;
-  }
-  } 
-}
 
 // keep this one as a template for DETACH SPEED AND LENGTH both 
 void LNADA0(void){ // NO LENGTH NOR SPEEDS
@@ -1977,6 +1891,28 @@ void Lintroute(void){ // CV: 4 bits for route in... other bits for logop
     BITN_AND_OUTVINT_; // for pulse out
   } 
 }
+
+void Lintsrroute(void){ // CV: 4 bits for route in... other bits for logop
+  uint8_t w=1;				       
+  HEADL;  
+  if (gate[1].trigger)      {
+    GSHIFT_;
+    tmp=(255-(CV[1]>>4)) & DACFROM; // other logics!
+    for (x=0;x<4;x++){ 
+      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
+	//	bitn=logopx(bitn,bitrr, 2); 
+      }
+      tmp=tmp>>2; // 4 bits
+    }
+    // no binroute needed
+    PULSIN_XOR;
+    BITN_AND_OUTVINT_; // for pulse out
+  } 
+}
+
 
 void LintDACroute(void){ // dacroute version with prob/CV deciding if we change table or not 
   uint8_t w=1;

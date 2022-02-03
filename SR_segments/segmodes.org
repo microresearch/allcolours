@@ -255,15 +255,34 @@ all the comparison possibilities]
 
 * 2022++
 
+*expand and port modes in prob and bit.h - add cv masks where necessary to these*
+
 *define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
+
+CVL - from length
+CV - from speed
+
+detaches
+INTmodes
+
 *re-check strobey, pulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR.h*
 *settle speeds and test new voltage/CV scheme*
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
+** 3/2/2022
+
+- fixed speed issues now in interpol code - slowest is around 1Hz with 2^14 octaves scale in log_gen/resources...
+
+- how far did we get with bitmodes? bit.h defining now for modeL, expand and then port!
+
+*thinking about how have whole other path - so feedback is one extra limb perhaps*
+
+where do we change dactype for NLR?/ C? also is 3-5 bitsDONE - in bit.h - so changes own dactype...
+
 ** 2/2/2022
 
-- hit problem with slower speeds and float - fix from test2.c - either reset at 8 or 1024 or reset in ENDER?! test...
++hit problem with slower speeds and float - fix from test2.c - either reset at 8 or 1024 or reset in ENDER?! test...+
 
 - do we have prob of bumping up local route: in modeL yes
 
@@ -281,9 +300,8 @@ also maybe some new modes across N->
 
 - various detached modes for probabilities and generic probs esp. in ADC
 
-*where do we change dacmode for NLR?*
 
-*can also have XOR opps for routing tables, where do we get dac/sr from - how to change this, mixes of DACs, all recursions*
+DONEcan also have XOR opps for routing tables, where do we get dac/sr from - how to change this, mixes of DACs, all recursions
 
 ** 1/2/2022
 
@@ -292,8 +310,6 @@ In modeN (also modeC bit nor so critical there) we can't have so many ADC/DAC se
 so:
 
 - start with 8 total basic ADC/abstract modes in. further mode on Cv select lines only - with probs, other modes...
-
-*FINAL TODO:*
 
 DONE: prob modes implemented - added probability.h for all sides
 

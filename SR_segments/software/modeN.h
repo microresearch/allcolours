@@ -766,9 +766,6 @@ refine and figure out dac modes as dac is too fast
 
  */
 
-// DONE: top bits of CV/speed select which DAC to take from - implement and test this, but we need access to bits/CV and smoothed
-// but for ADC in is probably best just to have fixed DAC as 3
-
 // so far we have 7 modes and all just use adc mode 0 so this needs to be trimmed - DAC modes also more suited for abstract modes
 // can also have BINROUTE in or not???
 
@@ -819,6 +816,10 @@ void Ndacghostincoming0(void){ // own ghost from next 1 - could also select inco
     ENDER;
   }
 }
+
+
+// DONE: top bits of CV/speed select which DAC to take from - implement and test this, but we need access to bits/CV and smoothed
+// but for ADC in is probably best just to have fixed DAC as 3
 
 void Ndacseladd0(void){
   HEADN;

@@ -4,11 +4,9 @@
 
 #define SRFROM (gate[dacfrom[daccount][w]].Gshift_[w])
 
+#define RETURN      bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01 
+
 #define CVOPEN {				\
-    if (gate[w].time_now>32768){				\
-      gate[w].int_time=0;					\
-      gate[w].time_now-=32768.0f;				\
-    }									\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \
     if (gate[w].dac>4095) gate[w].dac=4095;				\
@@ -19,10 +17,6 @@
   }
 
 #define CVOPENNOINTERPOL {				\
-    if (gate[w].time_now>32768){				\
-      gate[w].int_time=0;					\
-      gate[w].time_now-=32768.0f;				\
-    }									\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = delay_buffer[w][1];					\
     if (gate[w].dac>4095) gate[w].dac=4095;				\
@@ -34,10 +28,6 @@
 
 // this one is used for DACspeed modes and others
 #define CVOPENDAC {				\
-    if (gate[w].time_now>32768){				\
-      gate[w].int_time=0;					\
-      gate[w].time_now-=32768.0f;				\
-    }									\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \
     if (gate[w].dac>4095) gate[w].dac=4095;				\
@@ -71,7 +61,7 @@
 
 #define HEADSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[2]=speedf[2]; \
 
-#define HEADSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[3]=speedf[3]; count=0; \
+#define HEADSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[3]=speedf[3]; count=0; daccount=0; \
 
 // these ones are for no speed changes
 
@@ -81,7 +71,7 @@
 
 #define HEADSSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; \
 
-#define HEADSSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; count=0; \
+#define HEADSSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; count=0; daccount=0; \
 
 // and for NADA
 #define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
@@ -91,6 +81,8 @@
 
 #define ENDER {					\
     new_data(val,w);				\
+    gate[w].time_now-=1.0f;			\
+    gate[w].int_time=0;				\
   }
 
 

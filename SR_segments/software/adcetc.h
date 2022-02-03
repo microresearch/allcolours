@@ -1019,6 +1019,18 @@ static inline uint16_t logopx(uint32_t bita, uint32_t bitaa, uint32_t type){ //T
   return bita ^ bitaa; // default
 }
 
+static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
+   if (type==3)  return (bita ^ bitaa);
+   else if (type==1) return (bita | bitaa);
+   else if (type==0) return ~(bita)&255; // 8 bits
+  else if (type==2) {return (bita & bitaa);
+    //    ty=otherleaks(bita, bitaa,3,3); // how to change this?
+    //    return ty; // leaks using RSR as random // where we get 8 from...
+  }
+  return bita ^ bitaa; // default
+}
+
+
 //bitr=logop(bitr,bitrr,logopp[w]); // or other op TODO
 // logop: 0-XOR, 1-OR, 2-&, 3leaks - 0,1,2,3
 static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
@@ -1394,10 +1406,7 @@ void TIM4_IRQHandler(void)
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
   CV[2]=temp;
-  //  speedf[2]=logspeed[temp>>2];
-  if (CV[2]>512)   speedf[2]=0.0002f;
-  else   speedf[2]=1.0f;
-  //  speedf_[2]=1.0f;
+  speedf[2]=logspeed[temp>>2];
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!
 
