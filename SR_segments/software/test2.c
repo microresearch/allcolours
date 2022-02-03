@@ -733,12 +733,12 @@ heavens gate[4];
 
   static uint32_t lastdac[4]={0,0,0,0}, dac[4]={0,0,0,0}, val;
   float alpha;
-  static float time_now[4]={1024.0f};
-  unsigned long last_time[4];
+  static float time_now[4]={0.0f};
+  unsigned long last_time[4]={0.0f};
   static unsigned long int_time[4]={0};
   int w=0, ff=0, ffx=0;
   float speedf_[4]={0.0};
-  speedf_[0]=logspeed[0];
+  speedf_[0]=logspeed[1023];
   
   //  for (x=0;x<128000;x++){
   while(1){
@@ -766,17 +766,21 @@ heavens gate[4];
       //      printf("%d\n",dac[w]);
       //      printf(" ");
       time_now[w] += speedf_[w];
+      //      printf("nowx: %f\n", time_now[w]);
       last_time[w] = int_time[w];
       int_time[w] = (int)time_now[w];
       //      printf("now: %f\n", time_now[w]);
             if (last_time[w]<int_time[w])      {
 	val++;
 	lastdac[w]=val;
-	//	printf("last_time: %d\n", last_time[w]);
-	//	printf("now: %f\n", time_now[w]);
-	printf("xx ");
-	time_now[w]=0.0f; // trial
-	int_time[w]=0;
+	printf("last_time: %d\n", last_time[w]);
+	printf("now: %f\n", time_now[w]);
+	//	printf("xx ");
+	time_now[w]=time_now[w]-1.0f; // trial
+	//	printf("now-1: %f\n", time_now[w]);
+	int_time[w]-=1; // int_time[w]=0;
+	//	printf("int-1: %d\n", int_time[w]);
+
     //    last_time[w] += 1;
     } // lasttime*/
   }

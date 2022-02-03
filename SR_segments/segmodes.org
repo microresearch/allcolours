@@ -277,7 +277,7 @@ DONEmodeN: prob modes done, port electronotes and probability modes to L as temp
 *port from L to R and C maybe new modes* also multiple speed modes are in L - some for R only, some for C
 also maybe some new modes across N->
 
-*TODO: port generic ones into R and C from L in probability.h - done for L!!!!*
+*TODO: port generic ones into R and C from L in probability.h - done for L?!!!!*
 
 - various detached modes for probabilities and generic probs esp. in ADC
 
