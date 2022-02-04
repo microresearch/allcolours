@@ -4,6 +4,20 @@ notes: DACfrom 0-3, mix of DACs?, CV, CV +/xor/AND DAcfrom 0-3
 
 // fill in bit modes here - for modeL then expand then port
 
+dacfrom: 2 bits seperate
+
+length: 4 bits
+dactype: 4 bits
+
+route: 4 bits x2 logop = 8 bits
+prob: 7 bits
+
+Lintgenericprobxxx has route & prob in probability.h with total 11 bits
+
+so all would be 8length/dactype +8+7=23 bits
+
+cv selects dacfrom/2 bits leaves 10 bits with noise 
+
 using sr rather than dac
 
 we can add masks (eg. CV by either detaching SRlength, or as INTmodes)

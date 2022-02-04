@@ -98,6 +98,31 @@ void Cosc0(void){ // test oscillator
   }
 }
 
+void CLLswop(void){ // swop in or logop SR - cv and cvl ***
+  uint8_t w=2; uint32_t lin, lout;
+  HEADSSINNADA;
+    gate[2].dactype=0; gate[2].dacpar=param[2];
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_; 
+    if (gate[w].trigger) {
+      lin=127-(CV[2]>>5); //7= 2 bits for whichone and start which can be 5
+      lout=31-(CVL[2]>>7); // 5 bits for length
+      // length of incoming - lout
+      tmp=gate[lin&0x03].shift_>>(31-lout);
+      gate[w].shift_^=(tmp<<(31-(lin>>2)));
+      //gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one
+    }
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 // template for newmodes 
 void CN(void){ 
   uint8_t w=2;

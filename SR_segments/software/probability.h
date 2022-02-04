@@ -395,8 +395,8 @@ void Lintgenericprobx(void){
     // bit is 8 x 3 - 5 bits + 2 bits
     bit=gate[dacfrom[daccount][w]].dac&127; // 2+5 bits //- could also be extra bits for logical ops
     lower=bit&0x03;
-    tmp=(bitn>>2)&1;
-    tmpp=(bitn>>3)&1;
+    tmp=(bit>>2)&1;
+    tmpp=(bit>>3)&1; // fixed
     bit=(bit>>4)*3;
 
     if (left[tmp]<right[tmpp]) bitn=prob[lower]; // lowest 2 bits
@@ -404,6 +404,41 @@ void Lintgenericprobx(void){
     BITN_AND_OUTVINT_; // for pulse out
   } 
 }
+
+void LLintgenericprobx(void){ // as above but use CVL to select dacfrom/2 bits and mask 
+  uint8_t w=1;
+  uint32_t tmpp, bit, lower, other;
+  uint32_t prob[4]={0};
+  uint32_t left[2]={0}; uint32_t right[2]={0};
+  HEADL;  
+
+  if (gate[w].trigger)      {
+    GSHIFT_;
+
+    BINROUTE_;
+    prob[0]=bitn; // route
+    prob[1]=gate[w].Gshift_[w]>>SRlength[w]; // ret
+    prob[2]=!(GPIOC->IDR & pulsins[w]); 
+    prob[3]=0;
+
+    other=CVL[1]>>3; // 7 bits plus 2 bits = 9 bits
+    
+    left[0]=LFSR_[w]&4095; left[1]=gate[w].Gshift_[w]&4095; 
+    right[0]=4095-CV[w]; right[1]=right[0]+(gate[other&0x03].dac&4095);
+    if (right[1]>4095) right[1]=4095;
+    // bit is 8 x 3 - 5 bits + 2 bits
+    bit=(gate[other&0x03].dac&127) & (other>>2); // 2+5 bits //- could also be extra bits for logical ops
+    lower=bit&0x03;
+    tmp=(bit>>2)&1;
+    tmpp=(bit>>3)&1; // fixed
+    bit=(bit>>4)*3;
+
+    if (left[tmp]<right[tmpp]) bitn=prob[lower]; // lowest 2 bits
+    else bitn=prob[options[lower][bit]] ^prob[options[lower][(bit+1)]]^prob[options[lower][(bit+2)]];
+    BITN_AND_OUTVINT_; // for pulse out
+  } 
+}
+
 
 void Lintgenericprobxxx(void){ // try to combine with 4 bits for route
   uint8_t w=1;
@@ -416,13 +451,14 @@ void Lintgenericprobxxx(void){ // try to combine with 4 bits for route
     GSHIFT_;
     // 4 bits route+7 bits below = 11 bits = 
     // bit is 8 x 3 - 5 bits + 2 bits
-    topbit=(gate[dacfrom[daccount][w]].dac&2047)>>7; // 4 bits from top for routings
-    bit=topbit&127;
+    topbit=(gate[dacfrom[daccount][w]].dac&2047);
+    bit=topbit&127;// 7 bits now
     lower=bit&0x03;
-    tmp=(bitn>>2)&1;
-    tmpp=(bitn>>3)&1;
+    tmp=(bit>>2)&1; // fixed
+    tmpp=(bit>>3)&1;
     bit=(bit>>4)*3;
 
+    topbit=topbit>>7; // 4 bits from top for routings
     for (x=0;x<4;x++){ 
       if ((topbit&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -471,8 +507,8 @@ void Lintgenericprobxx(void){ // uses CVL for bits
     // bit is 8 x 3 - 5 bits + 2 bits
     bit=CVL[0]&127; // 2+5 bits //- could also be extra bits for logical ops
     lower=bit&0x03;
-    tmp=(bitn>>2)&1;
-    tmpp=(bitn>>3)&1;
+    tmp=(bit>>2)&1; // fixed
+    tmpp=(bit>>3)&1;
     bit=(bit>>4)*3;
 
     if (left[tmp]<right[tmpp]) bitn=prob[lower]; // lowest 2 bits

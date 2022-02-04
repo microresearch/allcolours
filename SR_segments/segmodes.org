@@ -270,13 +270,23 @@ INTmodes
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
+** 4/2/2022
+
+DONE- SR in SR again - how to embed one in another properly - with constraints - LLLSWOP
+
+- full generic bit interpreter
+
+- *can use CVL to select dacfrom and also mask in certain modes...*
+
+- *thinking of 0-15 as basic length/speed modes and 15-31 as detached modes*
+
 ** 3/2/2022
 
 - fixed speed issues now in interpol code - slowest is around 1Hz with 2^14 octaves scale in log_gen/resources...
 
 - how far did we get with bitmodes? bit.h defining now for modeL, expand and then port!
 
-*thinking about how have whole other path - so feedback is one extra limb perhaps*
+*thinking about how have whole other path - so feedback is one extra limb perhaps//isolate/un-isolate*
 
 where do we change dactype for NLR?/ C? also is 3-5 bitsDONE - in bit.h - so changes own dactype...
 

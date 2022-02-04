@@ -133,6 +133,32 @@ void Nnoroute0(void){ // basic ADC in with no route in
   }
 }
 
+void NLLswop0(void){ // swop in or logop SR - cv and cvl- not so good for Nmode
+  uint8_t w=0; uint32_t lin, lout;
+  HEADSSINNADA;
+
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_); 
+    BINROUTE_; 
+    if (gate[w].trigger) {
+      lin=127-(CV[0]>>5); //7= 2 bits for whichone and start which can be 5
+      lout=31-(CVL[0]>>7); // 5 bits for length
+      // length of incoming - lout
+      tmp=gate[lin&0x03].shift_>>(31-lout);
+      gate[w].shift_^=(tmp<< (31-(lin>>2)));// + (rin<<(31-(lin>>2))) );
+      //gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one
+      }
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 /*
 STROBE PROB MODES - could also be toggles
 STROBE - 1invert ADC BIT - XOR/OR routed
@@ -1632,8 +1658,8 @@ void NLintgenericprobx(void){ // TODO: can also be on trigger as CV strobe mode
     // bit is 8 x 3 - 5 bits + 2 bits
     bit=gate[dacfrom[daccount][w]].dac&127; // 2+5 bits //- could also be extra bits for logical ops
     lower=bit&0x03;
-    tmp=(bitn>>2)&1;
-    tmpp=(bitn>>3)&1;
+    tmp=(bit>>2)&1; // fixed
+    tmpp=(bit>>3)&1;
     bit=(bit>>4)*3;
 
     if (left[tmp]<right[tmpp]) bitn=prob[lower]; // lowest 2 bits

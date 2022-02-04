@@ -688,6 +688,30 @@ void LN40(void){// swap over SRs on pulse in?!! or swop in only (can swop in pre
   }
 }
 
+void LLLswop(void){ // swop in or logop SR - cv and cvl ***
+  uint8_t w=1; uint32_t lin, lout;
+  HEADSSINNADA;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    if (gate[w].trigger) {
+      lin=127-(CV[1]>>5); //7= 2 bits for whichone and start which can be 5
+      lout=31-(CVL[1]>>7); // 5 bits for length
+      // length of incoming - lout
+      tmp=gate[lin&0x03].shift_>>(31-lout);
+      gate[w].shift_^=(tmp<<(31-(lin>>2)));
+      //gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one
+    }
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 void LN42(void){ // - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn/complicated
   uint8_t w=1; static uint8_t tug[4]={0};
   HEADL;
@@ -2243,7 +2267,6 @@ void LINTBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV c
     BITN_AND_OUTVINT_;
   }
 }
-
 
 //PROBABILITY
 //INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
