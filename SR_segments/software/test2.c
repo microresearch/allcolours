@@ -786,7 +786,12 @@ heavens gate[4];
 
 
   uint8_t elf[8]={1, 3, 6, 19, 15, 18, 20, 22};
-  printf("%ud\n",(~elf[3]&255));  
+  printf("%ud\n",(~elf[3]&255));
+
+  uint8_t oreq=0;
+  oreq|=1;
+  printf("oreq %d\n",oreq);
+  
   /*   for (x=0;x<8;x++){
      printf("(LFSR[0]&%d)>>%d) + ",(1<<(elf[x]-1)), (elf[x]-(x+1))  );
    }

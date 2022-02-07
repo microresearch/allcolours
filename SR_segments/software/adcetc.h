@@ -494,20 +494,20 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
     otherpar=otherpar>>2; // how long? it should be?
      if (n[reg]>length) { // 0s
-       bt|=0; // XOR TODO
+       bt|=0; // NO SENSE TODO
        if (nn[reg]>otherpar) {
 	 n[reg]=0;
        }
        nn[reg]++;
      }
      else {
-       bt|=1; // XOR TODO
+       bt|=1; // NO SENSE TODO
        n[reg]++;
        nn[reg]=0;
      }         
      break;    
 
-     // 22->31 = no ADC IN just LFSR/DAC etc
+     // 22->31 = no ADC IN just LFSR/DAC etc abstract
      
   case 22: // LFSR runs on own SR so not true LFSR - REGG! no param
     bt = ((*SR >> (lfsr_taps[SRlength[regg]][0])) ^ (*SR >> (lfsr_taps[SRlength[regg]][1])) ^ (*SR >> (lfsr_taps[SRlength[regg]][2])) ^ (*SR >> (lfsr_taps[SRlength[regg]][3]))) & 1u;
@@ -604,7 +604,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt=!bt;// invert cycling bit
     }
     break;
-
+    /*
   case 32: // In progress  test mode for spaced sequential entry of 12 bits
       if (n[reg]>length) {
 	if (length<12) k[reg]=(adc_buffer[12])>>(11-length); // fill so no spacings
@@ -623,7 +623,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt = (k[reg]>>n[reg])&0x01;
     n[reg]++;    
     break;
-
+    */
   case 33: //  was 9 back to ADC - was! ADC prob mode using otherpar - 10 bits in this case  - OTHERPAR! 12 bits - else is returning bit
       // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...    
     // testing now for msb out
@@ -747,13 +747,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;
 
     /////////////////////// add modes
-
-  case 65: // was strobe mode for cycling bits a la TM - no input but now uses otherpar as probability! - can be intmode and cvmode
-    bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
-     if (((LFSR_[reg] & 4095 ) < otherpar)){
-      bt=!bt;// invert cycling bit
-    }
-    break;
 
   case 66: // basic sequential length of upto 12 bits cycling in MSB first -> ADC intmode various mixes of ADC incoming plus/modulo/etc/XOR CV[0]* intmodes
       if (length>11) length=11;
@@ -1030,7 +1023,6 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
   return bita ^ bitaa; // default
 }
 
-
 //bitr=logop(bitr,bitrr,logopp[w]); // or other op TODO
 // logop: 0-XOR, 1-OR, 2-&, 3leaks - 0,1,2,3
 static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
@@ -1189,7 +1181,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     //    if (reg<4 && length>3 && length<32) 
     // why (length-3)? to get down to 1 bit so could also have option for full bits!
     x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
-    x|=(otherpar&4095);
+    x=x|(otherpar&4095);
       break;
 
   case 14:/// we record mask and use this to mask the regular DAC... - could also be other-than-standard DACs
@@ -1198,7 +1190,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 	  mask[reg]=(otherpar&4095); // or reg can be otherpar/SR
 	  }
     x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
-    x|=mask[reg];
+    x=x|mask[reg];
     break;
 
     //    // case 15 was as case 2 but with param for filter - and now always has param

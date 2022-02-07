@@ -1,9 +1,22 @@
 // left hand functions
-// TODO: check we have     PULSIN_XOR;!!!!!!!!!!!!!! check all for     strobey, PULSIN_XOR; and output pulses
+// CHECKED check all pulse in, strobey, output pulses DONE
 
 // BINROUTE has strobey already
 
 /*
+
+latest:
+
+CV:
+0-15 - basic routes and probabilities
+15-31 detached
+
+CVDAC:
+32-47
+
+INTMODES:
+cv as routings, probabilities etc.
+
 
 CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC, what else?
 
@@ -26,7 +39,7 @@ void LN(void){
     GSHIFT_;
     // INSERT!
     
-    //    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    //    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     //    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -54,7 +67,7 @@ void LNwas14(void){ 	//- probability of advancing a GSR - strobe version we have
 	tmp=tmp>>1;
 	}	
 
-      if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+      if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
       PULSIN_XOR;
       BITN_AND_OUTV_; 
       ENDER;
@@ -103,8 +116,8 @@ void LNprob(void){ // from end of extramodes - TODO: port for CV use maybe/as in
 	else bitn=bitrr;
 	}	
     
-      if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
-    //    PULSIN_XOR;
+      if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+    //    PULSIN_XOR; // unused
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -132,7 +145,7 @@ void LNwas15(void){
 	tmp=tmp>>8; tmpp=tmpp>>8;
 	}	
     
-        if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+        if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
         PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -188,7 +201,7 @@ void LN5(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse))
     BINROUTE_;
     if (gate[w].trigger)	  bitrr=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
     else bitrr=!((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
-    bitn|=bitrr;
+    bitn=bitn|bitrr;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -211,7 +224,6 @@ void LN6(void){
       bitn=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01; 
     }
     PULSIN_XOR;
-
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -233,7 +245,6 @@ void LN7(void){
       bitn=!(gate[w].Gshift_[w]>>SRlength[w]) & 0x01; 
     }	
     PULSIN_XOR;
-    
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -254,9 +265,9 @@ void LN8(void){
     }
     else {
       bitn=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01; 
+      if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     }	
     PULSIN_XOR;
-    
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -283,7 +294,7 @@ void LN10(void){ // **
     }
     PULSIN_XOR;
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -314,6 +325,7 @@ void LN11(void){
 	tmp=tmp>>1;
       }
       PULSIN_XOR;
+      if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
       BITN_AND_OUTV_; 
       ENDER;
   }
@@ -341,7 +353,7 @@ void LN12(void){       // XX - we XOR on STROBE our shift with the GHOST
   }
   PULSIN_XOR;
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -361,10 +373,10 @@ void LN13(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)
 	  bitrr=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
 	}
 	else bitrr=!((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
-	bitn|=bitrr;
+	bitn=bitn|bitrr;
     PULSIN_XOR;
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -387,7 +399,7 @@ void LN14(void){ //	01 2-BITIN or loopback
 	}		//
 	PULSIN_XOR;
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -410,7 +422,7 @@ void LN15(void){
 	}	
     PULSIN_XOR;
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -437,7 +449,7 @@ void LN21(void){ // triadex inspired mode where we XOR in bits from the other SR
     //    bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn;
     bitn^=bitnn^bitnnn; 
     PULSIN_XOR;
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -453,13 +465,13 @@ void LN22(void){// as above
     GSHIFT_;
     // INSERT!
     bitn = (gate[others[w][0]].shift_>>SRlength[others[w][0]]) & 0x01;
-    bitnn = (gate[others[w][1]].shift_>>SRlength[others[w][0]]) & 0x01;
-    bitnnn = (gate[others[w][2]].shift_>>SRlength[others[w][0]]) & 0x01;
+    bitnn = (gate[others[w][1]].shift_>>SRlength[others[w][1]]) & 0x01;
+    bitnnn = (gate[others[w][2]].shift_>>SRlength[others[w][2]]) & 0x01;
 
     //    bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn;
     bitn^=bitnn^bitnnn; 
     PULSIN_XOR;
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -479,7 +491,7 @@ void LN29(void){
       bitn=bitn^1;
     }
     PULSIN_XOR;
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -499,7 +511,7 @@ void LN30(void){
       bitn=bitn^1;
     }
     PULSIN_XOR;
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -586,7 +598,7 @@ void LNsr35(void){ // TRIADEX 2 - try with SR...
     
     bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn^bitnnnn; 
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -618,7 +630,7 @@ void LN35(void){ // TRIADEX 2
     
     bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn^bitnnnn; 
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -658,7 +670,7 @@ void LN38(void){// pass through or cycle is toggled by clkin bit
     
     if (tug[w]) {
       bitn=(gate[w].Gshift_[w]>>SRlength[w])& 0x01;  // cycle...
-      if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+      if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     }
     else {
       BINROUTE_;
@@ -739,7 +751,8 @@ void LN42(void){ // - reverse direction of shift register - could be done on a t
 
 	gate[w].shift_ &= ~(1UL << SRlength[w]);
 	gate[w].shift_ +=(bitn << SRlength[w]);
-	BITN_AND_OUTVNOSHIFT_; 
+      if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+      BITN_AND_OUTVNOSHIFT_; 
       }
     ENDER;
   }
@@ -807,7 +820,7 @@ void LN50(void){ // GSR is masked in on trigger
     gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
     if (gate[w].trigger) gate[w].shift_&=gate[inroute[count][w]].Gshift_[w];
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -833,7 +846,7 @@ void LN62(void){ // LFSR in routed in SRs
       tmp=tmp>>1;
       }
       
-      if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+      if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
       PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -863,7 +876,7 @@ void LN65(void){// SR in SR with strobe as barrier? only for itself or for incom
       tmp=tmp>>1;
       }	
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -895,7 +908,7 @@ void LNwas13(void){ //pulse changes which bit ofghostSR we access - pulse moves 
 	    tmp=tmp>>1;
 	  }	  
 
-	  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+	  if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
 	  PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -1028,7 +1041,7 @@ void Losc(void){ // basic route in with oscillator
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
     BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
@@ -1045,7 +1058,7 @@ void Lmod(void){ // modulo route in SR
   if(gate[1].last_time<gate[1].int_time)      {
     GSHIFT_;
     //    BINROUTE_;
-    if (!strobey[1][mode[1]]) bitn|=gate[1].trigger;  
+    if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;  
     // we modulo our SR with routed ins
   tmp=binroute[count][w];
   for (x=0;x<4;x++){
@@ -1059,6 +1072,7 @@ void Lmod(void){ // modulo route in SR
   }
 
     PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -1141,7 +1155,7 @@ void LDACroute(void){
   CVOPEN;
   if(gate[1].last_time<gate[1].int_time)      {
   GSHIFT_;
-  if (!strobey[1][mode[1]]) bitn|=gate[1].trigger;
+  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
   //  BINROUTE_; // new routing in here.
   tmp=gate[dacfrom[daccount][1]].dac&15;
   for (x=0;x<4;x++){
@@ -1166,7 +1180,6 @@ void LSRroute(void){
   CVOPEN;
   if(gate[1].last_time<gate[1].int_time)      {
   GSHIFT_;
-  if (!strobey[1][mode[1]]) bitn|=gate[1].trigger;
   //  BINROUTE_; // new routing in here.
   tmp=gate[dacfrom[daccount][1]].Gshift_[w]&15;
   for (x=0;x<4;x++){
@@ -1178,6 +1191,7 @@ void LSRroute(void){
   tmp=tmp>>1;
     }
   PULSIN_XOR;
+  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
   BITN_AND_OUTV_; // with pulses
   ENDER;
   }
@@ -1191,7 +1205,7 @@ void LDACroutestrobe(void){ // strobe decides if we change local routing table
   CVOPEN;
   if(gate[1].last_time<gate[1].int_time)      {
   GSHIFT_;
-  //  if (!strobey[1][mode[1]]) bitn|=gate[1].trigger;
+  //  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
   if (gate[1].trigger){
   tmp=gate[dacfrom[daccount][1]].dac&15;
   for (x=0;x<4;x++){
@@ -1234,7 +1248,7 @@ void L32(void){ // multiple bits in as case 19 in draftdec
 			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
     }
     bitn=gate[w].shift_&1; // fixed this 29/12/2021
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger; 
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
@@ -1483,8 +1497,9 @@ void Lmultspeed3(void){ //  speeds of gshift, incoming gsr and bits/dac
     GSHIFT_;
     BINROUTENOG_; // no gshifty
     PULSIN_XOR;
-    BITN_AND_OUTV_;
-    ENDER;
+  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
+  BITN_AND_OUTV_;
+  ENDER;
   }
   }
 }
@@ -1641,7 +1656,6 @@ void LNADA0(void){ // NO LENGTH NOR SPEEDS
   }
 }
 
-// version for intmode with only CVL/detached length
 void LBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV control of bits and SR/DAC control - as we need 2 CVs (mix and CV) - detach both (in CV mode or one in intmode)
   uint8_t w=1; float mixer;
   HEADSSINNADA;
@@ -1666,6 +1680,7 @@ void LBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV cont
       tmp=tmp>>2; // 4 bits
     }
     PULSIN_XOR;
+    if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
     BITN_AND_OUTV_;
     ENDER;
   }
@@ -1728,7 +1743,7 @@ void Ldacadditself(void){ // tested//trial itself as DAC - can also be other var
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1743,7 +1758,7 @@ void Ldacghostitself(void){ // own ghost from next 1 - could also select incomin
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1758,7 +1773,7 @@ void Ldacghostincoming(void){ // own ghost from next 1 - could also select incom
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1774,7 +1789,7 @@ void Ldacseladd(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1789,7 +1804,7 @@ void Ldacadd(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1807,7 +1822,7 @@ void Ldacminus(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1825,7 +1840,7 @@ void Ldacspeedminus(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1842,7 +1857,7 @@ void Ldacmod(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -1859,7 +1874,7 @@ void LB(void){// with oscillator
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
     BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -1997,7 +2012,7 @@ void LintselADC_63(void){ // use CV to select adc type: only those which don't u
   if (gate[1].trigger)      {
     val=63-(CV[1]>>6); // 6 bits say
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[daccount][1],gate[w].adcpar, &gate[w].shift_);
+    bitn=ADC_(1,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_);
     val=(val&0x03);// lowest 2 bits for logop
     tmp=binroute[count][w];
     for (x=0;x<4;x++){
@@ -2042,7 +2057,7 @@ void LLNint35(void){ // TRIADEX 2 - TODO: version using CV or SR for these bits
     //    bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn^bitnnnn;
     bitn^=bitnn^bitnnn^bitnnnn; 
     
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     PULSIN_XOR;
     BITN_AND_OUTVINT_; 
   }
@@ -2234,7 +2249,7 @@ void LLNint41(void){ //  TM in TM: from it.c seems to use 2x comparators - one -
       if ((LFSR_[w] & 4095 )<gate[dacfrom[daccount][w]].dac) {
 	bitrr^=1;
       }
-      bitn|=bitrr;
+      bitn=bitn|bitrr;
       
     PULSIN_XOR;
     BITN_AND_OUTVINT_; // for pulse out
@@ -2282,7 +2297,7 @@ void Lintprobfixed(void){
       bitrr=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
     }
     else bitrr=!((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
-    bitn|=bitrr;
+    bitn=bitn|bitrr;
     
     PULSIN_XOR;
     BITN_AND_OUTVINT_; // for pulse out

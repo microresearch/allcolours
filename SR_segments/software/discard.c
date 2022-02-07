@@ -1,4 +1,119 @@
-  //  if (speedf_[0]==2.0f) speedf_[0]=LOWEST;
+/* // why we lost this?
+// Nint70 - if we can change type of gate[3].dac in dac mixes 66,67,68 or pure dac ins (?)
+void Nint70(void){
+  uint8_t w=0;				       
+  HEADN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    gate[3].dactype=15-(CV[0]>>8);     // 4 bits for type
+    bitn=ADC_(0,SRlength[w],67,gate[w].trigger,3,gate[3].dac, &gate[w].shift_);  // 4 bits for type  66=modulo, 67=add, 68=and
+    //BINROUTE_; // no route in in this case
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+*/
+
+/*
+void NLintprob084(void){ // own dac as comparator against DAC+CV 
+  // can also detach length and have this as prob mode too - prob of cycle or ADC. prob of cycle or routein
+  uint8_t w=0;				       
+  HEADSINN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    if (((LFSR_[0] & 4095 ) > CVL[0])){   // thsi way round
+    bitn=ADC_(0,SRlength[w],84,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_);
+    }
+    else JUSTCYCLE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+*/
+
+
+// try N0-N7 with ADCORIN() - these all fade out
+
+
+  void Nor0(void){ 
+  ADCORIN(0);
+  }
+
+  void Nor1(void){ 
+  ADCORIN(1);
+  }
+
+  void Nor2(void){ 
+  ADCORIN(2);
+  }
+
+  void Nor3(void){ 
+  ADCORIN(3);
+  }
+
+  void Nor4(void){
+  ADCORIN(4);
+  }
+
+  void Nor5(void){ 
+  ADCORIN(5);
+  }
+
+  void Nor6(void){
+  ADCORIN(6);
+  }
+
+  void Nor7(void){
+  ADCORIN(7);
+  }
+
+
+
+
+void Ntestorxor1_0(void){ // lower bits of CVL select xor or or in  -- version 2 below makes more sense
+  // speed is temp>>7 so 5 bits 0-31 so we want ((CVL[w]&64)>>6) 
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time){
+  GSHIFT_;
+  bitn=ADC_(0,SRlength[0],0,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_);
+  
+  if ((CVL[w]&64)>>6) {
+    BINROUTEOR_;
+  }
+  else {
+    BINROUTE_;
+    }
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+}
+}
+
+void Ntestorxor2_0(void){ // - or have 2 sets of 0-31 for length or/xor
+  // detach length
+  uint8_t w=0;
+  HEADSINN; // detach
+  SRlength[w]=31-((CVL[w]>>6)%32);
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time){
+  GSHIFT_;
+  bitn=ADC_(0,SRlength[0],0,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_);
+  if (((CVL[w]>>6)&32)==1) {
+    BINROUTEOR_;
+  }
+  else {
+    BINROUTE_;
+    }
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+}
+}
+
+
+//  if (speedf_[0]==2.0f) speedf_[0]=LOWEST;
   //  speedf__= (speedf_[0]-logspeed[1023-(gate[which].dac>>2)]);
 
 //  speedf__= logspeed[1023-(gate[speedfrom_[0]].dac>>2)];

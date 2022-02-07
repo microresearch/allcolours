@@ -265,10 +265,19 @@ CV - from speed
 detaches
 INTmodes
 
-*re-check strobey, pulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR.h*
+DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR.h
+
 *settle speeds and test new voltage/CV scheme*
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
+
+** 7/2/2022
+
+- DONE:trial basic mode - split length so handles xor/or in - logopxxx has the xor/or option too
+
+- *sort probability and route/bits files* // starting with modeN and cleaning up a bit
+
+- we can have say 64 as mode with no adc in 
 
 ** 4/2/2022
 

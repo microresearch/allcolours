@@ -1,10 +1,24 @@
 // right hand functions
 
-// **REMEMBER to set count=0 in relevant modes - HEAD // TODO: check we have     PULSIN_XOR;!!!!!!!!!!!!!!1
+//DONE//checked for pulsoutsX, pulsins and strobey
 
 /*
 
+latest:
+
+CV:
+0-15 - basic routes and probabilities
+15-31 detached
+
+CVDAC:
+32-47
+
+INTMODES:
+cv as routings, probabilities etc.
 and global set routes, set which dacs is dac for adc, set fake clkins
+
+
+
 
 CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC
 
@@ -99,7 +113,6 @@ void Rmod(void){ // modulo route in
   if(gate[3].last_time<gate[3].int_time)      {
     GSHIFT_;
     //    BINROUTE_;
-    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;  
     // we modulo our SR with routed ins
   tmp=binroute[count][w];
   for (x=0;x<4;x++){
@@ -113,6 +126,7 @@ void Rmod(void){ // modulo route in
   }
 
     PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -126,9 +140,10 @@ void Rosc0(void){ // basic route in with oscillator
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[daccount][3],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[daccount][3],0, &gate[w].shift_); // oscillator
     //    BINROUTE_; //
-    PULSIN_OR;
+    PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -228,7 +243,8 @@ void Rbumproute0(void){ // trigger bumps up our local route - add one to this (w
   bitn^=bitrr;
   }
   tmp=tmp>>1;
-    }			     
+    }
+  PULSIN_XOR;
   BITN_AND_OUTV_; // with pulses
   ENDER;
   }
@@ -242,7 +258,6 @@ void RDACroute0(void){
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
   GSHIFT_;
-  if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
   //  BINROUTE_; // new routing in here.
   tmp=gate[dacfrom[daccount][3]].dac&15;
   for (x=0;x<4;x++){
@@ -252,7 +267,9 @@ void RDACroute0(void){
   bitn^=bitrr;
   }
   tmp=tmp>>1;
-    }			     
+    }
+  PULSIN_XOR;
+  if (!strobey[3][mode[3]]) bitn=bitn|gate[3].trigger;
   BITN_AND_OUTV_; // with pulses
   ENDER;
   }
@@ -266,7 +283,7 @@ void RSRroute0(void){
   CVOPEN;
   if(gate[3].last_time<gate[3].int_time)      {
   GSHIFT_;
-  if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
+  if (!strobey[3][mode[3]]) bitn=bitn|gate[3].trigger;
   //  BINROUTE_; // new routing in here.
   tmp=gate[dacfrom[daccount][3]].Gshift_[3]&15;
   for (x=0;x<4;x++){
@@ -276,7 +293,9 @@ void RSRroute0(void){
   bitn^=bitrr;
   }
   tmp=tmp>>1;
-    }			     
+    }
+  PULSIN_XOR;
+  if (!strobey[3][mode[3]]) bitn=bitn|gate[3].trigger;
   BITN_AND_OUTV_; // with pulses
   ENDER;
   }
@@ -306,7 +325,7 @@ void R32(void){ // multiple bits in as case 19 in draftdec
 			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
     }
     bitn=gate[w].shift_&1; // fixed this 29/12/2021
-    if (!strobey[3][mode[3]]) bitn|=gate[3].trigger;
+    if (!strobey[3][mode[3]]) bitn=bitn|gate[3].trigger;
     PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
@@ -468,8 +487,9 @@ void RB0(void){// with oscillator
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[daccount][3],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(3,SRlength[w],30,gate[w].trigger,dacfrom[daccount][3],0, &gate[w].shift_); // oscillator
     //    BINROUTE_; // no route in now
+    if (!strobey[3][mode[3]]) bitn=bitn|gate[3].trigger;
     PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
@@ -600,7 +620,8 @@ void Rintroute0(void){ // CV: 4 bits for route in... other bits for logop
       tmp=tmp>>2; // 4 bits
     }
     // no binroute needed
-    BITN_AND_OUTVINT_; // for pulse out
+  PULSIN_XOR;
+  BITN_AND_OUTVINT_; // for pulse out
   } 
 }
 
@@ -614,7 +635,7 @@ void RintselADC_63(void){ // use CV to select adc type: only those which don't u
   if (gate[3].trigger)      {
     val=63-(CV[3]>>6); // 6 bits say
     GSHIFT_;
-    bitn=ADC_(3,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[daccount][3],gate[w].adcpar, &gate[w].shift_);
+    bitn=ADC_(3,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[daccount][3],0, &gate[w].shift_);
     val=(val&0x03);// lowest 2 bits for logop
     tmp=binroute[count][w];
     for (x=0;x<4;x++){
@@ -625,7 +646,8 @@ void RintselADC_63(void){ // use CV to select adc type: only those which don't u
   }
   tmp=tmp>>1;
     }			     
-    BITN_AND_OUTNINT_; // for no pulse out
+    PULSIN_XOR;
+    BITN_AND_OUTVINT_;
   } 
 }
 

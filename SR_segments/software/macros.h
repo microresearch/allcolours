@@ -123,6 +123,19 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
+#define BINROUTEOR_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn=bitn|bitrr;							\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
 #define BINROUTEANDCYCLE_ {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
@@ -136,18 +149,6 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
-#define BINROUTEOR_ {				\
-  tmp=binroute[count][w];				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  bitn|=bitrr;							\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
-  }
 
 // only advance incomings
 #define BINROUTEADV_ {				\
@@ -159,6 +160,7 @@
   }							\
   tmp=tmp>>1;						\
   }							\
+  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;	\
 }
 
 // we don't cycle incoming ghost just get bits

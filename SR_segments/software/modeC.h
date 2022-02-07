@@ -1,6 +1,24 @@
 // lowest modes as functions.... DAC output
 
+//*DONEre-check strobey, NOpulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR
+
+
 /*
+
+latest notes:
+
+CV:
+0-15 basic dac outs
+16-31 detachment
+
+CV+DAC:
+32-47
+
+INTMODES:
+cv as param 
+cv as choice of dac
+
+
 
 arrange also a bit better in adcetc with order and strobes in
 
@@ -90,7 +108,7 @@ void Cosc0(void){ // test oscillator
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(2,SRlength[w],30,gate[w].trigger,dacfrom[daccount][2],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(2,SRlength[w],30,gate[w].trigger,dacfrom[daccount][2],0, &gate[w].shift_); // oscillator
     //    BINROUTE_;
     BITN_AND_OUTV_; 
     ENDER;
@@ -115,7 +133,6 @@ void CLLswop(void){ // swop in or logop SR - cv and cvl ***
       gate[w].shift_^=(tmp<<(31-(lin>>2)));
       //gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one
     }
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -180,7 +197,7 @@ void CN17_0(void){
     BINROUTE_;
     if (gate[w].trigger)	  bitrr=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
     else bitrr=!((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
-    bitn|=bitrr;
+    bitn=bitn|bitrr;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -230,13 +247,10 @@ void C0(void){
   DACOUT;
 }
 
-
-
 void C0nog(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
   DACOUTNOG;
 }
-
 
 void C1(void){
   gate[2].dactype=1; gate[2].dacpar=param[2];
@@ -339,10 +353,6 @@ void Ctest(void){ // for speed 1hz to 20hz triangle here...
   }
   }  
 
-
-
-
-
 // TODO: just bump within a restricted range or array which make sense?
 void Cbumproute0(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
   uint8_t w=2;
@@ -378,7 +388,6 @@ void CDACroute0(void){
   CVOPEN;
   if(gate[2].last_time<gate[2].int_time)      {
   GSHIFT_;
-  if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
   //  BINROUTE_; // new routing in here.
   tmp=gate[dacfrom[daccount][2]].dac&15;
   for (x=0;x<4;x++){
@@ -389,7 +398,8 @@ void CDACroute0(void){
   }
   tmp=tmp>>1;
     }			     
-  BITN_AND_OUTV_; // with pulses
+ if (!strobey[2][mode[2]]) bitn=bitn|gate[2].trigger;
+   BITN_AND_OUTV_; // with pulses
   ENDER;
   }
   }  
@@ -402,7 +412,6 @@ void CSRroute0(void){
   CVOPEN;
   if(gate[2].last_time<gate[2].int_time)      {
   GSHIFT_;
-  if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
   //  BINROUTE_; // new routing in here.
   tmp=gate[dacfrom[daccount][2]].Gshift_[2]&15;
   for (x=0;x<4;x++){
@@ -413,6 +422,7 @@ void CSRroute0(void){
   }
   tmp=tmp>>1;
     }			     
+  if (!strobey[2][mode[2]]) bitn=bitn|gate[2].trigger;
   BITN_AND_OUTV_; // with pulses
   ENDER;
   }
@@ -441,7 +451,7 @@ void C32(void){ // multiple bits in as case 19 in draftdec
 			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
     }
     bitn=gate[w].shift_&1; // fixed this 29/12/2021
-    if (!strobey[2][mode[2]]) bitn|=gate[2].trigger;
+    if (!strobey[2][mode[2]]) bitn=bitn|gate[2].trigger;
     BITN_AND_OUTV_;
     ENDER;
   }    
@@ -462,7 +472,7 @@ void Cdacadditself0(void){ // tested//trial itself as DAC - can also be other va
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -477,7 +487,7 @@ void Cdacghostitself0(void){ // own ghost from next 1 - could also select incomi
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -492,7 +502,7 @@ void Cdacghostincoming0(void){ // own ghost from next 1 - could also select inco
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -508,7 +518,7 @@ void Cdacseladd0(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -523,7 +533,7 @@ void Cdacadd0(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -541,7 +551,7 @@ void Cdacminus0(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -559,7 +569,7 @@ void Cdacspeedminus0(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -576,7 +586,7 @@ void Cdacmod0(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    BITN_AND_OUTVN_;
+    BITN_AND_OUTV_;
     ENDER;
   }
 }
@@ -593,9 +603,8 @@ void CB0(void){// with oscillator
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],gate[w].adcpar, &gate[w].shift_); // oscillator
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
     BINROUTE_;
-    PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
   }
@@ -615,7 +624,6 @@ void Cdacoffset0(void){
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
   }
@@ -699,7 +707,6 @@ void CLNint104(void){ // let's try INT driven one for pulse train mode
 	train[w]++;
 	GSHIFT_;
 	BINROUTE_;
-	PULSIN_XOR;    
 	BITN_AND_OUTVINT_;    
       }
     }
@@ -724,7 +731,6 @@ void CLNint104(void){ // let's try INT driven one for pulse train mode
 	train[w]++;
 	GSHIFT_;
 	BINROUTE_;
-	PULSIN_XOR;    
 	BITN_AND_OUTVINT_;    
       }
     }

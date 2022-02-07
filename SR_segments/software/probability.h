@@ -18,7 +18,7 @@ void Lintprob1(void){  // 1invert routed
   } 
 }
 
-void Lintprob2(void){  
+void Lintprob2(void){  // route or cycling
   uint8_t w=1;				       
   HEADN;  
   if (gate[w].trigger)      {
@@ -34,7 +34,7 @@ void Lintprob2(void){
   } 
 }
 
-void Lintprob3(void){  
+void Lintprob3(void){  // routed vs routed_cycing
   uint8_t w=1;				       
   HEADN;  
   if (gate[w].trigger)      {
@@ -463,7 +463,7 @@ void Lintgenericprobxxx(void){ // try to combine with 4 bits for route
       if ((topbit&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
 	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
-	bitn=logopx(bitn,bitrr,(topbit)&0x03);
+	bitn=logopxxx(bitn,bitrr,(topbit)&0x03);
 	//	bitn=logopx(bitn,bitrr, 2); 
       }
       topbit=topbit>>2; // 4 bits

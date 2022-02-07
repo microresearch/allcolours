@@ -47,7 +47,7 @@
 
 heavens gate[4]; 
 
-#define LOWEST 0.000990f // TODO/TEST - this might change if we change logspeed
+#define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
 
 static uint32_t count=0;
 static uint32_t daccount=0;
@@ -321,6 +321,7 @@ void new_data(uint32_t data, uint32_t ww)
     delay_buffer[ww][1] = data;
 }
 
+// this one for ones which use strobe and cv
 // no strobes, nor otherpar (as that is CV or we need to free up a CV)
 uint32_t adclist[32]={0,1,2,3,4,5,6,7,8,22,23,25,26,27,30,68,71,72,73,74,75,76,77,78,79,80,81,82,101,22,23,25};
 
@@ -350,7 +351,7 @@ uint32_t testmodes[4]={0,0,0,0};
 // we list our modes here...
 void (*dofunc[4][64])(void)=
 {
-  {NLLswop0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {NLseladc, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, LX0},
   {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
