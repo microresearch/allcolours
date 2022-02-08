@@ -258,7 +258,8 @@ void C1(void){
 }
 
 void C2(void){ // one bit audio - set beta with param so fix now as: 2048
-  gate[2].dactype=2; gate[2].dacpar=2048;
+  // dependent on speed
+  gate[2].dactype=2; gate[2].dacpar=4096-CVL[2]; //     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
   DACOUT;
 }
 

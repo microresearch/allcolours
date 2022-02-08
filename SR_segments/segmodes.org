@@ -259,6 +259,8 @@ all the comparison possibilities]
 
 *define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
 
+multiple speeds are in: model.h
+
 CVL - from length
 CV - from speed
 
@@ -270,6 +272,16 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 *settle speeds and test new voltage/CV scheme*
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
+
+** 8/2/2022
+
+- working in modeN.h to assemble preliminary list of modes there, refining
+
+- added new multiplespeednew - test in modeN
+
+-TODO: test multiple speeds in modeN, 
+
+DONEdetach modes for strobes- 2 cases - need to select arrays of good adc modes and categorise
 
 ** 7/2/2022
 

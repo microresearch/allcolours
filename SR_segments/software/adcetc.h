@@ -167,10 +167,14 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   static uint32_t toggle[4]={0,0,0,0};
   uint32_t bt=0;
   int32_t tmp=0;
-
+  float integratorf=0.0, oldvaluef=0.0, inb;
   
   switch(type){    
 
+  default:
+    bt=0;
+    break;
+    
   case 0: // basic sequential length of upto 12 bits cycling in MSB first    
       if (length>11) length=11;
       if (n[reg]<0) {
@@ -195,8 +199,13 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]++;    
     break;
 
+    /*
   case 2: // variations on one bit audio - also phasey
+    //  n[reg]++;
+	//	if (n[reg]>48) { // try changing value?
+	//	  n[reg]=0;
     k[reg]=(adc_buffer[12]); // from 0 to 4095 but where is the middle? - also we do nothing here with length
+    //	}
     integrator[reg]+=(k[reg]-oldvalue[reg]);
    if(integrator[reg]>2048)
   {
@@ -209,7 +218,24 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt=0;
    }   
    break;    
+    */
 
+  case 2: // try with float but this is the same with phasings
+    inb=(((float)adc_buffer[12])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+    integratorf+=(inb-oldvaluef);
+   if(integratorf>0.0f)
+  {
+     oldvaluef=1.0f;
+     bt=1;
+  }
+   else
+   {
+      oldvaluef=-1.0f;
+      bt=0;
+   }   
+   break;    
+
+   
   case 3: // basic sequential length as in 0 but with padding if >11 bits **
     // as above but closer to 5
     // also try as MSB - now...

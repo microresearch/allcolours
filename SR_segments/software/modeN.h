@@ -9,13 +9,26 @@
 
 re-thinking 7/2/2022
 
-CV modes:
-0-7: basic ADC ins and some abstract ones - reduce...
-8-15; abstract ones - q of loopback/entry
+CV modes: 
+0-7: basic ADC ins and some abstract ones - reduce... // Noroute0, N0nog, N0, N1, N2, N3, N4, N6 optional N101 is nice, N32*** N82, N75, N81
+8-15; abstract ones - q of loopback/entry - strobe modes? // 
 
-15-31: detached modes
+abstract only: 28,29,30
+using dac: 25,26,27, 66,67,68,69,71,72,73,74, 77,79,80 - maybe one detached mode just for these
 
-DAC+CV: 32-47
+strobe route modes
+strobe general adc modes
+
+other route modes
+
+
+15-31: detached modes TODO: detached strobe modes
+
+
+
+DAC+CV: 32-39: no route in (choice of dacfrom)
+40-47: routeins/probs of routeins etc.
+[but maybe not for all modeLetc?]
 
 no route ins, some detached
 
@@ -49,10 +62,6 @@ INTmodes 16 or 32 maybe: use CV as param
 + across all prob of feedback in ...
 
 */
-
-// TODO: cut down number of ADC modes so we can have speed bumps maybe
-// OR for analogue modes and XOR for digital modes (trial but easily dies on OR!)
-
 
 #define ADCORIN(X){				\
   uint8_t w=0;					\
@@ -173,12 +182,16 @@ INTmodes 16 or 32 maybe: use CV as param
 // we have CV (speed) and CVL (length) - one is param, other is sel so
 // so length or speed can be from DAC only
 uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,21,81,82,77,78,79,80,22,23,24,25,26,27,28,29,30,31,101,64,65,66,67,68,71,72,73,74, 0,1,2,3,4,5,6,7,25,26,27,29,30};
-// maybe pad out to 64 with favoured ones
+// padded out to 64 with favoured ones
 
 uint8_t parammodes[16]={17,18,19,20, 21,22,29,33, 34,35,37,38, 39,66,67,68};
 
+uint8_t modes16[16]={0,1,2,3,4,6,101,32,82,75,81,28,29,30,79,80}; // choose again maybe temp list TODO
+
+// list for dacmodes! TODO!
+
 // prob or/xor/route
-void Norxor0(void){ // split length / or / xor
+void Norxor0(void){ // split length / or / xor // DETACH LENGTH - could be nice also select adc type
 ADCORXORIN(0);
 }
 
@@ -202,7 +215,7 @@ void N2(void){ // one bit audio
   ADCXORIN(2);
 }
 
-void N3(void){ 
+void N3(void){ // basic sequential length as in 0 but with padding if >11 bits  
   ADCXORIN(3);
 }
 
@@ -210,19 +223,73 @@ void N4(void){ // spaced 4 bits in but we need to route DAC in differently - thi
   ADCXORIN(4);
 }
 
-void N5(void){ 
+void N5(void){ // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...//NON
   ADCXORIN(5);
 }
 
-void N6(void){
+void N6(void){ // padded version of SR of bitsin
   ADCXORIN(6);
 }
 
-void N7(void){
+void N7(void){ // // timed version of SR bitsin - is MSB first- //NON
   ADCXORIN(7);
 }
 
+void N32(void){ // multiple bits in as case 19 in draftdec // ***
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    //  bitn=ADC_(0,SRlength[0],4,trigger[0],reggg,adcpar); // this is now adc mode 4 - we don't use bitn and do spacmask in adc
+    bitn=ADC_(0,SRlength[w],4,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_); 
+    if (SRlength[inroute[count][w]]>=SRlength[w]){
+    gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0])) >>(lastspac[SRlength[inroute[count][w]]][0]))+ \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))          >> ((lastspac[SRlength[inroute[count][w]]][1]) - spacc[SRlength[w]][0]))  + \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))         >>((lastspac[SRlength[inroute[count][w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))         >>((lastspac[SRlength[inroute[count][w]]][3]) - spacc[SRlength[w]][2]))); 
+  }
+  else // shift up <<
+    {
+      gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0]))>>(lastspac[SRlength[inroute[count][w]]][0])) + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[inroute[count][w]]][1]))  + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[inroute[count][w]]][2]))  + \
+			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
+    }
+  if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+  BITN_AND_OUTVN_; // no pulse ins/outs
+    ENDER;
+  }    
+  }
+}
+
+
+void N101(void){ // test speed double/skip sample
+  ADCXORIN(101);
+}
+
 //////////////////////////////////////////////////
+// abstracts
+
+void N28(void){ 
+  ADCXORIN(28);
+}
+
+void N29(void){ // 1 bit oscillator
+  ADCXORIN(29);
+}
+
+void N30(void){
+  ADCXORIN(30);
+}
+
+//////////////////////////////////////////////////
+
+// no adc
+void N64(void){ //no adc at ALL
+  ADCXORIN(64);
+}
 
 void N8(void){ 
   ADCXORIN(8);
@@ -276,11 +343,11 @@ void N20(void){ // comparator mode with clock as param[0] always
   ADCXORIN(20);
 }
 
-void N75(void){ // comparator mode with other dac as param
+void N75(void){ // comparator mode with other dac as param // ***
   ADCXORIN_NOROUTE(75);
 }
 
-void N76(void){ // comparator mode with OWN dac as param
+void N76(void){ // comparator mode with OWN dac as param 
   ADCXORIN(76);
 }
 
@@ -288,7 +355,7 @@ void N21(void){
   ADCXORIN(21);
 }
 
-void N81(void){ // 4 bits in
+void N81(void){ // 4 bits in ***
   ADCXORIN(81);
 }
 
@@ -296,7 +363,7 @@ void N82(void){ // comparator as incoming bit ***
   ADCXORIN_NOROUTE(82);
 }
 
-// ABSTRACT modes
+// DAC etc
 
 void N77(void){ // dac oscillator
   ADCXORIN(77);
@@ -338,38 +405,13 @@ void N27(void){ // testing no route in for DAC as we use DAC
   ADCXORIN_NOROUTE(27);
 }
 
-void N28(void){ 
-  ADCXORIN(28);
-}
-
-void N29(void){ // 1 bit oscillator
-  ADCXORIN(29);
-}
-
-void N30(void){
-  ADCXORIN(30);
-}
-
 void N31(void){ 
   ADCXORIN(31);
 }
 
-// add modes
+///////////////////////////////////////////
 
-void N101(void){ // test speed double/skip sample
-  ADCXORIN(101);
-}
-
-// no adc
-void N64(void){ //no adc at ALL
-  ADCXORIN(64);
-}
-
-
-// no adc
-void N65(void){ // was strobe mode for cycling bits a la TM - no input but now uses otherpar as probability! - can be intmode and cvmode
-  ADCXORIN(65);
-}
+//DACS:
 
 // adc in
 void N66(void){ // mixes with dac
@@ -403,267 +445,7 @@ void N74(void){ // dac in basic sequential length of upto 12 bits cycling in - c
   ADCXORIN(74);
 }
 
-
-
-/*
-STROBE PROB MODES - could also be toggles
-STROBE - 1invert ADC BIT - XOR/OR routed
-       - 2ADC BIT vs routed - NONE
-       - 3ADC BIT vs [ADC/xor/or/routed] - NONE
-*/
-
-void Nstrobe1_0(void){ // basic ADC in - see above table
-  uint8_t w=0;
-  HEADN;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    if (gate[w].trigger) bitn=!bitn;
-    BINROUTE_;
-    BITN_AND_OUTVN_;
-    ENDER;
-  }
-  }
-}
-
-void Nstrobe2_0(void){ // basic ADC in - strobe= bitn or route
-  uint8_t w=0;
-  HEADN;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    if (gate[w].trigger)    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    else BINROUTE_;
-    BITN_AND_OUTVN_;
-    ENDER;
-  }
-  }
-}
-
-void Nstrobe3_0(void){ // basic ADC in - see above table - 3ADC BIT vs [ADC/xor/or/routed] - NONE
-  uint8_t w=0;
-  HEADN;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    if (gate[w].trigger) BINROUTE_; // or vice versa
-    BITN_AND_OUTVN_;
-    ENDER;
-  }
-  }
-}
-
-// and this set is additionally only for abstract ADCs in
-// which can include DACs in... 22-31
-
-/*
-  4- ADC bits vs RETURNbit - XOR/OR routed
-  5- ADC bits vs [routed/xor/or/RETURNbit]
-  6- ADCBIT xor routed vs returnbit
-*/
-
-void Nstrobe4_22(void){ 
-  uint8_t w=0;
-  HEADN;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    bitn=ADC_(0,SRlength[w],22,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    if (gate[w].trigger) JUSTCYCLE_;
-    BINROUTE_; 
-    BITN_AND_OUTVN_;
-    ENDER;
-  }
-  }
-}
-
-void Nstrobe5_22(void){ 
-  uint8_t w=0;
-  HEADN;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    if (!gate[w].trigger) bitn=ADC_(0,SRlength[w],22,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    else {
-      BINROUTEANDCYCLE_;
-    }
-    BITN_AND_OUTVN_;
-    ENDER;
-  }
-  }
-}
-
-void Nstrobe6_22(void){  // 6- ADCBIT xor routed vs returnbit
-  uint8_t w=0;
-  HEADN;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    if (!gate[w].trigger) { bitn=ADC_(0,SRlength[w],22,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-      BINROUTE_;
-    }
-    else JUSTCYCLE_;
-    BITN_AND_OUTVN_;
-    ENDER;
-  }
-  }
-}
-
-
-
-/* bursts of DACin/ADCin to spawn/seed feedback - so trigger
-  means CV length of ADC bits in, no trigger is ROUTEin at otherCV
-  speed, or all at cv speed
-*/
-void NLBURST0(void){ 
-  // DETACH LENGTH
-  uint8_t w=0;
-  HEADSINN;
-  if (speedf_[w]!=2.0f){
-  CVOPEN;
-  if(gate[0].last_time<gate[0].int_time)      {
-  GSHIFT_;
-  if (gate[w].trigger){
-    train[w]=1;
-  }
-  if (train[w]!=0 && train[w]< (1024-(CVL[0]>>2))){
-  train[w]++;
-  bitn=ADC_(0,SRlength[0],0,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
-  }
-  else {
-    train[w]=0;
-    BINROUTE_;
-  }
-  BITN_AND_OUTVN_;
-  ENDER;
-  }
-  }
-}
-
-void NLseladc(void){ // select ADC 0-31 ***
-  // DETACH LENGTH
-  uint8_t w=0;
-  HEADSINN;
-  if (speedf_[w]!=2.0f){
-  CVOPEN;
-  if(gate[0].last_time<gate[0].int_time)      {
-  GSHIFT_;
-  tmp=(CVL[0]>>7); // 5 bits = 32 or we can have a list of preferred modes TODO !!!
-  bitn=ADC_(0,SRlength[0],tmp,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
-  BINROUTE_;
-  BITN_AND_OUTVN_;
-  ENDER;
-  }
-  }
-}
-
-void NLseladc1(void){ // select ADC 0-63 - preferred modes with param[0] as param
-  uint8_t w=0;
-  HEADSINN;
-  if (speedf_[w]!=2.0f){
-  CVOPEN;
-  if(gate[0].last_time<gate[0].int_time)      {
-  GSHIFT_;
-  tmp=(CVL[0]>>6); // 6 bits = 64 or we can have a list of preferred modes TODO !!!
-  bitn=ADC_(0,SRlength[0],parammodes[tmp],gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
-  BINROUTE_;
-  BITN_AND_OUTVN_;
-  ENDER;
-  }
-  }
-}
-
-
-void NLseladc2(void){ // speed from cv, cvl as type and dac as param
-  uint8_t w=0;
-  HEADSINN;
-  if (speedf_[w]!=2.0f){
-  CVOPEN;
-  if(gate[0].last_time<gate[0].int_time)      {
-  GSHIFT_;
-  bitn=ADC_(0,SRlength[0],parammodes[CVL[0]>>8],gate[0].trigger,dacfrom[daccount][0], gate[dacfrom[daccount][0]].dac, &gate[0].shift_); // or we can use adcchoice to fill in
-  BINROUTE_;
-  BITN_AND_OUTVN_;
-  ENDER;
-  }
-  }
-}
-
-void NLSRlengthsel(void){ //use other SR bits to determine length of SR, eg. can be modded or...*
-  // in this case we select ADC as above and use SR as length 
-  uint8_t w=0;
-  HEADSINN;
-  if (speedf_[w]!=2.0f){
-  CVOPEN;
-  if(gate[0].last_time<gate[0].int_time)      {
-
-    tmp=gate[dacfrom[daccount][0]].shift_&31;    
-    SRlength[0]=lookuplenall[tmp]; // 5 bits
-
-    GSHIFT_;
-  tmp=(CVL[0]>>7); // 5 bits = 32
-  bitn=ADC_(0,SRlength[0],tmp,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
-  //  BINROUTE_; // with or without route in
-  if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
-  BITN_AND_OUTVN_;
-  ENDER;
-  }
-  }
-}
-
-// adc0
-void NLSRlengthsel0(void){ //use other SR bits to determine length of SR, eg. can be modded or...*
-  uint8_t w=0;
-  HEADSINN;
-  if (speedf_[w]!=2.0f){
-  CVOPEN;
-  if(gate[0].last_time<gate[0].int_time)      {
-
-    tmp=gate[dacfrom[daccount][0]].shift_&15;    
-    SRlength[0]=lookuplenall[tmp%((CVL[0]>>7)+1)]; // 5 bits
-    //    SRlength[0]=lookuplenall[CVL[0]>>7]; // 5 bits
-    GSHIFT_;
-
-  bitn=ADC_(0,SRlength[0],0,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
-  //  BINROUTE_; // with or without route in // ***
-  if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
-  BITN_AND_OUTVN_;
-  ENDER;
-  }
-  }
-}
-
-void NLLswop0(void){ // swop in or logop SR - cv and cvl- not so good for Nmode
-  uint8_t w=0; uint32_t lin, lout;
-  HEADSSINNADA;
-
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_); 
-    BINROUTE_; 
-    if (gate[w].trigger) {
-      lin=127-(CV[0]>>5); //7= 2 bits for whichone and start which can be 5
-      lout=31-(CVL[0]>>7); // 5 bits for length
-      // length of incoming - lout
-      tmp=gate[lin&0x03].shift_>>(31-lout);
-      gate[w].shift_^=(tmp<< (31-(lin>>2)));// + (rin<<(31-(lin>>2))) );
-      //gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one
-      }
-    BITN_AND_OUTV_; 
-    ENDER;
-  }
-  }
-}
+//////////////////////////////////////////////////////////////////////////////////////////////////ROUTE MODES
 
 // maybe these work best in L/R modes
 // TODO: just bump within a restricted range or array which make sense?
@@ -796,36 +578,393 @@ void NDACroutestrobe0(void){ // dacroute with strobe
   }  
 }
 
-void N32(void){ // multiple bits in as case 19 in draftdec
+//////////////////////////////////////////////////////////////////////////////////////////////////STROBEE MODES
+
+/*
+STROBE PROB MODES - could also be toggles
+STROBE - 1invert ADC BIT - XOR/OR routed
+       - 2ADC BIT vs routed - NONE
+       - 3ADC BIT vs [ADC/xor/or/routed] - NONE
+*/
+
+// TODO/detached strobes with sel but need to choose which ones... or sel bits
+/* generic sets:
+
+- bits for choice of adc: 4 bits = 16 options
+- bits for trigger we have 6 options: maybe 4 options and split; 2 bits 
+
+ */
+
+void NLstrobe1(void){ 
+  uint8_t w=0, bits, bitss;
+  HEADSINN; // detach length
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitss=CVL[0]>>6; // 6 bits
+    bits=bitss&3; // 2 bits
+    if (bits==0){    
+    if (gate[w].trigger) bitn=!bitn;
+    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    BINROUTE_;
+    }
+
+    if (bits==1){    
+    if (gate[w].trigger)    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    else BINROUTE_;
+    }
+
+    if (bits==2){    
+    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) BINROUTE_; // or vice versa
+    }
+
+    if (bits==3){    
+    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) JUSTCYCLE_;
+    }
+
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
+
+void Nstrobe1_0(void){ 
   uint8_t w=0;
   HEADN;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    //  bitn=ADC_(0,SRlength[0],4,trigger[0],reggg,adcpar); // this is now adc mode 4 - we don't use bitn and do spacmask in adc
-    bitn=ADC_(0,SRlength[w],4,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_); 
-    if (SRlength[inroute[count][w]]>=SRlength[w]){
-    gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0])) >>(lastspac[SRlength[inroute[count][w]]][0]))+ \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))          >> ((lastspac[SRlength[inroute[count][w]]][1]) - spacc[SRlength[w]][0]))  + \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))         >>((lastspac[SRlength[inroute[count][w]]][2]) - spacc[SRlength[w]][1]))  + \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))         >>((lastspac[SRlength[inroute[count][w]]][3]) - spacc[SRlength[w]][2]))); 
-  }
-  else // shift up <<
-    {
-      gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0]))>>(lastspac[SRlength[inroute[count][w]]][0])) + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[inroute[count][w]]][1]))  + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[inroute[count][w]]][2]))  + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
-    }
-  if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
-  BITN_AND_OUTVN_; // no pulse ins/outs
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) bitn=!bitn;
+    BINROUTE_;
+    BITN_AND_OUTVN_;
     ENDER;
-  }    
+  }
   }
 }
 
-void Ngenericprobx(void){ // porting to strobe - ported to N - detach CVL - length to select ADC
+void Nstrobe2_0(void){ // basic ADC in - strobe= bitn or route
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    if (gate[w].trigger)    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    else BINROUTE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
+
+void Nstrobe3_0(void){ // basic ADC in - see above table - 3ADC BIT vs [ADC/xor/or/routed] - NONE
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) BINROUTE_; // or vice versa
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
+
+// and this set is additionally only for abstract ADCs in
+// which can include DACs in... 22-31
+
+/*
+  4- ADC bits vs RETURNbit - XOR/OR routed
+  5- ADC bits vs [routed/xor/or/RETURNbit]
+  6- ADCBIT xor routed vs returnbit
+*/
+
+void NLstrobe2(void){ // 2nd version covering abstract modes and returns - check adc selection TODO
+  uint8_t w=0, bits, bitss;
+  HEADSINN; // detach length
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitss=CVL[0]>>6; // 6 bits
+    bits=bitss&3; // 2 bits
+    if (bits==0){    
+    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) JUSTCYCLE_;
+    BINROUTE_; 
+    }
+
+    if (bits==1){    
+    if (!gate[w].trigger) bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    else {
+      BINROUTEANDCYCLE_;
+    }
+    }
+
+    if (bits==2){    
+    if (!gate[w].trigger) { bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+      BINROUTE_;
+    }
+    else JUSTCYCLE_;
+    }
+
+    if (bits==3){    // new one
+          bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+	  if (!gate[w].trigger) bitn=!bitn;
+	  BINROUTEANDCYCLE_;
+    }
+
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
+
+
+void Nstrobe4_29(void){ 
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],29,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) JUSTCYCLE_;
+    BINROUTE_; 
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
+
+void Nstrobe5_29(void){ 
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    if (!gate[w].trigger) bitn=ADC_(0,SRlength[w],29,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    else {
+      BINROUTEANDCYCLE_;
+    }
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
+
+void Nstrobe6_29(void){  // 6- ADCBIT xor routed vs returnbit
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    if (!gate[w].trigger) { bitn=ADC_(0,SRlength[w],29,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+      BINROUTE_;
+    }
+    else JUSTCYCLE_;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////// detached modes
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// ported/porting from modeL - but no adc selection possible
+void Nmultiplespeednew0(void){ // NO LENGTH - try 4 speeds as above - multiple versions of this // this one is ****
+  uint8_t w=0; // can we have bits to select combinations for the 4 options splitspeed???
+  // trigger: 1,2,3,4 2 bits
+  // counter1: 2 bits
+  //counterd: 2 bits - but all can only do one...
+  //speedf (does interpol but can have no interpol version with BITN_AND_OUTVINT_) 
+  
+  HEADSINN; // detach length
+
+  if (gate[0].trigger) GSHIFTNOS_; // 2.copy gshift on trigger
+
+  if (counter[0]>gate[dacfrom[daccount][w]].dac){ //3.advance incoming ghost
+    counter[0]=0;
+    BINROUTEADV_;
+  }
+
+  if (counterd[0]> CVL[0]){
+      counterd[0]=0;
+    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
+  }
+  
+  if (speedf_[w]!=2.0f){ // 4.main DAC
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    //    gate[w].shift_=gate[w].shift_<<1; // but no shift makes odd with add... anyways
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    BINROUTENOG_; // no gshifty
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+  }
+}
+
+
+/* bursts of DACin/ADCin to spawn/seed feedback - so trigger
+  means CV length of ADC bits in, no trigger is ROUTEin at otherCV
+  speed, or all at cv speed
+*/
+void NLBURST0(void){ 
+  // DETACH LENGTH
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  if (gate[w].trigger){
+    train[w]=1;
+  }
+  if (train[w]!=0 && train[w]< (1024-(CVL[0]>>2))){
+  train[w]++;
+  bitn=ADC_(0,SRlength[0],0,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
+  }
+  else {
+    train[w]=0;
+    BINROUTE_;
+  }
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+void NLseladc(void){ // select ADC 0-31 ***
+  // DETACH LENGTH
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  tmp=(CVL[0]>>7); // 5 bits = 32 or we can have a list of preferred modes TODO !!!
+  bitn=ADC_(0,SRlength[0],tmp,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+void NLseladc1(void){ // select ADC 0-63 - preferred modes with param[0] as param   // DETACH LENGTH
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  tmp=(CVL[0]>>6); // 6 bits = 64 or we can have a list of preferred modes TODO !!!
+  bitn=ADC_(0,SRlength[0],parammodes[tmp],gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+
+void NLseladc2(void){ // speed from cv, cvl as type and dac as param   // DETACH LENGTH
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  bitn=ADC_(0,SRlength[0],parammodes[CVL[0]>>8],gate[0].trigger,dacfrom[daccount][0], gate[dacfrom[daccount][0]].dac, &gate[0].shift_); // or we can use adcchoice to fill in
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+void NLSRlengthsel(void){ //use other SR bits to determine length of SR, eg. can be modded or...*   // DETACH LENGTH
+  // in this case we select ADC as above and use SR as length 
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+
+    tmp=gate[dacfrom[daccount][0]].shift_&31;    
+    SRlength[0]=lookuplenall[tmp]; // 5 bits
+
+    GSHIFT_;
+  tmp=(CVL[0]>>7); // 5 bits = 32
+  bitn=ADC_(0,SRlength[0],tmp,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
+  //  BINROUTE_; // with or without route in
+  if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+// adc0
+void NLSRlengthsel0(void){ //use other SR bits to determine length of SR, eg. can be modded or...*   // DETACH LENGTH
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+
+    tmp=gate[dacfrom[daccount][0]].shift_&15;    
+    SRlength[0]=lookuplenall[tmp%((CVL[0]>>7)+1)]; // 5 bits
+    //    SRlength[0]=lookuplenall[CVL[0]>>7]; // 5 bits
+    GSHIFT_;
+
+  bitn=ADC_(0,SRlength[0],0,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // or we can use adcchoice to fill in
+  //  BINROUTE_; // with or without route in // ***
+  if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+void NLLswop0(void){ // swop in or logop SR - cv and cvl- not so good for Nmode   // DETACH LENGTH/SPEED
+  uint8_t w=0; uint32_t lin, lout;
+  HEADSSINNADA;
+
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_); 
+    BINROUTE_; 
+    if (gate[w].trigger) {
+      lin=127-(CV[0]>>5); //7= 2 bits for whichone and start which can be 5
+      lout=31-(CVL[0]>>7); // 5 bits for length
+      // length of incoming - lout
+      tmp=gate[lin&0x03].shift_>>(31-lout);
+      gate[w].shift_^=(tmp<< (31-(lin>>2)));// + (rin<<(31-(lin>>2))) );
+      //gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one
+      }
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void Ngenericprobx(void){ // porting to strobe - ported to N - detach CVL - length to select ADC // DETACH LENGTH
   uint8_t w=0;
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};

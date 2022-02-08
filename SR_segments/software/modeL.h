@@ -1259,17 +1259,50 @@ void L32(void){ // multiple bits in as case 19 in draftdec
 
 // testing multiple speeds using CVL:
 /*
-1. shifting/SR speed <<
+1. shifting/SR speed << in all below we don't split this
 2. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes - L3 in modeL - in/outside loop as optionsDONE
 3. advance incoming GSR speed - slidings
 4. DAC out speed  - slipping - this is main loop as we need interpol
 */
 
+void Lmultiplespeednew(void){ // NO LENGTH - try 4 speeds as above - multiple versions of this // this one is ****
+  uint8_t w=1; // can we have bits to select combinations for the 4 options splitspeed???
+  // trigger: 1,2,3,4 2 bits
+  // counter1: 2 bits
+  //counterd: 2 bits - but all can only do one...
+  //speedf (does interpol but can have no interpol version with BITN_AND_OUTVINT_) 
+  
+  HEADSINL; // detach length
+
+  if (gate[1].trigger) GSHIFTNOS_; // 2.copy gshift on trigger
+
+  if (counter[1]>gate[dacfrom[daccount][w]].dac){ //3.advance incoming ghost
+    counter[1]=0;
+    BINROUTEADV_;
+  }
+
+  if (counterd[1]> CVL[1]){
+      counterd[1]=0;
+    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
+  }
+  
+  if (speedf_[w]!=2.0f){ // 4.main DAC
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    //    gate[w].shift_=gate[w].shift_<<1; // but no shift makes odd with add... anyways
+    BINROUTENOG_; // no gshifty
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+  }
+}
+
 void Lmultiplespeed0(void){ // NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSINL;
 
-  if (gate[1].trigger) GSHIFTNOS_; // 1.gshift owns on trigger
+  if (gate[1].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
 
   if (counter[1]>CVL[1]){ //2.advance incoming ghost
     counter[1]=0;
@@ -1295,7 +1328,7 @@ void Lmultiplespeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and 
 
   if (gate[1].trigger) BINROUTEADV_; //2.advance incoming ghost
 
-  if (counter[1]>CVL[1]){ // 1.gshift owns on trigger
+  if (counter[1]>CVL[1]){ // 1.copy gshift on trigger
     counter[1]=0;
     GSHIFTNOS_; 
   }
@@ -1316,7 +1349,7 @@ void Lmultiplespeed2(void){ // - NO LENGTH - speeds of gshift, incoming gsr and 
   uint8_t w=1;
   HEADSINL;
 
-  if (gate[1].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
+  if (gate[1].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
 
   if (counter[1]>CVL[1]){ //2.advance incoming ghost
     counter[1]=0;
@@ -1339,7 +1372,7 @@ void Lmultiplespeed3(void){ // - NO LENGTH - speeds of gshift, incoming gsr and 
   uint8_t w=1;
   HEADSINL;
 
-  //  if (gate[1].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
+  //  if (gate[1].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
 
   if (counter[1]>CVL[1]){ //2.advance incoming ghost
     counter[1]=0;
@@ -1369,7 +1402,7 @@ void Lmultiplespeeddac0(void){ // - NO LENGTH - speeds of gshift, incoming gsr a
     gate[w].shift_=gate[w].shift_<<1;
   }
   
-  if (gate[1].trigger) GSHIFTNOS_; // 1.gshift owns on trigger
+  if (gate[1].trigger) GSHIFTNOS_; // // 1.copy gshift on trigger
 
   if (counter[1]>CVL[1]){ //2.advance incoming ghost
     counter[1]=0;
@@ -1392,7 +1425,7 @@ void Lmultiplespeeddac1(void){ // - NO LENGTH - speeds of gshift, incoming gsr a
   uint8_t w=1;
   HEADL;
 
-  if (gate[1].trigger) GSHIFTNOS_; // 1.gshift owns on trigger
+  if (gate[1].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
 
   if (counter[1]>gate[dacfrom[daccount][w]].dac){ //2.advance incoming ghost
     counter[1]=0;
@@ -1415,7 +1448,7 @@ void Lmultspeed0(void){ // TEST: detach speed!!!- NO LENGTH - speeds of gshift, 
   uint8_t w=1;
   HEADSSINL; // detach speed here
 
-  if (gate[1].trigger) GSHIFTNOS_; // 1.gshift owns on trigger
+  if (gate[1].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
 
   if (counter[1]>CV[1]){ //2.advance incoming ghost from detached CV
     counter[1]=0;
@@ -1440,7 +1473,7 @@ void Lmultspeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits
 
   if (gate[1].trigger) BINROUTEADV_; //2.advance incoming ghost
   tmp=CV[1]>>2;
-  if (counter[1]>tmp){ // 1.gshift owns on trigger
+  if (counter[1]>tmp){ // // 1.copy gshift on trigger
     counter[1]=0;
     GSHIFTNOS_; 
   }
@@ -1461,7 +1494,7 @@ void Lmultspeed2(void){ // speeds of gshift, incoming gsr and bits/dac
   uint8_t w=1;
   HEADSSINL;
 
-  if (gate[1].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
+  if (gate[1].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
   tmp=CV[1]>>2;
   if (counter[1]>tmp){ //2.advance incoming ghost
     counter[1]=0;

@@ -19,8 +19,6 @@
 #define CVOPENNOINTERPOL {				\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = delay_buffer[w][1];					\
-    if (gate[w].dac>4095) gate[w].dac=4095;				\
-    else if (gate[w].dac<0) gate[w].dac=0;				\
     gate[w].time_now += speedf_[w];					\
     gate[w].last_time = gate[w].int_time;				\
     gate[w].int_time = gate[w].time_now;				\
