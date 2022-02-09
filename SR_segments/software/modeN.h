@@ -287,7 +287,7 @@ void N30(void){
 //////////////////////////////////////////////////
 
 // no adc
-void N64(void){ //no adc at ALL
+void Nnone(void){ //no adc at ALL
   ADCXORIN(64);
 }
 
@@ -355,8 +355,9 @@ void N21(void){
   ADCXORIN(21);
 }
 
-void N81(void){ // 4 bits in ***
-  ADCXORIN(81);
+void N81_4bits(void){ // 4 bits in ***
+  //  ADCXORIN_NOROUTE(81);
+    ADCXORIN(81);
 }
 
 void N82(void){ // comparator as incoming bit ***

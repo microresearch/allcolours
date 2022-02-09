@@ -273,6 +273,12 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
+** 9/2/2022
+
+- thinking to re-work noisy ADC to one-shot // test with constant speed and lengths and just try adc12 to start in N81_4bits
+REWORKED but still need to deal with mode/adc
+
+
 ** 8/2/2022
 
 - working in modeN.h to assemble preliminary list of modes there, refining
@@ -485,9 +491,9 @@ try to categorise and clear up modes:
 
 *can we have knob covering this and 0-10v as 1v/OCT*
 
-100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)
+*100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)*
 
- 14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
+// 14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
 
 http://lushprojects.com/circuitjs/circuitjs.html?ctz=CQAgjCAMB0l3BWcMBMcUHYMGZIA4UA2ATmIxAUgoqoQFMBaMMAKACVwU9wwURCALDz5UIA2lEkwELAIYgUCQp24DsfXt27Zo2EAx16w8ePpgnMkBMQQoU4-Bkgoyk4yZYAnFcIX5foiaQ7D4C3MTKYVIg4vrG0dJeodxoqtxUTvAsAO5+3Mx8isoFUElF-EJqfIKSKLhwLADGCkog6jHt7VQC0JlB-WCMxPoovVZkxC4RkMRqkOTmkKy55SXlNcErrTXlUZstkSn+ezkHMSmtXadVbXw3G9ftNTeapQDmZ2ACQuWpUo8aLgxCI+YIAe0kG3OhHI8UWcDIhCUilqkmwLAhYCQULUCCQSHhMwwSMIKIgGiQ6KAA
 

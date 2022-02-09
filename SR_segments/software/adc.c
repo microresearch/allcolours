@@ -102,20 +102,30 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	
 	/* ADC1 regular channel configuration -----------------------------------*/
 	// put them in order // test
-	
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_3Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_3Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 5, ADC_SampleTime_3Cycles);// PB0
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6, ADC_SampleTime_3Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 7, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 8, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 9, ADC_SampleTime_3Cycles);// PB1 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 10, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 11, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 12, ADC_SampleTime_3Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 13, ADC_SampleTime_3Cycles);// PC3 added 
+	/*
+  *            @arg ADC_SampleTime_3Cycles: Sample time equal to 3 cycles
+  *            @arg ADC_SampleTime_15Cycles: Sample time equal to 15 cycles
+  *            @arg ADC_SampleTime_28Cycles: Sample time equal to 28 cycles
+  *            @arg ADC_SampleTime_56Cycles: Sample time equal to 56 cycles	
+  *            @arg ADC_SampleTime_84Cycles: Sample time equal to 84 cycles	
+  *            @arg ADC_SampleTime_112Cycles: Sample time equal to 112 cycles	
+  *            @arg ADC_SampleTime_144Cycles: Sample time equal to 144 cycles	
+  *            @arg ADC_SampleTime_480Cycles: Sample time equal to 480 cycles	
+*/
+	// was 3 cycles
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_15Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_15Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_15Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_15Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 5, ADC_SampleTime_15Cycles);// PB0
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6, ADC_SampleTime_15Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 7, ADC_SampleTime_15Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 8, ADC_SampleTime_15Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 9, ADC_SampleTime_15Cycles);// PB1 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 10, ADC_SampleTime_15Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 11, ADC_SampleTime_15Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 12, ADC_SampleTime_15Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 13, ADC_SampleTime_15Cycles);// PC3 added 
 
 	
 

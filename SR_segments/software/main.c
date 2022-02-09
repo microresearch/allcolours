@@ -194,6 +194,7 @@ int main(void)
     // 13 channels now
     ADC1_Init((uint16_t *)adc_buffer);
 
+    
     GPIO_InitTypeDef GPIO_InitStructure;
 
     // TODO: organise ins and outs

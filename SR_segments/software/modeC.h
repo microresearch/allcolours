@@ -328,7 +328,7 @@ void C15(void){ // one bit audio with param as filter
   DACOUT;
 }
 
-void C67(void){ // stock 4 bit DAC
+void C67_4bits(void){ // stock 4 bit DAC
   gate[2].dactype=67; gate[2].dacpar=4095-(param[2]&4095);
   DACOUT;
 }
