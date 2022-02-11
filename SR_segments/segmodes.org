@@ -273,6 +273,19 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
+** 10/2/2022
+
+- noise on adc in seems to be to do with adc mode/multiple bits
+
+newTODO:
+- oscillators (as in 81 tests in adc) few bits repeating which could be pulled in on strobe from income (or from cv bits) - cycle k[reg]
+- feedback as in manually cut from in to feedback(norm) pull cable
+in software: feedback=dac[2]->adc cut to other dac or adc in or between 2 different dacs
+- if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc...
+
+challenge of mode N is number of ADCs - less so for modeC
+
+
 ** 9/2/2022
 
 - thinking to re-work noisy ADC to one-shot // test with constant speed and lengths and just try adc12 to start in N81_4bits

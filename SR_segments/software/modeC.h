@@ -99,6 +99,22 @@ what are the next 16x LR modes
 }
 
 
+// test adc in and dac out in one
+void Cadc(void){
+  uint8_t w=2;
+  HEADC;				
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[2].last_time<gate[2].int_time)      {
+  GSHIFT_;				
+  bitn=ADC_(2,SRlength[2],85,gate[2].trigger,dacfrom[daccount][2],param[2], &gate[2].shift_);
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
 // run through DAC modes with correct params set if necessary
 
 void Cosc0(void){ // test oscillator

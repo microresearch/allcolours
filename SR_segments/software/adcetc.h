@@ -1036,6 +1036,12 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      ADCtwo;
      if (k[reg]>tmp) bt=1;
      break;
+
+  case 85:
+    ADCtwo
+      if (k[reg]>2048) bt=1;
+      else bt=0;
+    break;
      
     ///////////////////////
   } // switch
@@ -1427,7 +1433,12 @@ void TIM4_IRQHandler(void)
   // modes are NOT inverted!
   /// TODO fix for new ADC scheme  
   //moden
-  temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_3Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  temp=ADC_GetConversionValue(ADC1);
+  temp=(temp+lastlastmoden+lastmoden)/3; 
+  //  temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; 
   lastlastmoden=lastmoden;
   lastmoden=temp;
   mode[0]=(temp>>6); // 64 modes = 6 bits  
