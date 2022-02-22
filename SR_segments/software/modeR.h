@@ -90,6 +90,21 @@ void R0nog(void){
   }
 }
 
+void Rnada(void){ 
+  uint8_t w=3;
+  HEADR;
+  if (speedf_[3]!=2.0f){ 
+  CVOPEN;
+  if(gate[3].last_time<gate[3].int_time)      {
+    GSHIFT_;
+    bitn=0;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
 void R1(void){ // route and cycle
   uint8_t w=3;
   HEADR;

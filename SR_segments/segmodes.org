@@ -273,6 +273,28 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
+
+** 22/2/2022
+
+- get back into code and test new adc mode 86: cut feedback - eg. cut for CV count clk pulses/on off
+// detached mode -> NLcutfeedback86
+
+- R mode just zero in... (so no RSR feedback): Rnada in modeR.h - TEST
+
+** 19/2/2022
+
+- returning to code... define character of each side starting with N, 16/16/16/16 modes - 
+
+modes which use strobe to one side
+
+N: is input and feedback -- RSR feedback//DAC feedback//normed ADC feedback//mix of...
+
+L: passon, route only
+
+C: output and entry?
+
+R: feedback -> N // DAC value...
+
 ** 10/2/2022
 
 - noise on adc in seems to be to do with adc mode/multiple bits
@@ -288,8 +310,8 @@ challenge of mode N is number of ADCs - less so for modeC
 
 ** 9/2/2022
 
-- thinking to re-work noisy ADC to one-shot // test with constant speed and lengths and just try adc12 to start in N81_4bits
-REWORKED but still need to deal with mode/adc
+- thinking to re-work noisy ADC to one-shot //
+REWORKED but still need to deal with mode/adc *TODO* - test
 
 
 ** 8/2/2022

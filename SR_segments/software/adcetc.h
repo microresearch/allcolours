@@ -50,7 +50,7 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
   static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
   static int32_t integrator=0.0f, oldValue=0.0f;
   static uint32_t k;//, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
-  static uint8_t lc=0;
+  //  static uint8_t lc=0;
   uint32_t bt=0, bit=0;
 
   switch(type){
@@ -177,7 +177,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
   static int32_t integrator[4]={0.0f}, oldvalue[4]={0.0f};
   static uint32_t k[4]={0}, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
-  static uint8_t lc=0;
+  //  static uint8_t lc=0;
   static uint32_t toggle[4]={0,0,0,0};
   uint32_t bt=0;
   int32_t tmp=0;
@@ -277,7 +277,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     ADCtwo;
     k[reg]=k[reg]>>8; // we want 4 bits
     *SR+=(k[reg]&1)+((k[reg]&2)<<spacc[length][0])+((k[reg]&4)<<spacc[length][1])+((k[reg]&8)<<spacc[length][2]);
-    // testing route in of bits from gate[0].Gshift_[regg] or rather dac
+    // testing route in of bits from gate[0].Gshift_[regg] or rather dac feedback
     k[reg]=(gate[regg].dac)>>8; 
     *SR^=(k[reg]&1)+((k[reg]&2)<<spacc[length][0])+((k[reg]&4)<<spacc[length][1])+((k[reg]&8)<<spacc[length][2]);    
     // 4 bits goes in
@@ -1042,7 +1042,27 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       if (k[reg]>2048) bt=1;
       else bt=0;
     break;
-     
+
+  case 86: // gate[regg].dac seq input ->     //    TODO: *cut feedback - eg. cut for CV count clk pulses/on off*
+    //count clk pulses, compare to CV
+    if (strobe) nn[reg]++;
+    if (nn[reg]>otherpar){ // range of otherpar?
+	nn[reg]=0;
+	toggle[reg]^=1;
+      }
+	
+    if (length>11) length=11;
+      if (n[reg]<0) {
+	//	k[reg]=(gate[regg].dac)>>(11-length); // switch between dac 3 and dac 1
+	if (toggle[reg]) 	k[reg]=(gate[3].dac)>>(11-length); // switch between dac 3 and dac 1
+	else 	k[reg]=(gate[1].dac)>>(11-length); // switch between dac 3 and dac 1
+	n[reg]=length;
+    }
+      bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
+    n[reg]--;    
+    break;
+
+    
     ///////////////////////
   } // switch
   return bt;

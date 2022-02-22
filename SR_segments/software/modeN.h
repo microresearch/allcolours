@@ -728,7 +728,6 @@ void NLstrobe2(void){ // 2nd version covering abstract modes and returns - check
   }
 }
 
-
 void Nstrobe4_29(void){ 
   uint8_t w=0;
   HEADN;
@@ -865,6 +864,23 @@ void NLseladc(void){ // select ADC 0-31 ***
   }
 }
 
+void NLcutfeedback86(void){ //    //    TODO: *cut feedback - eg. cut for CV count clk pulses/on off* STROBE
+  // DETACH LENGTH
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  tmp=(CVL[0]>>2); // 10 bits - how many bits works best?
+  bitn=ADC_(0,SRlength[0],86,gate[0].trigger,dacfrom[daccount][0],tmp, &gate[0].shift_); 
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
 void NLseladc1(void){ // select ADC 0-63 - preferred modes with param[0] as param   // DETACH LENGTH
   uint8_t w=0;
   HEADSINN;
@@ -880,7 +896,6 @@ void NLseladc1(void){ // select ADC 0-63 - preferred modes with param[0] as para
   }
   }
 }
-
 
 void NLseladc2(void){ // speed from cv, cvl as type and dac as param   // DETACH LENGTH
   uint8_t w=0;
