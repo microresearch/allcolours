@@ -1062,6 +1062,45 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]--;    
     break;
 
+  case 87: // basic 4 bits in - grab into SR on STROBE
+    // try new ADC scheme
+      if (n[reg]<0) {
+	if (strobe){
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_3Cycles);
+	ADC_SoftwareStartConv(ADC1);
+	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+	k[reg]=ADC_GetConversionValue(ADC1)>>8;
+	}
+  //	k[reg]=(adc_buffer[12])>>(8);
+	//		k[reg]=1; // testing for a repeated pattern - could be prob of a grab... SR wheel in SR
+	n[reg]=3;
+    }
+      bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
+      n[reg]--;    
+    break;
+
+  case 88: // - if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached
+     bt=0;
+     ADCtwo;
+     if ((k[reg])>((gate[regg].dac))) {
+       if (otherpar==255){ // then we 4 bits in of adc
+      if (n[reg]<0) {
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_3Cycles);
+	ADC_SoftwareStartConv(ADC1);
+	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+	k[reg]=ADC_GetConversionValue(ADC1)>>8;
+	
+  //	k[reg]=(adc_buffer[12])>>(8);
+	//		k[reg]=1; // testing for a repeated pattern - could be prob of a grab... SR wheel in SR
+	n[reg]=3;
+    }
+      bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
+      n[reg]--;    
+       }
+	 else       bt=otherpar;
+     }
+     break;
+
     
     ///////////////////////
   } // switch
@@ -1451,32 +1490,45 @@ void TIM4_IRQHandler(void)
     // 9: cspd, 10: clen, 11: cmode
 
   // modes are NOT inverted!
-  /// TODO fix for new ADC scheme  
+  /// TODO TEST->fixed for new ADC scheme  
   //moden
   ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_3Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  temp=(temp+lastlastmoden+lastmoden)/3; 
   //  temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; 
+  temp=(temp+lastlastmoden+lastmoden)/3; 
   lastlastmoden=lastmoden;
   lastmoden=temp;
   mode[0]=(temp>>6); // 64 modes = 6 bits  
 
   // modec
-  temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3; 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_3Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  temp=ADC_GetConversionValue(ADC1);
+  //  temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3; 
   lastlastmodec=lastmodec;
   lastmodec=temp;
   mode[2]=(temp>>6); // 64 modes = 6 bits  
 
   // model
-  temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_3Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  temp=ADC_GetConversionValue(ADC1);
+
+  // temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; 
   lastlastmodel=lastmodel;
   lastmodel=temp;
   mode[1]=(temp>>6); // 64 modes = 6 bits  
 
   // moder
-  temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3; 
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_3Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  temp=ADC_GetConversionValue(ADC1);
+  //  temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3; 
   lastlastmoder=lastmoder;
   lastmoder=temp;
   mode[3]=(temp>>6); // 64 modes = 6 bits  

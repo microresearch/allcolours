@@ -99,6 +99,7 @@ void Rnada(void){
     GSHIFT_;
     bitn=0;
     PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     BITN_AND_OUTV_; 
     ENDER;
   }

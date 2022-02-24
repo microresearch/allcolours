@@ -1,17 +1,22 @@
-// *re-check strobeyX, pulsins_NONE HERE!, pulsouts_NONE DONE
+// *re-check strobey(binroute always has)X, pulsins_NONE HERE!, pulsouts_NONE DONE
 //check: adcpar is null, replaced with 0
 
-// TOP modes as functions.... ADC/other inputs
-// check all for strobey: binroutes have strobey
-
-
 /*
+
+//////////////////////////////////////////////////////////////////////////////////////
+N: is input and feedback -- RSR feedback//DAC feedback//normed ADC feedback//mix of...
+
+- types of input, types of feedback (probability of RSR, other feedback)
+- use of CV, strobe, DACs
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 re-thinking 7/2/2022
 
 CV modes: 
 0-7: basic ADC ins and some abstract ones - reduce... // Noroute0, N0nog, N0, N1, N2, N3, N4, N6 optional N101 is nice, N32*** N82, N75, N81
-8-15; abstract ones - q of loopback/entry - strobe modes? // 
+8-15; abstract ones - q of loopback/entry - strobe modes? // how many strobe modes do we have?
+
 
 abstract only: 28,29,30
 using dac: 25,26,27, 66,67,68,69,71,72,73,74, 77,79,80 - maybe one detached mode just for these
@@ -21,10 +26,7 @@ strobe general adc modes
 
 other route modes
 
-
 15-31: detached modes TODO: detached strobe modes
-
-
 
 DAC+CV: 32-39: no route in (choice of dacfrom)
 40-47: routeins/probs of routeins etc.
@@ -37,29 +39,13 @@ INT: 48-63
 intmodes - which use CV as param
                  use CV as ADC select, can also be detachment here 
 
-
 [less routings]
 choice of adc
 probability of entry of adc, of route in etc...
 
 ////////////////////////////////////////////////////////////////////////
 
-
- *Some modes should not have any route in - in DACspeeds no DAC in maybe*
-
-Pin down to basic ADC ins, strobe ADC ins, abstract ins and reduce a bit
-
-CVmodes: 16 or 16x2 (OR/XOR) or 32x1 and select on casebycase (all logical ones as XOR maybe, others as mix of OR and XOR)
-
-logical modes: 22-31 which can also have prob of loopback and entry
-
-///maybe no DAC modes in N/C: DACmodes 16: test top bits as selecting which DAC
-
-INTmodes 16 or 32 maybe: use CV as param
-
-///we can also double some of these with OR/XOR
-
-+ across all prob of feedback in ...
+*Some modes should not have any route in - in DACspeeds no DAC in maybe*
 
 */
 
@@ -356,6 +342,11 @@ void N21(void){
 }
 
 void N81_4bits(void){ // 4 bits in ***
+  //  ADCXORIN_NOROUTE(81);
+    ADCXORIN(81);
+}
+
+void N87_4bits_strobein(void){ // 4 bits in *** STROBE
   //  ADCXORIN_NOROUTE(81);
     ADCXORIN(81);
 }
@@ -779,8 +770,51 @@ void Nstrobe6_29(void){  // 6- ADCBIT xor routed vs returnbit
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////// detached modes
+//////////////// detached modes:
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// - if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached
+// using 88 in adcetc.h and with otherpar as new bit
+
+void NLCVDACroute(void){ // CV: 4 bits for route in...
+  // 
+  uint8_t w=0; uint32_t tmpp=0, which;				       
+  HEADSINN;  
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  // CVL->choose tmpp which can be ADC (access?) otherpar=0means adcin 1, route 4 bits, cycle 1, XOR cycle/route 1 
+  // figure out CVL 12 bits
+  which=CVL[0]>>6; // try 6 bits
+  if (which==0) tmpp=255; // means use ADC
+  else if (which==1) tmpp=(gate[w].Gshift_[w]>>SRlength[w])& 0x01;  // use cycling bit
+  else
+    { // 4 bits for route 1 bit for xor cycle or not
+      if (which&0x02==2) val=1;
+      else val=0;
+      tmp=which>>2; // 1st two bits skipped... leaves 4 bits for route
+      for (x=0;x<4;x++){
+	if (tmp&0x01){
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+	  tmpp^=bitrr;
+	}
+	tmp=tmp>>1;
+      }
+      if (val==1) tmpp^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01;  // use cycling bit - will also zero itself on own route in
+    }
+  
+  bitn=ADC_(0,SRlength[0],88,gate[0].trigger,dacfrom[daccount][0],tmpp, &gate[0].shift_); 
+  //  no binroute here
+  if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+
 
 // ported/porting from modeL - but no adc selection possible
 void Nmultiplespeednew0(void){ // NO LENGTH - try 4 speeds as above - multiple versions of this // this one is ****
@@ -864,7 +898,7 @@ void NLseladc(void){ // select ADC 0-31 ***
   }
 }
 
-void NLcutfeedback86(void){ //    //    TODO: *cut feedback - eg. cut for CV count clk pulses/on off* STROBE
+void NLcutfeedback86(void){ //    //    TODO/TEST: *cut feedback between dacs 1 and 3 - eg. cut for CV count clk pulses/on off* STROBE
   // DETACH LENGTH
   uint8_t w=0;
   HEADSINN;
@@ -874,7 +908,7 @@ void NLcutfeedback86(void){ //    //    TODO: *cut feedback - eg. cut for CV cou
   GSHIFT_;
   tmp=(CVL[0]>>2); // 10 bits - how many bits works best?
   bitn=ADC_(0,SRlength[0],86,gate[0].trigger,dacfrom[daccount][0],tmp, &gate[0].shift_); 
-  BINROUTE_;
+  //  BINROUTE_; // TODO: route in or not - 2 versions
   BITN_AND_OUTVN_;
   ENDER;
   }
@@ -1473,20 +1507,42 @@ void Nint71(void){
   } 
 }
 
-void Nint72(void){ // as above but how can we do mix of adc/dac according to CV, but then we lose CV
+void Nint72(void){ // as above but how can we do mix of adc/dac according to CV, but then we lose CV - also for detached modes TODO
   uint8_t w=0; float pp,mult;			       
   HEADN;  
   if (gate[w].trigger)      {
     GSHIFT_;
     //    gate[dacfrom[daccount][0]].dactype=15-(CV[0]&15); // lowest bits
     // leaves us (CV[0]>>4)&255 to play with
-    tmp=(CV[0]>>2)&3;
-    mult=1.0f/(float)(((CV[0]>>4)&255)+1.0f);
+    tmp=CV[0]&3;
+    mult=1.0f/(float)((CV[0]>>2)+1.0f); // changed 24/2
     pp=(float)adc_buffer[12]+((float)(gate[tmp].dac)*mult); // mix with param
     //    pp=(float)(adc_buffer[12]*(1.0f-mult)+((float)(gate[3].dac)*mult); // mix with param - optional
     tmp=(int)pp;
     if (tmp>4095) tmp=4095;
-    bitn=ADCg_(0, SRlength[0], 0 , &gate[0].shift_, tmp);  // 4 bits for type  66=modulo, 67=add, 68=and
+    bitn=ADCg_(0, SRlength[0], 0 , &gate[0].shift_, tmp);  //??? 4 bits for type  66=modulo, 67=add, 68=and
+    //BINROUTE_; // no route in in this case but could be
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+// now mix using DAC[3] as mixer... what to do with rest of CV? this can also be for detached modes - CV used
+void Nint72dacmix(void){ // as above but how can we do mix of adc/dac according to CV, but then we lose CV - also for detached modes TODO
+  // 2 bits for dacsel, 4 bits for which ADCg
+  uint8_t w=0; float pp,mult; uint32_t tmpp;			       
+  HEADN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    //    gate[dacfrom[daccount][0]].dactype=15-(CV[0]&15); // lowest bits
+    // leaves us (CV[0]>>4)&255 to play with
+    tmpp=(CV[0]>>6);
+    tmp=tmpp&0x03;
+    mult=1.0f/(float)((gate[3].dac)+1.0f); // but if we use 3 below... anyways
+    pp=(float)adc_buffer[12]+((float)(gate[tmp].dac)*mult); // mix with param
+    //    pp=(float)(adc_buffer[12]*(1.0f-mult)+((float)(gate[3].dac)*mult); // mix with param - optional
+    tmp=(int)pp;
+    if (tmp>4095) tmp=4095;
+    bitn=ADCg_(0, SRlength[0], tmpp>>2 , &gate[0].shift_, tmp);  //??? 4 bits for type  66=modulo, 67=add, 68=and
     //BINROUTE_; // no route in in this case but could be
     BITN_AND_OUTNINT_; // for no pulse out
   } 
@@ -1546,7 +1602,7 @@ void Nintroute0(void){ // CV: 4 bits for route in... other bits for logop
 // use CVL freed up for probability of bitn entry...
 void NLintroute0(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=0;				       
-  HEADN;  
+  HEADSINN; // fixed 24/2  
   if (gate[w].trigger)      {
     GSHIFT_;
     if (((LFSR_[0] & 4095 ) < CVL[0])){ // prob of bit in - could also be DAc
@@ -1828,7 +1884,7 @@ void Nintprob7_0(void){ // electronotes draft0 - ADC or ROUTEIN
 void Nintprobdac1_0(void){ // example - as prob1 above but against DAC3
   // prob is choice of ADC or ADC XOR routed in bit
   uint8_t w=0;				       
-  HEADN;  
+  HEADSINN; // detached fixed 24/2  
   if (gate[w].trigger)      {
     GSHIFT_;
     bitn=ADC_(0,SRlength[w],(adclist[CVL[0]>>7]),gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_); 
