@@ -108,8 +108,8 @@ void Cadc(void){
   CVOPEN;
   if(gate[2].last_time<gate[2].int_time)      {
   GSHIFT_;				
-  bitn=ADC_(2,SRlength[2],85,gate[2].trigger,dacfrom[daccount][2],param[2], &gate[2].shift_);
-  BITN_AND_OUTVN_;
+  bitn=ADC_(2,SRlength[2],85,gate[2].trigger,dacfrom[daccount][2],param[2], &gate[2].shift_); // 85 so 1 bit from comparator
+  BITN_AND_OUTV_; // pulses outs - was VN no pulses???
   ENDER;
   }
   }
@@ -344,7 +344,7 @@ void C15(void){ // one bit audio with param as filter
   DACOUT;
 }
 
-void C67_4bits(void){ // stock 4 bit DAC
+void C67_4bits(void){ // stock 4 bit DAC - nothing to do with length
   gate[2].dactype=67; gate[2].dacpar=4095-(param[2]&4095);
   DACOUT;
 }

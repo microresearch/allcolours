@@ -273,6 +273,56 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
+
+** 5/3/2022
+
+- *double samples* so we hit 24 bits long/length is 3-24 then...
+
+- *do we already have double length 0-63 SRs not just for N????*
+
+- *where are we with extramodes.c and other source files?*
+
+** 2/3/2022
+
+- *how to think length (again) for modeN and modeC*
+
+modeN:
+
+bit length/SR length - but maybe only for abstract modes does it make
+a difference and any modes where we return/prob return, also q bit
+length > real12 (our11)
+
+- but at slower speeds there is a difference... (in length but)
+
+catalogue all adc modes for length...etc
+
+// adc modes which have set bit depth, variable bit depth, restricted to <11 depth
+// also check dac modes
+ 
+
+** 26/2/2022
+
+MODEN: route and DACs in - which DACs we can switch in, different bitstreams to switch...
+
+if we can abstract out dac, adc and routes in so is like SR bit streams in 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- look into 4 bit ADC in: adcetc.h CASE 81 4 bits in - does length change anything? *NO* - so we can detach this...
+
+check basic adc modes - how much length changes things... and how central length is?
+
+modeN/adc: probability of different dacs->
+
+- changed NLcutfeedback86 so is more instant - switch between 2 DACs
+
+check for adc modes where length makes a difference...
+
+16
+16 detached
+dacspeed - mix of detach...
+intspeed - speed and length? cvs free 2x CV...
+
 ** 24/2/2022
 
 - fixed new adc for modes in adcetc.h // to TEST
@@ -285,7 +335,7 @@ Nint72dacmix - using dac for mix
 
 - TODO: mix DAC(1)(normed) feedback in - using CV, using DAC - do we have these kind of mixes already? in Nint72 but we could have more
 
-
+TODO: list of dacmode in modeN.h// uint8_t dacmodes[16]= { // outs which use DAC
 
 ** 22/2/2022
 
@@ -293,6 +343,8 @@ Nint72dacmix - using dac for mix
 // detached mode -> NLcutfeedback86
 
 - R mode just zero in... (so no RSR feedback): Rnada in modeR.h - TEST
+
+////UP////
 
 ** 19/2/2022
 

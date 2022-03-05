@@ -1050,31 +1050,33 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	nn[reg]=0;
 	toggle[reg]^=1;
       }
-	
+    // changed 26/2 for instant change
     if (length>11) length=11;
       if (n[reg]<0) {
 	//	k[reg]=(gate[regg].dac)>>(11-length); // switch between dac 3 and dac 1
-	if (toggle[reg]) 	k[reg]=(gate[3].dac)>>(11-length); // switch between dac 3 and dac 1
-	else 	k[reg]=(gate[1].dac)>>(11-length); // switch between dac 3 and dac 1
+	lastbt[reg]=(gate[3].dac)>>(11-length); // switch between dac 3 and dac 1
+	k[reg]=(gate[1].dac)>>(11-length); // switch between dac 3 and dac 1
 	n[reg]=length;
     }
-      bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
+      if (toggle[reg]) bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
+      else bt = (lastbt[reg]>>n[reg])&0x01; // this means that MSB comes out first
     n[reg]--;    
     break;
 
-  case 87: // basic 4 bits in - grab into SR on STROBE
-    // try new ADC scheme
-      if (n[reg]<0) {
-	if (strobe){
+  case 87: // basic 4 bits in - grab into SR on STROBE 
+    // changed for toggle 26/2
+    if (strobe) toggle[reg]=1;
+ 
+    if (n[reg]<0) {
+      if (toggle[reg]==1){
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_3Cycles);
 	ADC_SoftwareStartConv(ADC1);
 	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
 	k[reg]=ADC_GetConversionValue(ADC1)>>8;
-	}
-  //	k[reg]=(adc_buffer[12])>>(8);
-	//		k[reg]=1; // testing for a repeated pattern - could be prob of a grab... SR wheel in SR
+	toggle[reg]=0;
+      }
 	n[reg]=3;
-    }
+      }
       bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
       n[reg]--;    
     break;

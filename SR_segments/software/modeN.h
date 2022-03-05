@@ -6,8 +6,20 @@
 //////////////////////////////////////////////////////////////////////////////////////
 N: is input and feedback -- RSR feedback//DAC feedback//normed ADC feedback//mix of...
 
-- types of input, types of feedback (probability of RSR, other feedback)
+- types of input (adc), types of feedback (probability obf RSR, other feedback)
 - use of CV, strobe, DACs
+
+that strobe speed modes are just not only a way to use other CVs
+
+>>adc modes which depend on length>>>
+
+//////////////////////////////////////////////////////////////////////////////////////
+list modes in adcetc and also here:
+
+abstract only: 28,29,30
+using dac: 25,26,27, 66,67,68,69,71,72,73,74, 77,79,80 - maybe one detached mode just for these
+
+seladc we have as list below
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,11 +27,7 @@ re-thinking 7/2/2022
 
 CV modes: 
 0-7: basic ADC ins and some abstract ones - reduce... // Noroute0, N0nog, N0, N1, N2, N3, N4, N6 optional N101 is nice, N32*** N82, N75, N81
-8-15; abstract ones - q of loopback/entry - strobe modes? // how many strobe modes do we have?
-
-
-abstract only: 28,29,30
-using dac: 25,26,27, 66,67,68,69,71,72,73,74, 77,79,80 - maybe one detached mode just for these
+8-15; abstract ones - q of loopback/entry - strobe modes? // how many strobe modes do we have? 3 + detached strobe modes
 
 strobe route modes
 strobe general adc modes
@@ -166,24 +174,17 @@ probability of entry of adc, of route in etc...
 
 // longer sel with strobes and cv but we can only access this from detached CV/speed and length
 // we have CV (speed) and CVL (length) - one is param, other is sel so
-// so length or speed can be from DAC only
-uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,21,81,82,77,78,79,80,22,23,24,25,26,27,28,29,30,31,101,64,65,66,67,68,71,72,73,74, 0,1,2,3,4,5,6,7,25,26,27,29,30};
+// so length or speed can be from DAC only or is detached
+uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,21,81,82,77,78,79,80,22,23,24,25,26,27,28,29,30,31,101,64,65,66,67,68,71,72,73,74, 0,1,2,3,4,5,6,7,25,26,27,29,30}; //6 bits
 // padded out to 64 with favoured ones
 
-uint8_t parammodes[16]={17,18,19,20, 21,22,29,33, 34,35,37,38, 39,66,67,68};
+uint8_t parammodes[16]={17,18,19,20, 21,22,29,33, 34,35,37,38, 39,66,67,68}; // preferred modes with param[0] as param
 
 uint8_t modes16[16]={0,1,2,3,4,6,101,32,82,75,81,28,29,30,79,80}; // choose again maybe temp list TODO
 
-// list for dacmodes! TODO!
+// uint8_t dacmodes[16]= // list for dacmodes! TODO!
 
-// prob or/xor/route
-void Norxor0(void){ // split length / or / xor // DETACH LENGTH - could be nice also select adc type
-ADCORXORIN(0);
-}
-
-void N0(void){ // basic ADC in with XOR route in
-  ADCXORIN(0);
-}
+//////////////////////////// other models
 
 void Noroute0(void){ // basic ADC in with no route in
   ADCXORIN_NOROUTE(0);
@@ -191,6 +192,18 @@ void Noroute0(void){ // basic ADC in with no route in
 
 void N0nog(void){ // basic ADC in with XOR route in and no gshifting <<
   ADCXORINNOG(0);
+}
+
+// cv selects length and  or/xor/route
+void Norxor0(void){ // split length / or / xor // DETACH LENGTH - could be nice also select adc type
+ADCORXORIN(0);
+}
+
+//////////////////////////////////////
+// basic ADC type  modes
+
+void N0(void){ // basic ADC in with XOR route in
+  ADCXORIN(0);
 }
 
 void N1(void){ // equivalent bits
@@ -341,14 +354,14 @@ void N21(void){
   ADCXORIN(21);
 }
 
-void N81_4bits(void){ // 4 bits in ***
-  //  ADCXORIN_NOROUTE(81);
-    ADCXORIN(81);
+void N81_4bits(void){ // 4 bits in *** - no length effect so we can detach///
+  //    ADCXORIN_NOROUTE(81);
+      ADCXORIN(81);
 }
 
 void N87_4bits_strobein(void){ // 4 bits in *** STROBE
   //  ADCXORIN_NOROUTE(81);
-    ADCXORIN(81);
+    ADCXORIN(87);
 }
 
 void N82(void){ // comparator as incoming bit ***
@@ -587,42 +600,6 @@ STROBE - 1invert ADC BIT - XOR/OR routed
 
  */
 
-void NLstrobe1(void){ 
-  uint8_t w=0, bits, bitss;
-  HEADSINN; // detach length
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    bitss=CVL[0]>>6; // 6 bits
-    bits=bitss&3; // 2 bits
-    if (bits==0){    
-    if (gate[w].trigger) bitn=!bitn;
-    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    BINROUTE_;
-    }
-
-    if (bits==1){    
-    if (gate[w].trigger)    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    else BINROUTE_;
-    }
-
-    if (bits==2){    
-    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    if (gate[w].trigger) BINROUTE_; // or vice versa
-    }
-
-    if (bits==3){    
-    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
-    if (gate[w].trigger) JUSTCYCLE_;
-    }
-
-    BITN_AND_OUTVN_;
-    ENDER;
-  }
-  }
-}
-
 void Nstrobe1_0(void){ 
   uint8_t w=0;
   HEADN;
@@ -677,6 +654,44 @@ void Nstrobe3_0(void){ // basic ADC in - see above table - 3ADC BIT vs [ADC/xor/
   5- ADC bits vs [routed/xor/or/RETURNbit]
   6- ADCBIT xor routed vs returnbit
 */
+
+//////////// detached strobes=5 modes
+
+void NLstrobe1(void){ 
+  uint8_t w=0, bits, bitss;
+  HEADSINN; // detach length
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitss=CVL[0]>>6; // 6 bits
+    bits=bitss&3; // 2 bits
+    if (bits==0){    
+    if (gate[w].trigger) bitn=!bitn;
+    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    BINROUTE_;
+    }
+
+    if (bits==1){    
+    if (gate[w].trigger)    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    else BINROUTE_;
+    }
+
+    if (bits==2){    
+    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) BINROUTE_; // or vice versa
+    }
+
+    if (bits==3){    
+    bitn=ADC_(0,SRlength[w],modes16[bitss>>2],gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
+    if (gate[w].trigger) JUSTCYCLE_;
+    }
+
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+  }
+}
 
 void NLstrobe2(void){ // 2nd version covering abstract modes and returns - check adc selection TODO
   uint8_t w=0, bits, bitss;
@@ -770,7 +785,7 @@ void Nstrobe6_29(void){  // 6- ADCBIT xor routed vs returnbit
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////// detached modes:
+//////////////// detached modes: 11 modes
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // - if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached
@@ -1043,7 +1058,7 @@ void Ngenericprobx(void){ // porting to strobe - ported to N - detach CVL - leng
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// CV and DAC modes - move these to LR! ???
+/// CV and DAC modes - move these to LR! ??? how many? 12 here
 /*
 
 refine and figure out dac modes as dac is too fast
@@ -1281,7 +1296,7 @@ void NLdacadc(void){ // speed is from dac, use cv to select type and cvl as para
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// INTMODES
+/// INTMODES - here there are: 44
 
 // there are only 16... and we want also abstract adc in/prob modes so we need to reduce prob modes
 // reduced adc modes and some abstract
