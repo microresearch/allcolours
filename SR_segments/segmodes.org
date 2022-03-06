@@ -274,11 +274,14 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 *cleaning, organising, testings!*
 
 
-** 5/3/2022
+** 6/3/2022
 
-- *double samples* so we hit 24 bits long/length is 3-24 then...
+- *TODO: double samples* so we hit 24 bits long/length is 3-24 then...
 
-- *do we already have double length 0-63 SRs not just for N????*
+- do we already have double length 0-63 SRs - *TEST NLdoublelength*
+
+// chnaged OUTV_ to OUTVN_ in modeN and as we have no pulse out in N!!! only in L, C and R!
+
 
 - *where are we with extramodes.c and other source files?*
 
@@ -329,18 +332,18 @@ intspeed - speed and length? cvs free 2x CV...
 - working through modeN - too many modes! how to make sense of this // order the modes in the file and how these can become more generic
 
 
-- TEST: NLCVDACroute if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached - but does as adc or...
+- *TEST*: NLCVDACroute if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached - but does as adc or...
 N87_4bits_strobein
 Nint72dacmix - using dac for mix
 
-- TODO: mix DAC(1)(normed) feedback in - using CV, using DAC - do we have these kind of mixes already? in Nint72 but we could have more
+*TODO: mix DAC(1)(normed) feedback in - using CV, using DAC - do we have these kind of mixes already? in Nint72 but we could have more*
 
-TODO: list of dacmode in modeN.h// uint8_t dacmodes[16]= { // outs which use DAC
+*TODO: list of dacmode in modeN.h// uint8_t dacmodes[16]= { // outs which use DAC*
 
 ** 22/2/2022
 
 - get back into code and TEST new adc mode 86: cut feedback - eg. cut for CV count clk pulses/on off
-// detached mode -> NLcutfeedback86
+// detached mode -> *NLcutfeedback86*
 
 - R mode just zero in... (so no RSR feedback): Rnada in modeR.h - TEST
 

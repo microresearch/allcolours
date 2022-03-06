@@ -859,12 +859,49 @@ void Nmultiplespeednew0(void){ // NO LENGTH - try 4 speeds as above - multiple v
     //    gate[w].shift_=gate[w].shift_<<1; // but no shift makes odd with add... anyways
     bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0], param[0], &gate[w].shift_);
     BINROUTENOG_; // no gshifty
-    PULSIN_XOR;
-    BITN_AND_OUTV_;
+    BITN_AND_OUTVN_;
     ENDER;
   }
   }
 }
+
+void NLdoublelength(void){   // DETACH LENGTH
+  uint8_t w=0, tmplength;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+    tmplength=CVL[0]>>6; // 0-63=6bits
+
+    if (tmplength<32) { // as usual
+      SRlength[0]=lookuplenall[tmplength]; 
+      GSHIFT_;
+      bitn=ADC_(0,SRlength[0],81,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // use 4 bits in!
+      BINROUTE_;
+  }
+    else {
+      // we add extension at top which we shift into: extrashift_  //   gate[w].shift_+=bitn;
+      // but gshift will be this top bit with appropriate reduced length
+      gate[w].Gshift_[0]=gate[w].extrashift_;
+      gate[w].Gshift_[1]=gate[w].extrashift_;
+      gate[w].Gshift_[2]=gate[w].extrashift_;
+      gate[w].Gshift_[3]=gate[w].extrashift_;
+      gate[w].extrashift_=gate[w].extrashift_<<1;
+
+      SRlength[0]=tmplength-31; // ???
+      gate[w].extrashift_+=gate[w].shift_>>31; // top bit shift in
+      gate[w].shift_=gate[w].shift_<<1;
+
+      bitn=ADC_(0,SRlength[0],81,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // use 4 bits in!
+      BINROUTE_;      
+    }
+    
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
 
 
 /* bursts of DACin/ADCin to spawn/seed feedback - so trigger
@@ -1023,7 +1060,7 @@ void NLLswop0(void){ // swop in or logop SR - cv and cvl- not so good for Nmode 
       gate[w].shift_^=(tmp<< (31-(lin>>2)));// + (rin<<(31-(lin>>2))) );
       //gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one
       }
-    BITN_AND_OUTV_; 
+    BITN_AND_OUTVN_; 
     ENDER;
   }
   }
@@ -1052,7 +1089,7 @@ void Ngenericprobx(void){ // porting to strobe - ported to N - detach CVL - leng
 
     if (gate[w].trigger) bitn=prob[lower]; // lowest 2 bits
     else bitn=prob[options[lower][bit]] ^prob[options[lower][(bit+1)]]^prob[options[lower][(bit+2)]];
-        BITN_AND_OUTV_; 
+        BITN_AND_OUTVN_; 
     ENDER;
 } 
 }
@@ -1248,7 +1285,7 @@ void NB0(void){// with oscillator
     GSHIFT_;
     bitn=ADC_(0,SRlength[w],30,gate[w].trigger,dacfrom[daccount][0],0, &gate[w].shift_); // oscillator
     BINROUTE_;
-    BITN_AND_OUTV_;
+    BITN_AND_OUTVN_;
     ENDER;
   }
 }
@@ -1268,7 +1305,7 @@ void Ndacoffset0(void){
     GSHIFT_;
     bitn=ADC_(0,SRlength[w],30,gate[w].trigger,dacfrom[daccount][0],0, &gate[w].shift_); // oscillator
     BINROUTE_;
-    BITN_AND_OUTV_;
+    BITN_AND_OUTVN_;
     ENDER;
   }
 }

@@ -4,6 +4,7 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t dactype, dacpar;
   uint32_t Gshift_[4];
   uint32_t shift_;
+  uint32_t extrashift_;
   uint32_t lastdac; // speed stuff
   uint32_t dac;
   int32_t route;
