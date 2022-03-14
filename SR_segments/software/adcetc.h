@@ -103,7 +103,7 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
       }
       else {
 	k=(income);
-	n[reg]=11;
+	n[reg]=length; // changed 14/3/2022
       }
     }
     bt = (k>>n[reg])&0x01;
@@ -253,9 +253,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;    
 
    
-  case 3: // basic sequential length as in 0 but with padding if >11 bits **
-    // as above but closer to 5
-    // also try as MSB - now...
+  case 3: // basic sequential length as in 0 but with padding if >11 bits ** not really padding tho!
+    // as is is same as 0
     if (n[reg]<0) { // 12 bits
       if (length<12) {
 	//	k[reg]=(adc_buffer[12])>>(11-length);
@@ -264,7 +263,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
       else {
 	k[reg]=(adc_buffer[12]);
-	n[reg]=11;
+	n[reg]=length; // padded with zeroes then - 14/3/2022
       }
     }
     bt = (k[reg]>>n[reg])&0x01;
@@ -296,7 +295,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]--;    
     break;
 
-  case 6: // padded version of SR of bitsin
+  case 6: // padded version of SR of bitsin o- does it differ from 3?
       if (n[reg]>length) {
 	ADCtwo;
 	if (length<12) ADCshift_[reg]=(k[reg])>>(11-length); 
@@ -488,6 +487,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 17: // timed version from otherpar
     //    if (length>11) length=11;
     //    otherpar+=32;
+    otherpar=otherpar&31;
     otherpar+=3;
     if (n[reg]>otherpar) {
       //      ADCshift_[reg]=(adc_buffer[12])>>(31-length);
@@ -544,7 +544,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      if (k[reg]>(otherpar&4095)) bt=1;
      break;
 
-  case 21: // XOR or OR of case 4 - 1 bit oscillator and input bits  - OTHERPAR! 12 bits
+  case 21: // XOR or OR - 1 bit oscillator and input bits  - OTHERPAR! 12 bits
   if (length>11) length=11;
       if (nnn[reg]<0) {
 	//	k[reg]=(adc_buffer[12])>>(11-length);

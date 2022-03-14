@@ -274,16 +274,91 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 *cleaning, organising, testings!*
 
 
+
+** 14/3/2022
+
+- *changed adc mode 3 as was same as 0 - check all logics... maybe better group them in modeN*
+
+*TODO: for adc-> 8 bit fixed modes (12bits and 4 we have), fixed equivalent bits in eg. 4 bits equiv...* 
+
+//catalogue adc modes which have set bit depth(set), variable bit depth(any), restricted to <11 depth(<11)
+
+adc: 
+0: <11
+1: any
+2: any/1bit
+3: any/pad 0
+4: set4
+5: 12 bits always cycle in to our length
+6: any - *does it differ from 3?*
+7: any
+8: any
+9: <11
+10: <11
+11: any
+12: any
+13: <11
+14: <11
+15: <11
+16: any/1bit
+17: any/otherpar+3
+18: any/otherpar
+19: any/otherpar
+20: any/1bitcomp
+21: <11 *TO FIX*
+22: noADC-LFSR
+23: noADC-LFSR
+24: noADC
+25: dac<11
+26: dac/onebit
+27: dac/any
+28: clkin
+29: 1bitosc
+30: clkspeed
+31: TMin
+32: *TESTTODO*
+33: <11adc/prob - *maybe move*
+34: 1 bit osc
+35: adc/prob
+36: <11adc/prob
+37: <11adc/prob
+38: <11adc/prob 
+39: 1bitadc/prob
+66: <11adc mod otherpar
+67: <11adc+otherpar
+68: <11adc&otherpar
+71: anydac
+72: anydac
+73: 4bitsin
+74: anydac
+75: adc/daccomp1bit
+76: adc/daccomp1bit
+77: 1 bit osc
+78: 1 bit osc
+79: 1 bit osc
+80: 1 bit osc
+81: 4bitsin
+82: comp
+101: <11adc
+84: comp
+85: comp
+86: <11dac
+87: 4bitsinadc
+88: 4bitsinadc 
+
+// also check/catalogue dac modes
+
+
+
 ** 6/3/2022
 
 - *TODO: double samples* so we hit 24 bits long/length is 3-24 then...
 
 - do we already have double length 0-63 SRs - *TEST NLdoublelength*
 
-// chnaged OUTV_ to OUTVN_ in modeN and as we have no pulse out in N!!! only in L, C and R!
+// changed OUTV_ to OUTVN_ in modeN - as we have no pulse out in N!!! only in L, C and R!
 
-
-- *where are we with extramodes.c and other source files?*
+- *where are we with extramodes.c and other source files? re-organise all when back*
 
 ** 2/3/2022
 
@@ -296,12 +371,6 @@ a difference and any modes where we return/prob return, also q bit
 length > real12 (our11)
 
 - but at slower speeds there is a difference... (in length but)
-
-catalogue all adc modes for length...etc
-
-// adc modes which have set bit depth, variable bit depth, restricted to <11 depth
-// also check dac modes
- 
 
 ** 26/2/2022
 

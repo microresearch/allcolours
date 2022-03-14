@@ -17,7 +17,7 @@ that strobe speed modes are just not only a way to use other CVs
 list modes in adcetc and also here:
 
 abstract only: 28,29,30
-using dac: 25,26,27, 66,67,68,69,71,72,73,74, 77,79,80 - maybe one detached mode just for these
+using dac: 25,26,27, 66,67,68,71,72,73,74, 77,79,80 - maybe one detached mode just for these
 
 seladc we have as list below
 
