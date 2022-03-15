@@ -275,6 +275,77 @@ DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count
 
 
 
+
+TODO: check bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...
+
+** 15/3/2022
+
+*modeN as key*
+
+towards generic treatment of bits from ADC, DAC, oscillator or other function, mix of these/feedback(=DAC?), route in // eg. 4 bits from osc into x length etc...
+
+that we can treat routein as we treat in other SRs or as special ADCin case????
+
+treatment of bits // function(ADC, DAC, OSCetc, routein, mix) they come from // length of SR 
+
+/////
+
+- towards more generic modeN (and other modes) - what are differences in macros (obvious for pulseins/outs we have or not)?
+
+//where bits come from/if they come/where they come... sequential toggles of eg. 1010111 bits in
+
+*TODO: we can have a pattern from otherSR or incoming of where/if bits come in*
+
+eg. we use a SR sequence to determine if (1or) we input bit from x. so /if/ is from: prob/comp, strobe/toggle, pattern
+
+also other decisions from bits -> eg. which bits in/....
+
+sequential->ins
+
+*bits in from ADC, DAC, oscillator or other function, mix of these/feedback, switch these - mix/switch*
+
+//////
+
+->  if/prob/strobe/toggle of ->>> bits in from where/and where these bits go (logic of their inputs). eg. multiple bits in...
+--> nature of the shift
+
+[where is generic description below?] 
+
+- where is our speed from?
+- where do we get bits from?
+- which bits
+- where do we get prob of bits in
+- where do bits come into
+- how do we shift?
+
+MODEN: route and DACs in - which DACs we can switch in, different bitstreams to switch...
+
+*if we can abstract out dac, adc and routes in so is like SR bit streams in*
+
+-// also check/catalogue dac modes:
+
+dac:
+66: any
+67: 4 bits with delay of bits
+0: any
+1: any equib
+2: any/1bit
+3: any/>7
+4: any
+5: any
+6: 4 spaced bits
+7: 4 spaced equiv bits
+8: any/sieve
+9: any/sieve
+10: any/len-otherpar
+11: any/sequential?
+12: any/sequential?
+13: any/mask
+14: any/mask
+15: any
+
+- so we could have more fixed bits eg. 4 bits out, 8 bits out, 12 bits out, regardless of length (so then we should really detach length)...
+
 ** 14/3/2022
 
 - *changed adc mode 3 as was same as 0 - check all logics... maybe better group them in modeN*
@@ -346,10 +417,6 @@ adc:
 87: 4bitsinadc
 88: 4bitsinadc 
 
-// also check/catalogue dac modes
-
-
-
 ** 6/3/2022
 
 - *TODO: double samples* so we hit 24 bits long/length is 3-24 then...
@@ -374,12 +441,6 @@ length > real12 (our11)
 
 ** 26/2/2022
 
-MODEN: route and DACs in - which DACs we can switch in, different bitstreams to switch...
-
-if we can abstract out dac, adc and routes in so is like SR bit streams in 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
 - look into 4 bit ADC in: adcetc.h CASE 81 4 bits in - does length change anything? *NO* - so we can detach this...
 
 check basic adc modes - how much length changes things... and how central length is?
@@ -398,6 +459,7 @@ intspeed - speed and length? cvs free 2x CV...
 ** 24/2/2022
 
 - fixed new adc for modes in adcetc.h // to TEST
+
 - working through modeN - too many modes! how to make sense of this // order the modes in the file and how these can become more generic
 
 

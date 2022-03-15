@@ -72,6 +72,7 @@ probability of entry of adc, of route in etc...
   }									\
   }
 
+// special one!
 #define ADCORXORIN(X){				\
   uint8_t w=0;					\
   HEADSINN;					\
