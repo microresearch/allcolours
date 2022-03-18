@@ -119,8 +119,7 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
     bt=0;
     break;   
     
-  case 5: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-        ////// full length regardless of len    
+  case 5: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc... // ***
     if (n[reg]<0) { // 12 bits = can also be 8 bits or less
 	k=(income);
 	n[reg]=11;
@@ -129,30 +128,23 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
     n[reg]--;    
     break;
 
-  case 6: // padded version of SR of bitsin
-      if (n[reg]>length) {
-	if (length<12) ADCshift_[reg]=(income)>>(11-length); 
-	else ADCshift_[reg]=(income)<<(length-11);
-	n[reg]=0;
+  case 6: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc... // ***
+    if (n[reg]<0) { // 8 bits
+	k=(income>>4);
+	n[reg]=7;
     }
-    n[reg]++;
-    bt=(ADCshift_[reg]>>length)&0x01;
-    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
+    bt = (k>>n[reg])&0x01; // top bit first
+    n[reg]--;    
     break;
 
-  case 7: // timed version of SR bitsin - is MSB first
-    if (n[reg]>length) { // ???
-      if (length>11){
-      ADCshift_[reg]=(income<<(length-11));
-      }
-      else ADCshift_[reg]=(income);
-    n[reg]=0;
+  case 7: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc... // ***
+    if (n[reg]<0) { // 4 bits
+	k=(income>>8);
+	n[reg]=3;
     }
-    n[reg]++;
-    bt=(ADCshift_[reg]>>length)&0x01;
-    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
+    bt = (k>>n[reg])&0x01; // top bit first
+    n[reg]--;    
     break;
-
   }
   return bt;
 }
@@ -170,7 +162,98 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   k[reg]=ADC_GetConversionValue(ADC1);					\
   }
-  
+
+#define ADCgeneric {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_3Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  k=ADC_GetConversionValue(ADC1);					\
+  }
+
+#define ADCgeneric11 {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_3Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  k=ADC_GetConversionValue(ADC1)>>(11-depth);				\
+  }
+
+
+
+// test, see how it looks - x bits one by one, can be shared across SR
+static inline uint32_t adcxbits(uint32_t depth){ // max 12 bits
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (depth>11) depth=11; // max depth
+    if (bc<0) {
+    ADCgeneric11;
+    bc=11;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t dac3bits(uint32_t depth){ // max 12 bits
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (depth>11) depth=11; // max depth
+  if (bc<0) {
+    k=(gate[3].dac)>>(11-depth);
+    bc=depth;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+
+static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  static float integratorf=0.0f, oldvaluef=0.0f;
+  float inb;
+    ADCgeneric;
+    inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+    integratorf+=(inb-oldvaluef);
+    if(integratorf>0.0f)
+  {
+     oldvaluef=1.0f;
+     bt=1;
+  }
+   else
+   {
+      oldvaluef=-1.0f;
+      bt=0;
+   }   
+  return bt;
+}
+
+static inline uint32_t adceqbits(uint32_t depth){
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (bc<0) {
+    ADCgeneric;
+    if (depth>31) depth=31; // and if depth is higher?
+    k=k/divy[depth];
+    bc=depth;
+  }
+    if (k!=0) {
+      bt=1;
+      k--;
+    }
+    else bt=0;
+    
+  bc--;
+  return bt;
+}
+
+// could even be list of functions here - how we integrate...
+uint32_t (*bitstreams[8])(uint32_t depth)={adcxbits};
+
 
 // 10/12/21 - changes to SR in place now for draftspeed.c
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR){
@@ -181,7 +264,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   static uint32_t toggle[4]={0,0,0,0};
   uint32_t bt=0;
   int32_t tmp=0;
-  float integratorf=0.0, oldvaluef=0.0, inb;
+  float integratorf=0.0, oldvaluef=0.0, inb; // shared across all adc
   
   switch(type){    
 
@@ -192,7 +275,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 0: // basic sequential length of upto 12 bits cycling in MSB first    
       if (length>11) length=11;
       if (n[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length);
 	ADCone;
 	n[reg]=length;
     }
@@ -202,7 +284,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 1: // equivalent bits: we don't need limit on number of bits
     if (n[reg]>length) {
-      //      k[reg]=(adc_buffer[12]); //
       ADCtwo;
       k[reg]=k[reg]/divy[length];
       n[reg]=0;
@@ -253,7 +334,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;    
 
    
-  case 3: // basic sequential length as in 0 but with padding if >11 bits ** not really padding tho!
+  case 3: // basic sequential length as in 0 but with padding of zeroes if >11 bits 
     // as is is same as 0
     if (n[reg]<0) { // 12 bits
       if (length<12) {
@@ -262,7 +343,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	n[reg]=length;
       }
       else {
-	k[reg]=(adc_buffer[12]);
+	ADCtwo; // dix 18/3
 	n[reg]=length; // padded with zeroes then - 14/3/2022
       }
     }
@@ -285,9 +366,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;   
     
   case 5: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
-        ////// full length regardless of len    
     if (n[reg]<0) { // 12 bits = can also be 8 bits or less
-      //	k[reg]=(adc_buffer[12]);
       ADCtwo;
       n[reg]=11;
     }
@@ -295,49 +374,43 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]--;    
     break;
 
-  case 6: // padded version of SR of bitsin o- does it differ from 3?
-      if (n[reg]>length) {
-	ADCtwo;
-	if (length<12) ADCshift_[reg]=(k[reg])>>(11-length); 
-	else ADCshift_[reg]=(k[reg])<<(length-11);
-	n[reg]=0;
+  case 6: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    if (n[reg]<0) { // 8 bits
+      ADCtwo;
+      k[reg]=k[reg]>>4;
+      n[reg]=7;
     }
-    n[reg]++;
-    bt=(ADCshift_[reg]>>length)&0x01;
-    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
-    break;
-    ///
-
-  case 7: // timed version of SR bitsin - is MSB first
-    if (n[reg]>length) { // ???
-      if (length>11){
-	ADCtwo;
-      ADCshift_[reg]=(k[reg]<<(length-11));
-      }
-      else ADCshift_[reg]=k[reg];
-    n[reg]=0;
-    }
-    n[reg]++;
-    bt=(ADCshift_[reg]>>length)&0x01;
-    ADCshift_[reg]=(ADCshift_[reg]<<1)+bt;
+    bt = (k[reg]>>n[reg])&0x01; // top bit first
+    n[reg]--;    
     break;
 
-  case 8: // timed version of SR bitsin - reversed
-    //if (length>11) length=11;
-    if (n[reg]>length) {
-      if (length>11){
-	ADCtwo;
-	ADCshift_[reg]=(k[reg]<<(length-11));
-      }
-      else ADCshift_[reg]=k[reg];
-      //    ADCshift_[reg]=(adc_buffer[12]);
-    n[reg]=0;
+  case 7: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
+    if (n[reg]<0) { // 4 bits
+      ADCtwo;
+      k[reg]=k[reg]>>8;
+      n[reg]=3;
     }
-    n[reg]++;
-    bt=(ADCshift_[reg]&(1<<length));
-    // clear bit
-    ADCshift_[reg]&=~(1<<length);	
-    ADCshift_[reg]=(ADCshift_[reg]>>1)+bt;
+    bt = (k[reg]>>n[reg])&0x01; // top bit first
+    n[reg]--;    
+    break;
+    
+  case 8: // try keep cycling adc with new entry on toggle or strobe
+    if (strobe) toggle[reg]^=1;
+    if (n[reg]<0) { // 12 bits
+      if (length<12) {
+	if (toggle[reg]) {
+	    ADCone;
+	  }
+      }
+      else {
+	if (toggle[reg]) {
+	    ADCtwo;
+	  }
+      }
+	n[reg]=length; // padded with zeroes then - 14/3/2022
+    }
+    bt = (k[reg]>>n[reg])&0x01;
+    n[reg]--;    
     break;
 
     
@@ -348,7 +421,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       if (length>11) length=11;
       //      if (n[reg]>length) {
             if (n[reg]<0) {
-	      //	      k[reg]=(adc_buffer[12])>>(11-length); //
 	      ADCone;
 	      n[reg]=length;
     }
@@ -364,7 +436,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 10: // basic sequential length of bits cycling in but zeroed by strobe STROBE
     if (length>11) length=11; //XXXmax12bits
       if (n[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length); //
 	ADCone;
       n[reg]=length;
     } 
@@ -414,7 +485,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     // so we don't use returned bt
       if (length>11) length=11;//XXXmax12bits
       if (n[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length); //
 	ADCone;
       n[reg]=length;
     }
@@ -435,7 +505,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
     if (length>11) length=11; //XXXmax12bits
       if (n[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length); //
 	ADCone;
       n[reg]=length;
     }
@@ -452,7 +521,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     if (length>11) length=11; //XXXmax12bits
 
   if (n[reg]<0) {
-    //	k[reg]=(adc_buffer[12])>>(11-length); //
     ADCone;
       n[reg]=length;
     }
@@ -465,7 +533,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 16: // STROBE: 3-one bit entry STROBE
     if (strobe) toggle[reg]^=1;
-    //    k[reg]=(adc_buffer[12]); // from 0 to 4095 but where is the middle? - also we do nothing here with length
     ADCtwo;
     integrator[reg]+=(k[reg]-oldvalue[reg]);
    if(integrator[reg]>2048)
@@ -490,7 +557,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     otherpar=otherpar&31;
     otherpar+=3;
     if (n[reg]>otherpar) {
-      //      ADCshift_[reg]=(adc_buffer[12])>>(31-length);
       ADCtwo;
       if (length<12) {
 	ADCshift_[reg]=(k[reg])>>(11-length); 
@@ -547,7 +613,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 21: // XOR or OR - 1 bit oscillator and input bits  - OTHERPAR! 12 bits
   if (length>11) length=11;
       if (nnn[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length);
 	ADCone;
       nnn[reg]=length;
     }
@@ -693,7 +758,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       if (length>11) length=11;
       //      if (n[reg]>length) {
             if (n[reg]<0) {
-	      //	      k[reg]=(adc_buffer[12])>>(11-length); //
 	      ADCone;
 	      n[reg]=length;
     }
@@ -745,7 +809,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     // so we don't use returned bt
       if (length>11) length=11;//XXXmax12bits
       if (n[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length); //
 	ADCone;
       n[reg]=length;
     }
@@ -765,7 +828,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
     if (length>11) length=11; //XXXmax12bits
       if (n[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length); //
 	ADCone;
       n[reg]=length;
     }
@@ -782,7 +844,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     if (length>11) length=11; //XXXmax12bits
 
   if (n[reg]<0) {
-    //	k[reg]=(adc_buffer[12])>>(11-length); //
     ADCone;
       n[reg]=length;
     }
@@ -794,7 +855,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       break;
 
   case 39: // STROBE: 3-one bit entry
-    //    k[reg]=(adc_buffer[12]); // from 0 to 4095 but where is the middle? - also we do nothing here with length
     ADCtwo;
     integrator[reg]+=(k[reg]-oldvalue[reg]);
    if(integrator[reg]>2048)
@@ -874,7 +934,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	n[reg]=length;
       }
       else {
-	//	k[reg]=(adc_buffer[12]);
 	//	ADctwo;
 	k[reg]=(gate[regg].dac);
 	n[reg]=11;
@@ -998,8 +1057,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	ADC_SoftwareStartConv(ADC1);
 	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
 	k[reg]=ADC_GetConversionValue(ADC1)>>8;
-	
-  //	k[reg]=(adc_buffer[12])>>(8);
 	//		k[reg]=1; // testing for a repeated pattern - could be prob of a grab... SR wheel in SR
 	n[reg]=3;
     }
@@ -1018,7 +1075,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 101: // speed bump based on 0 skip bits
       if (length>11) length=11;
       if (n[reg]<0) {
-	//	k[reg]=(adc_buffer[12])>>(11-length);
 	ADCone;
 	n[reg]=length;
     }
@@ -1045,6 +1101,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 86: // gate[regg].dac seq input ->     //    TODO: *cut feedback - eg. cut for CV count clk pulses/on off*
     //count clk pulses, compare to CV
+    // originally swicthed between dacs but that doesn't work so well without input
     if (strobe) nn[reg]++;
     if (nn[reg]>otherpar){ // range of otherpar?
 	nn[reg]=0;
@@ -1055,11 +1112,13 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       if (n[reg]<0) {
 	//	k[reg]=(gate[regg].dac)>>(11-length); // switch between dac 3 and dac 1
 	lastbt[reg]=(gate[3].dac)>>(11-length); // switch between dac 3 and dac 1
-	k[reg]=(gate[1].dac)>>(11-length); // switch between dac 3 and dac 1
+	//k[reg]=(gate[1].dac)>>(11-length); // switch between dac 3 and dac 1
+	ADCone; // adc
 	n[reg]=length;
-    }
+      }
       if (toggle[reg]) bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
       else bt = (lastbt[reg]>>n[reg])&0x01; // this means that MSB comes out first
+      //      bt = (k[reg]>>n[reg])&0x01;
     n[reg]--;    
     break;
 
@@ -1092,7 +1151,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
 	k[reg]=ADC_GetConversionValue(ADC1)>>8;
 	
-  //	k[reg]=(adc_buffer[12])>>(8);
 	//		k[reg]=1; // testing for a repeated pattern - could be prob of a grab... SR wheel in SR
 	n[reg]=3;
     }

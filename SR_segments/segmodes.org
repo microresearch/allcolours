@@ -269,14 +269,69 @@ INTmodes
 
 DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR.h
 
-*settle speeds and test new voltage/CV scheme*
+*settle speeds and test new voltage/CV scheme: what is Hz for 14 octaves slowest and fastest?*
+
+older notes:
+- thinking on scale/speeds - at the moment we have 0-5v CV input and
+  covers 2^10 - so 10 octaves...we want say 13 or 14 octaves - 0.1Hz
+  to 5K for 14 octaves/doublings
+
+*can we have knob covering this and 0-10v as 1v/OCT*
+
+*100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)*
+
+// 14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
+
+http://lushprojects.com/circuitjs/circuitjs.html?ctz=CQAgjCAMB0l3BWcMBMcUHYMGZIA4UA2ATmIxAUgoqoQFMBaMMAKACVwU9wwURCALDz5UIA2lEkwELAIYgUCQp24DsfXt27Zo2EAx16w8ePpgnMkBMQQoU4-Bkgoyk4yZYAnFcIX5foiaQ7D4C3MTKYVIg4vrG0dJeodxoqtxUTvAsAO5+3Mx8isoFUElF-EJqfIKSKLhwLADGCkog6jHt7VQC0JlB-WCMxPoovVZkxC4RkMRqkOTmkKy55SXlNcErrTXlUZstkSn+ezkHMSmtXadVbXw3G9ftNTeapQDmZ2ACQuWpUo8aLgxCI+YIAe0kG3OhHI8UWcDIhCUilqkmwLAhYCQULUCCQSHhMwwSMIKIgGiQ6KAA
+
+or 100k cv in, 23k feedback, and -10v is 70k
+
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
+*TODO: check bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...*
 
+** 18/3/2022
 
+- fix adcg and adc mode 7 as this just gives LSBs and check all
+  adcmodes, 6 is also same as 3 so replace both, 8 too DONE
 
-TODO: check bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...
+- do we have cycling adc/bits in - new mode 8 in adc_
+
+- to fix some of modeN which use old adc_buffer: 71, 72,
+  72dacmix-DONE/ - 72dacmix is no good, *71 and 72 need lookup for division - log*
+
+/////////////////////////////////
+
+thoughts on below - they are already close to bitstreams as they mostly
+deliver one bit but we can see how they look more abstracted...
+
+*also with stream model we can switch between streams and mix them,
+logical op them, and have differing depths*
+
+- notebook notes: 
+
+[but do we really need?] for modeN idea of generators which keep track
+  and deliver bits eg. adc generator, dac, osc generator, impulse generator ...
+ - also so as samples can be distributed across L,R,C,N (at moment
+   counters are all independent)
+ - sample depth independent of length is important (*TODO*)
+ 
+again:
+- where the bits come from
+- if they come in [according to prob/strobe/toggle/bit pattern]
+- where they conme in?
+- how/logical ops?
+
+-  maybe abstract out routes in/binroute as the kind of function
+   above - test more abstract version...
+
+- impulses
+
+*TODO: entry bit as logical op with a bit pattern (eg.100011101) from another SR!*
+how this could work: *we can have a pattern from otherSR or incoming of where/if bits come in*
+- if enter bit is an AND operation - we need to cycle bits from other
+  reg and where do we do this
 
 ** 16/3/2022
 
@@ -298,7 +353,6 @@ treatment of bits // function(ADC, DAC, OSCetc, routein, mix) they come from // 
 
 //where bits come from/if they come/where they come... sequential toggles of eg. 1010111 bits in
 
-*TODO: we can have a pattern from otherSR or incoming of where/if bits come in*
 
 eg. we use a SR sequence to determine if (1or) we input bit from x. so /if/ is from: prob/comp, strobe/toggle, pattern
 
@@ -365,9 +419,9 @@ adc:
 3: any/pad 0
 4: set4
 5: 12 bits always cycle in to our length
-6: any - *does it differ from 3?*
+6: any
 7: any
-8: any
+8: any???
 9: <11
 10: <11
 11: any
@@ -425,7 +479,7 @@ adc:
 
 - *TODO: double samples* so we hit 24 bits long/length is 3-24 then...
 
-- do we already have double length 0-63 SRs - *TEST NLdoublelength*
+- do we already have double length 0-63 SRs - TEST NLdoublelengthDONE
 
 // changed OUTV_ to OUTVN_ in modeN - as we have no pulse out in N!!! only in L, C and R!
 
@@ -467,18 +521,25 @@ intspeed - speed and length? cvs free 2x CV...
 - working through modeN - too many modes! how to make sense of this // order the modes in the file and how these can become more generic
 
 
-- *TEST*: NLCVDACroute if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached - but does as adc or...
+- *TEST*: NLCVDACroute if CV>DAC - entry of new bit from [ADC, route
+  or cycle] XOR cycle/route etc... - use what for this choice of
+  route - detached - but does as adc or...
+
 N87_4bits_strobein
-Nint72dacmix - using dac for mix
+
+Nint72dacmix - using dac for mix *NOTWORKING*
 
 *TODO: mix DAC(1)(normed) feedback in - using CV, using DAC - do we have these kind of mixes already? in Nint72 but we could have more*
 
-*TODO: list of dacmode in modeN.h// uint8_t dacmodes[16]= { // outs which use DAC*
+*TODO: list of dacmode in modeN.h// uint8_t dacmodes[16]= { // which use DAC*
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ** 22/2/2022
 
 - get back into code and TEST new adc mode 86: cut feedback - eg. cut for CV count clk pulses/on off
-// detached mode -> *NLcutfeedback86*
+// detached mode -> NLcutfeedback86 -> changed so switches between adc
+and dac3
 
 - R mode just zero in... (so no RSR feedback): Rnada in modeR.h - TEST
 
@@ -737,7 +798,7 @@ http://lushprojects.com/circuitjs/circuitjs.html?ctz=CQAgjCAMB0l3BWcMBMcUHYMGZIA
 
 or 100k cv in, 23k feedback, and -10v is 70k
 
-- how to scale and offset DACs for DACspeeds...(two controls - leave length as is maybe)
+- *how to scale and offset DACs for DACspeeds...(two controls - leave length as is maybe)*
 
 
 ** 25/1/2022

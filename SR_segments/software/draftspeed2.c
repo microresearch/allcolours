@@ -304,7 +304,7 @@ volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRR
 //                                  0              0              PB2                PC15           PB4               PA12           PB3                PA11 
 volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
-int32_t oldValue, integrator, k, bt;
+//int32_t oldValue, integrator, k, bt;
 
 static uint32_t counter[7]={0,0,0,0, 0,0,0};  // last 3 for fake clks
 static uint32_t counterd[4]={0,0,0,0};  // extra counter
@@ -351,10 +351,11 @@ uint32_t testmodes[4]={0,0,0,0};
 
 // collect modes: Lmultiplespeednew 
 void (*dofunc[4][64])(void)=
-{
-  {NLcutfeedback86, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+{//NLcutfeedback86
+  // test 6,7,8 and new funcs from tenerifa
+  {Nint72dacmix, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, LX0},
-  {C67_4bits, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
+  {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
 

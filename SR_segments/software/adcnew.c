@@ -21,7 +21,7 @@ TOTAL 13
  
 #include "adc.h"
 
-void ADC1_Init(uint16_t *ADC_Buffer)
+void ADC1_Init(void)
 {
 	DMA_InitTypeDef DMA_InitStructure;
 	ADC_CommonInitTypeDef ADC_CommonInitStructure;

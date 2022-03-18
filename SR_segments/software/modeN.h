@@ -94,7 +94,6 @@ probability of entry of adc, of route in etc...
   }									\
   }
 
-
 // added strobe in binroute
 #define ADCXORIN(X){				\
   uint8_t w=0;					\
@@ -110,6 +109,22 @@ probability of entry of adc, of route in etc...
   }									\
   }									\
   }
+
+#define ADCSTREAMXORIN(X) {			\
+  uint8_t w=0;					\
+  HEADN;						\
+  if (speedf_[w]!=2.0f){			\
+  CVOPEN;					\
+  if(gate[0].last_time<gate[0].int_time)      {	\
+  GSHIFT_;								\
+  bitn=bitstreams[0](X);						\
+  BINROUTE_;								\
+  BITN_AND_OUTVN_;							\
+  ENDER;								\
+  }									\
+  }									\
+  }
+
 
 #define ADCXORINNOG(X){				\
   uint8_t w=0;					\
@@ -199,6 +214,13 @@ void N0nog(void){ // basic ADC in with XOR route in and no gshifting <<
 void Norxor0(void){ // split length / or / xor // DETACH LENGTH - could be nice also select adc type
 ADCORXORIN(0);
 }
+
+//////////////////////////////////////
+// new stream test
+void N0S(void){ // basic ADC in with XOR route in
+  ADCSTREAMXORIN(4);
+}
+
 
 //////////////////////////////////////
 // basic ADC type  modes
@@ -872,10 +894,11 @@ void NLdoublelength(void){   // DETACH LENGTH
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[0].last_time<gate[0].int_time)      {
-    tmplength=CVL[0]>>6; // 0-63=6bits
+    tmplength=63-(CVL[0]>>6); // 0-63=6bits
 
     if (tmplength<32) { // as usual
-      SRlength[0]=lookuplenall[tmplength]; 
+      if (tmplength<3) tmplength=3;
+      SRlength[0]=tmplength;
       GSHIFT_;
       bitn=ADC_(0,SRlength[0],81,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_); // use 4 bits in!
       BINROUTE_;
@@ -889,7 +912,7 @@ void NLdoublelength(void){   // DETACH LENGTH
       gate[w].Gshift_[3]=gate[w].extrashift_;
       gate[w].extrashift_=gate[w].extrashift_<<1;
 
-      SRlength[0]=tmplength-31; // ???
+      SRlength[0]=tmplength-32; // fixed 18/3
       gate[w].extrashift_+=gate[w].shift_>>31; // top bit shift in
       gate[w].shift_=gate[w].shift_<<1;
 
@@ -1546,34 +1569,40 @@ void Nint68(void){ // mod // basic sequential length of upto 12 bits cycling in 
 // ****
 // now 3 bits type, 2 bits which
 void Nint71(void){
+  uint32_t k;
   uint8_t w=0, tmpp;				       
   HEADN;  
   if (gate[w].trigger)      {
     GSHIFT_;
     //    gate[dacfrom[daccount][0]].dactype=15-(CV[0]>>8);     // 4 top bits for type 0- was [1] why? and where we set this back
     tmpp=(CV[0]>>10); // 2 bits;
-    tmp=adc_buffer[12]+gate[tmpp].dac; // additive can be otherwise
+    //    tmp=adc_buffer[12]+gate[tmpp].dac; // additive can be otherwise
+    ADCgeneric;
+    tmp=k%gate[3].dac; // was + but not always working
     if (tmp>4095) tmp=4095;
-    bitn=ADCg_(0, SRlength[0], (7-(7&(CV[0]>>7))), &gate[0].shift_, tmp);  // 4 bits for type  66=modulo, 67=add, 68=and
+        bitn=ADCg_(0, SRlength[0], (7-(7&(CV[0]>>7))), &gate[0].shift_, tmp);  // 4 bits for type  66=modulo, 67=add, 68=and ???
+    //    bitn=ADCg_(0, SRlength[0], 0, &gate[0].shift_, tmp);  // 4 bits for type  66=modulo, 67=add, 68=and
     //BINROUTE_; // no route in in this case but could be
     BITN_AND_OUTNINT_; // for no pulse out
   } 
 }
 
 void Nint72(void){ // as above but how can we do mix of adc/dac according to CV, but then we lose CV - also for detached modes TODO
-  uint8_t w=0; float pp,mult;			       
+  uint8_t w=0; float pp,mult;
+  uint32_t k;
   HEADN;  
   if (gate[w].trigger)      {
     GSHIFT_;
     //    gate[dacfrom[daccount][0]].dactype=15-(CV[0]&15); // lowest bits
     // leaves us (CV[0]>>4)&255 to play with
-    tmp=CV[0]&3;
-    mult=1.0f/(float)((CV[0]>>2)+1.0f); // changed 24/2
-    pp=(float)adc_buffer[12]+((float)(gate[tmp].dac)*mult); // mix with param
-    //    pp=(float)(adc_buffer[12]*(1.0f-mult)+((float)(gate[3].dac)*mult); // mix with param - optional
+    //    tmp=CV[0]&3;
+    mult=1.0f/((float)(CV[0]>>8)+1.0f); // changed 24/2 - maybe as LOOKUP TODO
+    ADCgeneric;
+    pp=(float)(k *  (1.0f-mult)) + ((float)(gate[2].dac)*mult); // mix with param
+    //    //    pp=(float)(adc_buffer[12]*(1.0f-mult)+((float)(gate[3].dac)*mult); // mix with param - optional
     tmp=(int)pp;
     if (tmp>4095) tmp=4095;
-    bitn=ADCg_(0, SRlength[0], 0 , &gate[0].shift_, tmp);  //??? 4 bits for type  66=modulo, 67=add, 68=and
+    bitn=ADCg_(0, SRlength[0], 7 , &gate[0].shift_, tmp);  //??? 4 bits for type  66=modulo, 67=add, 68=and
     //BINROUTE_; // no route in in this case but could be
     BITN_AND_OUTNINT_; // for no pulse out
   } 
@@ -1582,7 +1611,8 @@ void Nint72(void){ // as above but how can we do mix of adc/dac according to CV,
 // now mix using DAC[3] as mixer... what to do with rest of CV? this can also be for detached modes - CV used
 void Nint72dacmix(void){ // as above but how can we do mix of adc/dac according to CV, but then we lose CV - also for detached modes TODO
   // 2 bits for dacsel, 4 bits for which ADCg
-  uint8_t w=0; float pp,mult; uint32_t tmpp;			       
+  uint8_t w=0; float pp,mult; uint32_t tmpp;
+  uint32_t k;
   HEADN;  
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -1590,12 +1620,13 @@ void Nint72dacmix(void){ // as above but how can we do mix of adc/dac according 
     // leaves us (CV[0]>>4)&255 to play with
     tmpp=(CV[0]>>6);
     tmp=tmpp&0x03;
-    mult=1.0f/(float)((gate[3].dac)+1.0f); // but if we use 3 below... anyways
-    pp=(float)adc_buffer[12]+((float)(gate[tmp].dac)*mult); // mix with param
-    //    pp=(float)(adc_buffer[12]*(1.0f-mult)+((float)(gate[3].dac)*mult); // mix with param - optional
+    mult=1.0f/(float)((gate[tmp].dac)+1.0f); // but if we use 3 below... anyways
+    ADCgeneric;
+    //    pp=(float)k+((float)(gate[tmp].dac)*mult); // mix with param
+    pp=((float)(k)*(1.0f-mult)) + ((float)(gate[3].dac)*mult); // mix with param - optional
     tmp=(int)pp;
     if (tmp>4095) tmp=4095;
-    bitn=ADCg_(0, SRlength[0], tmpp>>2 , &gate[0].shift_, tmp);  //??? 4 bits for type  66=modulo, 67=add, 68=and
+    bitn=ADCg_(0, SRlength[0], tmpp>>3 , &gate[0].shift_, tmp);  //??? 4 bits for type  66=modulo, 67=add, 68=and
     //BINROUTE_; // no route in in this case but could be
     BITN_AND_OUTNINT_; // for no pulse out
   } 

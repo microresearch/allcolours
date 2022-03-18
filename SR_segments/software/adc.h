@@ -12,6 +12,6 @@
 #include "stm32f4xx_rcc.h"
 
 
-void ADC1_Init(uint16_t *ADC_Buffer);
+void ADC1_Init(void);
 
 #endif

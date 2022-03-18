@@ -1124,6 +1124,14 @@ ADCX(2,2);
 printf("3");
 }
 
+float pp, mult=0.1f;
+int k=4095, kk, CV=4095;
+
+mult=1.0f/((float)(CV)+1.0f); // changed 24/2
+pp=(float)k *  mult;// + ((float)(gate[3].dac)*mult); // mix with param
+
+kk=(int)pp;
+printf("gggggg:%d\n",kk);
 
 //x= ( ((xp& (1<<lastspac[length][0]))>>lastspacbac[length][0]));// + ((xp& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((xp& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((xp& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
 

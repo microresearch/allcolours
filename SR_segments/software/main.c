@@ -31,7 +31,7 @@ PROG HEADER: yellow, green, blue, purple//down
 
 //extern heavens gate[4];
 
-__IO uint16_t adc_buffer[13];
+
 
 #define delay()						 do {	\
     register unsigned int ix;					\
@@ -192,7 +192,7 @@ int main(void)
     while (!RCC_WaitForHSEStartUp());
     
     // 13 channels now
-    ADC1_Init((uint16_t *)adc_buffer);
+    ADC1_Init();
 
     
     GPIO_InitTypeDef GPIO_InitStructure;
