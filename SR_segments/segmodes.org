@@ -299,7 +299,7 @@ or 100k cv in, 23k feedback, and -10v is 70k
 - do we have cycling adc/bits in - new mode 8 in adc_
 
 - to fix some of modeN which use old adc_buffer: 71, 72,
-  72dacmix-DONE/ - 72dacmix is no good, *71 and 72 need lookup for division - log*
+  72dacmix-DONE/ - 72dacmix is no good, *72 needs lookup for division - log*
 
 /////////////////////////////////
 
