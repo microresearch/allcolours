@@ -170,6 +170,7 @@ void initClock(){
 
 }
 
+//__IO uint16_t adc_buffer[13];
 
 //DAC_InitTypeDef dac_init_s;
 
@@ -187,13 +188,13 @@ int main(void)
     //    initClock();
     // instead: 29/12/2021 - 180 MHz we should have from HSE external 8 MHz clock
     //Enable HSE clock
-    RCC_HSEConfig(RCC_HSE_ON);
+        RCC_HSEConfig(RCC_HSE_ON);
     //Wait for clock to stabilize
-    while (!RCC_WaitForHSEStartUp());
+        while (!RCC_WaitForHSEStartUp());
     
     // 13 channels now
-    ADC1_Init();
-
+	ADC1_Init();
+	//	ADC1_Init((uint16_t *)adc_buffer);
     
     GPIO_InitTypeDef GPIO_InitStructure;
 

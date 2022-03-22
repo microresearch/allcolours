@@ -1136,10 +1136,12 @@ printf("gggggg:%d\n",kk);
 //x= ( ((xp& (1<<lastspac[length][0]))>>lastspacbac[length][0]));// + ((xp& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((xp& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((xp& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
 
 /*
-for (cd=1;cd<33;cd++){
-  x=4095/cd;
-  printf("%d, ",x);
+for (cd=1024;cd>0;cd--){
+  pp=cd/1024.0f;
+  printf("%f, ",pp);
  }
 */
+
+
 return 0;
 }

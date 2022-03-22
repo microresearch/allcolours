@@ -1,5 +1,9 @@
 * plan
 
+CODE, basic speed and new CV hardware tests, MANUAL
+
+/////////////////////////////////////////////////////////
+
 - implement/test all new modes and catalogue these
 
 // need balance of flexibility in modes, access to advanced routing...
@@ -291,6 +295,79 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 *TODO: check bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...*
 
+** 22/3/2022
+
+- refining: *that some DACs can have reduced depth/bits=volume* (again
+  there we don't need to match to length but then length does even
+  less)
+
+Q? modeN. 
+0-7 - most basic ADC in
+8-15 - strobe modes
+16-31 - detached modes, detached strobe modes
+
+/////modeN
+-bitstream in
+-routedbit/s from///
+-dotheycomein? - strobe/toggle/probability/ANDbitsotherSR -> using AND
+from other downstream SR doesn't work for feedback reasons///
+
+*(is just AND of bits with strobe/toggle/emerging bits) - probability as a bit*
+*idea of SR of probabilities itself*
+
+*bitstream can also choose wheretheycomefrom* see N91sw (again
+question always of detaching feedback - one limb just for DACs or???)
+- extra limb...
+
+-howtheycomein?
+
+for other modes we can have this for pulseins and routedins - make generic
+
+/////////////////////////////
+
+- reverted old adc, now back to new as was thinking on ADC noise but
+  is caused by fact that 0v is 2048 so x bits, rather than 0 - lower 6
+  bits are positive, top 6 negative (as is inverted) - is this a
+  problem (on output 2048 is 0 though but just means absence of bits
+  is not 0)...
+
+- thus 0 bits in register is -5v DAC output (as inverts there), but
+  input is inverted...
+
+- how do we deal with this? for example with equiv bits? or we can use
+  some lookups in some cases... (one bit audio in/out seems to work ok
+  now...)
+
+but we have no way of signifying pos or neg with bits/// trial
+energy/abs->DONE/also as generator
+
+-DONE/TODO: modeL/R where we don't ad dback in bitrr in gshift so just
+  dies out (as kind of impulse)* Lnoggg test
+
+** 21/3/2022
+
+- *TODO: more mixes//bitmix add is an OR*
+
+ *bitstream abstraction-question of sources, plan*
+
+- 17,19 in adcetc as suspect - clean up adcetc with new ideas
+  too.... 19isfaulty - replace new test case...DONE - also changes to
+  int29mode
+
+- oscillator has length of 1 and 0 bits so 2 sets of params to deal
+  with or we have square 50/50 oscillator... 
+
+- what we mean by impulse input? eg. strobe triggers x bits (1s, x
+bits from adc, x bits from ...) NLpulse89
+
+- DONE/TODO: sliding DACout from notebook, depth, whereitis and [shift <<]
+  params - done to some extent as 16 in dacs
+
+- TEST:N,L,C,R with sequential bits in from generators - Lstream,
+  Rstream etc - TESTED fine
+
+- added lookup for mixdivs72,72dacmix-check
+
 ** 18/3/2022
 
 - fix adcg and adc mode 7 as this just gives LSBs and check all
@@ -299,7 +376,10 @@ or 100k cv in, 23k feedback, and -10v is 70k
 - do we have cycling adc/bits in - new mode 8 in adc_
 
 - to fix some of modeN which use old adc_buffer: 71, 72,
-  72dacmix-DONE/ - 72dacmix is no good, *72 needs lookup for division - log*
+  72dacmix-DONE/ - 72dacmix is no good, 72 needs lookup for
+  division/DONE - recheck dacmix
+
+[dacmix works only with external pulse ins..., both can be refined]
 
 /////////////////////////////////
 
@@ -335,7 +415,7 @@ how this could work: *we can have a pattern from otherSR or incoming of where/if
 
 ** 16/3/2022
 
-*TODO: detach length of SR and bitdepth in modeN/adcetc...*
+*TODO: detach length of SR and bitdepth in modeN/adcetc...* - done to some extent with new generators
 
 ** 15/3/2022
 
@@ -408,7 +488,9 @@ dac:
 
 - *changed adc mode 3 as was same as 0 - check all logics... maybe better group them in modeN*
 
-*TODO: for adc-> 8 bit fixed modes (12bits and 4 we have), fixed equivalent bits in eg. 4 bits equiv...* 
+DONETODO: for adc-> 8 bit fixed modes (12bits and 4 we have),
+*TODO:fixed equivalent bits in eg. 4 bits equiv...* then we need to
+use length
 
 //catalogue adc modes which have set bit depth(set), variable bit depth(any), restricted to <11 depth(<11)
 
@@ -561,7 +643,7 @@ R: feedback -> N // DAC value...
 
 ** 10/2/2022
 
-- noise on adc in seems to be to do with adc mode/multiple bits
+- noise on adc in seems to be to do with adc mode/multiple bits 
 
 newDONE:
 - oscillators (as in 81 tests in adc) few bits repeating which could be pulled in on strobe from income (or from cv bits) - cycle k[reg]DONE as 87inadcetc///

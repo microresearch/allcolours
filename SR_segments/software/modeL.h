@@ -487,9 +487,9 @@ void LN29(void){
     GSHIFT_;
     // INSERT!
     bitn=(gate[w].Gshift_[w]>>SRlength[w])& 0x01;
-    if ((LFSR_[w] & 4095 )<adc_buffer[12]) {
-      bitn=bitn^1;
-    }
+    //    if ((LFSR_[w] & 4095 )<adc_buffer[12]) { // TODO: fix
+    //      bitn=bitn^1;
+    //    }
     PULSIN_XOR;
     if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
@@ -951,6 +951,20 @@ void L0(void){ // basic route in OR puls
   }
 }
 
+void Lnoggg(void){ // we don't add back in result of gshift TEST
+  uint8_t w=1; 
+  HEADL;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTENOGGG_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
 
 void L0nog(void){ // basic route in no GSHIFT<<
   uint8_t w=1;

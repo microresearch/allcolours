@@ -117,7 +117,7 @@ probability of entry of adc, of route in etc...
   CVOPEN;					\
   if(gate[0].last_time<gate[0].int_time)      {	\
   GSHIFT_;								\
-  bitn=bitstreams[0](X);						\
+  bitn=(*bitstreams[0])(X);						\
   BINROUTE_;								\
   BITN_AND_OUTVN_;							\
   ENDER;								\
@@ -202,6 +202,71 @@ uint8_t modes16[16]={0,1,2,3,4,6,101,32,82,75,81,28,29,30,79,80}; // choose agai
 
 //////////////////////////// other models
 
+void Nstream(void){ // sequential 12 bit in - use also for L, R, N
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadbits(11);
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+void Lstream(void){ // sequential 12 bit in - use also for L, R, N
+  uint8_t w=1;
+  HEADL;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadbits(11);
+  BINROUTE_;
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void Cstream(void){ // sequential 12 bit in - use also for L, R, N // what is our DAC out here?
+  uint8_t w=2;
+  HEADC;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadbits(11);
+  BINROUTE_;
+  //  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void Rstream(void){ // sequential 12 bit in - use also for L, R, N
+  uint8_t w=3;
+  HEADR;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadbits(11);
+  BINROUTE_;
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+
+}
+
+
 void Noroute0(void){ // basic ADC in with no route in
   ADCXORIN_NOROUTE(0);
 }
@@ -217,10 +282,10 @@ ADCORXORIN(0);
 
 //////////////////////////////////////
 // new stream test
+
 void N0S(void){ // basic ADC in with XOR route in
   ADCSTREAMXORIN(4);
 }
-
 
 //////////////////////////////////////
 // basic ADC type  modes
@@ -255,7 +320,18 @@ void N6(void){ // padded version of SR of bitsin
 
 void N7(void){ // // timed version of SR bitsin - is MSB first- //NON
   ADCXORIN(7);
+  //  ADCXORIN_NOROUTE(7);
 }
+
+void N90equiv(void){ // equiv energy
+  ADCXORIN(90);
+  //  ADCXORIN_NOROUTE(7);
+}
+
+void N91sw(void){ // use dac for input or loop
+  ADCXORIN_NOROUTE(91);
+}
+
 
 void N32(void){ // multiple bits in as case 19 in draftdec // ***
   uint8_t w=0;
@@ -354,7 +430,7 @@ void N17(void){
 }
 
 void N18(void){
-  ADCXORIN(18);
+  ADCXORIN(18); // otherpar?
 }
 
 void N19(void){ 
@@ -1022,6 +1098,22 @@ void NLseladc2(void){ // speed from cv, cvl as type and dac as param   // DETACH
   }
 }
 
+void NLpulse89(void){ // test 89 impulse  // DETACH LENGTH
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  bitn=ADC_(0,SRlength[0],89,gate[0].trigger,dacfrom[daccount][0], CVL[0]>>2, &gate[0].shift_); // or we can use adcchoice to fill in
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+
 void NLSRlengthsel(void){ //use other SR bits to determine length of SR, eg. can be modded or...*   // DETACH LENGTH
   // in this case we select ADC as above and use SR as length 
   uint8_t w=0;
@@ -1401,7 +1493,7 @@ void Nint17(void){ //  case 17: // otherpar as timed adc entry
   } 
 }
 
-void Nint18(void){ //  case 18: // otherpar as 
+void Nint18(void){ //  case 18: // otherpar as CV
   uint8_t w=0;				       
   HEADN;  
   if (gate[w].trigger)      {
@@ -1412,7 +1504,7 @@ void Nint18(void){ //  case 18: // otherpar as
   } 
 }
 
-void Nint19(void){ //  case 19: // otherpar as 
+void Nint19(void){ //  case 19: // otherpar as CV
   uint8_t w=0;				       
   HEADN;  
   if (gate[w].trigger)      {
@@ -1423,24 +1515,36 @@ void Nint19(void){ //  case 19: // otherpar as
   } 
 }
 
-void Nint21(void){ //  case 21: // otherpar as 
+void Nint32(void){ //  case 32-new tests - adc xor with dac: // otherpar as CV
   uint8_t w=0;				       
   HEADN;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    bitn=ADC_(0,SRlength[w],21,gate[w].trigger,dacfrom[daccount][0],4095-CV[0], &gate[w].shift_); 
+    bitn=ADC_(0,SRlength[w],32,gate[w].trigger,dacfrom[daccount][0],31-(CV[0]>>7), &gate[w].shift_); 
+    //    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+void Nint21(void){ //  case 21 oscillator: // otherpar as CV - REDONE TEST - detach
+  uint8_t w=0;				       
+  HEADSINN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    bitn=ADC_(0,CVL[0]>>2,21,gate[w].trigger,dacfrom[daccount][0],CV[0]>>2, &gate[w].shift_); 
     BINROUTE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
 }
 
 
-void Nintosc29(void){//  case 29:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits  - OTHERPAR! 12 bits
+void Nintosc29(void){//  case 29:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits  - OTHERPAR! 12 bits DETACH NOW
+  // or we freeze length as odd to have both tied together
   uint8_t w=0;				       
-  HEADN;  
+  HEADSINN;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    bitn=ADC_(0,SRlength[w],29,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_); 
+    bitn=ADC_(0,(CVL[0]>>2),29,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_);  // changing lengths to use CVL
     BINROUTE_;
     BITN_AND_OUTNINT_; // for no pulse out
   } 
@@ -1596,7 +1700,9 @@ void Nint72(void){ // as above but how can we do mix of adc/dac according to CV,
     //    gate[dacfrom[daccount][0]].dactype=15-(CV[0]&15); // lowest bits
     // leaves us (CV[0]>>4)&255 to play with
     //    tmp=CV[0]&3;
-    mult=1.0f/((float)(CV[0]>>8)+1.0f); // changed 24/2 - maybe as LOOKUP TODO
+    //    mult=1.0f/((float)(CV[0]>>8)+1.0f); // changed 24/2 - maybe as LOOKUP TODO
+        mult=mixer[CV[0]>>2]; // 10 bits - 0 is 1.0f so full dac
+    //    mult=0.0f;
     ADCgeneric;
     pp=(float)(k *  (1.0f-mult)) + ((float)(gate[2].dac)*mult); // mix with param
     //    //    pp=(float)(adc_buffer[12]*(1.0f-mult)+((float)(gate[3].dac)*mult); // mix with param - optional
@@ -1620,7 +1726,8 @@ void Nint72dacmix(void){ // as above but how can we do mix of adc/dac according 
     // leaves us (CV[0]>>4)&255 to play with
     tmpp=(CV[0]>>6);
     tmp=tmpp&0x03;
-    mult=1.0f/(float)((gate[tmp].dac)+1.0f); // but if we use 3 below... anyways
+    //    mult=1.0f/(float)((gate[tmp].dac)+1.0f); // but if we use 3 below... anyways
+    mult=mixer[gate[tmp].dac>>2];
     ADCgeneric;
     //    pp=(float)k+((float)(gate[tmp].dac)*mult); // mix with param
     pp=((float)(k)*(1.0f-mult)) + ((float)(gate[3].dac)*mult); // mix with param - optional

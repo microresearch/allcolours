@@ -68,6 +68,21 @@ what are the next 16x LR modes
   }							\
 }
 
+#define DACOUTGGG {				\
+  uint8_t w=2;					\
+  HEADC;						\
+  if (speedf_[2]!=2.0f){				\
+    CVOPEN;						\
+    if (gate[2].last_time<gate[2].int_time)      {	\
+      GSHIFT_;						\
+      BINROUTENOGGG_;					\
+      BITN_AND_OUTV_;					\
+      ENDER;						\
+    }							\
+  }							\
+}
+
+
 #define DACOUTX {				\
   uint8_t w=2;					\
   HEADSINC;						\
@@ -242,7 +257,8 @@ void CN18_0(void){
   }
 }
 
-void CLDACSEL0(void){
+
+void CLDACSEL0(void){ // detached
   uint8_t w=2;
   uint8_t mmm=CVL[2]>>8; // to 4 bits
   gate[2].dactype=mmm; gate[2].dacpar=param[2];
@@ -344,15 +360,28 @@ void C15(void){ // one bit audio with param as filter
   DACOUT;
 }
 
-void C67_4bits(void){ // stock 4 bit DAC - nothing to do with length
-  gate[2].dactype=67; gate[2].dacpar=4095-(param[2]&4095);
+void C67_4bits(void){ // stock 4 bit DAC - nothing to do with length!!!! TODO: use length PARAM as....
+  gate[2].dactype=67; gate[2].dacpar=param[2];
   DACOUT;
 }
 
-void C66(void){ // default basic dac
-  gate[2].dactype=66; gate[2].dacpar=4095-(param[2]&4095);
+void C67_4bitsNOGG(void){ // stock 4 bit DAC - nothing to do with length!!!! TODO: use length PARAM as....
+  gate[2].dactype=67; gate[2].dacpar=param[2];
+  DACOUTGGG;
+}
+
+
+void C66(void){ // default basic 4 bit dac
+  gate[2].dactype=66; gate[2].dacpar=param[2];
   DACOUT;
 }
+
+void C68(void){ // default basic 4 bit dac with no timing
+  gate[2].dactype=68; gate[2].dacpar=param[2];
+  DACOUT;
+}
+
+
 
 void Ctest(void){ // for speed 1hz to 20hz triangle here...
   // but why do we lose it ????
@@ -652,6 +681,17 @@ void Cint0(void){ // INTmode 0 no interpolation and no use of CV
   uint8_t w=2;				       
   gate[2].dactype=0; gate[2].dacpar=param[2];
   HEADC;  
+  if (gate[2].trigger)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVINT_; // we have pulse out
+  } 
+}
+
+void Cintslide16(void){ // window // detach length so we use speed and length
+  uint8_t w=2;				       
+  gate[2].dactype=16; gate[2].dacpar=CV[2]>>7; // 5 bits
+  HEADSSINC;  
   if (gate[2].trigger)      {
     GSHIFT_;
     BINROUTE_;

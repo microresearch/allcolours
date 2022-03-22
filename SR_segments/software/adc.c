@@ -58,7 +58,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
 	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div8;
 	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
-	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_20Cycles; // was 5?
+	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles; // was 5?
 	ADC_CommonInit(&ADC_CommonInitStructure);
 
 	/* ADC1 Init ------------------------------------------------------------*/
@@ -66,7 +66,7 @@ void ADC1_Init(uint16_t *ADC_Buffer)
 	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE; // was enable
 	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
-	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
+	ADC_InitStructure.ADC_ExternalTrigConv = 0x00;//ADC_ExternalTrigConv_T1_CC1;
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right; // was right - in CLOUDS is left? so is 12 bits
 	ADC_InitStructure.ADC_NbrOfConversion = 13;
 	//	ADC_InitStructure.ADC_NbrOfChannel = 10; not existing
@@ -113,28 +113,28 @@ void ADC1_Init(uint16_t *ADC_Buffer)
   *            @arg ADC_SampleTime_480Cycles: Sample time equal to 480 cycles	
 */
 	// was 3 cycles
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_15Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_15Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_15Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_15Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 5, ADC_SampleTime_15Cycles);// PB0
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6, ADC_SampleTime_15Cycles);// 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 7, ADC_SampleTime_15Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 8, ADC_SampleTime_15Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 9, ADC_SampleTime_15Cycles);// PB1 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 10, ADC_SampleTime_15Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 11, ADC_SampleTime_15Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 12, ADC_SampleTime_15Cycles);//
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 13, ADC_SampleTime_15Cycles);// PC3 added 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 5, ADC_SampleTime_480Cycles);// PB0
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6, ADC_SampleTime_480Cycles);// 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 7, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 8, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 9, ADC_SampleTime_480Cycles);// PB1 
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 10, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 11, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 12, ADC_SampleTime_480Cycles);//
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 13, ADC_SampleTime_480Cycles);// PC3 added 
 
 	
 
 	/* Enable Complete DMA interrupt  */
 	
-	//	DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, DISABLE); // do we need this?
+	//DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, DISABLE); // do we need this?
     
 	/* ADC DMA IRQ Channel configuration */
-	//		NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+	//	NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 	
 	/* Enable DMA request after last transfer (Single-ADC mode) */
 	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);

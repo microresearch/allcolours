@@ -1,3 +1,40 @@
+// sources: adc, dac, oscillator, clock?-return last strobe, impulses(TODO) - // add in different DACs, SR bits output
+// but some of these are single bits so doesn't make sense
+
+uint32_t fadc(void){
+  uint32_t k;
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_3Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  k=ADC_GetConversionValue(ADC1);
+  return k;
+}
+
+uint32_t fdac(void){
+  uint32_t k;
+  k=gate[3].dac;
+  return k;
+}
+
+uint32_t (*fff[8])(void)={fadc, fdac};
+
+// how we can start to abstract source out - but few sources...
+static inline uint32_t bits(uint32_t depth, uint8_t func){ // max 12 bits // func is index into function array
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (depth>11) depth=11; // max depth
+    if (bc<0) {
+      k=(*fff[func])(); // new 12 bits but only in case of adc/dac
+      k=k>>(11-depth);
+	bc=depth; // was 11
+  }
+    bt = (k>>bc)&0x01; // this means that MSB comes out first
+    bc--;
+    return bt;
+}
+
+
 /* // why we lost this?
 // Nint70 - if we can change type of gate[3].dac in dac mixes 66,67,68 or pure dac ins (?)
 void Nint70(void){

@@ -791,8 +791,24 @@ heavens gate[4];
   uint8_t oreq=0;
   oreq|=1;
   printf("oreq %d\n",oreq);
-  
-  /*   for (x=0;x<8;x++){
+  int n=0, nn=0, otherpar=1, length=0;
+  for (x=0;x<640;x++){
+     if (n>length) {
+       bt=0;
+       if (nn>=otherpar) {
+	 n=0;
+       }
+       nn++;
+     } // n>length
+     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     printf("%d ",bt);
+  }
+  /* 
      printf("(LFSR[0]&%d)>>%d) + ",(1<<(elf[x]-1)), (elf[x]-(x+1))  );
    }
    printf("\n");

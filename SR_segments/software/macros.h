@@ -121,6 +121,19 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
+#define BINROUTENOGGG_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+
 #define BINROUTEOR_ {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\

@@ -41,6 +41,7 @@
 #include "stm32f4xx_tim.h"
 #include "misc.h"
 #include "adc.h"
+#include "stdlib.h"
 #include <math.h>
 #include "resources.h"
 #include "modes.h"
@@ -91,7 +92,7 @@ uint8_t strobey[4][64]={
   
 #include "macros.h"
 
-extern __IO uint16_t adc_buffer[12];
+//extern __IO uint16_t adc_buffer[13];
 float LPF_Beta = 0.4; // 0<ß<1
 uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed to use in INTmodes and other modes
 ///uint32_t dacroute[4]={2,3,3,1}; // DAC routing for probability modes etc...
@@ -168,7 +169,7 @@ static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
 //uint32_t LFSR[4]={3,3,3,1}; // which SR take the LFSR bits from! default is from itself - but could be opposites eg. {2,3,0,1}
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
-uint32_t dactype[4]={66,66,0,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
+uint32_t dactype[4]={66,66,66,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
@@ -353,9 +354,9 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(void)=
 {//NLcutfeedback86
   // test 6,7,8 and new funcs from tenerifa
-  {Nint71, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {N91sw, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, LX0},
-  {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
+  {C1, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
 
@@ -421,14 +422,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     (*dofunc[www][mode[www]])();
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
-  if (www==2)  {
+    //  if (www==2)  {
     //      kk^=1; // test code
     //       if (kk)    gate[2].dac=4095;
     //        else gate[2].dac=0;
     DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8 
     int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-  }
+    //  }
 
+    
   // DAC for normed NSR/PWM
     if (www==dacfrom[daccount][0] && strobey[0][mode[0]]){
       tmp= gate[dacfrom[daccount][0]].dac; // now is set by count/array

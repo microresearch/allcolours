@@ -13,5 +13,6 @@
 
 
 void ADC1_Init(void);
+//void ADC1_Init(uint16_t *ADC_Buffer);
 
 #endif

@@ -568,7 +568,7 @@ void Lintgenericprob2(void){ // adc[12] is prob and cv is bits
     lower=bit&0x03;
     bit=(bit>>2)*3;
 
-    tmp=adc_buffer[12]&4095; // this could also be selected by bits
+    //    tmp=adc_buffer[12]&4095; // this could also be selected by bits - TODO_FIX!
     tmpp=gate[dacfrom[daccount][w]].dac&4095;
 
     if (tmp<tmpp) bitn=prob[lower]; // lowest 2 bits
