@@ -296,6 +296,11 @@
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
 }
 
+#define BITN_AND_OUTVNNO_ {						\
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+}
+
+
 // for int modes as no interpol, no pulse outs
 #define BITN_AND_OUTNINT_ {						\
     gate[w].shift_+=bitn;						\

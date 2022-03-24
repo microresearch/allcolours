@@ -463,7 +463,11 @@ int main(void)
   NVIC_Init(&NVIC_InitStructure);
 
   mode_init();
-  
+
+  // testings
+  //  DAC_SetChannel1Data(DAC_Align_12b_R, 0); // 1000/4096 * 3V3 == 0V8
+  //  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
+
   
     while(1) {
 

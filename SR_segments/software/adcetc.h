@@ -157,11 +157,12 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
   }
 
 
+// TEST INVERSION
 #define ADCtwo {				\
     ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
-  k[reg]=ADC_GetConversionValue(ADC1);					\
+  k[reg]=4095-ADC_GetConversionValue(ADC1);					\
   }
 
 
@@ -200,6 +201,16 @@ static inline uint32_t oscbits(uint32_t depth, uint32_t depthh){ // 2 params so 
      return bt;
 }
 
+static inline uint32_t osc1bits(uint32_t depth){  // we don't use depth!
+  // TODO: but is same more or less as static bit pattern which could be imposed at intervals
+  uint32_t bt;
+  static uint32_t lastbt;
+  lastbt^=1;
+  bt=lastbt;
+  return bt;
+}
+
+
 // what are variations on this? - for padding (x bits treated as y bits):
 // restrict to 12 bits (can also be x bits fixed), pad to x bits, always static number of bits
 static inline uint32_t adcxbits(uint32_t depth){ // max 12 bits
@@ -207,8 +218,8 @@ static inline uint32_t adcxbits(uint32_t depth){ // max 12 bits
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      ADCgeneric11; //   k=ADC_GetConversionValue(ADC1)>>(11-depth); 
       if (depth>11) depth=11; // max depth
+      ADCgeneric11; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
       bc=depth; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -784,6 +795,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      break;    
 
   case 30: // 3/12/2021 - 101010 clock at speed - ultrasonic at fastest speeds
+    // TODO: but is same more or less as static bit pattern which could be imposed at intervals
     lastbt[reg]^=1;
     bt=lastbt[reg];
     break;
@@ -1156,7 +1168,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      if (k[reg]>tmp) bt=1;
      break;
 
-  case 85:
+  case 85: // comp at 2048 middle...
     ADCtwo
       if (k[reg]>2048) bt=1;
       else bt=0;
@@ -1189,8 +1201,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     // changed for toggle 26/2
     if (strobe) toggle[reg]=1;
  
-    if (n[reg]<0) {
-      if (toggle[reg]==1){
+    if (n[reg]<0) {  // can also be if (n[reg]<0 || toggle[reg])
+      if (toggle[reg]){
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles);
 	ADC_SoftwareStartConv(ADC1);
 	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
@@ -1204,17 +1216,16 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
 
   case 88: // - if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached
+    // see modeN.h
      bt=0;
      ADCtwo;
-     if ((k[reg])>((gate[regg].dac))) {
+     if ((k[reg])>((gate[regg].dac))) { 
        if (otherpar==255){ // then we 4 bits in of adc
       if (n[reg]<0) {
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles);
 	ADC_SoftwareStartConv(ADC1);
 	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
 	k[reg]=ADC_GetConversionValue(ADC1)>>8;
-	
-	//		k[reg]=1; // testing for a repeated pattern - could be prob of a grab... SR wheel in SR
 	n[reg]=3;
     }
       bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
@@ -1250,7 +1261,79 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     tmp=dacpadbits(otherpar);
     if (tmp) bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it - or is always 0 
     break;    
+
+    // different encodings but all are so far 12 bits in and ignoring depth and length, other encodings
     
+  case 92: // basic sequential length of 12 bits cycling in with subtract of otherpar (max 12 bits)
+    if (n[reg]<0) { // 12 bits
+      ADCtwo;
+      tmp=k[reg]-otherpar;
+      if (tmp<0) k[reg]=0;
+      else k[reg]=tmp;
+      n[reg]=11;
+    }
+    bt = (k[reg]>>n[reg])&0x01; // top bit first
+    n[reg]--;    
+    break;
+
+  case 93: // basic sequential length of x bits cycling in with -2048
+    if (n[reg]<0) { // trial 8 bits which is really 7 bits
+      ADCtwo;
+      k[reg]=k[reg]>>4;// 8 bits
+      tmp=k[reg]-127;
+      if (tmp<0) k[reg]=0;
+      else k[reg]=tmp;
+      //      k[reg]=abs(tmp);
+      n[reg]=6;
+    }
+    bt = (k[reg]>>n[reg])&0x01; // top bit first
+    n[reg]--;    
+    break;
+
+  case 94: // basic sequential length of 12 bits cycling in with -2048 // abs
+    if (n[reg]<0) { 
+      ADCtwo;
+      k[reg]=k[reg]>>7;
+      tmp=k[reg]-15;
+      k[reg]=abs(tmp);
+      n[reg]=3;
+    }
+    bt = (k[reg]>>n[reg])&0x01; // top bit first
+    n[reg]--;    
+    break;
+
+  case 95: // basic 4 bits pattern in - grab into SR on STROBE
+    // but we need different patterns - detach
+    //    if (strobe) toggle[reg]=1;
+ 
+    if (n[reg]<0 || strobe){
+      if (strobe){
+	otherpar=otherpar&15;
+	k[reg]=pattern[otherpar];
+	//	k[reg]=0b1010;
+      }
+	n[reg]=3;
+      }
+      bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
+      n[reg]--;    
+    break;
+
+  case 96: // trial of straight x bits in on strobe/... 4 bits
+    if (strobe){
+      // mask in
+      *SR&=invmasky[3]; // clear length bits
+      ADCtwo;
+      *SR+=k[reg]>>8; // top 4 bits
+    } // no bt
+    bt=0;
+    break;    
+
+  case 97: // 4 bits straight 
+    *SR&=invmasky[3]; // clear length bits
+    ADCtwo;
+    *SR+=k[reg]>>8; // top 4 bits
+    bt=0;
+    break;    
      ///////////////////////
   } // switch
   return bt;
@@ -1476,10 +1559,14 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
   case 12: // we wait for otherparam bits then output that many bits from the top of the SR (len bit)
+    //    length=3; // is good to vary length AND otherpar AND speed - Cint12 does this
+    // can also be x number of equiv bits TRY!
     otherpar=otherpar&31; //5 bits
     if (n[wh]>otherpar) {
       n[wh]=0;
       x=((shift & masky[length])>>(rightshift[length]))<<leftshift[length];
+      //      length=1;
+      //      x=(shift & masky[length])<<11;
       lastout[wh]=x;
     }
     x=lastout[wh];
@@ -1521,9 +1608,10 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 16: // 22/3/2022 sliding bits.moving window - we have depth/length and where it is, wrap or not, shift or not
     // use detached length for length, and otherpar&31 for where it is, try no wrap
     // note: SRlength_[wh] or treat as full length/yes
+    if (length>11) length=11;
     otherpar=otherpar&31; //5 bits
     // topbits
-    x=shift&masky[length]<<otherpar; 
+    x=shift&(masky[length]<<otherpar); 
     // bottom bit   
     tmp=(otherpar+length);
     if (tmp>31){
@@ -1672,7 +1760,7 @@ void TIM4_IRQHandler(void)
   mode[0]=(temp>>6); // 64 modes = 6 bits  
 
   // modec
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_144Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
@@ -1694,7 +1782,7 @@ void TIM4_IRQHandler(void)
   mode[1]=(temp>>6); // 64 modes = 6 bits  
 
   // moder
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_144Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);

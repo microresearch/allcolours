@@ -215,6 +215,21 @@ void CLBURST0(void){
   }
 }
 
+ // but we need vary length and otherpar
+void CL16slide(void){   // DETACH SPEED
+  uint8_t w=2;
+  gate[2].dactype=16; gate[2].dacpar=CV[2]>>7;
+ HEADSSINC
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[2].last_time<gate[2].int_time)      {
+  GSHIFT_;
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
 
 void CN17_0(void){ 
   uint8_t w=2;
@@ -264,6 +279,17 @@ void CLDACSEL0(void){ // detached
   gate[2].dactype=mmm; gate[2].dacpar=param[2];
   DACOUTX;
 }
+
+void CL12(void){ // detached - interval DAC
+  HEADSINC;
+  uint8_t w=2;
+  gate[2].dactype=12; gate[2].dacpar=31-(CVL[2]>>7);
+  DACOUTX;
+  //      GSHIFT_;					       
+  //      BINROUTE_;				       
+  //      BITN_AND_OUTVINT_;				   
+}
+
 
 void CLDACSRSEL0(void){
   uint8_t w=2;
@@ -688,7 +714,21 @@ void Cint0(void){ // INTmode 0 no interpolation and no use of CV
   } 
 }
 
-void Cintslide16(void){ // window // detach length so we use speed and length
+void Cint12(void){ // INTmode - 
+  uint8_t w=2;				       
+  HEADSSINNADA;
+  // trial length down to 0  
+  SRlength[2]=31-(CVL[2]>>7);
+  gate[2].dactype=12; gate[2].dacpar=31-(CV[2]>>7);
+  if (gate[2].trigger)      {
+    GSHIFT_;
+    BINROUTE_;
+    BITN_AND_OUTVINT_; // we have pulse out
+  } 
+}
+
+
+void Cintslide16(void){ // window // speed is param// we need length so no detach
   uint8_t w=2;				       
   gate[2].dactype=16; gate[2].dacpar=CV[2]>>7; // 5 bits
   HEADSSINC;  

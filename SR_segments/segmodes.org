@@ -1,6 +1,15 @@
 * plan
 
-CODE, basic speed and new CV hardware tests, MANUAL
+serpent's head, caput draconis (rather than heavens\) - lunar node and
+link of geomantic figures with dots/dot matrix/bits... (see CCRU also)
+
+dragon with 5 heads!
+
+for calibration use unipolar out/gnded from Quad slope
+
+CODE: modes? normed clocks, how fast we can run?
+
+basic speed and new CV hardware tests, MANUAL
 
 /////////////////////////////////////////////////////////
 
@@ -293,7 +302,107 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *figure out calc for filter speeds (once we settle on speeds)*
 *cleaning, organising, testings!*
 
-*TODO: check bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...*
+*TODO: check newmodes, bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...*
+
+newmodes I think are in modeL - and need to be ported across!
+
+** 24/3/2022
+
+- *5th head of serpent* indicates extra feedback path - uncontrolled -
+  sink for other SRs, or free running SR, controlled by? eg. like
+  flipflop or generic SR... we can sample and use this 5th head!
+
+what are its parameters?
+
+- probability of feedback return is important
+
+- almost as if there could be chains of ADC operations
+
+-bitstream in
+-routedbit/s from///
+-dotheycomein? - strobe/toggle/probability/ANDbitsotherSR -> using AND
+from other downstream SR doesn't work for feedback reasons///
+- *how they come in* splicings with other chains, mixing with other
+  chains
+
+SR as a chain.. specifying chain
+
+N95 is now with dac choosing pattern to enter on strobe... *patterns can be geomantic*
+
+- assessing modes 11/12 in DAC and general speeds of DAC...
+
+*still question why length of ADC/DAC doesn't make any/much difference
+to signal*
+
+note also that oscillators are more effected by speed of NEXT SR - (eg
+modeL)... as if they are unchanging they write the same information -
+would be different if they were catching samples like 1/0/1/0 like a
+DAC - can we try this! - towards trying to think more generic
+
+DONE: Nflip mode... 
+
+OSC modes can also have strobe or other prob/decider for loopback (dac
+decider?)
+
+ADC: *insertion of static bits* /overlap of bits from different sources (where
+did we have repeating elements - from adc 87 on strobe) eg. we realise that 1010 from ^=1 (30)
+could be static pattern 
+
+on strobe we could enter one of y x-bit patterns (eg. 4 bit
+geomantics)... NLpattern95 but we could have other splices (of ADC
+etc)
+
+SR keeps shifting/or looping and we insert bit only on speed... - that
+is a bit like multiple speeds which we have already
+
+N97 only - we insert 4 bits in on speed otherwise keeps on routing,
+can also be route and cycle, other options
+
+// how these new modes fit with generic ideas??? ... more about
+splicing in, and seperating elements/shifts/speeds
+
+a lot also about routing...
+
+///modeN-> define abstract modes
+
+*TODO: sliding x bit entry a la 97!*
+
+*window of feedback... in modeR or N*
+
+** 23/3/2022
+
+- DAC16mode doesn't do much, sliding window, we will need to find use
+  for length in DAC as doesn't do hardly anything and we don't use for feedback...
+
+*maybe invert incoming adc and not dac out//or keep dac inverted*
+
+*TODO*- different encoding/decodings for adc/dac eg. one's complement
+= bitwise not, two's=one's+1, signed magnitude (MSB is sign 1 for - -
+this works better for energies...) - more abstract modes?? what these
+could be??
+
+//cut below 2048, energy only/equiv we have but can also be bits,,,,
+
+ADC - encoding, bit codings
+DAC - decodings?
+
+////
+
+eg. process/subtractetc, how we interpret these bits
+
+ADC- encodings/depth, how we deal with bits/coding bits (length?) (adcetc), this
+becomes bitstream into length SR (moden), do these bits come in, how are they
+treated, any other
+
+abtract out routein/vs/adcin/abstractoscin/////
+
+////
+
+do we have comp against changing levelyes-20/otherpar- DONEcan also be detached mode
+
+subtract changing level...Nintsub92 - detached? DONE NLsub92
+
+comp at 2048=mode85
 
 ** 22/3/2022
 
@@ -303,7 +412,7 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 Q? modeN. 
 0-7 - most basic ADC in
-8-15 - strobe modes
+8-15 - strobe modes/abstract modes...
 16-31 - detached modes, detached strobe modes
 
 /////modeN

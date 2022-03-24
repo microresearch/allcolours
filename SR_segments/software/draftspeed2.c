@@ -46,7 +46,7 @@
 #include "resources.h"
 #include "modes.h"
 
-heavens gate[4]; 
+static heavens gate[4]; 
 
 #define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
 
@@ -187,7 +187,7 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[16][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
-    {8,1,2,1}, // default 8121
+    {8,1,2,4}, // default was 8121 
   //  {0,0,1,0}, //  test
 	{8,1,2,2}, // expanding
 	{8,1,2,4}, // expanding
@@ -354,9 +354,9 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(void)=
 {//NLcutfeedback86
   // test 6,7,8 and new funcs from tenerifa
-  {N91sw, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {N95, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, LX0},
-  {C1, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
+  {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
 
@@ -396,7 +396,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     www=0;
   }
   
-  
   if (intflag[www]) { // process INT
     gate[www].trigger=1;
     intflag[www]=0;
@@ -412,23 +411,28 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do the modes
   
-  mode[www]=testmodes[www];
+  // mode[www]=testmodes[www];
   //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
-  //    mode[0]=0;mode[1]=0;mode[3]=0; // test dac
-  //
-    //            if (mode[2]>15) mode[2]=15;
+  mode[0]=0;mode[1]=0;mode[3]=0; // test dac
+  if (mode[2]>15) mode[2]=15;
   //    (*gate[www].dofunc[mode[www]])();
-      //      mode[2]=5;
+  //mode[2]=12;
     (*dofunc[www][mode[www]])();
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
-    //  if (www==2)  {
-    //      kk^=1; // test code
-    //       if (kk)    gate[2].dac=4095;
-    //        else gate[2].dac=0;
-    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8 
-    int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
-    //  }
+    if (www==2)  {
+    //          kk^=1; // test code
+    //	  if (kk)    gate[2].dac=4095;
+    //	  else gate[2].dac=0; // 50 KHz!
+      DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
+      ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
+    //    ADC_SoftwareStartConv(ADC1); 
+    //    while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+    //    kk=ADC_GetConversionValue(ADC1);
+    //    kk=2050;
+    //    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-kk); // 1000/4096 * 3V3 == 0V8 
+    //    int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+      }
 
     
   // DAC for normed NSR/PWM

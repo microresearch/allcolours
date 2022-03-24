@@ -110,6 +110,22 @@ probability of entry of adc, of route in etc...
   }									\
   }
 
+#define ADCXORINX(X){				\
+  uint8_t w=0;					\
+  HEADN;						\
+  if (speedf_[w]!=2.0f){			\
+  CVOPEN;					\
+  if(gate[0].last_time<gate[0].int_time)      {	\
+  GSHIFT_;								\
+  bitn=ADC_(0,SRlength[0],X,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_);	\
+  BINROUTE_;								\
+  BITN_AND_OUTVNNO_;							\
+  ENDER;								\
+  }									\
+  }									\
+  }
+
+
 #define ADCSTREAMXORIN(X) {			\
   uint8_t w=0;					\
   HEADN;						\
@@ -332,6 +348,41 @@ void N91sw(void){ // use dac for input or loop
   ADCXORIN_NOROUTE(91);
 }
 
+void N93(void){ // - 2048
+  ADCXORIN(93);
+}
+
+void N94(void){ // abs - 2048
+  ADCXORIN(94);
+}
+
+void N95(void){ // strobe toggle in - otherpar selects pattern which is now dac driven - 4 bits
+  param[0]=gate[dacfrom[daccount][0]].Gshift_[0]>>8;
+  ADCXORIN(95); 
+}
+
+void N97only(void){ // only pull in on speed otherwise route // ***
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[0]==2.0f) speedf_[0]=LOWEST;
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+    GSHIFTNOS_; // no shift
+  bitn=ADC_(0,SRlength[0],97,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_);
+  //  BINROUTE_; // or no route in here
+  BITN_AND_OUTVNNO_; // no shift
+  ENDER;
+  }
+  else {
+    // route in and shift
+    GSHIFT_;
+    BINROUTEANDCYCLE_; // or we can try with no route in so peters out, or with circular route
+    // JUSTCYCLE_
+    gate[w].shift_+=bitn;
+  }
+}
+
+
 
 void N32(void){ // multiple bits in as case 19 in draftdec // ***
   uint8_t w=0;
@@ -379,7 +430,14 @@ void N29(void){ // 1 bit oscillator
 }
 
 void N30(void){
-  ADCXORIN(30);
+
+}
+
+void Nflip(void){ // full speed 1/0 flipflop and fake strobe - TODO: fake strobe can also be used for other strobe modes...
+  static uint32_t flipflop=0;
+  flipflop^=1;
+  gate[0].trigger=flipflop;
+  ADCXORIN(28);
 }
 
 //////////////////////////////////////////////////
@@ -548,6 +606,11 @@ void N73(void){  // dac in special case for spaced bit entry depending on length
 void N74(void){ // dac in basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc...
   ADCXORIN(74);
 }
+
+void N96(void){ // strobe 4 bits straight in - no bt in any case
+  ADCXORINX(96); // we dont add bt but do shift - BITN_AND_OUTVNOSHIFT
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////ROUTE MODES
 
@@ -884,7 +947,7 @@ void Nstrobe6_29(void){  // 6- ADCBIT xor routed vs returnbit
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////// detached modes: 11 modes
+//////////////// detached modes:  modes ++
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // - if CV>DAC - entry of new bit from [ADC, route or cycle] XOR cycle/route etc... - use what for this choice of route - detached
@@ -1001,6 +1064,54 @@ void NLdoublelength(void){   // DETACH LENGTH
   }
   }
 }
+
+
+void NLpattern95(void){   // DETACH LENGTH and select one of 16 patterns insert on strobe
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  tmp=(CVL[0]>>8); //4 bits
+  bitn=ADC_(0,SRlength[0],95,gate[0].trigger,dacfrom[daccount][0],tmp, &gate[0].shift_); 
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+void NLcomp20(void){   // DETACH LENGTH - comparator 12 bits
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  bitn=ADC_(0,SRlength[0],20,gate[0].trigger,dacfrom[daccount][0],CVL[0], &gate[0].shift_); 
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+void NLsub92(void){   // DETACH LENGTH - subtract 12 bits
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  bitn=ADC_(0,SRlength[0],92,gate[0].trigger,dacfrom[daccount][0],4095-CVL[0], &gate[0].shift_); 
+  BINROUTE_;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
 
 
 
@@ -1471,7 +1582,7 @@ void Nint0(void){ // INTmode 0 no interpolation and no use of CV
 
 
 
-void Nintcomp20(void){ //CV comparator //  case 20: // otherpar as comparator - 10 bits standard here // now 12 bits  - OTHERPAR! 12 bits
+void Nintcomp20(void){ //CV comparator //  case 20: // CVotherpar as comparator - 10 bits standard here // now 12 bits  - OTHERPAR! 12 bits
   uint8_t w=0;				       
   HEADN;  
   if (gate[w].trigger)      {
@@ -1481,6 +1592,18 @@ void Nintcomp20(void){ //CV comparator //  case 20: // otherpar as comparator - 
     BITN_AND_OUTNINT_; // for no pulse out
   } 
 }
+
+void Nintsub92(void){ //subtract CV //  case 92: 
+  uint8_t w=0;				       
+  HEADN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],92,gate[w].trigger,dacfrom[daccount][0],(4095-CV[0]), &gate[w].shift_); 
+    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
 
 void Nint17(void){ //  case 17: // otherpar as timed adc entry
   uint8_t w=0;				       

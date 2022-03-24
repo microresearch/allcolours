@@ -792,6 +792,7 @@ heavens gate[4];
   oreq|=1;
   printf("oreq %d\n",oreq);
   int n=0, nn=0, otherpar=1, length=0;
+  /*
   for (x=0;x<640;x++){
      if (n>length) {
        bt=0;
@@ -807,7 +808,12 @@ heavens gate[4];
        nn=0;
      }         
      printf("%d ",bt);
-  }
+     }*/
+  uint32_t k=0; int tmppp;
+  tmppp=abs(k-2048);
+  //  tmppp=0b00000000000000000000000000001111;
+  printf("%u\n",tmppp);
+  
   /* 
      printf("(LFSR[0]&%d)>>%d) + ",(1<<(elf[x]-1)), (elf[x]-(x+1))  );
    }
