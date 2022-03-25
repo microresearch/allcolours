@@ -813,7 +813,20 @@ heavens gate[4];
   tmppp=abs(k-2048);
   //  tmppp=0b00000000000000000000000000001111;
   printf("%u\n",tmppp);
-  
+
+  // movemasky
+  for (x=0;x<31;x++){
+    for (y=31-x;y>0;y--){
+      printf("1");
+    }
+    if (x>3 && x<27){
+      printf("0000");
+    }
+      for (y=3;y<x;y++){
+      printf("1");
+      }
+      printf(",\n0b");
+  }
   /* 
      printf("(LFSR[0]&%d)>>%d) + ",(1<<(elf[x]-1)), (elf[x]-(x+1))  );
    }

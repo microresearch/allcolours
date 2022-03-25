@@ -216,7 +216,13 @@ uint8_t modes16[16]={0,1,2,3,4,6,101,32,82,75,81,28,29,30,79,80}; // choose agai
 
 // uint8_t dacmodes[16]= // list for dacmodes! TODO!
 
-//////////////////////////// other models
+// new stream test
+
+void N0S(void){ // basic ADC in with XOR route in
+  ADCSTREAMXORIN(4);
+}
+
+// 4 streams for sequential entry of bits into each register
 
 void Nstream(void){ // sequential 12 bit in - use also for L, R, N
   uint8_t w=0;
@@ -282,6 +288,36 @@ void Rstream(void){ // sequential 12 bit in - use also for L, R, N
 
 }
 
+//////////////////////////////////////
+// how to draft new experimental mode from notebook 25/3/2022 - that we want full speed mirror
+
+void Ndraft0(void){
+  uint8_t w=0;
+  HEADN;
+  // run at full speed adc/shift but no gshift - but what about binroute as this one becomes own binroute//mise en abyme
+  // eg. basic operation - but does it need its own speed sets?
+  gate[w].gshift_=gate[w].gshift_<<1;
+  bitn=adcpadbits(11);
+  gate[w].gshift_+=bitn;
+  
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFTNOS_;
+  gate[w].shift_=gate[w].gshift_;
+  //  bitn=adcpadbits(11); // if is just case of bitn we can don't need to copy full register... but
+  //  BINROUTE_; // route in gshift or insert/mix in ??? but we still need to slow it down...
+  bitrr = (gate[w].gshift_>>SRlength[x]) & 0x01;
+  bitn^=bitrr;
+  BITN_AND_OUTVN_;
+  ENDER;
+  }
+  }
+}
+
+
+
+//////////////////////////// other models
 
 void Noroute0(void){ // basic ADC in with no route in
   ADCXORIN_NOROUTE(0);
@@ -297,14 +333,8 @@ ADCORXORIN(0);
 }
 
 //////////////////////////////////////
-// new stream test
-
-void N0S(void){ // basic ADC in with XOR route in
-  ADCSTREAMXORIN(4);
-}
-
-//////////////////////////////////////
 // basic ADC type  modes
+//////////////////////////////////////
 
 void N0(void){ // basic ADC in with XOR route in
   ADCXORIN(0);
@@ -356,6 +386,10 @@ void N94(void){ // abs - 2048
   ADCXORIN(94);
 }
 
+void N99(void){ // strobe switches between adc and dac but did we not have this already?
+  ADCXORIN_NOROUTE(99);
+}
+
 void N95(void){ // strobe toggle in - otherpar selects pattern which is now dac driven - 4 bits
   param[0]=gate[dacfrom[daccount][0]].Gshift_[0]>>8;
   ADCXORIN(95); 
@@ -369,6 +403,27 @@ void N97only(void){ // only pull in on speed otherwise route // ***
   if(gate[0].last_time<gate[0].int_time)      {
     GSHIFTNOS_; // no shift
   bitn=ADC_(0,SRlength[0],97,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_);
+  //  BINROUTE_; // or no route in here
+  BITN_AND_OUTVNNO_; // no shift
+  ENDER;
+  }
+  else {
+    // route in and shift
+    GSHIFT_;
+    BINROUTEANDCYCLE_; // or we can try with no route in so peters out, or with circular route
+    // JUSTCYCLE_
+    gate[w].shift_+=bitn;
+  }
+}
+
+void N98adcordac(void){ // only pull in on speed otherwise route 
+  uint8_t w=0;
+  HEADN;
+  if (speedf_[0]==2.0f) speedf_[0]=LOWEST;
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+    GSHIFTNOS_; // no shift
+  bitn=ADC_(0,SRlength[0],98,gate[0].trigger,dacfrom[daccount][0],param[0], &gate[0].shift_);
   //  BINROUTE_; // or no route in here
   BITN_AND_OUTVNNO_; // no shift
   ENDER;
@@ -414,8 +469,8 @@ void N32(void){ // multiple bits in as case 19 in draftdec // ***
 }
 
 
-void N101(void){ // test speed double/skip sample
-  ADCXORIN(101);
+void N1010(void){ // test speed double/skip sample
+  ADCXORIN(1010);
 }
 
 //////////////////////////////////////////////////
@@ -1112,6 +1167,21 @@ void NLsub92(void){   // DETACH LENGTH - subtract 12 bits
   }
 }
 
+void NLsplice100(void){   // DETACH LENGTH - splice in 4 bits at position
+  uint8_t w=0;
+  HEADSINN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[0].last_time<gate[0].int_time)      {
+  GSHIFT_;
+  bitn=ADC_(0,SRlength[0],100,gate[0].trigger,dacfrom[daccount][0],31-(CVL[0]>>7), &gate[0].shift_); 
+  BINROUTE_;
+  BITN_AND_OUTVN_;//OSHIFT_; //  ADCXORINX(96); // we dont add bt but do shift - BITN_AND_OUTVNOSHIFT
+  ENDER;
+  }
+  }
+}
+
 
 
 
@@ -1292,6 +1362,8 @@ void NLLswop0(void){ // swop in or logop SR - cv and cvl- not so good for Nmode 
   }
   }
 }
+
+
 
 void Ngenericprobx(void){ // porting to strobe - ported to N - detach CVL - length to select ADC // DETACH LENGTH
   uint8_t w=0;

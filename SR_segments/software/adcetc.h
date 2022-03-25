@@ -1147,7 +1147,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      if (k[reg]> tmp) bt=1;
      break;
     
-  case 101: // speed bump based on 0 skip bits
+  case 1010: // speed bump based on 0 skip bits
       if (length>11) length=11;
       if (n[reg]<0) {
 	ADCone;
@@ -1199,7 +1199,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 87: // basic 4 bits in - grab into SR on STROBE 
     // changed for toggle 26/2
-    if (strobe) toggle[reg]=1;
+    if (strobe) toggle[reg]^=1;
  
     if (n[reg]<0) {  // can also be if (n[reg]<0 || toggle[reg])
       if (toggle[reg]){
@@ -1207,7 +1207,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 	ADC_SoftwareStartConv(ADC1);
 	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
 	k[reg]=ADC_GetConversionValue(ADC1)>>8;
-	toggle[reg]=0;
       }
 	n[reg]=3;
       }
@@ -1334,7 +1333,49 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     *SR+=k[reg]>>8; // top 4 bits
     bt=0;
     break;    
-     ///////////////////////
+
+  case 98: // 4 bits straight - toggle selects adc or dac...
+    if (strobe) toggle[reg]^=1;
+    *SR&=invmasky[3]; // clear length bits
+    
+    if (toggle[reg]){
+    ADCtwo;
+    *SR+=k[reg]>>8; // top 4 bits
+    }
+    else {
+      *SR+=gate[regg].dac>>8; // top 4 bits
+    }
+    bt=0;
+    break;    
+
+  case 99: // switch SR on toggle between adc and dac - 4 bits
+    if (strobe) toggle[reg]^=1;
+     if (n[reg]<0){
+      if (toggle[reg]){
+	ADCtwo;
+	k[reg]=k[reg]>>8; // 4 bits
+      }
+      else {
+	k[reg]=gate[regg].dac>>8; // 4 bits
+      }
+	n[reg]=3;
+      }
+      bt = (k[reg]>>n[reg])&0x01; // this means that MSB comes out first
+      n[reg]--;    
+    break;
+
+  case 100: // sliding splice in of x bits at position y on strobe - as in 96
+    // so either 2 params or we just slide in 4 bits - trial here - otherpar and we don't use length
+    if (strobe){
+      // mask in
+      *SR&=movemasky[otherpar]; // clear length bits
+      ADCtwo;
+      *SR+=(k[reg]>>8)<<otherpar; // top 4 bits - we can also try other logops in and obviously no mask in those cases
+    } // no bt
+    bt=0;
+    break;    
+
+    ///////////////////////
   } // switch
   return bt;
 }
