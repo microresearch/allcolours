@@ -304,10 +304,10 @@ void Ndraft0(void){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;
-  gate[w].shift_=gate[w].gshift_;
+  gate[w].shift_=gate[w].gshift_; /// that one has shift
   //  bitn=adcpadbits(11); // if is just case of bitn we can don't need to copy full register... but
   //  BINROUTE_; // route in gshift or insert/mix in ??? but we still need to slow it down...
-  bitrr = (gate[w].gshift_>>SRlength[x]) & 0x01;
+  bitrr = (gate[w].gshift_>>SRlength[w]) & 0x01; // length can also be independent
   bitn^=bitrr;
   BITN_AND_OUTVN_;
   ENDER;
@@ -315,7 +315,7 @@ void Ndraft0(void){
   }
 }
 
-
+//
 
 //////////////////////////// other models
 

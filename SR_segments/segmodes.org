@@ -318,7 +318,7 @@ characters of each tail/branch and new 5th branch...
 //quickTODO: sliding/splicing bits input adc_doesn't work as we tried
 before - forms a block, prototype for new setup from notebook...
 
-*working on Ndraft0*
+*working on Ndraft0 - also that mode of fast adc then copy in is also interesting which is what that is as no feedback so far*
 
 NEW: N98adcordac, N99 (toggle dac or adc), NLsplice100
 

@@ -91,7 +91,7 @@
     gate[w].Gshift_[1]=gate[w].shift_;			\
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
-    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
+    gate[w].shift_=gate[w].shift_<<1;			\
 }
 
 #define GSHIFTNOS_ {				\
