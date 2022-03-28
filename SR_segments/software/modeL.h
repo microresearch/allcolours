@@ -2277,7 +2277,6 @@ void LLNint47(void){ // case 47: // GSR runs at CV speed in INT mode (try)
   } 
 }
 
-
 void LLNint41(void){ //  TM in TM: from it.c seems to use 2x comparators - one - INTMODE
   uint8_t w=1;
   HEADL;  

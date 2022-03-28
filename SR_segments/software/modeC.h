@@ -1,58 +1,3 @@
-// lowest modes as functions.... DAC output
-
-//*DONEre-check strobey, NOpulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR
-
-
-/*
-
-latest notes:
-
-CV:
-0-15 basic dac outs
-16-31 detachment
-
-CV+DAC:
-32-47
-
-INTMODES:
-cv as param 
-cv as choice of dac
-
-
-
-arrange also a bit better in adcetc with order and strobes in
-
-CVmodes: 16xDAC could be reduced, followed by 4x4 DAC modes below, XOR/OR in to test, speeds << >>
-
-DACmodes: 16 - 4x4 as above or???
-
-INTmodes: 16 - CV as param
-
-other ideas: other dac outs, mix of dac outs, add dacs, modulo
-
-*/
-
-
-
-// TODO: we need to focus on what length does and cut down number of DAC modes...
-// in draftdec.c 16DAC followed by
-// 4x4 DAC modes
-  /*
-1-cycle and route 16 below
-2-2x strobe=prob from below
-3
-4-4 bit shuffle
-  
-00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ??
-01 2-BITIN or loopback
-   [10 3-INV of above]
-11 4- BITIN or not into cycling
-
-what are the next 16x LR modes
-  */
-
-// other possibles: bigger shifts in, speed bumps
-
 
 #define DACOUT {				\
   uint8_t w=2;					\
@@ -67,6 +12,21 @@ what are the next 16x LR modes
     }							\
   }							\
 }
+
+#define DACOUTNOV {				\
+  uint8_t w=2;					\
+  HEADC;						\
+  if (speedf_[2]!=2.0f){				\
+    CVOPENNOINTERPOL;					\
+    if (gate[2].last_time<gate[2].int_time)      {	\
+      GSHIFT_;						\
+      BINROUTE_;					\
+      BITN_AND_OUTV_;				\
+      ENDER;						\
+    }							\
+  }							\
+}
+
 
 #define DACOUTGGG {				\
   uint8_t w=2;					\
@@ -304,6 +264,12 @@ void C0(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];
   DACOUT;
 }
+
+void Cnov0(void){
+  gate[2].dactype=0; gate[2].dacpar=param[2];
+  DACOUTNOV;
+}
+
 
 void C0nog(void){
   gate[2].dactype=0; gate[2].dacpar=param[2];

@@ -44,7 +44,7 @@
 
 #define HEADL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[1]=SRlength_[1]; speedf_[1]=speedf[1]; \
 
-#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; speedf_[2]=speedf[2]; \
+#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; speedf_[2]=speedf[2]; if (speedf_[2]==2.0f) speedf_[2]=LOWEST; \
 
 #define HEADR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; count=0; daccount=0; speedf_[3]=speedf[3]; \
 
@@ -57,7 +57,7 @@
 
 #define HEADSINL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[1]=speedf[1]; \
 
-#define HEADSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[2]=speedf[2]; \
+#define HEADSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[2]=speedf[2]; if (speedf_[2]==2.0f) speedf_[2]=LOWEST; \
 
 #define HEADSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[3]=speedf[3]; count=0; daccount=0; \
 

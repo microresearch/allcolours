@@ -46,7 +46,7 @@
 #include "resources.h"
 #include "modes.h"
 
-static heavens gate[4]; 
+static heavens gate[8]; // for paralell SR doubled
 
 #define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
 
@@ -113,8 +113,8 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 volatile uint32_t param[4]={0,0,0,0}; // interrupt flag...
-uint32_t SRlength_[4]={31,31,31,31};
-uint32_t SRlength[4]={31,31,31,31};
+uint32_t SRlength_[8]={31,31,31,31};
+uint32_t SRlength[8]={31,31,31,31};
 
 uint16_t ADCLR[3]={29,30,31}; // non-adc ADC modes - this has changedDONE
 
@@ -289,8 +289,8 @@ static uint32_t train[4]={0,0,0,0};
 static uint32_t prev_stat[4]={0,0,0,0};
 static volatile uint32_t CV[4]={0,0,0,0};
 static volatile uint32_t CVL[4]={0,0,0,0};
-static volatile float speedf_[4]={1.0f,1.0f,1.0f,1.0f};
-static volatile float speedf[4]={1.0f,1.0f,1.0f,1.0f};
+static volatile float speedf_[8]={1.0f,1.0f,1.0f,1.0f};
+static volatile float speedf[8]={1.0f,1.0f,1.0f,1.0f};
 
 volatile uint32_t dac[4]={0,0,0,0};
 volatile uint32_t adc_[4]={0,0,0,0};
@@ -314,7 +314,7 @@ static uint32_t counterr=0, counterl=0;
 // new speed stuff
 
 #define DELAY_SIZE 6 // was 40 --- 3*width=16 = 3*16=48-5=43 - use 7 for simplea
-static int32_t delay_buffer[4][2] = { 0 }; // was 48 but it doesn't need to be so big
+static int32_t delay_buffer[8][2] = { 0 }; // was 48 but it doesn't need to be so big
 
 void new_data(uint32_t data, uint32_t ww)
 {
@@ -354,9 +354,9 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(void)=
 {//NLcutfeedback86
   // test 6,7,8 and new funcs from tenerifa
-  {Ndraft0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {N22, N23, N24, N29, N30, N95, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, LX0},
-  {C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
+  {Cnov0, C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
 
@@ -413,17 +413,19 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   // mode[www]=testmodes[www];
   //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
-  mode[0]=0;mode[1]=0;mode[3]=0; // test dac
+  //  mode[0]=4;
+  mode[1]=0;mode[3]=0; // test dac
   if (mode[2]>15) mode[2]=15;
+  if (mode[0]>5) mode[0]=5;
   //    (*gate[www].dofunc[mode[www]])();
   //mode[2]=12;
     (*dofunc[www][mode[www]])();
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
     if (www==2)  {
-    //          kk^=1; // test code
-    //	  if (kk)    gate[2].dac=4095;
-    //	  else gate[2].dac=0; // 50 KHz!
+      //              kk^=1; // test code
+	      //    	  if (kk)    gate[2].dac=4095;
+      //    	  else gate[2].dac=0; // 20 KHz!
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
       ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
     //    ADC_SoftwareStartConv(ADC1); 

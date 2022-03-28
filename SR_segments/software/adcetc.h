@@ -210,6 +210,13 @@ static inline uint32_t osc1bits(uint32_t depth){  // we don't use depth!
   return bt;
 }
 
+// depth is length of seq, rndd is LFSR or DAC, par is CVx - so we have 2xCV
+static inline uint32_t TMbits(uint32_t depth, uint32_t seq, uint32_t rndd, uint32_t par){  // for TM in TM, return inv or loop bits
+  uint32_t bt;
+  bt=(seq>>depth)&0x01;
+  if (par>rndd) bt=!bt;
+  return bt;
+}
 
 // what are variations on this? - for padding (x bits treated as y bits):
 // restrict to 12 bits (can also be x bits fixed), pad to x bits, always static number of bits
@@ -434,7 +441,6 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;    
    
   case 3: // basic sequential length as in 0 but with padding of zeroes if >11 bits 
-    // as is is same as 0
     if (n[reg]<0) { // 12 bits
       if (length<12) {
 	ADCone; 	//	k[reg]=(adc_buffer[12])>>(11-length);
@@ -498,7 +504,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]--;    
     break;
     
-  case 8: // try keep cycling adc with new entry on toggle or strobe
+  case 8: // try keep cycling adc with new entry on toggle or strobe STROBE
     if (strobe) toggle[reg]^=1;
     if (n[reg]<0) { // 12 bits
       if (length<12) {
@@ -1375,6 +1381,69 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt=0;
     break;    
 
+    // variations on this - and can also be used for other SRs
+    // variations: trial with adc bits in also (AND as in addition)-, in modeN with/without route, dac+otherpar, just dac, all comp options
+  case 101: // exact Turing machine - add otherpar and ADC and compare noise to this for loop or not
+    ADCtwo;
+    k[reg]+=otherpar; // CVL is also knob+CV so we have 2 CVs
+    if (k[reg]>4095) k[reg]=4095;
+    bt=(*SR>>length)& 0x01;
+    if (k[reg]>(LFSR_[reg]&4095)) bt=!bt;
+    break;
+
+  case 102: // with bits in from adc - exact Turing machine - add otherpar and ADC and compare noise to this for loop or not //***
+    // bits OR/add in can be before or after the inversion
+    bt=(*SR>>length)& 0x01;
+    if (otherpar>(LFSR_[reg]&4095)) bt=!bt;
+    bt|=adcpadbits(length);
+    break;
+
+    // inv of incomings
+  case 103: // with bits in from adc - exact Turing machine - add otherpar and ADC and compare noise to this for loop or not
+    ADCtwo;
+    k[reg]+=otherpar; // CVL is also knob+CV so we have 2 CVs
+    // bits AND/add in can be before or after the inversion
+    bt=adcpadbits(length);
+    if (otherpar>(LFSR_[reg]&4095)) bt=!bt;
+    break;
+
+    //TM in TM:    static inline uint32_t TMbits(uint32_t depth, uint32_t seq, uint32_t rndd, uint32_t par){  // for TM in TM, return inv or loop bits
+  case 104:
+    // select sequence for TM in TM - we can choose just to use bt from loop or loop it back in
+    // these kind of recursive modes which interrupt themselves... eg. feedback before we have feedback decided at faster speed
+    // how many CV? depth=length, position to get seq, par is parameter. = 3x so we use ADC_ for parameter, but leaves 2x cv we don't have
+    // so fix length ???
+    ADCtwo;
+    tmp=otherpar>>7; // 5 bits is our offset
+    //    length=31-(tmp+length); //length is fixed if we detach
+    bt=*SR&(masky[length]<<tmp); /// our seq
+    bt=bt>>tmp;
+    if ((length+tmp)>31){
+      length=31-tmp;
+    }
+    bt=TMbits(length, bt, LFSR_[reg]&4095, k[reg]);
+    // pull in adcbits
+    bt|=adcpadbits(length);
+    break;
+
+  case 105: // exact Turing machine - add otherpar and DAC and compare noise to this for loop or not
+    tmp=otherpar; // CVL is also knob+CV so we have 2 CVs - we don't need to deatch and can use CV here 
+    tmp+=gate[dacfrom[daccount][0]].dac;
+    if (tmp>4095) tmp=4095;
+    bt=(*SR>>length)& 0x01;
+    if (tmp>(LFSR_[reg]&4095)) bt=!bt;
+    break;
+
+  case 106: // exact Turing machine - add otherpar and DAC and compare noise to this for loop or not
+    ADCtwo;
+    tmp=k[reg]; // CVL is also knob+CV so we have 2 CVs - we don't need to deatch and can use CV here 
+    tmp+=gate[dacfrom[daccount][0]].dac;
+    if (tmp>4095) tmp=4095;
+    bt=(*SR>>length)& 0x01;
+    if (tmp>(LFSR_[reg]&4095)) bt=!bt;
+    break;
+    
+
     ///////////////////////
   } // switch
   return bt;
@@ -1790,7 +1859,7 @@ void TIM4_IRQHandler(void)
   // modes are NOT inverted!
   /// TODO TEST->fixed for new ADC scheme  
   //moden
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_144Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
@@ -1812,7 +1881,7 @@ void TIM4_IRQHandler(void)
   mode[2]=(temp>>6); // 64 modes = 6 bits  
 
   // model
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_144Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
