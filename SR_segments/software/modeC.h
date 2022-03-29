@@ -191,6 +191,32 @@ void CL16slide(void){   // DETACH SPEED
   }
 }
 
+//SRC: output from oscs or from SRN - select our input - route from...
+// we want to use CVL to select which one we route from and type of dac?
+// general purpose: what are variations?
+void CLrung0(void){ // detached length
+  uint8_t w=2;
+  HEADSINC;
+  tmp=CVL[2]>>6;// 2 bits for route, 4 bits for DACtype = 6 bits
+  gate[2].dactype=tmp>>2; gate[2].dacpar=param[2];
+  if (speedf_[2]!=2.0f){
+  CVOPEN;
+  if(gate[2].last_time<gate[2].int_time)      {
+  GSHIFT_;
+  // no strobe bit in
+  //  BINROUTE_; // new routing in here.
+  //  tmp=myroute[2][gate[2].route]; // route from N, L, or R = 3 options +itself = 0,1,2,3
+  tmp=tmp&0x03; // 2 bits
+  bitrr = (gate[tmp].Gshift_[2]>>SRlength[x]) & 0x01;
+  gate[tmp].Gshift_[2]=(gate[tmp].Gshift_[2]<<1)+bitrr;
+  bitn^=bitrr;
+
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
 void CN17_0(void){ 
   uint8_t w=2;
   gate[2].dactype=0; gate[2].dacpar=param[2];
@@ -351,6 +377,29 @@ void C15(void){ // one bit audio with param as filter
   gate[2].dactype=2; gate[2].dacpar=4095-(param[2]&4095);
   DACOUT;
 }
+
+void Creal15(void){ 
+  gate[2].dactype=15; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
+
+void C17(void){ // 12 bits audio from 2s complement
+  gate[2].dactype=17; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
+void C18(void){ // 12 bits audio from 2s complement
+  gate[2].dactype=18; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
+void C19(void){ // x bits audio from 2s complement
+  gate[2].dactype=19; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
+
 
 void C67_4bits(void){ // stock 4 bit DAC - nothing to do with length!!!! TODO: use length PARAM as....
   gate[2].dactype=67; gate[2].dacpar=param[2];

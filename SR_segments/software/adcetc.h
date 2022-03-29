@@ -234,6 +234,45 @@ static inline uint32_t adcxbits(uint32_t depth){ // max 12 bits
   return bt;
 }
 
+static inline uint32_t adc12compbits(uint32_t depth){ // fixed 12 bits 2s complement
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      if (k<2048) bitwise=1;
+      else bitwise=0;
+      k=abs(k-2048);
+      if (bitwise) k=(~k)+1;
+      bc=11; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t adccompbits(uint32_t depth){ // variable depth 2s complement
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      if (depth<12) k=k>>(11-depth);
+      else k=k<<(depth-11);
+      bc=depth; 
+      
+      if (k<(1<<depth)) bitwise=1;
+      else bitwise=0;
+	  k=abs(k-(1<<depth));
+      if (bitwise) k=(~k)+1;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+// we can also have 2s comp which is just shifted around...
+
 static inline uint32_t adcpadbits(uint32_t depth){ 
   uint32_t bt;
   static int32_t bc=31;
@@ -249,8 +288,25 @@ static inline uint32_t adcpadbits(uint32_t depth){
   return bt;
 }
 
+static inline uint32_t adc12onecompbits(uint32_t depth){ // fixed 12 bits 1s complement
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      if (k<2048) bitwise=1;
+      else bitwise=0;
+      k=abs(k-2048);
+      if (bitwise) k=(~k);
+      bc=11; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
 
-static inline uint32_t energybits(uint32_t depth){ // equiv bits energy
+
+static inline uint32_t energybits(uint32_t depth){ // equiv bits energy TODO: use this
   uint32_t bt;
   static int32_t bc=31;
   int32_t tmp;
@@ -800,7 +856,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
      }         
      break;    
 
-  case 30: // 3/12/2021 - 101010 clock at speed - ultrasonic at fastest speeds
+  case 30: // osc - 3/12/2021 - 101010 clock at speed - ultrasonic at fastest speeds
     // TODO: but is same more or less as static bit pattern which could be imposed at intervals
     lastbt[reg]^=1;
     bt=lastbt[reg];
@@ -1245,7 +1301,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     else bt=onebits(0);
     break;
 
-  case 90: // trial for 0v = 0 bits - equiv energy TODO: also as generator
+  case 90: // trial for 0v = 0 bits - equiv energy
         if (n[reg]>length) {
       ADCtwo;
       tmp=k[reg]-2048;
@@ -1443,7 +1499,25 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     if (tmp>(LFSR_[reg]&4095)) bt=!bt;
     break;
     
+  case 107:
+    // osc1bits
+    bt=osc1bits(length);
+    break;
 
+  case 108:
+    // 2scompadcbits - always 12
+    bt=adc12compbits(length);
+    break;
+
+  case 109:
+    // 2scompadcbits - 
+    bt=adccompbits(length); // can also be otherpar for depth
+    break;
+
+  case 110:
+    /// ones compliment
+    bt=adc12onecompbits(length); // can also be otherpar for depth
+    break;
     ///////////////////////
   } // switch
   return bt;
@@ -1532,7 +1606,7 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
 
 //0-15 so 16 modes
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
-  uint32_t x=0;
+  int32_t x=0;
   static uint32_t n[4]={0,0,0,0};
   static uint32_t nom[4]={0,0,0,0};
   static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
@@ -1731,8 +1805,71 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       x=x+y;
     }
     else x=x>>otherpar;
-    
     break;
+
+  case 17: // fixed 12 bits in 2s complement back to our encoding - but we have no use for length - except perhaps
+    // try delay
+    // here is fixed length
+    if (n[wh]>11) {
+      n[wh]=0;      
+      x=shift&masky[11]; // 12 bits
+      if (x&(1<<11)) {
+      x = x | ~((1 << 12)-1);
+    }
+    x=x+2048;
+    lastout[wh]=x;
+    }
+    x=lastout[wh];
+    n[wh]++;              
+    break;
+
+  case 18: // fixed 12 bits in 2s complement back to our encoding - but we have no use for length - except perhaps
+    // try delay
+    if (n[wh]>length) { // this could also be otherpar
+      n[wh]=0;      
+      x=shift&masky[11]; // 12 bits
+      if (x&(1<<11)) {
+      x = x | ~((1 << 12)-1);
+    }
+    lastout[wh]=x+2048;
+    }
+    x=lastout[wh];
+    n[wh]++;              
+    break;
+
+  case 19: //  2s complement back to our encoding 
+    // variable bits out
+    // try delay or no delay
+    if (n[wh]>length) { // this could also be otherpar // either or...
+      n[wh]=0;      
+      x=shift&masky[length]; // x bits
+      if (x&(1<<length)) {
+	x = x | ~((1 << (length+1))-1);
+    }
+      x=x+(1<<length);
+      // shift back to 12 bits...
+      lastout[wh]=((x&masky[length])>>rightshift[length])<<leftshift[length]; 
+    }
+    x=lastout[wh];
+    n[wh]++;              
+    break;
+
+  case 20: // fixed 12 bits in ONES complement back to our encoding - but we have no use for length - except perhaps
+    // try delay
+    if (n[wh]>length) { // this could also be otherpar
+      n[wh]=0;      
+      x=shift&masky[11]; // 12 bits
+      if (x&(1<<11)) {
+      x = x | ~(1 << 12);
+    }
+    lastout[wh]=x+2048;
+    }
+    x=lastout[wh];
+    n[wh]++;              
+    break;
+
+    
+
     ///////
   } // switch    
   return x;

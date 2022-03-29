@@ -214,6 +214,35 @@ void print32bits(uint32_t bitz){
 printf("\n");
 }
 
+void print16bits(uint32_t bitz){
+  int x,y;
+  unsigned char bitt;
+  uint32_t cc=0b10000000000000000000000000000000; 
+
+  for (y=0;y<32;y++){
+    if ((bitz&cc)!=0) bitt=1;
+    else bitt=0;
+    cc=cc>>1;
+    printf("%d",bitt);
+  }
+printf("\n");
+}
+
+void print12bits(uint32_t bitz){
+  int x,y;
+  unsigned char bitt;
+  uint32_t cc=1<<11;
+
+  for (y=0;y<12;y++){
+    if ((bitz&cc)!=0) bitt=1;
+    else bitt=0;
+    cc=cc>>1;
+    printf("%d",bitt);
+  }
+printf("\n");
+}
+
+
 static inline int bits_(uint32_t reg, uint32_t length){ // function returns bottom length bits of SR reg
   uint32_t x=0;
   if (reg<4) x=shift_[reg]>>(31-length);
@@ -809,12 +838,13 @@ heavens gate[4];
      }         
      printf("%d ",bt);
      }*/
-  uint32_t k=0; int tmppp;
+  int32_t k=0; int tmppp;
   tmppp=abs(k-2048);
   //  tmppp=0b00000000000000000000000000001111;
   printf("%u\n",tmppp);
 
   // movemasky
+  /*
   for (x=0;x<31;x++){
     for (y=31-x;y>0;y--){
       printf("1");
@@ -827,6 +857,60 @@ heavens gate[4];
       }
       printf(",\n0b");
   }
+  */
+  // test bitwise not
+  int32_t kk=0; uint32_t bitwise;
+  //  k=;
+  //  k=0;
+  // works
+  /*
+  k=400;
+  if (k<2048) bitwise=1;
+  else bitwise=0;
+  k=abs(k-2048);
+  print12bits(k);
+  
+  if (bitwise) k=(~k)+1;
+  print12bits(k);
+  printf("%d\n",k);
+  // convert back
+  if (k&(1<<11)) {
+    k = k | ~((1 << 12)-1);
+    printf("xxx %d\n",k);
+  }
+  k=k+2048;    
+  print32bits(k);
+  printf("%u\n",k);
+  */
+  
+  //    k=(1<<12);
+  //    printf("%d\n",k);
+
+  
+  k=1;
+  // 1 instead of 0
+  if (k<2048) bitwise=1;
+  else bitwise=0;
+  k=abs(k-2048);
+  
+  if (bitwise) k=(~k);
+  print12bits(k);
+  //  printf("%d\n",k);
+  // convert back
+    if (k&(1<<11)) {
+    k=(~k);
+    k=2048-k;
+  }
+  else k=k+2048;
+  
+  print12bits(k);
+  printf("%d\n",k);
+  
+  /*
+  kk-=2048;
+  print16bits(kk>>4);  
+  printf("%d\n",kk);
+  */
   /* 
      printf("(LFSR[0]&%d)>>%d) + ",(1<<(elf[x]-1)), (elf[x]-(x+1))  );
    }

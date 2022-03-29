@@ -161,7 +161,10 @@ uint8_t parammodes[16]={17,18,19,20, 21,22,29,33, 34,35,37,38, 39,66,67,68}; // 
 
 uint8_t modes16[16]={0,1,2,3,4,6,101,32,82,75,81,28,29,30,79,80}; // choose again maybe temp list TODO
 
-// uint8_t dacmodes[16]= // list for dacmodes! TODO!
+uint8_t dacmodes[16]={25,26,27,71,72,73,74,75,  77,78,79,80,86,88,91,105};
+
+//25,26,27,71,72,73,74,  also mixes of DAC/ADC in adcetc and in modeN to port from INTmodes/DONE  =7  - we need more
+// 75 dac as comp, 77,78,79,daccontrolsosc, 86cutfeedback, 88cv>dac, 91?, 105TM
 
 // new stream test
 
@@ -722,6 +725,15 @@ void N74(void){ // dac in basic sequential length of upto 12 bits cycling in - c
 void N96(void){ // strobe 4 bits straight in - no bt in any case
   ADCXORINX(96); // we dont add bt but do shift - BITN_AND_OUTVNOSHIFT
 }
+
+void N108(void){ // adc fixed 12 bits with 2s complement
+  ADCXORIN(108);
+}
+
+void N109(void){ // adc fixed 12 bits with 2s complement
+  ADCXORIN(109);
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////ROUTE MODES
@@ -1729,6 +1741,125 @@ void Ndacseloffosc2(void){ // ADC_ is offset, and cv is amount of dac / TEST! or
   }
 }
 
+//SRN: speed from SRR, data from SRL - new route XOR with loopback: rung
+void NLrung0(void){ // rung: use CVL[0]>>8 to select 1 of 16type DAC input from SRL
+  HEADSSINN;
+  uint8_t w=0;
+  float speedf__;
+  int32_t off;
+
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  tmp=(gate[3].dac)%(ADC_GetConversionValue(ADC1));
+  off=(2048-CV[0]);
+  tmp+=off;
+  tmp=tmp>>2; // 10 bits
+  if (tmp>1023) tmp=1023;
+    //  speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  speedf__=logspeed[tmp];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    tmp=CVL[0]>>8;
+    bitn=ADC_(0,SRlength[w],dacmodes[tmp],gate[w].trigger,2, param[0], &gate[w].shift_);  // from leftDAC
+    //    BINROUTE_; // did have this but try now with:
+    JUSTCYCLE_;
+    if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+void NLrung1(void){ // rung: use CVL[0]>>8 to select 1 of 16type DAC input from SRL
+  HEADSSINN;
+  uint8_t w=0;
+  float speedf__;
+  int32_t off;
+
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  tmp=(gate[3].dac)%(ADC_GetConversionValue(ADC1));
+  off=(2048-CV[0]);
+  tmp+=off;
+  tmp=tmp>>2; // 10 bits
+  if (tmp>1023) tmp=1023;
+    //  speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  speedf__=logspeed[tmp];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    tmp=CVL[0]>>8;
+    bitn=ADC_(0,SRlength[w],dacmodes[tmp],gate[w].trigger,2, param[0], &gate[w].shift_);  // from leftDAC
+    BINROUTE_; // did have this but try now with:
+    //    JUSTCYCLE_;
+    if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+// one variation would be just route in SRL as dataTODO, and use CVL for modulus in dacspeed
+// then can use ADC bit in
+void NLrung2(void){ // rung: use CVL[0]>>8 to select 1 of 16type DAC input from SRL
+  HEADSSINN;
+  uint8_t w=0;
+  float speedf__;
+  //  uint8_t whic=(CV[0]>>9)&3; //12 bits -> 2 bits
+  int32_t off;
+
+  tmp=(gate[1].dac)%(CVL[0]); // now speed from L and data from C as that is usual route
+  off=(2048-CV[0]);
+  tmp+=off;
+  tmp=tmp>>2; // 10 bits
+  if (tmp>1023) tmp=1023;
+    //  speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  speedf__=logspeed[tmp];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],0,gate[w].trigger,2, param[0], &gate[w].shift_);  // adc in or not
+    BINROUTE_;
+    if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
+
+// no DETACH. speed is from left side...
+// what are all variations of rung! for each side
+void Nrung0(void){ // rung: use CVL[0]>>8 to select 1 of 16type DAC input from SRL
+  HEADN;
+  uint8_t w=0;
+  float speedf__;
+  int32_t off;
+
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  tmp=(gate[1].dac)%(ADC_GetConversionValue(ADC1));
+  off=(2048-CV[0]);
+  tmp+=off;
+  tmp=tmp>>2; // 10 bits
+  if (tmp>1023) tmp=1023;
+    //  speedf__=logspeed[(CV[0]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  speedf__=logspeed[tmp];
+  if (speedf__==2.0f) speedf__=LOWEST;
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    //    tmp=CVL[0]>>8;
+    //    bitn=ADC_(0,SRlength[w],dacmodes[tmp],gate[w].trigger,2, param[0], &gate[w].shift_);  // from leftDAC
+    BINROUTE_;
+    if (!strobey[0][mode[0]]) bitn=bitn|gate[0].trigger;
+    BITN_AND_OUTVN_;
+    ENDER;
+  }
+}
 
 
 void Ndacadd0(void){

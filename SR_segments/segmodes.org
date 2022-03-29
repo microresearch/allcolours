@@ -314,12 +314,46 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 newmodes I think are in modeL - and need to be ported across!
 
+** 29/3/2022
+
+- cut routes? from notebook - what this means/how/why? relating to rungler - to cut the binroute in... =0 but how to put back...
+
+DONE: rungler options.
+
+*TODO: other basic SR options, 2s complement for ADC, DAC - in progress with various modes*
+
+what other encodings are there? zig-zag, one's complement...
+
+////
+
+//bitwise not add one
+
+for rungler:
+
+SRN: speed from SRR, data from SRL - new route XOR with loopback
+
+SRL, SRR: speed from SRN: (both run OSC with no binroute)
+
+SRC: output from oscs or from SRN - select our input - route from...
+
+implemented as: NLrung0, Lrung0, Rrung0 and CLrung0
+
+variations around these eg. for L/R type of speed, detach and type of osc...we already have some of these, working on for LandR//DONE
+
++also idea that if we use ADCIN as CV then we can cut the loopback or is it normed?+
+
 ** 28/3/2022
 
 *do we have fake feedback loop at fake speed?* - Ndraft1 heads in this direction
 
 but thinking we can start to work this towards the fifth hidden serpent...
 
+which could be fake feedback tail -> how long? speed - then modes (NLCR) which use this extended feedback, which can take different forms
+
+*?* that in modeN we always run input at full speed and just select
+bitn in on own speed - only question is modes which use multiple input
+
+or just run one kind of adc?
 
 *To start to simplify*
 
@@ -338,7 +372,7 @@ code draft layout
 classics:
 - TM, done - all variations to explore
 
-- Rungler:
+- Rungler: NLrung + some variations TODO
 
 Original: SR bit out XOR with OSC1 out AND OSC1 speed/freq is determined by SR (itself)
 
@@ -352,6 +386,8 @@ cycling bit XOR with DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCN
 WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
 
 EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+
+TRIADEX: 
 
 /////////////////////////////////////////////
 
@@ -383,6 +419,18 @@ At the moment we have prototype of:
 gshift/bitn_in/binroute/addinandout!
 
 sources[1]->entry[2]->logic][3]->where[4] (also 4 tails/routes here>>>)
+
+incoming bits vs. interpreted bits
+
+ they are bits - multiple GSR speeds...
+
+ADC/DAC bits: deliver bits/generator, tap into stream ... 
+OSC bits: they are bits, also can be streamed/accelerated...
+BINROUTE bits: they are bits, can be multiple GSR speeds, where they come from=route
+feedback bits: loopback bits
+
+
+/////////////////////////////////////////////
 
 *simple case of binroute or not?* how  to handle?
 
@@ -550,7 +598,7 @@ for other modes we can have this for pulseins and routedins - make generic
 but we have no way of signifying pos or neg with bits/// trial
 energy/abs->DONE/also as generator
 
--DONE/TODO: modeL/R where we don't ad dback in bitrr in gshift so just
+-DONE/TODO: modeL/R where we don't add back in bitrr in gshift so just
   dies out (as kind of impulse)* Lnoggg test
 
 ** 21/3/2022
@@ -822,7 +870,7 @@ Nint72dacmix - using dac for mix *NOTWORKING*
 
 *TODO: mix DAC(1)(normed) feedback in - using CV, using DAC - do we have these kind of mixes already? in Nint72 but we could have more*
 
-*TODO: list of dacmode in modeN.h// uint8_t dacmodes[16]= { // which use DAC*
+DONE: list of dacmode in modeN.h// uint8_t dacmodes[16]= { // which use DAC
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

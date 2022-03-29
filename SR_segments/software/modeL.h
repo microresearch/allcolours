@@ -1929,6 +1929,140 @@ void LB(void){// with oscillator
   }
 }
 
+//SRL, SRR: speed from SRN: (both run OSC with no binroute)
+// variations of the: all above for different speed ops, different oscillators (but some need params), use CVL to select speed ops and osc
+
+void Lrung0(void){// with oscillator - speedminus we use here
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  cv=(CV[1]>>2)-(gate[0].dac>>2);
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;  
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    //    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+void Lrung1(void){// with oscillator - other minus
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  cv=(gate[0].dac>>2)-(1024-(CV[1]>>2)); // other minus
+  if (cv<0) cv=0;
+  speedf__=logspeed[cv];
+  if (speedf__==2.0f) speedf__=LOWEST;  
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    //    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+void Lrung2(void){// with oscillator - mod
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  cv=((CV[1]>>2)+1); // modulo code
+  speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
+  if (speedf__==2.0f) speedf__=LOWEST;  
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    //    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+void Lrung3(void){// with oscillator - add
+  HEADL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  speedf__=logspeed[(CV[1]&511)+(gate[0].dac>>3)]; // add
+  if (speedf__==2.0f) speedf__=LOWEST;  
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    //    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+// 2bits speed ops, how many oscs we have...
+
+  /* what are speed ops? 
+
+  speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
+  cv=(CV[1]>>2)-(gate[0].dac>>2);  speedf__ = logspeed[cv] // minus
+  speedf__=logspeed[(CV[1]&511)+(gate[0].dac>>3)]; // add
+  cv=(gate[0].dac>>2)-(1024-(CV[1]>>2)); // other minus
+*/
+
+// oscs: 21adcandsharedbitsotherpar, 29otherpar, 28strobe, 30osc, 31tm, 34osc/otherpar, 77oscdac, 78oscdac, 79oscdac, 80oscdac, 89impulses/strobe/otherpar, 95otherpar/patterns, 107osc1bits +3: 19.adcpadbits, 18adcbits, 22lfsr
+uint8_t oscmode[16]={107,21,29,28, 30,31,34,77,  78,79,80,89, 95,19,18,22};
+
+void LLrung0(void){// DETACHED> with oscillator
+  HEADSINL;
+  uint8_t w=1;
+  int32_t cv;
+  float speedf__;
+  //  cv=(CV[1]>>2)-(gate[0].dac>>2);
+  //  if (cv<0) cv=0;
+  // 2 bits speed ops...
+  tmp=CVL[1]>>6; //2+4 bits = 6 bits
+  // top bits
+  if (tmp&16){
+    cv=((CV[1]>>2)+1); // modulo code
+    speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
+  }
+  else if (tmp&32){
+  cv=(CV[1]>>2)-(gate[0].dac>>2);
+  if (cv<0) cv=0;
+  speedf__ = logspeed[cv]; // minus
+  }
+  else if (tmp&48){
+  speedf__=logspeed[(CV[1]&511)+(gate[0].dac>>3)]; // add
+  }
+  else {
+  cv=(gate[0].dac>>2)-(1024-(CV[1]>>2)); // other minus
+  if (cv<0) cv=0;
+  speedf__ = logspeed[cv]; 
+  }
+
+  if (speedf__==2.0f) speedf__=LOWEST;  
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    tmp=tmp>>2;
+    bitn=ADC_(1,SRlength[w],oscmode[tmp],gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    //    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // intmodes
 // add in and check all probability modes
