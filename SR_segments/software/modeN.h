@@ -151,6 +151,10 @@
   }									\
   }
 
+// this one for ones which use strobe and cv
+// no strobes, nor otherpar (as that is CV or we need to free up a CV)
+uint32_t adclist[32]={0,1,2,3,4,5,6,7,8,22,23,25,26,27,30,68,71,72,73,74,75,76,77,78,79,80,81,82,101,22,23,25};
+
 // longer sel with strobes and cv but we can only access this from detached CV/speed and length
 // we have CV (speed) and CVL (length) - one is param, other is sel so
 // so length or speed can be from DAC only or is detached
@@ -730,8 +734,20 @@ void N108(void){ // adc fixed 12 bits with 2s complement
   ADCXORIN(108);
 }
 
-void N109(void){ // adc fixed 12 bits with 2s complement
+void N109(void){ // adc with 2s complement
   ADCXORIN(109);
+}
+
+void N110(void){ // adc fixed 12 bits with ONEs complement
+  ADCXORIN(110);
+}
+
+void N111(void){ // adc  with ONEs complement
+  ADCXORIN(111);
+}
+
+void N112(void){ // dac  with ONEs complement
+  ADCXORIN(112);
 }
 
 
@@ -1866,7 +1882,7 @@ void Ndacadd0(void){
   HEADN;
   uint8_t w=0;
   float speedf__;
-  speedf__=logspeed[(CV[0]&511)+(gate[dacfrom[daccount][0]].dac>>3)];
+  speedf__=logspeed[(CV[0]&511)+(gate[speedfrom[spdcount][0]].dac>>3)];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1884,7 +1900,7 @@ void Ndacaddmax0(void){ // REMOVE?
   uint8_t w=0;
   int32_t cv;
   float speedf__;
-  cv=(CV[0]>>2)+(gate[dacfrom[daccount][0]].dac>>2);
+  cv=(CV[0]>>2)+(gate[speedfrom[spdcount][0]].dac>>2);
   if (cv>1023) cv=1023;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1904,7 +1920,7 @@ void Ndacminus0(void){
   uint8_t w=0;
   int32_t cv;
   float speedf__;
-  cv=(gate[dacfrom[daccount][0]].dac>>2)-(1024-(CV[0]>>2));
+  cv=(gate[speedfrom[spdcount][0]].dac>>2)-(1024-(CV[0]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1924,7 +1940,7 @@ void Ndacspeedminus0(void){
   uint8_t w=0;
   int32_t cv;
   float speedf__;
-  cv=(CV[0]>>2)-(gate[dacfrom[daccount][0]].dac>>2); 
+  cv=(CV[0]>>2)-(gate[speedfrom[spdcount][0]].dac>>2); 
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1945,7 +1961,7 @@ void Ndacmod0(void){
   int32_t cv;
   float speedf__;
   cv=((CV[0]>>2)+1); // modulo code
-  speedf__=logspeed[(gate[dacfrom[daccount][0]].dac>>2)%cv];
+  speedf__=logspeed[(gate[speedfrom[spdcount][0]].dac>>2)%cv];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1963,7 +1979,7 @@ void NdacB0(void){// with oscillator
   uint8_t w=0;
   int32_t cv;
   float speedf__;
-  cv=(CV[0]>>2)-(gate[dacfrom[daccount][0]].dac>>2);
+  cv=(CV[0]>>2)-(gate[speedfrom[spdcount][0]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;  
@@ -1982,7 +1998,7 @@ void Ndacoffset0(void){
   float speedf__;
   float mmm=(float)(1024-(CVL[0]>>2))/1024.0f;
   HEADSINN;
-  tmp=(1024-(CV[0]>>2)) + (int)((float)(gate[dacfrom[daccount][0]].dac>>2)*mmm);
+  tmp=(1024-(CV[0]>>2)) + (int)((float)(gate[speedfrom[spdcount][0]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -2003,7 +2019,7 @@ void NLdacadc(void){ // speed is from dac, use cv to select type and cvl as para
   uint8_t w=0;
   int32_t cv;
   float speedf__;
-  cv=(gate[dacfrom[daccount][0]].dac>>2);
+  cv=(gate[speedfrom[spdcount][0]].dac>>2);
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;

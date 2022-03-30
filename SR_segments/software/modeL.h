@@ -1744,7 +1744,7 @@ void Ldac(void){
   float speedf__;
   HEADL;
   if (speedf_[1]==2.0f) speedf_[1]=LOWEST;
-  speedf__= (speedf_[1]-logspeed[1024-(gate[dacfrom[daccount][1]].dac>>2)]); // dacfrom
+  speedf__= (speedf_[1]-logspeed[1024-(gate[speedfrom[spdcount][1]].dac>>2)]); // dacfrom
   if (speedf__<LOWEST) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1763,7 +1763,7 @@ void Ldacoffset(void){
   float speedf__;
   float mmm=(float)(1024-(CVL[1]>>2))/1024.0f;
   HEADSINL;
-  tmp=(1024-(CV[1]>>2)) + (int)((float)(gate[dacfrom[daccount][1]].dac>>2)*mmm);
+  tmp=(1024-(CV[1]>>2)) + (int)((float)(gate[speedfrom[spdcount][1]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1845,7 +1845,7 @@ void Ldacadd(void){
   HEADL;
   uint8_t w=1;
   float speedf__;
-  speedf__=logspeed[(CV[1]&511)+(gate[dacfrom[daccount][1]].dac>>3)];
+  speedf__=logspeed[(CV[1]&511)+(gate[speedfrom[spdcount][1]].dac>>3)];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1861,7 +1861,7 @@ void Ldacminus(void){
   uint8_t w=1;
   int32_t cv;
   float speedf__;
-  cv=(gate[dacfrom[daccount][1]].dac>>2)-(1024-(CV[1]>>2));
+  cv=(gate[speedfrom[spdcount][1]].dac>>2)-(1024-(CV[1]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1879,7 +1879,7 @@ void Ldacspeedminus(void){
   uint8_t w=1;
   int32_t cv;
   float speedf__;
-  cv=(CV[1]>>2)-(gate[dacfrom[daccount][1]].dac>>2); 
+  cv=(CV[1]>>2)-(gate[speedfrom[spdcount][1]].dac>>2); 
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1898,7 +1898,7 @@ void Ldacmod(void){
   int32_t cv;
   float speedf__;
   cv=((CV[1]>>2)+1); // modulo code
-  speedf__=logspeed[(gate[dacfrom[daccount][1]].dac>>2)%cv];
+  speedf__=logspeed[(gate[speedfrom[spdcount][1]].dac>>2)%cv];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1914,7 +1914,7 @@ void LB(void){// with oscillator
   uint8_t w=1;
   int32_t cv;
   float speedf__;
-  cv=(CV[1]>>2)-(gate[dacfrom[daccount][1]].dac>>2);
+  cv=(CV[1]>>2)-(gate[speedfrom[spdcount][1]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;  

@@ -399,6 +399,16 @@ void C19(void){ // x bits audio from 2s complement
   DACOUT;
 }
 
+void C20(void){ // 12 bits audio from ONEs complement
+  gate[2].dactype=20; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
+void C21(void){ // x bits audio from ONEs complement
+  gate[2].dactype=21; gate[2].dacpar=4095-(param[2]&4095);
+  DACOUT;
+}
+
 
 
 void C67_4bits(void){ // stock 4 bit DAC - nothing to do with length!!!! TODO: use length PARAM as....
@@ -648,7 +658,7 @@ void Cdacspeedminus0(void){
   uint8_t w=2;
   int32_t cv;
   float speedf__;
-  cv=(CV[2]>>2)-(gate[dacfrom[daccount][2]].dac>>2); 
+  cv=(CV[2]>>2)-(gate[speedfrom[spdcount][2]].dac>>2); 
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -667,7 +677,7 @@ void Cdacmod0(void){
   int32_t cv;
   float speedf__;
   cv=((CV[2]>>2)+1); // modulo code
-  speedf__=logspeed[(gate[dacfrom[daccount][2]].dac>>2)%cv];
+  speedf__=logspeed[(gate[speedfrom[spdcount][2]].dac>>2)%cv];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -683,7 +693,7 @@ void CB0(void){// with oscillator
   uint8_t w=2;
   int32_t cv;
   float speedf__;
-  cv=(CV[2]>>2)-(gate[dacfrom[daccount][2]].dac>>2);
+  cv=(CV[2]>>2)-(gate[speedfrom[spdcount][2]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;  
@@ -702,7 +712,7 @@ void Cdacoffset0(void){
   float speedf__;
   float mmm=(float)(1024-(CVL[2]>>2))/1024.0f;
   HEADSSINNADA;
-  tmp=(1024-(CV[2]>>2)) + (int)((float)(gate[dacfrom[daccount][2]].dac>>2)*mmm);
+  tmp=(1024-(CV[2]>>2)) + (int)((float)(gate[speedfrom[spdcount][2]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   if (speedf__==2.0f) speedf__=LOWEST;

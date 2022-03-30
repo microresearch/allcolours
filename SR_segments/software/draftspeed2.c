@@ -52,6 +52,7 @@ static heavens gate[8]; // for paralell SR doubled
 
 static uint32_t count=0;
 static uint32_t daccount=0;
+static uint32_t spdcount=0;
 
 uint32_t neworder[4]={3,2,1,0}; // order backwards
 
@@ -163,9 +164,6 @@ static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG 
 
 static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt[4]={0,0,0,0};
 
-// so for simple pass through by speed would be: speedfrom=0/inputbit=2/adctype=0/route=last one as bit/
-//uint32_t speedfrom[4]={0,0,0,0}; //0 is CV, 1 is interrupt, 2 is DACspeedfrom_ + CV // unused so far...
-//uint32_t speedfrom_[4]={3,3,3,3}; // who we get dac speed offset from?
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
 //uint32_t LFSR[4]={3,3,3,1}; // which SR take the LFSR bits from! default is from itself - but could be opposites eg. {2,3,0,1}
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
@@ -264,6 +262,29 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  
   {1,3,1,1}
 };
 
+uint32_t speedfrom[16][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
+  {3,0,0,0}, // default
+  {0,0,0,0}, // synced...
+  {0,1,2,3}, // itself...
+  /*  
+  {1,3,1,1}, // new one for rungling 24/1/2022
+  {3,0,1,2}, // from latest notebook prev ones: 3,0,1,2
+  {0,1,2,3}, // itself
+  {3,2,1,0}, // reverse
+  {3,3,3,3},
+  {2,2,2,2},
+  {1,1,1,1},
+  {3,3,1,1},
+  {1,1,3,3},
+  {2,3,0,1}, // opposites
+  {1,0,3,2},
+  {1,2,3,0}, // nexts
+  {3,2,1,0}, /// rev
+  {1,3,1,1},
+  {1,3,1,1}*/
+};
+
+
 // can also have lists for each one to bump along
 uint32_t myroute[4][16]={
   {8, 4, 2, 1,  9, 5, 3, 1,  2, 4, 8, 1,  3, 5, 9, 1},
@@ -323,10 +344,6 @@ void new_data(uint32_t data, uint32_t ww)
     delay_buffer[ww][1] = data;
 }
 
-// this one for ones which use strobe and cv
-// no strobes, nor otherpar (as that is CV or we need to free up a CV)
-uint32_t adclist[32]={0,1,2,3,4,5,6,7,8,22,23,25,26,27,30,68,71,72,73,74,75,76,77,78,79,80,81,82,101,22,23,25};
-
 uint32_t options[4][24]={
       {1,3,3, 2,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 0,3,3},
       {0,3,3, 2,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 1,3,3},
@@ -353,7 +370,7 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew 
 void (*dofunc[4][64])(void)=
 {//NLcutfeedback86
-  {N109, N23, N24, N29, N30, N95, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {N112, N23, N24, N29, N30, N95, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
   {L0, L2, LX0},
   {C19, C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}

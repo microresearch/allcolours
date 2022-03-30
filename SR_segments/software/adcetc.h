@@ -239,7 +239,7 @@ static inline uint32_t adc12compbits(uint32_t depth){ // fixed 12 bits 2s comple
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      ADCgeneric; 
       if (k<2048) bitwise=1;
       else bitwise=0;
       k=abs(k-2048);
@@ -271,6 +271,28 @@ static inline uint32_t adccompbits(uint32_t depth){ // variable depth 2s complem
   return bt;
 }
 
+static inline uint32_t daccompbits(uint32_t depth){ // variable depth 2s complement for DAC
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      //      ADCgeneric;
+      k=(gate[2].dac); 
+      if (depth<12) k=k>>(11-depth);
+      else k=k<<(depth-11);
+      bc=depth; 
+      
+      if (k<(1<<depth)) bitwise=1;
+      else bitwise=0;
+	  k=abs(k-(1<<depth));
+      if (bitwise) k=(~k)+1;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+
 // we can also have 2s comp which is just shifted around...
 
 static inline uint32_t adcpadbits(uint32_t depth){ 
@@ -278,7 +300,7 @@ static inline uint32_t adcpadbits(uint32_t depth){
   static int32_t bc=31;
   static uint32_t k;
   if (bc<0) {
-    ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth);
+    ADCgeneric; 
     if (depth<12) k=k>>(11-depth);
     else k=k<<(depth-11);
     bc=depth; 
@@ -293,12 +315,36 @@ static inline uint32_t adc12onecompbits(uint32_t depth){ // fixed 12 bits 1s com
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      ADCgeneric; 
       if (k<2048) bitwise=1;
       else bitwise=0;
       k=abs(k-2048);
+      if (k==0) k=1;      
       if (bitwise) k=(~k);
       bc=11; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t adconecompbits(uint32_t depth){ // variable 12 bits 1s complement
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      ADCgeneric; 
+      if (depth<12) k=k>>(11-depth);
+      else k=k<<(depth-11);
+      bc=depth; 
+
+      if (k<(1<<depth)) bitwise=1;
+      else bitwise=0;
+
+      k=abs(k-(1<<depth));
+      if (k==0) k=1;
+      if (bitwise) k=(~k);
+      //     bc=11; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
   bc--;
@@ -347,8 +393,8 @@ static inline uint32_t dacpadbits(uint32_t depth){
   static int32_t bc=31;
   static uint32_t k;
   if (bc<0) {
-    //    ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth);
-    k=(gate[dacfrom[daccount][0]].dac); // change to proper DAC? - but now we just keep as 0 ... anyways
+    //    ADCgeneric; 
+    k=(gate[2].dac); 
     if (depth<12) k=k>>(11-depth);
     else k=k<<(depth-11);
     bc=depth; 
@@ -363,7 +409,7 @@ static inline uint32_t dacbits(uint32_t depth){ // max 12 bits
   static int32_t bc=31;
   static uint32_t k;
   if (bc<0) {
-    k=(gate[dacfrom[daccount][0]].dac)>>(11-depth);
+    k=(gate[2].dac)>>(11-depth);
     if (depth>11) depth=11; // max depth
     bc=depth;
   }
@@ -1515,9 +1561,22 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
 
   case 110:
-    /// ones compliment
-    bt=adc12onecompbits(length); // can also be otherpar for depth
+    /// ones compliment - always 12 bits
+    bt=adc12onecompbits(length); 
     break;
+
+  case 111:
+    /// ones compliment
+    bt=adconecompbits(length); // can also be otherpar for depth adconecompbits
+    break;
+
+  case 112:
+    /// 2 complimentDAC - now with mix
+    bt=daccompbits(length); // can also be otherpar for depth adconecompbits
+    bt|=adccompbits(length); // can also be otherpar for depth
+    break;
+
+
     ///////////////////////
   } // switch
   return bt;
@@ -1859,16 +1918,37 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (n[wh]>length) { // this could also be otherpar
       n[wh]=0;      
       x=shift&masky[11]; // 12 bits
+
       if (x&(1<<11)) {
-      x = x | ~(1 << 12);
+	x=(~x);
+	x&=masky[11];
+	lastout[wh]=2048-x;
+      }
+      else lastout[wh]=x+2048;
     }
-    lastout[wh]=x+2048;
+    x=lastout[wh]; // all above 2048
+    n[wh]++;              
+    break;
+
+  case 21: //  ONEs complement back to our encoding 
+    // variable bits out
+    // try delay or no delay
+    if (n[wh]>length) { // this could also be otherpar // either or... - but how do we get length AND otherpar // except detach speed...
+      n[wh]=0;      
+      x=shift&masky[length]; // x bits
+      if (x&(1<<length)) {
+	x=~x;
+	x&=masky[length];
+	x=(1<<length)-x;
+    }
+      else  x=x+(1<<length);
+      // shift back to 12 bits...
+      lastout[wh]=((x&masky[length])>>rightshift[length])<<leftshift[length]; 
     }
     x=lastout[wh];
     n[wh]++;              
     break;
 
-    
 
     ///////
   } // switch    

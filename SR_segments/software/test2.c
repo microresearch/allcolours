@@ -863,8 +863,8 @@ heavens gate[4];
   //  k=;
   //  k=0;
   // works
-  /*
-  k=400;
+
+  k=4000;
   if (k<2048) bitwise=1;
   else bitwise=0;
   k=abs(k-2048);
@@ -874,6 +874,8 @@ heavens gate[4];
   print12bits(k);
   printf("%d\n",k);
   // convert back
+  k&=masky[11];
+
   if (k&(1<<11)) {
     k = k | ~((1 << 12)-1);
     printf("xxx %d\n",k);
@@ -881,31 +883,37 @@ heavens gate[4];
   k=k+2048;    
   print32bits(k);
   printf("%u\n",k);
-  */
+
   
   //    k=(1<<12);
   //    printf("%d\n",k);
 
-  
-  k=1;
+  /*  
+  k=1000;
   // 1 instead of 0
+  if (k==0) k=1;
   if (k<2048) bitwise=1;
   else bitwise=0;
   k=abs(k-2048);
-  
+  print32bits(k);
   if (bitwise) k=(~k);
-  print12bits(k);
+  print32bits(k);
+
   //  printf("%d\n",k);
   // convert back
-    if (k&(1<<11)) {
+    k&=masky[11];
+    print32bits(k);
+  if (k&(1<<11)) {
     k=(~k);
+    k&=masky[11];
     k=2048-k;
   }
   else k=k+2048;
-  
-  print12bits(k);
-  printf("%d\n",k);
-  
+  printf("%u\n",k);
+
+  k=0b010000000000;
+  if (k&(1<<11)) printf("help");
+  */
   /*
   kk-=2048;
   print16bits(kk>>4);  

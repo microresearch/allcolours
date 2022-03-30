@@ -314,15 +314,73 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 newmodes I think are in modeL - and need to be ported across!
 
+** 30/3/2022
+
+generators/bits, encodings if any --> bits, 12 bits/encodings (only for dac and adc so we need these in generators)
+
+generators->prob/etc/mix
+
+*TODO: other basic SR options*  
+
+WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
+
+//options relating to new input: adc/dac, mix, routein - how to select these options
+
+EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+
+TODO: as a generator, we have variations otherwise in moden for adc in 
+
+TRIADEX: see what we have, harder with limited params but what we can get generically from this: multiple bitmasks
+
+///////////////////////////////////////////////////////////////////
+
+DONE:1 and 2s complement for ADC, one DACinDONE
+
+one's complementDONE
+
+also encodings for 12 bit dac // so we can mix these////someDONE
+
+*too many options/params: eg. speedfrom, adcin, mixwith dacfrom etc. stream, encoding*
+
+dacfrom/speedfrom? but also dacfrom is param and for feedback we route from 2 so is different - changed in adcetc to 2 for dacs routed in
+
+*DONE:use speedfrom so dacfrom and speedfrom are different and can be changed globally in modeR-TODO*
+
+eg. gate[speedfrom[spdcnt][3]].dac vs. gate[dacfrom[daccount][3]].dac
+
+- how to genericise rungler so is unfixed in routes... eg. that we can use NSR as oscillator approx... but speedfroms are fixed here....
+and with rungler we need all to be kind of synced... but abstract out...
+
+generic rungler: 
+SR1: speedfrom 2, datafrom 3(route or dacNSR)XORloopback // route from C=3
+SR2: speedfrom 1, osc/abstract
+SR3: speedfrom 1, osc/abstract
+
+speedfrom x
+
+encode as:
+binroute-9,0,2,0 
+speedfrom-1,0,none/0,0
+
+*but there is no sync of modes to use certain routes (count=binroute, spdcount=speed is that sync) - think about this*
+
+out is SR4 with route/dac from any... CSR/generic or we add speedfrom x option
+
+//////////////////////
+
+from notebook?
+
+x speedfrom
+x [dacfrom]
+x routefrom
+x param from 
+------------> recurse?
+
 ** 29/3/2022
 
 - cut routes? from notebook - what this means/how/why? relating to rungler - to cut the binroute in... =0 but how to put back...
 
 DONE: rungler options.
-
-*TODO: other basic SR options, 2s complement for ADC, DAC - in progress with various modes*
-
-what other encodings are there? zig-zag, one's complement...
 
 ////
 
@@ -367,7 +425,7 @@ DAC input modes: 25,26,27,71,72,73,74,  also mixes of DAC/ADC in adcetc and in m
 back to basics - detached TM modes (NLtm101)+, rework classic modes exactly, new
 code draft layout
 
-*TODO: other bit encodings for negative in adcetc/modeN*
+TODO: other bit encodings for negative in adcetc/modeNDONE
 
 classics:
 - TM, done - all variations to explore
