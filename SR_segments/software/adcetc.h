@@ -293,7 +293,6 @@ static inline uint32_t daccompbits(uint32_t depth){ // variable depth 2s complem
 }
 
 
-// we can also have 2s comp which is just shifted around...
 
 static inline uint32_t adcpadbits(uint32_t depth){ 
   uint32_t bt;
@@ -376,7 +375,7 @@ static inline uint32_t energybits(uint32_t depth){ // equiv bits energy TODO: us
 static inline uint32_t onebits(uint32_t depth){ // depth=0 resets
   uint32_t bt;
   static int32_t bc=31;
-  static uint32_t k;
+  //  static uint32_t k;
   if (bc<0) {
     bt=0;
     if (depth>0) bc=depth;
@@ -385,6 +384,28 @@ static inline uint32_t onebits(uint32_t depth){ // depth=0 resets
   bt = 1; // this means that MSB comes out first
   }
   bc--;
+  return bt;
+}
+
+//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+static inline uint32_t ENbits(uint32_t prob){ 
+  uint32_t bt, tmp;
+  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
+  // if all as switches are 1... 
+
+  //    prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
+    prob=prub[prob>>9];
+    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | prob)==255) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[0].Gshift_[0]>>SRlength[0]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+// trying for a simpler version
+static inline uint32_t ENsbits(uint32_t prob){ 
+  uint32_t bt, tmp;
+  if ((LFSR_[0]&4095)<prob) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+    //    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | prob)==255) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[0].Gshift_[0]>>SRlength[0]) & 0x01;	   // cycle bit
   return bt;
 }
 
@@ -418,16 +439,20 @@ static inline uint32_t dacbits(uint32_t depth){ // max 12 bits
   return bt;
 }
 
-static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO
+static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO/DONE
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
   static float integratorf=0.0f, oldvaluef=0.0f;
-  float inb;
-    ADCgeneric;
-    inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
-    integratorf+=(inb-oldvaluef);
-    if(integratorf>0.0f)
+  static float inb;
+  if (bc>depth){
+  ADCgeneric;
+  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+  bc=0;
+  }
+  integratorf+=(inb-oldvaluef);
+
+  if(integratorf>0.0f)
   {
      oldvaluef=1.0f;
      bt=1;
@@ -436,7 +461,8 @@ static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could 
    {
       oldvaluef=-1.0f;
       bt=0;
-   }   
+   }
+    bc++;
   return bt;
 }
 

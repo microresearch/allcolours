@@ -185,10 +185,10 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[16][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
-    {8,1,2,4}, // default was 8121 
+    {8,1,2,4}, // default was 8121 // now we have full route 8124
   //  {0,0,1,0}, //  test
-	{8,1,2,2}, // expanding
-	{8,1,2,4}, // expanding
+	{8,1,2,2}, // notexpanding
+	{8,1,2,1}, // notexpanding
 	{8,1,2,8}, // expanding
 	{8,1,2,9}, // expanding
 	{8,1,2,11}, // expanding
@@ -370,9 +370,9 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew 
 void (*dofunc[4][64])(void)=
 {//NLcutfeedback86
-  {N112, N23, N24, N29, N30, N95, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
-  {L0, L2, LX0},
-  {C19, C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
+  {N0, N23, N24, N29, N30, N95, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
+  {LLsliposc, L2, LX0},
+  {C2, C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
 
@@ -422,7 +422,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     clksr_[www]=(clksr_[www]<<1);
   }
   // genericLFSR for all probability modes
-  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 29) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 29, 25, 24
+  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   LFSR_[www] = (LFSR_[www]<<1) + tmp;
 
   // do the modes

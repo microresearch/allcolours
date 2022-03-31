@@ -957,7 +957,7 @@ void Nstrobe3_0(void){ // basic ADC in - see above table - 3ADC BIT vs [ADC/xor/
   6- ADCBIT xor routed vs returnbit
 */
 
-//////////// detached strobes=5 modes
+//////////// detached strobes=x modes
 
 void NLstrobe1(void){ 
   uint8_t w=0, bits, bitss;
@@ -1051,6 +1051,7 @@ void Nstrobe4_29(void){
   }
   }
 }
+
 
 void Nstrobe5_29(void){ 
   uint8_t w=0;
@@ -2365,8 +2366,46 @@ void NLintprob184(void){ // own dac as comparator against DAC+CV // ***
   } 
 }
 
-// what other bits we could have?
+///////////////////////////////////
+// generators - can also be for detached modes
+void Nintone(void){ // intmode for onebitadc with speed as depth/delay // tested
+  uint8_t w=0;				       
+  HEADN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    //    bitn=ADC_(0,SRlength[w],84,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_);
+    bitn=adconebits(CV[0]); // 0-31 5 bits or more >>7 TEST/try
+    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
 
+void NintEN(void){ // intmode for Electronotes generator
+  uint8_t w=0;				       
+  HEADN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    //    bitn=ADC_(0,SRlength[w],84,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_);
+    bitn=ENbits(CV[0]); // 0-31 5 bits or more >>7 TEST/try
+    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+void NintsEN(void){ // intmode for simpler Electronotes generator
+  uint8_t w=0;				       
+  HEADN;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    //    bitn=ADC_(0,SRlength[w],84,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_);
+    bitn=ENsbits(CV[0]); // 0-31 5 bits or more >>7 TEST/try
+    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+
+// what other bits we could have?
 void Nintroute0(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=0;				       
   HEADN;  
@@ -2608,9 +2647,11 @@ void Nintprob5_0(void){ // electronotes draft0 // can also use incoming SR inste
     //    if (((LFSR_[0] & 4095 ) < CV[0])){ // ((SR/LFSR & (CV) )== 4095)
     //    if ( ((LFSR_[0]&255) & ((CV[0]>>4)&255)) == 255 ){
     
-    tmp=255-(CV[0]>>4);
-    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&262144)>>15) + ((LFSR_[0]&16384)>>10) + ((LFSR_[0]&131072)>>12) + ((LFSR_[0]&524288)>>13) + ((LFSR_[0]&2097152)>>14)) | tmp)==255){
-    
+    //    tmp=255-(CV[0]>>4);
+    //    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&262144)>>15) + ((LFSR_[0]&16384)>>10) + ((LFSR_[0]&131072)>>12) + ((LFSR_[0]&524288)>>13) + ((LFSR_[0]&2097152)>>14)) | tmp)==255)
+    tmp=prub[CV[0]>>9];
+    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | tmp)==255)
+      {
     bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_); 
     BINROUTE_;
     }
@@ -2632,9 +2673,12 @@ void Nintprob6_0(void){ // electronotes draft0 // use incoming SR instead of LFS
     //    if (((LFSR_[0] & 4095 ) < CV[0])){ // ((SR/LFSR & (CV) )== 4095)
     //    if ( ((LFSR_[0]&255) & ((CV[0]>>4)&255)) == 255 ){
     // LFSR_[0]->gate[inroute[count][0]].shift_
-    tmp=255-(CV[0]>>4);
-    if ( ( ( ((gate[inroute[count][0]].shift_&1)>>0) + ((gate[inroute[count][0]].shift_&4)>>1) + ((gate[inroute[count][0]].shift_&32)>>3) + ((gate[inroute[count][0]].shift_&262144)>>15) + ((gate[inroute[count][0]].shift_&16384)>>10) + ((gate[inroute[count][0]].shift_&131072)>>12) + ((gate[inroute[count][0]].shift_&524288)>>13) + ((gate[inroute[count][0]].shift_&2097152)>>14)) | tmp)==255){
-    
+    //    tmp=255-(CV[0]>>4);
+    //    if ( ( ( ((gate[inroute[count][0]].shift_&1)>>0) + ((gate[inroute[count][0]].shift_&4)>>1) + ((gate[inroute[count][0]].shift_&32)>>3) + ((gate[inroute[count][0]].shift_&262144)>>15) + ((gate[inroute[count][0]].shift_&16384)>>10) + ((gate[inroute[count][0]].shift_&131072)>>12) + ((gate[inroute[count][0]].shift_&524288)>>13) + ((gate[inroute[count][0]].shift_&2097152)>>14)) | tmp)==255)
+    tmp=prub[CV[0]>>9];
+    if ( ( ( ((gate[inroute[count][0]].shift_&1)>>0) + ((gate[inroute[count][0]].shift_&4)>>1) + ((gate[inroute[count][0]].shift_&32)>>3) + ((gate[inroute[count][0]].shift_&16384)>>11) + ((gate[inroute[count][0]].shift_&131072)>>13) + ((gate[inroute[count][0]].shift_&524288)>>14) + ((gate[inroute[count][0]].shift_&2097152)>>15) + ((gate[inroute[count][0]].shift_&8388608)>>16)) | tmp)==255)
+
+      {
     bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_); 
     //    BINROUTE_;
     }
@@ -2657,9 +2701,11 @@ void Nintprob7_0(void){ // electronotes draft0 - ADC or ROUTEIN
     //    if (((LFSR_[0] & 4095 ) < CV[0])){ // ((SR/LFSR & (CV) )== 4095)
     //    if ( ((LFSR_[0]&255) & ((CV[0]>>4)&255)) == 255 ){
     
-    tmp=255-(CV[0]>>4);
-    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&262144)>>15) + ((LFSR_[0]&16384)>>10) + ((LFSR_[0]&131072)>>12) + ((LFSR_[0]&524288)>>13) + ((LFSR_[0]&2097152)>>14)) | tmp)==255){
-    
+    //    tmp=255-(CV[0]>>4);
+    //    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&262144)>>15) + ((LFSR_[0]&16384)>>10) + ((LFSR_[0]&131072)>>12) + ((LFSR_[0]&524288)>>13) + ((LFSR_[0]&2097152)>>14)) | tmp)==255){
+    tmp=prub[CV[0]>>9];
+    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | tmp)==255)
+    {
     bitn=ADC_(0,SRlength[w],0,gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_); 
     //    BINROUTE_;
     }
@@ -2870,9 +2916,12 @@ void NLintprob5(void){ // electronotes draft0 // can also use incoming SR instea
     //    if (((LFSR_[0] & 4095 ) < CV[0])){ // ((SR/LFSR & (CV) )== 4095)
     //    if ( ((LFSR_[0]&255) & ((CV[0]>>4)&255)) == 255 ){
     
-    tmp=255-(CV[0]>>4);
-    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&262144)>>15) + ((LFSR_[0]&16384)>>10) + ((LFSR_[0]&131072)>>12) + ((LFSR_[0]&524288)>>13) + ((LFSR_[0]&2097152)>>14)) | tmp)==255){
-    
+    /*    tmp=255-(CV[0]>>4);
+    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&262144)>>15) + ((LFSR_[0]&16384)>>10) + ((LFSR_[0]&131072)>>12) + ((LFSR_[0]&524288)>>13) + ((LFSR_[0]&2097152)>>14)) | tmp)==255)
+    */
+    tmp=prub[CV[0]>>9];
+    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | tmp)==255)
+{
     bitn=ADC_(0,SRlength[w],(adclist[CVL[0]>>7]),gate[w].trigger,dacfrom[daccount][0],CV[0], &gate[w].shift_); 
     BINROUTE_;
     }

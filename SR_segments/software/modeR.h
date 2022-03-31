@@ -1,38 +1,3 @@
-// right hand functions
-
-//DONE//checked for pulsoutsX, pulsins and strobey
-
-/*
-
-latest:
-
-CV:
-0-15 - basic routes and probabilities
-15-31 detached
-
-CVDAC:
-32-47
-
-INTMODES:
-cv as routings, probabilities etc.
-and global set routes, set which dacs is dac for adc, set fake clkins
-
-
-
-
-CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC
-
-DACmodes: basics, esoterics
-
-INTmodes: route from CV, prob from CV, others? + change global routes, fake clks, use as DAC, entry of adc/non-adc bits from top
-
-above, different kinds of DAC out
-
-*/
-
-
-// CV modes
-
 void RLLswop(void){ // swop in or logop SR - cv and cvl ***
   uint8_t w=3; uint32_t lin, lout;
   HEADSSINNADA;

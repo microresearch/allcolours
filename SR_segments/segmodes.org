@@ -314,6 +314,65 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 newmodes I think are in modeL - and need to be ported across!
 
+** 31/3/2022
+
+list of encodings for ADC, DAC: parameter is depth/delayforonebit
+
+- maximum 12 bits 
+- padded any number of bits
+- fixed number of bits: 12,8,4
+- one bit encoding
+- equivalent bits
+- energy equivalent bits (abs value)
+- fixed 12 bits 2s complement: can also be 8,4
+- variable depth 2s comp
+- fixed 12 bits 1s complement: can also be 8,4
+- variable depth 1s comp
+
+- comparator is an encoding????
+
+generators can also just be in modeN (see example Nintone)
+
+complemented by DAC decodings
+
+list of abstract generators and abstract modes:
+
+gens: 
+
+*notebook notes:*
+
+///question of so many params/// 
+
+In modeN ADC is possible param so with all detached we have 3 params... max 2 in other modes
+
+strobe/detach modes - frees speed and length as 2 params
+
+///
+
+- *how we manage routes - sync routes?*
+
+tricky as who syncs? if all mode can do this?
+
+- length of SR as distinct from param for ADC or DAC modes 
+
+length is only relevant for entry into next SR (if there is), and for cycling
+
+- what length and speed mean for each... (eg. in modeN we can free up speed easier)
+- how to extrapolate from basic SR (eg. rungler) for each side: L and R should have basic prob modes
+
+- slippage of bitstreams against each other 
+// *also that instead of a route we combine two SR eg. N and L??? how? and what is their content///only if both are generators* tEST
+
+- Q. detach ADC mode and leave it there?
+
+also defining basic ADC modes and modes which are more fancy and involve other routings - see how these are divided across adcetc/modeN.h
+
+x abstract modes ----
+x ADC modes ---------> bits/params for these eg. depth. + binroute/from/cycle + prob/strobe/toggle + specials...
+x DACin modes -------
+
+- stop adding more modes!
+
 ** 30/3/2022
 
 generators/bits, encodings if any --> bits, 12 bits/encodings (only for dac and adc so we need these in generators)
@@ -322,13 +381,12 @@ generators->prob/etc/mix
 
 *TODO: other basic SR options*  
 
-WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
-
-//options relating to new input: adc/dac, mix, routein - how to select these options
+WIARD: noise/comp selects new input or loop back/inverted loop back (jumper) //options relating to new input: adc/dac, mix, routein - how to select these options
 
 EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+DONE: as a generator, we have variations otherwise in moden for adc in 
 
-TODO: as a generator, we have variations otherwise in moden for adc in 
+- there were mistakes there which we need to fix from generator code...DONE - *port electro to other sides*
 
 TRIADEX: see what we have, harder with limited params but what we can get generically from this: multiple bitmasks
 

@@ -1,33 +1,4 @@
-// left hand functions
-// CHECKED check all pulse in, strobey, output pulses DONE
-
-// BINROUTE has strobey already
-
-/*
-
-latest:
-
-CV:
-0-15 - basic routes and probabilities
-15-31 detached
-
-CVDAC:
-32-47
-
-INTMODES:
-cv as routings, probabilities etc.
-
-
-CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC, what else?
-
-DACmodes: basics, esoterics
-
-INTmodes: route from CV, prob from CV, others?
-
-- how we work with length param as it doesn't change so much?
-
-*/
-
+// check strobey! TODO
 
 // template
 void LN(void){
@@ -1657,6 +1628,27 @@ void LLcvroute(void){ // CV: 4 bits for route in... other bits for logop
     ENDER;
   }
   } 
+}
+
+//- slippage of bitstreams against each other 
+// *also that instead of a route we combine two SR eg. N and L??? how? and what is their content///only if both are generators* tEST
+void LLsliposc(void){ // 
+  uint8_t w=1;				       
+  HEADSINL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+    GSHIFT_;
+    tmp=(CVL[1]>>7); // 5 bits
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    // slide
+    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1;
+    // no binroute needed
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+}
 }
 
 void LLcvSRmaskroute(void){ // CV: 4 bits for route in... other bits for logop

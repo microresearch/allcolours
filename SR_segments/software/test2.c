@@ -182,7 +182,7 @@ static uint8_t lfsr_taps[32][4] = {
         {28, 27, 26, 24},
         {29, 28, 25, 23},
         {30, 29, 28, 27},
-        {31, 29, 25, 24},
+        {31, 19, 25, 24},
   };
 
 //static uint32_t rightshift[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, // first 12 bits
@@ -863,7 +863,7 @@ heavens gate[4];
   //  k=;
   //  k=0;
   // works
-
+  /*
   k=4000;
   if (k<2048) bitwise=1;
   else bitwise=0;
@@ -883,7 +883,35 @@ heavens gate[4];
   k=k+2048;    
   print32bits(k);
   printf("%u\n",k);
+  */
+  for (x=0;x<32;x++){
+    printf("1<<%d",x);
+    printf("= %d\n",1<<x);
+  }
+ 
+  int prob=0;
+  
+  while(1){
+  bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
 
+  shift_registern=(shift_registern<<1)+bitn;
+  //  if (bitn) bitn=255;
+  //  else bitn=0;
+  //  printf("%c",bitn);
+
+   if ( ( ( ((shift_registern&1)>>0) + ((shift_registern&4)>>1) + ((shift_registern&32)>>3) + ((shift_registern&16384)>>11) + ((shift_registern&131072)>>13) + ((shift_registern&524288)>>14) + ((shift_registern&2097152)>>15) + ((shift_registern&8388608)>>16)) | prob)==255) {
+    //bitn=(shift_registern>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  //  prob=((shift_registern&1)>>0) + ((shift_registern&4)>>1) + ((shift_registern&32)>>3) + ((shift_registern&16384)>>11) + ((shift_registern&131072)>>13) + ((shift_registern&524288)>>14) + ((shift_registern&2097152)>>15) + ((shift_registern&8388608)>>16);
+  printf("x");
+   }
+  else printf(" ");
+  }
+  
+  //  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
+  //  LFSR_[www] = (LFSR_[www]<<1) + tmp;
+
+
+  
   
   //    k=(1<<12);
   //    printf("%d\n",k);
