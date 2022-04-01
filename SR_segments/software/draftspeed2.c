@@ -371,8 +371,8 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(void)=
 {//NLcutfeedback86
   {N0, N23, N24, N29, N30, N95, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
-  {LLsliposc, L2, LX0},
-  {C2, C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
+  {Lproboscintest, L2, LX0},
+  {C0, C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
   {R0, R0, R1}
 };
 

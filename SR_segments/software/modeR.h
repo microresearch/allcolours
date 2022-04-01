@@ -763,10 +763,11 @@ void Rintroute0(void){ // CV: 4 bits for route in... other bits for logop
   } 
 }
 
-void RintselADC_63(void){ // use CV to select adc type: only those which don't use CV or strobe LIST:
+void RintselADC_63(void){ // use CV to select adc type: only those which don't use CV or strobe LIST: also select logop for routein // ***
   // we could also us top bits to do something with? 16 modes=4 bits, top bits logop/route?
   //0,1,2,3,4,5,6,7,8 - adc logical-22,23,25,26,27,30,63,64,65 to test - 27 dies out but...
   uint8_t choice[16]={0,1,2,3,4,5,6,7,8, 22, 23, 25, 26, 27, 30, 63};//leave off -inprogress 63,64,65 to test - TODO: expand this with new abstract and dac modes...
+  //TODO: expand also with 
     // DAC inputs 25,26,27,71,72,73,74
   uint8_t w=3;				       
   HEADR;  

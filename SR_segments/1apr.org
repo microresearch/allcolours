@@ -1,0 +1,107 @@
+* new note 1/4/2022
+
+breakdown.
+
+N- type of ADC/route in/how we deal with/binroute_or_not as key - modeR which can also clear binroutes...//orjustthatone in
+
+or:
+
+bits and their encodings->how?-mix/prob/strobe/splice/XOR/mix
+
+R- set of global routes eg. cut all routes on strobe, sync routes, bump routes etc.
+
+*NEW IDEA:* 
+
+set/sync groups of modes from R: 8x8 and then we have minor modes on each:
+
+eg. 
+1-traditional/vienna and variations
+2-rungler - DAC speeds and multiple routings
+3-probability? more TM style
+4-freeform as is now
+5-bit recursions.
+
+Qs: 
+- how much is constraining ie. we can't mix and match but is more or less same now // more flexibility in minor modes
+- that there are only 8 Rmodes for DAC, feedback, pulseins - its still needs to keep functions 
+- how we start to code this based on what we have... functions? lists of function pointers...
+
+void (*dofunc[4][64])(void) is our array of functions now so we need 8x these for 8x major -> 64x minor modes
+
+array of arrays or case...
+
+- check how much rmodes really do so far... *TEST* eg. RintselADC_63 is quite powerful
+
+but for each of 8 major modes we can have 8 /different/ Rmodes... guess we need stick with dacspeed/intmodes
+
+R is somehow the 5th head/tail?
+
+////// thinking abstract more out also: 
+- all as bitstreams including decisions/use as decisions for insertion [eg. osc bitstream at speed y toggles on off input]
+- that doesn't always need to be routed with this ... but NSR needs something in
+- binroute as stream untied from any SR... binroute/return as generator/bitstream -> but is not independent - no ref now to an SR eg. gate[x].Gshift_[w]
+  [or that is an option if we have a new param in generators there] we need for return... itself!
+
+list of generators... - all take one param though?
+
+bits /spd/ = 5thSR/adc/dac/binroute/return /params/
+
+entry decided by = toggle/strobe/prob-comp/bits-|
+
+into /length/ /spd/ SR as X bits/one bit/slide/spaced
+
+also could be across all 4 SRs (eg. one as bits decided or filtered by another into...)
+
+// no routes just streams...
+
+** remind of bits eg. vienna bits
+
+6 bits/64 modes: 1 1 1 1 1 1
+- top bit/speedfrom
+- 4 bits routing in
+- 1 bit do prob of inversion
+
+or trial bits:
+pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
+1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
+
+** older segmodes.org
+
+new code draft layout:
+
+// how to code a new prototype from/also a bitmapped/probbed mode from:
+
+-bitstream /in/ (depth, other params) -routedbit/s from where/ROUTINGS/// - this is also a bitstream... but we have it seperate
+
+parallel bitstreams...
+
+-dotheycomein? - strobe/toggle/probability/ANDbitsotherSR -> using AND
+from other downstream SR doesn't work for feedback reasons///
+
+- *how they come in* splicings with other chains, mixing with other
+  chains
+
+At the moment we have prototype of:
+
+  if (speedf_[w]!=2.0f){			
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;	
+							
+  bitn=ADC_(0,SRlength[0],X,gate[0].trigger,dacfrom[daccount][0],param[0],  &gate[0].shift_); // parallel streams
+  BINROUTEOR_; // parallell
+
+  BITN_AND_OUTVN_; //out
+
+gshift/bitn_in/binroute/addinandout!
+
+sources[1]->entry[2]->logic][3]->where[4] (also 4 tails/routes here>>>)
+
+incoming bits vs. interpreted bits
+
+ they are bits - multiple GSR speeds...
+
+ADC/DAC bits: deliver bits/generator, tap into stream ... 
+OSC bits: they are bits, also can be streamed/accelerated...
+BINROUTE bits: they are bits, can be multiple GSR speeds, where they come from=route
+feedback bits: loopback bits
+

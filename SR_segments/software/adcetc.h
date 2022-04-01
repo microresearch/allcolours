@@ -182,6 +182,50 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
   
 
 //////////////////////////////////////////////////////////////////////////
+// TODO: fill in all possible generators: eg. new abstract ones, binroute and return...
+// options also include if we add in gshift or just shift out etc.
+static inline uint32_t binroutebits(uint32_t depth){   // depth as routesel...
+  uint32_t bt=0, bitrr;
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option
+    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+// depth can be length or param
+static inline uint32_t returnbits(uint32_t depth, uint32_t w){   // returning but we need ref to itself SR//, and its length/ as depth - starts to look like adc_ functions now
+  uint32_t bt=0;
+  //  bt=(*SR>>depth)& 0x01; // but return should be of ghost...   bitrr = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;		
+  bt = (gate[w].Gshift_[w]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  return bt;
+}
+
+//abstract: oscbits, osc1bits-also questions of static patterns, TM bits, onebits, ENbits, Ensbits
+// could also have fixed one set of oscbits eg. osceqbits
+// what else.... more on static patterns from dac or adc
+
+static inline uint32_t osceqbits(uint32_t depth){  
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+     if (n>depth) {
+       bt=0;
+       if (nn>=depth) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
 
 static inline uint32_t oscbits(uint32_t depth, uint32_t depthh){ // 2 params so can't fit 
   uint32_t bt;
@@ -217,6 +261,45 @@ static inline uint32_t TMbits(uint32_t depth, uint32_t seq, uint32_t rndd, uint3
   if (par>rndd) bt=!bt;
   return bt;
 }
+
+static inline uint32_t onebits(uint32_t depth){ // depth=0 resets
+  uint32_t bt;
+  static int32_t bc=31;
+  //  static uint32_t k;
+  if (bc<0) {
+    bt=0;
+    if (depth>0) bc=depth;
+  }
+  else{
+  bt = 1; // this means that MSB comes out first
+  }
+  bc--;
+  return bt;
+}
+
+//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+static inline uint32_t ENbits(uint32_t prob){ 
+  uint32_t bt, tmp;
+  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
+  // if all as switches are 1... 
+
+  //    prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
+    prob=prub[prob>>9];
+    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | prob)==255) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[0].Gshift_[0]>>SRlength[0]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+// trying for a simpler version
+static inline uint32_t ENsbits(uint32_t prob){ 
+  uint32_t bt, tmp;
+  if ((LFSR_[0]&4095)<prob) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+    //    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | prob)==255) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[0].Gshift_[0]>>SRlength[0]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+///////////////////////////////////////////
 
 // what are variations on this? - for padding (x bits treated as y bits):
 // restrict to 12 bits (can also be x bits fixed), pad to x bits, always static number of bits
@@ -270,29 +353,6 @@ static inline uint32_t adccompbits(uint32_t depth){ // variable depth 2s complem
   bc--;
   return bt;
 }
-
-static inline uint32_t daccompbits(uint32_t depth){ // variable depth 2s complement for DAC
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[2].dac); 
-      if (depth<12) k=k>>(11-depth);
-      else k=k<<(depth-11);
-      bc=depth; 
-      
-      if (k<(1<<depth)) bitwise=1;
-      else bitwise=0;
-	  k=abs(k-(1<<depth));
-      if (bitwise) k=(~k)+1;
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-
 
 static inline uint32_t adcpadbits(uint32_t depth){ 
   uint32_t bt;
@@ -372,73 +432,6 @@ static inline uint32_t energybits(uint32_t depth){ // equiv bits energy TODO: us
     return bt;
 }
 
-static inline uint32_t onebits(uint32_t depth){ // depth=0 resets
-  uint32_t bt;
-  static int32_t bc=31;
-  //  static uint32_t k;
-  if (bc<0) {
-    bt=0;
-    if (depth>0) bc=depth;
-  }
-  else{
-  bt = 1; // this means that MSB comes out first
-  }
-  bc--;
-  return bt;
-}
-
-//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
-static inline uint32_t ENbits(uint32_t prob){ 
-  uint32_t bt, tmp;
-  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
-  // if all as switches are 1... 
-
-  //    prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
-    prob=prub[prob>>9];
-    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | prob)==255) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
-  else   bt = (gate[0].Gshift_[0]>>SRlength[0]) & 0x01;	   // cycle bit
-  return bt;
-}
-
-// trying for a simpler version
-static inline uint32_t ENsbits(uint32_t prob){ 
-  uint32_t bt, tmp;
-  if ((LFSR_[0]&4095)<prob) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
-    //    if ( ( ( ((LFSR_[0]&1)>>0) + ((LFSR_[0]&4)>>1) + ((LFSR_[0]&32)>>3) + ((LFSR_[0]&16384)>>11) + ((LFSR_[0]&131072)>>13) + ((LFSR_[0]&524288)>>14) + ((LFSR_[0]&2097152)>>15) + ((LFSR_[0]&8388608)>>16)) | prob)==255) bt=(LFSR_[0]>>24)&0x01; // in schematic is XOR of 17,22,23,24
-  else   bt = (gate[0].Gshift_[0]>>SRlength[0]) & 0x01;	   // cycle bit
-  return bt;
-}
-
-static inline uint32_t dacpadbits(uint32_t depth){ 
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-  if (bc<0) {
-    //    ADCgeneric; 
-    k=(gate[2].dac); 
-    if (depth<12) k=k>>(11-depth);
-    else k=k<<(depth-11);
-    bc=depth; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dacbits(uint32_t depth){ // max 12 bits
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-  if (bc<0) {
-    k=(gate[2].dac)>>(11-depth);
-    if (depth>11) depth=11; // max depth
-    bc=depth;
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
 static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO/DONE
   uint32_t bt;
   static int32_t bc=31;
@@ -485,6 +478,60 @@ static inline uint32_t adceqbits(uint32_t depth){
   bc--;
   return bt;
 }
+
+/// fill out all DAC encoding schemes and would be nice to select which dac -here is all set to 2
+
+static inline uint32_t daccompbits(uint32_t depth){ // variable depth 2s complement for DAC
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      //      ADCgeneric;
+      k=(gate[2].dac); 
+      if (depth<12) k=k>>(11-depth);
+      else k=k<<(depth-11);
+      bc=depth; 
+      
+      if (k<(1<<depth)) bitwise=1;
+      else bitwise=0;
+	  k=abs(k-(1<<depth));
+      if (bitwise) k=(~k)+1;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t dacpadbits(uint32_t depth){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (bc<0) {
+    //    ADCgeneric; 
+    k=(gate[2].dac); 
+    if (depth<12) k=k>>(11-depth);
+    else k=k<<(depth-11);
+    bc=depth; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t dacbits(uint32_t depth){ // max 12 bits
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (bc<0) {
+    k=(gate[2].dac)>>(11-depth);
+    if (depth>11) depth=11; // max depth
+    bc=depth;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
 
 // could even be list of functions here - how we integrate...
 uint32_t (*bitstreams[8])(uint32_t depth)={adcxbits};
@@ -667,7 +714,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
     else
       {
-	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it - or is always 0 
+	//	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it - or is always 0
+	bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
       }
     break;
 
@@ -935,7 +983,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     break;
 
   case 31: // strobe mode for cycling bits a la TM - no input
-    bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+    //    bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it
+    	bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
     if (strobe){
       bt=!bt;// invert cycling bit
     }
@@ -975,7 +1024,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
     else
       {
-	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it or is always 0!
+	//	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it or is always 0!
+	bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
       }
     break;
 
@@ -1392,7 +1442,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 91:     // use as test for bit match with DAC
     bt=adcpadbits(4); // try fix depth here of 4
     tmp=dacpadbits(otherpar);
-    if (tmp) bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it - or is always 0 
+    if (tmp) 	bt = (gate[reg].Gshift_[reg]>>length) & 0x01; //bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it - or is always 0 
     break;    
 
     // different encodings but all are so far 12 bits in and ignoring depth and length, other encodings
@@ -1515,13 +1565,15 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     ADCtwo;
     k[reg]+=otherpar; // CVL is also knob+CV so we have 2 CVs
     if (k[reg]>4095) k[reg]=4095;
-    bt=(*SR>>length)& 0x01;
+    //    bt=(*SR>>length)& 0x01;
+    bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
     if (k[reg]>(LFSR_[reg]&4095)) bt=!bt;
     break;
 
   case 102: // with bits in from adc - exact Turing machine - add otherpar and ADC and compare noise to this for loop or not //***
     // bits OR/add in can be before or after the inversion
-    bt=(*SR>>length)& 0x01;
+    //    bt=(*SR>>length)& 0x01;
+    bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
     if (otherpar>(LFSR_[reg]&4095)) bt=!bt;
     bt|=adcpadbits(length);
     break;
@@ -1558,7 +1610,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     tmp=otherpar; // CVL is also knob+CV so we have 2 CVs - we don't need to deatch and can use CV here 
     tmp+=gate[dacfrom[daccount][0]].dac;
     if (tmp>4095) tmp=4095;
-    bt=(*SR>>length)& 0x01;
+    //    bt=(*SR>>length)& 0x01;
+    bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
     if (tmp>(LFSR_[reg]&4095)) bt=!bt;
     break;
 
@@ -1567,7 +1620,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     tmp=k[reg]; // CVL is also knob+CV so we have 2 CVs - we don't need to deatch and can use CV here 
     tmp+=gate[dacfrom[daccount][0]].dac;
     if (tmp>4095) tmp=4095;
-    bt=(*SR>>length)& 0x01;
+    //    bt=(*SR>>length)& 0x01;
+    bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
     if (tmp>(LFSR_[reg]&4095)) bt=!bt;
     break;
     

@@ -314,6 +314,16 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 newmodes I think are in modeL - and need to be ported across!
 
+** 1/4/2022 - see new .org file for today/new notes/concept
+
+10 encodings below XxY ADCxDAC mix = or - and we would need 3 parameters: whichencx mix whichency
+
+speed and length as 2 encs only...
+
+*or: trial for overlap/mix across NSR and LSR! so one as ADC one as DAC in*
+but that is different kind of mix..
+// set up generator list so can be selected...
+
 ** 31/3/2022
 
 list of encodings for ADC, DAC: parameter is depth/delayforonebit
@@ -552,7 +562,7 @@ feedback bits: loopback bits
 
 /////////////////////////////////////////////
 
-that DAC out can also have choice of non-interpolated modes eg. c0nov
+*that DAC out can also have choice of non-interpolated modes eg. c0nov*
 
 slowest speed is not 0.1Hz but 2Hz? 2Hz->14octaves->20Khz as our fastest
 

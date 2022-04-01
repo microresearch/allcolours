@@ -1261,7 +1261,7 @@ void Lmultiplespeednew(void){ // NO LENGTH - try 4 speeds as above - multiple ve
 
   if (gate[1].trigger) GSHIFTNOS_; // 2.copy gshift on trigger
 
-  if (counter[1]>gate[dacfrom[daccount][w]].dac){ //3.advance incoming ghost
+  if (counter[1]>gate[speedfrom[spdcount][1]].dac){ //3.advance incoming ghost
     counter[1]=0;
     BINROUTEADV_;
   }
@@ -1630,9 +1630,11 @@ void LLcvroute(void){ // CV: 4 bits for route in... other bits for logop
   } 
 }
 
-//- slippage of bitstreams against each other 
+//- slippage of bitstreams against each other - try other slips (other streams - how to select these?)
 // *also that instead of a route we combine two SR eg. N and L??? how? and what is their content///only if both are generators* tEST
-void LLsliposc(void){ // 
+// speed of entry same as osc - how do we vary osc speed - only way would be with fixed << overlap and use param
+// or to free up speed...
+void LLsliposc(void){ // detached
   uint8_t w=1;				       
   HEADSINL;  
  if (speedf_[1]!=2.0f){
@@ -1640,9 +1642,10 @@ void LLsliposc(void){ //
   if(gate[1].last_time<gate[1].int_time)      {
     GSHIFT_;
     tmp=(CVL[1]>>7); // 5 bits
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator or use generator
     // slide
-    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1;
+    //    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
+    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]& masky[SRlength[inroute[count][1]]])<<(tmp+1); // was xor ok
     // no binroute needed
     PULSIN_XOR;
     BITN_AND_OUTV_; // for pulse out
@@ -1650,6 +1653,82 @@ void LLsliposc(void){ //
   }
 }
 }
+
+void LLsliposc2(void){ // detached - osceqbits, speed by CVL and << is fixed, length is incoming length
+  uint8_t w=1;				       
+  HEADSINL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+    GSHIFT_;
+    tmp=(CVL[1]>>2); // 10 bits
+    //    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator or use generator
+    bitn=osceqbits(tmp);
+    // slide
+    //    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
+    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w] & masky[SRlength[inroute[count][1]]])<<1; // was xor 
+    // no binroute needed
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+}
+}
+
+void LLslipdac(void){ // detached
+  uint8_t w=1;				       
+  HEADSINL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+    GSHIFT_;
+    tmp=(CVL[1]>>7); // 5 bits
+    bitn=dacpadbits(SRlength[2]);
+    // slide
+    //    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
+    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]& masky[SRlength[inroute[count][1]]])<<(tmp+1); // was xor ok
+    // no binroute needed
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+}
+}
+
+void Ldacin(void){
+  uint8_t w=1;				       
+  HEADL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+    GSHIFT_;
+    bitn=dacpadbits(SRlength[2]);
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+}
+}
+
+void Lproboscintest(void){
+  uint8_t w=1;				       
+  HEADL;  
+ if (speedf_[1]!=2.0f){
+  CVOPEN;
+  if(gate[1].last_time<gate[1].int_time)      {
+    GSHIFT_;
+    //    tmp=dacpadbits(SRlength[2]);
+    tmp=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator or use generator
+	
+    if (tmp) BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // for pulse out
+    ENDER;
+  }
+}
+}
+
 
 void LLcvSRmaskroute(void){ // CV: 4 bits for route in... other bits for logop
   uint8_t w=1;				       
