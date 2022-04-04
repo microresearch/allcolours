@@ -314,6 +314,71 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 newmodes I think are in modeL - and need to be ported across!
 
+** 4/4/2022 
+
+*IN/DECISION [IN?]*
+
+extramodes.c: ignore as formed newmodes.c ->
+
+newmodes.c: most of these are in modeL.h
+
+temp.org, temp2.org, bits_and_prob.org
+
+//////////////////////////////
+
+Qs: routing and independence, if we want free SRs which just control/dont route (RSR), binroute or not, major/minor modes or not
+what we need to add: new generic bitmodes...
+
+//////////////////////////////
+
+catalogue files/maybe print this/these // we need overview of what we have:
+
+- DONE: fixed some electronotes mode in probability.h and now we have all modes as generic and called with w!
+
+but we still can't have minor modes as all ADcs/// so how to mix////
+
++but problem is pulsin (for N and C), and out (for N) - so adc modes have no pulse in, no out if used on LNR sides - should be FIXED now...+
+
+// *how to find a way forward: finish all new modes, port prob/other modes, fix up minor/major modes for tests*
+
+DONE: genericise - only thing we need to watch is count, daccount and spdcount (new)
+
+
+we can still have specific modes... we also got rid of slow/no_stop for CSR!
+
+we also need to deal with probability.h and bit.hDONE
+
+rung modes fixed as gate[0].dac
+
+/////////////////////////////////
+notebook notes+
+
+- +TODO: simulation* sim.c+
+
+- mix and match major and minor modes so are not all same /eg. not all prob. how?
+
+- generic in: 
+
+//FROM?//where from [ADCins/generators, DACins/generators [16 or so each], routes/returns] - how many bits? 6 maybe - and we need one param // combine?
+
+4 bits typegen/2 bits[-eg.adc/dac/abstract/route]=6 bits
+
+//IN?// as [strobe/toggle/bits[from]/probX.Y.Z] - how many bits? // combine?
+
+strobe|toggle|bitsfrom1234|prob1234
+1            |1bits/prob|2forwhere = 4 bits or more depending on prob modes 
+
+or we fix as prob/bits only from 3/RSR... then we have 2 bits - but prob needs CV
+
+//WHERE?//where in - route by route? eg, xor, logop - can also be abstracted as an IN?
+
+*or these can be split across SRs:*
+
+eg. N is where from, feeds into IN? (L), then C is wherein? (or just first 2)...
+
+with R as majormodes/back in or patterns for others (eg. we can't use DAC/bitss if there are no interesting DACs/bits)
+
+
 ** 1/4/2022 - see new .org file for today/new notes/concept
 
 10 encodings below XxY ADCxDAC mix = or - and we would need 3 parameters: whichencx mix whichency
@@ -328,18 +393,20 @@ but that is different kind of mix..
 
 list of encodings for ADC, DAC: parameter is depth/delayforonebit
 
-- maximum 12 bits 
-- padded any number of bits
-- fixed number of bits: 12,8,4
-- one bit encoding
-- equivalent bits
-- energy equivalent bits (abs value)
-- fixed 12 bits 2s complement: can also be 8,4
-- variable depth 2s comp
-- fixed 12 bits 1s complement: can also be 8,4
-- variable depth 1s comp
+16 encoders without comparator
 
-- comparator is an encoding????
+- maximum 12 bits 1
+- padded any number of bits 2
+- fixed number of bits: 12,8,4 345
+- one bit encoding 6
+- equivalent bits 7
+- energy equivalent bits (abs value) 8
+- fixed 12 bits 2s complement: can also be 8,4 //9.10.11
+- variable depth 2s comp //12
+- fixed 12 bits 1s complement: can also be 8,4 //13/14/15
+- variable depth 1s comp 16
+
+- comparator is an encoding???? no?
 
 generators can also just be in modeN (see example Nintone)
 

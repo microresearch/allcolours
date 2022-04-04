@@ -1,9 +1,9 @@
 // check strobey! TODO
 
 // template
-void LN(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN(uint8_t w){
+  uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -20,9 +20,9 @@ void LN(void){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void LNwas14(void){ 	//- probability of advancing a GSR - strobe version we have above in 3 (commented out)DONE
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRNwas14(uint8_t w){ 	//- probability of advancing a GSR - strobe version we have above in 3 (commented out)DONE
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -46,10 +46,10 @@ void LNwas14(void){ 	//- probability of advancing a GSR - strobe version we have
   }
 }
 
-void LNprob(void){ // from end of extramodes - TODO: port for CV use maybe/as intmode?
-  uint8_t w=1; uint8_t prob;
+void SRNprob(uint8_t w){ // from end of extramodes - TODO: port for CV use maybe/as intmode?
+uint8_t prob;
   uint32_t tmpp;
-  HEADL;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -96,10 +96,9 @@ void LNprob(void){ // from end of extramodes - TODO: port for CV use maybe/as in
 }
 
 
-void LNwas15(void){
-  uint8_t w=1;
+void SRNwas15(uint8_t w){
   uint32_t tmpp;
-  HEADL;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -127,9 +126,9 @@ void LNwas15(void){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // port in from newmodes.c
 
-void LN3(void){ // match newmodes numbers
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN3(uint8_t w){ // match newmodes numbers
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -144,9 +143,9 @@ void LN3(void){ // match newmodes numbers
   }
 }
 
-void LN4(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN4(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -161,9 +160,9 @@ void LN4(void){
   }
 }
 
-void LN5(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) 
-  uint8_t w=1; 
-  HEADL;
+void SRN5(uint8_t w){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) 
+
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -180,9 +179,9 @@ void LN5(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse))
   }
 }
 
-void LN6(void){
-  uint8_t w=1; 
-  HEADL;
+void SRN6(uint8_t w){
+
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -201,9 +200,8 @@ void LN6(void){
   }
 }
 
-void LN7(void){
-  uint8_t w=1;
-  HEADL;
+void SRN7(uint8_t w){
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -222,9 +220,9 @@ void LN7(void){
   }
 }
 
-void LN8(void){
-  uint8_t w=1; uint8_t prob; static uint8_t tug[4]={0};
-  HEADL;
+void SRN8(uint8_t w){
+uint8_t prob; static uint8_t tug[4]={0};
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -246,9 +244,9 @@ void LN8(void){
 }
 
 // there is no 9 there
-void LN10(void){ // **
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN10(uint8_t w){ // **
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -272,9 +270,9 @@ void LN10(void){ // **
   }
 }
 
-void LN11(void){
-  uint8_t w=1; uint8_t prob; uint32_t tmpp;
-  HEADL;
+void SRN11(uint8_t w){
+uint8_t prob; uint32_t tmpp;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -303,9 +301,9 @@ void LN11(void){
   }
 }
 
-void LN12(void){       // XX - we XOR on STROBE our shift with the GHOST
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN12(uint8_t w){       // XX - we XOR on STROBE our shift with the GHOST
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -331,9 +329,9 @@ void LN12(void){       // XX - we XOR on STROBE our shift with the GHOST
   }
 }
 
-void LN13(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ?? -- 9 below
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN13(uint8_t w){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) ?? -- 9 below
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -354,9 +352,9 @@ void LN13(void){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)
   }
 }
 
-void LN14(void){ //	01 2-BITIN or loopback
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN14(uint8_t w){ //	01 2-BITIN or loopback
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -377,9 +375,9 @@ void LN14(void){ //	01 2-BITIN or loopback
   }
 }
 
-void LN15(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN15(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -400,9 +398,9 @@ void LN15(void){
   }
 }
 
-void LN21(void){ // triadex inspired mode where we XOR in bits from the other SRs CASE 21
-  uint8_t w=1; uint32_t bitnn, bitnnn; 
-  HEADL;
+void SRN21(uint8_t w){ // triadex inspired mode where we XOR in bits from the other SRs CASE 21
+uint32_t bitnn, bitnnn; 
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -427,9 +425,9 @@ void LN21(void){ // triadex inspired mode where we XOR in bits from the other SR
   }
 }
 
-void LN22(void){// as above
-  uint8_t w=1; uint8_t prob; uint32_t bitnn, bitnnn; 
-  HEADL;
+void SRN22(uint8_t w){// as above
+uint8_t prob; uint32_t bitnn, bitnnn; 
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -449,9 +447,9 @@ void LN22(void){// as above
   }
 }
 
-void LN29(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN29(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -469,9 +467,9 @@ void LN29(void){
   }
 }
 
-void LN30(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN30(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -489,9 +487,9 @@ void LN30(void){
   }
 }
 
-void LN33(void){    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN33(uint8_t w){    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -512,10 +510,10 @@ void LN33(void){    //accumulate into GGGshift and then bang in to realSR on a C
   }
 }
 
-void LN34(void){    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
+void SRN34(uint8_t w){    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
   // with LOOP option
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -539,15 +537,15 @@ void LN34(void){    //accumulate into GGGshift and then bang in to realSR on a C
   }
 }
 
-void LNsr35(void){ // TRIADEX 2 - try with SR...
-  uint8_t w=1; uint8_t prob, bitnn, bitnnn, bitnnnn;
-  HEADL;
+void SRNsr35(uint8_t w){ // TRIADEX 2 - try with SR...
+uint8_t prob, bitnn, bitnnn, bitnnnn;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     // SR: gate[dacfrom[daccount][1]].dac we need 3+5+3+5 bits=16 x2
-    tmp=(gate[dacfrom[daccount][1]].dac);
+    tmp=(gate[dacfrom[daccount][w]].dac);
     
     s[0]=(tmp>>29)&3; // select which one... 0,1,2,3 
     ss[0]=(tmp>>24)&31;
@@ -577,9 +575,9 @@ void LNsr35(void){ // TRIADEX 2 - try with SR...
   }
 }
 
-void LN35(void){ // TRIADEX 2 
-  uint8_t w=1; uint8_t prob, bitnn, bitnnn, bitnnnn;
-  HEADL;
+void SRN35(uint8_t w){ // TRIADEX 2 
+uint8_t prob, bitnn, bitnnn, bitnnnn;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -610,9 +608,9 @@ void LN35(void){ // TRIADEX 2
 }
 
 
-void LN36(void){ // pulse triggers exchange between ghost and real
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN36(uint8_t w){ // pulse triggers exchange between ghost and real
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -629,9 +627,9 @@ void LN36(void){ // pulse triggers exchange between ghost and real
   }
 }
 
-void LN38(void){// pass through or cycle is toggled by clkin bit
-  uint8_t w=1; static uint8_t tug[4]={0};
-  HEADL;
+void SRN38(uint8_t w){// pass through or cycle is toggled by clkin bit
+static uint8_t tug[4]={0};
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -654,9 +652,9 @@ void LN38(void){// pass through or cycle is toggled by clkin bit
   }
 }
 
-void LN40(void){// swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN40(uint8_t w){// swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -671,8 +669,8 @@ void LN40(void){// swap over SRs on pulse in?!! or swop in only (can swop in pre
   }
 }
 
-void LLLswop(void){ // swop in or logop SR - cv and cvl ***
-  uint8_t w=1; uint32_t lin, lout;
+void SRLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
+uint32_t lin, lout;
   HEADSSINNADA;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -680,8 +678,8 @@ void LLLswop(void){ // swop in or logop SR - cv and cvl ***
     GSHIFT_;
     BINROUTE_;
     if (gate[w].trigger) {
-      lin=127-(CV[1]>>5); //7= 2 bits for whichone and start which can be 5
-      lout=31-(CVL[1]>>7); // 5 bits for length
+      lin=127-(CV[w]>>5); //7= 2 bits for whichone and start which can be 5
+      lout=31-(CVL[w]>>7); // 5 bits for length
       // length of incoming - lout
       tmp=gate[lin&0x03].shift_>>(31-lout);
       gate[w].shift_^=(tmp<<(31-(lin>>2)));
@@ -695,9 +693,9 @@ void LLLswop(void){ // swop in or logop SR - cv and cvl ***
 }
 
 
-void LN42(void){ // - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn/complicated
-  uint8_t w=1; static uint8_t tug[4]={0};
-  HEADL;
+void SRN42(uint8_t w){ // - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn/complicated
+static uint8_t tug[4]={0};
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -730,9 +728,9 @@ void LN42(void){ // - reverse direction of shift register - could be done on a t
   }
 }
 
-void LN46(void){ //- cycling array of ghosts toggle in/how to toggle out
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN46(uint8_t w){ //- cycling array of ghosts toggle in/how to toggle out
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -757,10 +755,10 @@ void LN46(void){ //- cycling array of ghosts toggle in/how to toggle out
 }
 
 
-void LN48(void){ //  // GSR doesn't change (becomes a revenant) - only works when we enter this and then is shifted out
+void SRN48(uint8_t w){ //  // GSR doesn't change (becomes a revenant) - only works when we enter this and then is shifted out
   //remake as ghost of ghost - can also be strobe which records this
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -779,9 +777,9 @@ void LN48(void){ //  // GSR doesn't change (becomes a revenant) - only works whe
   }
 }
 
-void LN50(void){ // GSR is masked in on trigger
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN50(uint8_t w){ // GSR is masked in on trigger
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -799,9 +797,9 @@ void LN50(void){ // GSR is masked in on trigger
   }
 }
 
-void LN62(void){ // LFSR in routed in SRs
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void SRN62(uint8_t w){ // LFSR in routed in SRs
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -825,9 +823,9 @@ void LN62(void){ // LFSR in routed in SRs
   }
 }
 
-void LN65(void){// SR in SR with strobe as barrier? only for itself or for incoming/itself
-  uint8_t w=1; uint8_t tmpt; static uint8_t cw=0;
-  HEADL;
+void SRN65(uint8_t w){// SR in SR with strobe as barrier? only for itself or for incoming/itself
+uint8_t tmpt; static uint8_t cw=0;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -855,10 +853,10 @@ void LN65(void){// SR in SR with strobe as barrier? only for itself or for incom
   }
 }
 
-void LNwas13(void){ //pulse changes which bit ofghostSR we access - pulse moves on bit
+void SRNwas13(uint8_t w){ //pulse changes which bit ofghostSR we access - pulse moves on bit
   // TODO: could also be CV
-  uint8_t w=1; uint8_t prob; static uint8_t which[4]={};
-  HEADL;
+uint8_t prob; static uint8_t which[4]={};
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -889,12 +887,12 @@ void LNwas13(void){ //pulse changes which bit ofghostSR we access - pulse moves 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Lno(void){
+void SRno(uint8_t w){
 }
 
-void LX0(void){ // basic route in XOR puls
-  uint8_t w=1; 
-  HEADL;
+void SRX0(uint8_t w){ // basic route in XOR puls
+
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -907,9 +905,9 @@ void LX0(void){ // basic route in XOR puls
   }
 }
 
-void L0(void){ // basic route in OR puls
-  uint8_t w=1; 
-  HEADL;
+void SR0(uint8_t w){ // basic route in OR puls
+
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -922,9 +920,9 @@ void L0(void){ // basic route in OR puls
   }
 }
 
-void Lnoggg(void){ // we don't add back in result of gshift TEST
-  uint8_t w=1; 
-  HEADL;
+void SRnoggg(uint8_t w){ // we don't add back in result of gshift TEST
+
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -937,9 +935,8 @@ void Lnoggg(void){ // we don't add back in result of gshift TEST
   }
 }
 
-void L0nog(void){ // basic route in no GSHIFT<<
-  uint8_t w=1;
-  HEADL;
+void SR0nog(uint8_t w){ // basic route in no GSHIFT<<
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -952,9 +949,8 @@ void L0nog(void){ // basic route in no GSHIFT<<
   }
 }
 
-void L1(void){ // route and cycle
-  uint8_t w=1;
-  HEADL;
+void SR1(uint8_t w){ // route and cycle
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -967,9 +963,8 @@ void L1(void){ // route and cycle
   }
 }
 
-void L2(void){ // test double/bump speed/sr on trigger
-  uint8_t w=1;
-  HEADL;
+void SR2(uint8_t w){ // test double/bump speed/sr on trigger
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -985,9 +980,8 @@ void L2(void){ // test double/bump speed/sr on trigger
   }
 }
 
-void L3(void){ // test gshift on trigger
-  uint8_t w=1;
-  HEADL;
+void SR3(uint8_t w){ // test gshift on trigger
+  HEAD;
   if (gate[w].trigger) { // outside or inside loop?
     GSHIFT_;
   }
@@ -1002,9 +996,8 @@ void L3(void){ // test gshift on trigger
   }
 }
 
-void L4(void){ // test gshift on trigger inside loop
-  uint8_t w=1;
-  HEADL;
+void SR4(uint8_t w){ // test gshift on trigger inside loop
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1019,14 +1012,13 @@ void L4(void){ // test gshift on trigger inside loop
   }
 }
 
-void Losc(void){ // basic route in with oscillator
-  uint8_t w=1;
-  HEADL;
+void SRosc(uint8_t w){ // basic route in with oscillator
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
     BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
@@ -1035,15 +1027,14 @@ void Losc(void){ // basic route in with oscillator
   }
 }
 
-void Lmod(void){ // modulo route in SR
-  uint8_t w=1;
-  HEADL;
-  if (speedf_[1]!=2.0f){ 
+void SRmod(uint8_t w){ // modulo route in SR
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     //    BINROUTE_;
-    if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;  
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;  
     // we modulo our SR with routed ins
   tmp=binroute[count][w];
   for (x=0;x<4;x++){
@@ -1066,22 +1057,21 @@ void Lmod(void){ // modulo route in SR
 
 // TODO: just bump within a restricted range or array which make sense?
 // where do we get that range from? start/end - need 2x CVs - if we detach both but...
-void Lbumproute(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
-  uint8_t w=1;
-  HEADL;
-  if (speedf_[1]!=2.0f){
+void SRbumproute(uint8_t w){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
+  HEAD;
+  if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   // no strobe bit in
   //  BINROUTE_; // new routing in here.
-  if (gate[1].trigger) gate[1].route++;
-  if (gate[1].route>15) gate[1].route=0;
-  tmp=myroute[1][gate[1].route];
+  if (gate[w].trigger) gate[w].route++;
+  if (gate[w].route>15) gate[w].route=0;
+  tmp=myroute[w][gate[w].route];
   for (x=0;x<4;x++){
   if (tmp&0x01){
-  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
-  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
   bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -1095,33 +1085,32 @@ void Lbumproute(void){ // trigger bumps up our local route - add one to this (wh
 
 // TODO: just bump within a restricted range or array which make sense?
 // where do we get that range from? start/end - need 2x CVs - if we detach both but...
-void LLLbumproute(void){ // trigger bumps up our local route - add one to this (what value) - gate[0].route - DETACH ALL
-  uint8_t w=1;
+void SRLLbumproute(uint8_t w){ // trigger bumps up our local route - add one to this (what value) - gate[0].route - DETACH ALL
   uint32_t tmpp;
   HEADSSINNADA;
-  if (speedf_[1]!=2.0f){
+  if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   // no strobe bit in
   //  BINROUTE_; // new routing in here.
-  tmp=(CV[1]>>8);
-  tmpp=(CVL[1]>>8);
+  tmp=(CV[w]>>8);
+  tmpp=(CVL[w]>>8);
   if (tmp<=tmpp){
-  if (gate[1].trigger) gate[1].route++;
-  if (gate[1].route>tmpp) gate[1].route=tmp;
+  if (gate[w].trigger) gate[w].route++;
+  if (gate[w].route>tmpp) gate[w].route=tmp;
   }
   else
     {
-  if (gate[1].trigger) gate[1].route--;
-  if (gate[1].route<tmpp) gate[1].route=tmp;
+  if (gate[w].trigger) gate[w].route--;
+  if (gate[w].route<tmpp) gate[w].route=tmp;
     }
   
-  tmp=myroute[1][gate[1].route];
+  tmp=myroute[w][gate[w].route];
   for (x=0;x<4;x++){
   if (tmp&0x01){
-  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
-  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
   bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -1133,20 +1122,19 @@ void LLLbumproute(void){ // trigger bumps up our local route - add one to this (
   }  
 }
 
-void LDACroute(void){ 
-  uint8_t w=1;
-  HEADL;
-  if (speedf_[1]!=2.0f){
+void SRDACroute(uint8_t w){ 
+  HEAD;
+  if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
-  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
+  if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
   //  BINROUTE_; // new routing in here.
-  tmp=gate[dacfrom[daccount][1]].dac&15;
+  tmp=gate[dacfrom[daccount][w]].dac&15;
   for (x=0;x<4;x++){
   if (tmp&0x01){
-  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
-  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
   bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -1158,45 +1146,43 @@ void LDACroute(void){
   }  
 }
 
-void LSRroute(void){ 
-  uint8_t w=1;
-  HEADL;
-  if (speedf_[1]!=2.0f){
+void SRSRroute(uint8_t w){ 
+  HEAD;
+  if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   //  BINROUTE_; // new routing in here.
-  tmp=gate[dacfrom[daccount][1]].Gshift_[w]&15;
+  tmp=gate[dacfrom[daccount][w]].Gshift_[w]&15;
   for (x=0;x<4;x++){
   if (tmp&0x01){
-  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
-  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
   bitn^=bitrr;
   }
   tmp=tmp>>1;
     }
   PULSIN_XOR;
-  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
+  if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
   BITN_AND_OUTV_; // with pulses
   ENDER;
   }
   }  
 }
 
-void LDACroutestrobe(void){ // strobe decides if we change local routing table 
-  uint8_t w=1;
-  HEADL;
-  if (speedf_[1]!=2.0f){
+void SRDACroutestrobe(uint8_t w){ // strobe decides if we change local routing table 
+  HEAD;
+  if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
-  //  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
-  if (gate[1].trigger){
-  tmp=gate[dacfrom[daccount][1]].dac&15;
+  //  if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+  if (gate[w].trigger){
+  tmp=gate[dacfrom[daccount][w]].dac&15;
   for (x=0;x<4;x++){
   if (tmp&0x01){
-  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
-  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
   bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -1211,9 +1197,8 @@ void LDACroutestrobe(void){ // strobe decides if we change local routing table
 }
 
 
-void L32(void){ // multiple bits in as case 19 in draftdec
-  uint8_t w=1;
-  HEADL;
+void SR32(uint8_t w){ // multiple bits in as case 19 in draftdec
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1250,24 +1235,24 @@ void L32(void){ // multiple bits in as case 19 in draftdec
 4. DAC out speed  - slipping - this is main loop as we need interpol
 */
 
-void Lmultiplespeednew(void){ // NO LENGTH - try 4 speeds as above - multiple versions of this // this one is ****
-  uint8_t w=1; // can we have bits to select combinations for the 4 options splitspeed???
+void SRmultiplespeednew(uint8_t w){ // NO LENGTH - try 4 speeds as above - multiple versions of this // this one is ****
+// can we have bits to select combinations for the 4 options splitspeed???
   // trigger: 1,2,3,4 2 bits
   // counter1: 2 bits
   //counterd: 2 bits - but all can only do one...
   //speedf (does interpol but can have no interpol version with BITN_AND_OUTVINT_) 
   
-  HEADSINL; // detach length
+  HEADSIN; // detach length
 
-  if (gate[1].trigger) GSHIFTNOS_; // 2.copy gshift on trigger
+  if (gate[w].trigger) GSHIFTNOS_; // 2.copy gshift on trigger
 
-  if (counter[1]>gate[speedfrom[spdcount][1]].dac){ //3.advance incoming ghost
-    counter[1]=0;
+  if (counter[w]>gate[speedfrom[spdcount][w]].dac){ //3.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
 
-  if (counterd[1]> CVL[1]){
-      counterd[1]=0;
+  if (counterd[w]> CVL[w]){
+      counterd[w]=0;
     gate[w].shift_=gate[w].shift_<<1; // 1. shifter
   }
   
@@ -1283,14 +1268,13 @@ void Lmultiplespeednew(void){ // NO LENGTH - try 4 speeds as above - multiple ve
   }
 }
 
-void Lmultiplespeed0(void){ // NO LENGTH - speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSINL;
+void SRmultiplespeed0(uint8_t w){ // NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEADSIN;
 
-  if (gate[1].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
+  if (gate[w].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
 
-  if (counter[1]>CVL[1]){ //2.advance incoming ghost
-    counter[1]=0;
+  if (counter[w]>CVL[w]){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1307,14 +1291,13 @@ void Lmultiplespeed0(void){ // NO LENGTH - speeds of gshift, incoming gsr and bi
 }
 
 // variations on this below
-void Lmultiplespeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSINL;
+void SRmultiplespeed1(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEADSIN;
 
-  if (gate[1].trigger) BINROUTEADV_; //2.advance incoming ghost
+  if (gate[w].trigger) BINROUTEADV_; //2.advance incoming ghost
 
-  if (counter[1]>CVL[1]){ // 1.copy gshift on trigger
-    counter[1]=0;
+  if (counter[w]>CVL[w]){ // 1.copy gshift on trigger
+    counter[w]=0;
     GSHIFTNOS_; 
   }
     
@@ -1330,14 +1313,13 @@ void Lmultiplespeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and 
   }
 }
 
-void Lmultiplespeed2(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSINL;
+void SRmultiplespeed2(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEADSIN;
 
-  if (gate[1].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
+  if (gate[w].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
 
-  if (counter[1]>CVL[1]){ //2.advance incoming ghost
-    counter[1]=0;
+  if (counter[w]>CVL[w]){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1352,15 +1334,14 @@ void Lmultiplespeed2(void){ // - NO LENGTH - speeds of gshift, incoming gsr and 
   }
 }
 
-void Lmultiplespeed3(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void SRmultiplespeed3(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   // no trigger advance
-  uint8_t w=1;
-  HEADSINL;
+  HEADSIN;
 
-  //  if (gate[1].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
+  //  if (gate[w].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
 
-  if (counter[1]>CVL[1]){ //2.advance incoming ghost
-    counter[1]=0;
+  if (counter[w]>CVL[w]){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1377,9 +1358,8 @@ void Lmultiplespeed3(void){ // - NO LENGTH - speeds of gshift, incoming gsr and 
 }
 
 // we can also have multiplespeeds that also use DAC and some don't need CVL in that case
-void Lmultiplespeeddac0(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSINL;
+void SRmultiplespeeddac0(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEADSIN;
 
   // for DAC:     gate[w].shift_=gate[w].shift_<<1; < gate[dacfrom[daccount][w]].dac
   if (counterl>gate[dacfrom[daccount][w]].dac){
@@ -1387,10 +1367,10 @@ void Lmultiplespeeddac0(void){ // - NO LENGTH - speeds of gshift, incoming gsr a
     gate[w].shift_=gate[w].shift_<<1;
   }
   
-  if (gate[1].trigger) GSHIFTNOS_; // // 1.copy gshift on trigger
+  if (gate[w].trigger) GSHIFTNOS_; // // 1.copy gshift on trigger
 
-  if (counter[1]>CVL[1]){ //2.advance incoming ghost
-    counter[1]=0;
+  if (counter[w]>CVL[w]){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1406,14 +1386,13 @@ void Lmultiplespeeddac0(void){ // - NO LENGTH - speeds of gshift, incoming gsr a
 }
 
 // version with DAC and speed so no CVL
-void Lmultiplespeeddac1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADL;
+void SRmultiplespeeddac1(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEAD;
 
-  if (gate[1].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
+  if (gate[w].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
 
-  if (counter[1]>gate[dacfrom[daccount][w]].dac){ //2.advance incoming ghost
-    counter[1]=0;
+  if (counter[w]>gate[dacfrom[daccount][w]].dac){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1429,14 +1408,13 @@ void Lmultiplespeeddac1(void){ // - NO LENGTH - speeds of gshift, incoming gsr a
   }
 }
 
-void Lmultspeed0(void){ // TEST: detach speed!!!- NO LENGTH - speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSSINL; // detach speed here
+void SRmultspeed0(uint8_t w){ // TEST: detach speed!!!- NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEADSSIN; // detach speed here
 
-  if (gate[1].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
+  if (gate[w].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
 
-  if (counter[1]>CV[1]){ //2.advance incoming ghost from detached CV
-    counter[1]=0;
+  if (counter[w]>CV[w]){ //2.advance incoming ghost from detached CV
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1452,14 +1430,13 @@ void Lmultspeed0(void){ // TEST: detach speed!!!- NO LENGTH - speeds of gshift, 
   }
 }
 
-void Lmultspeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSSINL;
+void SRmultspeed1(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEADSSIN;
 
-  if (gate[1].trigger) BINROUTEADV_; //2.advance incoming ghost
-  tmp=CV[1]>>2;
-  if (counter[1]>tmp){ // // 1.copy gshift on trigger
-    counter[1]=0;
+  if (gate[w].trigger) BINROUTEADV_; //2.advance incoming ghost
+  tmp=CV[w]>>2;
+  if (counter[w]>tmp){ // // 1.copy gshift on trigger
+    counter[w]=0;
     GSHIFTNOS_; 
   }
     
@@ -1475,14 +1452,13 @@ void Lmultspeed1(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits
   }
 }
 
-void Lmultspeed2(void){ // speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSSINL;
+void SRmultspeed2(uint8_t w){ // speeds of gshift, incoming gsr and bits/dac
+  HEADSSIN;
 
-  if (gate[1].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
-  tmp=CV[1]>>2;
-  if (counter[1]>tmp){ //2.advance incoming ghost
-    counter[1]=0;
+  if (gate[w].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
+  tmp=CV[w]>>2;
+  if (counter[w]>tmp){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1497,15 +1473,14 @@ void Lmultspeed2(void){ // speeds of gshift, incoming gsr and bits/dac
   }
 }
 
-void Lmultspeed3(void){ //  speeds of gshift, incoming gsr and bits/dac
+void SRmultspeed3(uint8_t w){ //  speeds of gshift, incoming gsr and bits/dac
   // no trigger advance
-  uint8_t w=1;
-  HEADSSINL;
+  HEADSSIN;
 
-  //  if (gate[1].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
-  tmp=CV[1]>>2;
-  if (counter[1]>tmp){ //2.advance incoming ghost
-    counter[1]=0;
+  //  if (gate[w].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
+  tmp=CV[w]>>2;
+  if (counter[w]>tmp){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1515,7 +1490,7 @@ void Lmultspeed3(void){ //  speeds of gshift, incoming gsr and bits/dac
     GSHIFT_;
     BINROUTENOG_; // no gshifty
     PULSIN_XOR;
-  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
+  if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -1523,9 +1498,8 @@ void Lmultspeed3(void){ //  speeds of gshift, incoming gsr and bits/dac
 }
 
 // we can also have multiplespeeds that also use DAC and some don't need CVL in that case // FOR R OR L: counterl//counterr
-void Lmultspeeddac0(void){ // speeds of gshift, incoming gsr and bits/dac
-  uint8_t w=1;
-  HEADSSINL;
+void SRmultspeeddac0(uint8_t w){ // speeds of gshift, incoming gsr and bits/dac
+  HEADSSIN;
 
   // for DAC:     gate[w].shift_=gate[w].shift_<<1; < gate[dacfrom[daccount][w]].dac
   if (counterl>gate[dacfrom[daccount][w]].dac){
@@ -1533,11 +1507,11 @@ void Lmultspeeddac0(void){ // speeds of gshift, incoming gsr and bits/dac
     gate[w].shift_=gate[w].shift_<<1;
   }
   
-  if (gate[1].trigger) GSHIFTNOS_; // 1.gshift owns on trigger
+  if (gate[w].trigger) GSHIFTNOS_; // 1.gshift owns on trigger
 
-  tmp=CV[1]>>2;
-  if (counter[1]>tmp){ //2.advance incoming ghost
-    counter[1]=0;
+  tmp=CV[w]>>2;
+  if (counter[w]>tmp){ //2.advance incoming ghost
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1553,10 +1527,9 @@ void Lmultspeeddac0(void){ // speeds of gshift, incoming gsr and bits/dac
 }
 
 // speed as probability (from?)
-void Lprobcvspeed(void){ 
-  uint8_t w=1;
-  HEADL;  
-  if (((LFSR_[1] & 4095 ) > CV[1])){ 
+void SRprobcvspeed(uint8_t w){ 
+  HEAD;  
+  if (((LFSR_[w] & 4095 ) > CV[w])){ 
     GSHIFT_;
     BINROUTE_;
     PULSIN_XOR;
@@ -1564,10 +1537,9 @@ void Lprobcvspeed(void){
   } 
 }
 
-void Lprobcvdacspeed(void){ 
-  uint8_t w=1;
-  HEADL;  
-  if ( (LFSR_[1] & 4095 ) < ((CV[1]>>1)+(gate[dacfrom[daccount][1]].dac>>1))) { //DAC etc also compared here
+void SRprobcvdacspeed(uint8_t w){ 
+  HEAD;  
+  if ( (LFSR_[w] & 4095 ) < ((CV[w]>>1)+(gate[dacfrom[daccount][w]].dac>>1))) { //DAC etc also compared here
     GSHIFT_;
     BINROUTE_;
     PULSIN_XOR;
@@ -1575,15 +1547,14 @@ void Lprobcvdacspeed(void){
   } 
 }
 
-void Lprobmultiplespeed3(void){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+void SRprobmultiplespeed3(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   // no trigger advance
-  uint8_t w=1;
-  HEADL;
+  HEAD;
 
-  //  if (gate[1].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
+  //  if (gate[w].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
 
-  if (((LFSR_[1] & 4095 ) > gate[dacfrom[daccount][1]].dac)){ //DAC 
-    counter[1]=0;
+  if (((LFSR_[w] & 4095 ) > gate[dacfrom[daccount][w]].dac)){ //DAC 
+    counter[w]=0;
     BINROUTEADV_;
   }
     
@@ -1604,15 +1575,14 @@ void Lprobmultiplespeed3(void){ // - NO LENGTH - speeds of gshift, incoming gsr 
 *- prob and routings
 */
 
-void LLcvroute(void){ // CV: 4 bits for route in... other bits for logop
-  uint8_t w=1;				       
-  HEADSINL;  
- if (speedf_[1]!=2.0f){
+void SRLcvroute(uint8_t w){ // CV: 4 bits for route in... other bits for logop
+  HEADSIN;  
+ if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
 
     GSHIFT_;
-    tmp=255-(CVL[1]>>4); // 8 bits
+    tmp=255-(CVL[w]>>4); // 8 bits
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -1634,18 +1604,17 @@ void LLcvroute(void){ // CV: 4 bits for route in... other bits for logop
 // *also that instead of a route we combine two SR eg. N and L??? how? and what is their content///only if both are generators* tEST
 // speed of entry same as osc - how do we vary osc speed - only way would be with fixed << overlap and use param
 // or to free up speed...
-void LLsliposc(void){ // detached
-  uint8_t w=1;				       
-  HEADSINL;  
- if (speedf_[1]!=2.0f){
+void SRLsliposc(uint8_t w){ // detached
+  HEADSIN;  
+ if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    tmp=(CVL[1]>>7); // 5 bits
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator or use generator
+    tmp=(CVL[w]>>7); // 5 bits
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator or use generator
     // slide
-    //    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
-    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]& masky[SRlength[inroute[count][1]]])<<(tmp+1); // was xor ok
+    //    gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
+    gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w]& masky[SRlength[inroute[count][w]]])<<(tmp+1); // was xor ok
     // no binroute needed
     PULSIN_XOR;
     BITN_AND_OUTV_; // for pulse out
@@ -1654,19 +1623,18 @@ void LLsliposc(void){ // detached
 }
 }
 
-void LLsliposc2(void){ // detached - osceqbits, speed by CVL and << is fixed, length is incoming length
-  uint8_t w=1;				       
-  HEADSINL;  
- if (speedf_[1]!=2.0f){
+void SRLsliposc2(uint8_t w){ // detached - osceqbits, speed by CVL and << is fixed, length is incoming length
+  HEADSIN;  
+ if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    tmp=(CVL[1]>>2); // 10 bits
-    //    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator or use generator
+    tmp=(CVL[w]>>2); // 10 bits
+    //    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator or use generator
     bitn=osceqbits(tmp);
     // slide
-    //    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
-    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w] & masky[SRlength[inroute[count][1]]])<<1; // was xor 
+    //    gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
+    gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w] & masky[SRlength[inroute[count][w]]])<<1; // was xor 
     // no binroute needed
     PULSIN_XOR;
     BITN_AND_OUTV_; // for pulse out
@@ -1675,18 +1643,17 @@ void LLsliposc2(void){ // detached - osceqbits, speed by CVL and << is fixed, le
 }
 }
 
-void LLslipdac(void){ // detached
-  uint8_t w=1;				       
-  HEADSINL;  
- if (speedf_[1]!=2.0f){
+void SRLslipdac(uint8_t w){ // detached
+  HEADSIN;  
+ if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    tmp=(CVL[1]>>7); // 5 bits
+    tmp=(CVL[w]>>7); // 5 bits
     bitn=dacpadbits(SRlength[2]);
     // slide
-    //    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
-    gate[w].shift_^=(gate[inroute[count][1]].Gshift_[w]& masky[SRlength[inroute[count][1]]])<<(tmp+1); // was xor ok
+    //    gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
+    gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w]& masky[SRlength[inroute[count][w]]])<<(tmp+1); // was xor ok
     // no binroute needed
     PULSIN_XOR;
     BITN_AND_OUTV_; // for pulse out
@@ -1695,12 +1662,11 @@ void LLslipdac(void){ // detached
 }
 }
 
-void Ldacin(void){
-  uint8_t w=1;				       
-  HEADL;  
- if (speedf_[1]!=2.0f){
+void SRdacin(uint8_t w){
+  HEAD;  
+ if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     bitn=dacpadbits(SRlength[2]);
     BINROUTE_;
@@ -1711,15 +1677,14 @@ void Ldacin(void){
 }
 }
 
-void Lproboscintest(void){
-  uint8_t w=1;				       
-  HEADL;  
- if (speedf_[1]!=2.0f){
+void SRproboscintest(uint8_t w){
+  HEAD;  
+ if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     //    tmp=dacpadbits(SRlength[2]);
-    tmp=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator or use generator
+    tmp=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator or use generator
 	
     if (tmp) BINROUTE_;
     PULSIN_XOR;
@@ -1730,15 +1695,14 @@ void Lproboscintest(void){
 }
 
 
-void LLcvSRmaskroute(void){ // CV: 4 bits for route in... other bits for logop
-  uint8_t w=1;				       
-  HEADSINL;  
- if (speedf_[1]!=2.0f){
+void SRLcvSRmaskroute(uint8_t w){ // CV: 4 bits for route in... other bits for logop
+  HEADSIN;  
+ if (speedf_[w]!=2.0f){
   CVOPEN;
-  if(gate[1].last_time<gate[1].int_time)      {
+  if(gate[w].last_time<gate[w].int_time)      {
 
     GSHIFT_;
-    tmp=(255-(CVL[1]>>4)) & DACFROM; // other logics // 8 bits
+    tmp=(255-(CVL[w]>>4)) & DACFROM; // other logics // 8 bits
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -1758,8 +1722,7 @@ void LLcvSRmaskroute(void){ // CV: 4 bits for route in... other bits for logop
 
 
 // keep this one as a template for DETACH SPEED AND LENGTH both 
-void LNADA0(void){ // NO LENGTH NOR SPEEDS
-  uint8_t w=1;
+void SRNADA0(uint8_t w){ // NO LENGTH NOR SPEEDS
   HEADSSINNADA;
     
   if (speedf_[w]!=2.0f){ 
@@ -1774,8 +1737,8 @@ void LNADA0(void){ // NO LENGTH NOR SPEEDS
   }
 }
 
-void LBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV control of bits and SR/DAC control - as we need 2 CVs (mix and CV) - detach both (in CV mode or one in intmode)
-  uint8_t w=1; float mixer;
+void SRBITMIX(uint8_t w){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV control of bits and SR/DAC control - as we need 2 CVs (mix and CV) - detach both (in CV mode or one in intmode)
+float mixer;
   HEADSSINNADA;
     
   if (speedf_[w]!=2.0f){ 
@@ -1784,8 +1747,8 @@ void LBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV cont
     GSHIFT_;
     tmp=255-(CV[w]>>4); // 8 bits
     mixer=1.0f/((float)(CVL[w]>>4)+1.0f);
-    mixer*=(float)(gate[dacfrom[daccount][1]].dac>>4);
-    // how to mix with DAC using CVL - gate[dacfrom[daccount][1]].dac
+    mixer*=(float)(gate[dacfrom[daccount][w]].dac>>4);
+    // how to mix with DAC using CVL - gate[dacfrom[daccount][w]].dac
     tmp+=(int)mixer;
     if (tmp>255) tmp=255;
     for (x=0;x<4;x++){ 
@@ -1798,7 +1761,7 @@ void LBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV cont
       tmp=tmp>>2; // 4 bits
     }
     PULSIN_XOR;
-    if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
     BITN_AND_OUTV_;
     ENDER;
   }
@@ -1810,12 +1773,11 @@ void LBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV cont
 //////////////////////// DAC speeds
 
 // test - speedCV-speedDAC 
-void Ldac(void){
-  uint8_t w=1;
+void SRdac(uint8_t w){
   float speedf__;
-  HEADL;
-  if (speedf_[1]==2.0f) speedf_[1]=LOWEST;
-  speedf__= (speedf_[1]-logspeed[1024-(gate[speedfrom[spdcount][1]].dac>>2)]); // dacfrom
+  HEAD;
+  if (speedf_[w]==2.0f) speedf_[w]=LOWEST;
+  speedf__= (speedf_[w]-logspeed[1024-(gate[speedfrom[spdcount][w]].dac>>2)]); // dacfrom
   if (speedf__<LOWEST) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1827,14 +1789,13 @@ void Ldac(void){
   }
 }
 
-// how to do offset and scale 0- CV[1] is offset, CVL[1] is scale...
+// how to do offset and scale 0- CV[w] is offset, CVL[w] is scale...
 // test - speedCV-speedDAC 
-void Ldacoffset(void){
-  uint8_t w=1;
+void SRdacoffset(uint8_t w){
   float speedf__;
-  float mmm=(float)(1024-(CVL[1]>>2))/1024.0f;
-  HEADSINL;
-  tmp=(1024-(CV[1]>>2)) + (int)((float)(gate[speedfrom[spdcount][1]].dac>>2)*mmm);
+  float mmm=(float)(1024-(CVL[w]>>2))/1024.0f;
+  HEADSIN;
+  tmp=(1024-(CV[w]>>2)) + (int)((float)(gate[speedfrom[spdcount][w]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1851,11 +1812,10 @@ void Ldacoffset(void){
 
 // these ones are ported from modeN.h
 
-void Ldacadditself(void){ // tested//trial itself as DAC - can also be other variants TODO
-  HEADL;
-  uint8_t w=1;
+void SRdacadditself(uint8_t w){ // tested//trial itself as DAC - can also be other variants TODO
+  HEAD;
   float speedf__;
-  speedf__=logspeed[(CV[1]&511)+(gate[1].dac>>3)];
+  speedf__=logspeed[(CV[w]&511)+(gate[w].dac>>3)];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1866,11 +1826,10 @@ void Ldacadditself(void){ // tested//trial itself as DAC - can also be other var
   }
 }
 
-void Ldacghostitself(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
-  HEADL;
-  uint8_t w=1;
+void SRdacghostitself(uint8_t w){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
+  HEAD;
   float speedf__;
-  speedf__=logspeed[(CV[1]&511)+((gate[1].Gshift_[routeto[count][1]])&511)];
+  speedf__=logspeed[(CV[w]&511)+((gate[w].Gshift_[routeto[count][w]])&511)];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1881,11 +1840,10 @@ void Ldacghostitself(void){ // own ghost from next 1 - could also select incomin
   }
 }
 
-void Ldacghostincoming(void){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
-  HEADL;
-  uint8_t w=1;
+void SRdacghostincoming(uint8_t w){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[0]//gate[x].Gshift_[w]
+  HEAD;
   float speedf__;
-  speedf__=logspeed[(CV[1]&511)+((gate[1].Gshift_[inroute[count][1]])&511)];
+  speedf__=logspeed[(CV[w]&511)+((gate[w].Gshift_[inroute[count][w]])&511)];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1896,12 +1854,11 @@ void Ldacghostincoming(void){ // own ghost from next 1 - could also select incom
   }
 }
 
-void Ldacseladd(void){
-  HEADL;
-  uint8_t w=1;
+void SRdacseladd(uint8_t w){
+  HEAD;
   float speedf__;
-  uint8_t whic=(CV[1]>>9)&3; //12 bits -> 2 bits
-  speedf__=logspeed[(CV[1]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  uint8_t whic=(CV[w]>>9)&3; //12 bits -> 2 bits
+  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1912,11 +1869,10 @@ void Ldacseladd(void){
   }
 }
 
-void Ldacadd(void){
-  HEADL;
-  uint8_t w=1;
+void SRdacadd(uint8_t w){
+  HEAD;
   float speedf__;
-  speedf__=logspeed[(CV[1]&511)+(gate[speedfrom[spdcount][1]].dac>>3)];
+  speedf__=logspeed[(CV[w]&511)+(gate[speedfrom[spdcount][w]].dac>>3)];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1927,12 +1883,11 @@ void Ldacadd(void){
   }
 }
 
-void Ldacminus(void){
-  HEADL;
-  uint8_t w=1;
+void SRdacminus(uint8_t w){
+  HEAD;
   int32_t cv;
   float speedf__;
-  cv=(gate[speedfrom[spdcount][1]].dac>>2)-(1024-(CV[1]>>2));
+  cv=(gate[speedfrom[spdcount][w]].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1945,12 +1900,11 @@ void Ldacminus(void){
   }
 }
 
-void Ldacspeedminus(void){
-  HEADL;
-  uint8_t w=1;
+void SRdacspeedminus(uint8_t w){
+  HEAD;
   int32_t cv;
   float speedf__;
-  cv=(CV[1]>>2)-(gate[speedfrom[spdcount][1]].dac>>2); 
+  cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2); 
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;
@@ -1963,13 +1917,12 @@ void Ldacspeedminus(void){
   }
 }
 
-void Ldacmod(void){
-  HEADL;
-  uint8_t w=1;
+void SRdacmod(uint8_t w){
+  HEAD;
   int32_t cv;
   float speedf__;
-  cv=((CV[1]>>2)+1); // modulo code
-  speedf__=logspeed[(gate[speedfrom[spdcount][1]].dac>>2)%cv];
+  cv=((CV[w]>>2)+1); // modulo code
+  speedf__=logspeed[(gate[speedfrom[spdcount][w]].dac>>2)%cv];
   if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -1980,19 +1933,18 @@ void Ldacmod(void){
   }
 }
 
-void LB(void){// with oscillator
-  HEADL;
-  uint8_t w=1;
+void SRB(uint8_t w){// with oscillator
+  HEAD;
   int32_t cv;
   float speedf__;
-  cv=(CV[1]>>2)-(gate[speedfrom[spdcount][1]].dac>>2);
+  cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
     BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -2003,19 +1955,18 @@ void LB(void){// with oscillator
 //SRL, SRR: speed from SRN: (both run OSC with no binroute)
 // variations of the: all above for different speed ops, different oscillators (but some need params), use CVL to select speed ops and osc
 
-void Lrung0(void){// with oscillator - speedminus we use here
-  HEADL;
-  uint8_t w=1;
+void SRrung0(uint8_t w){// with oscillator - speedminus we use here
+  HEAD;
   int32_t cv;
   float speedf__;
-  cv=(CV[1]>>2)-(gate[0].dac>>2);
+  cv=(CV[w]>>2)-(gate[0].dac>>2);// fixed as gate[0]
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
     //    BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -2023,19 +1974,18 @@ void Lrung0(void){// with oscillator - speedminus we use here
   }
 }
 
-void Lrung1(void){// with oscillator - other minus
-  HEADL;
-  uint8_t w=1;
+void SRrung1(uint8_t w){// with oscillator - other minus
+  HEAD;
   int32_t cv;
   float speedf__;
-  cv=(gate[0].dac>>2)-(1024-(CV[1]>>2)); // other minus
+  cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
   if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
     //    BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -2043,18 +1993,17 @@ void Lrung1(void){// with oscillator - other minus
   }
 }
 
-void Lrung2(void){// with oscillator - mod
-  HEADL;
-  uint8_t w=1;
+void SRrung2(uint8_t w){// with oscillator - mod
+  HEAD;
   int32_t cv;
   float speedf__;
-  cv=((CV[1]>>2)+1); // modulo code
+  cv=((CV[w]>>2)+1); // modulo code
   speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
   if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
     //    BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -2062,17 +2011,16 @@ void Lrung2(void){// with oscillator - mod
   }
 }
 
-void Lrung3(void){// with oscillator - add
-  HEADL;
-  uint8_t w=1;
+void SRrung3(uint8_t w){// with oscillator - add
+  HEAD;
   int32_t cv;
   float speedf__;
-  speedf__=logspeed[(CV[1]&511)+(gate[0].dac>>3)]; // add
+  speedf__=logspeed[(CV[w]&511)+(gate[0].dac>>3)]; // add
   if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
     //    BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -2085,38 +2033,37 @@ void Lrung3(void){// with oscillator - add
   /* what are speed ops? 
 
   speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
-  cv=(CV[1]>>2)-(gate[0].dac>>2);  speedf__ = logspeed[cv] // minus
-  speedf__=logspeed[(CV[1]&511)+(gate[0].dac>>3)]; // add
-  cv=(gate[0].dac>>2)-(1024-(CV[1]>>2)); // other minus
+  cv=(CV[w]>>2)-(gate[0].dac>>2);  speedf__ = logspeed[cv] // minus
+  speedf__=logspeed[(CV[w]&511)+(gate[0].dac>>3)]; // add
+  cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
 */
 
 // oscs: 21adcandsharedbitsotherpar, 29otherpar, 28strobe, 30osc, 31tm, 34osc/otherpar, 77oscdac, 78oscdac, 79oscdac, 80oscdac, 89impulses/strobe/otherpar, 95otherpar/patterns, 107osc1bits +3: 19.adcpadbits, 18adcbits, 22lfsr
 uint8_t oscmode[16]={107,21,29,28, 30,31,34,77,  78,79,80,89, 95,19,18,22};
 
-void LLrung0(void){// DETACHED> with oscillator
-  HEADSINL;
-  uint8_t w=1;
+void SRLrung0(uint8_t w){// DETACHED> with oscillator
+  HEADSIN;
   int32_t cv;
   float speedf__;
-  //  cv=(CV[1]>>2)-(gate[0].dac>>2);
+  //  cv=(CV[w]>>2)-(gate[0].dac>>2);
   //  if (cv<0) cv=0;
   // 2 bits speed ops...
-  tmp=CVL[1]>>6; //2+4 bits = 6 bits
+  tmp=CVL[w]>>6; //2+4 bits = 6 bits
   // top bits
   if (tmp&16){
-    cv=((CV[1]>>2)+1); // modulo code
+    cv=((CV[w]>>2)+1); // modulo code
     speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
   }
   else if (tmp&32){
-  cv=(CV[1]>>2)-(gate[0].dac>>2);
+  cv=(CV[w]>>2)-(gate[0].dac>>2);
   if (cv<0) cv=0;
   speedf__ = logspeed[cv]; // minus
   }
   else if (tmp&48){
-  speedf__=logspeed[(CV[1]&511)+(gate[0].dac>>3)]; // add
+  speedf__=logspeed[(CV[w]&511)+(gate[0].dac>>3)]; // add
   }
   else {
-  cv=(gate[0].dac>>2)-(1024-(CV[1]>>2)); // other minus
+  cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
   if (cv<0) cv=0;
   speedf__ = logspeed[cv]; 
   }
@@ -2126,7 +2073,7 @@ void LLrung0(void){// DETACHED> with oscillator
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     tmp=tmp>>2;
-    bitn=ADC_(1,SRlength[w],oscmode[tmp],gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],oscmode[tmp],gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
     //    BINROUTE_;
     PULSIN_XOR;
     BITN_AND_OUTV_;
@@ -2139,9 +2086,8 @@ void LLrung0(void){// DETACHED> with oscillator
 // add in and check all probability modes
 
 // prototype INTmode 0 no interpolation and no use of CV - cycles though
-void Lint(void){ 
-  uint8_t w=1;
-  HEADL;  
+void SRint(uint8_t w){ 
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     BINROUTEANDCYCLE_;
@@ -2150,9 +2096,8 @@ void Lint(void){
   } 
 }
 
-void Lint1(void){ // route in 
-  uint8_t w=1;
-  HEADL;  
+void SRint1(uint8_t w){ // route in 
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     BINROUTE_;
@@ -2162,12 +2107,11 @@ void Lint1(void){ // route in
 }
 
 
-void Lintroute(void){ // CV: 4 bits for route in... other bits for logop
-  uint8_t w=1;				       
-  HEADL;  
-  if (gate[1].trigger)      {
+void SRintroute(uint8_t w){ // CV: 4 bits for route in... other bits for logop
+  HEAD;  
+  if (gate[w].trigger)      {
     GSHIFT_;
-    tmp=255-(CV[1]>>4); // 8 bits
+    tmp=255-(CV[w]>>4); // 8 bits
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -2183,12 +2127,11 @@ void Lintroute(void){ // CV: 4 bits for route in... other bits for logop
   } 
 }
 
-void Lintsrroute(void){ // CV: 4 bits for route in... other bits for logop
-  uint8_t w=1;				       
-  HEADL;  
-  if (gate[1].trigger)      {
+void SRintsrroute(uint8_t w){ // CV: 4 bits for route in... other bits for logop
+  HEAD;  
+  if (gate[w].trigger)      {
     GSHIFT_;
-    tmp=(255-(CV[1]>>4)) & DACFROM; // other logics!
+    tmp=(255-(CV[w]>>4)) & DACFROM; // other logics!
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -2205,18 +2148,17 @@ void Lintsrroute(void){ // CV: 4 bits for route in... other bits for logop
 }
 
 
-void LintDACroute(void){ // dacroute version with prob/CV deciding if we change table or not 
-  uint8_t w=1;
-  HEADL;
+void SRintDACroute(uint8_t w){ // dacroute version with prob/CV deciding if we change table or not 
+  HEAD;
   GSHIFT_;
-  if (gate[1].trigger){
+  if (gate[w].trigger){
 
-    if (((LFSR_[1] & 4095 ) < CV[1])){  
-      tmp=gate[dacfrom[daccount][1]].dac&15;
+    if (((LFSR_[w] & 4095 ) < CV[w])){  
+      tmp=gate[dacfrom[daccount][w]].dac&15;
     for (x=0;x<4;x++){
   if (tmp&0x01){
-  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
-  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
   bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -2229,21 +2171,20 @@ void LintDACroute(void){ // dacroute version with prob/CV deciding if we change 
   }
 }
 
-void Lintprobroute1(void){ // prob/CV deciding if we increment local binroute count
-  uint8_t w=1;
+void SRintprobroute1(uint8_t w){ // prob/CV deciding if we increment local binroute count
   static uint8_t ourcount=0;
-  HEADL;
+  HEAD;
   GSHIFT_;
-  if (gate[1].trigger){
-    if (((LFSR_[1] & 4095 ) < CV[1])){  
+  if (gate[w].trigger){
+    if (((LFSR_[w] & 4095 ) < CV[w])){  
       ourcount++;
       if (ourcount>15) ourcount=0;
     }
     tmp=binroute[ourcount][w];
   for (x=0;x<4;x++){
   if (tmp&0x01){
-  bitrr = (gate[x].Gshift_[1]>>SRlength[x]) & 0x01;
-  gate[x].Gshift_[1]=(gate[x].Gshift_[1]<<1)+bitrr;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
   bitn^=bitrr;
   }
   tmp=tmp>>1;
@@ -2254,17 +2195,16 @@ void Lintprobroute1(void){ // prob/CV deciding if we increment local binroute co
   }
   }  
 
-void LintselADC_63(void){ // use CV to select adc type: only those which don't use CV or strobe LIST:
+void SRintselADC_63(uint8_t w){ // use CV to select adc type: only those which don't use CV or strobe LIST:
   // we could also us top bits to do something with? 16 modes=4 bits, top bits logop/route?
   //0,1,2,3,4,5,6,7,8 - adc logical-22,23,25,26,27,30,63,64,65 to test - 27 dies out but...
   uint8_t choice[16]={0,1,2,3,4,5,6,7,8, 22, 23, 25, 26, 27, 30, 63};//leave off -inprogress 63,64,65 to test - TODO: expand this with new abstract and dac modes...
     // DAC inputs 25,26,27,71,72,73,74
-  uint8_t w=1;				       
-  HEADL;  
-  if (gate[1].trigger)      {
-    val=63-(CV[1]>>6); // 6 bits say
+  HEAD;  
+  if (gate[w].trigger)      {
+    val=63-(CV[w]>>6); // 6 bits say
     GSHIFT_;
-    bitn=ADC_(1,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[daccount][1],0, &gate[w].shift_);
+    bitn=ADC_(w,SRlength[w],choice[val>>2],gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_);
     val=(val&0x03);// lowest 2 bits for logop
     tmp=binroute[count][w];
     for (x=0;x<4;x++){
@@ -2282,24 +2222,24 @@ void LintselADC_63(void){ // use CV to select adc type: only those which don't u
 
 // with split CVs for these bits
 
-void LLNint35(void){ // TRIADEX 2 - TODO: version using CV or SR for these bits
-  uint8_t w=1; uint8_t prob, bitnn, bitnnn, bitnnnn;
-  HEADSINL;
-  if (gate[1].trigger)      {
+void SRLNint35(uint8_t w){ // TRIADEX 2 - TODO: version using CV or SR for these bits
+uint8_t prob, bitnn, bitnnn, bitnnnn;
+  HEADSIN;
+  if (gate[w].trigger)      {
   GSHIFT_;
-  // so we have CV[1] and CVL[1] for bits
+  // so we have CV[w] and CVL[1] for bits
 
   // INSERT!
   //  CV[1] - 3 bits 3 bits 3 bits 3 bits = 12 bits - cv is 12 bits - so maybe just pick from lowest 8
-    s[0]=(CV[1]>>9)&3; // select which one... 0,1,2,3
-    ss[0]=(CV[1]>>6)&3;
-    s[1]=(CV[1]>>3)&3;
-    ss[1]=CV[1]&3;
+    s[0]=(CV[w]>>9)&3; // select which one... 0,1,2,3
+    ss[0]=(CV[w]>>6)&3;
+    s[1]=(CV[w]>>3)&3;
+    ss[1]=CV[w]&3;
 
-    s[2]=(CVL[1]>>9)&3; // select which one... 0,1,2,3
-    ss[2]=(CVL[1]>>6)&3;
-    s[3]=(CVL[1]>>3)&3;
-    ss[3]=CVL[1]&3;
+    s[2]=(CVL[w]>>9)&3; // select which one... 0,1,2,3
+    ss[2]=(CVL[w]>>6)&3;
+    s[3]=(CVL[w]>>3)&3;
+    ss[3]=CVL[w]&3;
     
     bitn = (gate[s[0]].shift_ >> ss[0]) & 0x01;
     bitnn = (gate[s[1]].shift_ >> ss[1]) & 0x01;
@@ -2315,9 +2255,8 @@ void LLNint35(void){ // TRIADEX 2 - TODO: version using CV or SR for these bits
   }
 }
 
-void LLNint(void){ 
-  uint8_t w=1;
-  HEADL;  
+void SRLNint(uint8_t w){ 
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     // INSERT!
@@ -2329,19 +2268,18 @@ void LLNint(void){
 
 ////
 
-void LLNint104(void){ // let's try INT driven one for pulse train mode
+void SRLNint104(uint8_t w){ // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
   // INT can also start new train or let old one carry on (now it starts new train...)
-  uint8_t w=1;
-  HEADL;  
+  HEAD;  
   if (gate[w].trigger)      {
     train[w]=1;
   }
   
-  //  if (counter[w]>CV[1]){
+  //  if (counter[w]>CV[w]){
   if (train[w]!=0){
 
-    if (train[w]<CV[1]){ // number of pulses
+    if (train[w]<CV[w]){ // number of pulses
       if (counter[w]>(gate[dacfrom[count][w]].dac>>2)){ // or another dac
 	counter[w]=0;
 	train[w]++;
@@ -2355,16 +2293,15 @@ void LLNint104(void){ // let's try INT driven one for pulse train mode
 }
 }
 
-  void LLNint105(void){ // let's try INT driven one for pulse train mode
+  void SRLNint105(uint8_t w){ // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
   // INT can also start new train or let old one carry on (now it starts new train...)
-  uint8_t w=1;
-  HEADL;  
+  HEAD;  
   if (gate[w].trigger)      {
     train[w]=1;
   }
   
-  //  if (counter[w]>CV[1]){
+  //  if (counter[w]>CV[w]){
   if (train[w]!=0){
     if (train[w]<(gate[dacfrom[count][w]].dac>>2)){ // number of pulses
       if (counter[w]>((CV[w]>>2))){ // or another dac
@@ -2380,13 +2317,13 @@ void LLNint104(void){ // let's try INT driven one for pulse train mode
 }
 }
 
-void LLNint68(void){ 
-  uint8_t w=1, tmpp;
-  HEADL;  
+void SRLNint68(uint8_t w){ 
+  uint8_t tmpp;
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     // INSERT!
-      tmpp=31-(CV[1]>>7);// 5 bits for length
+      tmpp=31-(CV[w]>>7);// 5 bits for length
       if (tmpp==0) tmpp=1;
 
       tmp=binroute[count][w]; // was route[w]
@@ -2407,13 +2344,13 @@ void LLNint68(void){
   } 
 }
 
-void LLNint67(void){  // shifter1
-  uint8_t w=1, tmpp;
-  HEADL;  
+void SRLNint67(uint8_t w){  // shifter1
+  uint8_t tmpp;
+  HEAD;  
   if (gate[w].trigger)      {
     //    GSHIFT_;
     // INSERT!
-      tmpp=31-(CV[1]>>7);// 5 bits for length
+      tmpp=31-(CV[w]>>7);// 5 bits for length
       if (tmpp==0) tmpp=1;
 
       gate[w].Gshift_[0]=gate[w].shift_;
@@ -2439,13 +2376,13 @@ void LLNint67(void){  // shifter1
   } 
 }
 
-void LLNint64(void){ // as 63 but we try INTmode with CV changing length of incoming routes
-  uint8_t w=1,tmpp;
-  HEADL;  
+void SRLNint64(uint8_t w){ // as 63 but we try INTmode with CV changing length of incoming routes
+  uint8_t tmpp;
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     // INSERT!
-      tmpp=31-(CV[1]>>7);// 5 bits for length    
+      tmpp=31-(CV[w]>>7);// 5 bits for length    
       tmp=binroute[count][w]; // was route[w]
       for (x=0;x<4;x++){ //unroll?
       if (tmp&0x01){  
@@ -2463,17 +2400,16 @@ void LLNint64(void){ // as 63 but we try INTmode with CV changing length of inco
   } 
 }
 
-void LLNint47(void){ // case 47: // GSR runs at CV speed in INT mode (try)
+void SRLNint47(uint8_t w){ // case 47: // GSR runs at CV speed in INT mode (try)
   // or vice versa NOW - GSR is on trigger
-  uint8_t w=1;
-  HEADL;  
+  HEAD;  
 
   if (gate[w].trigger==1){
     BINROUTE_;
   }
-  tmp=CV[1]>>2;
-  if (counter[1]>tmp && tmp<1020){
-    counter[1]=0;
+  tmp=CV[w]>>2;
+  if (counter[w]>tmp && tmp<1020){
+    counter[w]=0;
       GSHIFT_;      
       bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01; 
 
@@ -2482,15 +2418,14 @@ void LLNint47(void){ // case 47: // GSR runs at CV speed in INT mode (try)
   } 
 }
 
-void LLNint41(void){ //  TM in TM: from it.c seems to use 2x comparators - one - INTMODE
-  uint8_t w=1;
-  HEADL;  
+void SRLNint41(uint8_t w){ //  TM in TM: from it.c seems to use 2x comparators - one - INTMODE
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     // INSERT!
       bitn=(gate[w].Gshift_[w]>>SRlength[w])& 0x01; 
       
-      if ((LFSR_[w] & 4095 )> CV[1]) { // cycling bit
+      if ((LFSR_[w] & 4095 )> CV[w]) { // cycling bit
 	bitn^=1;
       }
 
@@ -2508,16 +2443,16 @@ void LLNint41(void){ //  TM in TM: from it.c seems to use 2x comparators - one -
 }
       
 // version for intmode with only CVL/detached length
-void LINTBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV control of bits and SR/DAC control - as we need 2 CVs (mix and CV) - detach both (in CV mode or one in intmode)
-  uint8_t w=1; float mixer;
+void SRINTBITMIX(uint8_t w){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV control of bits and SR/DAC control - as we need 2 CVs (mix and CV) - detach both (in CV mode or one in intmode)
+float mixer;
   HEADSSINNADA;
 
   if (gate[w].trigger)      {
   GSHIFT_;
     tmp=255-(CV[w]>>4); // 8 bits
     mixer=1.0f/((float)(CVL[w]>>4)+1.0f);
-    mixer*=(float)(gate[dacfrom[daccount][1]].dac>>4);
-    // how to mix with DAC using CVL - gate[dacfrom[daccount][1]].dac
+    mixer*=(float)(gate[dacfrom[daccount][w]].dac>>4);
+    // how to mix with DAC using CVL - gate[dacfrom[daccount][w]].dac
     tmp+=(int)mixer;
     if (tmp>255) tmp=255;
     for (x=0;x<4;x++){ 
@@ -2536,15 +2471,14 @@ void LINTBITMIX(void){ // NO LENGTH NOR SPEEDS //- TODO: how to mix between CV c
 
 //PROBABILITY
 //INTmode: probability mode where CV fixes bits (of prob) and prob is against DAC/SR onlys ???????what means* - ?prob is our LFSR - so we fix bits of this one...
-void Lintprobfixed(void){ 
-  uint8_t w=1;
-  HEADL;  
+void SRintprobfixed(uint8_t w){ 
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
 
     BINROUTE_;
-    if (( ((LFSR_[w] & 4095 )&(4095-CV[1])) < gate[dacfrom[daccount][w]].dac)){ // prob of inversion of cycling bit - other probs are possible
+    if (( ((LFSR_[w] & 4095 )&(4095-CV[w])) < gate[dacfrom[daccount][w]].dac)){ // prob of inversion of cycling bit - other probs are possible
       bitrr=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
     }
     else bitrr=!((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
@@ -2555,14 +2489,13 @@ void Lintprobfixed(void){
   } 
 }
 
-void Lintprobfixed1(void){ // as above prob cycling vs routein
-  uint8_t w=1;
-  HEADL;  
+void SRintprobfixed1(uint8_t w){ // as above prob cycling vs routein
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
 
-    if (( ((LFSR_[w] & 4095 )&(4095-CV[1])) < gate[dacfrom[daccount][w]].dac)){ // prob of inversion of cycling bit - other probs are possible
+    if (( ((LFSR_[w] & 4095 )&(4095-CV[w])) < gate[dacfrom[daccount][w]].dac)){ // prob of inversion of cycling bit - other probs are possible
       BINROUTE_;      
     }
     else JUSTCYCLE_;

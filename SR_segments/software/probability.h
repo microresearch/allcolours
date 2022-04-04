@@ -6,24 +6,22 @@
 
 // from modeN port in probs and electronotes for these...DONE
 
-void Lintprob1(void){  // 1invert routed
-  uint8_t w=1;				       
-  HEADN;  
+void probintprob1(uint8_t w){  // 1invert routed
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     BINROUTE_;
     PULSIN_XOR; // before or after inversion
-    if (((LFSR_[1] & 4095 ) < CV[1])) bitn=!bitn;
+    if (((LFSR_[w] & 4095 ) < CV[w])) bitn=!bitn;
     BITN_AND_OUTVINT_; 
   } 
 }
 
-void Lintprob2(void){  // route or cycling
-  uint8_t w=1;				       
-  HEADN;  
+void probintprob2(uint8_t w){  // route or cycling
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    if (((LFSR_[1] & 4095 ) > CV[1])){
+    if (((LFSR_[w] & 4095 ) > CV[w])){
       PULSIN_XOR; // here or at end?
       BINROUTE_;
       }
@@ -34,12 +32,11 @@ void Lintprob2(void){  // route or cycling
   } 
 }
 
-void Lintprob3(void){  // routed vs routed_cycing
-  uint8_t w=1;				       
-  HEADN;  
+void probintprob3(uint8_t w){  // routed vs routed_cycing
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    if (((LFSR_[1] & 4095 ) < CV[1])){
+    if (((LFSR_[w] & 4095 ) < CV[w])){
     BINROUTE_;
     }
     else
@@ -51,18 +48,20 @@ void Lintprob3(void){  // routed vs routed_cycing
   } 
 }
 
-void Lintprob5_0(void){ // electronotes draft0 // can also use incoming SR instead of LFSR
+void probintprob5_0(uint8_t w){ // electronotes draft0 // can also use incoming SR instead of LFSR
   // 8 switches - bits ANDed with bits 1, 3, 6, 19, 15, 18, 20, 22
   // switches have 256 options
-  uint8_t w=1;				       
-  HEADN;  
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    //    if (((LFSR_[1] & 4095 ) < CV[1])){ // ((SR/LFSR & (CV) )== 4095)
-    //    if ( ((LFSR_[1]&255) & ((CV[1]>>4)&255)) == 255 ){
+    //    if (((LFSR_[w] & 4095 ) < CV[w])){ // ((SR/LFSR & (CV) )== 4095)
+    //    if ( ((LFSR_[w]&255) & ((CV[w]>>4)&255)) == 255 ){
+    tmp=prub[CV[w]>>9];
+    if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | tmp)==255){
+
     
-    tmp=255-(CV[1]>>4);
-    if ( ( ( ((LFSR_[1]&1)>>0) + ((LFSR_[1]&4)>>1) + ((LFSR_[1]&32)>>3) + ((LFSR_[1]&262144)>>15) + ((LFSR_[1]&16384)>>10) + ((LFSR_[1]&131072)>>12) + ((LFSR_[1]&524288)>>13) + ((LFSR_[1]&2097152)>>14)) | tmp)==255){
+    //    tmp=255-(CV[w]>>4);
+    //    if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&262144)>>15) + ((LFSR_[w]&16384)>>10) + ((LFSR_[w]&131072)>>12) + ((LFSR_[w]&524288)>>13) + ((LFSR_[w]&2097152)>>14)) | tmp)==255){
     PULSIN_XOR;
     BINROUTE_;
     }
@@ -74,11 +73,10 @@ void Lintprob5_0(void){ // electronotes draft0 // can also use incoming SR inste
   } 
 }
 
-void Lintprob6_0(void){ // INVERT - electronotes draft0 // use incoming SR instead of LFSR - also no route in *** // can be lfsr against shift also***
+void probintprob6_0(uint8_t w){ // INVERT - electronotes draft0 // use incoming SR instead of LFSR - also no route in *** // can be lfsr against shift also***
   // 8 switches - bits ANDed with bits 1, 3, 6, 19, 15, 18, 20, 22
   // switches have 256 options
-  uint8_t w=1;				       
-  HEADN;  
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     BINROUTE_;
@@ -86,8 +84,10 @@ void Lintprob6_0(void){ // INVERT - electronotes draft0 // use incoming SR inste
     //    if (((LFSR_[1] & 4095 ) < CV[1])){ // ((SR/LFSR & (CV) )== 4095)
     //    if ( ((LFSR_[1]&255) & ((CV[1]>>4)&255)) == 255 ){
     // LFSR_[1]->gate[inroute[count][1]].shift_
-    tmp=255-(CV[1]>>4);
-    if ( ( ( ((gate[inroute[count][1]].shift_&1)>>0) + ((gate[inroute[count][1]].shift_&4)>>1) + ((gate[inroute[count][1]].shift_&32)>>3) + ((gate[inroute[count][1]].shift_&262144)>>15) + ((gate[inroute[count][1]].shift_&16384)>>10) + ((gate[inroute[count][1]].shift_&131072)>>12) + ((gate[inroute[count][1]].shift_&524288)>>13) + ((gate[inroute[count][1]].shift_&2097152)>>14)) | tmp)==255){
+    //    tmp=255-(CV[w]>>4);
+    //    if ( ( ( ((gate[inroute[count][w]].shift_&1)>>0) + ((gate[inroute[count][w]].shift_&4)>>1) + ((gate[inroute[count][w]].shift_&32)>>3) + ((gate[inroute[count][w]].shift_&262144)>>15) + ((gate[inroute[count][w]].shift_&16384)>>10) + ((gate[inroute[count][w]].shift_&131072)>>12) + ((gate[inroute[count][w]].shift_&524288)>>13) + ((gate[inroute[count][w]].shift_&2097152)>>14)) | tmp)==255){
+    tmp=prub[CV[w]>>9];
+    if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | tmp)==255){    
       bitn=!bitn;
     }
 
@@ -95,13 +95,12 @@ void Lintprob6_0(void){ // INVERT - electronotes draft0 // use incoming SR inste
   } 
 }
 
-void Lintprobdac1_0(void){ // example - as prob1 above but against DAC
+void probintprobdac1_0(uint8_t w){ // example - as prob1 above but against DAC
   // prob is choice of ADC or ADC XOR routed in bit
-  uint8_t w=1;				       
-  HEADN;  
+  HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
-    if ((gate[dacfrom[daccount][w]].dac)>CV[1]) {
+    if ((gate[dacfrom[daccount][w]].dac)>CV[w]) {
     BINROUTE_;
     PULSIN_XOR;
     }
@@ -117,9 +116,9 @@ void Lintprobdac1_0(void){ // example - as prob1 above but against DAC
 // strobes in modeL/CV modes
 
 // template 
-void Ltempst(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void probtempst(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -136,10 +135,10 @@ void Ltempst(void){
 
 // convert to tug/toggle
 
-void Ltoggle1(void){
-  uint8_t w=1; uint8_t prob;
+void probtoggle1(uint8_t w){
+uint8_t prob;
   static uint8_t tug[4]={0};
-  HEADL;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -155,10 +154,10 @@ void Ltoggle1(void){
   }
 }
 
-void Ltoggle2(void){
-  uint8_t w=1; uint8_t prob;
+void probtoggle2(uint8_t w){
+  uint8_t prob;
   static uint8_t tug[4]={0};
-  HEADL;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -176,10 +175,10 @@ void Ltoggle2(void){
   }
 }
 
-void Ltoggle3(void){
-  uint8_t w=1; uint8_t prob;
+void probtoggle3(uint8_t w){
+uint8_t prob;
   static uint8_t tug[4]={0};
-  HEADL;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -197,10 +196,10 @@ void Ltoggle3(void){
   }
 }
 
-void Ltoggle4(void){ // new one for ZERO entry
-  uint8_t w=1; uint8_t prob;
+void probtoggle4(uint8_t w){ // new one for ZERO entry
+uint8_t prob;
   static uint8_t tug[4]={0};
-  HEADL;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -218,10 +217,10 @@ void Ltoggle4(void){ // new one for ZERO entry
   }
 }
 
-void Ltoggle5(void){ // new one for ZERO entry against binroute/cycling
-  uint8_t w=1; uint8_t prob;
+void probtoggle5(uint8_t w){ // new one for ZERO entry against binroute/cycling
+uint8_t prob;
   static uint8_t tug[4]={0};
-  HEADL;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -241,9 +240,9 @@ void Ltoggle5(void){ // new one for ZERO entry against binroute/cycling
 
 ////////////////////
 
-void Lstrobe1(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void probstrobe1(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -258,9 +257,9 @@ void Lstrobe1(void){
   }
 }
 
-void Lstrobe2(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void probstrobe2(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -277,9 +276,9 @@ void Lstrobe2(void){
   }
 }
 
-void Lstrobe3(void){
-  uint8_t w=1; uint8_t prob;
-  HEADL;
+void probstrobe3(uint8_t w){
+uint8_t prob;
+  HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -341,11 +340,10 @@ X vs Y: options
     };
 */
 
-void Lintgenericprob0(void){ // TODO: can also be on trigger!
-  uint8_t w=1;
+void probintgenericprob0(uint8_t w){ // TODO: can also be on trigger!
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
-  HEADL;  
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -373,12 +371,11 @@ void Lintgenericprob0(void){ // TODO: can also be on trigger!
 //left side: LFSR, SRown - could also have SRany but...  
 //right side: CV, CV+DAC
 
-void Lintgenericprobx(void){
-  uint8_t w=1;
+void probintgenericprobx(uint8_t w){
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
   uint32_t left[2]={0}; uint32_t right[2]={0};
-  HEADL;  
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -405,12 +402,11 @@ void Lintgenericprobx(void){
   } 
 }
 
-void LLintgenericprobx(void){ // as above but use CVL to select dacfrom/2 bits and mask 
-  uint8_t w=1;
+void probLintgenericprobx(uint8_t w){ // as above but use CVL to select dacfrom/2 bits and mask 
   uint32_t tmpp, bit, lower, other;
   uint32_t prob[4]={0};
   uint32_t left[2]={0}; uint32_t right[2]={0};
-  HEADL;  
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -440,12 +436,11 @@ void LLintgenericprobx(void){ // as above but use CVL to select dacfrom/2 bits a
 }
 
 
-void Lintgenericprobxxx(void){ // try to combine with 4 bits for route
-  uint8_t w=1;
+void probintgenericprobxxx(uint8_t w){ // try to combine with 4 bits for route
   uint32_t tmpp, bit, topbit, lower;
   uint32_t prob[4]={0};
   uint32_t left[2]={0}; uint32_t right[2]={0};
-  HEADL;  
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -485,8 +480,7 @@ void Lintgenericprobxxx(void){ // try to combine with 4 bits for route
 }
 
 
-void Lintgenericprobxx(void){ // uses CVL for bits
-  uint8_t w=1;
+void probintgenericprobxx(uint8_t w){ // uses CVL for bits
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
   uint32_t left[2]={0}; uint32_t right[2]={0};
@@ -517,11 +511,10 @@ void Lintgenericprobxx(void){ // uses CVL for bits
   } 
 }
 
-void Lintgenericprob1(void){ // reverse so dac is prob and cv is bits
-  uint8_t w=1;
+void probintgenericprob1(uint8_t w){ // reverse so dac is prob and cv is bits
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
-  HEADL;  
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -547,11 +540,10 @@ void Lintgenericprob1(void){ // reverse so dac is prob and cv is bits
   } 
 }
 
-void Lintgenericprob2(void){ // adc[12] is prob and cv is bits
-  uint8_t w=1;
+void probintgenericprob2(uint8_t w){ // adc[12] is prob and cv is bits
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
-  HEADL;  
+  HEAD;  
 
   if (gate[w].trigger)      {
     GSHIFT_;
@@ -577,11 +569,10 @@ void Lintgenericprob2(void){ // adc[12] is prob and cv is bits
   } 
 }
 
-void Lgenericprobx(void){ // porting to strobe - ported to N
-  uint8_t w=1;
+void probgenericprobx(uint8_t w){ // porting to strobe - ported to N
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
-  HEADL;  
+  HEAD;  
 
   if (speedf_[w]!=2.0f){ 
     CVOPEN;

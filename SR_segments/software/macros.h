@@ -40,39 +40,27 @@
 
 //#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
 
-#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[0]=SRlength_[0]; speedf_[0]=speedf[0]; \
+#define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; count=0; daccount=0; spdcount=0; speedf_[w]=speedf[w]; \
 
-#define HEADL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[1]=SRlength_[1]; speedf_[1]=speedf[1]; \
-
-#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; speedf_[2]=speedf[2]; if (speedf_[2]==2.0f) speedf_[2]=LOWEST; \
-
-#define HEADR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; count=0; daccount=0; speedf_[3]=speedf[3]; \
-
-// this one for when we set count and daccount
-#define HEADRN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; speedf_[3]=speedf[3]; \
-
+#define HEADD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; count=0; daccount=0; spdcount=0; speedf_[w]=speedf[w]; PULSIN_XOR; \
 
 // these ones are for NO SRlength - stays as is and we can use CVL 12 bits
-#define HEADSINN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[0]=speedf[0]; \
 
-#define HEADSINL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[1]=speedf[1]; \
+#define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w];spdcount=0; count=0; daccount=0; \
 
-#define HEADSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[2]=speedf[2]; if (speedf_[2]==2.0f) speedf_[2]=LOWEST; \
-
-#define HEADSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[3]=speedf[3]; count=0; daccount=0; \
+#define HEADSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w];spdcount=0; count=0; daccount=0; PULSIN_XOR; \
 
 // these ones are for no speed changes
 
-#define HEADSSINN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[0]=SRlength_[0]; \
+#define HEADSSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; spdcount=0; count=0; daccount=0; \
 
-#define HEADSSINL float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[1]=SRlength_[1]; \
-
-#define HEADSSINC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[2]=SRlength_[2]; \
-
-#define HEADSSINR float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[3]=SRlength_[3]; count=0; daccount=0; \
+#define HEADSSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; spdcount=0; count=0; daccount=0; PULSIN_XOR; \
 
 // and for NADA
-#define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+#define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; spdcount=0; count=0; daccount=0; \
+  
+#define HEADSSINNADAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; PULSIN_XOR; spdcount=0; count=0; daccount=0; \
+
 
 
 //
@@ -217,7 +205,8 @@
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     tmp=(w<<1);								\
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
+    if (w!=0){								\
+      if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];				\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
     lengthbit=(SRlength[w]>>1);					\
     new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
@@ -226,6 +215,7 @@
     tmp++;							\
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    }								\
 }
 
 // for local changes to dactype 
@@ -233,21 +223,24 @@
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], tmp, gate[w].dacpar, gate[w].trigger); \
     tmp=(w<<1);								\
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    lengthbit=(SRlength[w]>>1);					\
-    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    if (w!=0){								\
+      if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];				\
+      else *pulsoutHI[tmp]=pulsouts[tmp];				\
+      lengthbit=(SRlength[w]>>1);					\
+      new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+      if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;			\
     prev_stat[w]=new_stat;					\
     tmp++;							\
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    }								\
 }
 
 
 #define BITN_AND_OUTVNOSHIFT_ {						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     tmp=(w<<1);								\
+    if (w!=0){								\
     if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
     lengthbit=(SRlength[w]>>1);					\
@@ -257,6 +250,7 @@
     tmp++;							\
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    }								\
 }
 
 
@@ -265,6 +259,7 @@
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     tmp=(w<<1);								\
+    if (w!=0){								\
     if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
     lengthbit=(SRlength[w]>>1);					\
@@ -274,11 +269,13 @@
     tmp++;							\
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    }								\
 }
 
 #define BITN_AND_OUTVINTNO_ {						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     tmp=(w<<1);								\
+    if (w!=0){								\
     if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
     lengthbit=(SRlength[w]>>1);					\
@@ -288,60 +285,31 @@
     tmp++;							\
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
-}
-
-// val and no pulse outs
-#define BITN_AND_OUTVN_ {						\
-    gate[w].shift_+=bitn;						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-}
-
-#define BITN_AND_OUTVNNO_ {						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-}
-
-
-// for int modes as no interpol, no pulse outs
-#define BITN_AND_OUTNINT_ {						\
-    gate[w].shift_+=bitn;						\
-    gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-}
-
-#define PULSOUT_ {				  \
-  tmp=(w<<1);					  \
-  if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];	  \
-  else *pulsoutHI[tmp]=pulsouts[tmp];		  \
-  lengthbit=(SRlength[w]>>1);			      \
-  new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;   \
-  if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;    \
-  prev_stat[w]=new_stat;			      \
-  tmp++;					      \
-  if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];	      \
-  else *pulsoutHI[tmp]=pulsouts[tmp];		      \
+    }								\
 }
 
 // these all had     if (w==3) count=0; 10/1/2021				\
 
 #define PULSIN_XOR {				\
-  xx=!(GPIOC->IDR & pulsins[w]);		\
+  if (pulse[w]){				\
+    xx=!(GPIOC->IDR & pulsins[w]);		\
   bitn^=xx;					\
+  }						\
   }
 
 #define PULSIN_OR {				\
-  xx=!(GPIOC->IDR & pulsins[w]);		\
+  if (pulse[w]){				\
+    xx=!(GPIOC->IDR & pulsins[w]);		\
   bitn|=xx;					\
+  }						\
 }
 
 // prob is upto 32 // 5 bits
 #define PULSIN_LEAK {				\
+  if (pulse[w]){					\
     xx=!(GPIOC->IDR & pulsins[w]);			\
     bitn=otherleaks(bitn,xx,prob,w);			\
-}
-
-
-#define PULSIN_LOGOP {				\
-      xx=!(GPIOC->IDR & pulsins[w]);		\
-      bitn=logop(bitn,xx,logtable[w]);		\
+  }							\
 }
 
 // reverse 32 bits for tmpp - but how to reverse based on length - reverse lowest srlength bits ?

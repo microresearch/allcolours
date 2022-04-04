@@ -300,6 +300,20 @@ static inline uint32_t ENsbits(uint32_t prob){
 }
 
 ///////////////////////////////////////////
+/*
+16 encoders without comparator
+
+- maximum 12 bits 1
+- padded any number of bits 2
+- fixed number of bits: 12,8,4 345
+- one bit encoding 6
+- equivalent bits 7
+- energy equivalent bits (abs value) 8
+- fixed 12 bits 2s complement: can also be 8,4 //9.10.11
+- variable depth 2s comp //12
+- fixed 12 bits 1s complement: can also be 8,4 //13/14/15
+- variable depth 1s comp 16
+*/
 
 // what are variations on this? - for padding (x bits treated as y bits):
 // restrict to 12 bits (can also be x bits fixed), pad to x bits, always static number of bits

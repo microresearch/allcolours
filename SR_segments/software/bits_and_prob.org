@@ -1,6 +1,6 @@
 * PROBS - to define and maybe place in files as sep parts
 
-*modeN: prob modes done, port electronotes and probability modes to R and C*
++modeN: prob modes done, port electronotes and probability modes to R and C+
 
 +question if routed includes cycle in its route? but only if we change table...+
 

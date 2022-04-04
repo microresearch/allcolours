@@ -318,6 +318,7 @@ volatile uint32_t adc_[4]={0,0,0,0};
 uint32_t counter_[4]={0,0,0,0};
 
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
+static uint32_t pulse[4]={0,1,0,1};
 static uint32_t LR[4]={0,1,0,1};
 static uint8_t flipd[4]={0,0,0,0};
 static uint16_t pulsouts[8]={0, 0,  1<<2, 1<<15, 1<<4, 1<<12, 1<<3, 1<<11};
@@ -368,21 +369,30 @@ uint32_t testmodes[4]={0,0,0,0};
 
 
 // collect modes: Lmultiplespeednew 
-void (*dofunc[4][64])(void)=
+void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {N0, N23, N24, N29, N30, N95, N8, N9, N10, N11, N12, N13, N10, N11, N12, N13, N14, N15, N16, N17, N18, N19, N20, N21, N22, N23, N24, N25, N26, N27, N28, N29, N30, N31, N32},
-  {Lproboscintest, L2, LX0},
-  {C0, C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15},
-  {R0, R0, R1}
+  {adc0},
+  {adcnone},
+  {adc0},
+  {adc0}
 };
 
 void mode_init(void){
-  uint32_t y;
+  uint32_t x;
 
   gate[0].shift_=0x15;
   gate[1].shift_=0x15;
   gate[2].shift_=0x15;
   gate[3].shift_=0x15;
+
+  for (x=0;x<4;x++){
+  gate[x].Gshift_[0]=0;
+  gate[x].Gshift_[1]=0;
+  gate[x].Gshift_[2]=0;
+  gate[x].Gshift_[3]=0;
+  }
+
+  
   
   gate[0].adctype=0;
 
@@ -427,15 +437,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do the modes
   
-  // mode[www]=testmodes[www];
+   mode[www]=testmodes[www];
   //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
   //  mode[0]=4;
-  mode[1]=0;mode[3]=0; // test dac
-  if (mode[2]>15) mode[2]=15;
-  if (mode[0]>5) mode[0]=5;
+  //  mode[1]=0;mode[3]=0; // test dac
+  //  if (mode[2]>15) mode[2]=15;
+  //  if (mode[0]>5) mode[0]=5;
   //    (*gate[www].dofunc[mode[www]])();
   //mode[2]=12;
-    (*dofunc[www][mode[www]])();
+    (*dofunc[www][mode[www]])(www);
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
     if (www==2)  {
