@@ -70,7 +70,7 @@
   }									\
   }
 
-
+/*
 #define ADCSTREAMXORIN(X) {			\
   HEADD;						\
   if (speedf_[w]!=2.0f){			\
@@ -84,7 +84,7 @@
   }									\
   }									\
   }
-
+*/
 
 #define ADCXORINNOG(X){				\
   HEADD;						\
@@ -165,9 +165,11 @@ uint8_t dacmodes[16]={25,26,27,71,72,73,74,75,  77,78,79,80,86,88,91,105};
 
 // new stream test
 
+/*
 void adc0S(uint8_t w){ // basic ADC in with XOR route in
   ADCSTREAMXORIN(4);
 }
+*/
 
 // streams for sequential entry of bits into each register
 
@@ -1149,6 +1151,70 @@ void adcLproto(uint8_t w){
   }
   }
 */
+
+void adcLabstract(uint8_t w){ // just to test abstract modes - could be used but we lose speed and wastes bits - detached both
+  HEADSSINNADA;
+  uint32_t depth;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  ///////HERE
+  tmp=CVL[w]>>8; // 4 bits
+  //  tmp=0;
+  depth=CV[w]; // 12-> 5 bits below
+  bitn=(*abstractbitstreams[tmp])(depth,w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+
+void adcLFROM(uint8_t w){  // FROM? - we use both params - can also be detached strobe modeTODO
+  HEADSSINNADA;
+  uint32_t depth, tmpp;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  ///////HERE
+  tmp=CVL[w]>>6; // 6 bits: type/route = 4 bits // adc/dac/abstract/route = 2 bits
+  depth=CV[w]; // 12-> 5 bits below
+  tmpp=tmp&3; //1st 2 bits
+  
+  if (tmpp==0){
+    // FROM adcins
+    bitn=(*adcbitstreams[tmp>>2])(depth>>7);
+  }
+  else if (tmpp==1){
+    bitn=(*dacbitstreams[tmp>>2])(depth>>7);
+  }
+  else if (tmpp==3){
+    bitn=(*abstractbitstreams[tmp>>2])(depth,w);
+  }
+  else {
+    // use route in from tmp
+    tmp=tmp>>2;
+      for (x=0;x<4;x++){
+	if (tmp&0x01){
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+	  bitn^=bitrr;
+	}
+	tmp=tmp>>1;
+      }
+  }
+  // binroute or not 
+
+  
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
 
 void adcLmix0(uint8_t w){
   float pp,mult;
@@ -2255,7 +2321,7 @@ void adcintEN(uint8_t w){ // intmode for Electronotes generator
   if (gate[w].trigger)      {
     GSHIFT_;
     //    bitn^=ADC_(w,SRlength[w],84,gate[w].trigger,dacfrom[daccount][w],CV[w], &gate[w].shift_);
-    bitn^=ENbits(CV[w]); // 0-31 5 bits or more >>7 TEST/try
+    bitn^=ENbits(CV[w],w); // 0-31 5 bits or more >>7 TEST/try
     BINROUTE_;
     BITN_AND_OUTVINT_; 
   } 
@@ -2266,7 +2332,7 @@ void adcintsEN(uint8_t w){ // intmode for simpler Electronotes generator
   if (gate[w].trigger)      {
     GSHIFT_;
     //    bitn^=ADC_(w,SRlength[w],84,gate[w].trigger,dacfrom[daccount][w],CV[w], &gate[w].shift_);
-    bitn^=ENsbits(CV[w]); // 0-31 5 bits or more >>7 TEST/try
+    bitn^=ENsbits(CV[w],w); // 0-31 5 bits or more >>7 TEST/try
     BINROUTE_;
     BITN_AND_OUTVINT_; 
   } 

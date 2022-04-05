@@ -169,7 +169,29 @@ void SRRaccelghosts0(uint8_t w){ // route in // exp mode to accelerate/bump on a
   }
 }
 
+///////////////////////////////// GLOBAL ROUTE modes
 // for CV modes add in bump up global routes, SR as global routing table
+
+void SRRstroberoute(uint8_t w){ // bump dacroute and binroute 
+  HEAD;
+  
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_; // we still keep our route in?
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+
+  if (gate[w].trigger) // or could be toggle to hold it
+    {
+      count=16;
+    }
+}
+
 
 void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute 
   HEAD;

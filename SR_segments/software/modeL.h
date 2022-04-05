@@ -18,8 +18,6 @@ void SRN(uint8_t w){
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void SRNwas14(uint8_t w){ 	//- probability of advancing a GSR - strobe version we have above in 3 (commented out)DONE
 uint8_t prob;
   HEAD;
@@ -1631,7 +1629,7 @@ void SRLsliposc2(uint8_t w){ // detached - osceqbits, speed by CVL and << is fix
     GSHIFT_;
     tmp=(CVL[w]>>2); // 10 bits
     //    bitn=ADC_(1,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator or use generator
-    bitn=osceqbits(tmp);
+    bitn=osceqbits(tmp,w);
     // slide
     //    gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w]>>tmp)<<1; // but what of length of incoming
     gate[w].shift_^=(gate[inroute[count][w]].Gshift_[w] & masky[SRlength[inroute[count][w]]])<<1; // was xor 

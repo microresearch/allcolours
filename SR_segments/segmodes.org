@@ -314,6 +314,41 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 newmodes I think are in modeL - and need to be ported across!
 
+** 5/4/2022
+
+- maybe no major/minor as we need RSR
+
+- ways of grouping favoured sets of modes (also like RSR syncing modes), splice in modes, extra modes etc.
+
+RSR modes/character: 
+
+- feedback/probability
+- independent DAC functions/generators (abstract, some in)
+- other functions (more of RSR etc. eg. global routings)
+
+do we have generic, detached probability modes?
+
+*TODO: RSR sync mode (sketched in)*
+
+RSR: that can GSHIFT itself as a 0 always to prevent binroutes into others (but does this effect anything)
+check for gate[3].Gshift_[3]
+
+DONEgeneric ADC/DAC generators->function array, abstract gens, 
+
+generic IN?DONE in probability, WHERE? we can't split per SR as we need the bits for logic... just have one bit routed in
+
+out which uses SR (which?) as sieve for multiple bits
+
+/// odd one. route in is determined by bottom 4 bits of another SR (do
+we have this?) - we have SRSRroute in model.h - but would be nice to
+select which SR we use for this
+
+*still thinking on how to split SRs so we can say mix multiple bitstreams* - think in parallel...
+
+can have 4 parallel generators XOR in say on CSR with prob (we have already)... route all in...
+
+tested new abstract generators 0-16DONE
+
 ** 4/4/2022 
 
 *IN/DECISION [IN?]*
@@ -331,7 +366,7 @@ what we need to add: new generic bitmodes...
 
 //////////////////////////////
 
-catalogue files/maybe print this/these // we need overview of what we have:
+catalogue files // we need overview of what we have:
 
 - DONE: fixed some electronotes mode in probability.h and now we have all modes as generic and called with w!
 
@@ -372,9 +407,11 @@ or we fix as prob/bits only from 3/RSR... then we have 2 bits - but prob needs C
 
 //WHERE?//where in - route by route? eg, xor, logop - can also be abstracted as an IN?
 
-*or these can be split across SRs:*
+*or these can be split across SRs: - held in potential as once we have them???*
 
 eg. N is where from, feeds into IN? (L), then C is wherein? (or just first 2)...
+
+but then what is IN against... and where? doesn't work out
 
 with R as majormodes/back in or patterns for others (eg. we can't use DAC/bitss if there are no interesting DACs/bits)
 

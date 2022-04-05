@@ -1,3 +1,133 @@
+/// TODO: check/add in strobey... but unnecesary for intmodes!
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+
+generic IN? 
+
+probability of entry of new bits as against what? against cycle?
+
+bits: strobe/toggle/bits1/2/3/4//prob
+
+//IN?// as [strobe/toggle/bits[from]/probX.Y.Z] - how many bits? // combine?
+
+probability needs one param/cv/cvl? and one to select so that's 2
+
+left side: LFSR, SRown,  
+right side: CV, CV+DAC
+
+LFSR<CV
+  LFSR<DAC
+LFSR<DAC+CV
+  LFSR<ADC_buffer[12]
+
+SRown<CV - own ghost SR: gate[w].Gshift_[w] 
+  SRown<DAC
+SRown<CV+DAC
+  SRown<SRincoming
+
+void probintnew(uint8_t w){ // uses CVL for bits - can also be full detached
+  uint32_t tmpp, bit, lower;
+  uint32_t prob[4]={0};
+  uint32_t left[2]={0}; uint32_t right[2]={0};
+  HEADSSINNADA; // detach all  
+
+  if (gate[w].trigger)      {
+    GSHIFT_;
+
+    BINROUTE_;
+
+    left[0]=LFSR_[w]&4095; left[1]=gate[w].Gshift_[w]&4095; 
+    right[0]=4095-CV[w]; right[1]=right[0]+(gate[dacfrom[daccount][w]].dac&4095);
+    if (right[1]>4095) right[1]=4095;
+
+
+    // adapt
+    tmp=(bit>>2)&1; // fixed
+    tmpp=(bit>>3)&1;
+    bit=(bit>>4)*3;
+
+    if (left[tmp]<right[tmpp]) bitn=prob[lower]; // lowest 2 bits
+    else bitn=prob[options[lower][bit]] ^prob[options[lower][(bit+1)]]^prob[options[lower][(bit+2)]];
+    PULSIN_XOR;
+    //    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    BITN_AND_OUTVINT_; // for pulse out
+  } 
+}
+
+
+
+
+*/
+
+void SRINquestion0(uint8_t w){ // NO LENGTH NOR SPEEDS - length is now bits, speed is now cv for - we use strobe here!
+  HEADSSINNADA;
+  uint32_t tmpp, bit, lower;
+  uint32_t left[2]={0}; uint32_t right[2]={0};
+  static uint8_t toggle;
+  
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // CVL as bits CV as prob
+    tmp=CVL[w]>>8; // 4 bits?
+    tmpp=tmp&3;
+    if (tmpp==0){// strobe
+      if (gate[w].trigger) {
+	BINROUTE_;
+      }
+      else
+	{
+	JUSTCYCLE_;
+	}
+    }
+    else if (tmpp==1){ // toggle
+      if (gate[w].trigger) toggle^=1;
+      if (toggle) {
+	BINROUTE_; // could use extra bits for route
+      }
+      else {
+	JUSTCYCLE_;
+      }
+    }
+    else if (tmpp==2) { //bits from + 2 bits from
+      bit=(tmp>>2)&3;
+      if ( (gate[bit].Gshift_[w]>>SRlength[bit]) & 0x01) {
+	BINROUTE_; // could use extra bits for route
+      }
+      else {
+	JUSTCYCLE_;
+      }      
+    }
+    else { // deal with probability - how many bits do we have? 2 so is all 4 bits long
+      bit=(tmp>>2)&3;
+
+      tmp=(bit)&1;
+      tmpp=(bit>>1)&1;
+
+      left[0]=LFSR_[w]&4095; left[1]=gate[w].Gshift_[w]&4095; 
+      right[0]=4095-CV[w]; right[1]=right[0]+(gate[dacfrom[daccount][w]].dac&4095);
+
+      if (left[tmp]<right[tmpp]) 	{ // could use one bit to invert?
+	BINROUTE_;
+      }
+      else {
+	JUSTCYCLE_;
+      }
+    }
+    
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+  }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // modeL as model but generic as possible
 
 // *prob/STROBE for CLN: invert routed*
@@ -125,7 +255,7 @@ uint8_t prob;
     GSHIFT_;
     // INSERT!
     
-    //    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
+    if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;

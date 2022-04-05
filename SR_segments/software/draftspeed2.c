@@ -184,7 +184,7 @@ uint32_t ourroute[4]={0,0,0,0};
 
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
-uint32_t binroute[16][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
+uint32_t binroute[17][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
     {8,1,2,4}, // default was 8121 // now we have full route 8124
   //  {0,0,1,0}, //  test
 	{8,1,2,2}, // notexpanding
@@ -202,7 +202,8 @@ uint32_t binroute[16][4]={ // add more routes, also what seq change of routes ma
 	{8,1,1,2}, // as altroute 3/0/0/1
 	{8,9,1,2}, // bounce L and R back and forth
 	{8,1,2,5}, // others
-	{2,4,8,1}, // reverse round route
+    {2,4,8,1}, // reverse round route
+    {0,0,0,0} // drop all routes
 }; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
 
 uint32_t inroute[16][4]={ // who we have main incoming route from 0-3 - from above
@@ -368,13 +369,13 @@ uint32_t testmodes[4]={0,0,0,0};
 //uint32_t adcchoice[32]={
 
 
-// collect modes: Lmultiplespeednew 
+// collect modes: Lmultiplespeednew MODES!
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc0},
-  {adcnone},
-  {adc0},
-  {adc0}
+  {adcLabstract},
+  {SRINquestion0},
+  {dac0},
+  {SRRstroberoute}
 };
 
 void mode_init(void){
@@ -445,7 +446,16 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //  if (mode[0]>5) mode[0]=5;
   //    (*gate[www].dofunc[mode[www]])();
   //mode[2]=12;
-    (*dofunc[www][mode[www]])(www);
+
+   // *TODO*: sync mode from RSR modes - we sync all modes so are same as LSR
+   // needs mirror rmode to work...
+   //   if (rmode==1) { mode[1]=mode[0];mode[2]=mode[0]; mode[3]=mode[0];
+   // or we have mode[3] as no mirror and simple pass through
+   if (www==3) {
+     spdcount=0; count=0; daccount=0; // so when we leave modes which set this reverts to 0...
+   }
+   
+   (*dofunc[www][mode[www]])(www);
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
     if (www==2)  {
@@ -487,6 +497,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	}
       }      
 
+      /*
       if (counter[5]>gate[dacfrom[daccount][3]].dac){ // R side
 	counter[5]=0;
 	if (strobey[3][mode[3]]){
@@ -494,8 +505,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	if (flipper[1]) GPIOB->BSRRH = clk_route[2];  
 	else   GPIOB->BSRRL=clk_route[2]; //  write bits
       }      
-      }
-
+      }*/
+      // 5th tail!
+      if (LFSR_[3]>>31) GPIOB->BSRRH = clk_route[2]; // now noise as tends to run out on feedback but slower noise or comp would be nice
+	else   GPIOB->BSRRL=clk_route[2]; //  write bits
+    
 //      if (counter[2]>(gate[3].dac)){ // now trying DAC 29/12/2021 - // C side!
 //	counter[2]=0;
 //	flipper[2]^=1;
@@ -507,7 +521,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       // trial just using lowest bit 30/12/2021 ??? TEST???? C side
       // - DONEtrial of another approach to fake clocks (but would be better as own ghosts???) - NOTEfrom segmodes but not sure what that means?
             if (strobey[2][mode[2]]){
-	      if ((gate[dacfrom[daccount][2]].shift_>>SRlength[3])&0x01) GPIOB->BSRRH = clk_route[4];
+	      if ((gate[dacfrom[daccount][2]].shift_>>SRlength[2])&0x01) GPIOB->BSRRH = clk_route[4]; /// can mean to die out
 	      else GPIOB->BSRRL=clk_route[4]; //  write bits
 	    }
       

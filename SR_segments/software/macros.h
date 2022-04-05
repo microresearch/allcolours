@@ -40,26 +40,26 @@
 
 //#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
 
-#define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; count=0; daccount=0; spdcount=0; speedf_[w]=speedf[w]; \
+#define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; \
 
-#define HEADD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; count=0; daccount=0; spdcount=0; speedf_[w]=speedf[w]; PULSIN_XOR; \
+#define HEADD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; PULSIN_XOR; \
 
 // these ones are for NO SRlength - stays as is and we can use CVL 12 bits
 
-#define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w];spdcount=0; count=0; daccount=0; \
+#define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w]; \
 
-#define HEADSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w];spdcount=0; count=0; daccount=0; PULSIN_XOR; \
+#define HEADSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w]; PULSIN_XOR; \
 
 // these ones are for no speed changes
 
-#define HEADSSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; spdcount=0; count=0; daccount=0; \
+#define HEADSSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; \
 
-#define HEADSSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; spdcount=0; count=0; daccount=0; PULSIN_XOR; \
+#define HEADSSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; PULSIN_XOR; \
 
 // and for NADA
-#define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; spdcount=0; count=0; daccount=0; \
+#define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
   
-#define HEADSSINNADAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; PULSIN_XOR; spdcount=0; count=0; daccount=0; \
+#define HEADSSINNADAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; PULSIN_XOR; \
 
 
 
