@@ -1,3 +1,5 @@
+/// basics - copy 0 to gshifts so no route in but still we can run for dacs
+
 void SRRLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
   uint32_t lin, lout;
   HEADSSINNADA;
@@ -390,8 +392,7 @@ void SRRdacoffset0(uint8_t w){
   HEADSIN;
   tmp=(1024-(CV[w]>>2)) + (int)((float)(gate[speedfrom[spdcount][w]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
-  speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeedd[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -775,8 +776,54 @@ void SRRintselADC_63(uint8_t w){ // use CV to select adc type: only those which 
     BITN_AND_OUTVINT_;
   } 
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 5th tail/head - 9th SR - [8]
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///... what other models there could be?
 
+void SR5_feedback(uint8_t w){ // detached
+  HEADSIN; // use CVL[w] for tail entry speed... // can also use as INTmode with speed as this speed...
+  // tail trial1
+  speedf_[8]=logspeedd[CVL[w]>>2];
+  val=w;
+  w=8;
+  gate[w].dac = delay_buffer[w][1]; // no interpol so we have gate[8].dac as 5th tail
+  gate[w].time_now += speedf_[w];
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // we want what would be/have been routed in
+      tmp=binroute[count][val];
+      for (x=0;x<4;x++){
+	if (tmp&0x01){
+	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+	  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+	  bitn^=bitrr;    
+	}
+	tmp=tmp>>1;
+      }
+    gate[w].shift_+=bitn;
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);
+    new_data(val,w);
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+  }
+  // back to regular RSR - and we can have variation on this
+  w=val;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // INTmodes: global route from CV, prob from CV, others? + change global routes, fake clks, use as DAC, entry of adc/non-adc bits from top
 
 /* // what bits we have again?///////////////////////////////////////////

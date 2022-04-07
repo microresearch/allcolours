@@ -1,4 +1,4 @@
-// check strobey! TODO
+// check strobey, pulsin! TODO
 
 // template
 void SRN(uint8_t w){
@@ -10,13 +10,78 @@ void SRN(uint8_t w){
     GSHIFT_;
     // INSERT!
     
-    //    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
-    //    PULSIN_XOR;
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
   }
 }
+
+// general options for shifting as bits: copy_to_gshift, addin_on_gshift, shift ourselves/double shift, pulsins, other pulsout options, add in bitn
+// 6 bits from dac...
+void SRshiftQ1(uint8_t w){
+  uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    prob=gate[dacfrom[daccount][w]].dac>>7; // 5 bits
+    //    GSHIFT_;
+    if (prob&1){
+      GSHIFTNOS_; // no shift
+    }
+
+    if (prob&2) gate[w].shift_=gate[w].shift_<<1; // own shift
+
+    if (prob&4) {
+      BINROUTE_;      
+    }
+    else
+      {
+	BINROUTENOG_;
+      }
+
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+
+    if (prob&8) {
+      PULSIN_XOR;
+    }
+    else {
+      PULSIN_OR;
+    }
+    
+    if (prob&16) {
+      BITN_AND_OUTV_;
+    }
+    else
+      {
+	BITN_AND_OUTVNOSHIFT_
+      }
+    
+    ENDER;
+  }
+  }
+}
+
+
+void SRsuccroute(uint8_t w){ // route in each in turn...
+  uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    bitn=succbits(0,w);//static inline uint32_t succbits(uint32_t depth, uint8_t wh){   // no use of depth - we route from each sr in turn
+    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
 
 void SRNwas14(uint8_t w){ 	//- probability of advancing a GSR - strobe version we have above in 3 (commented out)DONE
 uint8_t prob;
@@ -889,7 +954,6 @@ void SRno(uint8_t w){
 }
 
 void SRX0(uint8_t w){ // basic route in XOR puls
-
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -2079,6 +2143,52 @@ void SRLrung0(uint8_t w){// DETACHED> with oscillator
   }
 }
 
+
+void SRLbitprob(uint8_t w){ // new detached mode with prob wheel
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  ///////HERE
+  tmp=CVL[w];
+  val=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],tmp, &gate[w].shift_);
+  if (val){
+    BINROUTE_;
+  }
+  else
+    {
+      JUSTCYCLE_;
+    }  
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+void SRLbitdacprob(uint8_t w){ // dac with prob wheel
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  val=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],gate[dacfrom[daccount][w]].dac, &gate[w].shift_);
+  if (val){
+    BINROUTE_;
+  }
+  else
+    {
+      JUSTCYCLE_;
+    }  
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // intmodes
 // add in and check all probability modes
@@ -2355,6 +2465,7 @@ void SRLNint67(uint8_t w){  // shifter1
       gate[w].Gshift_[1]=gate[w].shift_;
       gate[w].Gshift_[2]=gate[w].shift_;
       gate[w].Gshift_[3]=gate[w].shift_;
+      gate[w].Gshift_[8]=gate[w].shift_;
       gate[w].shift_=gate[w].shift_<<tmpp;
       
       tmp=binroute[count][w]; // was route[w]

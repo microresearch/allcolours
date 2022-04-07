@@ -1,3 +1,4 @@
+// check all modes set type of dac?
 
 #define DACOUT {				\
   HEAD;						\
@@ -68,6 +69,111 @@
   }							\
 }
 
+// 6/4
+// say NLR can be generators into XOR (full mode) on CSR - DAC - can also be mix of logics and prob there...
+// so we have routes in for 1,2,8=11
+// 3 possible logics/or/prob - start with logic
+// different dac options
+
+void dacNLRin(uint8_t w){  // this one is just fixed XOR
+  HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  BINROUTE_; // new routing in here.
+  tmp=11;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+ if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+   BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+void dacNLRinlogic(uint8_t w){  // figure out bits for logic - also as possible strobe mode // logic can also be dac
+  HEADSIN;
+  uint8_t what=CVL[w]>>6; // 6 bits - 2 bits per NLC
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  BINROUTE_; // new routing in here.
+  tmp=11;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn=logopx(bitn,bitrr,what&0x03);
+  }
+  tmp=tmp>>1; what=what>>2;
+    }			     
+ if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+   BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+// probability of one stream vs other stream - say l vs r? or other options
+void dacLRprob(uint8_t w){  
+  HEADSIN;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+
+  if (((LFSR_[w] & 4095 ) < CVL[w])) x=1;
+  else x=3;
+
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr;
+
+  if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+// we can also have cv as successively going across all routes in...how?
+
+
+void dacLNLRin(uint8_t w){  // this one is just fixed XOR - detach length to pick our DAC
+  HEADSIN;
+  gate[w].dactype=CVL[w]>>8; // 16 so 4 bits
+  gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  BINROUTE_; // new routing in here.
+  tmp=11;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+ if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+   BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
 
 // test adc in and dac out in one
 void dacadc(uint8_t w){
@@ -88,6 +194,7 @@ void dacadc(uint8_t w){
 
 void dacosc0(uint8_t w){ // test oscillator
   HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -103,7 +210,7 @@ void dacosc0(uint8_t w){ // test oscillator
 void dacLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
   uint32_t lin, lout;
   HEADSSINNADA;
-    gate[w].dactype=0; gate[w].dacpar=param[w];
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -254,7 +361,6 @@ void dacLDACSEL0(uint8_t w){ // detached
 }
 
 void dacL12(uint8_t w){ // detached - interval DAC
-  HEADSIN;
   gate[w].dactype=12; gate[w].dacpar=31-(CVL[w]>>7);
   DACOUTX;
   //      GSHIFT_;					       
@@ -463,6 +569,7 @@ void dacbumproute0(uint8_t w){ // trigger bumps up our local route - add one to 
 
 void dacDACroute0(uint8_t w){ 
   HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -486,6 +593,7 @@ void dacDACroute0(uint8_t w){
 
 void dacSRroute0(uint8_t w){ 
   HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -509,6 +617,7 @@ void dacSRroute0(uint8_t w){
 
 void dac32(uint8_t w){ // multiple bits in as case 19 in draftdec
   HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -646,6 +755,7 @@ void dacdacspeedminus0(uint8_t w){
 
 void dacdacmod0(uint8_t w){
   HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   int32_t cv;
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
@@ -662,6 +772,7 @@ void dacdacmod0(uint8_t w){
 
 void dacB0(uint8_t w){// with oscillator
   HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   int32_t cv;
   float speedf__;
   cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2);
@@ -679,6 +790,7 @@ void dacB0(uint8_t w){// with oscillator
 }
 
 void dacdacoffset0(uint8_t w){
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   float speedf__;
   float mmm=(float)(1024-(CVL[w]>>2))/1024.0f;
   HEADSSINNADA;
@@ -732,7 +844,8 @@ void dacintslide16(uint8_t w){ // window // speed is param// we need length so n
 }
 
 void dacintroute0(uint8_t w){ // CV: 4 bits for route in... other bits for logop
-  HEAD;  
+  HEAD;
+    gate[w].dactype=0; gate[w].dacpar=param[w];
   if (gate[w].trigger)      {
     GSHIFT_;
     tmp=255-(CV[w]>>4); // 8 bits
@@ -779,7 +892,8 @@ void dacintselDAC_63(uint8_t w){
 void dacLNint104(uint8_t w){ // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
   // INT can also start new train or let old one carry on (now it starts new train...)
-  HEAD;  
+  HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   if (gate[w].trigger)      {
     train[w]=1;
   }
@@ -803,7 +917,8 @@ void dacLNint104(uint8_t w){ // let's try INT driven one for pulse train mode
   void dacLNint105(uint8_t w){ // let's try INT driven one for pulse train mode
   // INT triggers train of CV pulses at speed DAC - and can also be vice versa
   // INT can also start new train or let old one carry on (now it starts new train...)
-  HEAD;  
+  HEAD;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
   if (gate[w].trigger)      {
     train[w]=1;
   }

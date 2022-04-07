@@ -890,7 +890,7 @@ heavens gate[4];
   }
  
   int prob=0;
-  
+  /*  
   while(1){
   bitn = ((shift_registern >> (lfsr_taps[SRlengthn][0])) ^ (shift_registern >> (lfsr_taps[SRlengthn][1])) ^ (shift_registern >> (lfsr_taps[SRlengthn][2])) ^ (shift_registern >> (lfsr_taps[SRlengthn][3]))) & 1u; // 32 is 31, 29, 25, 24
 
@@ -906,6 +906,13 @@ heavens gate[4];
    }
   else printf(" ");
   }
+  */
+
+  prob=3;
+  if (prob&2) printf("OK\n");
+
+  uint32_t ffxf[4]={17,17,17,17};
+  printf("OK %d\n",ffxf[3]);
   
   //  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   //  LFSR_[www] = (LFSR_[www]<<1) + tmp;

@@ -79,6 +79,7 @@
     gate[w].Gshift_[1]=gate[w].shift_;			\
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
+    gate[w].Gshift_[8]=gate[w].shift_;			\
     gate[w].shift_=gate[w].shift_<<1;			\
 }
 
@@ -87,6 +88,7 @@
     gate[w].Gshift_[1]=gate[w].shift_;			\
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
+    gate[w].Gshift_[8]=gate[w].shift_;			\
 }
 
 
@@ -109,6 +111,19 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
+#define BINROUTENOS_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+
 #define BINROUTENOGGG_ {				\
   tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
@@ -121,6 +136,18 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
+// we don't cycle incoming ghost just get bits
+#define BINROUTENOG_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;							\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
 
 #define BINROUTEOR_ {				\
   tmp=binroute[count][w];				\
@@ -161,19 +188,6 @@
   }							\
   if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;	\
 }
-
-// we don't cycle incoming ghost just get bits
-#define BINROUTENOG_ {				\
-  tmp=binroute[count][w];				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  bitn^=bitrr;							\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
-  }
 
 #define BINROUTEANDCYCLENOG_ {				\
   tmp=binroute[count][w];				\

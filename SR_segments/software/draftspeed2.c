@@ -46,7 +46,7 @@
 #include "resources.h"
 #include "modes.h"
 
-static heavens gate[8]; // for paralell SR doubled
+static heavens gate[9]; // for paralell SR doubled + tail
 
 #define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
 
@@ -114,8 +114,8 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 volatile uint32_t param[4]={0,0,0,0}; // interrupt flag...
-uint32_t SRlength_[8]={31,31,31,31};
-uint32_t SRlength[8]={31,31,31,31};
+uint32_t SRlength_[9]={31,31,31,31,31,31,31,31,31};
+uint32_t SRlength[9]={31,31,31,31,31,31,31,31,31};
 
 uint16_t ADCLR[3]={29,30,31}; // non-adc ADC modes - this has changedDONE
 
@@ -155,6 +155,8 @@ static uint32_t storedlength[4][4]={
   {31,31,31,31},
   {31,31,31,31}
 };
+
+//static uint32_t TAIL_;
 
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
 //static uint32_t ghostof[4]; //
@@ -207,7 +209,7 @@ uint32_t binroute[17][4]={ // add more routes, also what seq change of routes ma
 }; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
 
 uint32_t inroute[16][4]={ // who we have main incoming route from 0-3 - from above
-        {3,0,1,0}, // default 8121
+        {3,0,1,2}, // default 8121 // now 8124
 	{3,0,1,1}, // expanding
 	{3,0,1,2}, // expanding
 	{3,0,1,3}, // expanding
@@ -311,8 +313,8 @@ static uint32_t train[4]={0,0,0,0};
 static uint32_t prev_stat[4]={0,0,0,0};
 static volatile uint32_t CV[4]={0,0,0,0};
 static volatile uint32_t CVL[4]={0,0,0,0};
-static volatile float speedf_[8]={1.0f,1.0f,1.0f,1.0f};
-static volatile float speedf[8]={1.0f,1.0f,1.0f,1.0f};
+static volatile float speedf_[9]={1.0f,1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f};
+static volatile float speedf[9]={1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
 volatile uint32_t dac[4]={0,0,0,0};
 volatile uint32_t adc_[4]={0,0,0,0};
@@ -337,7 +339,7 @@ static uint32_t counterr=0, counterl=0;
 // new speed stuff
 
 #define DELAY_SIZE 6 // was 40 --- 3*width=16 = 3*16=48-5=43 - use 7 for simplea
-static int32_t delay_buffer[8][2] = { 0 }; // was 48 but it doesn't need to be so big
+static int32_t delay_buffer[9][2] = { 0 }; // was 48 but it doesn't need to be so big
 
 void new_data(uint32_t data, uint32_t ww)
 {
@@ -369,14 +371,33 @@ uint32_t testmodes[4]={0,0,0,0};
 //uint32_t adcchoice[32]={
 
 
-// collect modes: Lmultiplespeednew MODES!
+// collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adcLabstract},
-  {SRINquestion0},
-  {dac0},
-  {SRRstroberoute}
+  {adcbin1_0}, 
+  {SRX0}, // SRX0 is basic route/xor
+  {dac0}, // dac0 is simplest out
+  {SRX0}
 };
+
+/*
+  {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95
+  {adcLbinprob}, //adcLabstractI binspeedcycle
+  {adcspeedstream},
+  {adcLbinprob}
+*/
+
+// TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
+void (*funcgroups[4][64])(uint8_t w)=
+{//NLcutfeedback86
+  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob}, 
+  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob}, 
+  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob},
+  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob}
+};
+
+// TODO: can there also be gap to allow for insertion of own mode eg. for DAC
+// eg. blank function which uses mode[w] 
 
 void mode_init(void){
   uint32_t x;
@@ -392,15 +413,15 @@ void mode_init(void){
   gate[x].Gshift_[2]=0;
   gate[x].Gshift_[3]=0;
   }
-
-  
   
   gate[0].adctype=0;
 
-  gate[2].dactype=0; // set for out
+  gate[0].dactype=67;
   gate[1].dactype=67; // default simpler version - now 4 bit version 
+  gate[2].dactype=0; // set for out
   gate[3].dactype=67;
-  gate[0].dactype=67;  
+  gate[8].dactype=67;  
+
 }
 
 
@@ -506,7 +527,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 	else   GPIOB->BSRRL=clk_route[2]; //  write bits
       }      
       }*/
-      // 5th tail!
+      // 5th tail could be used...??? but might be from right side!
       if (LFSR_[3]>>31) GPIOB->BSRRH = clk_route[2]; // now noise as tends to run out on feedback but slower noise or comp would be nice
 	else   GPIOB->BSRRL=clk_route[2]; //  write bits
     

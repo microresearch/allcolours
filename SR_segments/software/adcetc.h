@@ -48,7 +48,7 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
 // 7 modes
 static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *SR, uint32_t income){
   static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
-  static int32_t integrator=0.0f, oldValue=0.0f;
+  static int32_t integrator=0, oldValue=0;
   static uint32_t k;//, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   //  static uint8_t lc=0;
   uint32_t bt=0, bit=0;
@@ -182,15 +182,46 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
   
 
 //////////////////////////////////////////////////////////////////////////
-// TODO: fill in all possible generators: eg. new abstract ones, binroute and return...
-// options also include if we add in gshift or just shift out etc.
+
+static inline uint32_t probbits(uint32_t depth, uint8_t wh){   // PROBability mode
+  uint32_t bt=0;
+  if (depth>(LFSR_[wh]&4095)) bt=1;
+  return bt;
+}
+
+// but depth could also be param to advance x or shift on
+static inline uint32_t succbits(uint32_t depth, uint8_t wh){   // no use of depth - we route from each sr in turn
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint8_t x=0;
+  if (x==wh) x++;
+  if (x>3) x=0;
+  bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+  bt^=bitrr;
+  x++;
+  return bt;
+}
+
+static inline uint32_t succbitsI(uint32_t depth, uint8_t wh){   // no use of depth - we route from each sr in turn - independent version
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint8_t x[4]={0};
+  if (x[wh]==wh) x[wh]++;
+  if (x[wh]>3) x[wh]=0;
+  bitrr = (gate[x[wh]].Gshift_[0]>>SRlength[x[wh]]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+  bt^=bitrr;
+  x[wh]++;
+  return bt;
+}
 
 static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel...
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
-    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
     bt^=bitrr;
   }
@@ -212,6 +243,7 @@ static inline uint32_t returnbits(uint32_t depth, uint8_t wh){   // returning bu
 // could also have fixed one set of oscbits eg. osceqbits
 // what else.... more on static patterns from dac or adc
 
+// non-independent ones
 static inline uint32_t osceqbits(uint32_t depth, uint8_t wh){  
   uint32_t bt;
   static int32_t n=0,nn=0;
@@ -268,10 +300,52 @@ static inline uint32_t TMbits(uint32_t depth, uint32_t seq, uint32_t rndd, uint3
   return bt;
 }
 
+// we already have EN version
+//WIARD versions - macro versions - inside themselves
+//WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
+
+//WIARD
+static inline uint32_t wiardbits(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, bitrr, tmp;
+  if (depth>(LFSR_[wh]&4095)){
+  for (uint8_t x=0;x<4;x++){
+    tmp=binroute[count][wh];
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+  bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;
+  }
+  return bt;
+}
+
+static inline uint32_t wiardinvbits(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, bitrr, tmp;
+  if (depth>(LFSR_[wh]&4095)){
+  for (uint8_t x=0;x<4;x++){
+    tmp=binroute[count][wh];
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = !((gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01);
+  }
+  return bt;
+}
+
 static inline uint32_t TMsimplebits(uint32_t depth, uint8_t wh){
-  uint32_t bt,k;
+  uint32_t bt;
   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;				
-  //  ADCgeneric;
   if (depth>(LFSR_[wh]&4095)) bt=!bt;
   return bt;
 }
@@ -308,7 +382,13 @@ static inline uint32_t ENbits(uint32_t prob, uint8_t wh){
 static inline uint32_t ENsbits(uint32_t prob, uint8_t wh){ 
   uint32_t bt, tmp;
   if ((LFSR_[wh]&4095)<prob) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
-    //    if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+static inline uint32_t ENsroutedbits(uint32_t prob, uint8_t wh){ 
+  uint32_t bt, tmp;
+  if ((gate[inroute[count][wh]].Gshift_[wh]&4095)<prob) bt=(gate[inroute[count][wh]].Gshift_[wh]>>SRlength[inroute[count][wh]])&0x01; // in schematic is XOR of 17,22,23,24
   else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
   return bt;
 }
@@ -424,6 +504,262 @@ static inline uint32_t flipbits(uint32_t depth, uint8_t wh){
 
 
 uint32_t (*abstractbitstreams[16])(uint32_t depth, uint8_t wh)={binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits};
+
+uint32_t (*altabstractbitstreams[16])(uint32_t depth, uint8_t wh)={TMsimplebits, probbits, binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, succbits, flipbits};
+
+uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={probbits, succbits, wiardbits, wiardinvbits, binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits}; // 21
+
+
+// probbits, succbits, wiardbits, wiardinvbits and some independent versions --> maybe expand to 31 
+
+/////////////////////////////////////////// INDEPENDENT ones
+
+static inline uint32_t binroutebitsI(uint32_t depth, uint8_t wh){   // depth as routesel...
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t osceqbitsI(uint32_t depth, uint8_t wh){  
+  uint32_t bt;
+  static int32_t n[4]={0};
+  static int32_t nn[4]={0};
+     if (n[wh]>depth) {
+       bt=0;
+       if (nn[wh]>=depth) { // so equal bits from 0 / length 0 = 101010
+	 n[wh]=0;
+       }
+       nn[wh]++;
+     } // n     
+     else {
+       bt=1;
+       n[wh]++;
+       nn[wh]=0;
+     }         
+     return bt;
+}
+
+static inline uint32_t osc1bitsI(uint32_t depth, uint8_t wh){  
+  uint32_t bt;
+  static uint32_t lastbt[4]={0};
+  static uint32_t n[4]={0};
+  if (n[wh]>depth)  {
+    lastbt[wh]^=1;
+    n[wh]=0;
+  }
+  n[wh]++;
+  bt=lastbt[wh];
+  return bt;
+}
+
+static inline uint32_t TMsimplebitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt,k;
+  bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;				
+  //  ADCgeneric;
+  if (depth>(LFSR_[wh]&4095)) bt=!bt;
+  return bt;
+}
+
+static inline uint32_t wiardbitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, bitrr, tmp;
+  if (depth>(LFSR_[wh]&4095)){
+  for (uint8_t x=0;x<4;x++){
+    tmp=binroute[count][wh];
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+  bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;
+  }
+  return bt;
+}
+
+static inline uint32_t wiardinvbitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, bitrr, tmp;
+  if (depth>(LFSR_[wh]&4095)){
+  for (uint8_t x=0;x<4;x++){
+    tmp=binroute[count][wh];
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = !((gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01);
+  }
+  return bt;
+}
+
+static inline uint32_t onebitsI(uint32_t depth, uint8_t wh){ // depth=0 resets
+  uint32_t bt;
+  static int32_t bc[4]={31};
+  //  static uint32_t k;
+  if (bc[wh]<0) {
+    bt=0;
+    if (depth>0) bc[wh]=depth;
+  }
+  else{
+  bt = 1; // this means that MSB comes out first
+  }
+  bc[wh]--;
+  return bt;
+}
+
+//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+static inline uint32_t ENbitsI(uint32_t prob, uint8_t wh){ 
+  uint32_t bt, tmp;
+  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
+  // if all as switches are 1... 
+
+  //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
+  prob=prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+    if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+// trying for a simpler version
+static inline uint32_t ENsbitsI(uint32_t prob, uint8_t wh){ 
+  uint32_t bt, tmp;
+  if ((LFSR_[wh]&4095)<prob) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+    //    if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+static inline uint32_t compbitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt;
+  static uint32_t k;
+  ADCgeneric;
+  if (k>depth) bt=1;
+  else bt=0;
+  return bt;
+}
+
+static inline uint32_t compdacbitsI(uint32_t depth, uint8_t wh){ // runs out in loop
+  uint32_t bt;
+  static uint32_t k;
+  //  ADCgeneric;
+  k=(gate[3].dac); 
+  if (k>depth) bt=1;
+  else bt=0;
+  return bt;
+}
+
+static inline uint32_t compdaccbitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt;
+  static uint32_t k;
+  ADCgeneric;
+  if (k>(gate[3].dac)) bt=1;
+  else bt=0;
+  return bt;
+}
+
+static inline uint32_t pattern4bitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt;
+  static uint32_t k[4],n[4],nn[4];
+  //grab 4 bits pattern every depth
+  if (n[wh]>depth){
+    n[wh]=0;
+    k[wh]=gate[3].shift_&15;
+  }
+  if (nn[wh]>3){ // or count down
+    nn[wh]=0;
+  }
+  bt=k[wh]>>nn[wh];
+  n[wh]++; nn[wh]++;
+  return bt;
+}
+
+static inline uint32_t patternadcbitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt;
+  static uint32_t k[4],n[4],nn[4];
+  //grab 4 bits pattern every depth
+  if (n[wh]>depth){
+    n[wh]=0;
+    //    ADCgeneric;
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
+  ADC_SoftwareStartConv(ADC1);						
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  k[wh]=ADC_GetConversionValue(ADC1)>>8;				   
+  //  k[wh]=k[wh]>>8;
+  }
+  if (nn[wh]>3){ // or count down
+    nn[wh]=0;
+  }
+  bt=k[wh]>>nn[wh];
+  n[wh]++; nn[wh]++;
+  return bt;
+}
+
+
+static inline uint32_t pattern8bitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt;
+  static uint32_t k[4],n[4],nn[4];
+  //grab 4 bits pattern every depth
+  if (n[wh]>depth){
+    n[wh]=0;
+    k[wh]=gate[3].shift_&255;
+  }
+  if (nn[wh]>7){ // or count down
+    nn[wh]=0;
+  }
+  bt=k[wh]>>nn[wh];
+  n[wh]++; nn[wh]++;
+  return bt;
+}
+
+static inline uint32_t lfsrbitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt;
+  static uint32_t k;
+    bt = ((ADCshift_[wh] >> (lfsr_taps[depth][0])) ^ (ADCshift_[wh] >> (lfsr_taps[depth][1])) ^ (ADCshift_[wh] >> (lfsr_taps[depth][2])) ^ (ADCshift_[wh] >> (lfsr_taps[depth][3]))) & 1u;
+    ADCshift_[wh]=(ADCshift_[wh]<<1)+bt;
+    if (ADCshift_[wh]==0) ADCshift_[wh]=0xff;
+    return bt;
+}
+
+static inline uint32_t llfsrbitsI(uint32_t depth, uint8_t wh){
+  uint32_t bt;
+  static uint32_t k;
+  // out from lfsr at full speed
+  bt=(LFSR_[wh]>>31)&0x01;
+  return bt;
+}
+
+
+static inline uint32_t flipbitsI(uint32_t depth, uint8_t wh){  
+  uint32_t bt;
+  static uint32_t n[4];
+  depth=depth>>4; // 8 bits say
+  bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01; // returnbits				
+  if (n[wh]>depth)  {
+    bt=!bt;
+    n[wh]=0;
+  }
+  n[wh]++;
+  return bt;
+}
+
+
+uint32_t (*abstractbitstreamsI[16])(uint32_t depth, uint8_t wh)={binroutebitsI, osceqbitsI, osc1bitsI, onebitsI, ENbitsI, ENsbitsI, TMsimplebitsI, compbitsI, compdacbitsI, compdaccbitsI, pattern4bitsI, pattern8bitsI, patternadcbitsI, lfsrbitsI, llfsrbitsI, flipbitsI};
+
+
 
 ///////////////////////////////////////////
 /*
@@ -1054,7 +1390,7 @@ uint32_t (*dacbitstreams[16])(uint32_t depth)={dacxbits, dacpadbits, dac12bits, 
 // 10/12/21 - changes to SR in place now for draftspeed.c
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR){
   static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
-  static int32_t integrator[4]={0.0f}, oldvalue[4]={0.0f};
+  static int32_t integrator[4]={0}, oldvalue[4]={0};
   static uint32_t k[4]={0}, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   //  static uint8_t lc=0;
   static uint32_t toggle[4]={0,0,0,0};
@@ -1113,7 +1449,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;    
     */
 
-  case 2: // try with float but this is the same with phasings
+  case 2: // try with float but this is the same with phasings - and we need to make independent! TODO!
     ADCtwo;
     inb=(((float)k[reg])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle? 2048
     integratorf+=(inb-oldvaluef);
@@ -1150,10 +1486,10 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     *SR &=spacmask[length]; //cleared
     ADCtwo;
     k[reg]=k[reg]>>8; // we want 4 bits
-    *SR+=(k[reg]&1)+((k[reg]&2)<<spacc[length][0])+((k[reg]&4)<<spacc[length][1])+((k[reg]&8)<<spacc[length][2]);
+    *SR+=(k[reg]&1)+((k[reg]&2)<<spacc[length][reg])+((k[reg]&4)<<spacc[length][1])+((k[reg]&8)<<spacc[length][2]);
     // testing route in of bits from gate[0].Gshift_[regg] or rather dac feedback
     k[reg]=(gate[regg].dac)>>8; 
-    *SR^=(k[reg]&1)+((k[reg]&2)<<spacc[length][0])+((k[reg]&4)<<spacc[length][1])+((k[reg]&8)<<spacc[length][2]);    
+    *SR^=(k[reg]&1)+((k[reg]&2)<<spacc[length][reg])+((k[reg]&4)<<spacc[length][1])+((k[reg]&8)<<spacc[length][2]);    
     // 4 bits goes in
     // no bt return
     bt=0;
@@ -1597,8 +1933,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt=0;
     break;
 
-  case 37:     // 1-we keep on cycling ADC bits but only enter new bit on strobe - or vice versa
-
+  case 37:     // 1-we keep on cycling ADC bits but only enter new bit on prob - or vice versa
     if (length>11) length=11; //XXXmax12bits
       if (n[reg]<0) {
 	ADCone;
@@ -1612,7 +1947,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]--;    
     break;
     
-  case 38:     // 2-we only cycle ADC on strobe/toggle  - or vice versa
+  case 38:     // 2-we only cycle ADC on prob  - or vice versa
 
     if (length>11) length=11; //XXXmax12bits
 
@@ -1627,7 +1962,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
       break;
 
-  case 39: // STROBE: 3-one bit entry
+  case 39: // prob: 3-one bit entry
     ADCtwo;
     integrator[reg]+=(k[reg]-oldvalue[reg]);
    if(integrator[reg]>2048)
@@ -1744,7 +2079,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 76: // own dac as comparator 
      bt=0;
      ADCtwo;
-     if (k[reg]>((gate[0].dac))) bt=1;
+     if (k[reg]>((gate[reg].dac))) bt=1;
      break;
 
   case 77:// // 1 bit oscillator - train of length 1 bits followed by y 0 bits  - DAC- OTHERPAR! 12 bits
@@ -1839,7 +2174,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     
   case 82: // how we could use entry bit as comparator - but then we don't want any binroute
      bt=0;
-     tmp = (gate[inroute[count][0]].Gshift_[0]>>SRlength[inroute[count][0]]) & 0x01;
+     tmp = (gate[inroute[count][reg]].Gshift_[reg]>>SRlength[inroute[count][reg]]) & 0x01;
      tmp=tmp<<11; // upto 2048
      ADCtwo;
      if (k[reg]> tmp) bt=1;
@@ -1859,7 +2194,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     //TRY: cycling bit XOR with --> [DACout from own/other SR vs. comparator=CV/DAC/DAC+CV/CLKCNT???]*
 
   case 84: // own dac as comparator against DAC+CV
-    tmp=gate[0].dac-(otherpar);
+    tmp=gate[reg].dac-(otherpar);
     if (tmp<0) tmp=0;
      bt=0;
      ADCtwo;
@@ -2122,7 +2457,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 105: // exact Turing machine - add otherpar and DAC and compare noise to this for loop or not
     tmp=otherpar; // CVL is also knob+CV so we have 2 CVs - we don't need to deatch and can use CV here 
-    tmp+=gate[dacfrom[daccount][0]].dac;
+    tmp+=gate[dacfrom[daccount][reg]].dac;
     if (tmp>4095) tmp=4095;
     //    bt=(*SR>>length)& 0x01;
     bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
@@ -2132,7 +2467,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   case 106: // exact Turing machine - add otherpar and DAC and compare noise to this for loop or not
     ADCtwo;
     tmp=k[reg]; // CVL is also knob+CV so we have 2 CVs - we don't need to deatch and can use CV here 
-    tmp+=gate[dacfrom[daccount][0]].dac;
+    tmp+=gate[dacfrom[daccount][reg]].dac;
     if (tmp>4095) tmp=4095;
     //    bt=(*SR>>length)& 0x01;
     bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
@@ -2169,8 +2504,19 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     bt=daccompbits(length); // can also be otherpar for depth adconecompbits
     bt|=adccompbits(length); // can also be otherpar for depth
     break;
-
-
+    
+  case 113: // would be nice to run/slip this at another speed to what is used for...how
+    // cycling of probbits into SR and strobe/toggle freezes/unfreezes this
+    if (strobe) toggle[reg]^=1;
+    if (toggle[reg]){
+      bt=probbits(otherpar,reg);
+      ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+    }
+    else {
+      bt=(ADCshift_[regg]>>31)&0x1;
+      ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
+    }
+    
     ///////////////////////
   } // switch
   return bt;
@@ -2260,11 +2606,11 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
 //0-15 so 16 modes
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
   int32_t x=0;
-  static uint32_t n[4]={0,0,0,0};
-  static uint32_t nom[4]={0,0,0,0};
-  static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
-  static uint32_t lastout[4]={0,0,0,0};
-  static uint32_t toggle[4]={0,0,0,0};
+  static uint32_t n[9]={0,0,0,0,0,0,0,0,0};
+  static uint32_t nom[9]={0,0,0,0};
+  static float SmoothData[9]={0.0, 0.0, 0.0, 0.0};
+  static uint32_t lastout[9]={0,0,0,0,0,0,0,0,0};
+  static uint32_t toggle[9]={0,0,0,0};
   float betaf=0.4f;
   int32_t rem;
   uint32_t y,tmp;
