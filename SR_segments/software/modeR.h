@@ -55,21 +55,6 @@ void SRR0nog(uint8_t w){
   }
 }
 
-void SRRnoggg(uint8_t w){ // we don't add back in result of gshift TEST
-  HEAD;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    BINROUTENOGGG_;
-    PULSIN_XOR;
-    BITN_AND_OUTV_; 
-    ENDER;
-  }
-  }
-}
-
-
 void SRRnada(uint8_t w){ 
   HEAD;
   if (speedf_[w]!=2.0f){ 

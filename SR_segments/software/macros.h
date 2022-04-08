@@ -1,5 +1,9 @@
 // for new struct sets of modes:
 
+#define STR0 (gate[w].trigger)
+
+#define CYCl ((gate[w].Gshift_[w]>>SRlength[w])& 0x01)
+
 #define DACFROM (gate[dacfrom[daccount][w]].dac)
 
 #define SRFROM (gate[dacfrom[daccount][w]].Gshift_[w])
@@ -121,19 +125,6 @@
   }							\
   tmp=tmp>>1;						\
   }							\
-  }
-
-
-#define BINROUTENOGGG_ {				\
-  tmp=binroute[count][w];				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  bitn^=bitrr;					\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 // we don't cycle incoming ghost just get bits

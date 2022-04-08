@@ -360,7 +360,8 @@ uint32_t options[4][24]={
 #include "modeL.h"
 #include "modeR.h"
 #include "modeC.h"
-#include "probability.h" // probability modes for L, R and C
+#include "probability.h" // probability modes
+#include "experiment.h" // more functional modes - can also shift some things here... trials
 #include "bit.h" // bitmodes but some are still in modeL
 
 void testnull(void){
@@ -368,22 +369,21 @@ void testnull(void){
 
 uint32_t testmodes[4]={0,0,0,0};
 
-//uint32_t adcchoice[32]={
-
-
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adcbin1_0}, 
-  {SRX0}, // SRX0 is basic route/xor
-  {dac0}, // dac0 is simplest out
+  {noSRadc}, 
+  {SRsigma}, // SRX0 is basic route/xor
+  {dac2}, // dac0 is simplest out
   {SRX0}
 };
 
 /*
-  {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95
-  {adcLbinprob}, //adcLabstractI binspeedcycle
-  {adcspeedstream},
+nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
+
+  {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0
+  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma
+  {adcspeedstream}, dacNbinprob 
   {adcLbinprob}
 */
 

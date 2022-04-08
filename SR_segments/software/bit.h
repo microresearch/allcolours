@@ -30,6 +30,36 @@ INTmodes
 
 */
 
+
+/*
+void SRLproto(uint8_t w){
+  HEADSIND;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  ///////HERE
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+*/
+
+/*
+void SRintproto(uint8_t w){ 
+  HEAD;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    // HERE
+    PULSIN_XOR;
+    BITN_AND_OUTVINT_; 
+  } 
+}
+
+ */
+
+
 //- route and logop - 8 bits + 2 from other dac: LSRroutelogxx and LSRroutelogxxx
 void bitSRroutelog(uint8_t w){ // SR: 4 bits for route in... other bits for logop
   HEAD;  

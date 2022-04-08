@@ -33,7 +33,7 @@
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
-      BINROUTENOGGG_;					\
+      BINROUTENOG_;					\
       BITN_AND_OUTV_;					\
       ENDER;						\
     }							\
@@ -401,7 +401,7 @@ void dac1(uint8_t w){
 void dac2(uint8_t w){ // one bit audio - set beta with param so fix now as: 2048
   // dependent on speed
   gate[w].dactype=2; gate[w].dacpar=4096-CVL[w]; //     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
-  DACOUT;
+  DACOUTX; // if we keep length same and use CVL
 }
 
 void dac3(uint8_t w){

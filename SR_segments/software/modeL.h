@@ -982,21 +982,6 @@ void SR0(uint8_t w){ // basic route in OR puls
   }
 }
 
-void SRnoggg(uint8_t w){ // we don't add back in result of gshift TEST
-
-  HEAD;
-  if (speedf_[w]!=2.0f){ 
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_;
-    BINROUTENOGGG_;
-    PULSIN_XOR;
-    BITN_AND_OUTV_; 
-    ENDER;
-  }
-  }
-}
-
 void SR0nog(uint8_t w){ // basic route in no GSHIFT<<
   HEAD;
   if (speedf_[w]!=2.0f){ 
@@ -2173,7 +2158,7 @@ void SRLbitdacprob(uint8_t w){ // dac with prob wheel
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
-  val=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],gate[dacfrom[daccount][w]].dac, &gate[w].shift_);
+  val=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],gate[dacfrom[daccount][w]].dac, &gate[w].shift_); // prob wheel with dac
   if (val){
     BINROUTE_;
   }

@@ -485,17 +485,17 @@ void adc32(uint8_t w){ // multiple bits in as case 19 in draftdec // ***
     //  bitn^=ADC_(w,SRlength[w],4,trigger[w],reggg,adcpar); // this is now adc mode 4 - we don't use bitn and do spacmask in adc
     bitn^=ADC_(w,SRlength[w],4,gate[w].trigger,dacfrom[daccount][w], param[w], &gate[w].shift_); 
     if (SRlength[inroute[count][w]]>=SRlength[w]){
-    gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][w])) >>(lastspac[SRlength[inroute[count][w]]][w]))+ \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))          >> ((lastspac[SRlength[inroute[count][w]]][1]) - spacc[SRlength[w]][w]))  + \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))         >>((lastspac[SRlength[inroute[count][w]]][2]) - spacc[SRlength[w]][1]))  + \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))         >>((lastspac[SRlength[inroute[count][w]]][3]) - spacc[SRlength[w]][2]))); 
+    gate[w].shift_ |=(((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][w])) >>(lastspac[SRlength[inroute[count][w]]][w]))+ \
+		      ((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][1]))          >> ((lastspac[SRlength[inroute[count][w]]][1]) - spacc[SRlength[w]][w]))  + \
+		      ((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][2]))         >>((lastspac[SRlength[inroute[count][w]]][2]) - spacc[SRlength[w]][1]))  + \
+		      ((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][3]))         >>((lastspac[SRlength[inroute[count][w]]][3]) - spacc[SRlength[w]][2]))); 
   }
   else // shift up <<
     {
-      gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][w]))>>(lastspac[SRlength[inroute[count][w]]][w])) + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))<< ((spacc[SRlength[w]][w]) - lastspac[SRlength[inroute[count][w]]][1]))  + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[inroute[count][w]]][2]))  + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
+      gate[w].shift_ |=(((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][w]))>>(lastspac[SRlength[inroute[count][w]]][w])) + \
+			((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][1]))<< ((spacc[SRlength[w]][w]) - lastspac[SRlength[inroute[count][w]]][1]))  + \
+			((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[inroute[count][w]]][2]))  + \
+			((gate[inroute[count][w]].Gshift_[w]&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
     }
   if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
   BITN_AND_OUTV_; // no pulse ins/outs
@@ -1300,7 +1300,7 @@ void adcLbitprob(uint8_t w){
   GSHIFT_;
   ///////HERE
   tmp=CVL[w];
-  val=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],tmp, &gate[w].shift_);
+  val=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],tmp, &gate[w].shift_); // prob generator
   if (val){
     //  BINROUTE_;
     bitn=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
@@ -3102,11 +3102,11 @@ void adcintprob6_0(uint8_t w){ // electronotes draft0 // use incoming SR instead
     GSHIFT_;
     //    if (((LFSR_[w] & 4095 ) < CV[w])){ // ((SR/LFSR & (CV) )== 4095)
     //    if ( ((LFSR_[w]&255) & ((CV[w]>>4)&255)) == 255 ){
-    // LFSR_[w]->gate[inroute[count][w]].shift_
+    // LFSR_[w]->gate[inroute[count][w]].Gshift_[w]
     //    tmp=255-(CV[w]>>4);
-    //    if ( ( ( ((gate[inroute[count][w]].shift_&1)>>0) + ((gate[inroute[count][w]].shift_&4)>>1) + ((gate[inroute[count][w]].shift_&32)>>3) + ((gate[inroute[count][w]].shift_&262144)>>15) + ((gate[inroute[count][w]].shift_&16384)>>10) + ((gate[inroute[count][w]].shift_&131072)>>12) + ((gate[inroute[count][w]].shift_&524288)>>13) + ((gate[inroute[count][w]].shift_&2097152)>>14)) | tmp)==255)
+    //    if ( ( ( ((gate[inroute[count][w]].Gshift_[w]&1)>>0) + ((gate[inroute[count][w]].Gshift_[w]&4)>>1) + ((gate[inroute[count][w]].Gshift_[w]&32)>>3) + ((gate[inroute[count][w]].Gshift_[w]&262144)>>15) + ((gate[inroute[count][w]].Gshift_[w]&16384)>>10) + ((gate[inroute[count][w]].Gshift_[w]&131072)>>12) + ((gate[inroute[count][w]].Gshift_[w]&524288)>>13) + ((gate[inroute[count][w]].Gshift_[w]&2097152)>>14)) | tmp)==255)
     tmp=prub[CV[w]>>9];
-    if ( ( ( ((gate[inroute[count][w]].shift_&1)>>0) + ((gate[inroute[count][w]].shift_&4)>>1) + ((gate[inroute[count][w]].shift_&32)>>3) + ((gate[inroute[count][w]].shift_&16384)>>11) + ((gate[inroute[count][w]].shift_&131072)>>13) + ((gate[inroute[count][w]].shift_&524288)>>14) + ((gate[inroute[count][w]].shift_&2097152)>>15) + ((gate[inroute[count][w]].shift_&8388608)>>16)) | tmp)==255)
+    if ( ( ( ((gate[inroute[count][w]].Gshift_[w]&1)>>0) + ((gate[inroute[count][w]].Gshift_[w]&4)>>1) + ((gate[inroute[count][w]].Gshift_[w]&32)>>3) + ((gate[inroute[count][w]].Gshift_[w]&16384)>>11) + ((gate[inroute[count][w]].Gshift_[w]&131072)>>13) + ((gate[inroute[count][w]].Gshift_[w]&524288)>>14) + ((gate[inroute[count][w]].Gshift_[w]&2097152)>>15) + ((gate[inroute[count][w]].Gshift_[w]&8388608)>>16)) | tmp)==255)
 
       {
     bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],CV[w], &gate[w].shift_); 

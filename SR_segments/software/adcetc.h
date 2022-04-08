@@ -859,7 +859,10 @@ static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could 
   static float inb;
   if (bc>depth){
   ADCgeneric;
-  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+  //  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+  k=k-2048;
+  inb=(((float)k)/2047.0f); // from 0 to 4095 but where is the middle? 2048
+
   bc=0;
   }
   integratorf+=(inb-oldvaluef);
@@ -1391,7 +1394,7 @@ uint32_t (*dacbitstreams[16])(uint32_t depth)={dacxbits, dacpadbits, dac12bits, 
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR){
   static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
   static int32_t integrator[4]={0}, oldvalue[4]={0};
-  static uint32_t k[4]={0}, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
+  static int32_t k[4]={0}, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   //  static uint8_t lc=0;
   static uint32_t toggle[4]={0,0,0,0};
   uint32_t bt=0;
@@ -1451,19 +1454,22 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
 
   case 2: // try with float but this is the same with phasings - and we need to make independent! TODO!
     ADCtwo;
-    inb=(((float)k[reg])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle? 2048
+    //    inb=(((float)k[reg])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle? 2048
+    k[reg]=k[reg]-2048;
+    inb=(((float)k[reg])/2047.0f); // from 0 to 4095 but where is the middle? 2048
+
     integratorf+=(inb-oldvaluef);
-   if(integratorf>0.0f)
-  {
-     oldvaluef=1.0f;
-     bt=1;
-  }
-   else
-   {
-      oldvaluef=-1.0f;
-      bt=0;
-   }   
-   break;    
+    if(integratorf>0.0f)
+      {
+	oldvaluef=1.0f;
+	bt=1;
+      }
+    else
+      {
+	oldvaluef=-1.0f;
+	bt=0;
+      }   
+    break;    
    
   case 3: // basic sequential length as in 0 but with padding of zeroes if >11 bits 
     if (n[reg]<0) { // 12 bits
@@ -2641,6 +2647,9 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
     break;    
 
+  case 69: // all bits
+    x=shift&4095;
+    break;
     
   case 0: // length doesn't change much except at slow speeds - ADC x bits out - modded for new draft
     if (length==3){

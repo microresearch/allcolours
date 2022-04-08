@@ -60,6 +60,45 @@ void probintnew(uint8_t w){ // uses CVL for bits - can also be full detached
 
 */
 
+//TODO: basics again: LRC: prob of routein or cycle, strobe of the same...
+//N: prob of adc(which?)^routein or cycle, strobe of same...
+
+void basicprobint(uint8_t w){  // route or cycling
+  HEAD;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    if (((LFSR_[w] & 4095 ) > CV[w])){
+      BINROUTE_;
+      }
+    else {
+      JUSTCYCLE_;
+    }
+    PULSIN_XOR; // here or at end?
+    BITN_AND_OUTVINT_; 
+  } 
+}
+
+///
+
+void basicadcprobint(uint8_t w){  // route or cycling
+  HEAD;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    if (((LFSR_[w] & 4095 ) > CV[w])){
+      bitn^=ADC_(w,SRlength[w],2,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // one bit in say
+      BINROUTE_;
+      }
+    else {
+      JUSTCYCLE_;
+    }
+    PULSIN_XOR; // here or at end?
+    BITN_AND_OUTVINT_; 
+  } 
+}
+
+
+/////
+
 void SRINquestion0(uint8_t w){ // NO LENGTH NOR SPEEDS - length is now bits, speed is now cv for - we use strobe here!
   HEADSSINNADA;
   uint32_t tmpp, bit, lower;
@@ -152,12 +191,12 @@ void probintprob2(uint8_t w){  // route or cycling
   if (gate[w].trigger)      {
     GSHIFT_;
     if (((LFSR_[w] & 4095 ) > CV[w])){
-      PULSIN_XOR; // here or at end?
       BINROUTE_;
       }
     else {
       JUSTCYCLE_;
     }
+    PULSIN_XOR; // here or at end?
     BITN_AND_OUTVINT_; 
   } 
 }

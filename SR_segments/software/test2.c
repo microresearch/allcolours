@@ -917,10 +917,7 @@ heavens gate[4];
   //  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   //  LFSR_[www] = (LFSR_[www]<<1) + tmp;
 
-
-  
-  
-  //    k=(1<<12);
+   //    k=(1<<12);
   //    printf("%d\n",k);
 
   /*  
@@ -959,5 +956,48 @@ heavens gate[4];
    }
    printf("\n");
   */
-  
+  float inb, integratorf, oldvaluef;
+#define PI 3.14159
+  // int k;
+  k=0;
+    //    k=k-2048;
+    //    inb=(((float)k)/2047.0f); // from 0 to 4095 but where is the middle? 2048
+    //    printf("inb: %f\n",inb);
+
+    int integrator, oldValue;
+
+    for (x=0;x<100;x++){
+    integrator+=(k-oldValue);
+   if(integrator>2048)
+  {
+     oldValue=4095;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=-1;
+   }   
+       printf("integrator: %d bt: %d\n",integrator, bt);
+    }
+    
+    
+   /*    
+  for (x=0;x<100;x++){
+    //    inb=0.98f;
+    //    inb=(float)sin(2.0*PI*x*5.0/65536);
+    //    inb=-1.0f;
+    integratorf+=(inb-oldvaluef);
+    if(integratorf>0.0f)
+      {
+	oldvaluef=1.0f;
+	bt=1;
+      }
+    else
+      {
+	oldvaluef=-1.0f;
+	bt=-1;
+      }
+    printf("integrator: %f bt: %d\n",integratorf,bt);
+    }*/
 }
