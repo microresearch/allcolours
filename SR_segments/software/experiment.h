@@ -1,3 +1,190 @@
+// 11/4/2022
+
+/* bin
+
+   tmp=binroute[count][w];
+   for (x=0;x<4;x++){
+   if (tmp&0x01){
+   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+   bitn^=bitrr;
+   }
+   tmp=tmp>>1;
+  }
+
+ */
+
+// can we insert one wheel/SR in another - keep it running at last speed... embed it as our bitn
+
+// attach, detach, embed of functions
+
+// embed as bitn, as prob/decision
+
+// what that would look like and how that could be translated into a story, how to embed/recurse as a structure/itself
+
+/*
+
+we would need to simplify speed... speed can also be a character of SR... speed as decision from SR/generator
+
+speed as sequence of SR/ 1s and 0s
+
+global speed...
+
+genX:
+if (genX){
+gshift[w]
+bitn=genX
+}
+
+towards most simple SR - work from inside or from inside...
+
+void SRintprobnog(uint8_t w){  // intmode
+  HEAD;  
+  if (X)      {
+    GSHIFT_;
+
+    bitn=Y;
+    PULSIN_XOR;
+
+    BITN_AND_OUTVINT_; 
+  } 
+}
+
+// gshift as part of generator, output as what?
+
+-> abstractions of SRs aside from output - or vice versa... functions assigned to outputs
+
+splitting and subjection of itself... so each element is abstracted out and able to be controlled by...
+
+if (speed){
+  if X gshift
+  bitn=[ // generator selected--->
+    if (speed){
+      bitn=[ // generator
+      ]
+    }
+  ]
+}
+
+if (speedfrom){
+  gshift
+  bitn=FROM?
+  SR=IN?/WHERE?
+  GSR=GSR? // recurse... but we lose params...
+
+ */
+
+// itself(uint32_t (*f)( uint32_t (*f)(RECURSE),uint32_t depth, uint8_t wh), uint32_t depth, uint32_t other, uint8_t wh)
+
+// towards new prototype for itself as SR
+static uint32_t itself(uint32_t (*f)(uint32_t depth, uint8_t wh), uint32_t (*g)(uint32_t depth, uint8_t wh), uint32_t depth, uint32_t other, uint8_t wh){   // PROBability mode
+  uint32_t bt=0;
+  if (f(depth,wh)){ // if itself...recur
+      bt=g(other,wh);
+    }
+  return bt;
+}
+
+// wrap up eg.
+void SRitself(uint8_t w){
+uint8_t prob;
+  HEADSSINNADA;
+  CVOPEN;
+  GSHIFT_;
+    // CORE
+  bitn=itself(osceqbits,binroutebits,CV[w], CVL[w], w); // but we would need additional 8 bits (4+4) to set each of these - from another SR!!!
+  // abstractbitstreams[x], abstractbitstreams[y] 
+  
+  PULSIN_XOR; // place into SR function
+  
+  BITN_AND_OUTV_; // abstract out maybe
+  ENDER;
+}
+
+//speedfrom?, bitfrom?
+
+// vienna/generic was: 1bit speedfrom, [1bit adctype-fixed], 4 bits routein, 1bitprob_of_inv on param
+
+// swop incoming gshift and shift
+void SRGswop(uint8_t w){// swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
+uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // INSERT!
+    BINROUTE_;
+    //    if (gate[w].trigger) gate[w].shift_=gate[w].Gshift_[w]; // could also be incoming one
+    if (gate[w].trigger) gate[w].shift_=gate[inroute[count][w]].Gshift_[w]; // could also be incoming one
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+// 2 routes into one//XOR full TRY!
+void noSRxorroutes(uint8_t w){ // XOR in with mask of lengths
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFTNOS_;
+  // copy mask of bits from inroute
+  tmp=binroute[count][w];
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+    gate[w].shift_^= (gate[x].Gshift_[w]&masky[SRlength[x]]);
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+    bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+  }	
+  PULSIN_XOR;
+  BITN_AND_OUTVNOSHIFT_;  
+  ENDER;
+  }
+  }
+  }
+
+// question of embeddings and numbers say of gshifts... also shared gshifts as an option... embed this one//as a generatorDONE
+
+// new gshift for sharings: BINROUTESHARE_ and gate[x].Gshare_ -> only makes sense if we share routes or if there are functions to shift on shared routes... 
+// eg. function to shift on shared route at speed as one SR or to insert into shared SR!
+// try route from before one... or enforce shared routes
+void SRshroute(uint8_t w){ // strobe could also shift on
+  HEAD;
+  int32_t mw;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  mw=w-1;
+  //  if (mw<0) mw=3;
+  tmp=binroute[count][w];
+   for (x=0;x<4;x++){
+   if (tmp&0x01){
+   bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01;
+   gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+   if (gate[w].trigger) {
+   bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01;
+   gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+   }
+   bitn^=bitrr;
+   }
+   tmp=tmp>>1;
+  }
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+  
+///////////////////////////////////////////////////////////////////////////////////////////
+
 // 8/4/2022
 
 // wheeling probability function
@@ -96,7 +283,6 @@ void SR0nogtoggle(uint8_t w){ // basic route in no GSHIFT<< toggles
 }
 
 // and finally prob from CVL - detached... - and can also be an intmode TODO
-
 void SRLprobnog(uint8_t w){
   HEADSIN;
   if (speedf_[w]!=2.0f){
@@ -179,7 +365,8 @@ void noSRproto(uint8_t w){
   }
 */
 
-// masks to do - but they are also not bitstreams...
+// masks to do - but they are also not bitstreams... and we need a bitn for pulses or do a different pulse out
+// DONE using   RETURN; TEST!
 
 // trial 12 bits of adc in 
 void noSRadc(uint8_t w){
@@ -193,6 +380,7 @@ void noSRadc(uint8_t w){
   gate[w].shift_=k;
   tmp=gate[inroute[count][w]].Gshift_[w]&masky[SRlength[w]];
   gate[w].shift_^=tmp;
+  RETURN;
   BITN_AND_OUTVNOSHIFT_;
   ENDER;
   }
@@ -226,12 +414,10 @@ void noSRcopy(uint8_t w){ // copy in with mask of length
   gate[w].shift_=tmp;
   PULSIN_XOR;
   gate[w].shift_^=bitn; // where do we put pulse bits? - not much happening
+  RETURN;
   BITN_AND_OUTVNOSHIFT_;  
   ENDER;
   }
   }
   }
-
-
-// parity plays
 

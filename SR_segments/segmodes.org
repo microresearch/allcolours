@@ -50,11 +50,22 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
+** 9/4/2022
+
+- *question really of too many bits/params - and strategies for coping with these - eg. each mode as part of the param space (eg. dictating speed)...*
+
+- possibility of a shared gshift, and of dissociated outputs (inputs also into bus?)
+
+- are we done with modeN/incoming?
+- start catalogue all - esp L/R and do we have enough from the DAC
+- check all files...
+
+// more working out in expr. modes. how much is down to CV, pulses and clocks in and less fancy modes...
+
 ** 8/4/2022
 
 - options not to advance the Gshift so there is no cycling in - global option. this and binroute in?
 [also has a lot to do with length and incomings]
-
 
 SR can even be totally static or just fulfill a function /// try some basics with this, new experiment.h file
 
@@ -70,7 +81,7 @@ notebook notes:
 ------ each has a function, an input, an output?
 ------ speed
 
-each SR has a route, feedback through decisiopn, altering next but also a FUNCTION!
+each SR has a route, feedback through decision, altering next but also a FUNCTION!
 
 a patch programming with SR to next, but next determines its own route...
 
@@ -80,9 +91,6 @@ N-probability of entry from [adc-which?^R] vs cycling
 L-fromN
 C-fromL
 R-fromC
-
-[where is that function - we have be do as basic above]
-
 
 ** 7/4/2022
 

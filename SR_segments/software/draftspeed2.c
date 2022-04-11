@@ -372,9 +372,9 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {noSRadc}, 
-  {SRsigma}, // SRX0 is basic route/xor
-  {dac2}, // dac0 is simplest out
+  {adc2}, 
+  {SRshroute}, // SRX0 is basic route/xor
+  {dac2}, 
   {SRX0}
 };
 
@@ -382,7 +382,7 @@ void (*dofunc[4][64])(uint8_t w)=
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0
-  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma
+  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes
   {adcspeedstream}, dacNbinprob 
   {adcLbinprob}
 */

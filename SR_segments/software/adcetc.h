@@ -182,10 +182,11 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
   
 
 //////////////////////////////////////////////////////////////////////////
+// GENERATORS...
 
 static inline uint32_t probbits(uint32_t depth, uint8_t wh){   // PROBability mode
   uint32_t bt=0;
-  if (depth>(LFSR_[wh]&4095)) bt=1;
+  if (depth<(LFSR_[wh]&4095)) bt=1;
   return bt;
 }
 
@@ -216,13 +217,13 @@ static inline uint32_t succbitsI(uint32_t depth, uint8_t wh){   // no use of dep
   return bt;
 }
 
-static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel...
+static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
-    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
-    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
     bt^=bitrr;
   }
   depth=depth>>1;

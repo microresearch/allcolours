@@ -8,7 +8,7 @@
 
 #define SRFROM (gate[dacfrom[daccount][w]].Gshift_[w])
 
-#define RETURN      bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01 
+#define RETURN (bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01) 
 
 #define CVOPEN {				\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
@@ -84,6 +84,7 @@
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
     gate[w].Gshift_[8]=gate[w].shift_;			\
+    gate[w].Gshare_=gate[w].shift_;			\
     gate[w].shift_=gate[w].shift_<<1;			\
 }
 
@@ -93,6 +94,7 @@
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
     gate[w].Gshift_[8]=gate[w].shift_;			\
+    gate[w].Gshare_=gate[w].shift_;			\
 }
 
 
@@ -114,6 +116,21 @@
   }							\
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
+
+// shared binroute/gshift - only makes sense if we share routes or if there are functions to shift on...
+#define BINROUTESHARE_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01;		\
+  gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
 
 #define BINROUTENOS_ {				\
   tmp=binroute[count][w];				\

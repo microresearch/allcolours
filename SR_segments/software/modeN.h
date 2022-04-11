@@ -1201,6 +1201,7 @@ void adcLdoublelength(uint8_t w){   // DETACH LENGTH
       gate[w].Gshift_[2]=gate[w].extrashift_;
       gate[w].Gshift_[3]=gate[w].extrashift_;
       gate[w].Gshift_[8]=gate[w].extrashift_;
+      gate[w].Gshare_=gate[w].shift_;
       gate[w].extrashift_=gate[w].extrashift_<<1;
 
       SRlength[w]=tmplength-32; // fixed 18/3

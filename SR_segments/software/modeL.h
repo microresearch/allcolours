@@ -2451,6 +2451,7 @@ void SRLNint67(uint8_t w){  // shifter1
       gate[w].Gshift_[2]=gate[w].shift_;
       gate[w].Gshift_[3]=gate[w].shift_;
       gate[w].Gshift_[8]=gate[w].shift_;
+      gate[w].Gshare_=gate[w].shift_;
       gate[w].shift_=gate[w].shift_<<tmpp;
       
       tmp=binroute[count][w]; // was route[w]
