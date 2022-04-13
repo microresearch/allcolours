@@ -311,8 +311,8 @@ uint32_t oppose[4]={2,3,0,1};
 static uint32_t train[4]={0,0,0,0};
 
 static uint32_t prev_stat[4]={0,0,0,0};
-static volatile uint32_t CV[4]={0,0,0,0};
-static volatile uint32_t CVL[4]={0,0,0,0};
+static uint32_t CV[4]={0,0,0,0};
+static uint32_t CVL[4]={0,0,0,0};
 static volatile float speedf_[9]={1.0f,1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f};
 static volatile float speedf[9]={1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
@@ -372,9 +372,9 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc2}, 
-  {SRshroute}, // SRX0 is basic route/xor
-  {dac2}, 
+  {noSRadc2s}, 
+  {noSRcopy}, // SRX0 is basic route/xor
+  {noSRdac2s}, 
   {SRX0}
 };
 
@@ -390,13 +390,19 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
 void (*funcgroups[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob}, 
-  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob}, 
-  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob},
-  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob}
+  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob, noSRadc2s, noSRadc2s}, 
+  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy}, 
+  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s},
+  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0}
 };
 
-// TODO: can there also be gap to allow for insertion of own mode eg. for DAC
+// so if we wanted to select these how would that work - as major mode but with no minor modes>>>???
+// or like sliding against this - just as numbers, or... R selects funcgroup as major mode, L selects which one in group... CN as params for our list???
+// then other major modes...
+// - at moment just use as suggested groupings...
+
+
+// TODO/above: can there also be gap to allow for insertion of own mode eg. for DAC
 // eg. blank function which uses mode[w] 
 
 void mode_init(void){
@@ -421,7 +427,6 @@ void mode_init(void){
   gate[2].dactype=0; // set for out
   gate[3].dactype=67;
   gate[8].dactype=67;  
-
 }
 
 
@@ -437,6 +442,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   // for the time between counts
   counter_[0]++;  counter_[1]++;  counter_[2]++;  counter_[3]++;
+
+  // would be easier to pass in modes structure... but...
+  //  SRitselftryagain(0, moodsw[0].spdfr, moodsw[0].probfr, moodsw[0].incfr, moodsw[0].incor, moodsw[0].last, moodsw[0].par1,  moodsw[0].par2,  moodsw[0].par3,  moodsw[0].par4, moodsw[0].logic);  
 
   
   www++;

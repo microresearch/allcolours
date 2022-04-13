@@ -50,6 +50,36 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
+
+** 13/4/2022
+
+- notebook: recheck generator as speed????
+- clkin should be more or less consistent eg. NC, as pulse in XOR, LR ???
+- Q of mdoes, sets of modes, major minor...
+
+
+** 12/4/2022
+
+- norm clk only in clkspd (and essential clk modes) and make use of clk always: as pulsein
+  (esp. in C and N), as toggle and non-essential decision, advance GSRs and other elements
+
+more of clk: clk can deliver from gen or cycle in - also toggle
+
+clk
+toggle
+
+*to treat as a parameter we need to use - even if is fixed as 0*
+
+- 2s complement and others for noSRadc DONE and some fixes there...
+
+- how we can think about routing/functions... for example, N-incoming, LR-params for entry of N into C/outgoing...
+
+but that is split with "normal" routing of N-L-C-R-N...
+
+** 11/4/2022
+
+- see experiment.h
+
 ** 9/4/2022
 
 - *question really of too many bits/params - and strategies for coping with these - eg. each mode as part of the param space (eg. dictating speed)...*

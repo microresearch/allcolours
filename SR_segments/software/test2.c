@@ -338,6 +338,13 @@ static inline uint32_t countbits(uint32_t i)
   //    return( countbts[i&0xFFFF] + countbts[i>>16] );
 }
 
+//void fun1() { printf("Fun1\n"); }
+
+void recurse(void (*f)()){
+printf("x\n");
+f();
+}
+
 
 int main(void)   // try to re-learn pointer arrays
 {
@@ -980,6 +987,12 @@ heavens gate[4];
    }   
        printf("integrator: %d bt: %d\n",integrator, bt);
     }
+
+    //    recurse(recurse);
+    // trial pointers
+
+    
+    
     
     
    /*    

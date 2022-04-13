@@ -184,6 +184,26 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
 //////////////////////////////////////////////////////////////////////////
 // GENERATORS...
 
+static inline uint32_t strobebits(uint32_t depth, uint8_t wh){   // strobe - no depth
+  uint32_t bt;
+  bt=gate[wh].trigger;
+  return bt;
+}
+
+static inline uint32_t togglebits(uint32_t depth, uint8_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  if (gate[wh].trigger) bt=bt^1;
+  return bt;
+}
+
+static inline uint32_t pulsebits(uint32_t depth, uint8_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  if (pulse[wh]){
+    bt=!(GPIOC->IDR & pulsins[wh]);
+  }
+  return bt;
+}
+
 static inline uint32_t probbits(uint32_t depth, uint8_t wh){   // PROBability mode
   uint32_t bt=0;
   if (depth<(LFSR_[wh]&4095)) bt=1;
@@ -2899,7 +2919,19 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     n[wh]++;              
     break;
 
+  case 22: //2s comp back in one go
+    //      x=shift&masky[11]; // 12 bits but we want the top 12 bits of length
+    x=((shift>>rightshift[length])<<leftshift[length])&masky[11];
+      if (x&(1<<11)) {
+      x = x | ~((1 << 12)-1);
+    }
+    x=x+2048;
+    break;
 
+    case 23: // regular 12 bits in one go
+      x=((shift>>rightshift[length])<<leftshift[length])&masky[11];
+    break;
+    
     ///////
   } // switch    
   return x;

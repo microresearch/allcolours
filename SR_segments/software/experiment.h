@@ -1,3 +1,91 @@
+// 13/4.2022
+
+// speedfrom, prob, incoming, final bit(pulsin) as 4 functions numbered - gridlike...
+// but question is again lack of params...
+
+/*
+
+void recurse(void (*f)(void)){ // but again we would have to have: recurse(void (*f)(void (*f)(void (*f)(void (*f)(void (*f)(void))))) etc...
+printf("x");
+f();
+}
+
+recurse(recurse); 
+
+ */
+
+// attempting more generic - so we can define a mode within grid of functions, plug in parameters, and logic
+
+typedef struct moods_ { // 
+  uint8_t spdfr;
+  uint8_t probfr;
+  uint8_t incfr;
+  uint8_t incor;
+  uint8_t last;
+  uint32_t *par1, *par2, *par3, *par4;
+  uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
+} moods;
+
+
+uint8_t XOR_(uint8_t bit1, uint8_t bit2){
+  uint8_t res;
+  res=bit1^bit2;
+  return res;
+}
+
+static moods moodsw[64]={
+			   {0,0,0,0,0,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
+}; // how to do refs to dacs  
+  // would be easier to pass in modes structure... but...
+  //  SRitselftryagain(0, moodsw[0].spdfr, moodsw[0].probfr, moodsw[0].incfr, moodsw[0].incor, moodsw[0].last, moodsw[0].par1,  moodsw[0].par2,  moodsw[0].par3,  moodsw[0].par4, moodsw[0].logic);  // seems to be accepted
+
+
+void SRitselftryagain(uint8_t w, uint8_t spdfr, uint8_t probfr, uint8_t incfr, uint8_t incor, uint8_t last, uint32_t *par1, uint32_t *par2, uint32_t *par3, uint32_t *par4, uint8_t (*logic)(uint8_t bit1, uint8_t bit2) ){
+uint8_t prob;
+ HEADSSINNADA; // detach depending on what/
+  CVOPEN;
+  GSHIFT_;
+  // CORE
+  if (abstractbitstreamslong[spdfr](par1[w], w)){ // q of depth from CV for 4
+    if (abstractbitstreamslong[probfr](par2[w], w)){ // prob
+      bitn=abstractbitstreamslong[incfr](par3[w], w);
+    }
+    else
+      { // ??
+	// which function?
+	bitn=abstractbitstreamslong[par3[w]](CVL[w], w);
+      }
+  }
+
+  bitn=logic(bitn, abstractbitstreamslong[last](par4[w], w)); 
+  
+  BITN_AND_OUTV_; // abstract out maybe
+  ENDER;
+}
+
+// 12/4/2022
+
+// itself/loopback as route or decision?
+// how to break down further as set of functions or options so is not such monolithic functions??? eg. what clkbit does, pulsin_xor
+// guess as sets of bits again...
+
+// if [if x bitfrom X] bitfrom X // else?
+
+// if x source y or z - plug in generators - just as example to think on
+
+static uint32_t itself2(uint32_t (*f)(uint32_t depth, uint8_t wh), uint32_t (*g)(uint32_t depth, uint8_t wh), uint32_t (*h)(uint32_t depth, uint8_t wh), uint32_t depth, uint8_t wh){   // or extra param for g(param,wh)???
+  uint32_t bt=0;
+  if (f(depth,wh)){ // if itself...recur
+      bt=g(depth,wh);
+    }
+  else bt=h(depth,wh);
+  return bt;
+}
+
+// if (itself2(func[x],func[y],func[z],CV[0],w)) itself2...;
+
+// do we clk/strobe as generator, toggle generator...??? do we have this? - DONE
+
 // 11/4/2022
 
 /* bin
@@ -36,7 +124,7 @@ gshift[w]
 bitn=genX
 }
 
-towards most simple SR - work from inside or from inside...
+towards most simple SR - work from inside or from inside out
 
 void SRintprobnog(uint8_t w){  // intmode
   HEAD;  
@@ -376,7 +464,31 @@ void noSRadc(uint8_t w){
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;
   ADCgeneric;
-  if (SRlength[w]>11) k=k<<(SRlength[w]-11);
+  k=k>>(leftshift[SRlength[w]])<<rightshift[SRlength[w]]; // fill length
+  gate[w].shift_=k;
+  tmp=gate[inroute[count][w]].Gshift_[w]&masky[SRlength[w]];
+  gate[w].shift_^=tmp;
+  RETURN;
+  BITN_AND_OUTVNOSHIFT_;
+  ENDER;
+  }
+  }
+  }
+
+//- 2s complement and others for noSRadc
+void noSRadc2s(uint8_t w){
+  HEAD; uint32_t k;
+  uint32_t bt, bitwise;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFTNOS_;
+  ADCgeneric;
+  if (k<2048) bitwise=1;
+  else bitwise=0;
+  k=abs(k-2048);
+  if (bitwise) k=(~k)+1;
+  k=k>>(leftshift[SRlength[w]])<<rightshift[SRlength[w]]; // fill length
   gate[w].shift_=k;
   tmp=gate[inroute[count][w]].Gshift_[w]&masky[SRlength[w]];
   gate[w].shift_^=tmp;
@@ -390,13 +502,43 @@ void noSRadc(uint8_t w){
 // and 12 bits out dac
 void noSRdac(uint8_t w){ 
   HEAD;
-  gate[w].dactype=69; gate[w].dacpar=param[w];
+  gate[w].dactype=23; gate[w].dacpar=param[w];
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFTNOS_;
     tmp=(gate[inroute[count][w]].Gshift_[w]&masky[SRlength[w]]);
     gate[w].shift_=tmp;
+    BITN_AND_OUTVNOSHIFT_; 
+    ENDER;
+  }
+  }
+}
+
+void noSRdac2s(uint8_t w){ 
+  HEAD;
+  gate[w].dactype=22; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFTNOS_;
+    tmp=(gate[inroute[count][w]].Gshift_[w]&masky[SRlength[w]]);
+    gate[w].shift_=tmp;
+    BITN_AND_OUTVNOSHIFT_; 
+    ENDER;
+  }
+  }
+}
+
+void noSRdac2sRLxor(uint8_t w){  // xor of left and right
+  HEAD;
+  gate[w].dactype=22; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFTNOS_;
+    tmp=(gate[1].Gshift_[w]&masky[SRlength[1]]);
+    gate[w].shift_=tmp^(gate[3].Gshift_[w]&masky[SRlength[3]]);
     BITN_AND_OUTVNOSHIFT_; 
     ENDER;
   }
