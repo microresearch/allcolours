@@ -519,8 +519,8 @@ void adc29(uint8_t w){ // 1 bit oscillator
   ADCXORIN(29);
 }
 
-void adc30(uint8_t w){
-  ADCXORIN(30);
+void adc30(uint8_t w){ // osc
+  ADCXORIN_NOROUTE(30);
 }
 
 // TODO: can also be other abstract modes (but how to select these), can detach and select strobemodes
@@ -1344,13 +1344,13 @@ void adcLbinprob(uint8_t w){ // binroute in as prob of entry of new bit from adc
   }
 
 // do as a INTmode with 2 params//
-void adcintbinprob(uint8_t w){ // INTmode 0 no interpolation and no use of CV
+void adcintbinprob(uint8_t w){ 
   HEADSSINNADAD;  
   if (gate[w].trigger)      {
     GSHIFT_;
     val=CVL[w]>>8; // 4 bits 
   ///////HERE
-  BINROUTENOS_;
+    BINROUTENOS_; // bit from route in
   if (bitn){
     bitn=(*abstractbitstreams[val])(CV[w],w);
     PULSIN_XOR;
@@ -1360,6 +1360,18 @@ void adcintbinprob(uint8_t w){ // INTmode 0 no interpolation and no use of CV
     JUSTCYCLE_; 
     PULSIN_XOR;
   }
+    BITN_AND_OUTVINT_; 
+  } 
+}
+
+// another without route in decision
+void adcintabstract(uint8_t w){ 
+  HEADSSINNADAD;  // length is detached or not
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    val=CVL[w]>>8; // 4 bits 
+    bitn=(*abstractbitstreams[val])(CV[w],w);
+    //    BINROUTE_; // or not
     BITN_AND_OUTVINT_; 
   } 
 }
@@ -1499,8 +1511,8 @@ void adcLabstractNOG(uint8_t w){ // abstract modes with option now binroute or n
   }
 
 
-void adcLabstractLD(uint8_t w){ // abstract modes with option now binroute or not - now with length=depth so we have speed
-  HEADSIND;
+void adcLabstractLD(uint8_t w){ // abstract modes with option now binroute or not - now with fixed length=depth so we have speed
+  HEADSIND; // detach length
   uint32_t depth;
   if (speedf_[w]!=2.0f){
   CVOPEN;
@@ -2445,7 +2457,7 @@ void adcdacmod0(uint8_t w){
   }
 }
 
-void adcdacB0(uint8_t w){// with oscillator
+void adcdacB0(uint8_t w){// with oscillator could use CVL also?
   HEADD;
   int32_t cv;
   float speedf__;
@@ -2501,7 +2513,6 @@ void adcLdacadc(uint8_t w){ // speed is from dac, use cv to select type and cvl 
     ENDER;
   }
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// INTMODES - here there are: 44

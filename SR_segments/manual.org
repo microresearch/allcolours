@@ -10,6 +10,9 @@ vehicle
 
 next level
 
+** or caput draconis materials
+
+geomancy,,, figures 
 
 ** ascii art/outputs for different SR varieties
 
@@ -75,4 +78,7 @@ further manipulate their own incoming ghost registers.
 20HP, XmA at +12V, XmA at -12V, 0mA at 5v. Multiple inputs, single audio/CV outputs, multiple pulse outputs. Power is red stripe/-12V DOWN.
 
 ** any example patches
+
+** links/reading list
+
 

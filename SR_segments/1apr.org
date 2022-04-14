@@ -20,6 +20,7 @@ eg.
 3-probability? more TM style
 4-freeform as is now
 5-bit recursions.
+6-groups of modes - L would select which of 64 groups for all 4 SRs
 
 Qs: 
 - how much is constraining ie. we can't mix and match but is more or less same now // more flexibility in minor modes

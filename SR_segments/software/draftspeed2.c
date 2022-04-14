@@ -372,9 +372,9 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {noSRadc2s}, 
-  {noSRcopy}, // SRX0 is basic route/xor
-  {noSRdac2s}, 
+  {adcintabstract}, 
+  {SRX0}, // SRX0 is basic route/xor
+  {dacNLRprobinINT1311seldac}, 
   {SRX0}
 };
 
@@ -390,10 +390,10 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
 void (*funcgroups[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob, noSRadc2s, noSRadc2s}, 
-  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy}, 
-  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s},
-  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0}
+  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD}, 
+  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy, adcLabstractLD}, 
+  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin}, // dacNLRprobinINT1311
+  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0, adcLabstractLD}
 };
 
 // so if we wanted to select these how would that work - as major mode but with no minor modes>>>???
@@ -445,7 +445,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // would be easier to pass in modes structure... but...
   //  SRitselftryagain(0, moodsw[0].spdfr, moodsw[0].probfr, moodsw[0].incfr, moodsw[0].incor, moodsw[0].last, moodsw[0].par1,  moodsw[0].par2,  moodsw[0].par3,  moodsw[0].par4, moodsw[0].logic);  
-
+  //  SRitselftry2(0, &moodsw[0]);
   
   www++;
   if (www>3) {

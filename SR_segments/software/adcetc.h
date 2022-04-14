@@ -184,6 +184,39 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
 //////////////////////////////////////////////////////////////////////////
 // GENERATORS...
 
+// some don't use depth, how to deal with this?
+
+//four SRbits
+static inline uint32_t SRNbits(uint32_t depth, uint8_t wh){   // returning but we need ref to itself SR//, and its length/ as depth - starts to look like adc_ functions now
+  uint32_t bt=0;
+  depth=depth>>7; // 5 bits
+  bt = (gate[0].Gshift_[wh]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  return bt;
+}
+
+static inline uint32_t SRLbits(uint32_t depth, uint8_t wh){   // returning but we need ref to itself SR//, and its length/ as depth - starts to look like adc_ functions now
+  uint32_t bt=0;
+  depth=depth>>7; // 5 bits
+  bt = (gate[1].Gshift_[wh]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  return bt;
+}
+
+static inline uint32_t SRCbits(uint32_t depth, uint8_t wh){   // returning but we need ref to itself SR//, and its length/ as depth - starts to look like adc_ functions now
+  uint32_t bt=0;
+  depth=depth>>7; // 5 bits
+  bt = (gate[2].Gshift_[wh]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  return bt;
+}
+
+static inline uint32_t SRRbits(uint32_t depth, uint8_t wh){   // returning but we need ref to itself SR//, and its length/ as depth - starts to look like adc_ functions now
+  uint32_t bt=0;
+  depth=depth>>7; // 5 bits
+  bt = (gate[3].Gshift_[wh]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  return bt;
+}
+
+
+
 static inline uint32_t strobebits(uint32_t depth, uint8_t wh){   // strobe - no depth
   uint32_t bt;
   bt=gate[wh].trigger;
@@ -251,12 +284,63 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as r
   return bt;
 }
 
+static inline uint32_t binrouteORbits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt|=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binrouteANDbits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt&=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binrouteSRbits(uint32_t depth, uint8_t wh){   // depth as routesel... SR itself, no GSR 
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
+    //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+
 // depth can be length or param
 static inline uint32_t returnbits(uint32_t depth, uint8_t wh){   // returning but we need ref to itself SR//, and its length/ as depth - starts to look like adc_ functions now
   uint32_t bt=0;
   depth=depth>>7; // 5 bits
   //  bt=(*SR>>depth)& 0x01; // but return should be of ghost...   bitrr = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;		
   bt = (gate[wh].Gshift_[wh]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  return bt;
+}
+
+static inline uint32_t returnnotbits(uint32_t depth, uint8_t wh){   // returning but we need ref to itself SR//, and its length/ as depth - starts to look like adc_ functions now
+  uint32_t bt=0;
+  depth=depth>>7; // 5 bits
+  //  bt=(*SR>>depth)& 0x01; // but return should be of ghost...   bitrr = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;		
+  bt = !((gate[wh].Gshift_[wh]>>depth) & 0x01);		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
   return bt;
 }
 
@@ -528,7 +612,7 @@ uint32_t (*abstractbitstreams[16])(uint32_t depth, uint8_t wh)={binroutebits, os
 
 uint32_t (*altabstractbitstreams[16])(uint32_t depth, uint8_t wh)={TMsimplebits, probbits, binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, succbits, flipbits};
 
-uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={probbits, succbits, wiardbits, wiardinvbits, binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits}; // 21
+uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits, binrouteSRbits, binrouteANDbits, binrouteORbits, returnbits, returnnotbits, probbits, succbits, wiardbits, wiardinvbits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits, strobebits, togglebits, }; // 28 so far // we want 32=5 bits
 
 
 // probbits, succbits, wiardbits, wiardinvbits and some independent versions --> maybe expand to 31 
@@ -2584,7 +2668,7 @@ static inline uint16_t otherleaks(uint16_t x, uint16_t y, uint16_t prob, uint16_
   return 0;
 }
 
-
+// logop: 2 bits logopx: 2 bits, logopxxx operates on many bits 
 
 //bitr=logop(bitr,bitrr,logopp[w]); // or other op TODO
 // logop: 0-XOR, 1-OR, 2-&, 3leaks - 0,1,2,3
@@ -2604,16 +2688,21 @@ static inline uint16_t logopx(uint32_t bita, uint32_t bitaa, uint32_t type){ //T
   return bita ^ bitaa; // default
 }
 
-static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
-   if (type==3)  return (bita ^ bitaa);
-   else if (type==1) return (bita | bitaa);
-   else if (type==0) return ~(bita)&255; // 8 bits
-  else if (type==2) {return (bita & bitaa);
+static inline uint16_t logopxx(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
+  // 0 is XOR< 1 is OR etc
+  uint32_t ty;
+  // 
+  if (type==3)  return (bita | bitaa);
+   //  else if (type==1) return (bita | bitaa);
+   else if (type==1) return (bita & bitaa);
+  else if (type==0) return (bita ^ bitaa);
+  else if (type==2) {return (bita ^ !bitaa); //inv
     //    ty=otherleaks(bita, bitaa,3,3); // how to change this?
     //    return ty; // leaks using RSR as random // where we get 8 from...
   }
   return bita ^ bitaa; // default
 }
+
 
 //bitr=logop(bitr,bitrr,logopp[w]); // or other op TODO
 // logop: 0-XOR, 1-OR, 2-&, 3leaks - 0,1,2,3
@@ -2626,6 +2715,17 @@ static inline uint16_t logop(uint32_t bita, uint32_t bitaa, uint32_t type){ //TO
   else if (type==3) {
     ty=leaks(bita, bitaa,3,3);
     return ty; // leaks using RSR as random 
+  }
+  return bita ^ bitaa; // default
+}
+
+static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ //TODO: xor, or, and, leaky, others?
+   if (type==3)  return (bita ^ bitaa);
+   else if (type==1) return (bita | bitaa);
+   else if (type==0) return ~(bita)&255; // 8 bits
+  else if (type==2) {return (bita & bitaa);
+    //    ty=otherleaks(bita, bitaa,3,3); // how to change this?
+    //    return ty; // leaks using RSR as random // where we get 8 from...
   }
   return bita ^ bitaa; // default
 }

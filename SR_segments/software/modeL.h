@@ -224,7 +224,6 @@ uint8_t prob;
 }
 
 void SRN5(uint8_t w){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^pulse)) // OR (routedORpulse) 
-
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -243,7 +242,6 @@ void SRN5(uint8_t w){ //00 1-TM invert cycling bit - OR with BITIN (OR (routed^p
 }
 
 void SRN6(uint8_t w){
-
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -512,6 +510,7 @@ uint8_t prob; uint32_t bitnn, bitnnn;
 
 void SRN29(uint8_t w){
 uint8_t prob;
+ uint32_t k;
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -519,9 +518,10 @@ uint8_t prob;
     GSHIFT_;
     // INSERT!
     bitn=(gate[w].Gshift_[w]>>SRlength[w])& 0x01;
-    //    if ((LFSR_[w] & 4095 )<adc_buffer[12]) { // TODO: fix
-    //      bitn=bitn^1;
-    //    }
+    ADCgeneric;
+    if ((LFSR_[w] & 4095 )<k) { // TODO: fixED DONE
+      bitn=bitn^1;
+    }
     PULSIN_XOR;
     if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger; 
     BITN_AND_OUTV_; 
@@ -754,7 +754,6 @@ uint32_t lin, lout;
   }
   }
 }
-
 
 void SRN42(uint8_t w){ // - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn/complicated
 static uint8_t tug[4]={0};
@@ -1550,7 +1549,7 @@ void SRmultspeeddac0(uint8_t w){ // speeds of gshift, incoming gsr and bits/dac
 
   // for DAC:     gate[w].shift_=gate[w].shift_<<1; < gate[dacfrom[daccount][w]].dac
   if (counterl>gate[dacfrom[daccount][w]].dac){
-    counterl=0; // COUNTERL - COUNTERR for letf and right DONE
+    counterl=0; // COUNTERL - COUNTERR for letf and right DONE - advances in draftspeed
     gate[w].shift_=gate[w].shift_<<1;
   }
   

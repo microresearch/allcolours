@@ -51,6 +51,62 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
 
+** 14/4/2022
+
+To resolve: binroute and logics, clkin, pulsin, CV extent, what we get from newmodes.c and if we can discard: list of missing modes to discard or port
+
+basic routings - for new functions, for new routes
+basic clk, intmodes, speedmodes
+basic SR structures eg. Tm etc.
+
+all the modes we have created
+generic modes and how we can create from these///
+
+or follow abstraction route?
+
+
+see also temp.org, temp2.org, bits_and_prob.org
+
+work through step by step and also new experiment.h - conclusions from abstraction
+
+Q of restraints/simplicity which can then be stacked up and CONTROLLED!
+
+////////////
+
+/// *TODO: dacspeed and internal speed slip against each other: gshift and... see multiple speeds where we have dac but not as core speed*
+
+multiple speeds of:
+
+- copy gshift
+- shift own SR
+- advance incoming GSRs
+- main dac and route in with no shifts
+
+
+- routing depends a lot on modes...
+
+- abstract works. change gate[w].dac throughout or???
+
+- so we need more logical ops for binroute in! that is not always XOR as standard - but how to vary this (global, local)
+
+logopx(uint32_t bita, uint32_t bitaa, uint32_t type) -- 2 bits
+
+TAKE CARE OF:
+- basic SR structures and routings with changing logop
+- using new abstractions//functional routings
+- new abstract modes and lists // cover basics and extend
+- masks
+
+Q of binroute still, of logic ops across all, major and minor, grouped modes etc....
+
+[one idea for grouped modes was to have R as selector of grouped modes and each other mode as moving off to other modes...]
+
+split between functional routings, grouped routes and prob routes and traditional feedback routing and if we can mix the two...
+
+if say L has function such as prob - for pooling of parameters - then ... ways of thinking about modes...
+
+take stock of what we have...
+
 ** 13/4/2022
 
 - notebook: recheck generator as speed????

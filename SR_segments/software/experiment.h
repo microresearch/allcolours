@@ -1,4 +1,17 @@
-// 13/4.2022
+// 14/4/2022
+
+// slide 2 bitstreams against each others? how to chain bitstreams but
+// again we lose parameters, how we can imagine leaving behind a chain
+// of parameters - key Q is params and organisation/streams
+
+/*
+bitn=logiq((*abstractbitstreams[val])(CV[w],w),(*abstractbitstreams[val2])(CVL[w],w)) 
+
+4 params is too much... and that sliding can be each SR... 
+
+*/
+
+// 13/14/4/2022
 
 // speedfrom, prob, incoming, final bit(pulsin) as 4 functions numbered - gridlike...
 // but question is again lack of params...
@@ -16,13 +29,14 @@ recurse(recurse);
 
 // attempting more generic - so we can define a mode within grid of functions, plug in parameters, and logic
 
-typedef struct moods_ { // 
+typedef struct moods_ { //
+  uint8_t gsfr;
   uint8_t spdfr;
   uint8_t probfr;
   uint8_t incfr;
   uint8_t incor;
   uint8_t last;
-  uint32_t *par1, *par2, *par3, *par4;
+  uint32_t *par0, *par1, *par2, *par3, *par4;
   uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
 } moods;
 
@@ -34,33 +48,75 @@ uint8_t XOR_(uint8_t bit1, uint8_t bit2){
 }
 
 static moods moodsw[64]={
-			   {0,0,0,0,0,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
-}; // how to do refs to dacs  
-  // would be easier to pass in modes structure... but...
-  //  SRitselftryagain(0, moodsw[0].spdfr, moodsw[0].probfr, moodsw[0].incfr, moodsw[0].incor, moodsw[0].last, moodsw[0].par1,  moodsw[0].par2,  moodsw[0].par3,  moodsw[0].par4, moodsw[0].logic);  // seems to be accepted
+  {0,0,0,0,0,0, CV,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
+}; // how to do refs to dacs
+// WE would need to change that ref... so is owndac[w] across all files... TODO? if we decide
 
+// so each mode is defined by 5x5bits (decision functions 1,0), 5 CV sources (DAC or CV), and one logic function (say: AND, XOR, leak, OR)
+// where does this get us?
 
-void SRitselftryagain(uint8_t w, uint8_t spdfr, uint8_t probfr, uint8_t incfr, uint8_t incor, uint8_t last, uint32_t *par1, uint32_t *par2, uint32_t *par3, uint32_t *par4, uint8_t (*logic)(uint8_t bit1, uint8_t bit2) ){
-uint8_t prob;
- HEADSSINNADA; // detach depending on what/
-  CVOPEN;
-  GSHIFT_;
-  // CORE
-  if (abstractbitstreamslong[spdfr](par1[w], w)){ // q of depth from CV for 4
-    if (abstractbitstreamslong[probfr](par2[w], w)){ // prob
-      bitn=abstractbitstreamslong[incfr](par3[w], w);
+// how can we combine decison functions logically? a chain of... but this would be another function??
+// more of a model which is about bitstreamds and combinations of bitstreams
+
+/*
+
+  if (stream1){  // spd
+  gate[w].shift_=gate[w].shift_<<stream0
+    if (stream2){ // prob
+      bitn=stream3; // in?
     }
     else
-      { // ??
-	// which function?
-	bitn=abstractbitstreamslong[par3[w]](CVL[w], w);
+      { 
+	bitn=stream4; // inor?
       }
-  }
+  bitn=mode->logic(bitn, stream5); // pulsin
+}
 
-  bitn=logic(bitn, abstractbitstreamslong[last](par4[w], w)); 
+// how that can be split across multiples...
+
+ */
+
+void SRitselftry2(uint8_t w, moods *mode){ // pass in structure
+  HEADSSINNADA; // detach depending on what/
+  if (abstractbitstreamslong[mode->spdfr](mode->par1[w], w)){  // spd - for intmodes we can lose this // moved speed UP
+  CVOPEN;
+  GSHIFTNOS_;
+  /// CORE
+  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[mode->gsfr](mode->par0[w], w));
+    if (abstractbitstreamslong[mode->probfr](mode->par2[w], w)){ // prob
+      bitn=abstractbitstreamslong[mode->incfr](mode->par3[w], w); // what?
+    }
+    else
+      { 
+	bitn=abstractbitstreamslong[mode->par3[w]](mode->par3[w], w); // or?
+      }
   
+  bitn=mode->logic(bitn, abstractbitstreamslong[mode->last](mode->par4[w], w)); 
+  ///  
   BITN_AND_OUTV_; // abstract out maybe
   ENDER;
+  }
+}
+
+void SRitselftryagain(uint8_t w, uint8_t gsfr, uint8_t spdfr, uint8_t probfr, uint8_t incfr, uint8_t incor, uint8_t last, uint32_t *par0, uint32_t *par1, uint32_t *par2, uint32_t *par3, uint32_t *par4, uint8_t (*logic)(uint8_t bit1, uint8_t bit2) ){
+uint8_t prob;
+ HEADSSINNADA; // detach depending on what/
+  if (abstractbitstreamslong[spdfr](par1[w], w)){  // spd - for intmodes we can losee this - moved up
+ CVOPEN;
+  GSHIFTNOS_;
+  /// CORE
+  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[gsfr](par0[w], w)); // gshift or not
+    if (abstractbitstreamslong[probfr](par2[w], w)){ // prob
+      bitn=abstractbitstreamslong[incfr](par3[w], w); // what?
+    }
+    else
+      { 
+	bitn=abstractbitstreamslong[par3[w]](par3[w], w); // or?
+      }
+  bitn=logic(bitn, abstractbitstreamslong[last](par4[w], w)); 
+  BITN_AND_OUTV_; // abstract out maybe
+  ENDER;
+  }
 }
 
 // 12/4/2022
@@ -177,7 +233,9 @@ static uint32_t itself(uint32_t (*f)(uint32_t depth, uint8_t wh), uint32_t (*g)(
 void SRitself(uint8_t w){
 uint8_t prob;
   HEADSSINNADA;
+  if (speedf_[w]!=2.0f){ 
   CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
     // CORE
   bitn=itself(osceqbits,binroutebits,CV[w], CVL[w], w); // but we would need additional 8 bits (4+4) to set each of these - from another SR!!!
@@ -187,8 +245,10 @@ uint8_t prob;
   
   BITN_AND_OUTV_; // abstract out maybe
   ENDER;
+  }
+  }
 }
-
+  
 //speedfrom?, bitfrom?
 
 // vienna/generic was: 1bit speedfrom, [1bit adctype-fixed], 4 bits routein, 1bitprob_of_inv on param

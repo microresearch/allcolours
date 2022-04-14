@@ -146,8 +146,95 @@ void dacLRprob(uint8_t w){
   }
   }  
 }
-// we can also have cv as successively going across all routes in...how?
 
+// probability of one stream vs other stream - say l vs r? or other options
+void dacLRprobxorN(uint8_t w){  // and XOR N in now...
+  HEADSIN;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+
+  if (((LFSR_[w] & 4095 ) < CVL[w])) x=1;
+  else x=3;
+
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr;
+
+  x=0;
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr;
+
+  if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+  BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+// 1 2 8  merge/mix according to CVL 1 to 2 to 8 - can be other orders also...
+// version for merge across 1,3,11 - also other logics
+void dacNLRprobin(uint8_t w){  // this one is just fixed XOR
+  HEADSIN; // detach
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  BINROUTE_; // new routing in here.
+  //  tmp=11; // 12 bits first 6 bits is
+  if (((LFSR_[w] & 2047) > CVL[w])) tmp=1; 
+  else tmp=2; 
+  if (CVL[w]>2047){
+    if (((LFSR_[w] & 2047) < (CVL[w]-2047))) tmp=8;
+  }
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+    }			     
+ if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+   BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
+
+// version for merge across 1,3,11 and inverted - also other logics
+void dacNLRprobin1311(uint8_t w){  // this one is just fixed XOR
+  HEADSIN; // detach
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  BINROUTE_; // new routing in here.
+  //  tmp=11; // 12 bits first 6 bits is
+  if (((LFSR_[w] & 2047) > CVL[w])) tmp=1; 
+  else tmp=3; 
+  if (CVL[w]>2047){
+    if (((LFSR_[w] & 2047) < (CVL[w]-2047))) tmp=11;
+  }
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr; // where can we get logic from? max 6 bits 3x2bits logics... - so as an intmode detached we can do it
+  }
+  tmp=tmp>>1;
+    }			     
+ if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+   BITN_AND_OUTV_; // with pulses
+  ENDER;
+  }
+  }  
+}
 
 void dacLNLRin(uint8_t w){  // this one is just fixed XOR - detach length to pick our DAC
   HEADSIN;
@@ -936,4 +1023,59 @@ void dacLNint104(uint8_t w){ // let's try INT driven one for pulse train mode
     }
   else train[w]=0; // train ran out
 }
+}
+
+// with logop 
+void dacNLRprobinINT1311(uint8_t w){  // this one is just fixed XOR
+  HEADSIN; // detach length
+  uint8_t logg;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  if (gate[w].trigger)      {
+  GSHIFT_;
+  //  BINROUTE_; // new routing in here.
+  if (((LFSR_[w] & 2047) > CVL[w])) tmp=1; 
+  else tmp=3; 
+  if (CVL[w]>2047){
+    if (((LFSR_[w] & 2047) < (CVL[w]-2047))) tmp=11;
+  }
+  logg=CV[w]>>4; // 8 bits = 4x2 logic bits
+  //  first 2 are fake - 0 for just XOR
+  logg=logg&0b11111100;
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn=logopxx(bitn,bitrr,logg&3); // where can we get logic from? max 6 bits 3x2bits logics... - so as an intmode detached we can do it
+  }
+  tmp=tmp>>1; logg=logg>>2;
+    }			     
+ if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+ BITN_AND_OUTVINT_; // with pulses
+  }
+}
+
+//- can also use CV[w] for dac select
+void dacNLRprobinINT1311seldac(uint8_t w){  // this one is just fixed XOR
+  HEADSIN; // detach length
+  uint8_t logg;
+  gate[w].dactype=CV[w]>>8; gate[w].dacpar=param[w]; // 4 bits
+  if (gate[w].trigger)      {
+  GSHIFT_;
+  //  BINROUTE_; // new routing in here.
+  if (((LFSR_[w] & 2047) > CVL[w])) tmp=1; 
+  else tmp=3; 
+  if (CVL[w]>2047){
+    if (((LFSR_[w] & 2047) < (CVL[w]-2047))) tmp=11;
+  }
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  bitn^=bitrr;
+  }
+  tmp=tmp>>1; 
+    }			     
+ if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
+ BITN_AND_OUTVINT_; // with pulses
+  }
 }
