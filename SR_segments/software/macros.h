@@ -10,6 +10,39 @@
 
 #define RETURN (bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01) 
 
+////////
+
+#define ADCone {					\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  k[reg]=ADC_GetConversionValue(ADC1)>>(11-length);			\
+  }
+
+
+// TEST INVERSION  - was invrted but now not
+#define ADCtwo {				\
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  k[reg]=ADC_GetConversionValue(ADC1);					\
+  }
+
+
+#define ADCgeneric {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  k=ADC_GetConversionValue(ADC1);					\
+  }
+
+#define ADCgeneric11 {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  k=ADC_GetConversionValue(ADC1)>>(11-depth);				\
+  }
+
 #define CVOPEN {				\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \

@@ -1,3 +1,27 @@
+static inline uint32_t adc4bits_unshare(uint32_t depth, uint8_t wh){ // use wh too so matches other gens
+  uint32_t bt, k;
+  static uint32_t fast=0, khh;
+  static int32_t bc[4]={0,0,0,0};
+  static uint32_t kh[4]={0,0,0,0};
+
+  // run at fastest - but all of them are running this! 
+  if (fast>3){  
+  ADCgeneric;
+  khh=k>>8;
+  fast=0;
+  }
+  fast++;
+  
+  if (bc[wh]<0) {
+    kh[wh]=khh;
+    bc[wh]=3; 
+  }
+  bt = (kh[wh]>>bc[wh])&0x01; // this means that MSB comes out first
+  bc[wh]--;
+  return bt;
+}
+
+
 // was speed.h
 
 void Ndacoffset0(void){

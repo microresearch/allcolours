@@ -13,6 +13,10 @@ basic speed and new CV hardware tests, MANUAL
 
 *20Kz fastest dac speed with 32/16 divider...*
 
+signals are inverted so unipolar 0-5v is from 0-2048 values and bipolar -5 to 5v is 0-4095
+
+-2.5 to +2 is 1024 to 1024+2048 = 3072
+
 /////////////////////////////////////////////////////////
 
 - implement sketch of all modes as below with DAC and ADC options
@@ -50,6 +54,95 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
+
+** 15/5/2022
+
+// how we can share a value - who updates it? eg. sample and hold ->? heldsample
+// unless is outside the generator and always runs, then we need to always run adc and just sample that...
+// or mix and math adcs...
+
+// new signal processors: sample_and_hold, what else?
+
+*TODO: 4094 implemented: outs are each bit, CVs from groups of bits and the QS/serial out (see 4094) below..., clock edges*
+
+*TODO: check masking modes, do masking modes*
+
+we have 10vpp so 5vpp has problems with full range comp... also comp and unipolar signals
+
+*fix comp at 2000 and think about signals - comp without depth?*
+
+new: added defdac=3 global, proper 8 bit cipher mode: (we have some as SRN33,34 in modeL.h)
+
+///question eg. with say consecutive ADC values of speeds (should we bring adc in at fastest and just sample from this??)
+
+DONE: chance of prob decay (flip) as it advances down SR... - older bits...- initial chance of decay/flip
+
+/////
+
+*how to start to make sense*
+
+TRIM//back to basics/strip down with details and variations on latest sets of modes:
+
+speedfrom?
+from?
+inlogic?
+
+to answer for each classic SR:
+
+eg.
+TM/WIARD/EN: speedfrom(clock), from=loop/invert loop, inlogic=prob: CVcompNOISE/SR=comp
+
+and what this means for each SR side. eg.
+
+speedfrom: clock/speedCV/DAC(which?)
+from: ADC, loop, pulsin/clkin, invertedloop, inverted_all
+inlogic XvsY: probCV, probDAC [probFROM], strobe, toggle [LOOPvsFROM]
+
+RUNG:
+
+
+
+
+functions/philosophies: 
+
+-types of input (ADC abstract) and output (DAC), processing
+
+-generic - also relates to recursion - eg. incoming SR dictates functionality of SR (or a param such as length)
+
+-replicating functions such as digital filter, 8 bit cipher/4094 SR
+
+-didactic: how do we use all the bits we have, and the parameters
+
+(speed and length or more untied params - they are just parameters) -
+new model (ie. how useful is length?)
+
+...but SR "has" length and speed/clock as basics (unless we just think of bitstreams)
+
+look again at 4094: 
+
+The HEF4094B is an 8-bit serial-in/serial or parallel-out shift
+register with a storage register and 3-state outputs. Both the shift
+and storage register have separate clocks. The device features a
+serial input (D) and two serial outputs (QS1 and QS2) to enable
+cascading. Data is shifted on the LOW-to-HIGH transitions of the CP
+input. Data is available at QS1 on the LOW-to-HIGH transitions of the
+CP input to allow cascading when clock edges are fast. The same data
+is available at QS2 on the next HIGH-to-LOW transition of the CP input
+to allow cascading when clock edges are slow.  The data in the shift
+register is transferred to the storage register when the STR input is
+HIGH.
+
+-patterns (classic SR)
+-more about one bit audio/rotting sounds
+-input, feedthrough and feedback - ADC/DAC and also abstract functions/SRs
+-bit *recursion* onto itself - deciding itself (SR state/function as SR) - how an SR is defined and encoded
+-SRs as functions which feed into each other and dictate each other - more as a patch
+
+influences/ideas:
+
+- CCRU/hexagrams
+- i ching/geomancy/african binary codes...
+- rotting sounds
 
 ** 14/4/2022
 

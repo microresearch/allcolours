@@ -550,6 +550,7 @@ uint8_t prob;
   }
 }
 
+// like 8 bit CIPHER
 void SRN33(uint8_t w){    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
 uint8_t prob;
   HEAD;
@@ -566,7 +567,27 @@ uint8_t prob;
     if (gate[w].trigger==1) { // strobe
       gate[w].shift_&=invmasky[SRlength[w]]; 
       gate[w].shift_+=(GGGshift_[w]&masky[SRlength[w]]);// to check again
+    }
+    bitn=CYCl;
+    BITN_AND_OUTVNOSHIFT_;
+    ENDER;
+  }
+  }
+}
+
+void SRN33cipher(uint8_t w){  //just copy in on strobe - so is more like 4094 storage register/out
+uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFTNOS_; // we dont shift our own SR
+    
+    if (gate[w].trigger==1) { // strobe
+      gate[w].shift_&=invmasky[SRlength[w]]; 
+      gate[w].shift_+=(GGGshift_[w]&masky[SRlength[w]]);// to check again
     } 
+    bitn=CYCl;
     BITN_AND_OUTVNOSHIFT_;
     ENDER;
   }
@@ -580,7 +601,7 @@ uint8_t prob;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
-    GSHIFT_; // we dont shift our own SR
+    GSHIFT_; // we do shift our own SR
     // INSERT!
     tmp=(gate[w].Gshift_[w]>>SRlength[w])& 0x01;
     gate[w].shift_+=tmp;

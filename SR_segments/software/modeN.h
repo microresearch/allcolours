@@ -196,7 +196,7 @@ void adc0S(uint8_t w){ // basic ADC in with XOR route in
 }
 */
 
-// streams for sequential entry of bits into each register
+// streams for sequential entry of bits into each register - could also be 4 bits
 
 void stream(uint8_t w){ // sequential 12 bit in - use also for L, R, N
   HEADD;
@@ -318,8 +318,6 @@ void adcLparallel2(uint8_t w){ //
   }  
 }
 
-
-
 //??TODO:
 // or eg. NSR and RSR slide against each other with offset, no BINroute
 // well RSR slides into NSR
@@ -434,7 +432,6 @@ void adc95bins(uint8_t w){ // strobe toggle in - otherpar selects pattern which 
   param[w]=gate[dacfrom[daccount][w]].Gshift_[w]>>8;
   ADCXORINBIN(95); 
 }
-
 
 void adc97only(uint8_t w){ // only pull in on speed otherwise route // ***
   HEADD;
@@ -1289,8 +1286,6 @@ void adcLbinrstr(uint8_t w){ // route in as strobe: select strobemode (we have 2
   }
   }
 
-
-
 /// exp mode - some of these are more like route modes - which decide route rather than ADCs
 // so we could use in LSR
 void adcLbitprob(uint8_t w){
@@ -1862,9 +1857,6 @@ void adcLsplice100(uint8_t w){   // DETACH LENGTH - splice in 4 bits at position
   }
 }
 
-
-
-
 /* bursts of DACin/ADCin to spawn/seed feedback - so trigger
   means CV length of ADC bits in, no trigger is ROUTEin at otherCV
   speed, or all at cv speed
@@ -2086,8 +2078,6 @@ void adcLLswop0(uint8_t w){ // swop in or logop SR - cv and cvl- not so good for
   }
   }
 }
-
-
 
 void adcgenericprobx(uint8_t w){ // porting to strobe - ported to N - detach CVL - length to select ADC // DETACH LENGTH
   uint32_t tmpp, bit, lower;
@@ -2824,7 +2814,8 @@ void adcLintprob184(uint8_t w){ // own dac as comparator against DAC+CV // ***
 }
 
 ///////////////////////////////////
-// generators - can also be for detached modes
+// using generators - can also be for detached modes
+
 void adcintone(uint8_t w){ // intmode for onebitadc with speed as depth/delay // tested
   HEADD;  
   if (gate[w].trigger)      {

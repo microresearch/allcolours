@@ -1,3 +1,168 @@
+// 15/4/2022
+
+ //uint32_t patt[32]={0b1010, 0b1010, 0b1010, 0b1010, 0b11001100, 0b11001100, 0b11001100, 0b11001100, 0b111000111000, 0b111000111000, 0b111000111000, 0b111000111000, 0b1111000011110000, 0b1111000011110000, 0b1111000011110000, 0b1111000011110000, 0b11111000001111100000, 0b11111000001111100000, 0b11111000001111100000, 0b11111000001111100000, 0b111111000000111111000000, 0b111111000000111111000000, 0b111111000000111111000000, 0b111111000000111111000000, 0b1111111000000011111110000000, 0b1111111000000011111110000000, 0b1111111000000011111110000000, 0b1111111000000011111110000000, 0b11111111000000001111111100000000, 0b11111111000000001111111100000000, 0b11111111000000001111111100000000, 0b11111111000000001111111100000000};
+
+// same bits out from generators - generic or shared clock
+static inline uint32_t pattern_unshare(uint32_t depth, uint8_t wh){
+  uint32_t bt, k;
+  static uint32_t fast=0, khh;
+  static int32_t bc[4]={0,0,0,0};
+  static uint32_t kh[4]={0,0,0,0};
+  
+  if (bc[wh]<0) {
+    kh[wh]=0b1010; // pattern also from dac but then looks like independent generators - better with fixed length
+    bc[wh]=3; // we can also use length 
+  }
+  bt = (kh[wh]>>bc[wh])&0x01; // this means that MSB comes out first
+  bc[wh]--;
+  return bt;
+}
+
+void SRpattern_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
+  HEADD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn^=pattern_unshare(SRlength[w],w); // or detach - length not used
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+// mods: usual, 
+
+
+// chance of prob decay (flip) as it advances down SR... - older bits...* initial chance of decay/flip
+// older ones more likely to flip...
+/*
+from bitdsp:
+// + `type == 1` -- set a bit's value to low 
+// + `type == 2` -- flip bit
+// + `type == 3` -- set a bit's value to high
+
+process sequence of bits
+
+for (x=SRlength;x>0;x--)
+if (highestprob) flipbitx
+highestprob-lessens
+ */
+
+void SRLdecaying(uint8_t w){
+  HEADSIN;
+  int tt, dec;
+  uint32_t highestprob=4095;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  BINROUTE_;
+  dec=(4096/SRlength[w]);
+  for (tt=SRlength[w];tt>0;tt--){
+    //    if (highestprob) flipbitx
+    //highestprob-lessens
+    if ( (LFSR_[w] & highestprob) > CVL[w]) {
+	gate[w].shift_^=(1<<tt); // flips
+      }
+      highestprob=highestprob-dec;      
+  }
+  
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+// works fine for slower approaches...
+
+// DONE: eg. what happens if used consecutively... we have that in stream...  // how we could share same bits?
+// question of counting bits... ie. if we want to share same bit who counts them down... (last caller but how do we know that?)
+
+static inline uint32_t adc4bits_unshare(uint32_t depth, uint8_t wh){ // use wh too so matches other gens
+  uint32_t bt, k;
+  static uint32_t fast=0, khh;
+  static int32_t bc[4]={0,0,0,0};
+  static uint32_t kh[4]={0,0,0,0};
+  
+  if (bc[wh]<0) {
+    ADCgeneric;
+    kh[wh]=k>>8;
+    bc[wh]=3; 
+  }
+  bt = (kh[wh]>>bc[wh])&0x01; // this means that MSB comes out first
+  bc[wh]--;
+  return bt;
+}
+// also question split between generator and modeX.h - question of wrapping, autowraps?
+// it becomes:
+
+void stream4_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
+  HEADD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn^=adc4bits_unshare(11,w);
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+// always variations: binroute, shift or not...
+// but also what happens if we unshare across dacs, any sequential output
+
+//////////////////////////////////////////////////////////
+
+// cipher generator now in gen.h to use for adc
+
+// more like cipher entering SR
+void adccipher(uint8_t w){ // generator is contained so is different to one below which can have binroute inside
+  HEADD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  ///////HERE
+  bitn^=cipherbits(CVL[w], w); // not using depth
+  BINROUTE_; // or not!
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+// variations TODO: binroute or not, prob of binroute/cycle, use prob as speed, use strobe as speed and prob as trigger, or if on L or R, pulse as trigger
+// thinking about how variations become submodes...
+
+// 8 bit CIPHER for adc/trad modes
+void adccipher2(uint8_t w){    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
+uint8_t prob;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFTNOS_; // we dont shift our own SR
+
+    GGGshift_[w]=GGGshift_[w]<<1;
+    BINROUTE_; // here binroute is in different place or not - to above
+    bitn^=ADC_(w,SRlength[w],85,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+    PULSIN_XOR; // not for adc ignore
+    GGGshift_[w]+=bitn;
+    
+    if (gate[w].trigger==1) { // strobe
+      gate[w].shift_&=invmasky[SRlength[w]]; 
+      gate[w].shift_+=(GGGshift_[w]&masky[SRlength[w]]);// to check again
+    } 
+    bitn=CYCl;
+    BITN_AND_OUTVNOSHIFT_;
+    ENDER;
+  }
+  }
+}
+// variations such as: binroute or not. timing of binroute 
+
+
 // 14/4/2022
 
 // slide 2 bitstreams against each others? how to chain bitstreams but

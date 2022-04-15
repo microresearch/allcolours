@@ -270,7 +270,7 @@ void dacadc(uint8_t w){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;				
-  bitn=ADC_(w,SRlength[w],85,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // 85 so 1 bit from comparator
+  bitn=ADC_(w,SRlength[w],85,gate[w].trigger,dacfrom[daccount][w],CVL[w], &gate[w].shift_); // 85 so 1 bit from comparator
   BITN_AND_OUTV_; // pulses outs - was VN no pulses???
   ENDER;
   }
@@ -1058,7 +1058,7 @@ void dacNLRprobinINT1311(uint8_t w){  // this one is just fixed XOR
 void dacNLRprobinINT1311seldac(uint8_t w){  // this one is just fixed XOR
   HEADSIN; // detach length
   uint8_t logg;
-  gate[w].dactype=CV[w]>>8; gate[w].dacpar=param[w]; // 4 bits
+  gate[w].dactype=CV[w]>>8; gate[w].dacpar=4096; // 4 bits  
   if (gate[w].trigger)      {
   GSHIFT_;
   //  BINROUTE_; // new routing in here.

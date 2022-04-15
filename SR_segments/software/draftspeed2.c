@@ -326,6 +326,8 @@ static uint32_t LR[4]={0,1,0,1};
 static uint8_t flipd[4]={0,0,0,0};
 static uint16_t pulsouts[8]={0, 0,  1<<2, 1<<15, 1<<4, 1<<12, 1<<3, 1<<11};
 
+static uint8_t defdac=3;
+
 volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
 //                                  0              0              PB2                PC15           PB4               PA12           PB3                PA11 
 volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
@@ -355,6 +357,7 @@ uint32_t options[4][24]={
       {0,3,3, 1,3,3, 2,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 3,3,3}
     };
 
+#include "gen.h" // generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 #include "modeN.h"
 #include "modeL.h"
@@ -372,28 +375,28 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adcintabstract}, 
-  {SRX0}, // SRX0 is basic route/xor
-  {dacNLRprobinINT1311seldac}, 
-  {SRX0}
+  {SRpattern_unshare}, 
+  {SRpattern_unshare}, // SRX0 is basic route/xor
+  {dac0}, 
+  {SRpattern_unshare}
 };
 
 /*
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
-  {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0
+  {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2
   {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes
-  {adcspeedstream}, dacNbinprob 
+  {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac
   {adcLbinprob}
 */
 
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
 void (*funcgroups[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD}, 
-  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy, adcLabstractLD}, 
-  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin}, // dacNLRprobinINT1311
-  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0, adcLabstractLD}
+  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare}, 
+  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
+  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin, stream4_unshare}, // dacNLRprobinINT1311
+  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0, adcLabstractLD, stream4_unshare}
 };
 
 // so if we wanted to select these how would that work - as major mode but with no minor modes>>>???
@@ -493,12 +496,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
       //    	  else gate[2].dac=0; // 20 KHz!
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
       ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
-    //    ADC_SoftwareStartConv(ADC1); 
-    //    while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-    //    kk=ADC_GetConversionValue(ADC1);
+      //      ADC_SoftwareStartConv(ADC1); 
+      //      while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+      //      kk=ADC_GetConversionValue(ADC1);
     //    kk=2050;
-    //    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-kk); // 1000/4096 * 3V3 == 0V8 
-    //    int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+      //      DAC_SetChannel1Data(DAC_Align_12b_R, 4095-kk); // 1000/4096 * 3V3 == 0V8 
+      //int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
       }
 
     
