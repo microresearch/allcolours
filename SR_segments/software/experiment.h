@@ -1,3 +1,294 @@
+// 18/4/2022
+
+// TODO: more multiple speeds
+/// *TODO: dacspeed and internal speed slip against each other: gshift and... see multiple speeds where we have dac but not as core speed*
+
+void SRmultiplespeednewdac0(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
+  HEADSSIN;
+  float speedf__;
+  
+  if (gate[w].trigger) GSHIFTNOS_; // // 1.copy gshift on trigger// sans <<
+
+  if (counter[w]>CV[w]){ //2.advance incoming ghost on speed
+    counter[w]=0;
+    BINROUTEADV_;
+  }
+
+  speedf__=logspeedd[gate[speedfrom[spdcount][w]].dac>>2]; // that's 10 bits only - can also have scaling by CV 
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    gate[w].shift_=gate[w].shift_<<1; 
+    BINROUTENOG_; // no gshifty
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+// more variations on this! - 4 speeds, cv, cvl, strobe, dac
+// break down into:
+
+/*
+from modeL.h
+x. shifting/SR speed << in all below we don't split this except new - can be part of dac or in gshift
+
+1. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes - L3 in modeL - in/outside loop as optionsDONE
+2. advance incoming GSR speed - slidings
+3. DAC out speed  - slipping - this is main loop as we need interpol
+ */
+
+// 4 independent speeds. 5 options: NONE (as in shift is taken up elseehere) CV, CVL, trigger, DAC = 2 bits each, collapse 1.shifter = 6 bits but select will use one CVL
+/* we have so far in model.h:
+SRmultiplespeednew: T:1, DAC: 2, CVL:<<x, CV: 3 
+speed0: T:1, CVL: 2, CV: 3
+1: T:2, CVL: 1, CV: 3
+2: T:1<<, CVL: 2, CV: 3
+3: CVL: 2, CV: 3
+dac0: T: 1, DAC: <<x, CVL: 2, CV: 3
+dac1: T: 1, DAC: 2, CV: 3
+multspeed0: T: 1, CVL: 2, CV: 3
+multspeed1: T: 2, CVL: 2, CV: 3 
+2: T: 1<<, CVL: 2, CV: 3
+3: CVL: 2, CV: 3
+speeddac0: T: 1, DAC: <<x, CVL: 2, CV: 3
+ 
+newdac0 above: T: 1, CV: 2, DAC: 3<<
+newdac below: T: 1, CV: 2, CVL: <<x, DAC: 3
+
+what options to be done:
+
+ */
+
+void SRmultiplespeednewdac(uint8_t w){ // NO LENGTH - try 4 speeds as above - multiple versions of this // this one is ****
+  
+  HEADSIN; // detach length
+  float speedf__;
+
+  if (gate[w].trigger) GSHIFTNOS_; // 2.copy gshift on trigger
+
+  if (counter[w]>CV[w]){ //3.advance incoming ghost
+    counter[w]=0;
+    BINROUTEADV_;
+  }
+
+  if (counterd[w]> CVL[w]){
+      counterd[w]=0;
+    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
+  }
+  
+  speedf__=logspeedd[gate[speedfrom[spdcount][w]].dac>>2]; // that's 10 bits only - can also have scaling by CV 
+  CVOPENDAC;
+  if(gate[w].last_time<gate[w].int_time)      {
+    //    gate[w].shift_=gate[w].shift_<<1; // but no shift makes odd with add... anyways
+    BINROUTENOG_; 
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+/* what do we have of: operations on whole register/across registers? -noSR series
+
+eg. noSRxorroutes: XOR with mask of incoming lengths... of routes in - which now we have as prob in = can also be sel routes and logic DONE below
+
+*/
+
+// circular buffer - borrowed from delay_line - can also have all options for this such as cycle/entry/prob etc...
+// what is model for those permutations - where?
+
+void noSRdelay_line(uint8_t w){ 
+  HEAD;
+  static uint32_t counter[4]={0,0,0,0}; // shared // unshared counter
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFTNOS_;
+  //  bitn^=delay_line_shared(CVL[w],w); // or detach - length not used - this is our binroute
+  BINROUTE_; // generators/prob/other routes/
+  PULSIN_XOR;
+  gate[w].shift_&=bitmasky[counter[w]];
+  gate[w].shift_|=(bitn<<counter[w]);
+  counter[w]++;
+  if (counter[w]>SRlength[w]) counter[w]=0;
+  BITN_AND_OUTVNOSHIFT_;
+  ENDER;
+  }
+  }
+}
+
+// catalogue possible ins?
+
+// delay line - large array and we write single bits into that circular buffer - 12 bits 4095 bits delay=128
+// but then buffer is not a shift reg
+// length=delay
+// what is incoming bit? - route in - others?
+
+uint32_t delayline[128]; //shared delay line
+uint32_t delaylineUN[4][128]; //UNshared delay line
+
+static inline uint32_t delay_line_shared(uint32_t depth, uint8_t wh){ // share counter and delay line
+  // what other options are there?
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits; // 32 bits of bits
+  tmp=binroute[count][wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  // extract from delay line (12 bits=4095)
+  depth=bits+depth;
+  if (depth>=4095) depth-=4095;
+  tmp=depth/32;
+  bitrr=(delayline[tmp]>>(depth%32))&0x01;
+
+  // put into delay line - need index and bit index
+  tmp=bits/32;
+  tmpp=bits%32;
+  delayline[tmp]&=bitmasky[tmpp];
+  delayline[tmp]|=(bt<<(tmpp));
+  bits++;
+  if (bits>4095) bits=0;
+
+  return bitrr;
+}
+
+static inline uint32_t delay_line_shared2(uint32_t depth, uint8_t wh){ // there are independent counters and shared line
+  // what other options are there?
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits[4]; // 32 bits of bits
+  tmp=binroute[count][wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  // extract from delay line (12 bits=4095)
+  depth=bits[wh]+depth;
+  if (depth>=4095) depth-=4095;
+  tmp=depth/32;
+  bitrr=(delayline[tmp]>>(depth%32))&0x01;
+
+  // put into delay line - need index and bit index
+  tmp=bits[wh]/32;
+  tmpp=bits[wh]%32;
+  delayline[tmp]&=bitmasky[tmpp];
+  delayline[tmp]|=(bt<<(tmpp));
+  bits[wh]++;
+  if (bits[wh]>4095) bits[wh]=0;
+
+  return bitrr;
+}
+
+static inline uint32_t delay_line_shared3(uint32_t depth, uint8_t wh){ // there is a shared counter and indie lines
+  // what other options are there?
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits; // 32 bits of bits
+  tmp=binroute[count][wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  // extract from delay line (12 bits=4095)
+  depth=bits+depth;
+  if (depth>=4095) depth-=4095;
+  tmp=depth/32;
+  bitrr=(delaylineUN[wh][tmp]>>(depth%32))&0x01;
+
+  // put into delay line - need index and bit index
+  tmp=bits/32;
+  tmpp=bits%32;
+  delaylineUN[wh][tmp]&=bitmasky[tmpp];
+  delaylineUN[wh][tmp]|=(bt<<(tmpp));
+  bits++;
+  if (bits>4095) bits=0;
+  return bitrr;
+}
+
+
+static inline uint32_t delay_line_unshared(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits[4]; // 32 bits of bits
+  tmp=binroute[count][wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  
+  // extract from delay line (12 bits=4095)
+  depth=bits[wh]+depth;
+  if (depth>=4095) depth-=4095;
+  tmp=depth/32;
+  bitrr=(delaylineUN[wh][tmp]>>(depth%32))&0x01;
+
+  // put into delay line - need index and bit index
+  tmp=bits[wh]/32;
+  tmpp=bits[wh]%32;
+  delaylineUN[wh][tmp]&=bitmasky[tmpp];
+  delaylineUN[wh][tmp]|=(bt<<(tmpp));
+  bits[wh]++;
+  if (bits[wh]>4095) bits[wh]=0;
+
+  return bitrr;
+}
+
+void SRdelay_lineSH(uint8_t w){ 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn^=delay_line_shared(CVL[w],w); // or detach - length not used - this is our binroute
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SRdelay_lineSH2(uint8_t w){ 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn^=delay_line_shared2(CVL[w],w); // or detach - length not used - this is our binroute
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SRdelay_line(uint8_t w){ 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn^=delay_line_unshared(CVL[w],w); // or detach - length not used - this is our binroute
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
 // 15/4/2022
 
  //uint32_t patt[32]={0b1010, 0b1010, 0b1010, 0b1010, 0b11001100, 0b11001100, 0b11001100, 0b11001100, 0b111000111000, 0b111000111000, 0b111000111000, 0b111000111000, 0b1111000011110000, 0b1111000011110000, 0b1111000011110000, 0b1111000011110000, 0b11111000001111100000, 0b11111000001111100000, 0b11111000001111100000, 0b11111000001111100000, 0b111111000000111111000000, 0b111111000000111111000000, 0b111111000000111111000000, 0b111111000000111111000000, 0b1111111000000011111110000000, 0b1111111000000011111110000000, 0b1111111000000011111110000000, 0b1111111000000011111110000000, 0b11111111000000001111111100000000, 0b11111111000000001111111100000000, 0b11111111000000001111111100000000, 0b11111111000000001111111100000000};
@@ -115,7 +406,7 @@ void stream4_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
 
 //////////////////////////////////////////////////////////
 
-// cipher generator now in gen.h to use for adc
+// cipher generator now in gen.h to use for adc [4094]
 
 // more like cipher entering SR
 void adccipher(uint8_t w){ // generator is contained so is different to one below which can have binroute inside
@@ -212,7 +503,10 @@ uint8_t XOR_(uint8_t bit1, uint8_t bit2){
   return res;
 }
 
-static moods moodsw[64]={
+//
+////... SRitselftry2(0, &moodsw[0]);
+//
+static moods moodsw[64]={ // unused...
   {0,0,0,0,0,0, CV,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
 }; // how to do refs to dacs
 // WE would need to change that ref... so is owndac[w] across all files... TODO? if we decide
@@ -438,29 +732,65 @@ uint8_t prob;
 }
 
 // 2 routes into one//XOR full TRY!
-void noSRxorroutes(uint8_t w){ // XOR in with mask of lengths
-  HEAD;
+void noSRxorroutes(uint8_t w){ // XOR in 
+  HEADSIN;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
-  GSHIFTNOS_;
   // copy mask of bits from inroute
-  tmp=binroute[count][w];
-  for (x=0;x<4;x++){
-  if (tmp&0x01){
-    gate[w].shift_^= (gate[x].Gshift_[w]&masky[SRlength[x]]);
+  if (((LFSR_[w] & 4095 ) > CVL[w])){   // this way round?
+    
+    GSHIFTNOS_;
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){
+    if (tmp&0x01){ // use length for something else? prob?
+      gate[w].shift_^= (gate[x].Gshift_[w]); // or length of that mask is another parameter - strobe mode - but that length doesnt do much except stop
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
     bitn^=bitrr;
   }
   tmp=tmp>>1;
-  }	
+  }
   PULSIN_XOR;
-  BITN_AND_OUTVNOSHIFT_;  
+  BITN_AND_OUTVNOSHIFT_;   // dont add in bitn
+  }
+  else
+    {
+      GSHIFT_;
+      JUSTCYCLE_;
+      PULSIN_XOR;
+      BITN_AND_OUTV_;
+    }
   ENDER;
   }
   }
   }
+
+// // 2 routes into one//XOR full TRY! - select route and logic - 6 bits
+void noSRselxorroutes(uint8_t w){ // XOR in
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  // copy mask of bits from inroute
+    GSHIFTNOS_;
+    tmp=CVL[w]>>8; // 
+    for (x=0;x<4;x++){
+    if (tmp&0x01){ 
+      gate[w].shift_^= (gate[x].Gshift_[w]); // but length doesnt do much except stop
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+    //    bitn^=bitrr; // lowest 2 bits for logic
+    bitn=logop(bitn,bitrr,(CVL[w]>>6)&3);
+  }
+  tmp=tmp>>1;
+  }
+  PULSIN_XOR;
+  BITN_AND_OUTVNOSHIFT_;   // dont add in bitn
+  ENDER;
+  }
+  }
+}
 
 // question of embeddings and numbers say of gshifts... also shared gshifts as an option... embed this one//as a generatorDONE
 

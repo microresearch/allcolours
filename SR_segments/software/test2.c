@@ -204,14 +204,14 @@ void print32bits(uint32_t bitz){
   int x,y;
   unsigned char bitt;
   uint32_t cc=0b10000000000000000000000000000000; 
-
+  printf("0b");
   for (y=0;y<32;y++){
     if ((bitz&cc)!=0) bitt=1;
     else bitt=0;
     cc=cc>>1;
     printf("%d",bitt);
   }
-printf("\n");
+printf(",\n");
 }
 
 void print16bits(uint32_t bitz){
@@ -991,8 +991,11 @@ heavens gate[4];
     //    recurse(recurse);
     // trial pointers
 
-    
-    
+    for (x=0;x<32;x++){
+      //      printf("%u, ", ~(1<<x)); 
+      print32bits(~(1<<x));
+      //      printf(", \n");
+    }
     
     
    /*    

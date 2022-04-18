@@ -376,6 +376,16 @@ void adc2(uint8_t w){ // one bit audio
   ADCXORIN(2);
 }
 
+void adc114(uint8_t w){ // one bit audio - unipolar
+  ADCXORIN(114);
+}
+
+
+void adc2no(uint8_t w){ // one bit audio
+  ADCXORIN_NOROUTE(2);
+}
+
+
 void adc3(uint8_t w){ // basic sequential length as in 0 but with padding if >11 bits  
   ADCXORIN(3);
 }
@@ -2862,7 +2872,7 @@ void adcintroute0(uint8_t w){ // CV: 4 bits for route in... other bits for logop
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
 	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
-	bitn^=logopx(bitn,bitrr,(tmp)&0x03);
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
 	//	bitn=logopx(bitn,bitrr, 2); 
       }
       tmp=tmp>>2; // 4 bits
@@ -2886,7 +2896,7 @@ void adcLintroute0(uint8_t w){ // CV: 4 bits for route in... other bits for logo
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
 	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
-	bitn^=logopx(bitn,bitrr,(tmp)&0x03);
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
 	//	bitn=logopx(bitn,bitrr, 2); 
       }
       tmp=tmp>>2; // 4 bits
@@ -2909,7 +2919,7 @@ void adcintselADC1(uint8_t w){ // parammodes speed from trigger, cv for selectad
   if (tmp&0x01){
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
-  bitn^=logop(bitn,bitrr,val);
+  bitn=logop(bitn,bitrr,val);
   }
   tmp=tmp>>1;
     }			     
@@ -2929,7 +2939,7 @@ void adcintselADC2(uint8_t w){ // speed from trigger, cv for selectadc, detach l
   if (tmp&0x01){
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
-  bitn^=logop(bitn,bitrr,val);
+  bitn=logop(bitn,bitrr,val);
   }
   tmp=tmp>>1;
     }			     
@@ -2953,7 +2963,7 @@ void adcintselADC_63(uint8_t w){ // use CV to select adc type: only those which 
   if (tmp&0x01){
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
-  bitn^=logop(bitn,bitrr,val);
+  bitn=logop(bitn,bitrr,val);
   }
   tmp=tmp>>1;
     }			     

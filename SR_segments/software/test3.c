@@ -49,9 +49,9 @@ void SRitselftry2(uint8_t w, moods *mode){
 int main(void)  
 {
   //SRitselftryagain(0, moodsw[0].spdfr, moodsw[0].probfr, moodsw[0].incfr, moodsw[0].incor, moodsw[0].last, moodsw[0].par1,  moodsw[0].par2,  moodsw[0].par3,  moodsw[0].par4, moodsw[0].logic);
-  SRitselftry2(0, &moodsw[0]);
-  uint32_t xxx=0b1111;
-  printf("\n%d\n",xxx); 
+  //  SRitselftry2(0, &moodsw[0]);
+  //  uint32_t xxx=0b1111;
+  //  printf("\n%d\n",xxx); 
   
 
   

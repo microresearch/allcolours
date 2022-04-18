@@ -1910,6 +1910,28 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       bt=(ADCshift_[regg]>>31)&0x1;
       ADCshift_[regg]=(ADCshift_[regg]<<1)+bt;
     }
+
+  case 114: // try with float but this is the same with phasings - and we need to make independent! TODO!
+    // for unipolar 0-248
+    ADCtwo;
+    //    inb=(((float)k[reg])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle? 2048
+    k[reg]=k[reg]-1024;
+    inb=(((float)k[reg])/1024.0f); // from 0 to 4095 but where is the middle? 2048
+    if (inb>1.0f) inb=1.0f;
+    
+    integratorf+=(inb-oldvaluef);
+    if(integratorf>0.0f)
+      {
+	oldvaluef=1.0f;
+	bt=1;
+      }
+    else
+      {
+	oldvaluef=-1.0f;
+	bt=0;
+      }   
+    break;    
+
     
     ///////////////////////
   } // switch
@@ -2559,12 +2581,10 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-
   CVL[1]=temp;
   temp=temp>>7; 
   SRlength_[1]=lookuplenall[temp];
-  //  SRlength_[1]=31;
-  //  temp=(adc_buffer[7]);
+
   ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));

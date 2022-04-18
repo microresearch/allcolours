@@ -79,6 +79,8 @@ further manipulate their own incoming ghost registers.
 
 ** any example patches
 
-** links/reading list
+** links/reading list/reader
 
-
+- other random
+- http://www.ccru.net/digithype/Afrobinary.htm
+- https://monoskop.org/images/f/f1/CCRU_Abstract_Culture_Digital_Hyperstition_1999.pdf

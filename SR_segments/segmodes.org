@@ -55,17 +55,51 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
 
-** 15/5/2022
+** 18/4/2022
+
+*TODO: final multispeed modes, modeC still needs non interpol dac and mix outs, an end to modes*
+
+*// some more generic solution???*
+
+- one bit audio doesn't work with unipolar signal (0-2048) as we set
+  the middle/zero? 114 is new adcmode, and should also be generator
+  but questions bi vs uni entry... same problem with comparator //???
+
+- fixed binroute^=logop in modeN.h
+
+binroute as function on top of binroute cancells itself xor
+
+variations of delay line sharing - what of these modes which only make sense for 1+ Srs to run...
+
+*Q. gate[x].dac and easier access - owndac -> other mode mood scheme*
+
+notebook:
+- how too share access to bits in function (master?)
+- only copy in when the receiver has made one circulation
+[stories for each: ]
+when you have circulated, i will copy in. when i have acknowledged that you have circulated you can copy in
+what does it mean - when you have circulated...
+or bits are shifted into longer register and we keep track of our own index...
+
+- DONE:delay which isn't a slowing down. bit delay line
+
+- rethink/reduce to well-documented and tested sets of functions:
+-- basic prob/routes
+-- classic SR and excursions
+-- ADC/DAC
+-- fancier permutations of each characteristic. eg. multiple speeds...
+
+- also functions which convert/use DAC 32 bits values...???
+
+** 15/4/2022
 
 // how we can share a value - who updates it? eg. sample and hold ->? heldsample
 // unless is outside the generator and always runs, then we need to always run adc and just sample that...
-// or mix and math adcs...
+// or mix and match adcs...
 
 // new signal processors: sample_and_hold, what else?
 
-*TODO: 4094 implemented: outs are each bit, CVs from groups of bits and the QS/serial out (see 4094) below..., clock edges*
-
-*TODO: check masking modes, do masking modes*
+4094 implemented: outs are each bit, CVs from groups of bits and the QS/serial out (see 4094) below..., clock edges
 
 we have 10vpp so 5vpp has problems with full range comp... also comp and unipolar signals
 
@@ -100,8 +134,10 @@ inlogic XvsY: probCV, probDAC [probFROM], strobe, toggle [LOOPvsFROM]
 
 RUNG:
 
-
-
+generic rungler: 
+SR1: speedfrom clock/dac2, datafrom 3(route or dacNSR)XORloopback // route from C=3
+SR2: speedfrom 1, osc/abstract
+SR3: speedfrom 1, osc/abstract
 
 functions/philosophies: 
 
@@ -165,8 +201,6 @@ work through step by step and also new experiment.h - conclusions from abstracti
 Q of restraints/simplicity which can then be stacked up and CONTROLLED!
 
 ////////////
-
-/// *TODO: dacspeed and internal speed slip against each other: gshift and... see multiple speeds where we have dac but not as core speed*
 
 multiple speeds of:
 

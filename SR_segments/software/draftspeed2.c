@@ -375,19 +375,19 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {SRpattern_unshare}, 
-  {SRpattern_unshare}, // SRX0 is basic route/xor
+  {adc0}, 
+  {SRmultiplespeednewdac}, // SRX0 is basic route/xor
   {dac0}, 
-  {SRpattern_unshare}
+  {SRX0}
 };
 
 /*
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2
-  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes
+  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0
   {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac
-  {adcLbinprob}
+  {adcLbinprob} SRpattern_unshare
 */
 
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers

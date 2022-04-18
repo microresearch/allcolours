@@ -1300,6 +1300,7 @@ void SR32(uint8_t w){ // multiple bits in as case 19 in draftdec
 2. GSR copy speed (own GSR) //copy on strobe? see 37 in newmodes - L3 in modeL - in/outside loop as optionsDONE
 3. advance incoming GSR speed - slidings
 4. DAC out speed  - slipping - this is main loop as we need interpol
+
 */
 
 void SRmultiplespeednew(uint8_t w){ // NO LENGTH - try 4 speeds as above - multiple versions of this // this one is ****
@@ -1327,7 +1328,7 @@ void SRmultiplespeednew(uint8_t w){ // NO LENGTH - try 4 speeds as above - multi
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     //    gate[w].shift_=gate[w].shift_<<1; // but no shift makes odd with add... anyways
-    BINROUTENOG_; // no gshifty
+    BINROUTENOG_; 
     PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
@@ -1349,7 +1350,7 @@ void SRmultiplespeed0(uint8_t w){ // NO LENGTH - speeds of gshift, incoming gsr 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     gate[w].shift_=gate[w].shift_<<1; 
-    BINROUTENOG_; // no gshifty
+    BINROUTENOG_; 
     PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
@@ -1480,7 +1481,7 @@ void SRmultspeed0(uint8_t w){ // TEST: detach speed!!!- NO LENGTH - speeds of gs
 
   if (gate[w].trigger) GSHIFTNOS_; // 1.copy gshift on trigger
 
-  if (counter[w]>CV[w]){ //2.advance incoming ghost from detached CV
+  if (counter[w]>CVL[w]){ //2.advance incoming ghost from detached CV - fixed for CVL 18/4
     counter[w]=0;
     BINROUTEADV_;
   }
@@ -1501,7 +1502,8 @@ void SRmultspeed1(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr an
   HEADSSIN;
 
   if (gate[w].trigger) BINROUTEADV_; //2.advance incoming ghost
-  tmp=CV[w]>>2;
+
+  tmp=CVL[w]>>2; // fixed
   if (counter[w]>tmp){ // // 1.copy gshift on trigger
     counter[w]=0;
     GSHIFTNOS_; 
@@ -1523,7 +1525,8 @@ void SRmultspeed2(uint8_t w){ // speeds of gshift, incoming gsr and bits/dac
   HEADSSIN;
 
   if (gate[w].trigger) GSHIFT_; // // 1.copy gshift on trigger - NOW WITH <<
-  tmp=CV[w]>>2;
+
+  tmp=CVL[w]>>2; // fixed
   if (counter[w]>tmp){ //2.advance incoming ghost
     counter[w]=0;
     BINROUTEADV_;
@@ -1545,7 +1548,7 @@ void SRmultspeed3(uint8_t w){ //  speeds of gshift, incoming gsr and bits/dac
   HEADSSIN;
 
   //  if (gate[w].trigger) GSHIFT_; // 1.gshift owns on trigger - NOW WITH <<
-  tmp=CV[w]>>2;
+  tmp=CVL[w]>>2; // fixed
   if (counter[w]>tmp){ //2.advance incoming ghost
     counter[w]=0;
     BINROUTEADV_;
@@ -1576,7 +1579,7 @@ void SRmultspeeddac0(uint8_t w){ // speeds of gshift, incoming gsr and bits/dac
   
   if (gate[w].trigger) GSHIFTNOS_; // 1.gshift owns on trigger
 
-  tmp=CV[w]>>2;
+  tmp=CVL[w]>>2; // fixed
   if (counter[w]>tmp){ //2.advance incoming ghost
     counter[w]=0;
     BINROUTEADV_;
