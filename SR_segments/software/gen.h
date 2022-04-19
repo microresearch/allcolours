@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-// GENERATORS...
+// abstract GENERATORS... adc ones are in adcetc.h
 
 // some don't use depth, how to deal with this? can also be more INVERTED
 
@@ -426,7 +426,7 @@ static inline uint32_t lfsrbits(uint32_t depth, uint8_t wh){
     return bt;
 }
 
-static inline uint32_t llfsrbits(uint32_t depth, uint8_t wh){
+static inline uint32_t llfsrbits(uint32_t depth, uint8_t wh){ // no depth
   uint32_t bt;
   static uint32_t k;
   // out from lfsr at full speed

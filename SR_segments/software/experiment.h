@@ -1,3 +1,239 @@
+// 19/4/2022
+
+//+gens->bitspeed (do we not have that?): yes as adcspeedstream in modeN.h but still we need to improve generators+
+
+//TODO::
+// still todo experiment with shared bits
+// binroute and spdroute from routes and recursion,
+// rungler in rungler but split across
+// cut all routes // open close route bit
+
+///////////......
+
+// *** how to take characteristics and split these across SRs while keeping some structure... code to write/chop code, multiple opposing speeds...
+
+// look again bitdsp and parallel bit processings
+
+/// trigger oversamples (at speed)
+// how do we oversample - run twice at speed...
+// run twice but if we are slow others would have to wait... so just run twice...
+
+// these can also be selecting different types of ADC and detached...
+void ADCovers(uint8_t w){ 
+  HEAD;
+  // 2nd round - was inside loop - fix << though
+  if (gate[w].trigger){
+  gate[w].shift_=gate[w].shift_<<1;
+  bitn=adcpadbits(SRlength[w]);
+  gate[w].shift_+=bitn;
+  }
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadbits(SRlength[w]);
+  BINROUTE_; // or not! 
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+void ADCoverss(uint8_t w){   // 2nd round - was inside loop - fix << though 
+  HEAD;
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadbits(SRlength[w]);
+
+  if (gate[w].trigger){
+  gate[w].shift_+=bitn;
+  gate[w].shift_=gate[w].shift_<<1;
+  bitn=adcpadbits(SRlength[w]);
+  }
+    
+  BINROUTE_; // keep bin
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+// or go for 2 identical samples in
+// almost like sample and hold
+void ADCoversss(uint8_t w){   // 2nd round - was inside loop - fix << though 
+  HEAD;
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadbits(SRlength[w]);
+
+  if (gate[w].trigger){
+  gate[w].shift_+=bitn;
+  gate[w].shift_=gate[w].shift_<<1;
+  //  bitn=adcpadbits(SRlength[w]);
+  }
+  // so same bitn will come in
+  BINROUTE_; // keep bin
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+// same but outside so we need new adc for sample and hold-like also
+static inline uint32_t adcpadholdbits(uint32_t depth, uint8_t reset){ // TODO: eg. what happens if used consecutively... we have that in stream...  // how we could share same bits?
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (bc<0) {
+    ADCgeneric; 
+    if (depth<12) k=k>>(11-depth);
+    else k=k<<(depth-11);
+    bc=depth; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  if (reset) bc--;
+  return bt;
+}
+
+void ADCoverssss(uint8_t w){   // 2nd round - was inside loop - fix << though 
+  HEADD;
+
+  if (gate[w].trigger){
+  gate[w].shift_=gate[w].shift_<<1;
+  bitn=adcpadholdbits(SRlength[w], 0); // doesn't advance
+  gate[w].shift_+=bitn;
+  }
+  
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adcpadholdbits(SRlength[w],1);  // that one advances things so above trigger own is same bit - or vice versa
+  BINROUTE_; // 
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+// start with sample and holds on trigger...
+void ADChold(uint8_t w){   // 2nd round - was inside loop - fix << though 
+  HEADD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  
+  if(gate[w].last_time<gate[w].int_time)      {
+    /*
+    if (gate[w].trigger)  { // we could also hold binroute by not advancing GSRs - holdings
+      GSHIFTNOS_; 
+    }
+    else
+      {
+	GSHIFT_;
+      }
+  */
+    GSHIFT_;
+    bitn=adcpadholdbits(SRlength[w], (!gate[w].trigger)); // trigger will hold it...
+    BINROUTE_; 
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+  }
+  }
+
+// other sample and hold with revolving bits on hold...
+static inline uint32_t adcpadholdcyclebits(uint32_t depth, uint8_t reset){ // TODO: eg. what happens if used consecutively... we have that in stream...  // how we could share same bits?
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  static uint8_t oldreset=1;
+    if (reset) oldreset=0;
+
+  if (bc<0) {
+    if (oldreset){
+      ADCgeneric; 
+    }
+    if (depth<12) k=k>>(11-depth);
+    else k=k<<(depth-11);
+    bc=depth; 
+    oldreset=1;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+void ADCholdcycle(uint8_t w){   // 2nd round - was inside loop - fix << though 
+  HEADD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn^=adcpadholdcyclebits(SRlength[w], (gate[w].trigger)); // trigger will hold it
+    BINROUTE_; 
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+  }
+  }
+
+////////////////////////////////////////////////////////////////////////////
+
+// TODO: ADC noise comp and select new generators,
+// ADC noise comp:   if (((LFSR_[w] & 4095 ) > k)){  = not so exciting
+void ADCnoisecmp(uint8_t w){  // for top modeN
+  //  HEADSIN;
+  HEADSSINNADA; // or do as strobe
+  uint32_t k;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  ADCgeneric;  
+  if (((LFSR_[w] & 4095 ) > k)){   // this way round?
+    // select gen and input
+    bitn=(*abstractbitstreams[CVL[w]>>8])(CV[w],w); // oops need 2 CVs - 4 bits for first one - leaves 2 bits spare...
+  }
+  else
+    {
+      JUSTCYCLE_; // no length/speed - is a bit odd - discards bits
+    }
+  //  BINROUTE_; // or not! could use excess bits?
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }
+
+ // or do as strobe
+void ADCnoisecmpSTROBE(uint8_t w){  // for top modeN
+  //  HEADSIN;
+  HEADSSINNADA;
+  uint32_t k;
+  if (gate[w].trigger)      {
+  GSHIFT_;
+  ADCgeneric;  
+  if (((LFSR_[w] & 4095 ) > k)){   // this way round?
+    // select gen and input
+    bitn=(*abstractbitstreams[CVL[w]>>8])(CV[w],w); // oops need 2 CVs - 4 bits for first one - leaves 2 bits spare...
+  }
+  else
+    {
+      JUSTCYCLE_; // no length/speed - is a bit odd - discards bits
+    }
+  //BINROUTE_; // or not! could use excess bits?
+  BITN_AND_OUTVINT_;
+  }
+}
+
+  
 // 18/4/2022
 
 // TODO: more multiple speeds
@@ -484,8 +720,12 @@ recurse(recurse);
  */
 
 // attempting more generic - so we can define a mode within grid of functions, plug in parameters, and logic
+// or SRitselftry2 is a function too eg:
+// func(uint8_t w, moods *mode) - but can we pass in structure itself - as doesn;t know itself
+// but we could pull that out into function array
 
 typedef struct moods_ { //
+  //  void (*func)(uint8_t w, moods *mode);
   uint8_t gsfr;
   uint8_t spdfr;
   uint8_t probfr;
@@ -496,6 +736,7 @@ typedef struct moods_ { //
   uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
 } moods;
 
+void (*moodsfuncs[64])(uint8_t w, moods *mode);
 
 uint8_t XOR_(uint8_t bit1, uint8_t bit2){
   uint8_t res;

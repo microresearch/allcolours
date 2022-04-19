@@ -187,7 +187,7 @@ uint32_t ourroute[4]={0,0,0,0};
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[17][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
-    {8,1,2,4}, // default was 8121 // now we have full route 8124
+    {8,1,2,4}, // new default: 8 1 2 4 // default was 8121 // now we have full route 8124
   //  {0,0,1,0}, //  test
 	{8,1,2,2}, // notexpanding
 	{8,1,2,1}, // notexpanding
@@ -375,8 +375,8 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc0}, 
-  {SRmultiplespeednewdac}, // SRX0 is basic route/xor
+  {ADCholdcycle}, 
+  {SRX0}, // SRX0 is basic route/xor
   {dac0}, 
   {SRX0}
 };

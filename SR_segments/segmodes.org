@@ -55,6 +55,21 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
 
+** 19/4/2022
+
+- see experiment.h// large notebook notes
+
+- thinking about trigger and how it works in CVspeed modes - if we
+  should keep trigger/pulsein over until we process - ie. if was
+  trigger or pulse in the interval? - but for long intervals chances
+  are there will be a trigger - maybe notion of trigger window?
+
+- *TODO: fix up generators a bit so they make more use of depth and work well*
+
+- other routing N-L N-C L-R R-N: 8, 1, 1, 2
+
+- slice/splice remix and mix of speeds
+
 ** 18/4/2022
 
 *TODO: final multispeed modes, modeC still needs non interpol dac and mix outs, an end to modes*
@@ -128,7 +143,7 @@ TM/WIARD/EN: speedfrom(clock), from=loop/invert loop, inlogic=prob: CVcompNOISE/
 
 and what this means for each SR side. eg.
 
-speedfrom: clock/speedCV/DAC(which?)
+speedfrom: clock/speedCV/DAC(which?), bits
 from: ADC, loop, pulsin/clkin, invertedloop, inverted_all
 inlogic XvsY: probCV, probDAC [probFROM], strobe, toggle [LOOPvsFROM]
 
