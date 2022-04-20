@@ -16,7 +16,7 @@
 #define DACOUTNOV {				\
   HEAD;						\
   if (speedf_[w]!=2.0f){				\
-    CVOPENNOINTERPOL;					\
+    CVOPENNOINTERPOL;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
       BINROUTE_;					\

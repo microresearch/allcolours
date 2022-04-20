@@ -1,12 +1,168 @@
-// 19/4/2022
-
-//+gens->bitspeed (do we not have that?): yes as adcspeedstream in modeN.h but still we need to improve generators+
+// 20/4/2022
 
 //TODO::
 // still todo experiment with shared bits
-// binroute and spdroute from routes and recursion,
-// rungler in rungler but split across
-// cut all routes // open close route bit
+// cut all routes // open close route bit with clock/toggle
+// see    (*moodsfuncs[0])(www, &moodsw[0]);  below - but no interpol there... -> re-work that with  what we have here for interpol
+
+
+// DONE:
+// rungler in rungler but split across - is this not what we have with abstracted out versions below
+// how we define independent rungler: as below IN=binroute and spdfrom=binroute but it has cycle...
+
+//*abstract out interpol and strobe*
+// start with basic function exposed
+
+void base(uint8_t w){ // basic template
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_; 
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+  }
+}
+
+/*
+- interpol is function of dac - ignore for now then fill in
+
+// why we have dac outside of any movement
+    alpha = gate[w].time_now - (float)gate[w].int_time; // we put alpha into SR struct and into speedfrac
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;				\
+
+vs. for no inter
+    gate[w].dac = delay_buffer[w][1];
+
+for no inter we can be inside speed//otherwise outside...
+
+later inside speed:
+
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);
+    new_data(val,w); // puts val into [1]
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+
+- fractional speed as external
+    new_data(val,w);
+    gate[w].time_now += speedf_[w];
+    gate[w].last_time = gate[w].int_time;
+    gate[w].int_time = gate[w].time_now;
+ */
+
+static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage
+  uint32_t bt=0;
+  float speed;
+  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+// strobe we have as: strobebits // binroute: binroutebits
+
+// define spdmodes
+uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, strobebits, binroutebits};
+
+// for first one we have one param for fixed spdmodes, second one uses 2nd for route
+
+// we would ideally need 4 params: spdmode/depth, in/depth
+// if we have major mode idea then we would use minor mode as spdmode/in (how? - as combos?) and CVs as depths
+// how many bits? 4 bits here for spdmodes, 4 for in, depth varies in bits... (eg. can be 4 bits too for binroute)
+
+// but the nice to have split so is not all these for LRCN//// how to do????
+// also as binroute for spd tends to run at audio rates...
+
+// options: speed from strobe - no int, from dac or CV - interpol/no_interpol, from bits - no int = 1,2,3,4 options
+// what we don't have is freezespeed, nor copy of speedf_ but we can do that - otherwise is working!
+void abstractoutinterpol(uint8_t w){ 
+  HEAD;
+  uint8_t spdfrom=2, interpol=0; // how we set/unset interpol bit
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpol)   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    // core
+    GSHIFT_;
+    BINROUTE_;
+    // do dac for non-interpols
+    if (!interpol){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+// binroute and spdroute from routes and recursion - this one does this! but recursion is tricky without clock injection
+
+// add in binroute
+// but problem is if both run binroute - each instance is not independent even with I as indep. as is same w!
+void abstractoutinterpolroute(uint8_t w){ 
+  HEADNADA;
+  uint8_t spdfrom=2, interpol=0; 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpol)   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    // core
+    GSHIFT_;
+    bitn=binroutebitsI(CVL[w],w); // independent from shared one above - 
+    // do dac for non-interpols
+    if (!interpol){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+// rungler version for rung in rung across all -> with cycle/cycle on strobe
+void abstractoutinterpolrung(uint8_t w){ 
+  HEADNADA;
+  uint8_t spdfrom=2, interpol=0; 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpol)   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    // core
+    GSHIFT_;
+    bitn=binroutebitscyclestrI(CVL[w], w); // independent from shared one above - cycle on strobe
+    // do dac for non-interpols
+    if (!interpol){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+
+// 19/4/2022
+
+//+gens->bitspeed (do we not have that?): yes as adcspeedstream in modeN.h but still we need to improve generators+
 
 ///////////......
 
@@ -736,8 +892,6 @@ typedef struct moods_ { //
   uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
 } moods;
 
-void (*moodsfuncs[64])(uint8_t w, moods *mode);
-
 uint8_t XOR_(uint8_t bit1, uint8_t bit2){
   uint8_t res;
   res=bit1^bit2;
@@ -751,6 +905,7 @@ static moods moodsw[64]={ // unused...
   {0,0,0,0,0,0, CV,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
 }; // how to do refs to dacs
 // WE would need to change that ref... so is owndac[w] across all files... TODO? if we decide
+
 
 // so each mode is defined by 5x5bits (decision functions 1,0), 5 CV sources (DAC or CV), and one logic function (say: AND, XOR, leak, OR)
 // where does this get us?
@@ -776,10 +931,10 @@ static moods moodsw[64]={ // unused...
 
  */
 
-void SRitselftry2(uint8_t w, moods *mode){ // pass in structure
+// but this has no interpol - 20/4/2022
+void SRitselftry2(uint8_t w, moods *mode){ // pass in structure - 
   HEADSSINNADA; // detach depending on what/
   if (abstractbitstreamslong[mode->spdfr](mode->par1[w], w)){  // spd - for intmodes we can lose this // moved speed UP
-  CVOPEN;
   GSHIFTNOS_;
   /// CORE
   gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[mode->gsfr](mode->par0[w], w));
@@ -793,10 +948,15 @@ void SRitselftry2(uint8_t w, moods *mode){ // pass in structure
   
   bitn=mode->logic(bitn, abstractbitstreamslong[mode->last](mode->par4[w], w)); 
   ///  
-  BITN_AND_OUTV_; // abstract out maybe
+  BITN_AND_OUTVINT_; // abstract out maybe
   ENDER;
   }
 }
+
+void (*moodsfuncs[64])(uint8_t w, moods *mode)={SRitselftry2}; // list of functions and then we can call for example    (*dofunc[www][mode[www]])(www);
+
+//   (*moodsfuncs[0])(www, &moodsw[0]); // mode=0
+
 
 void SRitselftryagain(uint8_t w, uint8_t gsfr, uint8_t spdfr, uint8_t probfr, uint8_t incfr, uint8_t incor, uint8_t last, uint32_t *par0, uint32_t *par1, uint32_t *par2, uint32_t *par3, uint32_t *par4, uint8_t (*logic)(uint8_t bit1, uint8_t bit2) ){
 uint8_t prob;

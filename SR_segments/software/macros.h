@@ -47,14 +47,12 @@
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \
     if (gate[w].dac>4095) gate[w].dac=4095;				\
-    else if (gate[w].dac<0) gate[w].dac=0;				\
     gate[w].time_now += speedf_[w];					\
     gate[w].last_time = gate[w].int_time;				\
     gate[w].int_time = gate[w].time_now;				\
   }
 
 #define CVOPENNOINTERPOL {				\
-    alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = delay_buffer[w][1];					\
     gate[w].time_now += speedf_[w];					\
     gate[w].last_time = gate[w].int_time;				\
@@ -95,19 +93,18 @@
 
 // and for NADA
 #define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
-  
+
+#define HEADNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+
 #define HEADSSINNADAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; PULSIN_XOR; \
-
-
 
 //
 
 #define ENDER {					\
-    new_data(val,w);				\
-    gate[w].time_now-=1.0f;			\
-    gate[w].int_time=0;				\
+  new_data(val,w);							\
+  gate[w].time_now-=1.0f;						\
+  gate[w].int_time=0;							\
   }
-
 
 // redefining for struct
 
@@ -308,8 +305,6 @@
     }								\
 }
 
-
-// for pulse outs
 #define BITN_AND_OUTVINT_ {						\
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \

@@ -375,16 +375,16 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {ADCholdcycle}, 
-  {SRX0}, // SRX0 is basic route/xor
-  {dac0}, 
-  {SRX0}
+  {adc0}, 
+  {abstractoutinterpolrung}, // SRX0 is basic route/xor
+  {abstractoutinterpolrung}, 
+  {SR5_feedback}
 };
 
 /*
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
-  {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2
+  {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2 // ADCholdcycle
   {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0
   {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac
   {adcLbinprob} SRpattern_unshare
@@ -488,6 +488,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
    }
    
    (*dofunc[www][mode[www]])(www);
+
+   //   (*moodsfuncs[0])(www, &moodsw[0]); //see experiment.h - mode=0;b
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
     if (www==2)  {

@@ -114,6 +114,46 @@ static inline uint32_t succbitsI(uint32_t depth, uint8_t wh){   // no use of dep
 static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+    }
+  return bt;
+}
+
+static inline uint32_t binroutebitscycle(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+  depth=depth|wh; // adds itself
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binroutebitscyclestr(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+  if (gate[wh].trigger) depth=depth|wh; // adds itself on strobe
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
@@ -453,7 +493,7 @@ uint32_t (*abstractbitstreams[16])(uint32_t depth, uint8_t wh)={binroutebits, os
 
 uint32_t (*altabstractbitstreams[16])(uint32_t depth, uint8_t wh)={TMsimplebits, probbits, binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, succbits, flipbits};
 
-uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits, binrouteSRbits, binrouteANDbits, binrouteORbits, returnbits, returnnotbits, probbits, succbits, wiardbits, wiardinvbits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits, strobebits, togglebits, }; // 28 so far // we want 32=5 bits
+uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits, binroutebitscycle, binrouteSRbits, binrouteANDbits, binrouteORbits, returnbits, returnnotbits, probbits, succbits, wiardbits, wiardinvbits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits, strobebits, togglebits, }; // 29 so far // we want 32=5 bits
 
 
 // probbits, succbits, wiardbits, wiardinvbits and some independent versions --> maybe expand to 31 
@@ -463,6 +503,37 @@ uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits
 static inline uint32_t binroutebitsI(uint32_t depth, uint8_t wh){   // depth as routesel...
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binroutebitscycleI(uint32_t depth, uint8_t wh){   // depth as routesel...
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  depth=depth|wh; // add itself in
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binroutebitscyclestrI(uint32_t depth, uint8_t wh){   // depth as routesel... cycle added on strobe!
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  //  depth=depth|wh; // add itself in
+  if (gate[wh].trigger) depth=depth|wh; // adds itself
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version

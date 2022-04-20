@@ -20,6 +20,7 @@ signals are inverted so unipolar 0-5v is from 0-2048 values and bipolar -5 to 5v
 /////////////////////////////////////////////////////////
 
 - implement sketch of all modes as below with DAC and ADC options
+- check all pulsins, outs and clks/clk norm functions
 - test/play
 - tweaks for slower speed, CLK norms, what else? how we handle one bit audio filter?
 
@@ -54,6 +55,58 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
+
+** 20/4/2022
+
+- working in experiment.h: abstracting out spdmodes, spdfrom but we
+  can't route own bits to speed (of course). no recursion, dies out
+  (unless we use clock - added this to binroutebits)
+
+- strategies:
+
+-- too many parameters,,, fix some/mix and match
+-- print and cut up functions/python re-workings/further into generic functions
+-- *dissect whole diagram TODO!*
+
+speedfrom [ADCs/gens/DACs/binroute->which route?]------->      gsrcopy // <<SR // <<GSR // binroute/dac
+infrom [ADCs/gens/DACs/binroute->which route?]
+IN? [ADCs/gens/DACs/binroute->which route?]
+logic [ADCs/gens/DACs/binroute->which route?]
+
+-- most generic option eg. vienna code ... but how to get recursion in/chasing/chaining, also null route mode is there
+
+recursion and chains:
+
+routes--> spdfrom \-\----> recur onto routes
+          bitfroms \-\
+          probfrom \-\
+          logicfrom \-\ and from is to route in...    
+
+how to be all of? - supplier of bits to determine X, route in as in bitsfrom, and this way in ???
+
+cannot recur on itself or 4 selves..
+
+LRNC are defined by route (and adc,dac out but these can be changed) and doesn't matter who has adc in as all is determined by routes
+
+all have route from 3 which has route from ... or is a gen, or adc
+
+*sync routes, sync speed (on trigger)*
+
+binroute/spdroute / detach / layers of params 
+
+as in mode can set binroute/spdroute and stick with this *trial?*
+
+thinking that layers of params like a stack can be an SR which we pile up... how to remove layers?
+
+- no identity - identity is only from route (pulsins are only identifiers of LR) and physical layout
+
+so key is what provides this identity: one master, 3 slaves, as own chosen identity might be at odds with others
+
+towards something like major/minor modes or modeR chooses from a grid of modes...
+
+*abstract out interpol and strobe*
+
+*to keep null route in binroutes or route always from 5th/extra tail?!*
 
 ** 19/4/2022
 
