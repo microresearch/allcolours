@@ -1,10 +1,361 @@
-// 20/4/2022
+// define spdmodes
+uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit};
+uint8_t interpoll[16]={1,0,0,0,0,0,0,0, 0,0,0,0, 0,0,0,0};// match above
 
-//TODO::
-// still todo experiment with shared bits
-// cut all routes // open close route bit with clock/toggle
+// template/s
+void SRxxx(uint8_t w){ // 
+  HEADD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn^=pattern_unshare(SRlength[w],w); 
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// 22/4/2022
+
+// think about abstractions and grids///printing maybes....
+// slides and splits - grids of modes and params/values and entry of SRs into these...
+// shall we look again at rung in rungler
+
+// pattern match bitstream from bitdsp: if pattern of length matches then flip bit eg... as gen?
+
+
+// RSR master mode: cut all routes // open close route bit with clock/toggle
+
+// uses count to set binroute to 16 // only for right hand side
+void SRRcutallroutes(uint8_t w){  
+  HEAD;
+  if (gate[w].trigger) count=16; // placed outside speed
+  else count=0;
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SRRtoggcutallroutes(uint8_t w){ // toggle version of above
+  HEAD;
+  static uint8_t toggle=0;
+  if (gate[w].trigger) toggle^=1;
+
+  if (toggle) count=16; // placed outside speed
+  else count=0;
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// can also have prob and binroute/generator versions but these run in SR speed itself
+// again how to generalise that kind of structure
+void SRRbinrcutallroutes(uint8_t w){  
+  HEADSIN; // we use CVl for param in
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+
+  if (binroutebitsI(CVL[w],w)) count=16; // placed inside speed
+  else count=0;
+  
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// 21/4/2022
+
+// experiment with shared bits
+// define - so generator accesses a bit (X) and shares that with next caller of that bit
+
+static uint32_t sharedindexes[4]={0,0,0,0};
+static uint32_t bufferd[1024];
+static uint32_t head;
+
+// tested in test3.c 22/4/2022
+static inline uint32_t shared(uint32_t depth, uint8_t wh){
+  uint32_t bt=0;
+  static int32_t bc=31;
+  static uint32_t k;
+
+  sharedindexes[wh]++;
+
+  if (resetz==1){
+    head++;
+    if (head>1023) head=0;
+
+    // new bit - can also be passed to other generators
+    if (bc<0) {
+      ADCgeneric;
+      k=k>>8;
+      bc=3; 
+    }
+    bt = (k>>bc)&0x01; // this means that MSB comes out first
+    bc--;
+    
+    bufferd[head]=bt;
+    resetz=0; 
+  }
+
+  if (sharedindexes[wh]>1024) sharedindexes[wh]=0;
+  bt=bufferd[sharedindexes[wh]];
+  return bt;
+}
+
+void SRshare(uint8_t w){ // shared bits
+  HEADD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn^=shared(SRlength[w],w); // doesn't use length
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
 // see    (*moodsfuncs[0])(www, &moodsw[0]);  below - but no interpol there... -> re-work that with  what we have here for interpol
+// MOVED it up here...
 
+// attempting more generic - so we can define a mode within grid of functions, plug in parameters, and logic
+// or SRitselftry2 is a function too eg:
+// func(uint8_t w, moods *mode) - but can we pass in structure itself - as doesn;t know itself
+// but we could pull that out into function array like so:
+
+//void (*moodsfuncs[64])(uint8_t w, moods *mode)={SRitselftry2}; // list of functions and then we can call for example    (*dofunc[www][mode[www]])(www);
+//   (*moodsfuncs[0])(www, &moodsw[0]); // mode=0
+
+typedef struct moods_ { //
+  //  void (*func)(uint8_t w, moods *mode);
+  uint8_t gsfr;
+  uint8_t spdfr;
+  uint8_t probfr;
+  uint8_t incfr;
+  uint8_t incor;
+  uint8_t last;
+  uint32_t *par0, *par1, *par2, *par3, *par4;
+  uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
+} moods;
+
+uint8_t XOR_(uint8_t bit1, uint8_t bit2){
+  uint8_t res;
+  res=bit1^bit2;
+  return res;
+}
+
+//
+////... SRitselftry2(0, &moodsw[0]);
+//
+static moods moodsw[64]={ // unused...
+  {0,0,0,0,0,0, CV,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
+}; // how to do refs to dacs
+// WE would need to change that ref... so is owndac[w] across all files... TODO? if we decide
+
+// so each mode is defined by 5x5bits (decision functions 1,0), 5 CV sources (DAC or CV), and one logic function (say: AND, XOR, leak, OR)
+// where does this get us?
+
+// how can we combine decison functions logically? a chain of... but this would be another function??
+// more of a model which is about bitstreamds and combinations of bitstreams
+
+/*
+
+  if (stream1){  // spd
+  gate[w].shift_=gate[w].shift_<<stream0 // in or outside
+    if (stream2){ // prob
+      bitn=stream3; // in?
+    }
+    else
+      { 
+	bitn=stream4; // inor?
+      }
+  bitn=mode->logic(bitn, stream5); // pulsin
+}
+
+// how that can be split across multiples...
+
+ */
+
+// but this has no interpol - 20/4/2022 -adding now!/21/4
+void SRitselftry2(uint8_t w, moods *mode){ // pass in structure - 
+  HEADNADA; // detach depending on what/
+  uint8_t interpol=0; // resolve this - figure out from spdfrom bits
+
+  if (interpol)   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  
+  if (abstractbitstreamslong[mode->spdfr](mode->par1[w], w)){  // spd - for intmodes we can lose this // moved speed UP
+  GSHIFTNOS_;
+  /// CORE
+  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[mode->gsfr](mode->par0[w], w)); // is this within outer spd? we could have different versions
+    if (abstractbitstreamslong[mode->probfr](mode->par2[w], w)){ // prob
+      bitn=abstractbitstreamslong[mode->incfr](mode->par3[w], w); // what?
+    }
+    else
+      { 
+	bitn=abstractbitstreamslong[mode->par3[w]](mode->par3[w], w); // or?
+      }
+  
+  bitn=mode->logic(bitn, abstractbitstreamslong[mode->last](mode->par4[w], w)); 
+  ///  
+    if (!interpol){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTVNOSHIFT_; // part of interpol - val=DAC but fits for all - now without +bitn
+    new_data(val,w);
+  }
+}
+
+// earlier abstraction
+// question is how to avoid running same functions twice in abstractbitstreams-> unless we want to
+// also here we have 5 parameters
+
+// still thinking on some kind of grid!
+
+/*
+void SRitselftry2(uint8_t w, moods *mode){ // pass in structure - 
+  HEADSSINNADA; // detach depending on what/
+  if (abstractbitstreamslong[mode->spdfr](mode->par1[w], w)){  // spd - for intmodes we can lose this // moved speed UP
+  GSHIFTNOS_;
+  /// CORE
+  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[mode->gsfr](mode->par0[w], w)); // is this within outer spd? we could have different versions
+    if (abstractbitstreamslong[mode->probfr](mode->par2[w], w)){ // prob
+      bitn=abstractbitstreamslong[mode->incfr](mode->par3[w], w); // what?
+    }
+    else
+      { 
+	bitn=abstractbitstreamslong[mode->par3[w]](mode->par3[w], w); // or?
+      }
+  
+  bitn=mode->logic(bitn, abstractbitstreamslong[mode->last](mode->par4[w], w)); 
+  ///  
+  BITN_AND_OUTVINT_; // abstract out maybe
+  ENDER;
+  }
+}
+*/
+
+
+// further look into abstraction here
+// have we not just shifted it into spdmodes above arrays of function calls in calls...
+
+void abstract(uint8_t w){  // was abstractoutinterpolroute
+  HEADNADA;
+  uint8_t spdfrom=2; 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    // core operation
+    // we need a bitn for potential pulsouts
+    // what we do with bitn or GSR...
+
+    // we have 4 sliding speeds: GSRcopyin, <<SR, <<GSR, binroute/dac
+    // now these are all in spdfrom/mode 
+    GSHIFTNOS_;
+    gate[w].shift_=gate[w].shift_<<1;
+    // bt= //
+    // << appropriate GSR(s)
+    /* // simple SR
+
+    GSHIFT_; //-> copy to GSR and shift <<SR as 2 sep ops
+    bitn=binroutebitsI(CVL[w],w); // seperate speed of dac and <<GSR
+    gate[w].shift_+=bitn;						\
+    */
+
+    /* delayline noSR
+       GSHIFTNOS_;
+    
+       BINROUTE_; // generators/prob/other routes/
+       PULSIN_XOR;
+       gate[w].shift_&=bitmasky[counter[w]];
+       gate[w].shift_|=(bitn<<counter[w]);
+       counter[w]++;
+       if (counter[w]>SRlength[w]) counter[w]=0;
+     */
+
+    /*noSR noSRxorroutes
+    GSHIFTNOS_;
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){
+    if (tmp&0x01){ // use length for something else? prob?
+      gate[w].shift_^= (gate[x].Gshift_[w]); // or length of that mask is another parameter - strobe mode - but that length doesnt do much except stop
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+    bitn^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  PULSIN_XOR;
+
+     */
+    
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTVNOSHIFT_; // part of interpol - val=DAC but fits for all - now without +bitn
+    new_data(val,w);
+  }
+}
+
+// // from below,,,, we need to lose << on GSR to slow things down... 
+// doesn't slow much -> problem is that series of 1s will trigger - we need transition
+// but that doesn;t work for say fractionals (also if strobe is held we keep on)...
+// try in gen - slower is DONE...
+
+// version with no << GSR for incoming speed // and only on a transition - that one slows down but is not so exciting
+void abstractoutinterpolnoshift(uint8_t w){ 
+  HEADNADA;
+  uint8_t spdfrom=4;  // spdfrom 3 is noshift, 4 is that one but only on a change
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    // core
+    GSHIFT_;
+    bitn=binroutebitsI(CVL[w], w); // independent from shared one above - cycle on strobe
+    // do dac for non-interpols
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+// 20/4/2022
 
 // DONE:
 // rungler in rungler but split across - is this not what we have with abstracted out versions below
@@ -26,54 +377,6 @@ void base(uint8_t w){ // basic template
   }
 }
 
-/*
-- interpol is function of dac - ignore for now then fill in
-
-// why we have dac outside of any movement
-    alpha = gate[w].time_now - (float)gate[w].int_time; // we put alpha into SR struct and into speedfrac
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha));
-    if (gate[w].dac>4095) gate[w].dac=4095;				\
-
-vs. for no inter
-    gate[w].dac = delay_buffer[w][1];
-
-for no inter we can be inside speed//otherwise outside...
-
-later inside speed:
-
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);
-    new_data(val,w); // puts val into [1]
-    gate[w].time_now-=1.0f;
-    gate[w].int_time=0;
-
-- fractional speed as external
-    new_data(val,w);
-    gate[w].time_now += speedf_[w];
-    gate[w].last_time = gate[w].int_time;
-    gate[w].int_time = gate[w].time_now;
- */
-
-static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage
-  uint32_t bt=0;
-  float speed;
-  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
-  gate[wh].time_now += speed;
-  gate[wh].last_time = gate[wh].int_time;
-  gate[wh].int_time = gate[wh].time_now;
-
-  if(gate[wh].last_time<gate[wh].int_time) {
-    bt=1; // move on
-    gate[wh].time_now-=1.0f;
-    gate[wh].int_time=0;
-  }
-  return bt;
-}
-
-// strobe we have as: strobebits // binroute: binroutebits
-
-// define spdmodes
-uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, strobebits, binroutebits};
-
 // for first one we have one param for fixed spdmodes, second one uses 2nd for route
 
 // we would ideally need 4 params: spdmode/depth, in/depth
@@ -83,14 +386,16 @@ uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, strobebits, bin
 // but the nice to have split so is not all these for LRCN//// how to do????
 // also as binroute for spd tends to run at audio rates...
 
+// we need to lose << on GSR to slow things down... try this 21/4
+
 // options: speed from strobe - no int, from dac or CV - interpol/no_interpol, from bits - no int = 1,2,3,4 options
 // what we don't have is freezespeed, nor copy of speedf_ but we can do that - otherwise is working!
 void abstractoutinterpol(uint8_t w){ 
   HEAD;
-  uint8_t spdfrom=2, interpol=0; // how we set/unset interpol bit
+  uint8_t spdfrom=2; 
   gate[w].dactype=0; gate[w].dacpar=param[w]; // test
 
-  if (interpol)   {
+  if (interpoll[spdfrom])   {
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
@@ -100,7 +405,7 @@ void abstractoutinterpol(uint8_t w){
     GSHIFT_;
     BINROUTE_;
     // do dac for non-interpols
-    if (!interpol){
+    if (!interpoll[spdfrom]){
     gate[w].dac = delay_buffer[w][1];
     }
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
@@ -114,10 +419,10 @@ void abstractoutinterpol(uint8_t w){
 // but problem is if both run binroute - each instance is not independent even with I as indep. as is same w!
 void abstractoutinterpolroute(uint8_t w){ 
   HEADNADA;
-  uint8_t spdfrom=2, interpol=0; 
+  uint8_t spdfrom=2;
   gate[w].dactype=0; gate[w].dacpar=param[w]; // test
 
-  if (interpol)   {
+  if (interpoll[spdfrom])   {
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
@@ -127,7 +432,7 @@ void abstractoutinterpolroute(uint8_t w){
     GSHIFT_;
     bitn=binroutebitsI(CVL[w],w); // independent from shared one above - 
     // do dac for non-interpols
-    if (!interpol){
+    if (!interpoll[spdfrom]){
     gate[w].dac = delay_buffer[w][1];
     }
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
@@ -138,10 +443,10 @@ void abstractoutinterpolroute(uint8_t w){
 // rungler version for rung in rung across all -> with cycle/cycle on strobe
 void abstractoutinterpolrung(uint8_t w){ 
   HEADNADA;
-  uint8_t spdfrom=2, interpol=0; 
+  uint8_t spdfrom=2; 
   gate[w].dactype=0; gate[w].dacpar=param[w]; // test
 
-  if (interpol)   {
+  if (interpoll[spdfrom])   {
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
@@ -151,14 +456,13 @@ void abstractoutinterpolrung(uint8_t w){
     GSHIFT_;
     bitn=binroutebitscyclestrI(CVL[w], w); // independent from shared one above - cycle on strobe
     // do dac for non-interpols
-    if (!interpol){
+    if (!interpoll[spdfrom]){
     gate[w].dac = delay_buffer[w][1];
     }
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
 }
-
 
 // 19/4/2022
 
@@ -875,89 +1179,8 @@ recurse(recurse);
 
  */
 
-// attempting more generic - so we can define a mode within grid of functions, plug in parameters, and logic
-// or SRitselftry2 is a function too eg:
-// func(uint8_t w, moods *mode) - but can we pass in structure itself - as doesn;t know itself
-// but we could pull that out into function array
-
-typedef struct moods_ { //
-  //  void (*func)(uint8_t w, moods *mode);
-  uint8_t gsfr;
-  uint8_t spdfr;
-  uint8_t probfr;
-  uint8_t incfr;
-  uint8_t incor;
-  uint8_t last;
-  uint32_t *par0, *par1, *par2, *par3, *par4;
-  uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
-} moods;
-
-uint8_t XOR_(uint8_t bit1, uint8_t bit2){
-  uint8_t res;
-  res=bit1^bit2;
-  return res;
-}
-
-//
-////... SRitselftry2(0, &moodsw[0]);
-//
-static moods moodsw[64]={ // unused...
-  {0,0,0,0,0,0, CV,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
-}; // how to do refs to dacs
-// WE would need to change that ref... so is owndac[w] across all files... TODO? if we decide
-
-
-// so each mode is defined by 5x5bits (decision functions 1,0), 5 CV sources (DAC or CV), and one logic function (say: AND, XOR, leak, OR)
-// where does this get us?
-
-// how can we combine decison functions logically? a chain of... but this would be another function??
-// more of a model which is about bitstreamds and combinations of bitstreams
 
 /*
-
-  if (stream1){  // spd
-  gate[w].shift_=gate[w].shift_<<stream0
-    if (stream2){ // prob
-      bitn=stream3; // in?
-    }
-    else
-      { 
-	bitn=stream4; // inor?
-      }
-  bitn=mode->logic(bitn, stream5); // pulsin
-}
-
-// how that can be split across multiples...
-
- */
-
-// but this has no interpol - 20/4/2022
-void SRitselftry2(uint8_t w, moods *mode){ // pass in structure - 
-  HEADSSINNADA; // detach depending on what/
-  if (abstractbitstreamslong[mode->spdfr](mode->par1[w], w)){  // spd - for intmodes we can lose this // moved speed UP
-  GSHIFTNOS_;
-  /// CORE
-  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[mode->gsfr](mode->par0[w], w));
-    if (abstractbitstreamslong[mode->probfr](mode->par2[w], w)){ // prob
-      bitn=abstractbitstreamslong[mode->incfr](mode->par3[w], w); // what?
-    }
-    else
-      { 
-	bitn=abstractbitstreamslong[mode->par3[w]](mode->par3[w], w); // or?
-      }
-  
-  bitn=mode->logic(bitn, abstractbitstreamslong[mode->last](mode->par4[w], w)); 
-  ///  
-  BITN_AND_OUTVINT_; // abstract out maybe
-  ENDER;
-  }
-}
-
-void (*moodsfuncs[64])(uint8_t w, moods *mode)={SRitselftry2}; // list of functions and then we can call for example    (*dofunc[www][mode[www]])(www);
-
-//   (*moodsfuncs[0])(www, &moodsw[0]); // mode=0
-
-
 void SRitselftryagain(uint8_t w, uint8_t gsfr, uint8_t spdfr, uint8_t probfr, uint8_t incfr, uint8_t incor, uint8_t last, uint32_t *par0, uint32_t *par1, uint32_t *par2, uint32_t *par3, uint32_t *par4, uint8_t (*logic)(uint8_t bit1, uint8_t bit2) ){
 uint8_t prob;
  HEADSSINNADA; // detach depending on what/
@@ -965,7 +1188,7 @@ uint8_t prob;
  CVOPEN;
   GSHIFTNOS_;
   /// CORE
-  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[gsfr](par0[w], w)); // gshift or not
+  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[gsfr](par0[w], w)); // shift or not
     if (abstractbitstreamslong[probfr](par2[w], w)){ // prob
       bitn=abstractbitstreamslong[incfr](par3[w], w); // what?
     }
@@ -978,6 +1201,7 @@ uint8_t prob;
   ENDER;
   }
 }
+*/
 
 // 12/4/2022
 
@@ -988,7 +1212,7 @@ uint8_t prob;
 // if [if x bitfrom X] bitfrom X // else?
 
 // if x source y or z - plug in generators - just as example to think on
-
+/*
 static uint32_t itself2(uint32_t (*f)(uint32_t depth, uint8_t wh), uint32_t (*g)(uint32_t depth, uint8_t wh), uint32_t (*h)(uint32_t depth, uint8_t wh), uint32_t depth, uint8_t wh){   // or extra param for g(param,wh)???
   uint32_t bt=0;
   if (f(depth,wh)){ // if itself...recur
@@ -997,6 +1221,7 @@ static uint32_t itself2(uint32_t (*f)(uint32_t depth, uint8_t wh), uint32_t (*g)
   else bt=h(depth,wh);
   return bt;
 }
+*/
 
 // if (itself2(func[x],func[y],func[z],CV[0],w)) itself2...;
 

@@ -3,6 +3,23 @@
 
 // some don't use depth, how to deal with this? can also be more INVERTED
 
+// replacing embedded speed... in new abstractions...
+static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage
+  uint32_t bt=0;
+  float speed;
+  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
 // try 8 bit cipher mode
 //ADC in comparator -> bits, clked/speed into GGSR which shifts along, on strobe GGSR copied to SR
 static inline uint32_t cipherbits(uint32_t depth, uint8_t wh){
@@ -133,6 +150,49 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as r
   return bt;
 }
 
+static inline uint32_t binroutebits_noshift_transit(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now - no shift of GSR<<
+  uint32_t btt=0,bt=0, bitrr;
+  static uint8_t lastone;
+  depth=depth>>8; // 12 bits to 4 bits
+  // deal with no route
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    bt^=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+    }
+  if (lastone!=bt) btt=1; // it was a transition 0-1 1-0
+  lastone=bt;
+  return btt;
+}
+
+static inline uint32_t binroutebits_noshift(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now - no shift of GSR<<
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  // deal with no route
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    bt^=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+    }
+  return bt;
+}
+
 static inline uint32_t binroutebitscycle(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
@@ -158,6 +218,36 @@ static inline uint32_t binroutebitscyclestr(uint32_t depth, uint8_t wh){   // de
   if (depth&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binroutebitscycle_noshift(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+  depth=depth|wh; // adds itself
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binroutebitscyclestr_noshift(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+  if (gate[wh].trigger) depth=depth|wh; // adds itself on strobe
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
   }
   depth=depth>>1;
@@ -503,6 +593,12 @@ uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits
 static inline uint32_t binroutebitsI(uint32_t depth, uint8_t wh){   // depth as routesel...
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshift_[wh]>>SRlength[8]) & 0x01; 
+    gate[8].Gshift_[wh]=(gate[8].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  } else
+    {
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
@@ -511,17 +607,36 @@ static inline uint32_t binroutebitsI(uint32_t depth, uint8_t wh){   // depth as 
   }
   depth=depth>>1;
   }
+    }
   return bt;
 }
 
-static inline uint32_t binroutebitscycleI(uint32_t depth, uint8_t wh){   // depth as routesel...
+static inline uint32_t binroutebitsI_noshift(uint32_t depth, uint8_t wh){   // depth as routesel...
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshift_[wh]>>SRlength[8]) & 0x01; 
+    bt^=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+    }
+  return bt;
+}
+
+static inline uint32_t binroutebitscycleI_noshift(uint32_t depth, uint8_t wh){   // depth as routesel...
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
   depth=depth|wh; // add itself in
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
-    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
     bt^=bitrr;
   }
   depth=depth>>1;

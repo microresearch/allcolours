@@ -56,6 +56,29 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
 
+** 22/4/2022
+
+- shared bits completed... can also be with other generators embedded
+
+//generators in generators//
+
+** 21/4/2022
+
+- q of stacks of params - but maybe too complex (feedback loops of SR->params)
+- working through new abstractions in experiment.h
+- potentials of shared bit and rungs in rungs
+- maybe get rid of unmving SR or?
+- that we can also have interpol for non-frac speed eg. strobe modes
+
+rungler:
+
+---->0  0<---spds
+\  dat\/ spd/
+ \    ()   /
+  \-- ()--/
+      ()
+- 2 side SRs and 2 central
+
 ** 20/4/2022
 
 - working in experiment.h: abstracting out spdmodes, spdfrom but we
@@ -104,7 +127,7 @@ so key is what provides this identity: one master, 3 slaves, as own chosen ident
 
 towards something like major/minor modes or modeR chooses from a grid of modes...
 
-*abstract out interpol and strobe*
+abstract out interpol and strobeDONE
 
 *to keep null route in binroutes or route always from 5th/extra tail?!*
 

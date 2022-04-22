@@ -357,6 +357,8 @@ uint32_t options[4][24]={
       {0,3,3, 1,3,3, 2,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 3,3,3}
     };
 
+static uint32_t resetz=1;
+
 #include "gen.h" // generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 #include "modeN.h"
@@ -375,10 +377,10 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc0}, 
-  {abstractoutinterpolrung}, // SRX0 is basic route/xor
-  {abstractoutinterpolrung}, 
-  {SR5_feedback}
+  {SRshare}, 
+  {SRshare}, // SRX0 is basic route/xor
+  {dac0}, 
+  {SRRbinrcutallroutes}
 };
 
 /*
@@ -386,7 +388,7 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2 // ADCholdcycle
   {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0
-  {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac
+  {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac abstractoutinterpolnoshift
   {adcLbinprob} SRpattern_unshare
 */
 
@@ -453,6 +455,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   www++;
   if (www>3) {
     www=0;
+    resetz=1;
   }
   
   if (intflag[www]) { // process INT
