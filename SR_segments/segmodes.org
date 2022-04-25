@@ -56,6 +56,20 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
 
+** 25/4/2022
+
+*4x4x4x4* permutationals caput draconis....
+
+*TODO: /// all generic spdmode modes - these need speed being copied over for necessary modes*
+
+- take stock! compare abstractions in new file
+- no major modes on R - but how we can achieve eg. vienna-like modes (6/12 bits)
+- switch by CV between CVspeed and strobe speed.
+
+- catalogue all: where we get speed from?
+
+strobe, CV, adc, CVL, dac/which?, bitsfrom/which?
+
 ** 22/4/2022
 
 - shared bits completed... can also be with other generators embedded
@@ -67,8 +81,8 @@ or 100k cv in, 23k feedback, and -10v is 70k
 - q of stacks of params - but maybe too complex (feedback loops of SR->params)
 - working through new abstractions in experiment.h
 - potentials of shared bit and rungs in rungs
-- maybe get rid of unmving SR or?
-- that we can also have interpol for non-frac speed eg. strobe modes
+- maybe get rid of unmoving SR or????
+- that we can also have interpol for non-frac speed eg. strobe modesDONE
 
 rungler:
 

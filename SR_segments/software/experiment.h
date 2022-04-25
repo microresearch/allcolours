@@ -1,6 +1,10 @@
-// define spdmodes
-uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit};
-uint8_t interpoll[16]={1,0,0,0,0,0,0,0, 0,0,0,0, 0,0,0,0};// match above
+// REF: #define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w];
+
+// define spdmodes - 7 so far ++
+uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits};
+
+// 2x speedfrac - one interpol, one no interpol
+uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
 // template/s
 void SRxxx(uint8_t w){ // 
@@ -9,11 +13,137 @@ void SRxxx(uint8_t w){ //
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
-  //  bitn^=pattern_unshare(SRlength[w],w); 
+  //  bitn^=
   BINROUTE_; // or not
   BITN_AND_OUTV_;
   ENDER;
   }
+  }
+}
+
+// 25/4/2022
+
+//TODO:
+
+// no major modes on R - but how we can achieve eg. vienna-like modes (6/12 bits)
+
+// switch by CV between CVspeed and strobe speed - select spdmode
+
+// catalogue speeds, spdmodes? - how far we got with that? - how we can add to spdmodes (or just standard generators?) TRIAL!
+// what other generators for speed/// select our speedmode with CVL?
+
+// also from bitdsp add 2 streams - part of stream/SR with/out carry or inc carry...
+// binroute of the carry... carry is one bit over length<<1
+
+// test new probbitsxortoggle
+
+void SRprobxortog(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  if (probbitsxortoggle(CVL[w],w)) {
+      BINROUTE_; // or not
+    }
+    else
+      {
+	JUSTCYCLE_;
+      }
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// other version of above
+void SRprobxortogx(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+/// how to do interpol for non-frac modes... AGAIN these need speed being copied over for necessary modes
+void SR_strobeint(uint8_t w){ // testing - not sure... this is generic one as all we have is spdfrom=6 /// try other spdmodes here
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=8;  // strobeint
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    GSHIFT_;
+    BINROUTE_; // or not
+    // do dac for non-interpols
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+// pattern match bitstream from bitdsp: if pattern of length matches then flip bit eg... as gen?
+// match lower parts of lengthx, from 2 other SRs (4 bits) - flip incoming bit if match
+// so is either as strobe or detached/// CVL // but where we get length cv? or use 2 bits length <<1 and 4 comp
+void SRmatch(uint8_t w){ // pattern matcher - could be longer pattern
+  HEADSIN;
+  uint32_t tmpp;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=CVL[w]>>6; // 6 bits
+  tmpp=masky[(tmp>>4)]; // top 2 bits
+  if ( (gate[tmp&0x03].Gshift_[w]&tmpp)==(gate[((tmp&12)>>2)].Gshift_[w]&tmpp)) val=1;
+  else val=0;
+  BINROUTE_; // or not
+  if (val) bitn=!bitn; // invert // or can be other op/choice... abstract out!
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// abstract out for different spdmodes eg. strobe here...
+void SRmatch_strobe(uint8_t w){ // testing - we free length and use spd for sel
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=2;  // strobe
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    GSHIFT_;
+    tmp=CV[w]>>8; // 4 bits
+    tmpp=masky[31-(CV[w]>>7)]; // 5 bits - could also be double match with tmpp as no/mask
+    if ( (gate[tmp&0x03].Gshift_[w]&tmpp)==(gate[(tmp>>2)].Gshift_[w]&tmpp)) val=1;
+    else val=0;
+    BINROUTE_; // or not
+    if (val) bitn=!bitn; // invert // or can be other op/choice... abstract out!
+
+    // do dac for non-interpols
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
   }
 }
 
@@ -22,9 +152,6 @@ void SRxxx(uint8_t w){ //
 // think about abstractions and grids///printing maybes....
 // slides and splits - grids of modes and params/values and entry of SRs into these...
 // shall we look again at rung in rungler
-
-// pattern match bitstream from bitdsp: if pattern of length matches then flip bit eg... as gen?
-
 
 // RSR master mode: cut all routes // open close route bit with clock/toggle
 

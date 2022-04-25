@@ -20,6 +20,25 @@ static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed 
   return bt;
 }
 
+static inline uint32_t strobeint(uint32_t depth, uint8_t wh){ // kind of works...
+  uint32_t bt=0;
+  static float speed;
+  //  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  gate[wh].lastest++;
+  if(gate[wh].trigger) {
+    bt=1; // move on
+    speed=1.0f/(float)gate[wh].lastest; 
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+    gate[wh].lastest=0;
+  }
+  return bt;
+}
+
+
 // try 8 bit cipher mode
 //ADC in comparator -> bits, clked/speed into GGSR which shifts along, on strobe GGSR copied to SR
 static inline uint32_t cipherbits(uint32_t depth, uint8_t wh){
@@ -88,7 +107,7 @@ static inline uint32_t togglebits(uint32_t depth, uint8_t wh){   // toggle - no 
 }
 
 static inline uint32_t pulsebits(uint32_t depth, uint8_t wh){   // toggle - no depth
-  static uint32_t bt=0;
+  uint32_t bt=0;
   if (pulse[wh]){
     bt=!(GPIOC->IDR & pulsins[wh]);
   }
@@ -100,6 +119,21 @@ static inline uint32_t probbits(uint32_t depth, uint8_t wh){   // PROBability mo
   if (depth<(LFSR_[wh]&4095)) bt=1;
   return bt;
 }
+
+static inline uint32_t probbitsxorstrobe(uint32_t depth, uint8_t wh){   // PROBability mode xor strobe - can be more ops
+  uint32_t bt=0;
+  if (depth<(LFSR_[wh]&4095)) bt=1;
+  bt=bt^gate[wh].trigger;
+  return bt;
+}
+
+static inline uint32_t probbitsxortoggle(uint32_t depth, uint8_t wh){   // PROBability mode xor strobe - can be more ops
+  static uint32_t bt=0;
+  if (gate[wh].trigger) bt=bt^1;
+  if (depth<(LFSR_[wh]&4095)) bt^=1; // variations
+  return bt;
+}
+
 
 // but depth could also be param to advance x or shift on
 static inline uint32_t succbits(uint32_t depth, uint8_t wh){   // no use of depth - we route from each sr in turn
@@ -583,7 +617,7 @@ uint32_t (*abstractbitstreams[16])(uint32_t depth, uint8_t wh)={binroutebits, os
 
 uint32_t (*altabstractbitstreams[16])(uint32_t depth, uint8_t wh)={TMsimplebits, probbits, binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, succbits, flipbits};
 
-uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits, binroutebitscycle, binrouteSRbits, binrouteANDbits, binrouteORbits, returnbits, returnnotbits, probbits, succbits, wiardbits, wiardinvbits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits, strobebits, togglebits, }; // 29 so far // we want 32=5 bits
+uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits, binroutebitscycle, binrouteSRbits, binrouteANDbits, binrouteORbits, returnbits, returnnotbits, probbits, probbitsxorstrobe, probbitsxortoggle, succbits, wiardbits, wiardinvbits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits, strobebits, togglebits, cipherbits}; 
 
 
 // probbits, succbits, wiardbits, wiardinvbits and some independent versions --> maybe expand to 31 
