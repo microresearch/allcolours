@@ -56,6 +56,28 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
 
+** 26/4/2022
+
+*primary question of recursion - heads and tails and how these are connected, what recurs, feedsback on what and how Rmode can change this*
+*recursion of geomancy - 4x4 = 16 optiosn, 4 major modes???*
+*also recursion by way of jacks, and param[w] not to forget*
+
+- *also forgot about lengthsel functions like adcLSRlengthsel0 in modeN.h*
+
+// added binrouteINVbits in gen.h 26/4/2022
+
+- CV/CVL as bits -vs- CV as param to generate bits? ????
+
+- sequential bits bump up spdroute/binroute - other choices
+- bits choose binroute bits -> incoming -> bits choose...
+
+.. 1 bits -> speed
+.  2         route    x4 SRs
+.  3         prob
+.  4         logic/pulse  -> recurse all onto 4x SRs - 4 heads - what that means.... [N-speed, L-route etc]
+
+[bits] selects [bits] for [eg. speed] eg. bit as speed bit selects source (which is other bits)
+
 ** 25/4/2022
 
 *4x4x4x4* permutationals caput draconis....

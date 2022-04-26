@@ -1,7 +1,7 @@
 // REF: #define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w];
 
-// define spdmodes - 7 so far ++
-uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits};
+// define spdmodes - need to think which ones work...
+uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test
 
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
@@ -21,22 +21,137 @@ void SRxxx(uint8_t w){ //
   }
 }
 
-// 25/4/2022
-
+// 26/4/2022
 //TODO:
-
-// no major modes on R - but how we can achieve eg. vienna-like modes (6/12 bits)
-
-// switch by CV between CVspeed and strobe speed - select spdmode
-
-// catalogue speeds, spdmodes? - how far we got with that? - how we can add to spdmodes (or just standard generators?) TRIAL!
-// what other generators for speed/// select our speedmode with CVL?
-
 // also from bitdsp add 2 streams - part of stream/SR with/out carry or inc carry...
 // binroute of the carry... carry is one bit over length<<1
 
-// test new probbitsxortoggle
 
+
+// no major modes on R/maybe - but how we can achieve eg. vienna-like modes (6/12 bits)
+// what was vienna scheme again?
+/*
+6 bits/64 modes: 1 1 1 1 1 1 - in original was from CV
+- top bit/speedfrom (strobe or CV - if strobe then use CV as param...
+- 4 bits routing in
+- 1 bit do prob of inversion
+*/
+void SR_vienna(uint8_t w){  
+  HEADSIN; // detach length
+  uint32_t tmpp, tmppp;
+  uint8_t spdfrom; 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+  // 6 bits from CV or DAC
+  tmpp=CVL[w]>>6; // detached length
+  if (tmpp>>5) // top bit
+    {
+    spdfrom=2; // strobe
+    tmppp=CV[w]; // from CV/speed
+    }
+  else {
+    spdfrom=0; // fractional speed.
+    tmppp=param[w]; // param from clock
+  }
+    
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){  // we dont use CV for strobe
+    GSHIFT_;
+    // bitn opp can be inserted... eg. LFSR
+    // XX
+    // 4 bits for route
+    tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
+    for (x=0;x<4;x++){  // older version
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+
+    // and prob thing
+    /*
+    doit[w]=(mode[w]>>4)&0x01; // top bit maybe
+    if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
+    */
+    if ((tmpp>>4)&0x01) {
+      if (gate[dacfrom[count][w]].dac<tmppp) bitn^=1;
+	}
+      
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+
+
+// switch by CV between CVspeed and strobe speed
+// or could be simple prob/bit switch. - new twist of if (bitstream) spdfrom=
+// but we run out of CVs- 1speed, CVL-selectbitstream, param for bitstream... - which now is dac - heading in new direction/abstract furtherTODO!
+// and think of length
+// also how prob is extracted into bitsfrom - how to chain bitsfrom: eg.  bitsprob decides spdfrom of bitsotherprob entry of bitsmode etc...
+// bit chain IS the 4 SRs in some configuration?
+void SR_switchspeed(uint8_t w){  
+  HEADSIN;
+  uint32_t tmpp;
+  uint8_t spdfrom; 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+  tmp=CVL[w]>>7; // 5 bits 
+  tmpp=abstractbitstreamslong[tmp](CV[w],w);
+  if (tmpp) spdfrom=0; // alternatives
+  else spdfrom=2;
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](gate[speedfrom[spdcount][w]].dac,w)){ // replace CV[w] with dac?
+    GSHIFT_;
+    BINROUTE_; // or not
+    // do dac for non-interpols
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+
+//select spdmode - select our speedmode with CV/L?
+void SR_selspeed(uint8_t w){ // TEST!
+  HEADSIN;
+  uint32_t tmpp;
+  uint8_t spdfrom; 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+  spdfrom=CVL[w]>>8; // 4 bits 16 ops - could be more... trial...
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+    GSHIFT_;
+    BINROUTE_; // or not
+    // do dac for non-interpols
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+// 25/4/2022
+
+// xortoggle-PROBability mode xor strobe in gen.h
 void SRprobxortog(uint8_t w){ // 
   HEADSIN;
   if (speedf_[w]!=2.0f){
@@ -282,7 +397,7 @@ typedef struct moods_ { //
   uint8_t incfr;
   uint8_t incor;
   uint8_t last;
-  uint32_t *par0, *par1, *par2, *par3, *par4;
+  uint32_t *par0, *par1, *par2, *par3, *par4; // to add in for length also
   uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
 } moods;
 
@@ -304,7 +419,7 @@ static moods moodsw[64]={ // unused...
 // where does this get us?
 
 // how can we combine decison functions logically? a chain of... but this would be another function??
-// more of a model which is about bitstreamds and combinations of bitstreams
+// more of a model which is about bitstreams and combinations of bitstreams
 
 /*
 

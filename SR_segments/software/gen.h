@@ -184,6 +184,29 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as r
   return bt;
 }
 
+static inline uint32_t binrouteINVbits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+    }
+  bt=!bt;
+  return bt;
+}
+
 static inline uint32_t binroutebits_noshift_transit(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now - no shift of GSR<<
   uint32_t btt=0,bt=0, bitrr;
   static uint8_t lastone;
