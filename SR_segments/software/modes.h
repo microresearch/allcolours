@@ -15,6 +15,9 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   float alpha;
   long last_time;
   long int_time;
+  uint32_t delay[128]; // 128x32 bits=4096
+  uint8_t latch;
+  uint32_t index;
 } heavens;
 
 

@@ -78,7 +78,7 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
     n[reg]++;    
     break;
 
-  case 2: // variations on one bit audio - also phasey
+  case 2: // variations on one bit audio - also phasey - sigma-delta
     k=(income); // from 0 to 4095 but where is the middle? - also we do nothing here with length
     integrator+=(k-oldValue);
    if(integrator>2048)
@@ -239,7 +239,7 @@ static inline uint32_t adc4bits(uint32_t depth){ // fixed 12,8,4
   return bt;
 }
 
-static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO/DONE
+static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
@@ -840,7 +840,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
    break;    
     */
 
-  case 2: // try with float but this is the same with phasings - and we need to make independent! TODO!
+  case 2: // try with float but this is the same with phasings - and we need to make independent! TODO! sigma-delta
     ADCtwo;
     //    inb=(((float)k[reg])/2048.0f)-1.0f; // from 0 to 4095 but where is the middle? 2048
     k[reg]=k[reg]-2048;
@@ -1061,7 +1061,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
       break;
 
-  case 16: // STROBE: 3-one bit entry STROBE
+  case 16: // STROBE: 3-one bit entry STROBE - sigma-delta
     if (strobe) toggle[reg]^=1;
     ADCtwo;
     integrator[reg]+=(k[reg]-oldvalue[reg]);
@@ -1174,7 +1174,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     n[reg]--;    
     break;
         
-  case 26: // one bit audio input from DAC
+  case 26: // one bit audio input from DAC  - sigma-delta
     k[reg]=gate[regg].dac; // from 0 to 4095 but where is the middle? - also we do nothing here with length
     integrator[reg]+=(k[reg]-oldvalue[reg]);
    if(integrator[reg]>2048)
@@ -1356,7 +1356,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
       }
       break;
 
-  case 39: // prob: 3-one bit entry
+  case 39: // prob: 3-one bit entry  - sigma-delta
     ADCtwo;
     integrator[reg]+=(k[reg]-oldvalue[reg]);
    if(integrator[reg]>2048)
@@ -2095,7 +2095,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (x>4095) x=4095;
     break;
 
-  case 2: // one bit audio but with beta as param
+  case 2: // one bit audio but with beta as param  - sigma-delta
     // beta is now (6/12/2021) always param - just if is generated from cv or speed or ... betaf=0.4f is usual value
     // 0.4=par/4096.0
     if (otherpar==0) otherpar=1;

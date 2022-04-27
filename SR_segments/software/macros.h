@@ -10,6 +10,8 @@
 
 #define RETURN (bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01) 
 
+#define SHFT     gate[w].shift_=gate[w].shift_<<1;
+
 ////////
 
 #define ADCone {					\
@@ -255,6 +257,23 @@
 // this one is for fractional speeds/interpol
 #define BITN_AND_OUTV_ {						\
     gate[w].shift_+=bitn;						\
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+    tmp=(w<<1);								\
+    if (w!=0){								\
+      if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];				\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    lengthbit=(SRlength[w]>>1);					\
+    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    prev_stat[w]=new_stat;					\
+    tmp++;							\
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    }								\
+}
+
+#define BITN_AND_OUTVXOR_ {						\
+    gate[w].shift_^=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     tmp=(w<<1);								\
     if (w!=0){								\

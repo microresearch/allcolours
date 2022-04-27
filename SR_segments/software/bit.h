@@ -1,5 +1,7 @@
 /*
 
+Modes which interpret bits?
+
 notes: DACfrom 0-3, mix of DACs?, CV, CV +/xor/AND DAcfrom 0-3
 
 // fill in bit modes here - for modeL then expand then port

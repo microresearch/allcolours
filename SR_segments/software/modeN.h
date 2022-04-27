@@ -347,7 +347,7 @@ void adcLdraft2(uint8_t w){ // detach
 
 //////////////////////////// other models
 
-void adcoroute0(uint8_t w){ // basic ADC in with no route in
+void adcnoroute0(uint8_t w){ // basic ADC in with no route in
   ADCXORIN_NOROUTE(0);
 }
 

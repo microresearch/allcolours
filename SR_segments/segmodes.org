@@ -55,6 +55,54 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
+*TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete//*
+
+** 27/4/2022
+
+- Q, if we replace binroute with generic abstract access... then what do potentially independent modes do?
+
+// so we have: binroute, multi routes in, dacs/SRs dictate parameters, we can patch pulseouts in some cases, they can pull in adc, give dac out
+// *binroute is kind of fixed to a routing operational mode!*
+// do we need to guarantee that one Sr contributes?
+
+L,C,R we have pulses out... so N is odd one out// 6 pulse outs...
+
+- for slower speeds trigger always needs to coincide or we latch - reset when we use - testing in SRghostlatch
+
+- *also QQQQ we dont use clksr_[w] so much* - try in gen.h to shift out...TESTED?DONE
+
+- that we devolve to each SR as a single function - so not having
+  chain of bitstreams as decisions/speed but spdfrom binroute,
+  probfrom binroute and manipulation of routes is more important
+
+*again clash of route in->bits and route in->spd/decide...*
+
+*then each needs 2-3 routes in+*
+
+DONE- generic sigma delta - we have for adc and dac in adcetc.h but could also be for other values: SRsigmadelta
+
+DONE - holder function - hold bits for /depth/ time: static inline uint32_t SRproc_h(uint32_t depth, uint8_t bit, uint8_t wh){  
+*AS new genre of processors - how these would function*
+
+- *way to express lists of functions/operations/flow - again what is most generic pseudo SR...*
+
+x/y grid of parameters and functions
+
+BITS/STREAM -//- VALUE/CV/DAC
+
+recursion needs some input
+
+N L R
+\ | /
+  C - 3 bitstreams + strobe + CV/CVL/ADC which can select and control bitstreams 
+
+CV becomes bitstream 
+bitstream selects CV source/influences it... *[how to abstract bit choice of DACs, CVL, CV, SR raw, past SR, tails... more pointers?]*
+
+- RSR defines 4 major routes _or_ modes ?
+
+- how to archive and overview all our files... new approaches/evolution...?
+
 
 ** 26/4/2022
 
@@ -82,7 +130,7 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 *4x4x4x4* permutationals caput draconis....
 
-*TODO: /// all generic spdmode modes - these need speed being copied over for necessary modes*
+*TODO: /// all generic spdmode modes - these need speed/length being copied over for necessary modes*
 
 - take stock! compare abstractions in new file
 - no major modes on R - but how we can achieve eg. vienna-like modes (6/12 bits)

@@ -1,7 +1,58 @@
 //////////////////////////////////////////////////////////////////////////
 // abstract GENERATORS... adc ones are in adcetc.h
+// some don't use depth, how to deal with this? can also be more INVERTED ones!
 
-// some don't use depth, how to deal with this? can also be more INVERTED
+//- holder function - hold bits for /depth/ time - which bits? - this is more of a processor though...
+// delay line or hold until new value we can take
+// define processors:
+static inline uint32_t SRproc_h(uint32_t depth, uint8_t bit, uint8_t wh){ 
+  static uint32_t bt=0;
+  static uint32_t cnt=0, top=0;
+  cnt++;
+  if (cnt>top){
+    top=depth;
+    bt=bit;
+    cnt=0;
+  }
+  return bt;
+}
+//////////////////////////////////////////////////////////////
+//template
+static inline uint32_t SRttt(uint32_t depth, uint8_t wh){  // 
+  uint32_t bt=0;
+  return bt;
+}
+
+// zero/nada
+static inline uint32_t SRzero(uint32_t depth, uint8_t wh){  // returns only zeroes
+  uint32_t bt=0;
+  return bt;
+}
+
+// top bit of clksr 
+static inline uint32_t SRclksr(uint32_t depth, uint8_t wh){   // no depth
+  uint32_t bt=0;
+  bt=(clksr_[wh]>>SRlength[wh])&0x01;
+  return bt;
+}
+
+static inline uint32_t SRsigmadelta(uint32_t depth, uint8_t wh){  // processor for any int/depth
+  uint32_t bt=0;
+  static int32_t integrator=0, oldValue=0;
+  
+  integrator+=(depth-oldValue);
+   if(integrator>2048)
+  {
+     oldValue=4095;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+  return bt;
+}
 
 // replacing embedded speed... in new abstractions...
 static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage
@@ -37,7 +88,6 @@ static inline uint32_t strobeint(uint32_t depth, uint8_t wh){ // kind of works..
   }
   return bt;
 }
-
 
 // try 8 bit cipher mode
 //ADC in comparator -> bits, clked/speed into GGSR which shifts along, on strobe GGSR copied to SR

@@ -811,7 +811,7 @@ static uint8_t tug[4]={0};
   }
 }
 
-void SRN46(uint8_t w){ //- cycling array of ghosts toggle in/how to toggle out
+void SRN46(uint8_t w){ //- cycling array of ghosts toggle in/how to toggle out // return????
 uint8_t prob;
   HEAD;
   if (speedf_[w]!=2.0f){ 
