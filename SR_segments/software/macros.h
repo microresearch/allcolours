@@ -137,7 +137,7 @@
 
 
 #define BINROUTE_ {				\
-  tmp=binroute[count][w];				\
+    tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
@@ -327,6 +327,21 @@
 #define BITN_AND_OUTVINT_ {						\
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+    tmp=(w<<1);								\
+    if (w!=0){								\
+    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    lengthbit=(SRlength[w]>>1);					\
+    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
+    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
+    prev_stat[w]=new_stat;					\
+    tmp++;							\
+    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
+    else *pulsoutHI[tmp]=pulsouts[tmp];				\
+    }								\
+}
+
+#define BITN_AND_OUTNODAC_ {						\
     tmp=(w<<1);								\
     if (w!=0){								\
     if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\

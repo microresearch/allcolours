@@ -74,6 +74,125 @@ void SRxx_xx(uint8_t w){ //
   }
 }
 
+// 2/5/2022
+
+// TODO: spd from 1/theothers, routefrom 2/theothers, prob/logic from 3/theothers...
+// spdfrom->gate[others[w][0]].dac
+// but then where do bits actually come from...??? and what do we use CVs for...
+// generic spdfrom_binroute[x]
+// spd as bits or as value/dac
+// trial as bits - binroutebits
+
+void SRothers(uint8_t w){ // no use of CV though - could be as value/probability against 
+  HEAD;
+  tmp=CV[w]>>6; // 3x 2 bits =6
+  if (singleroutebits((tmp&3)<<10, w)){ //speed
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  // BINROUTE_;
+  if (singleroutebits(((tmp&12)>>2)<<10, w)){ //prob
+    bitn=singleroutebits(((tmp&48)>>4)<<10, w); // route
+			 }
+    else {
+      JUSTCYCLE_;
+      bitn=!bitn; /// added so runs better
+    }
+  PULSIN_XOR;
+  BITN_AND_OUTVINT_;
+    }
+    }
+// variations - would be nice with 4 layers... 4x2 8 bits though...
+
+
+// trial of dacbus... modeC manipulates this mix...
+// straight route in so we need params for who to add and maybe type of dac
+// selected
+void SRdacbus(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    gate[w].shift_+=bitn;
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); // modes = 4 bits
+    //    val+= other dac... // how change modes for other dacs...
+    BITN_AND_OUTNODAC_;
+    ENDER;
+  }
+  }
+}
+
+
+
+// 28/4/2022
+
+// for speedfrom what options we have:
+// [gens=strobe/prob/clksr/DACs/binroute->which route?]
+// in speedfrac we have depth as CV[w] or dac/speedfrom... but we could make specific functions... - prob is special case but we can use CV[w] against ???
+// against DAC, against LFSR
+
+// speeds with no params....
+// as functions: 
+uint32_t (*speedfroms[8])(uint8_t wh)={sadcfrac, sdacfrac, sstrobe, sstrobeint, sbinroute, sprob, sprobdac, sclksr}; // sycycle also...
+uint8_t interpolll[8]={1,1,0,1, 0,0,0,0}; // new one to match above
+uint8_t freecv[8]={0,1,1,1, 1,0,0,1}; 
+
+// new template following this:
+void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. otherwise not... so we can free it check freecv above
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=1; // fixed for sadcfrac
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+  if (interpolll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (speedfroms[spdfrom](w)){ 
+    GSHIFT_;
+    // if freecv[spdfrom] ... // do what with it? eg. route...
+    BINROUTE_; // or not
+    // do dac for non-interpols
+    if (!interpolll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+// test SRclksrG ghosts
+void SR_clksrG(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=SRclksrG(SRlength[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// test SRclksr
+void SR_clksr(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=SRclksr(SRlength[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
 // 27/4/2022
 // towards generic sets of functions but...
 
@@ -96,23 +215,6 @@ void SR_test(uint8_t w){ //
   }
   }
 }
-
-
-// test SRclksr
-void SR_clksr(uint8_t w){ // 
-  HEAD;
-  if (speedf_[w]!=2.0f){
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-  GSHIFT_;
-  bitn=SRclksr(0,w);
-  BINROUTE_;
-  BITN_AND_OUTV_;
-  ENDER;
-  }
-  }
-}
-
 
 /*
 - store previous SR value (every time or...), rotating store, also what happened to our longer storage? // dac value or whole SR

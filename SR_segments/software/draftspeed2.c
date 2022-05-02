@@ -99,6 +99,7 @@ uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed to use in INTmodes and other m
 ///uint32_t dacroute[4]={2,3,3,1}; // DAC routing for probability modes etc...
 
 #define FULL 0b11111111111111111111111111111111 //32 bits full
+#define HALB 0b10101010101010101010101010101010 //32 bits 1010
 #define MAXVALUE 4095
 #define SMOOTHINGS 512 // we can hold 65536 of our 16 bit ADC values...speed
 uint32_t cc=0, totc=0, smoothc[SMOOTHINGS];
@@ -121,7 +122,9 @@ uint16_t ADCLR[3]={29,30,31}; // non-adc ADC modes - this has changedDONE
 
 uint32_t s[4]={0,0,0,0};
 uint32_t ss[4]={0,0,0,0};
-uint32_t clksr_[4]={0,0,0,0};
+uint32_t clksr_[4]={HALB,HALB,HALB,HALB};
+uint32_t clksrG_[4]={0,0,0,0};
+ 
 
 // for generic CLK fake puls routing
 //LSRCLK-pulse9=PB12, RSRCLK-pulse10=PB13, CSRCLCK-pulse11=PB14
@@ -378,16 +381,16 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
   {adc0}, 
-  {SR_test}, // SRX0 is basic route/xor
+  {SRothers}, // SRX0 is basic route/xor
   {dac0}, 
-  {SRX0}
+  {SRothers}
 };
 
 /*
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2 // ADCholdcycle
-  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes
+  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes SR_clksrG
   {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac abstractoutinterpolnoshift
   {adcLbinprob} SRpattern_unshare
 */
@@ -442,7 +445,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   uint32_t tmp;
   static uint32_t flipper[4]={1}, www=0, kk=0;
 
-  
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
   
   // for the time between counts
@@ -461,11 +463,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (intflag[www]) { // process INT
     gate[www].trigger=1;
     intflag[www]=0;
-    clksr_[www]=(clksr_[www]<<1)+1;     // shift on to CLKSR
+    clksrG_[www]=clksr_[www]; // copy in to ghost
+    tmp=(clksr_[www]>>31)& 0x01; // length is 31
+    clksr_[www]=(clksr_[www]<<1)+tmp;     // shift round CLKSR - we can also insert in/copy in
   }
   else  {
     gate[www].trigger=0;
-    clksr_[www]=(clksr_[www]<<1);
+    //    clksr_[www]=(clksr_[www]<<1); 
   }
   // genericLFSR for all probability modes
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24

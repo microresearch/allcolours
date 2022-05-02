@@ -1,11 +1,24 @@
+//// comment/ catalogue...
+
+/*
+- processors: hold bits, bits to value, value to bits and independent versions
+- speedgens with no params and default routes: sadcfrac, sdacfrac, sstrobe, sstrobeint, sbinroute, scycle, sprob, sprobdac, sclksr
+- generators: depth, wh
+
+- independent generators - so no shared stuff
+
+ */
+
 //////////////////////////////////////////////////////////////////////////
 // abstract GENERATORS... adc ones are in adcetc.h
 // some don't use depth, how to deal with this? can also be more INVERTED ones!
 
+///////////////////////////////////////////////
+// PROCESSORS
+
 //- holder function - hold bits for /depth/ time - which bits? - this is more of a processor though...
 // delay line or hold until new value we can take
-// define processors:
-static inline uint32_t SRproc_h(uint32_t depth, uint8_t bit, uint8_t wh){ 
+static inline uint32_t SRproc_hold(uint32_t depth, uint8_t bit, uint8_t wh){ 
   static uint32_t bt=0;
   static uint32_t cnt=0, top=0;
   cnt++;
@@ -16,7 +29,180 @@ static inline uint32_t SRproc_h(uint32_t depth, uint8_t bit, uint8_t wh){
   }
   return bt;
 }
-//////////////////////////////////////////////////////////////
+
+// bits to value
+static inline uint32_t SRproc_accum(uint32_t depth, uint8_t bit, uint8_t wh){ 
+  static uint32_t bt=0, cc=0, final;
+  cc++;
+  if (cc>depth) {
+    final=bt;
+    cc=0;
+    bt=0;
+  }
+  if (bit) {
+    bt++;
+  }
+  return bt; // returns last final value
+}
+
+// value to bits - depth is value to shift out, bit is length - runs until new bits needed
+static inline uint32_t SRproc_bits(uint32_t depth, uint8_t bit, uint8_t wh){ 
+  static int32_t cc=0;
+  uint32_t bt;
+  static uint32_t bits;
+  bt=(bits>>cc)&0x01;
+  cc--;
+  if (cc<0) {
+    cc=bit;
+    bits=depth;
+  }
+  return bt; // returns a bit
+}
+
+// independent versions of these as they share values...
+
+static inline uint32_t SRproc_holdI(uint32_t depth, uint8_t bit, uint8_t wh){ 
+  static uint32_t bt[4]={0,0,0,0};
+  static uint32_t cnt[4]={0,0,0,0};
+  static uint32_t top[4]={0,0,0,0};
+
+  cnt[wh]++;
+  if (cnt[wh]>top[wh]){
+    top[wh]=depth;
+    bt[wh]=bit;
+    cnt[wh]=0;
+  }
+  return bt[wh];
+}
+
+// bits to value
+static inline uint32_t SRproc_accumI(uint32_t depth, uint8_t bit, uint8_t wh){ 
+  static uint32_t bt[4]={0,0,0,0}, cc[4]={0,0,0,0}, final[4];
+  cc[wh]++;
+  if (cc[wh]>depth) {
+    final[wh]=bt[wh];
+    cc[wh]=0;
+    bt[wh]=0;
+  }
+  if (bit) {
+    bt[wh]++;
+  }
+  return bt[wh]; // returns last final value
+}
+
+static inline uint32_t SRproc_bitsI(uint32_t depth, uint8_t bit, uint8_t wh){ 
+  static int32_t cc[4]={0,0,0,0};
+  uint32_t bt;
+  static uint32_t bits[4]={0,0,0,0};
+  bt=(bits[wh]>>cc[wh])&0x01;
+  cc[wh]--;
+  if (cc[wh]<0) {
+    cc[wh]=bit;
+    bits[wh]=depth;
+  }
+  return bt; // returns a bit
+}
+
+////////////////////////////////////////////////////////////// GENS
+// speedgens with no params, just wh and use default routes
+static inline uint32_t sadcfrac(uint8_t wh){ 
+  uint32_t bt=0;
+  float speed;
+  speed=logspeedd[CV[wh]>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+static inline uint32_t sdacfrac(uint8_t wh){ 
+  uint32_t bt=0;
+  float speed;
+  speed=logspeedd[gate[speedfrom[count][wh]].dac>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+static inline uint32_t sstrobe(uint8_t wh){   // strobe - no depth
+  uint32_t bt;
+  bt=gate[wh].trigger;
+  return bt;
+}
+
+static inline uint32_t sstrobeint(uint8_t wh){
+  uint32_t bt=0;
+  static float speed;
+  //  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  gate[wh].lastest++;
+  if(gate[wh].trigger) {
+    bt=1; // move on
+    speed=1.0f/(float)gate[wh].lastest; 
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+    gate[wh].lastest=0;
+  }
+  return bt;
+}
+
+static inline uint32_t sbinroute(uint8_t wh){   // depth as routesel... shared bits now
+  uint32_t bt=0, bitrr, depth;
+  depth=binroute[count][wh];
+
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t scycle(uint8_t wh){   // itself/cycle
+  uint32_t bt=0;
+  bt=((gate[wh].Gshift_[wh]>>SRlength[wh])& 0x01);
+  return bt;
+}
+
+static inline uint32_t sprob(uint8_t wh){   // PROBability mode - against LFSR
+  uint32_t bt=0;
+  if (CV[wh]<(LFSR_[wh]&4095)) bt=1;
+  return bt;
+}
+
+static inline uint32_t sprobdac(uint8_t wh){   // PROBability mode - against DAC
+  uint32_t bt=0;
+  if (CV[wh]<gate[dacfrom[count][wh]].dac) bt=1;
+  return bt;
+}
+
+static inline uint32_t sclksr(uint8_t wh){ 
+  uint32_t bt=0;
+  bt=(clksr_[wh]>>SRlength[wh])&0x01;
+  return bt;
+}
+
+
+////////////////////////////////////////////////////////////// GENS
+
 //template
 static inline uint32_t SRttt(uint32_t depth, uint8_t wh){  // 
   uint32_t bt=0;
@@ -30,9 +216,17 @@ static inline uint32_t SRzero(uint32_t depth, uint8_t wh){  // returns only zero
 }
 
 // top bit of clksr 
-static inline uint32_t SRclksr(uint32_t depth, uint8_t wh){   // no depth
+static inline uint32_t SRclksr(uint32_t depth, uint8_t wh){ 
   uint32_t bt=0;
-  bt=(clksr_[wh]>>SRlength[wh])&0x01;
+  bt=(clksr_[wh]>>depth)&0x01;
+  return bt;
+}
+
+// how could we cycle through clksr if it is not moving - we need gsr for them -clksrG_
+static inline uint32_t SRclksrG(uint32_t depth, uint8_t wh){
+  uint32_t bt=0;
+  bt=(clksrG_[wh]>>depth)&0x01;
+  clksrG_[wh]=(clksrG_[wh]<<1)+bt; // this also changes patterns there
   return bt;
 }
 
@@ -231,6 +425,18 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as r
   depth=depth>>1;
   }
     }
+  return bt;
+}
+
+static inline uint32_t singleroutebits(uint32_t depth, uint8_t wh){  // just route from 0-3 single route
+  uint32_t bt=0, bitrr;
+  depth=depth>>10; // 12 bits to 2 bits
+    // deal with no route
+
+  bitrr = (gate[depth].Gshare_>>SRlength[depth]) & 0x01; 
+  gate[depth].Gshare_=(gate[depth].Gshare_<<1)+bitrr;
+  bt=bitrr;
+  
   return bt;
 }
 
@@ -691,9 +897,6 @@ uint32_t (*abstractbitstreams[16])(uint32_t depth, uint8_t wh)={binroutebits, os
 uint32_t (*altabstractbitstreams[16])(uint32_t depth, uint8_t wh)={TMsimplebits, probbits, binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, succbits, flipbits};
 
 uint32_t (*abstractbitstreamslong[32])(uint32_t depth, uint8_t wh)={binroutebits, binroutebitscycle, binrouteSRbits, binrouteANDbits, binrouteORbits, returnbits, returnnotbits, probbits, probbitsxorstrobe, probbitsxortoggle, succbits, wiardbits, wiardinvbits, osceqbits, osc1bits, onebits, ENbits, ENsbits, ENsroutedbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits, strobebits, togglebits, cipherbits}; 
-
-
-// probbits, succbits, wiardbits, wiardinvbits and some independent versions --> maybe expand to 31 
 
 /////////////////////////////////////////// INDEPENDENT ones
 

@@ -55,7 +55,62 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
-*TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete//*
+*TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete// 2 may*
+
+** 2/5/2022
+
+- speedfrom x [vs] speedfrom[from[x]]
+eg. speed from DAC or speed from [chosen by DAC]
+
+speed as value/speed as trigger and translators between? (added value to bits processor)
+xfrom x vs xfrom[from[x]] eg. prob from DAC vs prob from choice from DAC
+
+- generators/processors (for bits or for values)
+
+** 29/4/2022
+
+- split of spdroutes | binroutes
+
+speed from SR | speedmodeX
+route from SR | binmodeX
+
+** 28/4/2022
+
+files:
+//org: Xmode, 1apr, thisone, acSRmodes, seg2.org, bits_and_prob, temp, temp2
+
+//.h/c: modeX.h, experiment.h, probability.h, prob.h, newmodes.c, abstraction.h
+
+*can anyone be DAC - but if more than one what do we do? mix? -dacbus?*
+
+*question of 5th tail - if we always have this*
+
+// from below: speedfrom [ADCs/gens=strobe/prob/clksr/DACs/binroute->which route?]------->      gsrcopy // <<SR // <<GSR // binroute/dac
+
+DONEsmaller gen selection eg speedsfrom...
+
+// bitfrom,,,,
+
+- note: param[x] is count between interrupts, clksr_ is SR shifting on strobe bits -> re-worked to test...DONE
+*- so we can use clksr as a 5th tail on each - an SR driven by clk but we can copy contents in there (when/how?)*
+
+- DONEbits bump values - bits-> values
+
+- *check bitdsp: recursive boolean networks(int), delta(int), delay(int32), maskedOR(int32)*
+
+// maskedOR:
+
+(MASK AND (A OR B)) OR (NOTMASK AND A)
+
+back to basics/classicSR:
+1- speedfromX / or / CV clock speed
+2- prob of new entry/vs/cycle - new entry can be route in
+3- prob of inversion/vs/cycle - or/xor pulsebit/clkbits
+
+fixed routing (rungler) vs. open routing/dictated routing (last segment of modeR) - see below how we deal with independent modes
+
+maybe simplest thing is just to try some sets of modes out...
+
 
 ** 27/4/2022
 
@@ -175,9 +230,9 @@ rungler:
 -- print and cut up functions/python re-workings/further into generic functions
 -- *dissect whole diagram TODO!*
 
-speedfrom [ADCs/gens/DACs/binroute->which route?]------->      gsrcopy // <<SR // <<GSR // binroute/dac
+speedfrom [ADCs/gens=prob/clk/DACs/binroute->which route?]------->      gsrcopy // <<SR // <<GSR // binroute/dac
 infrom [ADCs/gens/DACs/binroute->which route?]
-IN? [ADCs/gens/DACs/binroute->which route?]
+IN/prob? [ADCs/gens/DACs/binroute->which route?]
 logic [ADCs/gens/DACs/binroute->which route?]
 
 -- most generic option eg. vienna code ... but how to get recursion in/chasing/chaining, also null route mode is there

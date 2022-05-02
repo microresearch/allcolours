@@ -1,5 +1,42 @@
 * schematic
 
+
+TESTS:
+
+- basic binticDONE
+- expanded with signum
+
+== see below// is signum working? // is bin3 working (how to test on own as all have feedback)
+
+all bin 1 2 3 saeem work in same way so...
+fixed 2.2k on r99 4th vca as was wrong part
+
+- Mindlin
+- crossover
+
+** 2/5/2022
+
+- if we invert b3->bb3 (so input to 3rd integral - x which goes to
+  signum) then seems stable and quite interesting (why as seems wrong for equation?)
+
+** 29/4/2022
+
+r68 try 1.5m according to calcs for 12v // try 2m as no 1.5 -- trying but still unstable
+
+** 28/4/2022
+
+- revisiting - had to resolder u1 1st amp does have connection to b3 through r9 which explains what we thought was bleed
+
+////
+- +basic bintic with 2x switched caps and 3x vca is strong on clock and not much input+ - was one cap unsoldered now fixed and behaves well...
+- bit now with 3x bintic/integrators and signum is 10v no signal out from R1->out amplifier
+
+signals from others... is bb3 bin/int working??? fixed r24 and worked a bit/not now//signum?
+
+d1 to dd1 is inverted...
+
+- how did we calc values for VCAs - halving signal at max?
+
 ** 22/12/2021
 
 - if we think of a simple switching analogue comp - with several 4066
@@ -70,7 +107,7 @@ which is close to:
 
 sprott manual is ax``` + bx`` + [cSGN(x) - dx] = 0
 
-where is x` ???
+where is x` ??? 
 
 * TODO
 
