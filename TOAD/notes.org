@@ -14,10 +14,30 @@ fixed 2.2k on r99 4th vca as was wrong part
 - Mindlin
 - crossover
 
+** 3/5/2022
+
+- according to equations last/3rd/signum path should not be inverting ????
+
+X''' = -G(x) + Ax'' + x'
+
+- 100k also in last path is necessary (we have 22k in R72 already but up to 100K)
+
+- worried about impedance in LM13700 inputs - how can we change this - LM13700 is fine but prob in current control
+
+also 1k in bintics to check and 100k for gnd on damper to maybe add...
+
+Iabc is control current max 2mA // recalculate
+
+say for 1st R40 and R41 is 100K then r44 is 22k (we can also change top in pot/divider) - seems to work fine as is with changes noted
+
+- temp remove r9 to test 1st invertor as is offset...
+
+
+
 ** 2/5/2022
 
 - if we invert b3->bb3 (so input to 3rd integral - x which goes to
-  signum) then seems stable and quite interesting (why as seems wrong for equation?)
+  signum) then seems stable and quite interesting 
 
 ** 29/4/2022
 

@@ -1,5 +1,16 @@
 * notes towards manual
 
+- grid of features with symbols eg.
+
+      clk spd 
+xmode  *   -
+
+eg. does it use clk (as param, as timing/speed, as pulse)
+
+what else??? fill in
+
+also like grid from moods modes/
+
 ** Heavens material
 
 https://academic.oup.com/jcmc/article/3/3/JCMC334/4584381

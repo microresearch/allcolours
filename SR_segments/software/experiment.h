@@ -74,6 +74,25 @@ void SRxx_xx(uint8_t w){ //
   }
 }
 
+// 3/5/2022
+
+// trial static inline uint32_t SRproc_hold(uint32_t depth, uint8_t bit){
+void SRhold(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  bitn=SRproc_hold(CVL[w]>>4,bitn);
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
 // 2/5/2022
 
 // TODO: spd from 1/theothers, routefrom 2/theothers, prob/logic from 3/theothers...
@@ -83,7 +102,7 @@ void SRxx_xx(uint8_t w){ //
 // spd as bits or as value/dac
 // trial as bits - binroutebits
 
-void SRothers(uint8_t w){ // no use of CV though - could be as value/probability against 
+void SRothers(uint8_t w){ // length could also be as value/probability against 
   HEAD;
   tmp=CV[w]>>6; // 3x 2 bits =6
   if (singleroutebits((tmp&3)<<10, w)){ //speed
@@ -106,8 +125,7 @@ void SRothers(uint8_t w){ // no use of CV though - could be as value/probability
 
 // trial of dacbus... modeC manipulates this mix...
 // straight route in so we need params for who to add and maybe type of dac
-// selected
-void SRdacbus(uint8_t w){ // 
+void dacbus(uint8_t w){ // 
   HEADSIN;
   if (speedf_[w]!=2.0f){
   CVOPEN;
@@ -115,8 +133,105 @@ void SRdacbus(uint8_t w){ //
     GSHIFT_;
     BINROUTE_;
     gate[w].shift_+=bitn;
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); // modes = 4 bits
-    //    val+= other dac... // how change modes for other dacs...
+    tmp=CVL[w]>>6; // 6 bits
+    gate[w].dacpar=param[w];
+    val=DAC_(w, gate[w].shift_, SRlength[w], tmp>>2, gate[w].dacpar, gate[w].trigger); // modes = 4 bits but some rely on length
+    if ((tmp>>4)!=w) val+=gate[tmp>>4].dac; //other dac... // how change modes for other dacs... or not - but which dac - and not itself
+    if (val>4095) val=4095;
+    BITN_AND_OUTNODAC_;
+    ENDER;
+  }
+  }
+}
+// variation1 - possible 4 layers of dacs... itself, 1, 2, 3 - how to stack... // 2 bits... // strobe bumps up
+// others[4][3]={ all but itself
+void dacbusothers(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    gate[w].shift_+=bitn;
+    tmp=CVL[w]>>5; // 7 bits
+    gate[w].dacpar=param[w];
+    val=DAC_(w, gate[w].shift_, SRlength[w], tmp>>3, gate[w].dacpar, gate[w].trigger); // modes = 4 bits but some rely on length
+    if ((tmp>>4)&1) val+=gate[others[w][0]].dac; // 3 bits - TODO: try also shift out clkbits - any set of 3 bits
+    if ((tmp>>5)&1) val+=gate[others[w][1]].dac;
+    if ((tmp>>6)) val+=gate[others[w][2]].dac; 
+    //    if (val>4095) val=4095;
+    // or
+    val=val%4095;
+    BITN_AND_OUTNODAC_;
+    ENDER;
+  }
+  }
+}
+
+// using the others clkbits
+void dacbusothers_clk(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    gate[w].shift_+=bitn;
+    tmp=CVL[w]>>8; // 4 bits
+    gate[w].dacpar=param[w];
+    val=DAC_(w, gate[w].shift_, SRlength[w], tmp, gate[w].dacpar, gate[w].trigger); // modes = 4 bits but some rely on length
+    if (clksrG_[others[w][0]]&1) val+=gate[others[w][0]].dac; // 3 bits - TODO: try also shift out clkbits - any set of 3 bits
+    if (clksrG_[others[w][1]]&1) val+=gate[others[w][1]].dac;
+    if (clksrG_[others[w][2]]&1) val+=gate[others[w][2]].dac; 
+    //    if (val>4095) val=4095;
+    // or
+    val=val%4095;
+    BITN_AND_OUTNODAC_;
+    ENDER;
+  }
+  }
+}
+
+void dacbusothers_sr(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    gate[w].shift_+=bitn;
+    tmp=CVL[w]>>8; // 4 bits
+    gate[w].dacpar=param[w];
+    val=DAC_(w, gate[w].shift_, SRlength[w], tmp, gate[w].dacpar, gate[w].trigger); // modes = 4 bits but some rely on length
+    if (gate[others[w][0]].shift_&1) val+=gate[others[w][0]].dac; // 3 bits - TODO: try also shift out clkbits - any set of 3 bits
+    if (gate[others[w][1]].shift_&1) val+=gate[others[w][1]].dac;
+    if (gate[others[w][2]].shift_&1) val+=gate[others[w][2]].dac; 
+    //    if (val>4095) val=4095;
+    // or
+    val=val%4095;
+    BITN_AND_OUTNODAC_;
+    ENDER;
+  }
+  }
+}
+
+void dacbusothers_own(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    gate[w].shift_+=bitn;
+    tmp=CVL[w]>>6; // 6 bits
+    gate[w].dacpar=param[w];
+    val=DAC_(w, gate[w].shift_, SRlength[w], tmp>>2, gate[w].dacpar, gate[w].trigger); // modes = 4 bits but some rely on length
+    if (gate[tmp>>4].shift_&1) val+=gate[others[w][0]].dac; // 3 bits - TODO: try also shift out clkbits - any set of 3 bits
+    if ((gate[tmp>>4].shift_>>1)&1) val+=gate[others[w][1]].dac;
+    if ((gate[tmp>>4].shift_>>2)&1) val+=gate[others[w][2]].dac; 
+    //    if (val>4095) val=4095;
+    // or
+    val=val%4095;
     BITN_AND_OUTNODAC_;
     ENDER;
   }

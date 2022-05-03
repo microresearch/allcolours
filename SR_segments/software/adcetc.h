@@ -2208,7 +2208,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
     //    // case 15 was as case 2 but with
-   param for filter - and now always has param
+    //   param for filter - and now always has param
 
   case 15:// standard bit DAC for x bits - new mode here
 

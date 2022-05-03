@@ -57,6 +57,62 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 *TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete// 2 may*
 
+*static/frozen speeds in general or not*
+*slower speeds/cv*
+*check use of clk, pulsin, out*
+
+** 3/5/2022
+
+- *like idea of past modes still running/layered and changing params but how: or SR as selecting, running through modes, holding modes, operations ON modes*
+
+// notes from notebook and new:
+
+- also division of types between generators (create), routers, speedfrom/routefrom, and global changers/experimental
+(as works well with just SRothers on RL and CN as simple! 
+
+eg.
+  {adc0}, 
+  {SRothers}, // SRX0 is basic route/xor
+  {dac0}, 
+  {SRothers}
+
+- check/re-check simple types from rung:
+1.generators+speedfromX
+2.binroute/from and cycle/speedfromX
+3.binroute/outDAC (we have)
+4.5th tail feedback within a binroute ///
+
+- 16 cards x 4 = 4 x 16 geomantic figures/ 16 SR functions x4 - detach, strobe, dacspeed, normal / figures as models
+eg. for split speeds, always 4 layers...
+- copy/gshift
+- speed of X
+- route
+- prob/in logic
+
+or * * - gs/no gs
+    *  - ?
+    *  - bin/cycle
+    *  - ?
+
+*also how 4 layers combine -- 4 ** * * * - 4 cards, 4 layers of head, etc... earth etc...
+
+- *chain of for each SR// how???*
+
+1-if [x] bitfrom[y] 
+2-if [if [x] bitfrom[y]] bitfrom[y]
+3-if [if [if [x] bitfrom[y]] bitfrom[y]] bitfrom[y]
+4-if [if [if [if [x] bitfrom[y]] bitfrom[y]] bitfrom[y]] bitfrom[y]
+
+- code layers, depth, descent
+
+- re-check latest processors. values->bits = adc, bits->values = dac, values IS SR made up of bits, but what values other than SR do we operate on!
+
+- inversions/inverted recursion - eg. speedfrom itself fails but does it fail if inverted?
+
+- *SRs which operate on/stuff/change other SRs directly and not just GSRS, do we have these eg. shift on SR if bitx, insert into sr, splice...*
+
+- simple modes/complex modes/detached modes/speed modes/global modes
+
 ** 2/5/2022
 
 - speedfrom x [vs] speedfrom[from[x]]
@@ -65,7 +121,7 @@ eg. speed from DAC or speed from [chosen by DAC]
 speed as value/speed as trigger and translators between? (added value to bits processor)
 xfrom x vs xfrom[from[x]] eg. prob from DAC vs prob from choice from DAC
 
-- generators/processors (for bits or for values)
+- *how to combine generators/processors (for bits or for values): sets of combos but how to combine and we need more*
 
 ** 29/4/2022
 
