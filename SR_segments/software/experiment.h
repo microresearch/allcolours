@@ -432,6 +432,72 @@ void SR_clksr(uint8_t w){ //
 
 
 // 27/4/2022
+
+//- *hold/perform last function with frozen params but change say length as CVL?*
+// how??? - how do we enter? is more a case of freezing last param which was CVL and using for length
+// what means last function?
+
+// so we would need paramx[w] 
+// doesn't make sense as we have it....
+// we need to freeze on entry // but unfreeze on exit/change... marked in SR...
+void SR_genspeed2(uint8_t w){
+  HEAD;
+  uint32_t par;
+  if (gate[w].changed) gate[w].paramx=CVL[w]; // if we want -  but only on entry // this can also be on trigger - try below
+  // or freeze for length
+  SRlength[w]=lookuplenall[CVL[w]>>7];
+  uint8_t spdfrom=gate[w].paramx>>7; // 5 bits 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; 
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){
+    GSHIFT_;
+    // ACTION!
+    bitn=abstractbitstreamslong[spdfrom](CV[w],w); // without even getting into prob
+    //    BINROUTE_; // how to chain in binroutebits (and param for that)
+
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+void SR_genspeed3(uint8_t w){ // working now
+  HEAD;
+  uint32_t par;
+  if (gate[w].trigger) gate[w].paramx=CVL[w]; // if we want -  but only on entry // this can also be on trigger - try below
+  // or freeze for length
+  SRlength[w]=lookuplenall[CVL[w]>>7];
+  uint8_t spdfrom=gate[w].paramx>>8; // 4 bits 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; 
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){
+    GSHIFT_;
+    // ACTION!
+    //    bitn=abstractbitstreamslong[spdfrom](CV[w],w); // without even getting into prob
+    BINROUTE_; // how to chain in binroutebits (and param for that)
+
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
 // towards generic sets of functions but...
 
 // *[how to abstract bit choice of DACs, CVL, CV, SR raw, past SR, clksr_, with masks for 12 bits?, tails... more pointers?]*

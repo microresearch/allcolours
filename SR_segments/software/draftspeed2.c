@@ -76,6 +76,7 @@ uint32_t rr=0, totr=0, smoothr[SMOOTHINGS];
 uint32_t nn=0, totn=0, smoothn[SMOOTHINGS];
 
 uint16_t mode[4]={0,0,0,0};
+uint16_t lastmode[4]={1,1,1,1};
 uint8_t clkr=7;
 uint16_t lastmodec, lastmoden, lastmodel, lastmoder;
 uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
@@ -332,7 +333,7 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
   {adc0}, 
-  {SR_recbin}, // SRX0 is basic route/xor
+  {SR_genspeed3}, // SRX0 is basic route/xor
   {dac0}, 
   {SRX0}
 };
@@ -341,7 +342,7 @@ void (*dofunc[4][64])(uint8_t w)=
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2 // ADCholdcycle
-  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes SR_clksrG SRothers dacbusothers_clk dacbusothers_sr dacbusothers_own SRhold SRholdspd SR_speedx SR_splitx
+  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes SR_clksrG SRothers dacbusothers_clk dacbusothers_sr dacbusothers_own SRhold SRholdspd SR_speedx SR_splitx SR_recbin
   {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac abstractoutinterpolnoshift 
   {adcLbinprob} SRpattern_unshare
 */
@@ -368,16 +369,15 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 void mode_init(void){
   uint32_t x;
 
-  gate[0].shift_=0x15;
-  gate[1].shift_=0x15;
-  gate[2].shift_=0x15;
-  gate[3].shift_=0x15;
 
   for (x=0;x<4;x++){
-  gate[x].Gshift_[0]=0;
-  gate[x].Gshift_[1]=0;
-  gate[x].Gshift_[2]=0;
-  gate[x].Gshift_[3]=0;
+    gate[x].changed=0;
+    gate[x].paramx=0;
+    gate[x].shift_=0x15;
+    gate[x].Gshift_[0]=0;
+    gate[x].Gshift_[1]=0;
+    gate[x].Gshift_[2]=0;
+    gate[x].Gshift_[3]=0;
   }
   
   gate[0].adctype=0;
@@ -428,9 +428,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   LFSR_[www] = (LFSR_[www]<<1) + tmp;
 
   // do the modes
-  
-   mode[www]=testmodes[www];
-  //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
+  mode[www]=testmodes[www];
+   
+   //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
   //  mode[0]=4;
   //  mode[1]=0;mode[3]=0; // test dac
   //  if (mode[2]>15) mode[2]=15;

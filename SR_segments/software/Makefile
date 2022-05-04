@@ -52,7 +52,7 @@ AFLAGS  = -mlittle-endian -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -mfl
 
 LFLAGS  = -T $(LDSCRIPT) -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 
 #LFLAGS_END = -larm_cortexM4lf_math -ldsplib_lm4f -Wl,--gc-sections,-Map=myfile.map -lm -lc
-LFLAGS_END =  -Wl,--gc-sections,-Map=myfile.map -lm -lc
+LFLAGS_END =  -Wl,--print-memory-usage,--gc-sections,-Map=myfile.map -lm -lc  
 
 # Executables
 ARCH = arm-none-eabi
