@@ -18,7 +18,7 @@
 
 //- holder function - hold bits for /depth/ time - which bits? - this is more of a processor though...
 // delay line or hold until new value we can take
-static inline uint32_t SRproc_hold(uint32_t depth, uint8_t bit){ 
+static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){ 
   static uint32_t bt=0;
   static uint32_t cnt=0, top=0;
   cnt++;
@@ -31,7 +31,7 @@ static inline uint32_t SRproc_hold(uint32_t depth, uint8_t bit){
 }
 
 // bits to value
-static inline uint32_t SRproc_accum(uint32_t depth, uint8_t bit){ 
+static inline uint32_t SRproc_accum(uint32_t depth, uint32_t bit){ 
   static uint32_t bt=0, cc=0, final;
   cc++;
   if (cc>depth) {
@@ -46,7 +46,7 @@ static inline uint32_t SRproc_accum(uint32_t depth, uint8_t bit){
 }
 
 // value to bits - depth is value to shift out, bit is length - runs until new bits needed
-static inline uint32_t SRproc_bits(uint32_t depth, uint8_t bit){ 
+static inline uint32_t SRproc_bits(uint32_t depth, uint32_t bit){ 
   static int32_t cc=0;
   uint32_t bt;
   static uint32_t bits;
@@ -61,7 +61,7 @@ static inline uint32_t SRproc_bits(uint32_t depth, uint8_t bit){
 
 // independent versions of these as they share values...
 
-static inline uint32_t SRproc_holdI(uint32_t depth, uint8_t bit, uint8_t wh){ 
+static inline uint32_t SRproc_holdI(uint32_t depth, uint32_t bit, uint8_t wh){ 
   static uint32_t bt[4]={0,0,0,0};
   static uint32_t cnt[4]={0,0,0,0};
   static uint32_t top[4]={0,0,0,0};
@@ -76,7 +76,7 @@ static inline uint32_t SRproc_holdI(uint32_t depth, uint8_t bit, uint8_t wh){
 }
 
 // bits to value
-static inline uint32_t SRproc_accumI(uint32_t depth, uint8_t bit, uint8_t wh){ 
+static inline uint32_t SRproc_accumI(uint32_t depth, uint32_t bit, uint8_t wh){ 
   static uint32_t bt[4]={0,0,0,0}, cc[4]={0,0,0,0}, final[4];
   cc[wh]++;
   if (cc[wh]>depth) {
@@ -90,7 +90,7 @@ static inline uint32_t SRproc_accumI(uint32_t depth, uint8_t bit, uint8_t wh){
   return final[wh]; // returns last final value
 }
 
-static inline uint32_t SRproc_bitsI(uint32_t depth, uint8_t bit, uint8_t wh){ 
+static inline uint32_t SRproc_bitsI(uint32_t depth, uint32_t bit, uint8_t wh){ 
   static int32_t cc[4]={0,0,0,0};
   uint32_t bt;
   static uint32_t bits[4]={0,0,0,0};

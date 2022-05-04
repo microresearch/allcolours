@@ -1,3 +1,49 @@
+
+/*
+// for manual binroute
+    tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
+    for (x=0;x<4;x++){  // older version
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+*/
+
+
+
+uint32_t neworder[4]={3,2,1,0}; // order backwards
+
+uint32_t neworders[24][4]={
+  {0,1,2,3},
+  {0,1,3,2},
+  {0,2,1,3},
+  {0,2,3,1},
+  {0,3,1,2},
+  {0,3,2,1},
+  {1,2,3,0},
+  {1,2,0,3},
+  {1,3,2,0},
+  {1,3,0,2},
+  {1,0,2,3},
+  {1,0,3,2},
+  {2,3,0,1},
+  {2,3,1,0},
+  {2,0,1,3},
+  {2,0,3,1},
+  {2,1,3,0},
+  {2,1,0,3},
+  {3,0,1,2},
+  {3,0,2,1},
+  {3,1,2,0},
+  {3,1,0,2},
+  {3,2,1,0},
+  {3,2,0,1}  
+};
+
+
 static inline uint32_t adc4bits_unshare(uint32_t depth, uint8_t wh){ // use wh too so matches other gens
   uint32_t bt, k;
   static uint32_t fast=0, khh;

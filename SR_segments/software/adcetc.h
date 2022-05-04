@@ -10,13 +10,13 @@ static inline uint8_t probableCV(uint32_t reg, uint32_t type){
   // prob of cycling bit let's say or ADC bit in or...
   switch(type){
   case 0:
-    if ((LFSR_[reg] & 4095 )< (shift_[reg]& 4095))      return 1;
+    if ((LFSR_[reg] & 4095 )< (gate[reg].shift_& 4095))      return 1;
     break;
   case 1:
-    if ((LFSR_[reg] & 4095 )< (shift_[dacfrom[daccount][reg]] & 4095))      return 1;
+    if ((LFSR_[reg] & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
     break;
   case 2:
-    if ((shift_[reg] & 4095 )< (shift_[dacfrom[daccount][reg]] & 4095))      return 1;
+    if ((gate[reg].shift_ & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
     break;
   case 3:
     if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
@@ -30,10 +30,10 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
   // prob of cycling bit let's say or ADC bit in or...
   switch(type){
   case 0:
-    if ((LFSR_[reg] & 4095 )< (shift_[reg]& 4095))      return 1;
+    if ((LFSR_[reg] & 4095 )< (gate[reg].shift_& 4095))      return 1;
     break;
   case 1:
-    if ((LFSR_[reg] & 4095 )< (shift_[dacfrom[daccount][reg]] & 4095))      return 1;
+    if ((LFSR_[reg] & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
     break;
   case 2:
     if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
@@ -41,8 +41,6 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
   }    
   return 0;
 }
-
-
 
 // 19/1/22 return of more generic ADC_ in = so income is passed in function and can be DAC+ADC etc so we have different handlings
 // 7 modes
@@ -959,7 +957,7 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
     else
       {
 	//	bt=(*SR>>length)& 0x01; //cycling bit but what if we are already cycling then just inverts it - or is always 0
-	bt = (gate[reg].Gshift_[reg]>>length) & 0x01; 
+	bt = (gate[reg].shift_>>length) & 0x01; 
       }
     break;
 
@@ -2043,6 +2041,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   static float SmoothData[9]={0.0, 0.0, 0.0, 0.0};
   static uint32_t lastout[9]={0,0,0,0,0,0,0,0,0};
   static uint32_t toggle[9]={0,0,0,0};
+  static uint32_t mask[4]={0,0,0,0};
+
   float betaf=0.4f;
   int32_t rem;
   uint32_t y,tmp;

@@ -61,9 +61,33 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *slower speeds/cv*
 *check use of clk, pulsin, out*
 
+** 4/5/2022
+
+head fire C 1=one dot/active. 0=2 dots/passive. 
+neck air L
+body water R
+feet earth N
+
+each figure has active/passive lines for 4 layers - in the 4 elements
+
+*if we can translate 16 figures straight from binary into modes?*
+
+//recursion/inversion/or not/// .. probability of recursion
+
+*formalise 5th tail*
+
+*more consistent - pulsin in closing macro, clkins etc..., detach CVs for later/length/speed, draft this as cleaner set of modes 
+*- we can keep main, draftspeed and only change modes*
+
+// speed up compile
+
 ** 3/5/2022
 
+*xx*
 - *like idea of past modes still running/layered and changing params but how: or SR as selecting, running through modes, holding modes, operations ON modes*
+- *params can also be shifted along, lag and delay as in SR but for values, or bit on/off selectors*
+
+*a chain of modes cycling*
 
 // notes from notebook and new:
 

@@ -623,6 +623,9 @@ uint8_t prob;
 
 void SRNsr35(uint8_t w){ // TRIADEX 2 - try with SR...
 uint8_t prob, bitnn, bitnnn, bitnnnn;
+ uint32_t s[4]={0,0,0,0};
+ uint32_t ss[4]={0,0,0,0};
+
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -661,6 +664,9 @@ uint8_t prob, bitnn, bitnnn, bitnnnn;
 
 void SRN35(uint8_t w){ // TRIADEX 2 
 uint8_t prob, bitnn, bitnnn, bitnnnn;
+ uint32_t s[4]={0,0,0,0};
+uint32_t ss[4]={0,0,0,0};
+
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
@@ -2340,6 +2346,9 @@ void SRintselADC_63(uint8_t w){ // use CV to select adc type: only those which d
 
 void SRLNint35(uint8_t w){ // TRIADEX 2 - TODO: version using CV or SR for these bits
 uint8_t prob, bitnn, bitnnn, bitnnnn;
+ uint32_t s[4]={0,0,0,0};
+ uint32_t ss[4]={0,0,0,0};
+
   HEADSIN;
   if (gate[w].trigger)      {
   GSHIFT_;

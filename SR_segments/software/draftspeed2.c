@@ -54,35 +54,6 @@ static uint32_t count=0;
 static uint32_t daccount=0;
 static uint32_t spdcount=0;
 
-uint32_t neworder[4]={3,2,1,0}; // order backwards
-
-uint32_t neworders[24][4]={
-  {0,1,2,3},
-  {0,1,3,2},
-  {0,2,1,3},
-  {0,2,3,1},
-  {0,3,1,2},
-  {0,3,2,1},
-  {1,2,3,0},
-  {1,2,0,3},
-  {1,3,2,0},
-  {1,3,0,2},
-  {1,0,2,3},
-  {1,0,3,2},
-  {2,3,0,1},
-  {2,3,1,0},
-  {2,0,1,3},
-  {2,0,3,1},
-  {2,1,3,0},
-  {2,1,0,3},
-  {3,0,1,2},
-  {3,0,2,1},
-  {3,1,2,0},
-  {3,1,0,2},
-  {3,2,1,0},
-  {3,2,0,1}  
-};
-
 // 1 means its used so do normed clocks - all one for testing
 uint8_t strobey[4][64]={
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
@@ -94,9 +65,6 @@ uint8_t strobey[4][64]={
 #include "macros.h"
 
 //extern __IO uint16_t adc_buffer[13];
-float LPF_Beta = 0.4; // 0<ß<1
-uint32_t lookupadc[4]={0,3,9,6}; // CVs for speed to use in INTmodes and other modes
-///uint32_t dacroute[4]={2,3,3,1}; // DAC routing for probability modes etc...
 
 #define FULL 0b11111111111111111111111111111111 //32 bits full
 #define HALB 0b10101010101010101010101010101010 //32 bits 1010
@@ -118,10 +86,6 @@ volatile uint32_t param[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength_[9]={31,31,31,31,31,31,31,31,31};
 uint32_t SRlength[9]={31,31,31,31,31,31,31,31,31};
 
-uint16_t ADCLR[3]={29,30,31}; // non-adc ADC modes - this has changedDONE
-
-uint32_t s[4]={0,0,0,0};
-uint32_t ss[4]={0,0,0,0};
 uint32_t clksr_[4]={HALB,HALB,HALB,HALB};
 uint32_t clksrG_[4]={0,0,0,0};
  
@@ -140,8 +104,6 @@ static uint32_t clk_route[8]={0,
 };
 
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
-static uint32_t shift_[4]={0xffff,0xffff,0xffff,0xffff};
-static uint32_t mask[4]={0,0,0,0};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
 
@@ -159,18 +121,10 @@ static uint32_t storedlength[4][4]={
   {31,31,31,31}
 };
 
-//static uint32_t TAIL_;
-
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
-//static uint32_t ghostof[4]; //
-
-// and cycling/circling array of ghosts which can come back or go forwards/backwards - when these ghosts are copied over (on event)
-// with 256 cycles/copies - or we can have variable length of this shifting array
-
 static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt[4]={0,0,0,0};
 
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
-//uint32_t LFSR[4]={3,3,3,1}; // which SR take the LFSR bits from! default is from itself - but could be opposites eg. {2,3,0,1}
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
 uint32_t dactype[4]={66,66,66,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
@@ -178,12 +132,9 @@ uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
 uint32_t route[4]={8,1,2,1}; // route[4]={1,9,9,9}; NLCR=1248 0->15 binary routing table
 uint32_t defroute[4]={3,0,1,0}; // 0,1,2,3 NLCR - not binary code but just one!
-//uint32_t defroute[4]={0,0,0,0}; // 0,1,2,3 NLCR - not binary code but just one!
-//uint32_t prev[4]    ={3,0,1,0}; // previous
 uint32_t revroute[4]={1,2,3,0}; // 0,1,2,3 NLCR - reverse route
 uint32_t defroutee[4]={3,0,1,1}; // 0,1,2,3 NLCR - in this one 3 routes from 1 too
 uint32_t altroute[4]={3,0,0,1}; // 0,1,2,3 NLCR - not binary code but just one! // N->C, N->L, L->R, R->N = 
-//uint32_t reggs[4]={3,3,3,3}; // take DACs all from last feedback reg
 uint32_t reggg=0;
 uint32_t ourroute[4]={0,0,0,0};
 
@@ -319,8 +270,6 @@ static uint32_t CVL[4]={0,0,0,0};
 static volatile float speedf_[9]={1.0f,1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f};
 static volatile float speedf[9]={1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
-volatile uint32_t dac[4]={0,0,0,0};
-volatile uint32_t adc_[4]={0,0,0,0};
 uint32_t counter_[4]={0,0,0,0};
 
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
@@ -341,14 +290,11 @@ static uint32_t counter[7]={0,0,0,0, 0,0,0};  // last 3 for fake clks
 static uint32_t counterd[4]={0,0,0,0};  // extra counter
 static uint32_t counterr=0, counterl=0;
 
-// new speed stuff
-
 #define DELAY_SIZE 6 // was 40 --- 3*width=16 = 3*16=48-5=43 - use 7 for simplea
 static int32_t delay_buffer[9][2] = { 0 }; // was 48 but it doesn't need to be so big
 
 void new_data(uint32_t data, uint32_t ww)
 {
-  //    for (u8 ii=0;ii<DELAY_SIZE-5;ii++)	
   delay_buffer[ww][0] = delay_buffer[ww][1];
     delay_buffer[ww][1] = data;
 }
@@ -362,15 +308,20 @@ uint32_t options[4][24]={
 
 static uint32_t resetz=1;
 
-#include "gen.h" // generators
+// extra files to check...
+
+#include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
-#include "modeN.h"
-#include "modeL.h"
-#include "modeR.h"
-#include "modeC.h"
-#include "probability.h" // probability modes
+
+//#include "modeN.h"
+//#include "modeL.h"
+//#include "modeR.h"
+//#include "modeC.h"
+//#include "probability.h" // probability modes
+
+#include "basis.h" // basics from commented ones just to speed up tests
 #include "experiment.h" // more functional modes - can also shift some things here... trials
-#include "bit.h" // bitmodes but some are still in modeL
+//#include "bit.h" // bitmodes but some are still in modeL
 
 void testnull(void){
 }
@@ -381,7 +332,7 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
   {adc0}, 
-  {SRhold}, // SRX0 is basic route/xor
+  {SR_recbin}, // SRX0 is basic route/xor
   {dac0}, 
   {SRX0}
 };
@@ -390,19 +341,20 @@ void (*dofunc[4][64])(uint8_t w)=
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2 // ADCholdcycle
-  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes SR_clksrG SRothers dacbusothers_clk dacbusothers_sr dacbusothers_own
-  {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac abstractoutinterpolnoshift
+  {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes SR_clksrG SRothers dacbusothers_clk dacbusothers_sr dacbusothers_own SRhold SRholdspd SR_speedx SR_splitx
+  {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac abstractoutinterpolnoshift 
   {adcLbinprob} SRpattern_unshare
 */
 
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
-void (*funcgroups[4][64])(uint8_t w)=
+/* void (*funcgroups[4][64])(uint8_t w)=
 {//NLcutfeedback86
   {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare}, 
   {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
   {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin, stream4_unshare}, // dacNLRprobinINT1311
   {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0, adcLabstractLD, stream4_unshare}
 };
+*/
 
 // so if we wanted to select these how would that work - as major mode but with no minor modes>>>???
 // or like sliding against this - just as numbers, or... R selects funcgroup as major mode, L selects which one in group... CN as params for our list???

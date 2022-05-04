@@ -23,19 +23,6 @@ void SRxxx(uint8_t w){ //
   }
 }
 
-/*
-// for manual binroute
-    tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
-    for (x=0;x<4;x++){  // older version
-      if (tmp&0x01){
-	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
-	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
-	bitn^=bitrr;
-      }
-      tmp=tmp>>1; // 4 bits
-    }
-*/
-
 void SRxxxx(uint8_t w){
   HEAD;
   uint32_t tmpp;
@@ -74,7 +61,121 @@ void SRxx_xx(uint8_t w){ //
   }
 }
 
+// 4/5/2022
+
+// processors for values eg. holds of speeds... SRproc_hold(uint32_t depth, uint32_t bit){  // bit=value, depth=how long
+void SRholdspd(uint8_t w){ // sample and hold on speed
+  HEADNADA;
+  speedf_[w]=logspeedd[SRproc_hold(CVL[w]<<2, CV[w])>>2]; // detached
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+}
+
+// trial own bits inverted to speed - not so successful with binroute...
+void SRownspd(uint8_t w){ // use of CV[w] as binroute
+  HEAD;
+  tmp=scycle(w);
+  if (gate[w].trigger) tmp=!tmp; 
+  if (tmp){
+  GSHIFT_;
+  //  BINROUTE_;
+  bitn=binroutebits(CV[w],w);
+  PULSIN_XOR;
+  BITN_AND_OUTVINT_;
+  }
+}
+
+
 // 3/5/2022
+// how can we deal with idea of:
+/*
+1-if [x] bitfrom[y1] 
+2-if [if [x] bitfrom[y1]] bitfrom[y2]
+3-if [if [if [x] bitfrom[y]] bitfrom[y]] bitfrom[y]
+4-if [if [if [if [x] bitfrom[y]] bitfrom[y]] bitfrom[y]] bitfrom[y]
+
+just as logical oppp - AND of bitfroms - needs some variations - calls new bits in action...
+
+layered binroutes... 
+
+if (sbinroute(others[w][0])) bitn=sbinroute(others[w][1]);
+if (bitn) bitn=sbinroute(others[w][2]);
+if (bitn) bitn=binroutebits(uint32_t depth, uint8_t wh)			       
+
+//or pass down in cycle.
+
+if bitfromC bitn=binroutebits... or generator...
+
+*/
+// trial - untie routes...? - layers from geomantic cards...
+void SR_recbin(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  bitn=binroutebits(CVL[w],w); // how these layers can differ - 4 layers... 
+  if (bitn){ 
+    bitn=binroutebits(CVL[w],w); 
+  }
+  if (bitn){
+    bitn=binroutebits(CVL[w],w);
+  }
+  if (bitn){
+    bitn=binroutebits(CVL[w],w);
+  }
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
+// routes in as elements of split speeds - sbinroute
+void SR_splitx(uint8_t w){ // 3 params for spdfrom, length, spdmode // + 2 for bitn// =5params//// +2 for prob
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=0;  // fixed as usual speed
+  //  SRlength[w]=PARAM2?; // length is CVL
+   
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (!sbinroute(others[w][0])) { // inversion to avoid running out
+      GSHIFTNOS_; // 2.copy gshift on trigger // gate[XX].Gshift[w]&0x01...
+    }
+
+  if (!sbinroute(others[w][1])) { //3.advance incoming ghost
+    BINROUTEADV_;
+  }
+
+  if (!sbinroute(others[w][2])) {
+    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
+  }
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){ 
+    //    bitn=abstractbitstreamslong[PARAM4?](PARAM5?,w); // without even getting into prob
+    BINROUTENOG_; // or not
+
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    PULSIN_XOR;
+    BITN_AND_OUTVXOR_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
 
 // trial static inline uint32_t SRproc_hold(uint32_t depth, uint8_t bit){
 void SRhold(uint8_t w){ // 
@@ -86,6 +187,23 @@ void SRhold(uint8_t w){ //
   //  bitn=probbitsxortoggle(CVL[w],w);
   BINROUTE_;
   bitn=SRproc_hold(CVL[w]>>4,bitn);
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SRholdfromdac(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  tmp=gate[dacfrom[count][w]].dac%(CVL[w]+1);
+  bitn=SRproc_hold(tmp>>4,bitn);
+  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -239,7 +357,6 @@ void dacbusothers_own(uint8_t w){ //
 }
 
 
-
 // 28/4/2022
 
 // for speedfrom what options we have:
@@ -257,7 +374,7 @@ uint8_t freecv[8]={0,1,1,1, 1,0,0,1};
 void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. otherwise not... so we can free it check freecv above
   HEAD;
   uint32_t tmpp;
-  uint8_t spdfrom=1; // fixed for sadcfrac
+  uint8_t spdfrom=1; // fixed 
   gate[w].dactype=0; gate[w].dacpar=param[w]; // test
   if (interpolll[spdfrom])   {
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
@@ -266,12 +383,18 @@ void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. ot
   }
   if (speedfroms[spdfrom](w)){ 
     GSHIFT_;
-    // if freecv[spdfrom] ... // do what with it? eg. route...
+    if (freecv[spdfrom]) // do what with it? eg. route/ or use as probability
+      {
+	bitn=binroutebits(CV[w],w);
+		 }
+    else {
     BINROUTE_; // or not
+    }
     // do dac for non-interpols
     if (!interpolll[spdfrom]){
     gate[w].dac = delay_buffer[w][1];
     }
+    PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -437,7 +560,7 @@ void SRxorSR(uint8_t w){
   uint8_t spdfrom=0; //set.choose - here is frac
   gate[w].dactype=0; gate[w].dacpar=param[w]; 
 
-  if (interpoll[spdfrom])   {
+  if (interpoll[spdfrom])   { 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
