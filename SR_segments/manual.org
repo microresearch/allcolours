@@ -1,4 +1,18 @@
-* notes towards manual
+* notes towards manual/caput draconis
+
+** new 4/5/2022+
+
+- how to use with geomantic layout of 4 figures...
+
+[from segmodes]
+head fire C 1=one dot/active. 0=2 dots/passive. 
+neck air L
+body water N
+feet earth R
+
+each figure has active/passive lines (passive as static) for 4 layers - in the 4 elements
+
+so then one card would give how to operate (eg. which to leave static) but then for 4 cards?
 
 - grid of features with symbols eg.
 
@@ -23,7 +37,7 @@ next level
 
 ** or caput draconis materials
 
-geomancy,,, figures 
+geomancy figures 
 
 ** ascii art/outputs for different SR varieties
 

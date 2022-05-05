@@ -57,9 +57,42 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 *TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete// 2 may*
 
+RESOLVE ARCH:
+
 *static/frozen speeds in general or not*
 *slower speeds/cv*
 *check use of clk, pulsin, out*
+*5th tail always running and how we switch in to it differenmt streams from SRs*
+
+** 5/5/2022
+
+- slower speeds to test without stoppings
+- draft new architectures
+
+- mode which is delayed functions of last modes (modes as parameters/crosses/bits of yes/no), CVs which are delays of last CVs
+- hold/freeze CV at one point in delay, vars updated on trigger
+
+-difference between SR and delay line, stack of modes/of values/CV/CVL
+
+ O O shift/no shift
+  O  speedfrom x/y
+  O  binroute/cycle
+  O  logic/prob/in
+
+- *5th tail: initiate a stream and keep this running and move on*
+
+           | | 
+tail switch V
+            |
+
+- *thinking on new arch: that modes initiate streams, channel and modify these rather than one stream per SR, so can be shared streams also*
+// but how many streams run simultaneously
+
+// I initiate and route streams to others 
+as in CLRN are not identified with streams but control them, with their clocks for example...
+
+lots of options: x controls and modes stream y, but z can change it for itself, or all streams can modify it, in turn...
+
 
 ** 4/5/2022
 
@@ -70,7 +103,7 @@ feet earth N
 
 each figure has active/passive lines for 4 layers - in the 4 elements
 
-*if we can translate 16 figures straight from binary into modes?, or translate figures or...*
+*if we can translate 16 figures straight from binary into modes?, or translate figures or... a language to translate - 4 bits interpreter*
 
 //recursion/inversion/or not/// .. probability of recursion
 

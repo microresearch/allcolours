@@ -8,11 +8,49 @@ TESTS:
 
 == see below// is signum working? // is bin3 working (how to test on own as all have feedback)
 
-all bin 1 2 3 saeem work in same way so...
+all bin 1 2 3 seem to work in same way so...
 fixed 2.2k on r99 4th vca as was wrong part
+
+vpp is around 20v (too high)
 
 - Mindlin
 - crossover
+
+
+
+** 5/5/2022
+
+- signum trials with analogue thing:
+
+implemented with comparator and with no input we have chaos with exact
+equation/layout but with very precise settings for signum relationship!
+
+also very low freq but now add inbetween coeffs - still low and unstable 
+
+coeff5 is signum amount
+coeff6 is siganl in Cx-bsgnX
+
+
+- trial last integrator is not switched - change last INV4 (r90) to 10n integrator and ditch r89:
+
+again nothing when have last VCA non-inverted....// and double checked vca4 is all fine
+
+- under what conditions it stops (as is just extra feedback?)
+
+Q if is inversion before b3 which counts or??? as long as there is inversion (so can also be after signum)
+try sans signum(still inversion issue)
+
+*stability of signum with no gnd bias on comparator?* - how to re-test this 
+
+- maybe ditch signum so is just bintic merge with mindlin // bintic vs. mindlin...
+
+** 4/5/2022
+
+- fixed up all VCAs with new values (not think on CV in now) 
+
+- test BINTIC [d1=dd1 inv], rest +
+
+bintic is fine, but still SIGNUM thing on positive vca (so minus back in) just bumps down/up to rails...
 
 ** 3/5/2022
 
@@ -30,9 +68,7 @@ Iabc is control current max 2mA // recalculate
 
 say for 1st R40 and R41 is 100K then r44 is 22k (we can also change top in pot/divider) - seems to work fine as is with changes noted
 
-- temp remove r9 to test 1st invertor as is offset...
-
-
+- temp remove r9 to test 1st invertor as is offset...// replaced
 
 ** 2/5/2022
 
