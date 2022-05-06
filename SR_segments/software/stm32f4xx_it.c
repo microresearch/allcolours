@@ -135,10 +135,8 @@ say 1/10 so is not such a big jump
 extern __IO uint16_t adc_buffer[12];
 float LPF_Beta = 0.4; // 0<ß<1
 
-#define TOPSPEED 1024 // as this might change for lower speeds
-#define FROZENSPEED 1024 // 
 #define MAXVALUE 4095
-#define SMOOTHINGS 512 // we can hold 65536 of our 16 bit ADC values...speed
+#define SMOOTHINGS 32 // we can hold 65536 of our 16 bit ADC values...speed
 uint32_t cc=0, totc=0, smoothc[SMOOTHINGS];
 uint32_t ll=0, totl=0, smoothl[SMOOTHINGS];
 uint32_t rr=0, totr=0, smoothr[SMOOTHINGS];

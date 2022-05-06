@@ -30,6 +30,48 @@ static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){
   return bt;
 }
 
+// real delay line, bit enters and we furnish bit at depth x - shared version - we have in experiment.h but there uses binroute
+static inline uint32_t SRproc_delay(uint32_t depth, uint32_t bit){  
+  static uint32_t delayline[128]; //shared delay line
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits; // 32 bits of bits
+
+  // extract from delay line (12 bits=4095)
+  depth=bits+depth;
+  if (depth>=4095) depth-=4095;
+  tmp=depth/32;
+  bitrr=(delayline[tmp]>>(depth%32))&0x01;
+
+  // put into delay line - need index and bit index
+  tmp=bits/32;
+  tmpp=bits%32;
+  delayline[tmp]&=bitmasky[tmpp];
+  delayline[tmp]|=(bit<<(tmpp));
+  bits++;
+  if (bits>4095) bits=0;
+
+  return bitrr;
+}
+  
+// delay line for values - shared...
+static inline uint32_t SRproc_delayvals(uint32_t depth, uint32_t bit){  
+  static uint32_t delayline[128]; //shared delay line
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits; // 32 bits of bits
+
+  // extract from delay line (12 bits=4095)
+  depth=bits+depth;
+  if (depth>=128) depth-=128;
+  bitrr=delayline[depth];
+
+  // put into delay line
+  delayline[bits]=bit;
+  bits++;
+  if (bits>127) bits=0;
+
+  return bitrr;
+}
+
 // bits to value
 static inline uint32_t SRproc_accum(uint32_t depth, uint32_t bit){ 
   static uint32_t bt=0, cc=0, final;
@@ -214,6 +256,18 @@ static inline uint32_t SRzero(uint32_t depth, uint8_t wh){  // returns only zero
   uint32_t bt=0;
   return bt;
 }
+
+// one - can also be for speeds or otherwise
+static inline uint32_t SRone(uint32_t depth, uint8_t wh){ 
+  uint32_t bt=1;
+  return bt;
+}
+
+static inline uint32_t Sone(uint8_t wh){
+  uint32_t bt=1;
+  return bt;
+}
+
 
 // top bit of clksr 
 static inline uint32_t SRclksr(uint32_t depth, uint8_t wh){ 

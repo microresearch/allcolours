@@ -61,6 +61,104 @@ void SRxx_xx(uint8_t w){ //
   }
 }
 
+// 6/5/2022
+//- try alt gshift which keeps intact gsr (cycle through but we need to signal reset)
+// [as gsr as we have it can be destructive if we change lengths]
+/*
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+*/
+
+void SRX0_newgsr(uint8_t w){ // basic route in XOR puls
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPENNOINTERPOL;
+  if(gate[w].last_time<gate[w].int_time)      {
+    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; // but we need resets for all
+    GSHIFT_;
+    //    BINROUTE_; // replace binroute with new gsr handlings // as alternative
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){ 
+      if (tmp&0x01){
+	if (gate[x].reset[w]){
+	  gate[x].reset[w]=0;
+	  gate[w].gsrcnt[x]=SRlength[x];
+	}
+	bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01; 
+	gate[w].gsrcnt[x]--;
+	if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+// can also  be variation where we don't use reset//keep cycling... show all gsr options, gsr of gsr etc...
+// 
+void SRX0_newgsr_nores(uint8_t w){ // basic route in XOR puls
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPENNOINTERPOL;
+  if(gate[w].last_time<gate[w].int_time)      {
+    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; // but we need resets for all
+    GSHIFT_;
+    //    BINROUTE_; // replace binroute with new gsr handlings // as alternative
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){ 
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01; 
+	gate[w].gsrcnt[x]--;
+	if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+// and now for adc
+void adc0_newgsr(uint8_t w){ // basic route in XOR puls ADC0
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPENNOINTERPOL;
+  if(gate[w].last_time<gate[w].int_time)      {
+    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; // but we need resets for all
+    GSHIFT_;
+    //    BINROUTE_; // replace binroute with new gsr handlings // as alternative
+    bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){ 
+      if (tmp&0x01){
+	if (gate[x].reset[w]){
+	  gate[x].reset[w]=0;
+	  gate[w].gsrcnt[x]=SRlength[x];
+	}
+	bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01; 
+	gate[w].gsrcnt[x]--;
+	if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
 // 4/5/2022
 
 // processors for values eg. holds of speeds... SRproc_hold(uint32_t depth, uint32_t bit){  // bit=value, depth=how long
@@ -1798,8 +1896,8 @@ void noSRdelay_line(uint8_t w){
 // length=delay
 // what is incoming bit? - route in - others?
 
-uint32_t delayline[128]; //shared delay line
-uint32_t delaylineUN[4][128]; //UNshared delay line
+static uint32_t delayline[128]; //shared delay line
+static uint32_t delaylineUN[4][128]; //UNshared delay line
 
 static inline uint32_t delay_line_shared(uint32_t depth, uint8_t wh){ // share counter and delay line
   // what other options are there?

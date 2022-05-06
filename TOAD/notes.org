@@ -16,7 +16,20 @@ vpp is around 20v (too high)
 - Mindlin
 - crossover
 
+** 6/5/2022
 
+analogue thing: 
+
+- *for G(x)= -B(x) + Csgn(x) // which is just with inverter before the G(x) so is what we had below with last VCA inverted!*
+
+but we have adjustable ratio within the signum...
+
+from sprott (a new class): B=1.2, C=2.0
+
+1/1.2 for signal = 8.333k vs 1k ref
+Vs/C = 10/2 = 50k for signum
+
+but on coeff6: signum = same more or less as signal: try with own circuit (and scope?)
 
 ** 5/5/2022
 

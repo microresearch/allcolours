@@ -62,11 +62,21 @@ RESOLVE ARCH:
 *static/frozen speeds in general or not*
 *slower speeds/cv*
 *check use of clk, pulsin, out*
-*5th tail always running and how we switch in to it differenmt streams from SRs*
+*5th tail always running and how we switch in to it different streams from SRs*
+*dacs with no interpol or not*
+
+*BASIC DECISIONS*
+
+** 6/5/2022
+
+- grid and use null functions like SRzero, SRone to stop/start options -> more towards moods/modes
+
+- DONE: try alt gshift which keeps intact gsr (cycle through but we need to signal reset) - also if dacs have nointerpol or not
+[as gsr as we have it can be destructive if we change lengths]
 
 ** 5/5/2022
 
-- slower speeds to test without stoppings
+- *slower speeds to test without stoppings* TESTINGS
 - draft new architectures
 
 - mode which is delayed functions of last modes (modes as parameters/crosses/bits of yes/no), CVs which are delays of last CVs
@@ -86,7 +96,7 @@ tail switch V
             |
 
 - *thinking on new arch: that modes initiate streams, channel and modify these rather than one stream per SR, so can be shared streams also*
-// but how many streams run simultaneously
+// but how many streams run simultaneously, also seems go against main idea...
 
 // I initiate and route streams to others 
 as in CLRN are not identified with streams but control them, with their clocks for example...
