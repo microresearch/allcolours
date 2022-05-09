@@ -11,10 +11,24 @@ TESTS:
 all bin 1 2 3 seem to work in same way so...
 fixed 2.2k on r99 4th vca as was wrong part
 
-vpp is around 20v (too high)
+vpp is around 20v (too high) - why so high? - signum maybe sends over so keep lower vca? some tweaks...
+
 
 - Mindlin
 - crossover
+
+** 9/5/2022
+
+- thinking about split/combine of mindlin/sprott - that can be just 2 sides rather than doubled up, and with norms across one to other
+or switches of paths one to other...
+- also norm of sprott out back to its own clock
+- investigate other outs: B1x, B2x, B3x, R1 (we use)
+
+- now patch mindlin: nada at first (also norm q for 2 inputs), multiplier always hot: *ad633 ar soic has different pins to what we have on pcb...*
+
++where are DIP for testings?+
+
+- think of smaller utilities eg. onebit/sigmadelta
 
 ** 6/5/2022
 
@@ -29,7 +43,7 @@ from sprott (a new class): B=1.2, C=2.0
 1/1.2 for signal = 8.333k vs 1k ref
 Vs/C = 10/2 = 50k for signum
 
-but on coeff6: signum = same more or less as signal: try with own circuit (and scope?)
+but on coeff6: signum = same more or less as signal: try with own circuit (and scope?): r68 (leave as 2M)
 
 ** 5/5/2022
 

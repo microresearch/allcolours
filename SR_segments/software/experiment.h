@@ -3,7 +3,7 @@
 // REF: #define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w];
 
 // define spdmodes - need to think which ones work...
-uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test
+uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
 
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
@@ -34,14 +34,15 @@ void SRxxxx(uint8_t w){
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+  
   if (spdmodes[spdfrom](CV[w],w)){
     GSHIFT_;
     // bitn=
     BINROUTE_; // or not
 
-    if (!interpoll[spdfrom]){
-    gate[w].dac = delay_buffer[w][1];
-    }
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -61,6 +62,85 @@ void SRxx_xx(uint8_t w){ //
   }
 }
 
+// 9/5/2022
+// towards new minimal template which handles most conditions eg. interpol/none, detachment
+/*
+1.new gshift/old gshift // we always need to reset
+2.all dacs interpol/no interpol
+3.frozen or not - is that an option? or just keep with lowest frozen and slow speeds - or no freeze on NSR/out
+4.use of clk/pulsin-xor
+5.clean up so less macros and is a bit more general - also between interpol/direct dac access
+6.detachment of CVs - take out of adcetc///
+7.anything else to add in, eg., recording modes, last values etc...
+8.clkbit, other params
+
+so for our modes we can also define strobey - pull out of binroute and place where?
+
+mode grid needs:
+function, strobey, interpoll, inner_function?, detach?, 
+
+*/
+
+// breaking down again into subfunctions, how these can be more spread out...
+// 16 spdmodes with associated interpool yes/no
+
+// we can also sub in speedfroms and other generators -> more generic
+void SRx_x(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspeed, uint32_t interpoll, uint32_t (*innerfunc)(uint8_t w)){
+  HEADNADA;
+  if (detachlen) SRlength_[w]=lookuplenall[CVL[w]>>7]; // can be detached...
+  if (detachspeed) speedf_[w]=slowerlog[CV[w]>>2]; // or we could look at list of for each mode/// different speedlogs (fractional...)
+  if (speedf_[w]!=2.0f){ // ignored if we don't have the stop...
+    // interpol or not
+    if (interpoll)   { // but interpoll only makes sense for 2 modes... which are in speedfrom
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
+    gate[w].time_now += speedf_[w]; // this is in necessary speedfrom for frac speeds
+    gate[w].last_time = gate[w].int_time;
+    gate[w].int_time = gate[w].time_now;
+
+    if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // CORE - types of binroute// new macro is BINROUTEalt_;
+    bitn=(*innerfunc)(w);//   (*dofunc[www][mode[www]])(www);
+    //    if (strobey) bitn|=gate[w].trigger;	
+    PULSIN_XOR; 
+    BITN_AND_OUTV_; 
+    ENDER;
+  }    
+  }
+}
+
+uint32_t innertest(uint8_t w){
+  uint32_t bitn=0, tmp, x, bitrr;
+  BINROUTE_;
+  return bitn;
+}
+
+// check slowest speed
+void SRspeedtest(uint8_t w){
+  static uint32_t tgg=0;
+  HEADSIN;
+  speedf_[w]=slowerlog[CV[w]>>2]; // 10 bits
+  gate[w].time_now += speedf_[w];
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+
+  if(gate[w].last_time<gate[w].int_time)      {
+    tgg^=1;
+    if (tgg==1) gate[w].dac=4095;
+    else gate[w].dac=0;
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;	
+
+  }
+}
+
 // 6/5/2022
 //- try alt gshift which keeps intact gsr (cycle through but we need to signal reset)
 // [as gsr as we have it can be destructive if we change lengths]
@@ -74,24 +154,8 @@ void SRX0_newgsr(uint8_t w){ // basic route in XOR puls
   if (speedf_[w]!=2.0f){ 
   CVOPENNOINTERPOL;
   if(gate[w].last_time<gate[w].int_time)      {
-    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; // but we need resets for all
-    GSHIFT_;
-    //    BINROUTE_; // replace binroute with new gsr handlings // as alternative
-    tmp=binroute[count][w];
-    for (x=0;x<4;x++){ 
-      if (tmp&0x01){
-	if (gate[x].reset[w]){
-	  gate[x].reset[w]=0;
-	  gate[w].gsrcnt[x]=SRlength[x];
-	}
-	bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01; 
-	gate[w].gsrcnt[x]--;
-	if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];
-	bitn^=bitrr;
-      }
-      tmp=tmp>>1; // 4 bits
-    }
-
+    GSHIFT_; // resets added to macro 9/5/2022
+    BINROUTEalt_;
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -106,9 +170,7 @@ void SRX0_newgsr_nores(uint8_t w){ // basic route in XOR puls
   if (speedf_[w]!=2.0f){ 
   CVOPENNOINTERPOL;
   if(gate[w].last_time<gate[w].int_time)      {
-    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; // but we need resets for all
-    GSHIFT_;
-    //    BINROUTE_; // replace binroute with new gsr handlings // as alternative
+    GSHIFT_; // resets added to macro 9/5/2022
     tmp=binroute[count][w];
     for (x=0;x<4;x++){ 
       if (tmp&0x01){
@@ -128,14 +190,12 @@ void SRX0_newgsr_nores(uint8_t w){ // basic route in XOR puls
 }
 
 // and now for adc
-void adc0_newgsr(uint8_t w){ // basic route in XOR puls ADC0
+void adc0_newgsr(uint8_t w){ // basic route in XOR pulse and ADC0
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPENNOINTERPOL;
   if(gate[w].last_time<gate[w].int_time)      {
-    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; // but we need resets for all
-    GSHIFT_;
-    //    BINROUTE_; // replace binroute with new gsr handlings // as alternative
+    GSHIFT_; // resets added to macro 9/5/2022
     bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
     tmp=binroute[count][w];
     for (x=0;x<4;x++){ 
@@ -151,7 +211,6 @@ void adc0_newgsr(uint8_t w){ // basic route in XOR puls ADC0
       }
       tmp=tmp>>1; // 4 bits
     }
-
     PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
@@ -262,13 +321,14 @@ void SR_splitx(uint8_t w){ // 3 params for spdfrom, length, spdmode // + 2 for b
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+  
   if (spdmodes[spdfrom](CV[w],w)){ 
     //    bitn=abstractbitstreamslong[PARAM4?](PARAM5?,w); // without even getting into prob
     BINROUTENOG_; // or not
 
-    if (!interpoll[spdfrom]){
-    gate[w].dac = delay_buffer[w][1];
-    }
     PULSIN_XOR;
     BITN_AND_OUTVXOR_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
@@ -479,6 +539,11 @@ void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. ot
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
+
   if (speedfroms[spdfrom](w)){ 
     GSHIFT_;
     if (freecv[spdfrom]) // do what with it? eg. route/ or use as probability
@@ -489,9 +554,6 @@ void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. ot
     BINROUTE_; // or not
     }
     // do dac for non-interpols
-    if (!interpolll[spdfrom]){
-    gate[w].dac = delay_buffer[w][1];
-    }
     PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
@@ -552,15 +614,16 @@ void SR_genspeed2(uint8_t w){
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
   if (spdmodes[spdfrom](CV[w],w)){
     GSHIFT_;
     // ACTION!
     bitn=abstractbitstreamslong[spdfrom](CV[w],w); // without even getting into prob
     //    BINROUTE_; // how to chain in binroutebits (and param for that)
 
-    if (!interpoll[spdfrom]){
-    gate[w].dac = delay_buffer[w][1];
-    }
     PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
@@ -581,15 +644,17 @@ void SR_genspeed3(uint8_t w){ // working now
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
+
   if (spdmodes[spdfrom](CV[w],w)){
     GSHIFT_;
     // ACTION!
     //    bitn=abstractbitstreamslong[spdfrom](CV[w],w); // without even getting into prob
     BINROUTE_; // how to chain in binroutebits (and param for that)
 
-    if (!interpoll[spdfrom]){
-    gate[w].dac = delay_buffer[w][1];
-    }
     PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
@@ -729,6 +794,11 @@ void SRxorSR(uint8_t w){
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
+
   if (spdmodes[spdfrom](CV[w],w)){
     GSHIFT_;
     // 4 bits binroute
@@ -748,9 +818,6 @@ void SRxorSR(uint8_t w){
     gate[tmpp].Gshift_[w]=(gate[tmpp].Gshift_[w]<<1)+bitrr; 
     bitn^=bitrr;
 
-    if (!interpoll[spdfrom]){
-    gate[w].dac = delay_buffer[w][1];
-    }
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -893,6 +960,10 @@ void SR_vienna(uint8_t w){
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
   if (spdmodes[spdfrom](CV[w],w)){  // we dont use CV for strobe
     GSHIFT_;
     // bitn opp can be inserted... eg. LFSR
@@ -917,9 +988,6 @@ void SR_vienna(uint8_t w){
       if (gate[dacfrom[count][w]].dac<tmppp) bitn^=1;
 	}
       
-    if (!interpoll[spdfrom]){
-    gate[w].dac = delay_buffer[w][1];
-    }
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -959,6 +1027,8 @@ void SR_switchspeed(uint8_t w){
   }
 }
 
+//uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test - tested
+// how many more could we use?
 
 //select spdmode - select our speedmode with CV/L?
 void SR_selspeed(uint8_t w){ // TEST!
@@ -966,19 +1036,22 @@ void SR_selspeed(uint8_t w){ // TEST!
   uint32_t tmpp;
   uint8_t spdfrom; 
   gate[w].dactype=0; gate[w].dacpar=param[w]; // test
-  spdfrom=CVL[w]>>8; // 4 bits 16 ops - could be more... trial...
-  if (interpoll[spdfrom])   {
+  spdfrom=CVL[w]>>7; // 4 bits 16 ops - could be more... trial... // tested // now try abstract // was 4 bits
+  //  spdfrom=11;
+  if (interpoll[spdfrom])   { // and if we don't use CV?
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
-  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w] 
+  //  if (spdmodes[spdfrom](CV[w],w)){ // replace CV[w]
+  if (abstractbitstreamslong[spdfrom](CV[w],w)){ // testing was just spdmodes and 4 bits/16 operations
     GSHIFT_;
     BINROUTE_; // or not
     // do dac for non-interpols
     if (!interpoll[spdfrom]){
     gate[w].dac = delay_buffer[w][1];
     }
+    PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }

@@ -21,7 +21,6 @@
   k[reg]=ADC_GetConversionValue(ADC1)>>(11-length);			\
   }
 
-
 // TEST INVERSION  - was invrted but now not
 #define ADCtwo {				\
     ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
@@ -29,7 +28,6 @@
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   k[reg]=ADC_GetConversionValue(ADC1);					\
   }
-
 
 #define ADCgeneric {				\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
@@ -111,7 +109,8 @@
 // redefining for struct
 
 #define GSHIFT_ {				\
-    gate[w].Gshift_[0]=gate[w].shift_;			\
+    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
+    gate[w].Gshift_[0]=gate[w].shift_;					\
     gate[w].Gshift_[1]=gate[w].shift_;			\
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
@@ -121,6 +120,7 @@
 }
 
 #define GSHIFTNOS_ {				\
+    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
     gate[w].Gshift_[0]=gate[w].shift_;			\
     gate[w].Gshift_[1]=gate[w].shift_;			\
     gate[w].Gshift_[2]=gate[w].shift_;			\
@@ -135,6 +135,22 @@
   bitn^=bitrr;						\
   }
 
+#define BINROUTEalt_ {				\
+  tmp=binroute[count][w];			\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+  if (gate[x].reset[w]){			\
+  gate[x].reset[w]=0;				\
+  gate[w].gsrcnt[x]=SRlength[x];		\
+  }								\
+    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
+    gate[w].gsrcnt[x]--;					\
+    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitn^=bitrr;						\
+  }								\
+  tmp=tmp>>1;							\
+  }								\
+  }
 
 #define BINROUTE_ {				\
     tmp=binroute[count][w];				\
@@ -146,8 +162,10 @@
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
+
+// pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+
 
 // shared binroute/gshift - only makes sense if we share routes or if there are functions to shift on...
 #define BINROUTESHARE_ {				\

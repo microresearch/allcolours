@@ -24,4 +24,11 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t index;
 } heavens;
 
-
+typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 
+  uint32_t strobey;
+  uint32_t interpoll;
+  uint32_t detachlen;
+  uint32_t detachspeed;
+  void (*func)(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspeed, uint32_t interpoll, uint32_t (*innerfunc)(uint8_t w));
+  uint32_t (*innerfunc)(uint8_t w);
+} modez; 

@@ -2462,7 +2462,7 @@ void TIM4_IRQHandler(void)
     // 9: cspd, 10: clen, 11: cmode
 
   // modes are NOT inverted!
-  /// TODO TEST->fixed for new ADC scheme  
+
   //moden
   ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
@@ -2613,5 +2613,5 @@ void TIM4_IRQHandler(void)
   temp=ADC_GetConversionValue(ADC1);
   CVL[2]=temp;
   temp=temp>>7; 
-  SRlength_[2]=lookuplenall[temp];
+  SRlength_[2]=lookuplenall[temp]; // TODO: take speed and lens out so we can detach easier
 }

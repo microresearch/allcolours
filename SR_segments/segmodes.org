@@ -32,7 +32,7 @@ signals are inverted so unipolar 0-5v is from 0-2048 values and bipolar -5 to 5v
 
 *define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
 
-*settle speeds and test new voltage/CV scheme: what is Hz for 14 octaves slowest and fastest?*
+settle speeds and test new voltage/CV scheme: what is Hz for 16 octaves slowest and fastest? 0.25 Hz to 16KHz
 
 older notes:
 - thinking on scale/speeds - at the moment we have 0-5v CV input and
@@ -66,6 +66,51 @@ RESOLVE ARCH:
 *dacs with no interpol or not*
 
 *BASIC DECISIONS*
+
+** 9/5/2022
+
+- *resolve 5th tail*
+
+- new CV calculations:
+
+So now we have 16 octaves which are to be covered by knob (full range 3.3v)
+
+-10vknob is x3 feedback
+
+- 16 in 1024 = 64 per oct = 640 max = 2.0v max
+
+10v->2v = 1/5th
+
+*100k cv in, 20k feedback, 60k -10knob - so we just change 2 resistors*
+
+*but maybe return to 14 or 15 octs*
+
+// for 15 octs would be: 68 = 680 max = 2.19v
+10v->2.19=4.56 22k feedback
+
+14 octs above
+
+// how slow is slowest now/test? - slowest is now 2 secs/2secs = 0.25 Hz -> 20 KHzaprrox 16KHz = 16 octaves...
+
+changed r65 (66.5k not 60k), r71 on proto board - tested/seems ok but need 1v source defined...
+
+- start maybe again with reduced modes and macros with new modes - to cover all options below// again grid of options
+
+- again how to wrap up: what is new/options:
+
+1.new gshift/old gshift //for mix of we always need to reset/ add into what macro? into GSHIFTS_
+2.all dacs interpol/no interpol
+3.frozen or not - is that an option? or just keep with lowest frozen and slow speeds - or no freeze on NSR/out
+4.use of clk/pulsin-xor
+5.clean up so less macros and is a bit more general - also between interpol/direct dac access
+6.detachment of CVs - take out of adcetc///
+8.clkbit, other params
+9.hold or toggle of pulsin/nay processor of values...
+10.is we use speedmodes then strobey is more complex
+
+- *new abstractions to be checked out*
+
+- *test speed modes: SR_selspeed*
 
 ** 6/5/2022
 
@@ -1681,7 +1726,7 @@ DONEcan also have XOR opps for routing tables, where do we get dac/sr from - how
 
 ** 1/2/2022
 
-In modeN (also modeC bit nor so critical there) we can't have so many ADC/DAC select modes for each possibility:
+In modeN (also modeC bit not so critical there) we can't have so many ADC/DAC select modes for each possibility:
 
 so:
 

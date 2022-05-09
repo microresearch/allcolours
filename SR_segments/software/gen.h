@@ -303,10 +303,11 @@ static inline uint32_t SRsigmadelta(uint32_t depth, uint8_t wh){  // processor f
 }
 
 // replacing embedded speed... in new abstractions...
-static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage
+static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage - trial with stopps
   uint32_t bt=0;
   float speed;
-  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  speed=slowerlog[depth>>2]; // 12 bits to 10 bits
+  if (speed!=2.0f){
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -315,6 +316,7 @@ static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed 
     bt=1; // move on
     gate[wh].time_now-=1.0f;
     gate[wh].int_time=0;
+  }
   }
   return bt;
 }
@@ -793,10 +795,11 @@ static inline uint32_t TMsimplebits(uint32_t depth, uint8_t wh){
   return bt;
 }
 
-static inline uint32_t onebits(uint32_t depth, uint8_t wh){ // depth=0 resets
+static inline uint32_t onebits(uint32_t depth, uint8_t wh){ // depth=0 resets --> ??? use strobe
   uint32_t bt;
   static int32_t bc=31;
   //  static uint32_t k;
+  if (gate[wh].trigger) depth=0;  
   if (bc<0) {
     bt=0;
     if (depth>0) bc=depth;
@@ -815,7 +818,7 @@ static inline uint32_t ENbits(uint32_t prob, uint8_t wh){
   // if all as switches are 1... 
 
   //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
-  prob=prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+  prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
     if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
   else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
   return bt;
@@ -824,7 +827,7 @@ static inline uint32_t ENbits(uint32_t prob, uint8_t wh){
 // trying for a simpler version
 static inline uint32_t ENsbits(uint32_t prob, uint8_t wh){ 
   uint32_t bt, tmp;
-  if ((LFSR_[wh]&4095)<prob) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  if ((LFSR_[wh]&4095)>prob) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
   else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
   return bt;
 }
@@ -944,6 +947,9 @@ static inline uint32_t flipbits(uint32_t depth, uint8_t wh){
   n++;
   return bt;
 }
+
+// to compare with these...
+//uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
 
 
 uint32_t (*abstractbitstreams[16])(uint32_t depth, uint8_t wh)={binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits};
@@ -1106,6 +1112,7 @@ static inline uint32_t onebitsI(uint32_t depth, uint8_t wh){ // depth=0 resets
   uint32_t bt;
   static int32_t bc[4]={31};
   //  static uint32_t k;
+  if (gate[wh].trigger) depth=0;  
   if (bc[wh]<0) {
     bt=0;
     if (depth>0) bc[wh]=depth;
@@ -1124,7 +1131,7 @@ static inline uint32_t ENbitsI(uint32_t prob, uint8_t wh){
   // if all as switches are 1... 
 
   //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
-  prob=prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+  prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
     if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
   else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
   return bt;
@@ -1133,7 +1140,7 @@ static inline uint32_t ENbitsI(uint32_t prob, uint8_t wh){
 // trying for a simpler version
 static inline uint32_t ENsbitsI(uint32_t prob, uint8_t wh){ 
   uint32_t bt, tmp;
-  if ((LFSR_[wh]&4095)<prob) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  if ((LFSR_[wh]&4095)>prob) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
     //    if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
   else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
   return bt;

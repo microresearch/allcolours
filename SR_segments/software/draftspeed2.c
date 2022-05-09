@@ -327,15 +327,19 @@ static uint32_t resetz=1;
 void testnull(void){
 }
 
+static modez newmodes[128]={ // then call mode by number
+  {1,1,1,1, SRx_x, innertest}
+};
+
 uint32_t testmodes[4]={0,0,0,0};
 
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc0_newgsr}, 
-  {SRX0_newgsr_nores}, // SRX0 is basic route/xor
-  {SRX0_newgsr_nores}, // dac0 
-  {SRX0_newgsr_nores}
+  {adc0}, 
+  {SR_selspeed}, // SRX0 is basic route/xor
+  {dac0}, // dac0 
+  {SRX0}
 };
 
 /*
@@ -370,6 +374,7 @@ void mode_init(void){
   uint32_t x;
 
 
+  
   for (x=0;x<4;x++){
     gate[x].changed=0;
     gate[x].paramx=0;
@@ -438,7 +443,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //    (*gate[www].dofunc[mode[www]])();
   //mode[2]=12;
 
-   // *TODO*: sync mode from RSR modes - we sync all modes so are same as LSR
+  // *TODO*: sync mode from RSR modes - we sync all modes so are same as LSR
    // needs mirror rmode to work...
    //   if (rmode==1) { mode[1]=mode[0];mode[2]=mode[0]; mode[3]=mode[0];
    // or we have mode[3] as no mirror and simple pass through
@@ -446,8 +451,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
      spdcount=0; count=0; daccount=0; // so when we leave modes which set this reverts to 0...
    }
    
-   (*dofunc[www][mode[www]])(www);
-
+      (*dofunc[www][mode[www]])(www);
+   // test to call 
+   // static modez newmodes[128]={ // then call mode by number
+   //  {0,0,0,0, SRx_x, innertest}
+   //};
+   uint8_t choice=0;
+   //   (*newmodes[choice].func)(www, newmodes[choice].strobey, newmodes[choice].detachlen, newmodes[choice].detachspeed, newmodes[choice].interpoll, newmodes[choice].innerfunc);   
+   
    //   (*moodsfuncs[0])(www, &moodsw[0]); //see experiment.h - mode=0;b
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
