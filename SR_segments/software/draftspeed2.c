@@ -337,7 +337,7 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
   {adc0}, 
-  {SR_selspeed}, // SRX0 is basic route/xor
+  {SR_probbin}, // SRX0 is basic route/xor
   {dac0}, // dac0 
   {SRX0}
 };

@@ -237,10 +237,27 @@ static inline uint32_t adc4bits(uint32_t depth){ // fixed 12,8,4
   return bt;
 }
 
+/*
+    k[reg]=k[reg]-2048;
+    inb=(((float)k[reg])/2047.0f); // from 0 to 4095 but where is the middle? 2048
+
+    integratorf+=(inb-oldvaluef);
+    if(integratorf>0.0f)
+      {
+	oldvaluef=1.0f;
+	bt=1;
+      }
+    else
+      {
+	oldvaluef=-1.0f;
+	bt=0;
+	*/
+// but why does this sound different to one above from adc_ - as one above lost static float so was just inb as plus minus/comparator
+// which works ok
 static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
   uint32_t bt;
   static int32_t bc=31;
-  static uint32_t k;
+  int32_t k; // fixed 10/5
   static float integratorf=0.0f, oldvaluef=0.0f;
   static float inb;
   if (bc>depth){
@@ -266,6 +283,37 @@ static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could 
     bc++;
   return bt;
 }
+
+static inline uint32_t adconebitsreset(uint32_t depth, uint8_t w){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
+  uint32_t bt;
+  static int32_t bc=31;
+  int32_t k;
+  static float integratorf=0.0f, oldvaluef=0.0f;
+  static float inb;
+  if (bc>depth){
+    ADCgeneric;
+    //  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
+    k=k-2048;
+    inb=(((float)k)/2047.0f); // from 0 to 4095 but where is the middle? 2048
+    bc=0;
+  }
+  if (gate[w].trigger==1) integratorf=0.0f; 
+  integratorf+=(inb-oldvaluef);
+
+  if(integratorf>0.0f)
+  {
+     oldvaluef=1.0f;
+     bt=1;
+  }
+   else
+   {
+      oldvaluef=-1.0f;
+      bt=0;
+   }
+    bc++;
+  return bt;
+}
+
 
 static inline uint32_t adceqbits(uint32_t depth){
   uint32_t bt;
@@ -785,7 +833,8 @@ static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t st
   static uint32_t toggle[4]={0,0,0,0};
   uint32_t bt=0;
   int32_t tmp=0;
-  float integratorf=0.0, oldvaluef=0.0, inb; // shared across all adc
+  static float integratorf=0.0, oldvaluef=0.0; // was not static
+  float inb; // shared across all adc
   
   switch(type){    
 

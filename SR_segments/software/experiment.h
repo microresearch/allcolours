@@ -62,6 +62,44 @@ void SRxx_xx(uint8_t w){ //
   }
 }
 
+// 10/5/2022
+
+// prob for 2 sorts of binroute/or toggle between the two
+void SR_probbin(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  if (((LFSR_[w] & 4095 ) > CVL[w])){   // this way round?
+      BINROUTE_;
+  }
+  else {
+    BINROUTEalt_;
+  }
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
+// bitdsp resetting thing: adconebitsreset(uint32_t depth, uint8_t w) - but that adds w which other gens in adcetc don't have...
+// test it here
+void adcone_bitreset(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=adconebitsreset(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
 // 9/5/2022
 // towards new minimal template which handles most conditions eg. interpol/none, detachment
 /*
@@ -83,13 +121,29 @@ function, strobey, interpoll, inner_function?, detach?,
 
 // breaking down again into subfunctions, how these can be more spread out...
 // 16 spdmodes with associated interpool yes/no
+/*
+static modez newmodes[128]={ // then call mode by number
+  {0,0,0,0, SRx_x, innertest}
+};
+(*newmodes[choice].func)(www, newmodes[choice].strobey, newmodes[choice].detachlen, newmodes[choice].detachspeed, newmodes[choice].interpoll, newmodes[choice].innerfunc);   
+*/
+
+/*
+ think of access to eg. pointer or value... eg. for spdmode
+
+if (spdpnt) val=*spdpntr;
+else val=spdval;
+
+*/
+
+
 
 // we can also sub in speedfroms and other generators -> more generic
 void SRx_x(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspeed, uint32_t interpoll, uint32_t (*innerfunc)(uint8_t w)){
   HEADNADA;
   if (detachlen) SRlength_[w]=lookuplenall[CVL[w]>>7]; // can be detached...
   if (detachspeed) speedf_[w]=slowerlog[CV[w]>>2]; // or we could look at list of for each mode/// different speedlogs (fractional...)
-  if (speedf_[w]!=2.0f){ // ignored if we don't have the stop...
+  if (w==2 || speedf_[w]!=2.0f){ // ignored if we don't have the stop... and if we are modec
     // interpol or not
     if (interpoll)   { // but interpoll only makes sense for 2 modes... which are in speedfrom
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
@@ -107,9 +161,9 @@ void SRx_x(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspee
     if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     // CORE - types of binroute// new macro is BINROUTEalt_;
-    bitn=(*innerfunc)(w);//   (*dofunc[www][mode[www]])(www);
-    //    if (strobey) bitn|=gate[w].trigger;	
-    PULSIN_XOR; 
+    bitn=(*innerfunc)(w);//   (*dofunc[www][mode[www]])(www); --> innerfunc passed params if needed?
+    if (strobey) bitn|=gate[w].trigger;	 // or
+    PULSIN_XOR;  // or
     BITN_AND_OUTV_; 
     ENDER;
   }    

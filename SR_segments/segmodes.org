@@ -59,7 +59,7 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 RESOLVE ARCH:
 
-*static/frozen speeds in general or not*
+*static/frozen speeds in general or not - yes but just not on lowest*
 *slower speeds/cv*
 *check use of clk, pulsin, out*
 *5th tail always running and how we switch in to it different streams from SRs*
@@ -67,9 +67,28 @@ RESOLVE ARCH:
 
 *BASIC DECISIONS*
 
-** 9/5/2022
+** 10/5/2022 - now back to 15octave speeds
+
+- *fix up logspeed/slower and stops across all???*
 
 - *resolve 5th tail*
+- *how we can begin to finish*
+
+- trial dacspeed with slowest speeds, what was reset/integrator in bitdspDONE, set own cycle length/cycle even if moves on
+
+*noticing that if we use dacspeed then is double interpol - interpol at source, interpol on new speed*
+
+*no new modes/finish abstract ones*
+
+// from most basic upwards -> complex
+
+- speed fromx, feed through, no gsr in, just sr -> generators/processors
+
+*prob/bit for binroute/newbinroutething*
+
+- speed/gsr/bitn in/dacout/recurse
+
+** 9/5/2022
 
 - new CV calculations:
 
@@ -98,7 +117,8 @@ changed r65 (66.5k not 60k), r71 on proto board - tested/seems ok but need 1v so
 
 - again how to wrap up: what is new/options:
 
-1.new gshift/old gshift //for mix of we always need to reset/ add into what macro? into GSHIFTS_
+1.new gshift/old gshift //for mix of we always need to reset/ add into what macro? into GSHIFTS_ -DONE
+// from plain sr through gshift to special gshift
 2.all dacs interpol/no interpol
 3.frozen or not - is that an option? or just keep with lowest frozen and slow speeds - or no freeze on NSR/out
 4.use of clk/pulsin-xor

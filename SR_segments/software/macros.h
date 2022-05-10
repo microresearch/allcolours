@@ -70,6 +70,14 @@
     gate[w].int_time = gate[w].time_now;				\
   }
 
+#define CVOPENDACNOINTERPOL {				\
+    gate[w].dac = delay_buffer[w][1];					\
+    gate[w].time_now += speedf__;					\
+    gate[w].last_time = gate[w].int_time;				\
+    gate[w].int_time = gate[w].time_now;				\
+  }
+
+
 // we cannot place this inside other macros! fixed 12/1/2021
 // HEADN for modesN
 

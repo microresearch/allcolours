@@ -2,7 +2,7 @@
 
 #define DACOUT {				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=2.0f){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -15,7 +15,7 @@
 
 #define DACOUTNOV {				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=2.0f){				\
     CVOPENNOINTERPOL;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -29,7 +29,7 @@
 
 #define DACOUTGGG {				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=2.0f){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -43,7 +43,7 @@
 
 #define DACOUTX {				\
   HEADSIN;						\
-  if (speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=2.0f){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -58,7 +58,7 @@
 // no << in gshift
 #define DACOUTNOG {				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=2.0f){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -78,7 +78,7 @@
 void dacNLRin(uint8_t w){  // this one is just fixed XOR
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -103,7 +103,7 @@ void dacNLRinlogic(uint8_t w){  // figure out bits for logic - also as possible 
   HEADSIN;
   uint8_t what=CVL[w]>>6; // 6 bits - 2 bits per NLC
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -128,7 +128,7 @@ void dacNLRinlogic(uint8_t w){  // figure out bits for logic - also as possible 
 void dacLRprob(uint8_t w){  
   HEADSIN;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -151,7 +151,7 @@ void dacLRprob(uint8_t w){
 void dacLRprobxorN(uint8_t w){  // and XOR N in now...
   HEADSIN;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -180,7 +180,7 @@ void dacLRprobxorN(uint8_t w){  // and XOR N in now...
 void dacNLRprobin(uint8_t w){  // this one is just fixed XOR
   HEADSIN; // detach
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -210,7 +210,7 @@ void dacNLRprobin(uint8_t w){  // this one is just fixed XOR
 void dacNLRprobin1311(uint8_t w){  // this one is just fixed XOR
   HEADSIN; // detach
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -240,7 +240,7 @@ void dacLNLRin(uint8_t w){  // this one is just fixed XOR - detach length to pic
   HEADSIN;
   gate[w].dactype=CVL[w]>>8; // 16 so 4 bits
   gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -266,7 +266,7 @@ void dacLNLRin(uint8_t w){  // this one is just fixed XOR - detach length to pic
 void dacadc(uint8_t w){
   HEAD;				
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;				
@@ -282,7 +282,7 @@ void dacadc(uint8_t w){
 void dacosc0(uint8_t w){ // test oscillator
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -298,7 +298,7 @@ void dacLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
   uint32_t lin, lout;
   HEADSSINNADA;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -322,7 +322,7 @@ void dacLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
 void dacN(uint8_t w){ 
   gate[w].dactype=0; gate[w].dacpar=param[w];
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -339,7 +339,7 @@ void dacLBURST0(uint8_t w){
   HEADSIN;
   gate[w].dactype=0; gate[w].dacpar=param[w];
 
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -364,7 +364,7 @@ void dacLBURST0(uint8_t w){
 void dacL16slide(uint8_t w){   // DETACH SPEED
   gate[w].dactype=16; gate[w].dacpar=CV[w]>>7;
  HEADSSIN
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -382,7 +382,7 @@ void dacLrung0(uint8_t w){ // detached length
   HEADSIN;
   tmp=CVL[w]>>6;// 2 bits for route, 4 bits for DACtype = 6 bits
   gate[w].dactype=tmp>>2; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -403,7 +403,7 @@ void dacLrung0(uint8_t w){ // detached length
 void dacN17_0(uint8_t w){ 
   gate[w].dactype=0; gate[w].dacpar=param[w];
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -422,7 +422,7 @@ void dacN18_0(uint8_t w){
   static uint8_t tug[4]={0};
   gate[w].dactype=0; gate[w].dacpar=param[w];
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -631,7 +631,7 @@ void dactest(uint8_t w){ // for speed 1hz to 20hz triangle here...
 void dacbumproute0(uint8_t w){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -657,7 +657,7 @@ void dacbumproute0(uint8_t w){ // trigger bumps up our local route - add one to 
 void dacDACroute0(uint8_t w){ 
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -681,7 +681,7 @@ void dacDACroute0(uint8_t w){
 void dacSRroute0(uint8_t w){ 
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -705,7 +705,7 @@ void dacSRroute0(uint8_t w){
 void dac32(uint8_t w){ // multiple bits in as case 19 in draftdec
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;

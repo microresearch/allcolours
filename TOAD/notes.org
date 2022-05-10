@@ -17,6 +17,25 @@ vpp is around 20v (too high) - why so high? - signum maybe sends over so keep lo
 - Mindlin
 - crossover
 
+** 10/5/2022
+
+- either dual/split or switching (then need to find good switch) or some hybrid of this
+2 branches join...
+
+*first Mindlin notes:*
+
+- setup as book but 1st R between integrators works well at 100ohm (tried 1k.10k then is more like sprott ringing)
+
+- can also be VCA (noninv)
+
+- try: replace invertors with VCA inv (to test)DONE... +on one it only works with one of the invertors??? (inv4) which is the one we turned into integrator! [but with that extra integrator+
+
+- simplifying... we can remove B(t) multiplier and just use VCA, same for E(t) or vice versa
+
+- q scaling of these ins and also of VCA vs mult (see above - both do similar job)
+
++r2 doesn't do much,,,but...+
+
 ** 9/5/2022
 
 - thinking about split/combine of mindlin/sprott - that can be just 2 sides rather than doubled up, and with norms across one to other
