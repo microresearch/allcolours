@@ -171,9 +171,19 @@
   tmp=tmp>>1;						\
   }							\
   }
-
 // pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
 
+
+#define BINROUTESR_ {				\
+    tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
 
 // shared binroute/gshift - only makes sense if we share routes or if there are functions to shift on...
 #define BINROUTESHARE_ {				\

@@ -2,6 +2,9 @@
 
 // REF: #define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w];
 
+static uint32_t delayline[128]; //shared delay line
+static uint32_t delaylineUN[4][128]; //UNshared delay line
+
 // define spdmodes - need to think which ones work...
 uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
 
@@ -61,6 +64,53 @@ void SRxx_xx(uint8_t w){ //
   }
   }
 }
+
+// 11/5/2022
+static inline uint32_t delay_line_in(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits[4]; // 32 bits of bits
+  // put into delay line - need index and bit index
+  tmp=bits[wh]/32;
+  tmpp=bits[wh]%32;
+  delaylineUN[wh][tmp]&=bitmasky[tmpp];
+  delaylineUN[wh][tmp]|=(depth<<(tmpp));
+  bits[wh]++;
+  if (bits[wh]>4095) bits[wh]=0;
+}
+
+static inline uint32_t delay_line_out(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, tmp;
+  tmp=depth/32;
+  bt=(delaylineUN[wh][tmp]>>(depth%32))&0x01;
+  return bt;
+}
+
+// incoming always into circular delay line and we pick these off at speed...
+// what are other options for incoming-> in or outside speed...
+
+// if we are slower than route in: delay line, intercepted value, overlap?
+// if we are faster: same as we have, cycle gsr or just hold sr value
+
+void SRdelay_lineIN(uint8_t w){  // could also be shared version of this
+  HEADSIN;
+  static uint32_t cnt=0;
+  BINROUTE_;
+  delay_line_in(bitn,w);
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn=delay_line_out(cnt,w); // or detach - length not used - this is our binroute
+  cnt++;
+  if (cnt>4095) cnt=0;
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
 
 // 10/5/2022
 
@@ -2022,10 +2072,6 @@ void noSRdelay_line(uint8_t w){
 // but then buffer is not a shift reg
 // length=delay
 // what is incoming bit? - route in - others?
-
-static uint32_t delayline[128]; //shared delay line
-static uint32_t delaylineUN[4][128]; //UNshared delay line
-
 static inline uint32_t delay_line_shared(uint32_t depth, uint8_t wh){ // share counter and delay line
   // what other options are there?
   uint32_t bt=0, bitrr, tmp, tmpp;

@@ -336,9 +336,9 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc0}, 
-  {SR_probbin}, // SRX0 is basic route/xor
-  {dac0}, // dac0 
+  {adc85}, 
+  {SRdelay_lineIN}, // SRX0 is basic route/xor
+  {SRdelay_lineIN}, // dac0 
   {SRX0}
 };
 

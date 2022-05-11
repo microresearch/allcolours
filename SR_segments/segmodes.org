@@ -67,6 +67,19 @@ RESOLVE ARCH:
 
 *BASIC DECISIONS*
 
+** 11/5/2022
+
+basic choices:
+
+- speedfrom: cv, binroute_etc, gens, dacs etc.
+- interpoll/type of dacout 
+- bitfrom:
+- no binroute/binroute_/binroutesr_/justcycle/binroutealt and others (with shifts/no shifts etc) and choices/prob/toggle of these
+- from adc/dac/gens etc.
+- clckin, pulsin
+
+*phasey sigma/delta fix?*
+
 ** 10/5/2022 - now back to 15octave speeds
 
 - *fix up logspeed/slower and stops across all???*
@@ -82,7 +95,7 @@ RESOLVE ARCH:
 
 // from most basic upwards -> complex
 
-- speed fromx, feed through, no gsr in, just sr -> generators/processors
+- speed fromx, feed through, no gsr in/just sr -> generators/processors//complex insertions
 
 *prob/bit for binroute/newbinroutething*
 
