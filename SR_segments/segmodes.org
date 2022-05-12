@@ -55,7 +55,7 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
-*TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete// 2 may*
+*TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete*
 
 RESOLVE ARCH:
 
@@ -67,18 +67,29 @@ RESOLVE ARCH:
 
 *BASIC DECISIONS*
 
+** 12/5/2022
+
+- added another binroute type as insert zero if we don't have a new bit DONE
+- can also just follow last one... DONE
+
+*also potential global speed from moder*
+
+again how to advance here....
+
 ** 11/5/2022
 
 basic choices:
 
-- speedfrom: cv, binroute_etc, gens, dacs etc.
-- interpoll/type of dacout 
+- speedfrom: cv, binroute_etc, gens, dacs, follow route in resets
+- no/interpoll/type of dacout 
 - bitfrom:
 - no binroute/binroute_/binroutesr_/justcycle/binroutealt and others (with shifts/no shifts etc) and choices/prob/toggle of these
 - from adc/dac/gens etc.
 - clckin, pulsin
 
 *phasey sigma/delta fix?*
+
+
 
 ** 10/5/2022 - now back to 15octave speeds
 
@@ -96,8 +107,6 @@ basic choices:
 // from most basic upwards -> complex
 
 - speed fromx, feed through, no gsr in/just sr -> generators/processors//complex insertions
-
-*prob/bit for binroute/newbinroutething*
 
 - speed/gsr/bitn in/dacout/recurse
 

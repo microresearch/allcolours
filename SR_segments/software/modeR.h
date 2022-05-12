@@ -55,7 +55,7 @@ void SRR0nog(uint8_t w){
   }
 }
 
-void SRRnada(uint8_t w){ 
+void SRRnada(uint8_t w){  // no route in
   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;

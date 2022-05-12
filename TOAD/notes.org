@@ -17,6 +17,21 @@ vpp is around 20v (too high) - why so high? - signum maybe sends over so keep lo
 - Mindlin
 - crossover
 
+** 12/5/2022
+
+- extend with extra integrator/bintic and signum neg into signum but
+  we don't have spare VCA so just use pot/inv (not inv4)// also hard to know where to extend from....
+
+tried from out of 2nd integrator/not neg -> bb3 then r1 into signum and back into first integrator - 
+
+mindlin: 
+R1 highest - C3 x
+R2 lowest - C1
+R3 mid - C2 x
+r1 and r3 were mults
+
+and C4 is first R
+
 ** 10/5/2022
 
 - either dual/split or switching (then need to find good switch) or some hybrid of this

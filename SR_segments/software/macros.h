@@ -45,7 +45,7 @@
 
 #define CVOPEN {				\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \
+    gate[w].dac = ((float)delay_buffer[w][1] * alpha) + ((float)delay_buffer[w][0] * (1.0f - alpha)); \
     if (gate[w].dac>4095) gate[w].dac=4095;				\
     gate[w].time_now += speedf_[w];					\
     gate[w].last_time = gate[w].int_time;				\
@@ -58,11 +58,12 @@
     gate[w].last_time = gate[w].int_time;				\
     gate[w].int_time = gate[w].time_now;				\
   }
+// 1 is always the new data
 
 // this one is used for DACspeed modes and others
 #define CVOPENDAC {				\
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - alpha)); \
+    gate[w].dac = ((float)delay_buffer[w][1] * alpha) + ((float)delay_buffer[w][0] * (1.0f - alpha)); \
     if (gate[w].dac>4095) gate[w].dac=4095;				\
     else if (gate[w].dac<0) gate[w].dac=0;				\
     gate[w].time_now += speedf__;					\
@@ -159,6 +160,21 @@
   tmp=tmp>>1;							\
   }								\
   }
+
+#define BINROUTEZERO_ {			\
+  tmp=binroute[count][w];			\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+  if (gate[x].reset[w]){				\
+  bitrr = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  gate[x].reset[w]=0;					\
+  }							\
+  else bitrr=0;						\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+}
 
 #define BINROUTE_ {				\
     tmp=binroute[count][w];				\

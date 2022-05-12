@@ -2,8 +2,9 @@
 
 // REF: #define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w];
 
-static uint32_t delayline[128]; //shared delay line
-static uint32_t delaylineUN[4][128]; //UNshared delay line
+// enlarge - 4096 bits=128x32 // say for 4x4096=512 4x4096=16384
+static uint32_t delayline[512]; //shared delay line
+static uint32_t delaylineUN[4][512]; //UNshared delay line
 
 // define spdmodes - need to think which ones work...
 uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
@@ -51,7 +52,7 @@ void SRxxxx(uint8_t w){
   }
 }
 
-void SRxx_xx(uint8_t w){ // 
+void SR_xx_xx(uint8_t w){ // 
   HEADSIN;
   if (speedf_[w]!=2.0f){
   CVOPEN;
@@ -59,6 +60,72 @@ void SRxx_xx(uint8_t w){ //
   GSHIFT_;
   //  bitn=probbitsxortoggle(CVL[w],w);
   BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// 12/5/2022
+// if we are slower than route in: delay line, intercepted value, overlap?
+// if we are faster: same as we have, cycle gsr or just hold sr value
+
+// only advance if one of routed in advances (caught if is zero or only itself)
+void SR_binspdx(uint8_t w){ // TODO: make use of CV here - just a trial model
+  HEAD;
+  CVOPENNOINTERPOL;
+  if(gate[inroute[count][w]].reset[w])
+    {
+      gate[inroute[count][w]].reset[w]=0;
+      GSHIFT_;
+      BINROUTE_;
+      BITN_AND_OUTV_;
+      ENDER;
+    }
+}
+  
+// further if we are faster then insert a zero sample
+void SR_insert_zero(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  //  BINROUTE_;
+  // route in and deal with reset gate[w].reset[0]=1;
+  BINROUTEZERO_;
+  
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SR_insert_zero_dac2(uint8_t w){ // 
+  HEADSIN;
+  gate[w].dactype=2; gate[w].dacpar=4096-CVL[w]; //     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
+  if (speedf_[w]!=2.0f){
+  CVOPENNOINTERPOL;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  //  BINROUTE_;
+  // route in and deal with reset gate[w].reset[0]=1;
+  tmp=binroute[count][w];   
+  for (x=0;x<4;x++){  // older version
+    if (tmp&0x01){
+      if (gate[x].reset[w]){
+      bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
+      gate[x].reset[w]=0;
+      }
+      else bitrr=0;
+      bitn^=bitrr;
+    }
+    tmp=tmp>>1; // 4 bits
+    }
+  
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -75,7 +142,7 @@ static inline uint32_t delay_line_in(uint32_t depth, uint8_t wh){
   delaylineUN[wh][tmp]&=bitmasky[tmpp];
   delaylineUN[wh][tmp]|=(depth<<(tmpp));
   bits[wh]++;
-  if (bits[wh]>4095) bits[wh]=0;
+  if (bits[wh]>16383) bits[wh]=0;
 }
 
 static inline uint32_t delay_line_out(uint32_t depth, uint8_t wh){
@@ -94,7 +161,7 @@ static inline uint32_t delay_line_out(uint32_t depth, uint8_t wh){
 void SRdelay_lineIN(uint8_t w){  // could also be shared version of this
   HEADSIN;
   static uint32_t cnt=0;
-  BINROUTE_;
+  BINROUTESR_; // or other forms
   delay_line_in(bitn,w);
 
   if (speedf_[w]!=2.0f){
@@ -103,8 +170,50 @@ void SRdelay_lineIN(uint8_t w){  // could also be shared version of this
   GSHIFT_;
   bitn=delay_line_out(cnt,w); // or detach - length not used - this is our binroute
   cnt++;
-  if (cnt>4095) cnt=0;
+  if (cnt>16383) cnt=0;
   PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// other option is previous into delay_line and then we pickup from last counter - but then modes need to agree or always write into delay// too complex
+// so each SR has a buffer... or 4 sets of buffers???
+// for basic routing say one buffer and count
+
+void SRintodel(uint8_t w){ // 
+  HEAD;
+  uint32_t tmpp;
+  
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  BINROUTE_; // or not
+  // fill bitn into delay and advance delcnt
+  // put into delay line - need index and bit index
+  tmp=gate[w].delcnt/32;
+  tmpp=gate[w].delcnt%32;
+  gate[w].delay[tmp]&=bitmasky[tmpp];
+  gate[w].delay[tmp]|=(bitn<<(tmpp));
+  gate[w].delcnt++;
+  if (gate[w].delcnt>16383) gate[w].delcnt=0;  
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// needs own delcnt
+void SRfromdel(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn^=
+  //  BINROUTE_; // or not
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -143,7 +252,7 @@ void adcone_bitreset(uint8_t w){ //
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   bitn=adconebitsreset(CVL[w],w);
-  BINROUTE_;
+  BINROUTE_; // with binroute disturbs one bit audio but...
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -185,8 +294,6 @@ if (spdpnt) val=*spdpntr;
 else val=spdval;
 
 */
-
-
 
 // we can also sub in speedfroms and other generators -> more generic
 void SRx_x(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspeed, uint32_t interpoll, uint32_t (*innerfunc)(uint8_t w)){

@@ -284,22 +284,41 @@ static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could 
   return bt;
 }
 
+#define GAIN 0.5f
+
 static inline uint32_t adconebitsreset(uint32_t depth, uint8_t w){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
   uint32_t bt;
   static int32_t bc=31;
   int32_t k;
   static float integratorf=0.0f, oldvaluef=0.0f;
-  static float inb;
-  if (bc>depth){
+  static float inb, SmoothData[9]={0.0f,0.0f,0.0f,0.0f};
+  float betaf;
+  //float gg=(float)depth/1024.0f;
+    if (bc>depth){
     ADCgeneric;
+    // try lowpass on k
+    /*
+    betaf=(float)(depth)/4096.0f; // between 0 and 1?
+    //betaf=0.1f;
+    SmoothData[w] = SmoothData[w] - (betaf * (SmoothData[w]-(float)(k))); //
+    inb=SmoothData[w];
+    */
+    inb=(float)k;
+    //k=2048;
     //  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
-    k=k-2048;
-    inb=(((float)k)/2047.0f); // from 0 to 4095 but where is the middle? 2048
+    inb=inb-2048.0f;
+    inb=inb/2047.0f; // from 0 to 4095 but where is the middle? 2048
+    //inb=0.0f;
     bc=0;
-  }
-  if (gate[w].trigger==1) integratorf=0.0f; 
-  integratorf+=(inb-oldvaluef);
-
+    }
+    if (gate[w].trigger==1) integratorf=0.0f;
+  
+  
+  integratorf+=(inb-(oldvaluef));
+  // test clipping
+  //  if (integratorf>2.0f) integratorf=2.0f;
+  //  else if (integratorf<=-2.0f) integratorf=-2.0f;
+  
   if(integratorf>0.0f)
   {
      oldvaluef=1.0f;
@@ -2085,9 +2104,11 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
 //0-15 so 16 modes
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
   int32_t x=0;
+  float f=0.0f;
   static uint32_t n[9]={0,0,0,0,0,0,0,0,0};
   static uint32_t nom[9]={0,0,0,0};
   static float SmoothData[9]={0.0, 0.0, 0.0, 0.0};
+  //  static float lastx[4]={0.0, 0.0, 0.0, 0.0};
   static uint32_t lastout[9]={0,0,0,0,0,0,0,0,0};
   static uint32_t toggle[9]={0,0,0,0};
   static uint32_t mask[4]={0,0,0,0};
@@ -2150,10 +2171,17 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (otherpar==0) otherpar=1;
     if (otherpar>4096) otherpar=4096;
     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
+
     y=(shift >>length)&1;
+    //    if (y==1) f=1.0f;
+    //    else f=-1.0f;
     if (y==1) x=4095;
     else x=0;
-    SmoothData[wh] = SmoothData[wh] - (betaf * (SmoothData[wh] - x));
+    SmoothData[wh] = SmoothData[wh] - (betaf * (SmoothData[wh] - ((float)(x)))); //
+    //    lastx[wh]=x;
+    //    SmoothData[wh]=f;
+	//    f=(SmoothData[wh]*2048.0f)+2048.0f;
+	//    x=(int)f;
     x=(int)SmoothData[wh];
     break;
 

@@ -14,7 +14,18 @@
 // some don't use depth, how to deal with this? can also be more INVERTED ones!
 
 ///////////////////////////////////////////////
-// PROCESSORS
+// PROCESSORS - but need to be shared 
+
+// low pass for values, depth is betaf, bit is value
+static inline uint32_t SRproc_lp(uint32_t depth, uint32_t bit, uint8_t w){ 
+  float betaf, inb, SmoothData[4]={0.0,0.0,0.0,0.0};
+    betaf=(float)(depth)/4096.0f; // between 0 and 1?
+    //betaf=0.1f;
+    SmoothData[w] = SmoothData[w] - (betaf * (SmoothData[w]-(float)(bit))); //
+    inb=SmoothData[w];
+    return bit;
+}
+
 
 //- holder function - hold bits for /depth/ time - which bits? - this is more of a processor though...
 // delay line or hold until new value we can take

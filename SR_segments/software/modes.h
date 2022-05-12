@@ -15,7 +15,8 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   float alpha;
   long last_time;
   long int_time;
-  uint32_t delay[128]; // 128x32 bits=4096
+  uint32_t delay[512]; // 128x32 bits=4096 // 512=16384
+  uint32_t delcnt;
   uint32_t paramx; // for param holds - could be more than one param...
   uint32_t changed;
   uint32_t reset[4];
