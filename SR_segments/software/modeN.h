@@ -56,6 +56,7 @@
   }									\
   }
 
+/// ????? BINROUTENOS_
 #define ADCXORINBIN(X){				\
   HEADD;					\
   if (speedf_[w]!=2.0f){			\
@@ -1481,7 +1482,7 @@ void adcLabstract(uint8_t w){ // abstract modes with option now binroute or not
   tmp=CVL[w]>>6; // 4 bits + 2 now - 6 bits
   depth=CV[w]; // 12-> 5 bits below
   if (tmp&0x01)  bitn=(*abstractbitstreams[tmp>>2])(depth,w);
-  else bitn=(*abstractbitstreamsI[tmp>>2])(depth,w);
+  else bitn=(*abstractbitstreamsI[tmp>>2])(depth,w); // independent
   if (tmp&0x02){    
     BINROUTE_;
   }

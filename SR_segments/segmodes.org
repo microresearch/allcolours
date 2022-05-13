@@ -64,17 +64,43 @@ RESOLVE ARCH:
 *check use of clk, pulsin, out*
 *5th tail always running and how we switch in to it different streams from SRs*
 *dacs with no interpol or not*
+*also potential global speeds from moder - how this can over-ride // sets of global modes*
+
+- platform to manipulate permutations
+
+- choose abstraction and fill in modes (check what we have - old code is easiest maybe), and then deal with details like clk, puls etc.
+
 
 *BASIC DECISIONS*
+
+key qs: CVs speed and length, ringing nature of mid route sometimes and slowest speeds for route 
+- should speed be so slow as we can always use pulse for very slow speeds
+
+** 13/5/2022
+
+TODO/notebook notes:
+
+
+- DONE:alt binroute: //eg. we keep cycling in until we finish one length and there is a reset
+void SR_altbin1(uint8_t w){ // 
+
+- do we want to test one bit 4x over-sample into NSR, then feedback would be into LSR only...
+
+- +sim.c shows that regular binroute messes samples through (as gshift copy will shift) when we go from slow to faster...+
+
+- +maybe new GSHIFT_ with selective updates - can also be mask - eg. update last bit only+
+
++re-test for shiftsr/hold: is also same situation as no shift of gshift+
+
+slower than route in: delaybuffer, slip/miss samples
+faster than route in: hold/no <<gshift, cycle, shared cycle also, insert zero
 
 ** 12/5/2022
 
 - added another binroute type as insert zero if we don't have a new bit DONE
 - can also just follow last one... DONE
 
-*also potential global speed from moder*
-
-again how to advance here....
+again how to advance here..
 
 ** 11/5/2022
 

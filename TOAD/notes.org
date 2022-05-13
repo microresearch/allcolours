@@ -1,21 +1,6 @@
-* schematic
+offset. vca is multiplier so is not inserting signals...
 
-
-TESTS:
-
-- basic binticDONE
-- expanded with signum
-
-== see below// is signum working? // is bin3 working (how to test on own as all have feedback)
-
-all bin 1 2 3 seem to work in same way so...
-fixed 2.2k on r99 4th vca as was wrong part
-
-vpp is around 20v (too high) - why so high? - signum maybe sends over so keep lower vca? some tweaks...
-
-
-- Mindlin
-- crossover
+- one slower mindlin controls another...
 
 ** 12/5/2022
 

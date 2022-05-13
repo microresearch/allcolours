@@ -336,8 +336,8 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc0}, 
-  {SRX0}, // SRX0 is basic route/xor
+  {adc_overonebit}, 
+  {SRX0sr}, // SRX0 is basic route/xor
   {dac2}, // dac0 SR_insert_zero_dac2
   {SRX0}
 };
@@ -384,6 +384,15 @@ void mode_init(void){
     gate[x].Gshift_[1]=0;
     gate[x].Gshift_[2]=0;
     gate[x].Gshift_[3]=0;
+    gate[x].reset[0]=0;
+    gate[x].reset[1]=0;
+    gate[x].reset[2]=0;
+    gate[x].reset[3]=0;
+
+    gate[0].gsrcnt[x]=31;
+    gate[1].gsrcnt[x]=31;
+    gate[2].gsrcnt[x]=31;	
+    gate[3].gsrcnt[x]=31;
   }
   
   gate[0].adctype=0;

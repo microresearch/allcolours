@@ -145,7 +145,7 @@
   }
 
 #define BINROUTEalt_ {				\
-  tmp=binroute[count][w];			\
+    tmp=binroute[count][w];			\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
   if (gate[x].reset[w]){			\
@@ -189,7 +189,20 @@
   }
 // pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
 
+// same as binroute??????
+#define BINROUTENOS_ {				\
+  tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
 
+// same more or less as BINROUTENOG_ but not with gshift
 #define BINROUTESR_ {				\
     tmp=binroute[count][w];				\
   for (x=0;x<4;x++){					\
@@ -213,19 +226,6 @@
   tmp=tmp>>1;						\
   }							\
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
-  }
-
-
-#define BINROUTENOS_ {				\
-  tmp=binroute[count][w];				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  bitn^=bitrr;					\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
   }
 
 // we don't cycle incoming ghost just get bits

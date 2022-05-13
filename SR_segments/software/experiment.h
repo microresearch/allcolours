@@ -53,12 +53,117 @@ void SRxxxx(uint8_t w){
 }
 
 void SR_xx_xx(uint8_t w){ // 
-  HEADSIN;
+  HEAD;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// 13/5/2022
+
+// try for oversample - run 1 bit at full speed...
+void adc_overonebit(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  bitn=adconebitsx();
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
+// some alt binroutes
+
+// reflect - sr cycles in opposite direction with incoming bitn from gshift or... >>
+void SR_reflect(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+    tmp=binroute[count][w];
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn^=bitrr;
+	bitn^=gate[w].localGSR[x]&0x01;
+	gate[w].localGSR[x]=(gate[w].localGSR[x]>>1)+(bitrr<<SRlength[x]);
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
+//eg. we keep cycling in until we finish one length and there is a reset
+void SR_altbin1(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=binroute[count][w];
+    for (x=0;x<4;x++){
+      if (tmp&0x01){  
+	if (gate[w].gsrcnt[x]<0){
+	  gate[w].gsrcnt[x]=SRlength[x];
+	  
+	  if (gate[x].reset[w]){
+	    gate[w].localGSR[x]=gate[x].Gshift_[w];
+	    gate[x].reset[w]=0;
+	  }
+	}
+	bitrr = (gate[w].localGSR[x]>>gate[w].gsrcnt[x]) & 0x01;
+	gate[w].gsrcnt[x]--;
+	bitn^=bitrr;
+      }
+    tmp=tmp>>1;
+    }
+  
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+//maybe new GSHIFT_ with selective updates - can also be mask (from where?) - not so exciting
+void adc0_altgshift(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    //  GSHIFT_;
+    
+    gate[w].Gshift_[0]=gate[w].shift_ & clksr_[w];
+    gate[w].Gshift_[1]=gate[w].shift_ & clksr_[w];
+    gate[w].Gshift_[2]=gate[w].shift_ & clksr_[w];
+    gate[w].Gshift_[3]=gate[w].shift_ & clksr_[w];
+    
+    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1;
+    gate[w].Gshare_=gate[w].shift_;
+    gate[w].shift_=gate[w].shift_<<1;
+    
+    
+  //  bitn=probbitsxortoggle(CVL[w],w);
+    bitn=ADC_(w,SRlength[w],0,bitn,dacfrom[daccount][w],param[w], &gate[w].shift_);  
   BINROUTE_;
   BITN_AND_OUTV_;
   ENDER;
@@ -114,7 +219,7 @@ void SR_insert_zero_dac2(uint8_t w){ //
   //  BINROUTE_;
   // route in and deal with reset gate[w].reset[0]=1;
   tmp=binroute[count][w];   
-  for (x=0;x<4;x++){  // older version
+  for (x=0;x<4;x++){
     if (tmp&0x01){
       if (gate[x].reset[w]){
       bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
@@ -318,7 +423,7 @@ void SRx_x(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspee
     if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     // CORE - types of binroute// new macro is BINROUTEalt_;
-    bitn=(*innerfunc)(w);//   (*dofunc[www][mode[www]])(www); --> innerfunc passed params if needed?
+    bitn=(*innerfunc)(w);//   (*dofunc[www][mode[www]])(www); --> innerfunc passed params if needed? and if we have CV...
     if (strobey) bitn|=gate[w].trigger;	 // or
     PULSIN_XOR;  // or
     BITN_AND_OUTV_; 
@@ -1015,7 +1120,7 @@ void SRxorSR(uint8_t w){
     // 4 bits binroute
     tmpp=CVL[w]>>6; // 6 bits
     tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
-    for (x=0;x<4;x++){  // older version
+    for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
 	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
@@ -1181,7 +1286,7 @@ void SR_vienna(uint8_t w){
     // XX
     // 4 bits for route
     tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
-    for (x=0;x<4;x++){  // older version
+    for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
 	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
