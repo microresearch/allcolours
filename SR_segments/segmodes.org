@@ -76,6 +76,10 @@ RESOLVE ARCH:
 key qs: CVs speed and length, ringing nature of mid route sometimes and slowest speeds for route 
 - should speed be so slow as we can always use pulse for very slow speeds
 
+** 14/5/2022
+
+- note that we can always have clock in as pulsin for lowest and route from independent ones... patching possible...
+
 ** 13/5/2022
 
 TODO/notebook notes:

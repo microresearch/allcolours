@@ -311,6 +311,32 @@ static inline uint32_t adconebitsx(void){ // depth is ignored or could be parame
   return bt;
 }
 
+static inline uint32_t adconebitsmid(uint32_t depth, uint8_t w){ // set midpoint
+  uint32_t bt, k;
+  static float integratorf=0.0f, oldvaluef=0.0f;
+  static float inb;
+  float betaf;
+    ADCgeneric;
+    inb=(float)k;
+    inb=inb-(float)depth;
+    inb=inb/2047.0f; // from 0 to 4095 but where is the middle? 2048
+  
+    integratorf+=(inb-(oldvaluef));
+    
+    if(integratorf>0.0f)
+      {
+	oldvaluef=1.0f;
+     bt=1;
+  }
+   else
+   {
+      oldvaluef=-1.0f;
+      bt=0;
+   }
+  return bt;
+}
+
+
 
 static inline uint32_t adconebitsreset(uint32_t depth, uint8_t w){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
   uint32_t bt;

@@ -66,6 +66,35 @@ void SR_xx_xx(uint8_t w){ //
   }
 }
 
+// 14/5/2022
+/// try also oversample in draftspeed/ adcnull do nothing - no good
+
+void adcnull(uint8_t w){ // 
+}
+
+void adcallone(uint8_t w){ // 
+  uint32_t bitn;
+  GSHIFT_;
+  bitn=adconebitsx();
+  gate[w].shift_+=bitn;
+}
+
+// try adjust mid point for sigma/delta/
+void adc_onebitmid(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  bitn=adconebitsmid(CVL[w]>>1,w);
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
 // 13/5/2022
 
 // try for oversample - run 1 bit at full speed...
