@@ -76,6 +76,40 @@ RESOLVE ARCH:
 key qs: CVs speed and length, ringing nature of mid route sometimes and slowest speeds for route 
 - should speed be so slow as we can always use pulse for very slow speeds
 
+** 16/5/2022
+
+still like idea from before:
+*xx*
+- *like idea of past modes still running/layered and changing params but how: or SR as selecting, running through modes, holding modes, operations ON modes*
+- *params can also be shifted along, lag and delay as in SR but for values, or bit on/off selectors*
+
+*a chain of modes cycling*
+
+// how we can leave running and detach (5th tail) so extra tail runs! as an extra mode which leaves off, departs
+
+back to basics/new file: entry of a bit at time x from y into SR of length z following logic zz // multiple entry/layers...
+
+investigate different models// concept and sound (eg. ringing of slow into fast..)
+
+1-4 layers always
+
+1 basis/fixed for mode is type of gshift:
+                          type of speed: bits(from), cv, strobe, dacspeed with modifiers
+                               of binroute: no binroute/binroute_/binroutesr_/justcycle/binroutealt and others (with shifts/no shifts etc) and choices/prob/toggle of these
+                              [of logic]
+
+TODO: trial now:::
+
+- DONE;length from dac/lengthfrom also: speedfrom, routefrom, lengthfrom, logicfrom 
+
+- trial faster one bit audio (no float)
+
+- how to downsample - run at full speed but drop samples? for dac? FIR filters... read up
+
+// say we need run at 24x for 8khz would be 8x24=200oddKHz - what is fastest...
+
+- DONE extract headings to classify functions (python): extract.py matches our void prototype functions...
+
 ** 14/5/2022
 
 - note that we can always have clock in as pulsin for lowest and route from independent ones... patching possible...

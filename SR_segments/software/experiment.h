@@ -66,6 +66,25 @@ void SR_xx_xx(uint8_t w){ //
   }
 }
 
+// 16/5/2022
+//- length from dac/lengthfrom also: speedfrom, routefrom, lengthfrom, logicfrom 
+void SRX0_len(uint8_t w){ // basic route in XOR puls 
+  HEADSIN;
+  //  speedf_[w]=0.5f;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    SRlength[w]=lookuplenall[(dacfrom[daccount][w]>>7)];//%(CVL[w]>>7)]; // 32 is 5 bits or use CVL for something
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 // 14/5/2022
 /// try also oversample in draftspeed/ adcnull do nothing - no good
 
