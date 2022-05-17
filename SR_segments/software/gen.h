@@ -165,7 +165,6 @@ static inline uint32_t sadcfrac(uint8_t wh){
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
-
   if(gate[wh].last_time<gate[wh].int_time) {
     bt=1; // move on
     gate[wh].time_now-=1.0f;
@@ -174,7 +173,25 @@ static inline uint32_t sadcfrac(uint8_t wh){
   return bt;
 }
 
-static inline uint32_t sdacfrac(uint8_t wh){ 
+// sadcfrac with stoppage - this is the only one what needs it
+static inline uint32_t sadcfracstop(uint8_t wh){ 
+  uint32_t bt=0;
+  float speed;
+  speed=logspeed[CV[wh]>>2]; // 12 bits to 10 bits
+  if (wh==2 || speed!=2.0f){ 
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  }
+  return bt;
+}
+
+static inline uint32_t sdacfrac(uint8_t wh){ // variations where we temper the dac
   uint32_t bt=0;
   float speed;
   speed=logspeedd[gate[speedfrom[count][wh]].dac>>2]; // 12 bits to 10 bits
@@ -535,7 +552,7 @@ static inline uint32_t binroutebits_noshift_transit(uint32_t depth, uint8_t wh){
   static uint8_t lastone;
   depth=depth>>8; // 12 bits to 4 bits
   // deal with no route
-  if (depth==0) { // SR5 is 8th which is outside these bits 
+   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     bt^=bitrr;
   } else

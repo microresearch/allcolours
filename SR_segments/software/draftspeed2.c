@@ -336,10 +336,10 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {SRX0_len}, 
-  {SRX0_len}, // SRX0 is basic route/xor
-  {dac2}, // dac0 SR_insert_zero_dac2
-  {SRX0}
+  {adc0}, 
+  {SRX0}, // SRX0 is basic route/xor
+  {SR_layer1}, // dac0 SR_insert_zero_dac2
+  {SR5_feedback_int}
 };
 
 /*
@@ -359,6 +359,14 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
   {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin, stream4_unshare}, // dacNLRprobinINT1311
   {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0, adcLabstractLD, stream4_unshare}
 };
+
+group:
+  {adc0}, 
+  {SRX0}, // SRX0 is basic route/xor
+  {SR_layer1}, // dac0 SR_insert_zero_dac2
+  {SR5_feedback}
+
+
 */
 
 // so if we wanted to select these how would that work - as major mode but with no minor modes>>>???

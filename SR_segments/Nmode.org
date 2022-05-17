@@ -1,0 +1,99 @@
+* MODEN
+
+NSR: input and feedback - but then is question of route in (as that is
+also feedback)...
+
+RSR has speed of feedback so here we have quantity of feedback 
+
+mixes of adc, dac=feedback, abstract modes
+
+TODO: more abstract modes(what?), mixes, splices, choose insertion of
+sections of adc/dac, choose window of insertions, new ghost feedback
+idea from notebook, probability of feedbackDAC/route in
+
+Q? modeN. 
+0-7 - most basic ADC in - xbits, equalbits, onebit, comparator  // also abstract or?
+8-15 - strobe modes/abstract modes...
+16-31 - detached modes, detached strobe modes
+32-47 - dacspeed
+48-63 - strobespeed
+
+
+more about: types of input, types of encoding, feedback and mixes of feedback, abstract modes also with feedback
+
+*in modeN.h we can have sel of modes for feedback/mix rather than in adcetc*
+
+** breaking down
+
+- straight adc/dac modes INPUT, detached selections of sets of these modes, strobespeed selections also
+
+- strobe modes
+
+- dacspeed
+
+- detached modes all
+
+- special modes
+
+
+
+
+** older from modeN.h
+
+/*
+
+//////////////////////////////////////////////////////////////////////////////////////
+N: is input and feedback -- RSR feedback//DAC feedback//normed ADC feedback//mix of...
+
+- types of input (adc), types of feedback (probability obf RSR, other feedback)
+- use of CV, strobe, DACs
+
+that strobe speed modes are just not only a way to use other CVs
+
+>>adc modes which depend on length>>>
+
+//////////////////////////////////////////////////////////////////////////////////////
+list modes in adcetc and also here:
+
+abstract only: 28,29,30
+using dac: 25,26,27, 66,67,68,71,72,73,74, 77,79,80 - maybe one detached mode just for these
+
+seladc we have as list below
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+re-thinking 7/2/2022
+
+CV modes: 
+0-7: basic ADC ins and some abstract ones - reduce... // Noroute0, N0nog, N0, N1, N2, N3, N4, N6 optional N101 is nice, N32*** N82, N75, N81
+8-15; abstract ones - q of loopback/entry - strobe modes? // how many strobe modes do we have? 3 + detached strobe modes
+
+strobe route modes
+strobe general adc modes
+
+other route modes
+
+15-31: detached modes TODO: detached strobe modes
+
+DAC+CV: 32-39: no route in (choice of dacfrom)
+40-47: routeins/probs of routeins etc.
+[but maybe not for all modeLetc?]
+
+no route ins, some detached
+
+INT: 48-63
+
+intmodes - which use CV as param
+                 use CV as ADC select, can also be detachment here 
+
+[less routings]
+choice of adc
+probability of entry of adc, of route in etc...
+
+////////////////////////////////////////////////////////////////////////
+
+Some modes should not have any route in - in DACspeeds no DAC in maybe
+
+// but now we have different dac speedfrom#
+
+*/

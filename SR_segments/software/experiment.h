@@ -66,6 +66,63 @@ void SR_xx_xx(uint8_t w){ //
   }
 }
 
+// 17/5/2022
+// *how we could have layers rather than routes: routein is xor sieve and we can choose routes (q of route 0)...*
+// so select route in from CVL
+void SR_layer1(uint8_t w){ // also use extra bits
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=(CVL[w]>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
+  if (tmp==0 || ((CVL[w]>>7)&1)) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
+    gate[w].shift_ ^=gate[8].Gshare_;
+    bitn^=bitrr;
+  }
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	bitn^=bitrr; // we need bitn for pulses
+	gate[w].shift_ ^=gate[x].Gshift_[w];
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; // versions which just use SR and no gshift or don;t shift it
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+    // clear lowest bit
+    gate[w].shift_&=invmasky[0];
+    // what of pulse ins>
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // version with own bitn add
+    
+    ENDER;
+  }
+  }
+}
+
+
+
+
+
+//- *trial faster one bit audio (no float) - we had this...
+// try adjust mid point for sigma/delta/
+void adc_onebitmidnof(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=adconebitsmid(CVL[w]>>1,w);
+  bitn=adconebitsmidnof(CVL[w]>>1,w);
+  //  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
 // 16/5/2022
 //- length from dac/lengthfrom also: speedfrom, routefrom, lengthfrom, logicfrom 
 void SRX0_len(uint8_t w){ // basic route in XOR puls 

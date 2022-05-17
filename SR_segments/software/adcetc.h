@@ -290,7 +290,6 @@ static inline uint32_t adconebitsx(void){ // depth is ignored or could be parame
   uint32_t bt, k;
   static float integratorf=0.0f, oldvaluef=0.0f;
   static float inb;
-  float betaf;
     ADCgeneric;
     inb=(float)k;
     inb=inb-2048.0f;
@@ -315,7 +314,7 @@ static inline uint32_t adconebitsmid(uint32_t depth, uint8_t w){ // set midpoint
   uint32_t bt, k;
   static float integratorf=0.0f, oldvaluef=0.0f;
   static float inb;
-  float betaf;
+
     ADCgeneric;
     inb=(float)k;
     inb=inb-(float)depth;
@@ -336,7 +335,26 @@ static inline uint32_t adconebitsmid(uint32_t depth, uint8_t w){ // set midpoint
   return bt;
 }
 
-
+static inline uint32_t adconebitsmidnof(uint32_t depth, uint8_t w){ // set midpoint
+  uint32_t bt;
+  int32_t k;
+  static signed long integrator=0, oldValue=0;
+  
+  ADCgeneric;
+  k=k-depth;
+  integrator+=(k-oldValue);
+  if(integrator>0)
+  {
+    oldValue=2048;
+    bt=1;
+  }
+   else
+   {
+     oldValue=-2048;
+     bt=0;
+   }   
+  return bt;
+}
 
 static inline uint32_t adconebitsreset(uint32_t depth, uint8_t w){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
   uint32_t bt;
@@ -344,7 +362,6 @@ static inline uint32_t adconebitsreset(uint32_t depth, uint8_t w){ // depth is i
   int32_t k;
   static float integratorf=0.0f, oldvaluef=0.0f;
   static float inb, SmoothData[9]={0.0f,0.0f,0.0f,0.0f};
-  float betaf;
   //float gg=(float)depth/1024.0f;
     if (bc>depth){
     ADCgeneric;

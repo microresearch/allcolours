@@ -1,0 +1,34 @@
+* MODEL
+
+** older
+
+// left hand functions
+// CHECKED check all pulse in, strobey, output pulses DONE
+
+// BINROUTE has strobey already
+
+/*
+
+latest:
+
+CV:
+0-15 - basic routes and probabilities
+15-31 detached
+
+CVDAC:
+32-47
+
+INTMODES:
+cv as routings, probabilities etc.
+
+
+CVmodes: basics, prob modes entry/loopback, esoteric modes, << bumps, route from DAC, prob from DAC, what else?
+
+DACmodes: basics, esoterics
+
+INTmodes: route from CV, prob from CV, others?
+
+- how we work with length param as it doesn't change so much?
+
+*/
+

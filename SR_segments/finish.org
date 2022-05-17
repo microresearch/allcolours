@@ -1,0 +1,72 @@
+* try to finish - to resolve:
+
+one bit audio issues, what generators work for speed etc.
+
+where is 5th tail and how to resolve....
+
+////
+
+
+Rewrite for new/fixed: pulsins, clk/strobey and clksr, that CSR has no stopspeed, detach of CVs for speed and length, 5th tail
+
+so tailor more towards each side again
+
+////
+
+expand modes in prob and bit.h - add cv masks where necessary to these
+
+define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs
+
+settle speeds and test new voltage/CV scheme
+
+figure out calc for filter speeds (once we settle on speeds)
+
+TODO: check newmodes, bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...*
+TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
+TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
+
+basic choices:
+
+- speedfrom: cv, binroute_etc, gens, dacs etc.
+- no/interpoll/type of dacout 
+- bitfrom:
+- no binroute/binroute_/binroutesr_/justcycle/binroutealt and others (with shifts/no shifts etc) and choices/prob/toggle of these
+- from adc/dac/gens etc.
+- clckin, pulsin
+
+- how to wrap up: what is new/options:
+
+2.all dacs interpol/no interpol
+3.frozen or not - is that an option? or just keep with lowest frozen and slow speeds - or no freeze on CSR/out
+4.use of clk/pulsin-xor
+5.clean up so less macros and is a bit more general - also between interpol/direct dac access
+6.detachment of CVs - take out of adcetc///
+8.clkbit, other params
+9.hold or toggle of pulsin/nay processor of values...
+10.is we use speedmodes then strobey is more complex
+
+- *5th tail: initiate a stream and keep this running and move on*
+
+* bitdsp notes/play
+
+int1bit_clip_r(reset, low, high, G, x) = 
+    ddsm1_clip_r(reset, low, high, G, int_clip_r(reset, low, high, x));
+                                       
+// -----------------------------------------------------------------------------
+
+ddsm1_clip_r(reset, low, high, G, x) = y
+    letrec {
+        'y = ba.if(int_clip_r(reset, low, high, x - G * y) < 0, -1, 1);
+    };
+
+
+// -----------------------------------------------------------------------------
+// First-order clipped with reset ddsm lowpass.
+//
+lp1bit_clip_r(reset, low, high, G, cf, x) = y
+    letrec {
+        'y = int1bit_clip_r(reset, low, high, G, (x - y) * cf);
+    };
+
+
+

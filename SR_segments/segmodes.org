@@ -57,6 +57,8 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 *TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete*
 
+*settle on final speeds across all and check*
+
 RESOLVE ARCH:
 
 *static/frozen speeds in general or not - yes but just not on lowest*
@@ -76,6 +78,54 @@ RESOLVE ARCH:
 key qs: CVs speed and length, ringing nature of mid route sometimes and slowest speeds for route 
 - should speed be so slow as we can always use pulse for very slow speeds
 
+** 17/5/2022
+
+*5th tail - so RSR has different function: tail as in TOAD also can be process like integration/delta*
+
+*co-ordination of routes and DACs, eg. bitfrom/speedfrom same one???*
+*SR as bitspeed/as DACspeed differentiate*
+
+///
+
+- done:how we could have layers rather than routes: routein is xor sieve and we can choose routes (q of route 0, now as tail)
+
+void SR5_feedback(uint8_t w){ - is only model we have for 5th tail but it's speed is set by CVL which would mean always detaching it
+
+- *still question of how to detach process for 5th tail* so all is not
+  doing so much, how to signal that detach and move on - we can do on change of
+  mode but then will just go through intermediate modes
+
+- fixed for mode: type of gshift, type of binroute, type of interpoll
+
+but what are types of gshift: no gshift, gshift and no <<sr, gshiftcopy only on strobe...
+
+permutations of: 1spdfrom
+                 2lengthfrom
+		 3bitfrom/routefrom
+		 4probfrom 
+
+from: CV, CVL, DAC1-4, ADC, CLKSR/strobe, generators, 
+
+also as spdfrom can be with modifiers eg. DAC%CV is a bit more complex (do that in functions)
+
+layers:
+
+-fixed type of interpol
+-spdfrom->spdfrom functions
+-lengthfrom
+-fixed type of gshift: what are they?
+-bitfrom - types of binroute are in functions
+-probfrom
+-dacs? 
+
+///
+
+4 slots-> pointers/or/generators_processors (generator can also just return value from pointer)
+
+but spdfrom is a bit/function, length is value, route/bin is bit
+
+*model for the above*
+
 ** 16/5/2022
 
 still like idea from before:
@@ -85,7 +135,7 @@ still like idea from before:
 
 *a chain of modes cycling*
 
-// how we can leave running and detach (5th tail) so extra tail runs! as an extra mode which leaves off, departs
+// *how we can leave running and detach (5th tail) so extra tail runs! as an extra mode which leaves off, departs*
 
 back to basics/new file: entry of a bit at time x from y into SR of length z following logic zz // multiple entry/layers...
 
@@ -95,18 +145,18 @@ investigate different models// concept and sound (eg. ringing of slow into fast.
 
 1 basis/fixed for mode is type of gshift:
                           type of speed: bits(from), cv, strobe, dacspeed with modifiers
-                               of binroute: no binroute/binroute_/binroutesr_/justcycle/binroutealt and others (with shifts/no shifts etc) and choices/prob/toggle of these
+                               of binroute: no binroute/binroute_/binroutesr_/justcycle/binroutealt/zeroes and others (with shifts/no shifts etc) and choices/prob/toggle of these
                               [of logic]
 
 TODO: trial now:::
 
 - DONE;length from dac/lengthfrom also: speedfrom, routefrom, lengthfrom, logicfrom 
 
-- trial faster one bit audio (no float)
+- DONEtrial faster one bit audio (no float) - but how fast can it be?
 
 - how to downsample - run at full speed but drop samples? for dac? FIR filters... read up
 
-// say we need run at 24x for 8khz would be 8x24=200oddKHz - what is fastest...
+// say we need run at 24x for 8khz would be 8x24=200oddKHz - what is fastest... nowhere close
 
 - DONE extract headings to classify functions (python): extract.py matches our void prototype functions...
 
@@ -203,7 +253,7 @@ changed r65 (66.5k not 60k), r71 on proto board - tested/seems ok but need 1v so
 
 - again how to wrap up: what is new/options:
 
-1.new gshift/old gshift //for mix of we always need to reset/ add into what macro? into GSHIFTS_ -DONE
++1.new gshift/old gshift //for mix of we always need to reset/ add into what macro? into GSHIFTS_ -DONE+
 // from plain sr through gshift to special gshift
 2.all dacs interpol/no interpol
 3.frozen or not - is that an option? or just keep with lowest frozen and slow speeds - or no freeze on NSR/out
@@ -211,7 +261,7 @@ changed r65 (66.5k not 60k), r71 on proto board - tested/seems ok but need 1v so
 5.clean up so less macros and is a bit more general - also between interpol/direct dac access
 6.detachment of CVs - take out of adcetc///
 8.clkbit, other params
-9.hold or toggle of pulsin/nay processor of values...
+9.hold or toggle of pulsin/any processor of values...
 10.is we use speedmodes then strobey is more complex
 
 - *new abstractions to be checked out*
@@ -542,7 +592,7 @@ towards something like major/minor modes or modeR chooses from a grid of modes..
 
 abstract out interpol and strobeDONE
 
-*to keep null route in binroutes or route always from 5th/extra tail?!*
+*to keep null route in binroutes or route always from 5th/extra tail?! - see gen.h*
 
 ** 19/4/2022
 

@@ -769,10 +769,11 @@ void SRRintselADC_63(uint8_t w){ // use CV to select adc type: only those which 
 void SR5_feedback(uint8_t w){ // detached
   HEADSIN; // use CVL[w] for tail entry speed... // can also use as INTmode with speed as this speed...
   // tail trial1
+  uint8_t old;
   speedf_[8]=logspeedd[CVL[w]>>2];
-  val=w;
+  old=w;
   w=8;
-  gate[w].dac = delay_buffer[w][1]; // no interpol so we have gate[8].dac as 5th tail
+  //  gate[w].dac = delay_buffer[w][1]; // no interpol so we have gate[8].dac as 5th tail
   gate[w].time_now += speedf_[w];
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -789,13 +790,13 @@ void SR5_feedback(uint8_t w){ // detached
 	tmp=tmp>>1;
       }
     gate[w].shift_+=bitn;
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);
+    //    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); // do we need that dac?
     new_data(val,w);
     gate[w].time_now-=1.0f;
     gate[w].int_time=0;
   }
   // back to regular RSR - and we can have variation on this
-  w=val;
+  w=old; // ??? as we disrupted val
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {

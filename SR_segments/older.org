@@ -1,0 +1,260 @@
+* older modes sketch
+
+newer is 1-31 ADC modes
+1-15 DAC modes
+16-31 4x4 DAC modes...
+
+CVspeed:
+1-15 -LR simple modes/all inc. prob
+      N 8xADC x2 - pass in/circle_and_pass or 16 ADC modes with pass in only!
+      C 4xDAC x4 //or 8xDAC x2 // or 16x DAC - pass in/circle only/circle and pass/prob
+
+16-31 LR - exp modes - place global CV route modes
+      NC - any match modes 4xADC, 4xDAC
+
+or 31x ADC and 2x16 DACs = now 4x4 DACs
+
+CV+DACspeed: // other speed options: speed from clkcnt, speed from CV+clkcnt
+32-47 LR - modes mixed
+      NC as 1or2
+
+INTspeed: // or speed from INT divided by CV->TODO! // SR->bit speed (ANDed with CV/trigger) eg. if && bitx
+48-63 LR - mix using CV params - probability, comparator, CV+DAC/ADC as modifier
+      NC 4x ADC/DAC and prob modes - special INT modes for ADC/DAC which make use of CV/not trigger
+
+plus global change routes for INTmodes right at the end,,,
+
+CV&DACspeed: -/+/wrapsDAC- tested some...
+
+timing from pulse AND speedcv (divide, multiply, expect), pulse
+AND/OR/XOR top? (again no bits), from ghost registers (which can also
+be themselves clocked by top register and then we can use bits in
+or?), timing also from SR->DAC
+
+
+** classification
+
+L&R modes...
+
+- basic route/logic modes
+- probability modes
+- use of CLKIN as bit modes/as toggles etc.
+- speedfrom/routings/logic manipulations
+- esoteric
+
+** list from theone.c
+
+//0: all pass through only
+
+//1: cycle round only XORbits - basic 0 DAC out
+
+//2: cycle and pass only XORcycleXOR-bits - basic 0 DAC out
+
+//3: N: passon/XOR-LFSR LR: passonORbits C: XOR-DACequiv  // note that for LR with no bits in these are all the same
+
+//4: N: passon/XOR-ADC1bit LR: passonANDbits C:XOR-DAC1bit
+
+//5: N: passon/XOR-ADCxbit LR: passonLEAKbits C: XOR-DACspacers
+
+//// maybe remove 678! and add new ADC/DAC options instead
+
+678: N:cycle/pass/XOR-ADCoptions LR: cycleandpasXOR-LOGOPbits C: as N/DACoptions //NOTE: these ones are quite destructive of ADC ins/orDAC?
+6 LFSR
+7 ADC1
+8 ADCxbits
+
+//////9- test code with other ADC and DAC options
+//rung - cycle XOR with pass//=mode2
+
+10 - model for probability modes?
+
+/////
+TODO: prob modes below as/and basic INT modes
+
+- probability modes for (DAC, DAC+CV comp to SR,countedclk): 
+   - prob of bit in/inverted bit in,
+    - XOR bit in from->[cycled//ADCorLFSR//pulseifwehave]->routed in or not
+    - bitin OR loopback, prob of bitin or inverted loopback, 
+
+???prob of cycle, new bit from bits/from route -> how many? make this
+  clearer:
+
+SR is customSR or RSR(routed SR)
+
+1. if SR<CV  // int mode
+2.if SR<DAC  // cv/int mode
+3.if SR<DAC+CV // int mode
++4.if sr<CLKCNT // cv mode+
+XX
+1. invert cycling bit or not, pulsbit is ORed in (TM)
+2. invert routedin bit or not, pulsbit is ORed in (TM)
+3. mix of this?
+
+3. new input (from pulsbit) or cycling bit (wiard and EN)
+4. new input (from route) or cycling bit
+5. new input (from ADC) or cycling bit//6. new input (from LFSR) or cycling bit - only for 0
+
+7-10 above with inverted cycling bit
+
+so is quite a few modes for all options
+
+///
+- other modes/to fill in:
+
+- Rungler:
+
+Original: SR bit out XOR with OSC1 out AND OSC1 speed/freq is determined by SR (itself)
+
+-> 3x SRs: SR1 (RSR)? takes clk/speed from SR2 and data from SR3 (XOR with
+own feedback). dacspeed we can use 2x CV, amount and offset (CV as
+offset - NSR)
+
+aspects:
+
+rungler is XOR of route in with itself: eg. L1
+
+speed from DAC of other SR - dacspeed modes. do we have offset/amount?
+
+can we choose who we take speed from? Ndacseladd0*
+
+routings which allow for this -> yes
+
+others/basics: LCR
+
+///
+
+- leaky logic, memory logic to play with 
+
+- Beckett/gray code.
+
+Gray code: where each line differs in only one bit
+Beckett/gray: as gray code but bit first in first out (history of bits also for leaky???)
+
+bit position x which has not changed... FIFO ... we have list of transitions (which bit flips) for n=5 etc.
+
+- modes from original it.c ported to generic form
+
+** ADC modes 
+
+TODO: more comparator modes, adc_in to be compared to what? compare to: CV, DAC, CV+DAC, to clksr_, to param - OR feed these into otherpar already
+
+** DAC modes
+
+** new modes from below
+
+DONEProbability modes: CV//PARAM//SRDACx > SRDACx -> result - case 30 with dacy<dacx
+
+DONE+ADC could also be used in probability modes+ - case 29 now
+
+DONE- *8 bit cipher code* --> we have in ADC_ mode 8 ,, but could also be used for modes case 32,33
+accumulate into ggsr and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
+4094 - on STROBE signal, SR is transferred to the storage register...
+
+DONE- triadex: we could use counters from clkins as indicator of which bits from which SR to parity-in
+--> this is an XOR of 4 bits - selected from clocking bits, on/off bit and from shift register feedback
+that we can have XORs of bits from other SRs entering our SR
+so table would be for 4 bits from 4x maxSRlength=32*4=128 (ignore lengths) - case 35
+
+DONE- pulse triggers exchange between ghost and real case 36
+
+DONEhold ghost 37
+
+DONE- pass through or cycle is toggled by clkin bit - case 38
+
+DONE - multiple DACs - but how we do this as a single mode (add/sub/wrap other DACS, additive DAC into DAC[2]) case 39
+
+DONE- swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
+
+DONE - TM in TM
+
+DONE - reverse direction of shift register - could be done on a toggle: >> and << and blank/fill in bitn
+
+DONEinDACcase15 - toggle/record/keep frozen bits and keep these ORED with the shift register as it cycles or does whatever
+
+DONE - probability for reverse direction - case 45
+
+DONE - instructions shift left or right the associated LFSR (instruction as 1 or 0)... and enter this bit into our SR... - TRY THIS as ADC mode - case 27
+can also be other shiftings using bits (xSR shifts ySR left or right)
+
+DONE - - cycling array of ghosts toggle in/how to toggle out
+could be keep recording into array and on INT we cycle through (XOR/OR in pass through) until we get to last recorded of max x case 46
+// could also be alternatives but as it is we just replace on INT the revenant SR
+
+- more modes which play with GSRs: GSR as mask for???..., freeze/speed up
+  GSR, GSR runs at CV speed in INT mode (try - and vice versa)DONE, re-routing make use of
+  GSR already. 
+
+swop GSR/SR or /into/ SR (before copy?)????
+
+DONE- GSR doesn't change (becomes a revenant) 48 and 49
+
+// pulse in means double a step.. ????DONE
+
+- modes which manipulate THEIR OWN SR routing table/speedfrom tables - DAC/CVetc ... - this is already in modes 24,25,26 to re-examine
+
+24: clkin bumps up routing table only
+
+25: INTmode - CV shifts table and lowest 3 bits of DACmode - so total of 6 bits only - we could expand this for other bits - added logic table
+
+26: as 25 but with SR as source - added logic table
+
+also speedfrom_ table->who/ but can't use cv for that... TODO
+
+- most generic table for all elements which could become itself a SR//SRx as determiner...
+use DAC, CV or SR as this can be different to DACs (if they are not just default)
+
+
+////
+
+trial bits:
+
+pulse/cv speed, input ADC/LFSR/no, output DAC/else?, type SR, type SR, type SR(3 bits of types=8), routing from (4 options)  
+1               1     1            1                 1        1        1                           1 1 1 1 - 4 bits just to make it easier but could be less
+
+eg.
+0-looping only/aka return only!
+1-pass on only - straight through
+2-pass on and return bitx
+
+- expand all possible probability modes...???
+
+3-TM with pass on - INT mode
+4-TM with loop back
+5-TM in TM pass on
+6-TM in TM loop
+
+7-Rungler XOR pass on
+8-Rungler XOR loop back
+9+Run with different speeds???
+10+Run with bits???
+
+** AC modes and inspirations:
+
+- clkin leaps/flips bits - that we can apply a mask from clkin for
+  whole SR - would be nice to be able to freeze this thoughDONE to some extent
+
+- DONE in adc_ - case 31 - TO TEST shifting array of taps/ghost taps/ clksr can also be taps: ghost_tapsL[32][4] = { // left hand path ghost_tapsR
+
+- sr loops in sr
+
+** first it.c modes to port in
+
+[- TM and other prob modes:  CV in as comparator for SR DAC, CV as comparator for ADC in, ADC as comp for SR DAC
+all the comparison possibilities]
+
+- overlaps: in overlap we just mask top x bits of previous routed (so only one route or?) in to this one...DONE
+
+- shift x bits in DONE
+
+- SR in SR//barriersDONEkind of
+
+
+multiple speeds are in: model.h
+
+CVL - from length
+CV - from speed
+
+detaches
+INTmodes
+
+DONE7/2/2022:re-check strobey, pulsins, pulsouts for all modeX.h modes and count=0 where necessary in modeR.h
