@@ -78,13 +78,30 @@ RESOLVE ARCH:
 key qs: CVs speed and length, ringing nature of mid route sometimes and slowest speeds for route 
 - should speed be so slow as we can always use pulse for very slow speeds
 
+** 19/5/2022
+
+TODO:
+- start to list/extract modes and categorise from files...
+
+individual routes/one route in only // global or local
+multiple routes                    // 
+
+*alternating routes* eg. route in can be 4 bits from one SR (shifting)// hold from GSR and shift on strobe
+
+list types of binroute: 
+
+1no binroute/2binroute_/3binroutesr_/4justcycle/5binroutealt/6zeroes 
+
++ shifts/no shift sharedgshift, shift on trigger [and choices/prob/toggle of these]
+
+permute cases for each option: length, speed, bit/route... 
+
 ** 17/5/2022
 
 *5th tail - so RSR has different function: tail as in TOAD also can be process like integration/delta*
 
 *co-ordination of routes and DACs, eg. bitfrom/speedfrom same one???*
 *SR as bitspeed/as DACspeed differentiate*
-
 ///
 
 - done:how we could have layers rather than routes: routein is xor sieve and we can choose routes (q of route 0, now as tail)
