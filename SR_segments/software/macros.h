@@ -161,8 +161,51 @@
   }								\
   }
 
+#define BINROUTEaltstrip_ {				\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+  if (gate[x].reset[w]){			\
+  gate[x].reset[w]=0;				\
+  gate[w].gsrcnt[x]=SRlength[x];		\
+  }								\
+    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
+    gate[w].gsrcnt[x]--;					\
+    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitn^=bitrr;						\
+  }								\
+  tmp=tmp>>1;							\
+  }								\
+  }
+
+#define BINROUTEnoaltstrip_ {				\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
+    gate[w].gsrcnt[x]--;					\
+    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitn^=bitrr;						\
+  }								\
+  tmp=tmp>>1;							\
+  }								\
+  }
+
+
 #define BINROUTEZERO_ {			\
   tmp=binroute[count][w];			\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+  if (gate[x].reset[w]){				\
+  bitrr = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  gate[x].reset[w]=0;					\
+  }							\
+  else bitrr=0;						\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+}
+
+#define BINROUTEZEROstrip_ {			\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
   if (gate[x].reset[w]){				\
@@ -189,6 +232,20 @@
   }
 // pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
 
+// use tmp
+#define BINROUTEstrip_ {				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+// pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+
+
 // same as binroute??????
 #define BINROUTENOS_ {				\
   tmp=binroute[count][w];				\
@@ -214,6 +271,17 @@
   }							\
   }
 
+#define BINROUTESRstrip_ {				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+
 // shared binroute/gshift - only makes sense if we share routes or if there are functions to shift on...
 #define BINROUTESHARE_ {				\
   tmp=binroute[count][w];				\
@@ -225,8 +293,20 @@
   }							\
   tmp=tmp>>1;						\
   }							\
+  }
+
+#define BINROUTESHAREstrip_ {				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01;		\
+  gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;		\
+  bitn^=bitrr;					\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
+
 
 // we don't cycle incoming ghost just get bits
 #define BINROUTENOG_ {				\
@@ -241,8 +321,42 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
+#define BINROUTENOGstrip_ {				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;							\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+#define BINROUTEtrigstrip_ {				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;							\
+  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
 #define BINROUTEOR_ {				\
   tmp=binroute[count][w];				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  bitn=bitn|bitrr;							\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+#define BINROUTEORstrip_ {				\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\

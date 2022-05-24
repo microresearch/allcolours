@@ -246,6 +246,55 @@ static inline uint32_t sbinroute(uint8_t wh){   // depth as routesel... shared b
   return bt;
 }
 
+static inline uint32_t sbinroute0(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t bitn=0, bitrr, tmp,x;
+  tmp=binroute[count][w];
+  BINROUTESRstrip_;  
+  return bitn;
+}
+
+static inline uint32_t sbinroute1(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t bitn=0, bitrr, tmp,x;
+  tmp=binroute[count][w];
+  BINROUTEaltstrip_;
+  return bitn;
+}
+
+static inline uint32_t sbinroute2(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t bitn=0, bitrr, tmp,x;
+  tmp=binroute[count][w];
+  BINROUTEZEROstrip_;
+  return bitn;
+}
+
+static inline uint32_t sbinroute3(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t bitn=0, bitrr, tmp,x;
+  tmp=binroute[count][w];
+  BINROUTESHAREstrip_;
+  return bitn;
+}
+
+static inline uint32_t sbinroute4(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t bitn=0, bitrr, tmp,x;
+  tmp=binroute[count][w];
+  BINROUTENOGstrip_;
+  return bitn;
+}
+
+static inline uint32_t sbinroute5(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t bitn=0, bitrr, tmp,x;
+  tmp=binroute[count][w];
+  BINROUTEtrigstrip_;
+  return bitn;
+}
+
+static inline uint32_t sbinroute6(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t bitn=0, bitrr, tmp,x;
+  tmp=binroute[count][w];
+  BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
+  return bitn;
+}
+
 static inline uint32_t scycle(uint8_t wh){   // itself/cycle
   uint32_t bt=0;
   bt=((gate[wh].Gshift_[wh]>>SRlength[wh])& 0x01);

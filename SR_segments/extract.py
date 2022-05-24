@@ -109,17 +109,25 @@ def func_name_extract(file_path):
     fp.close()
     return func_list
 
-def write_to_file(func_list, output_file):
-    fp = open(output_file, "w")
+def write_to_file(filoen, func_list, output_file):
+    fp = open(output_file, "a")
+    fp.write("\n\nxxxxx " + filen + "\n\n")
     for one in func_list:
         fp.write(one + "\n")
     fp.close()
 
 if __name__ == '__main__':
 
-    if len(sys.argv) != 3:
-        print '''Usage: python func_name_extract.py <file_path> <output_file>\n'''
-        exit(-1)
-    func_list = func_name_extract(sys.argv[1])
-    write_to_file(func_list, sys.argv[2])
+    file_list=['experiment.h', 'modeN.h', 'modeC.h', 'modeL.h', 'modeR.h', 'bit.h', 'probability.h', 'prob.h']
+
+    for file in file_list:
+        filen="software/"+file
+        func_list = func_name_extract(filen)
+        write_to_file(filen, func_list, "extracted")
+    
+    # if len(sys.argv) != 3:
+    #     print '''Usage: python func_name_extract.py <file_path> <output_file>\n'''
+    #     exit(-1)
+    # func_list = func_name_extract(sys.argv[1])
+
 

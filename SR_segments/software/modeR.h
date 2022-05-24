@@ -1,4 +1,7 @@
 /// basics - copy 0 to gshifts so no route in but still we can run for dacs
+// we need to zero counts in some modes... except global ones here
+
+// a set of global counts for spd, route, dac which don;t reset to zero ...
 
 void SRRLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
   uint32_t lin, lout;
@@ -159,7 +162,7 @@ void SRRaccelghosts0(uint8_t w){ // route in // exp mode to accelerate/bump on a
 ///////////////////////////////// GLOBAL ROUTE modes
 // for CV modes add in bump up global routes, SR as global routing table
 
-void SRRstroberoute(uint8_t w){ // bump dacroute and binroute 
+void SRRstroberoute(uint8_t w){ // kill all routes
   HEAD;
   
   if (speedf_[w]!=2.0f){ 
@@ -175,12 +178,13 @@ void SRRstroberoute(uint8_t w){ // bump dacroute and binroute
 
   if (gate[w].trigger) // or could be toggle to hold it
     {
-      count=16;
+      count=16; // no routes...
     }
+  else count=0; // basic route
 }
 
 
-void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute 
+void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute  // what of spdcount
   HEAD;
 
   if (gate[w].trigger) // outside speed?
@@ -681,11 +685,11 @@ void SRRint0(uint8_t w){
   } 
 }
 
-void SRRglobalint0(uint8_t w){ // now use 8 bits - 4 for each count and daccount->dacfrom
-  HEAD;
+void SRRglobalint0(uint8_t w){ // now use 8 bits - 4 for each count and daccount->dacfrom - can we use 8 bits from CV?
+  HEADSIN;
   if (gate[w].trigger)      {
-    count=CV[w]>>8; //16 is 4 bits - we could have more
-    daccount=(CV[w]>>4)&15;
+    count=CV[w]>>8; //16 is 4 bits - we could have more - 
+    daccount=(CVL[w]>>4)&15;
     GSHIFT_;
     BINROUTE_;
     PULSIN_XOR;

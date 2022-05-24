@@ -6,7 +6,7 @@
 static uint32_t delayline[512]; //shared delay line
 static uint32_t delaylineUN[4][512]; //UNshared delay line
 
-// define spdmodes - need to think which ones work...
+// define spdmodes - need to think which ones work... and maybe expand with new binroutes to 32 // 5 bits
 uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
 
 // 2x speedfrac - one interpol, one no interpol
@@ -16,7 +16,7 @@ uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strob
 void SRxxx(uint8_t w){ // 
   HEAD;
   if (speedf_[w]!=2.0f){
-  CVOPEN;
+    CVOPEN; // CVOPENNOINTERPOL
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   //  bitn^=
@@ -66,6 +66,328 @@ void SR_xx_xx(uint8_t w){ //
   }
 }
 
+// 24/5/2022
+
+void SR_cvbits(uint8_t w){ //- if we treat all as bits then some CV should go into SRs as a mask - function for this
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_; // type of binroute
+  gate[w].shift_^=CVL[w];
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// check how many bits we can hit - 6 or 7 bits is max unless is more continuous
+void SR_testbits(uint8_t w){ // 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  if ( (CVL[w]>>5)!=16){ // 6 bitsYES, 7 bitsalmost, 8clicks  
+    BINROUTE_;
+  }
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
+
+// trial +- dacspeed - so we have 0-1024 10 bits and 512 is mid 0 less is minus more is plus and clip
+void SRdacplusminus(uint8_t w){
+  HEAD;
+  int32_t cv, tmpp;
+  float speedf__;
+  tmpp=(CV[w]>>2)-512;
+  cv=(gate[speedfrom[spdcount][w]].dac>>2) + tmpp;  
+  if (cv<0) cv=0;
+  else if (cv>1023) cv=1023;
+  speedf__=logspeedd[cv];
+  CVOPENDACNOINTERPOL;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+}
+
+
+// what if each routed in bit has different binroute options: again q of each route as a layer but needs ghost of its straightforward layer
+// ie. if we have a chain of routes then all they do is route, we need split for each
+// could this be the 00 0 of the active/passive geomantics
+
+// bit with x different options - 4 bits in, 3 bits per bit is too much
+
+// trial select of different binroutes and routings with 7 bits
+// TODO: or can be CV and CVL and we select binroutes and probs - x bits
+
+// 1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos, 7trigger, 8newaltone
+
+void SR_binr_fixed(uint8_t w){ // fixed route but we have 3 bits for selection only??? // prob= // or sel per bit...
+  HEADSIN;  
+  uint32_t tmpp;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=binroute[count][w];
+  SRlength[w]=lookuplenall[CVL[w]>>7]; // top 5 bits as length
+  tmpp=(CVL[w]>>4)&7; // next 3 bits for binroute selection
+    switch(tmpp){
+    case 0:
+    BINROUTEstrip_;
+    break;
+    case 1:
+    BINROUTESRstrip_;
+    break;
+    case 2:
+    BINROUTEaltstrip_;
+    break;
+    case 3:
+    BINROUTEZEROstrip_;
+    break;
+    case 4:
+    BINROUTESHAREstrip_;
+    break;
+    case 5:
+    BINROUTENOGstrip_;
+    break;
+    case 6:
+    BINROUTEtrigstrip_;
+    break;
+    case 7:
+      BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
+    break;
+    }
+
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// or just use regular binroute options
+void SR_binr(uint8_t w){ // 
+  HEADSIN;
+  uint32_t tmpp;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=CVL[w]>>8; // top4 bits for routing itself
+  tmpp=(CVL[w]>>5)&7; // lower 3 bits for binroute selection
+    switch(tmpp){
+    case 0:
+    BINROUTEstrip_;
+    break;
+    case 1:
+    BINROUTESRstrip_;
+    break;
+    case 2:
+    BINROUTEaltstrip_;
+    break;
+    case 3:
+    BINROUTEZEROstrip_;
+    break;
+    case 4:
+    BINROUTESHAREstrip_;
+    break;
+    case 5:
+    BINROUTENOGstrip_;
+    break;
+    case 6:
+    BINROUTEtrigstrip_;
+    break;
+    case 7:
+      BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
+    break;
+    }
+
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SR_binr_dac0(uint8_t w){ // same as above with dac=0
+  HEADSIN;  
+  uint32_t tmpp;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=CVL[w]>>8; // top4 bits for routing itself
+  tmpp=(CVL[w]>>5)&7; // lower 3 bits for binroute selection
+    switch(tmpp){
+    case 0:
+    BINROUTEstrip_;
+    break;
+    case 1:
+    BINROUTESRstrip_;
+    break;
+    case 2:
+    BINROUTEaltstrip_;
+    break;
+    case 3:
+    BINROUTEZEROstrip_;
+    break;
+    case 4:
+    BINROUTESHAREstrip_;
+    break;
+    case 5:
+    BINROUTENOGstrip_;
+    break;
+    case 6:
+    BINROUTEtrigstrip_;
+    break;
+    case 7:
+      BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
+    break;
+    }
+
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SR_binr_adc0(uint8_t w){ // same as above with adc=0
+  HEADSIN;  
+  uint32_t tmpp;
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  tmp=binroute[count][w]
+
+  tmp=CVL[w]>>8; // top4 bits for routing itself
+  tmpp=(CVL[w]>>5)&7; // lower 3 bits for binroute selection
+  bitn=ADC_(w,4,0,0,dacfrom[daccount][w],param[w], &gate[w].shift_);  
+  switch(tmpp){
+    case 0:
+    BINROUTEstrip_;
+    break;
+    case 1:
+    BINROUTESRstrip_;
+    break;
+    case 2:
+    BINROUTEaltstrip_;
+    break;
+    case 3:
+    BINROUTEZEROstrip_;
+    break;
+    case 4:
+    BINROUTESHAREstrip_;
+    break;
+    case 5:
+    BINROUTENOGstrip_;
+    break;
+    case 6:
+    BINROUTEtrigstrip_;
+    break;
+    case 7:
+      BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
+    break;
+    }
+
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
+// last new modes: route from SR [4 bits]: route in can be 4 bits from one SR (shifting)// hold from GSR and shift on strobe is also option
+
+void SR_routeSRbits00(uint8_t w){ // fixed SR for route bits: gate[dacfrom[count][w]].Gshift_[w]
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=gate[dacfrom[count][w]].shift_&15; // lowest 4 bits
+  BINROUTEstrip_; // also can be different types of binroute
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SR_routeSRbits01(uint8_t w){ //CVL chooses SR for route bits (only 4 SRs so 2 bits, or we route in/xor a 4 bit route)
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=CVL[w]>>8; // 4 bits
+  bitrr=0;
+  for (x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr ^= (gate[x].shift_)&15; 
+    }
+    tmp=tmp>>1; // 4 bits
+  }
+  tmp=bitrr;
+  BINROUTEstrip_; // also can be different types of binroute
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SR_routeSRbits02(uint8_t w){ //CV chooses SR for route bits for SR for route bits
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  tmp=CVL[w]>>8; // 4 bits
+  bitrr=0;
+  for (x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr ^= (gate[x].shift_)&15; 
+    }
+    tmp=tmp>>1; // 4 bits
+  }
+  tmp=bitrr;
+  bitrr=0;
+  for (x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr ^= (gate[x].shift_)&15; 
+    }
+    tmp=tmp>>1; // 4 bits
+  }
+
+  tmp=bitrr;
+  BINROUTEstrip_; // also can be different types of binroute
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+
+
 // 17/5/2022
 // *how we could have layers rather than routes: routein is xor sieve and we can choose routes (q of route 0)...*
 // so select route in from CVL
@@ -100,10 +422,6 @@ void SR_layer1(uint8_t w){ // also use extra bits
   }
   }
 }
-
-
-
-
 
 //- *trial faster one bit audio (no float) - we had this...
 // try adjust mid point for sigma/delta/

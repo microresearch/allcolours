@@ -78,6 +78,179 @@ RESOLVE ARCH:
 key qs: CVs speed and length, ringing nature of mid route sometimes and slowest speeds for route 
 - should speed be so slow as we can always use pulse for very slow speeds
 
+interpoll is only for dac so keep to a minimum options there and mostly in modeC
+
+** TODO
+
+new dir/files
+
+what are models: abstractions, mishmash here, minor/major modes,
+ghost/tails, layers/hold/detach, modes initiate streams (below), all
+as bits and functions/gens, 
+
+sliding of matched functions - so there is major one and others deviate from that by wrapped value...
+
+16x16x16x16=65536/// how we can address all global route permutations... a value for each... 4+4+4+4=16 bits for one set of global routes
+
+*as would be nice to have global routes from SR but at present we just use arrays... - how to bridge this gap*
+
+- co-ordinate and check lists of routes, dacfrom, speedfrom routes
+- ghost routed layers trial
+- 5th tail as processor, generator and what_would_have_been
+- check all above: speed, clkin, pulsin etc.
+- sort modes
+
+** 24/5/2022
+
+modeR manipulations: for spdcount(speedfrom), count(binroute), daccount(dacfrom) - also used for lengthfrom
+
+speedfrom
+dacfrom
+binroutefrom
+lengthfrom
+
+so that's 3 x 4 bits - we have 2x CV only
+
+but modeR also needs to do its thing - everybody has dual functions! to provide, to get/route and/or to have a function
+
+R- set of global routes eg. cut all routes on strobe, sync routes, bump routes etc. // what do we have already?
+
+not so well organised there in modeR.h:
+
+void SRRstroberoute(uint8_t w){ // zero global/cut all routes on trigger
+void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute
+void SRRglobaldac0(uint8_t w){ // dac as global route table or could be SR as route bits but we need to fix that
+
+we need: sync counts/routes, count/route from which dac/sr?, CV/CVL
+
+there are 4 bits of routes x 4 // 65536 possibles so we can't have an array for these
+
+gate[speedfrom[spdcount][w]].dac
+
+////////////////////
+
+DONE- if we treat all as bits then some CV should go into SRs as a mask - function for this 
+
+////////////////////
+
+// what if each routed in bit has different binroute options: again q of each route as a layer but needs ghost of its straightforward layer
+// ie. if we have a chain of routes then all they do is route, we need split for each
+// could this be the 00 0 of the active/passive geomantics
+
+// so there is always ghost straight routed layer ... // *a residue*
+// but how do we put this to use...
+
+g// start from scratch with basic modes and tail, modes for each side to complete and test
+
+N: head/fire - in/adc/gens                    0 0 // 2 is passive
+L: neck/air  - through/prob/placement          0 // active
+R: body/water - out/dac                        0  *we need to zero counts in some modes... except global ones here*
+C: feet/earth - feedback/dacinfluence/5th tail 0  *No freeze*
+
+passive as routein, active as input/generator
+
+tail as generator/processor eg. as integrator (SRsigma), as delay...
+tail as what would have been/basic feedback
+
+we can always have bit speeds and slow speeds from strobe.
+
+importance of routes // function vs routes, fixed and generic eg. self-routing
+
+*question is if we have free routing then adc can be dissolved/ not routed in... so better with coordinated*
+
+speedfrom: bit/value
+bitfrom: route/bit/gen-value
+lengthfrom: CVL/DAC
+
+route: 4 bits, type of binroute: 2 bits, of prob: x bits = x bits
+
+basic modes: basic SR types, from permutations below:
+
+spd as from major mode... but for strobe modes we have extra CV!
+
+[LEN,   ROUTE]
+1 ['DACx', 'genCV']
+2 ['DACx', 'CV']
+3 ['CV', 'fixed']
+4 ['fixed', 'CV']
+5 ['genCV', 'fixed']
+6 ['CV', 'DACx']
+7 ['genCV', 'DACx']
+8 ['fixed', 'genCV']
+
+// what about different binroutes in above... CV for length/route is only 4 bits also so we can use x bits for prob/binroute type
+
+bit modes, prob modes, special modes, modes for each side...
+
+individual routes, multiple routes, volatile/changing routes...
+
+again rungler model: 
+
+x y
+\ / 
+ z
+ |
+zz tail R
+
+x: genX, spdfrom z + offset // optional route in from zz
+y: genX, spdfrom z + own offset // optional route in from zz
+z: route in from x, spd from y + own offset // optional route in from zz- OUT
+zz: tail. process of z and feedback to x, y or z.
+
+translate into own setup:
+
+x: N - spdfromC+CV offset, gen-CVL(param?), route in or not from R? (1 bit)  
+y: L - spdfromC+CV offset, gen-CVL(param?), route in or not from R? (1 bit)  
+z: C - spdfromL+CV offset, route in from x, route in or not from R? (1 bit)  
+zz: R - tail/processor: CVL
+
+DONE:try with CV as -+ offset
+
+make table for routings/speedfrom here... 
+
+q of generators with cv for select and cv for param
+
+0 on binroute with no other route in?
+
+///////////////////////////////////////////////////////
+
+DONE:// last new modes: route from SR [4 bits]: route in can be 4 bits from one SR (shifting)// hold from GSR and shift on strobe
+
+fixed SR for route bits: gate[dacfrom[count][w]].Gshift_[w]
+CV chooses SR for route bits (only 4 SRs so 2 bits, or we route in/xor a 4 bit route)
+CV chooses SR for route bits for SR for route bits
+
+permuted modes/basic modes
+
+// last notebook notes/trondheim:
+
+- list of recursions/to list
+- define as prob modes, bit modes, global/Rmodes, own route modes, special modes
+- what are geomantic modes?
+
+// extraction: extract from experiment.h, modeN.h, modeC.h, modeL.h, modeR.h, bit.h, probability.h, prob.h to extracted // DONE
+
+// permutations: segpermute.py further work with types of binroute
+
+// re-check for order: how many octaves defined...
+
+14: slowest speed: resistors: feedback , -10v
+15:
+16:
+
+// processors for bits in gen.h - for tail?
+// how do different binroutes effect ringing speed sound...
+
+*binroutes:*
+
+1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos, 7trigger, 8toggle//orOR
+
++ Gshiftswithin: no shift, shift on trigger [and choices/prob/toggle of these] - for binroute only
+
+so becomes: 5+ 6nos, 7trigger, 8toggle - 3 bits and save prob for extra mode // prob of gshift
+
+// check TODOs here...// below
+
 ** 19/5/2022
 
 TODO:
@@ -86,11 +259,9 @@ TODO:
 individual routes/one route in only // global or local
 multiple routes                    // 
 
-*alternating routes* eg. route in can be 4 bits from one SR (shifting)// hold from GSR and shift on strobe
-
 list types of binroute: 
 
-1no binroute/2binroute_/3binroutesr_/4justcycle/5binroutealt/6zeroes 
+1no binroute/2binroute_/3binroutesr_/4binroutealt/5zeroes 
 
 + shifts/no shift sharedgshift, shift on trigger [and choices/prob/toggle of these]
 
@@ -112,9 +283,9 @@ void SR5_feedback(uint8_t w){ - is only model we have for 5th tail but it's spee
   doing so much, how to signal that detach and move on - we can do on change of
   mode but then will just go through intermediate modes
 
-- fixed for mode: type of gshift, type of binroute, type of interpoll
+- fixed for mode: type of gshift, type of binroute, type of interpoll - lots of permutations
 
-but what are types of gshift: no gshift, gshift and no <<sr, gshiftcopy only on strobe...
++but what are types of gshift: no gshift, gshift and no <<sr, gshiftcopy only on strobe... no+
 
 permutations of: 1spdfrom
                  2lengthfrom
@@ -130,7 +301,7 @@ layers:
 -fixed type of interpol
 -spdfrom->spdfrom functions
 -lengthfrom
--fixed type of gshift: what are they?
++-fixed type of gshift: what are they?+
 -bitfrom - types of binroute are in functions
 -probfrom
 -dacs? 

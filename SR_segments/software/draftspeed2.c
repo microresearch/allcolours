@@ -223,6 +223,9 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  
 uint32_t speedfrom[16][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
   {3,0,0,0}, // default
   {0,0,0,0}, // synced...
+  {1,1,1,1}, // synced...
+  {2,2,2,2}, // synced...
+  {3,3,3,3}, // synced...
   {0,1,2,3}, // itself...
   /*  
   {1,3,1,1}, // new one for rungling 24/1/2022
@@ -337,9 +340,9 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
   {adc0}, 
-  {SRX0}, // SRX0 is basic route/xor
-  {SR_layer1}, // dac0 SR_insert_zero_dac2
-  {SR5_feedback_int}
+  {SR_cvbits}, // SRX0 is basic route/xor
+  {dac0}, // dac0 SR_insert_zero_dac2, SR_binr_fixed
+  {SRX0}
 };
 
 /*
@@ -465,9 +468,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
    // needs mirror rmode to work...
    //   if (rmode==1) { mode[1]=mode[0];mode[2]=mode[0]; mode[3]=mode[0];
    // or we have mode[3] as no mirror and simple pass through
-   if (www==3) {
+
+  /* // reset only in dacmodes modeR
+  if (www==3) {
      spdcount=0; count=0; daccount=0; // so when we leave modes which set this reverts to 0...
    }
+  */
 
    ///   adcallone(0); // TESTY all onebits in
    (*dofunc[www][mode[www]])(www);

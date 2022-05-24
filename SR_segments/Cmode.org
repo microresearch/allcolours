@@ -4,7 +4,7 @@ output/dacs, again can be mixes,,,
 
 *some dac out with NO interpol modes eg. c0nov*
 
-for dac out we don't have speed to freeze/no OUT!
+*for dac out we don't have speed to freeze/no OUT!*
 
 question is of length but now as we feedback through NSR is ok...
 
