@@ -58,8 +58,8 @@ void SRR0nog(uint8_t w){
   }
 }
 
-void SRRnada(uint8_t w){  // no route in
-  HEAD;
+void SRRnada(uint8_t w){  // no route in. nada
+   HEAD;
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -206,7 +206,7 @@ void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute  // what of spdcou
   }
 }
 
-void SRRglobaldac0(uint8_t w){ // dac as global route table or could be SR as route bits but we need to fix that
+void SRRglobaldac0(uint8_t w){ // dac as global route table 
   HEAD;
   if (speedf_[w]!=2.0f){ 
     CVOPEN;
@@ -506,35 +506,27 @@ void SRRrung0(uint8_t w){// with oscillator
   float speedf__;
   cv=(gate[0].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
-  speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
-
+  speedf__=logspeedd[cv];
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
-    //    BINROUTE_; // no route in now
-    if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
-    PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
   }
 }
 
-void SRRrung1(uint8_t w){// with oscillator - other minus
+void SRRrung1(uint8_t w){// with oscillator - other minus - but is same as above
   HEAD;
   int32_t cv;
   float speedf__;
   cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
   if (cv<0) cv=0;
-  speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;  
+  speedf__=logspeedd[cv];
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
-    //    BINROUTE_;
-    PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
   }
@@ -545,8 +537,7 @@ void SRRrung2(uint8_t w){// with oscillator - mod
   int32_t cv;
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
-  speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
-  if (speedf__==2.0f) speedf__=LOWEST;  
+  speedf__=logspeedd[(gate[0].dac>>2)%cv]; // mod
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;

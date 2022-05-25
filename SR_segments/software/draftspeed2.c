@@ -48,6 +48,8 @@
 
 static heavens gate[9]; // for paralell SR doubled + tail
 
+static uint32_t binary[9]={0,0,0,0}; // binary global routing
+
 #define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
 
 static uint32_t count=0;
@@ -74,6 +76,7 @@ uint32_t cc=0, totc=0, smoothc[SMOOTHINGS];
 uint32_t ll=0, totl=0, smoothl[SMOOTHINGS];
 uint32_t rr=0, totr=0, smoothr[SMOOTHINGS];
 uint32_t nn=0, totn=0, smoothn[SMOOTHINGS];
+uint32_t mde;
 
 uint16_t mode[4]={0,0,0,0};
 uint16_t lastmode[4]={1,1,1,1};
@@ -317,13 +320,13 @@ static uint32_t resetz=1;
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 
-//#include "modeN.h"
-//#include "modeL.h"
-//#include "modeR.h"
-//#include "modeC.h"
-//#include "probability.h" // probability modes
+#include "modeN.h"
+#include "modeL.h"
+#include "modeR.h"
+#include "modeC.h"
+#include "probability.h" // probability modes
 
-#include "basis.h" // basics from commented ones just to speed up tests
+//#include "basis.h" // basics from commented ones just to speed up tests
 #include "experiment.h" // more functional modes - can also shift some things here... trials
 //#include "bit.h" // bitmodes but some are still in modeL
 
@@ -340,7 +343,7 @@ uint32_t testmodes[4]={0,0,0,0};
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
   {adc0}, 
-  {SR_cvbits}, // SRX0 is basic route/xor
+  {SRX0}, // SRX0 is basic route/xor
   {dac0}, // dac0 SR_insert_zero_dac2, SR_binr_fixed
   {SRX0}
 };
@@ -355,28 +358,27 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 */
 
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
-/* void (*funcgroups[4][64])(uint8_t w)=
-{//NLcutfeedback86
-  {adcLrung0, adcLrung1, adcLrung2, adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare}, 
-  {SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
-  {dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin, stream4_unshare}, // dacNLRprobinINT1311
-  {SRRrung0, SRRrung1, SRRrung2, SRRrung3, adcLbinprob, SRX0, SRX0, adcLabstractLD, stream4_unshare}
-};
+ void (*funcgroups[4][64])(uint8_t w)=
+{
+  {adc0, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s,adcLabstractLD, stream4_unshare}, 
+  {SRX0, SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
+  {SR_layer1, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
+  {SR5_feedback, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
+}; // 10 so far
 
+
+/*
 group:
   {adc0}, 
   {SRX0}, // SRX0 is basic route/xor
   {SR_layer1}, // dac0 SR_insert_zero_dac2
   {SR5_feedback}
-
-
 */
 
 // so if we wanted to select these how would that work - as major mode but with no minor modes>>>???
 // or like sliding against this - just as numbers, or... R selects funcgroup as major mode, L selects which one in group... CN as params for our list???
 // then other major modes...
 // - at moment just use as suggested groupings...
-
 
 // TODO/above: can there also be gap to allow for insertion of own mode eg. for DAC
 // eg. blank function which uses mode[w] 
@@ -454,8 +456,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   LFSR_[www] = (LFSR_[www]<<1) + tmp;
 
   // do the modes
-  mode[www]=testmodes[www];
-   
+  //  mode[www]=testmodes[www];
+
+  
    //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
   //  mode[0]=4;
   //  mode[1]=0;mode[3]=0; // test dac
@@ -476,7 +479,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   */
 
    ///   adcallone(0); // TESTY all onebits in
-   (*dofunc[www][mode[www]])(www);
+  //  (*dofunc[www][mode[www]])(www);
+
+  // for void (*funcgroups[4][64])(uint8_t w)=
+  mde=mode[3];
+  if (mde>9) mde=9; // 9 groups so far
+  (*funcgroups[www][mde])(www);
+  
    // test to call 
    // static modez newmodes[128]={ // then call mode by number
    //  {0,0,0,0, SRx_x, innertest}

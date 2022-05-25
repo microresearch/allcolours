@@ -42,8 +42,8 @@ basic choices:
 5.clean up so less macros and is a bit more general - also between interpol/direct dac access
 6.detachment of CVs - take out of adcetc///
 8.clkbit, other params
-9.hold or toggle of pulsin/nay processor of values...
-10.is we use speedmodes then strobey is more complex
+9.hold or toggle of pulsin/any processor of values...
+10.if we use speedmodes then strobey is more complex
 
 - *5th tail: initiate a stream and keep this running and move on*
 

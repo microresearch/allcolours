@@ -13,6 +13,7 @@ import random
 
 #params=['CV', 'DACx', 'fixed', 'other']
 params=['CV', 'DACx', 'fixed', "genCV"]
+param2=['CV', 'DACx', 'fixed']
 
 # what would other be? generator(which needs 2xCV or 1xCV to select) we call it genCV
 
@@ -50,7 +51,7 @@ fresh=[]
 
 #### for len and route only with spd as cv (so leaves only one x CV
 
-for x in range(100000):
+for x in range(10000):
     for y in range(2):
         addon=random.choice(params)
         geo.append(addon)
@@ -71,6 +72,29 @@ for modez in modes:
     count+=1
     print count, modez
 
+#### for len and route only with spd as cv (so leaves only one x CV
+geo=[]
+modes=[]
+
+for x in range(10000):
+    for y in range(2):
+        addon=random.choice(param2)
+        geo.append(addon)
+    #    constraints
+    # constraint: must have 1x CV
+    if (geo.count('CV')==1):
+        if (geo not in modes):
+            modes.append(geo)
+    geo=[]
+count=0
+
+print
+print "xx[LEN,   ROUTE]"
+for modez in modes:
+    count+=1
+    print count, modez
+
+    
 # 8 options above x8 = 64 x2 = 128 basic modes then // but interpol is only for dac    
 #- fixed for mode: type of binroute (8 opts-3 bits), type of interpoll-1 bits ???
     

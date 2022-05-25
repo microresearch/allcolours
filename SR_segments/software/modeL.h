@@ -986,7 +986,6 @@ void SRX0(uint8_t w){ // basic route in XOR puls
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }

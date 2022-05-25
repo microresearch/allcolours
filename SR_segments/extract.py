@@ -5,7 +5,6 @@ import re
 import sys
 type_list = ['int', 'char', 'float', 'double', 'bool', 'void', 'short', 'long', 'signed', 'struct']
 
-
 def pickle_dump(root_path, data, file_name):
     os.chdir(root_path)
     fp = open(file_name, "w")
@@ -28,12 +27,14 @@ def is_valid_name(name):
 def is_func_own(line):
 #int, __int64, void, char*, char *, struct Node, long long int, (void *)
 #int func(int a, int *b, (char *) c)
+    global countt
     line = line.strip()
     if len(line) < 2:
         return None
-    if 'void ' in line:
+    if 'void ' in line and '(uint8_t w)' in line:
+        countt+=1
         return line
-    
+    return None
     
 def is_func(line):
 #int, __int64, void, char*, char *, struct Node, long long int, (void *)
@@ -119,15 +120,16 @@ def write_to_file(filoen, func_list, output_file):
 if __name__ == '__main__':
 
     file_list=['experiment.h', 'modeN.h', 'modeC.h', 'modeL.h', 'modeR.h', 'bit.h', 'probability.h', 'prob.h']
+    countt=0
 
     for file in file_list:
         filen="software/"+file
         func_list = func_name_extract(filen)
-        write_to_file(filen, func_list, "extracted")
+        write_to_file(filen, func_list, "extracted2")
     
     # if len(sys.argv) != 3:
     #     print '''Usage: python func_name_extract.py <file_path> <output_file>\n'''
     #     exit(-1)
     # func_list = func_name_extract(sys.argv[1])
-
+    print "functions: ", countt
 

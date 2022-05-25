@@ -1,5 +1,7 @@
 // for new struct sets of modes:
 
+#define RESETR count=0; daccount=0; spdcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
+
 #define STR0 (gate[w].trigger)
 
 #define CYCl ((gate[w].Gshift_[w]>>SRlength[w])& 0x01)
@@ -8,7 +10,7 @@
 
 #define SRFROM (gate[dacfrom[daccount][w]].Gshift_[w])
 
-#define RETURN (bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01) 
+#define RETURN bitn^=(gate[w].Gshift_[w]>>SRlength[w])& 0x01
 
 #define SHFT     gate[w].shift_=gate[w].shift_<<1;
 
@@ -86,26 +88,20 @@
 
 #define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; \
 
-#define HEADD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; PULSIN_XOR; \
+#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=lookuplenall[CVL[w]>>7]; speedf_[w]=logspeedd[CV[w]>>2];
 
 // these ones are for NO SRlength - stays as is and we can use CVL 12 bits
 
 #define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w]; \
 
-#define HEADSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w]; PULSIN_XOR; \
-
 // these ones are for no speed changes
 
 #define HEADSSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; \
 
-#define HEADSSIND float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; PULSIN_XOR; \
-
-// and for NADA
+// and for NADA both the same
 #define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
 
 #define HEADNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
-
-#define HEADSSINNADAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; PULSIN_XOR; \
 
 //
 
@@ -220,7 +216,7 @@
 }
 
 #define BINROUTE_ {				\
-    tmp=binroute[count][w];				\
+    tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
@@ -231,6 +227,7 @@
   }							\
   }
 // pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+// added in binary[w] for global bitroute testings
 
 // use tmp
 #define BINROUTEstrip_ {				\
@@ -422,6 +419,7 @@
 //DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
 // this one is for fractional speeds/interpol
 #define BITN_AND_OUTV_ {						\
+    PULSIN_XOR;								\
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     if (w!=0){								\
@@ -437,6 +435,7 @@
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
     }								\
 }
+// added pulsin_xor
 
 #define BITN_AND_OUTVXOR_ {						\
     gate[w].shift_^=bitn;						\
@@ -491,6 +490,7 @@
 }
 
 #define BITN_AND_OUTVINT_ {						\
+    PULSIN_XOR;								\
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     if (w!=0){								\

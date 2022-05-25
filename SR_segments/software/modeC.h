@@ -382,7 +382,7 @@ void dacLrung0(uint8_t w){ // detached length
   HEADSIN;
   tmp=CVL[w]>>6;// 2 bits for route, 4 bits for DACtype = 6 bits
   gate[w].dactype=tmp>>2; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=2.0f){ // remove!
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;

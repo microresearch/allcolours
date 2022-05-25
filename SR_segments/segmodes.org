@@ -1,3 +1,114 @@
+* sketch modes
+
+discard basic 64x64x64x64 modes with some overlap for other models...
+
+double/ghost tail - how to do this without slowing down...
+
+*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it*
+
+basis:
+[adc/gen types/params -> bit in/prob]
+speed/from
+length/from
+binroute/type/from -> bit in/prob
+[dac out/types/interpoll]
+
+from: CV, CVL, DAC1-4, (ADC), CLKSR/strobe, generators/which need params themselves (5th tail as further param)
+
+prob/bitin is: CVvsDACx, CVvsLFSR, DACvsLFSR, strobe
+
+- basic routing modes: type of binroute, permutations below,
+- interpol is only for dac/ int/noint across all modes?
+- leave speed. length at previous values. eg. early modes can set these quite easily
+
+602 modes extracted: some are duplicates across L and R, also some templates etc... still...
+
+64x4=256! 4x16=64
+
+*what are models to choose from:*
+
+dacbus?
+
+generic vienna model
+abstractions: list these? but still have param shortage...
+
+expanded rungler model with different options and switched routings TODO
+
+mishmash here: bitmodes, probmodes, recursions, esoteric modes
+minor/major modes,
+
+ghost/tails - where do we use these?
+
+layers/hold/detach, 
+modes initiate streams (below), 
+all as bits and functions/gens, 
+
+*sliding of matched functions - so there is major one and others deviate from that by wrapped value... versions of this*
+
+what are probable/possible recursions? of dac/sr onto ANY parameter, of dac/sr onto choice of parameter, of dac/sr onto parameter of function outputing parameter...
+
+SR is function, SR recurs... smaller loops eg. N->L->N->C->R->N
+
+** modeN
+
+- too many ADC modes, how do we deal with functions and options for CV ins/params...
+
+param from cv, dac, clkspd/clk:
+
+eg. 
+
+void adc95(uint8_t w){ // strobe toggle in - otherpar selects pattern which is now dac driven - 4 bits
+  param[w]=gate[dacfrom[daccount][w]].Gshift_[w]>>8;
+  ADCXORIN(95); 
+}
+
+standard routing - is no route in option itself or from modeR?
+
+type of adc, type of route in!
+
+type of adc: lists we have, type of param
+
+also use abstract generators here...
+
+** modeC
+
+- no stoppage
+- how many dac/options
+
+** modeR
+
+- null mode - 0 out = SRRnada
+
+** LLLRRRetc
+
+speed as CV:
+[LEN,   ROUTE]
+1 ['DACx', 'genCV']
+2 ['DACx', 'CV']
+3 ['CV', 'fixed']
+4 ['fixed', 'CV']
+5 ['genCV', 'fixed']
+6 ['CV', 'DACx']
+7 ['genCV', 'DACx']
+8 ['fixed', 'genCV']
+
+xx[LEN,   ROUTE]
+1 ['CV', 'fixed']
+2 ['DACx', 'CV']
+3 ['fixed', 'CV']
+4 ['CV', 'DACx']
+
+
+genCV uses CV driven gen (which one? as we just have one CV so is fixed gen or no options: to generate route, eg. binroute)
+
+genCV needs to generate 4 bits for route, 5 bits for len
+
++ type of binroute: 8 options =8x8=64!
+
+always too many options and if we go for major/minor is too fixed...
+
+also for abstract bitstreams we need cv to select and cv/dac as param...
+
 * plan
 
 serpent's head, caput draconis (rather than heavens\) - lunar node and
@@ -27,8 +138,7 @@ signals are inverted so unipolar 0-5v is from 0-2048 values and bipolar -5 to 5v
 * 2022++
 
 *check all logic, pulsins, outs, strobey and implement strobey finally*
-
-*expand modes in prob and bit.h - add cv masks where necessary to these*
+*expand modes in prob and bit.h - add cv masks where necessary to these ???*
 
 *define what CVs we can use, what prob modes, split modes for adc, dac selects, and routes/probs*
 
@@ -55,50 +165,96 @@ or 100k cv in, 23k feedback, and -10v is 70k
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
-*TODO: maybe clean up in new version if we have to take a break - work on TOUCH/TOAD to complete*
-
 *settle on final speeds across all and check*
 
 RESOLVE ARCH:
 
 *static/frozen speeds in general or not - yes but just not on lowest*
-*slower speeds/cv*
+*slower speeds/cv to fix*
 *check use of clk, pulsin, out*
 *5th tail always running and how we switch in to it different streams from SRs*
-*dacs with no interpol or not*
+*dacs with interpol or not*
 *also potential global speeds from moder - how this can over-ride // sets of global modes*
-
-- platform to manipulate permutations
-
-- choose abstraction and fill in modes (check what we have - old code is easiest maybe), and then deal with details like clk, puls etc.
-
-
-*BASIC DECISIONS*
-
-key qs: CVs speed and length, ringing nature of mid route sometimes and slowest speeds for route 
-- should speed be so slow as we can always use pulse for very slow speeds
-
-interpoll is only for dac so keep to a minimum options there and mostly in modeC
+*reset global speeds and binary[all] in moder - RESETR macro to use*
+*logspeedd for no stops eg. in all modeC*
 
 ** TODO
 
-new dir/files
+make new dir/files
 
-what are models: abstractions, mishmash here, minor/major modes,
-ghost/tails, layers/hold/detach, modes initiate streams (below), all
-as bits and functions/gens, 
-
-sliding of matched functions - so there is major one and others deviate from that by wrapped value...
-
-16x16x16x16=65536/// how we can address all global route permutations... a value for each... 4+4+4+4=16 bits for one set of global routes
-
-*as would be nice to have global routes from SR but at present we just use arrays... - how to bridge this gap*
+*modes which manipulate other SRs ???*
 
 - co-ordinate and check lists of routes, dacfrom, speedfrom routes
-- ghost routed layers trial
+- clean up generators/adc/dac - gens for adc
+- ghost routed layers trial/also 5th tail for all modeC - how to do this fast... is it always default single route in from C?
 - 5th tail as processor, generator and what_would_have_been
 - check all above: speed, clkin, pulsin etc.
 - sort modes
+
+** 25/5/2022
+
+// think on new models/new TODO
+
+- tail/ghost modes
+- global modes
+- make more pairs
+
+** takeaways/new: grouped modes and geomantics, tails and ghosts but how
+to enter, record and SR of modes to work through, rungler collection,
+binary for spdroute/spdcount, binroute/count and daccount
+
+- added headc macro for modec speed/no freeze in basis.h
+- adconebitsx for sigma/delta works ok - int32 version doesn't work so leave out from adcetc.h
+
+- *sliding grouped modes notes:* 
+
+0 0
+ 0
+ 0
+ 0 across modes / active/passive of past modes/overlay ???
+
+we can also slide/offset into extra modes, matrix can also be subject
+to SR, SR-like shift through group-modes, memory of movement back and
+forth, recursion, sets of geomantic cards somehow fits here, can we fit templates/lists into the grid?
+
+still we need to shift 600 modes inn
+
+16 figures // 16 modules - each as predictive/python generated codeset
+
+*TODO:*
+// runglers without interpoll and with other options // what is routing there? also with different adc/gen options in head (not just osc) - see below
+// clean up speeds and mess of:   if (w==2 || speedf_[w]!=2.0f){ // makes no sense
+// clean up generators vs also adcin, dacouts - clean up interpols
+// new global route/spdcount, daccount functions
+// binary thing below
+// take interpoll out of generic speedfroms into gen.h
+// tail and new ghost modes - how that could work? how fast we make tail as needs run at full speed or run somehow as double
+// modes which manipulate other SRs: how? swop SRs/opposing
+// what are SRs which process bits? delays, delta: Srsigma, all SRs in most cases...
+// extra sets of routes, spd, dacfrom
+
+#define DACFROM (gate[dacfrom[daccount][w]].dac)
+#define SRFROM (gate[dacfrom[daccount][w]].Gshift_[w])
+
+use these macros always so we can do similar binary thing
+
+in main.c divider of 21 gives us 1Hz to 16KHz max at 15 octaves
+14 octs: 2HZ // 1.9 hz really // adjust divider accordingly
+
+DONE: as would be nice to have global routes from SR but at present we just use arrays... - how to bridge this gap:*
+OR in on 16th zero/count: done as SR_globalbin
+
+eg.
+
+tmp=binroute[count][w]|binary[w]; // and binary is 16 bits in 4 pieces...			
+*TODO: but would have to change all binroutes...*
+
+
+- place PULSIN_XOR in out macros - so clean that up
+- deal with strobey and clean up - again in macros
+- len and speed taken out and placed in macros
+- global routes in modeR also as strobe and other speeds...
+- for speedmodes we pull out interpol to make it cleaner
 
 ** 24/5/2022
 
@@ -113,9 +269,7 @@ so that's 3 x 4 bits - we have 2x CV only
 
 but modeR also needs to do its thing - everybody has dual functions! to provide, to get/route and/or to have a function
 
-R- set of global routes eg. cut all routes on strobe, sync routes, bump routes etc. // what do we have already?
-
-not so well organised there in modeR.h:
+R- set of global routes eg. cut all routes on strobe, sync routes, bump routes etc. // what do we have already in modeR.h:
 
 void SRRstroberoute(uint8_t w){ // zero global/cut all routes on trigger
 void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute
@@ -138,9 +292,9 @@ DONE- if we treat all as bits then some CV should go into SRs as a mask - functi
 // could this be the 00 0 of the active/passive geomantics
 
 // so there is always ghost straight routed layer ... // *a residue*
-// but how do we put this to use...
+// *but how do we put this to use...*
 
-g// start from scratch with basic modes and tail, modes for each side to complete and test
+// start from scratch with basic modes and tail, modes for each side to complete and test
 
 N: head/fire - in/adc/gens                    0 0 // 2 is passive
 L: neck/air  - through/prob/placement          0 // active
@@ -184,7 +338,7 @@ bit modes, prob modes, special modes, modes for each side...
 
 individual routes, multiple routes, volatile/changing routes...
 
-again rungler model: 
+*again rungler model:*
 
 x y
 \ / 
@@ -194,7 +348,7 @@ zz tail R
 
 x: genX, spdfrom z + offset // optional route in from zz
 y: genX, spdfrom z + own offset // optional route in from zz
-z: route in from x, spd from y + own offset // optional route in from zz- OUT
+z: route in from x, spd from y + own offset // optional route in from zz- OUT?, it cycles
 zz: tail. process of z and feedback to x, y or z.
 
 translate into own setup:
@@ -203,6 +357,15 @@ x: N - spdfromC+CV offset, gen-CVL(param?), route in or not from R? (1 bit)
 y: L - spdfromC+CV offset, gen-CVL(param?), route in or not from R? (1 bit)  
 z: C - spdfromL+CV offset, route in from x, route in or not from R? (1 bit)  
 zz: R - tail/processor: CVL
+
++ extra tail
+
+how we have routing in version here?
+
+xy s LR, z is N (uses ADC as mod fo spd), C is daclrung0 - just choose route in from these and dacout/type
+
+SR\Rrung0: L/R speed from N, OSC
+SR\Rrungs: some same/just changes in speed - add new speed mod thing:
 
 DONE:try with CV as -+ offset
 
@@ -338,7 +501,7 @@ investigate different models// concept and sound (eg. ringing of slow into fast.
 
 TODO: trial now:::
 
-- DONE;length from dac/lengthfrom also: speedfrom, routefrom, lengthfrom, logicfrom 
+- DONE;length from dac/lengthfrom also: speedfrom, routefrom, lengthfrom, logicfrom  - we also had SR->length in modeN
 
 - DONEtrial faster one bit audio (no float) - but how fast can it be?
 

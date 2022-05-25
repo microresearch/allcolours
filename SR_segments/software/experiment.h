@@ -9,6 +9,10 @@ static uint32_t delaylineUN[4][512]; //UNshared delay line
 // define spdmodes - need to think which ones work... and maybe expand with new binroutes to 32 // 5 bits
 uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
 
+// added new binroutes in gen.h also new speedfracint puts dac into mode
+
+// where do we use sadcfrac
+
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
@@ -33,7 +37,7 @@ void SRxxxx(uint8_t w){
   uint8_t spdfrom=0; //set.choose - here is frac
   gate[w].dactype=0; gate[w].dacpar=param[w]; 
 
-  if (interpoll[spdfrom])   {
+  if (interpoll[spdfrom])   { // place in spdmodes TODO
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
@@ -59,6 +63,60 @@ void SR_xx_xx(uint8_t w){ //
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+// 25/5/2022
+
+// // TODO: or can be CV and CVL and we select binroutes and probs - x bits -
+
+// route/type/prob for each bit but then question is wasted bits for 0 routes or single routes in...
+
+/* matrix?
+routes: 1 1 1 1
+type: 0non,1gsr,2sr,3alt - 2 bits per route
+= 8 bits 0-255 - try take from SR
+
+all is bits//cv into SRetc
+
+*/
+
+// 1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos-noshift, 7trigger, 8newaltone-noreset
+
+
+//TODO: modeR manipulations: for spdcount(speedfrom), count(binroute), daccount(dacfrom) - also used for lengthfrom
+/*
+R- set of global routes eg. cut all routes on strobe, sync routes, bump routes etc. // what do we have already in modeR.h:
+
+void SRRstroberoute(uint8_t w){ // zero global/cut all routes on trigger
+void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute
+void SRRglobaldac0(uint8_t w){ // dac as global route table or could be SR as route bits but we need to fix that
+
+we need: sync counts/routes, count/route from which dac/sr?, CV/CVL
+*/
+
+// bump all spdcount, count and daccount at once on strobe
+// intmode: 2 from CV, CVL, one from dac
+// bump each one on strobe
+
+// can we do spdcount and daccount also with binary?
+
+void SR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast without pulsin
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  count=16; // sets to zero
+  binary[0]=gate[w].shift_&15; // which SR? itself - binary will also need to be reset
+  binary[1]=(gate[w].shift_>>4)&15;
+  binary[2]=(gate[w].shift_>>8)&15;
+  binary[3]=(gate[w].shift_>>12)&15;
   BINROUTE_;
   BITN_AND_OUTV_;
   ENDER;
@@ -100,8 +158,6 @@ void SR_testbits(uint8_t w){ //
   }
 }
 
-
-
 // trial +- dacspeed - so we have 0-1024 10 bits and 512 is mid 0 less is minus more is plus and clip
 void SRdacplusminus(uint8_t w){
   HEAD;
@@ -111,28 +167,27 @@ void SRdacplusminus(uint8_t w){
   cv=(gate[speedfrom[spdcount][w]].dac>>2) + tmpp;  
   if (cv<0) cv=0;
   else if (cv>1023) cv=1023;
-  speedf__=logspeedd[cv];
-  CVOPENDACNOINTERPOL;
+  speedf__=logspeedd[cv]; // no stop
+  CVOPENDACNOINTERPOL; // or with interpoll
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     BINROUTE_;
-    PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
   }
 }
 
-
 // what if each routed in bit has different binroute options: again q of each route as a layer but needs ghost of its straightforward layer
 // ie. if we have a chain of routes then all they do is route, we need split for each
 // could this be the 00 0 of the active/passive geomantics
 
-// bit with x different options - 4 bits in, 3 bits per bit is too much
+// bit with x different options - 4 bits in, 3 bits per bit is too much, even 2 bits for different opts???
 
 // trial select of different binroutes and routings with 7 bits
 // TODO: or can be CV and CVL and we select binroutes and probs - x bits
 
-// 1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos, 7trigger, 8newaltone
+// 1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos-noshift, 7trigger, 8newaltone-noreset
+
 
 void SR_binr_fixed(uint8_t w){ // fixed route but we have 3 bits for selection only??? // prob= // or sel per bit...
   HEADSIN;  
@@ -324,7 +379,6 @@ void SR_routeSRbits00(uint8_t w){ // fixed SR for route bits: gate[dacfrom[count
   GSHIFT_;
   tmp=gate[dacfrom[count][w]].shift_&15; // lowest 4 bits
   BINROUTEstrip_; // also can be different types of binroute
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -347,7 +401,6 @@ void SR_routeSRbits01(uint8_t w){ //CVL chooses SR for route bits (only 4 SRs so
   }
   tmp=bitrr;
   BINROUTEstrip_; // also can be different types of binroute
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -379,7 +432,6 @@ void SR_routeSRbits02(uint8_t w){ //CV chooses SR for route bits for SR for rout
 
   tmp=bitrr;
   BINROUTEstrip_; // also can be different types of binroute
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -392,13 +444,44 @@ void SR_routeSRbits02(uint8_t w){ //CV chooses SR for route bits for SR for rout
 // *how we could have layers rather than routes: routein is xor sieve and we can choose routes (q of route 0)...*
 // so select route in from CVL
 void SR_layer1(uint8_t w){ // also use extra bits
-  HEAD;
+  HEADSIN;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   tmp=(CVL[w]>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
   if (tmp==0 || ((CVL[w]>>7)&1)) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
+    gate[w].shift_ ^=gate[8].Gshare_;
+    bitn^=bitrr;
+    }
+
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	bitn^=bitrr; // we need bitn for pulses
+	gate[w].shift_ ^=gate[x].Gshift_[w];
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; // versions which just use SR and no gshift or don;t shift it
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+    // clear lowest bit
+    gate[w].shift_&=invmasky[0];
+    BITN_AND_OUTV_; // version with own bitn add
+    ENDER;
+  }
+  }
+}
+
+void SR_layer12(uint8_t w){ // also use extra bits - use sr for this one instaed of CVL
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  tmp=(CVL[w]>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
+  tmp=gate[dacfrom[count][w]].shift_&15;
+    if (tmp==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
     gate[w].shift_ ^=gate[8].Gshare_;
     bitn^=bitrr;
@@ -414,10 +497,8 @@ void SR_layer1(uint8_t w){ // also use extra bits
     }
     // clear lowest bit
     gate[w].shift_&=invmasky[0];
-    // what of pulse ins>
-    PULSIN_XOR;
-    BITN_AND_OUTV_; // version with own bitn add
-    
+
+    BITN_AND_OUTV_; // version with own bitn add    
     ENDER;
   }
   }
@@ -452,7 +533,6 @@ void SRX0_len(uint8_t w){ // basic route in XOR puls
     SRlength[w]=lookuplenall[(dacfrom[daccount][w]>>7)];//%(CVL[w]>>7)]; // 32 is 5 bits or use CVL for something
     GSHIFT_;
     BINROUTE_;
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -466,11 +546,11 @@ void SRX0_len(uint8_t w){ // basic route in XOR puls
 void adcnull(uint8_t w){ // 
 }
 
-void adcallone(uint8_t w){ // 
+static inline void adcallone(uint8_t w){ // 
   uint32_t bitn;
   GSHIFT_;
-  bitn=adconebitsx();
-  gate[w].shift_+=bitn;
+    bitn=adconebitsx();
+    gate[w].shift_+=bitn;
 }
 
 // try adjust mid point for sigma/delta/
@@ -624,7 +704,6 @@ void SR_insert_zero(uint8_t w){ //
   // route in and deal with reset gate[w].reset[0]=1;
   BINROUTEZERO_;
   
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -699,7 +778,6 @@ void SRdelay_lineIN(uint8_t w){  // could also be shared version of this
   bitn=delay_line_out(cnt,w); // or detach - length not used - this is our binroute
   cnt++;
   if (cnt>16383) cnt=0;
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -848,7 +926,6 @@ void SRx_x(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspee
     // CORE - types of binroute// new macro is BINROUTEalt_;
     bitn=(*innerfunc)(w);//   (*dofunc[www][mode[www]])(www); --> innerfunc passed params if needed? and if we have CV...
     if (strobey) bitn|=gate[w].trigger;	 // or
-    PULSIN_XOR;  // or
     BITN_AND_OUTV_; 
     ENDER;
   }    
@@ -865,7 +942,8 @@ uint32_t innertest(uint8_t w){
 void SRspeedtest(uint8_t w){
   static uint32_t tgg=0;
   HEADSIN;
-  speedf_[w]=slowerlog[CV[w]>>2]; // 10 bits
+  speedf_[w]=logspeedd[CV[w]>>2]; // 10 bits
+  //  speedf_[w]=slowerlog[CV[w]>>2]; // 10 bits
   gate[w].time_now += speedf_[w];
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -895,7 +973,6 @@ void SRX0_newgsr(uint8_t w){ // basic route in XOR puls
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_; // resets added to macro 9/5/2022
     BINROUTEalt_;
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -921,7 +998,6 @@ void SRX0_newgsr_nores(uint8_t w){ // basic route in XOR puls
       tmp=tmp>>1; // 4 bits
     }
 
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -950,7 +1026,6 @@ void adc0_newgsr(uint8_t w){ // basic route in XOR pulse and ADC0
       }
       tmp=tmp>>1; // 4 bits
     }
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -1100,8 +1175,7 @@ void SRholdfromdac(uint8_t w){ //
   BINROUTE_;
   tmp=gate[dacfrom[count][w]].dac%(CVL[w]+1);
   bitn=SRproc_hold(tmp>>4,bitn);
-  PULSIN_XOR;
-  BITN_AND_OUTV_;
+
   ENDER;
   }
   }
@@ -1293,7 +1367,6 @@ void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. ot
     BINROUTE_; // or not
     }
     // do dac for non-interpols
-    PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -1363,7 +1436,6 @@ void SR_genspeed2(uint8_t w){
     bitn=abstractbitstreamslong[spdfrom](CV[w],w); // without even getting into prob
     //    BINROUTE_; // how to chain in binroutebits (and param for that)
 
-    PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -1394,7 +1466,6 @@ void SR_genspeed3(uint8_t w){ // working now
     //    bitn=abstractbitstreamslong[spdfrom](CV[w],w); // without even getting into prob
     BINROUTE_; // how to chain in binroutebits (and param for that)
 
-    PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -1454,7 +1525,6 @@ void SRghost(uint8_t w){ // needs something as CVL seems not do much
   //   // always write or only on strobe
   // if always then goes into OUTV_ below...
   ///  gate[w].delay and index
-  PULSIN_XOR;
   if (gate[w].trigger){
   tmp=gate[w].index/32;
   tmpp=gate[w].index%32;
@@ -1490,7 +1560,6 @@ void SRghostlatch(uint8_t w){ // needs something as CVL seems not do much - adde
   //   // always write or only on strobe
   // if always then goes into OUTV_ below...
   ///  gate[w].delay and index
-  PULSIN_XOR;
   if (gate[w].latch){
     gate[w].latch=0;
   tmp=gate[w].index/32;
@@ -1584,14 +1653,12 @@ void SRxorroutes(uint8_t w){ // XOR in
     // and we need bitn so shift
     bitn=CYCl;
     SHFT;
-    PULSIN_XOR;
     BITN_AND_OUTV_;
   }
   else
     {
       GSHIFT_;
       BINROUTE_; 
-      PULSIN_XOR;
       BITN_AND_OUTV_;
     }
   ENDER;
@@ -1614,14 +1681,12 @@ void SRaddroutes(uint8_t w){ // how to add without overflow - long
     // and we need bitn so shift
     bitn=CYCl;
     SHFT;
-    PULSIN_XOR;
     BITN_AND_OUTV_;   
   }
   else
     {
       GSHIFT_;
       BINROUTE_; 
-      PULSIN_XOR;
       BITN_AND_OUTV_;
     }
   ENDER;
@@ -1790,7 +1855,6 @@ void SR_selspeed(uint8_t w){ // TEST!
     if (!interpoll[spdfrom]){
     gate[w].dac = delay_buffer[w][1];
     }
-    PULSIN_XOR;
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -1917,7 +1981,7 @@ void SRmatch_strobe(uint8_t w){ // testing - we free length and use spd for sel
 
 // RSR master mode: cut all routes // open close route bit with clock/toggle
 
-// uses count to set binroute to 16 // only for right hand side
+// uses count to set binroute to 16 // only for right hand side - we had/have this in modeR: SRRstroberoute
 void SRRcutallroutes(uint8_t w){  
   HEAD;
   if (gate[w].trigger) count=16; // placed outside speed
@@ -2012,7 +2076,7 @@ static inline uint32_t shared(uint32_t depth, uint8_t wh){
 }
 
 void SRshare(uint8_t w){ // shared bits
-  HEADD;
+  HEAD;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -2452,7 +2516,7 @@ static inline uint32_t adcpadholdbits(uint32_t depth, uint8_t reset){ // TODO: e
 }
 
 void ADCoverssss(uint8_t w){   // 2nd round - was inside loop - fix << though 
-  HEADD;
+  HEAD;
 
   if (gate[w].trigger){
   gate[w].shift_=gate[w].shift_<<1;
@@ -2474,7 +2538,7 @@ void ADCoverssss(uint8_t w){   // 2nd round - was inside loop - fix << though
 
 // start with sample and holds on trigger...
 void ADChold(uint8_t w){   // 2nd round - was inside loop - fix << though 
-  HEADD;
+  HEAD;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   
@@ -2520,7 +2584,7 @@ static inline uint32_t adcpadholdcyclebits(uint32_t depth, uint8_t reset){ // TO
 }
 
 void ADCholdcycle(uint8_t w){   // 2nd round - was inside loop - fix << though 
-  HEADD;
+  HEAD;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -2604,7 +2668,6 @@ void SRmultiplespeednewdac0(uint8_t w){ // - NO LENGTH - speeds of gshift, incom
   if(gate[w].last_time<gate[w].int_time)      {
     gate[w].shift_=gate[w].shift_<<1; 
     BINROUTENOG_; // no gshifty
-    PULSIN_XOR;
     BITN_AND_OUTV_;
     ENDER;
   }
@@ -2834,7 +2897,6 @@ void SRdelay_lineSH(uint8_t w){
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   bitn^=delay_line_shared(CVL[w],w); // or detach - length not used - this is our binroute
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -2848,7 +2910,6 @@ void SRdelay_lineSH2(uint8_t w){
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   bitn^=delay_line_shared2(CVL[w],w); // or detach - length not used - this is our binroute
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -2862,7 +2923,6 @@ void SRdelay_line(uint8_t w){
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   bitn^=delay_line_unshared(CVL[w],w); // or detach - length not used - this is our binroute
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -2891,7 +2951,7 @@ static inline uint32_t pattern_unshare(uint32_t depth, uint8_t wh){
 }
 
 void SRpattern_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
-  HEADD;
+  HEAD;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -2940,7 +3000,6 @@ void SRLdecaying(uint8_t w){
       highestprob=highestprob-dec;      
   }
   
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -2970,7 +3029,7 @@ static inline uint32_t adc4bits_unshare(uint32_t depth, uint8_t wh){ // use wh t
 // it becomes:
 
 void stream4_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
-  HEADD;
+  HEAD;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -2991,7 +3050,7 @@ void stream4_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
 
 // more like cipher entering SR
 void adccipher(uint8_t w){ // generator is contained so is different to one below which can have binroute inside
-  HEADD;
+  HEAD;
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -3209,10 +3268,7 @@ uint8_t prob;
   GSHIFT_;
     // CORE
   bitn=itself(osceqbits,binroutebits,CV[w], CVL[w], w); // but we would need additional 8 bits (4+4) to set each of these - from another SR!!!
-  // abstractbitstreams[x], abstractbitstreams[y] 
-  
-  PULSIN_XOR; // place into SR function
-  
+  // abstractbitstreams[x], abstractbitstreams[y]   
   BITN_AND_OUTV_; // abstract out maybe
   ENDER;
   }
@@ -3235,7 +3291,6 @@ uint8_t prob;
     BINROUTE_;
     //    if (gate[w].trigger) gate[w].shift_=gate[w].Gshift_[w]; // could also be incoming one
     if (gate[w].trigger) gate[w].shift_=gate[inroute[count][w]].Gshift_[w]; // could also be incoming one
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -3269,7 +3324,6 @@ void noSRxorroutes(uint8_t w){ // XOR in
     {
       GSHIFT_;
       JUSTCYCLE_; // or could be BINROUTE
-      PULSIN_XOR;
       BITN_AND_OUTV_;
     }
   ENDER;
@@ -3330,7 +3384,6 @@ void SRshroute(uint8_t w){ // strobe could also shift on
    }
    tmp=tmp>>1;
   }
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -3352,7 +3405,6 @@ void SRprobwheel(uint8_t w){ // new detached mode with prob wheel as generator o
   GSHIFT_;
   tmp=CVL[w];
   bitn=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],tmp, &gate[w].shift_);
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -3405,7 +3457,6 @@ void SR0nogstrobe(uint8_t w){ // basic route in no GSHIFT<< strobed
       {
 	BINROUTE_;
       }
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -3429,7 +3480,6 @@ void SR0nogtoggle(uint8_t w){ // basic route in no GSHIFT<< toggles
       {
 	BINROUTE_;
       }
-    PULSIN_XOR;
     BITN_AND_OUTV_; 
     ENDER;
   }
@@ -3449,7 +3499,6 @@ void SRLprobnog(uint8_t w){
   else {
     BINROUTENOG_;
   }
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -3496,7 +3545,6 @@ void SRsigma(uint8_t w){
   integrator+=(val-cycle);
   if (integrator>0) bitn=1;
   else bitn=0;
-  PULSIN_XOR;
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -3620,7 +3668,6 @@ void noSRcopy(uint8_t w){ // copy in with mask of length
   // copy mask of bits from inroute
   tmp=gate[inroute[count][w]].Gshift_[w]&masky[SRlength[w]];
   gate[w].shift_=tmp;
-  PULSIN_XOR;
   gate[w].shift_^=bitn; // where do we put pulse bits? - not much happening
   RETURN;
   BITN_AND_OUTVNOSHIFT_;  

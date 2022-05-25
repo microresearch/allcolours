@@ -7,6 +7,8 @@
 
 - independent generators - so no shared stuff
 
+we need generators with no params... we can take some from speedgens...
+
  */
 
 //////////////////////////////////////////////////////////////////////////
@@ -173,6 +175,27 @@ static inline uint32_t sadcfrac(uint8_t wh){
   return bt;
 }
 
+static inline uint32_t sadcfracint(uint8_t w){  // interpol/dacout is inside now
+  uint32_t bt=0;
+  float speed;
+  speed=logspeedd[CV[w]>>2]; // 12 bits to 10 bits
+
+  gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+  gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+  if (gate[w].dac>4095) gate[w].dac=4095;
+  
+  gate[w].time_now += speed;
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+  if(gate[w].last_time<gate[w].int_time) {
+    bt=1; // move on
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+  }
+  return bt;
+}
+
+
 // sadcfrac with stoppage - this is the only one what needs it
 static inline uint32_t sadcfracstop(uint8_t wh){ 
   uint32_t bt=0;
@@ -301,13 +324,13 @@ static inline uint32_t scycle(uint8_t wh){   // itself/cycle
   return bt;
 }
 
-static inline uint32_t sprob(uint8_t wh){   // PROBability mode - against LFSR
+static inline uint32_t sprob(uint8_t wh){   // PROBability mode - against LFSR - uses cv
   uint32_t bt=0;
   if (CV[wh]<(LFSR_[wh]&4095)) bt=1;
   return bt;
 }
 
-static inline uint32_t sprobdac(uint8_t wh){   // PROBability mode - against DAC
+static inline uint32_t sprobdac(uint8_t wh){   // PROBability mode - against DAC  - uses cv
   uint32_t bt=0;
   if (CV[wh]<gate[dacfrom[count][wh]].dac) bt=1;
   return bt;
@@ -389,6 +412,47 @@ static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed 
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
 
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  }
+  return bt;
+}
+
+static inline uint32_t speedfracint(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage - trial with stopps
+  uint32_t bt=0;
+  float speed;
+  speed=slowerlog[depth>>2]; // 12 bits to 10 bits
+  if (speed!=2.0f){
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+
+  gate[wh].alpha = gate[wh].time_now - (float)gate[wh].int_time;
+  gate[wh].dac = ((float)delay_buffer[wh][DELAY_SIZE-5] * gate[wh].alpha) + ((float)delay_buffer[wh][DELAY_SIZE-6] * (1.0f - gate[wh].alpha));
+  if (gate[wh].dac>4095) gate[wh].dac=4095;
+  
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  }
+  return bt;
+}
+
+static inline uint32_t speedfracnoint(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage - trial with stopps
+  uint32_t bt=0;
+  float speed;
+  speed=slowerlog[depth>>2]; // 12 bits to 10 bits
+  if (speed!=2.0f){
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  gate[wh].dac = delay_buffer[wh][1];
+  
   if(gate[wh].last_time<gate[wh].int_time) {
     bt=1; // move on
     gate[wh].time_now-=1.0f;

@@ -997,12 +997,16 @@ heavens gate[4];
       //      printf(", \n");
     }
     
-    
-   /*    
-  for (x=0;x<100;x++){
+    k=2049;
+       
+  for (x=0;x<1000;x++){
     //    inb=0.98f;
     //    inb=(float)sin(2.0*PI*x*5.0/65536);
-    //    inb=-1.0f;
+    //    inb=0.0f;
+    inb=(float)(k);
+    inb=inb-2048.0;
+    inb=inb/2048.0; // from 0 to 4095 but where is the middle? 2048
+
     integratorf+=(inb-oldvaluef);
     if(integratorf>0.0f)
       {
@@ -1015,5 +1019,5 @@ heavens gate[4];
 	bt=-1;
       }
     printf("integrator: %f bt: %d\n",integratorf,bt);
-    }*/
+    }
 }

@@ -18,9 +18,11 @@ eg.
 1-traditional/vienna and variations
 2-rungler - DAC speeds and multiple routings
 3-probability? more TM style
-4-freeform as is now
-5-bit recursions.
-6-groups of modes - L would select which of 64 groups for all 4 SRs
+4-freeform as is now - mix
+5-bit recursions. all is bits
+6-groups of modes - L would select which of 64 groups for all 4 SRs - but then what do others do... offset from those groups
+7-generators/functions
+8-ghost mode
 
 Qs: 
 - how much is constraining ie. we can't mix and match but is more or less same now // more flexibility in minor modes

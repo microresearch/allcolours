@@ -76,7 +76,7 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
     n[reg]++;    
     break;
 
-  case 2: // variations on one bit audio - also phasey - sigma-delta
+  case 2: // variations on one bit audio - also phasey - sigma-delta - FIX 
     k=(income); // from 0 to 4095 but where is the middle? - also we do nothing here with length
     integrator+=(k-oldValue);
    if(integrator>2048)
@@ -289,24 +289,27 @@ static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could 
 static inline uint32_t adconebitsx(void){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
   uint32_t bt, k;
   static float integratorf=0.0f, oldvaluef=0.0f;
-  static float inb;
-    ADCgeneric;
-    inb=(float)k;
-    inb=inb-2048.0f;
-    inb=inb/2047.0f; // from 0 to 4095 but where is the middle? 2048
+  float inb;
+  ADCgeneric;
+  //  k=2048.0f;
+  inb=(float)(k);
+  //  inb=inb-2048.0; //sounds better without this
+  //  inb=inb+CVL[0]; // offset
+  inb=inb/2048.0; // from 0 to 4095 but where is the middle? 2048
+
+  integratorf+=(inb-oldvaluef);
+  //  integratorf=inb;
   
-    integratorf+=(inb-(oldvaluef));
-    
-    if(integratorf>0.0f)
+  if(integratorf>0.0)
       {
-	oldvaluef=1.0f;
-     bt=1;
-  }
-   else
-   {
-      oldvaluef=-1.0f;
+	oldvaluef=1.0;
+	bt=1;
+      }
+  else
+    {
+      oldvaluef=-1.0;
       bt=0;
-   }
+    }
   return bt;
 }
 
@@ -2240,7 +2243,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (otherpar==0) otherpar=1;
     if (otherpar>4096) otherpar=4096;
     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
-
+    //    betaf=0.025;
     y=(shift >>length)&1;
     //    if (y==1) f=1.0f;
     //    else f=-1.0f;
@@ -2248,9 +2251,9 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     else x=0;
     SmoothData[wh] = SmoothData[wh] - (betaf * (SmoothData[wh] - ((float)(x)))); //
     //    lastx[wh]=x;
-    //    SmoothData[wh]=f;
-	//    f=(SmoothData[wh]*2048.0f)+2048.0f;
-	//    x=(int)f;
+    //SmoothData[wh]=f;
+    //    f=(SmoothData[wh]*2048.0f)+2048.0f;
+    //x=(int)f;
     x=(int)SmoothData[wh];
     break;
 
