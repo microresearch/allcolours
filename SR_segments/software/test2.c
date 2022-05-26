@@ -998,7 +998,7 @@ heavens gate[4];
     }
     
     k=2049;
-       
+    /*
   for (x=0;x<1000;x++){
     //    inb=0.98f;
     //    inb=(float)sin(2.0*PI*x*5.0/65536);
@@ -1019,5 +1019,12 @@ heavens gate[4];
 	bt=-1;
       }
     printf("integrator: %f bt: %d\n",integratorf,bt);
+    }*/
+    int32_t yum=101;
+    
+    for (x=0;x<4;x++){
+      yum=yum>>1;
+      printf("%d\n",yum);
     }
+    
 }

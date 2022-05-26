@@ -320,32 +320,35 @@ static uint32_t resetz=1;
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 
-#include "modeN.h"
-#include "modeL.h"
-#include "modeR.h"
-#include "modeC.h"
-#include "probability.h" // probability modes
+//#include "modeN.h"
+//#include "modeL.h"
+//#include "modeR.h"
+//#include "modeC.h"
+//#include "probability.h" // probability modes
 
 //#include "basis.h" // basics from commented ones just to speed up tests
 #include "experiment.h" // more functional modes - can also shift some things here... trials
 //#include "bit.h" // bitmodes but some are still in modeL
+#include "rungler.h"
 
 void testnull(void){
 }
 
+/*
 static modez newmodes[128]={ // then call mode by number
   {1,1,1,1, SRx_x, innertest}
 };
+*/
 
 uint32_t testmodes[4]={0,0,0,0};
 
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {//NLcutfeedback86
-  {adc0}, 
-  {SRX0}, // SRX0 is basic route/xor
-  {dac0}, // dac0 SR_insert_zero_dac2, SR_binr_fixed
-  {SRX0}
+  {SRrunghead0N}, // 7 // binroute type not so important here
+  {SRrunghead0L}, // SRX0 is basic route/xor // 25 prob modes
+  {SRrungout}, 
+  {SRrungbody0}
 };
 
 /*
@@ -353,19 +356,23 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2 // ADCholdcycle
   {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes SR_clksrG SRothers dacbusothers_clk dacbusothers_sr dacbusothers_own SRhold SRholdspd SR_speedx SR_splitx SR_recbin
-  {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac abstractoutinterpolnoshift 
+  {adcspeedstream}, dacNbinprob NLRprobinINT1311seldac abstractoutinterpolnoshift  // dac0 SR_insert_zero_dac2, SR_binr_fixed
   {adcLbinprob} SRpattern_unshare
 */
 
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
- void (*funcgroups[4][64])(uint8_t w)=
+/*
+void (*funcgroups[4][64])(uint8_t w)=
 {
   {adc0, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s,adcLabstractLD, stream4_unshare}, 
-  {SRX0, SRrung0,SRrung1, SRrung2, SRrung3, SRLrung0, adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
-  {SR_layer1, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
+  {SR_layer1, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
+  {dac0, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
   {SR5_feedback, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
 }; // 10 so far
+*/
+// problist
 
+ //void (*problist[64])(uint8_t w)={basicprobint, basicadcprobint, SRINquestion0, probintprob1, probintprob2, probintprob3, probintprob5_0, probintprob6_0, probintprobdac1_0, probtempst, probtoggle1, probtoggle2, probtoggle3, probtoggle4, probtoggle5, probstrobe1, probstrobe2, probstrobe3, probintgenericprob0, probintgenericprobx, probLintgenericprobx, probintgenericprobxxx, probintgenericprobxx, probintgenericprob1, probintgenericprob2, probgenericprobx}; // 26 total
 
 /*
 group:
@@ -385,8 +392,6 @@ group:
 
 void mode_init(void){
   uint32_t x;
-
-
   
   for (x=0;x<4;x++){
     gate[x].delcnt=0;
@@ -410,11 +415,11 @@ void mode_init(void){
   
   gate[0].adctype=0;
 
-  gate[0].dactype=67;
-  gate[1].dactype=67; // default simpler version - now 4 bit version 
+  gate[0].dactype=66;
+  gate[1].dactype=66; // default simpler version - now 4 bit version 
   gate[2].dactype=0; // set for out
-  gate[3].dactype=67;
-  gate[8].dactype=67;  
+  gate[3].dactype=66;
+  gate[8].dactype=66;  
 }
 
 
@@ -455,10 +460,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   LFSR_[www] = (LFSR_[www]<<1) + tmp;
 
-  // do the modes
-  //  mode[www]=testmodes[www];
-
-  
    //    mode[1]=0;mode[2]=0;mode[3]=0; // test adc mode 0
   //  mode[0]=4;
   //  mode[1]=0;mode[3]=0; // test dac
@@ -479,13 +480,18 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   */
 
    ///   adcallone(0); // TESTY all onebits in
-  //  (*dofunc[www][mode[www]])(www);
+    mde=0;
+  //  if (www==0) mde=mode[0];
+  //  if (mde>6) mde=6;
+  
+      (*dofunc[www][mde])(www);
 
   // for void (*funcgroups[4][64])(uint8_t w)=
-  mde=mode[3];
-  if (mde>9) mde=9; // 9 groups so far
+    /*
+    mde=mode[3];
+  if (mde>9) mde=9; // 10 groups so far
   (*funcgroups[www][mde])(www);
-  
+    */  
    // test to call 
    // static modez newmodes[128]={ // then call mode by number
    //  {0,0,0,0, SRx_x, innertest}

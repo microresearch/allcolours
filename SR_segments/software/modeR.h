@@ -775,7 +775,7 @@ void SR5_feedback(uint8_t w){ // detached
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     // we want what would be/have been routed in
-      tmp=binroute[count][val];
+      tmp=binroute[count][old];
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -791,7 +791,7 @@ void SR5_feedback(uint8_t w){ // detached
     gate[w].int_time=0;
   }
   // back to regular RSR - and we can have variation on this
-  w=old; // ??? as we disrupted val
+  w=old; 
   if (speedf_[w]!=2.0f){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {

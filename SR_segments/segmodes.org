@@ -25,11 +25,12 @@ prob/bitin is: CVvsDACx, CVvsLFSR, DACvsLFSR, strobe
 
 64x4=256! 4x16=64
 
-*what are models to choose from:*
+*what are models to choose from // for major minor modes:*
 
 dacbus?
 
-generic vienna model
+generic vienna model: redo with interpoll (also if this is for major/minor modes how does RSR fit with reduced bits of course?, then RSR is more like tail)
+
 abstractions: list these? but still have param shortage...
 
 expanded rungler model with different options and switched routings TODO
@@ -191,6 +192,39 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 26/5/2022
+
+// how rungler can be more independent - not matched double and other. how doublke could be in itself
+
+- fixed errors in runglers but sounds ok/maybe is just no movement: error in tmp being uint and in wrong spd entry - we left as is just fixed in rungler.h
+- fixed crash in SR5_feedback
+
+- Q of detach length in ADC/modeN as length is most important for SR incoming!
+
+BINROUTE_, BINROUTEalt_, BINROUTEZERO_, BINROUTENOG_, BINROUTESR_, BINROUTESHARE_, none
+
+0none1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos, [7trigger, 8toggle]
+
+basics to try against global changes:
+
+N: 
+
+- more on listening today: extract mode list from python, new caput
+  main stripped file, new modes files (eg. collect runglers), how
+  python can permute code, new TODO file, permute routes in python
+
+-> cleaning code, python work, listening/coding, new files
+
+- clean up adc/dac and gen.h (lists)
+
+double/ghost: 
+- how to do it fast= no speed calcs, simple route in, SR only/no GSR,
+  how it can incorporate GSR (but GSR is a ghost for another),
+  exchange with ghost, ghost controlled by another, maybe for tail
+  only, other SRs or GSRs in layers... (what past layers we have recorded?)
+
+runglers: see rungler.h
+
 ** 25/5/2022
 
 // think on new models/new TODO
@@ -201,7 +235,7 @@ make new dir/files
 
 ** takeaways/new: grouped modes and geomantics, tails and ghosts but how
 to enter, record and SR of modes to work through, rungler collection,
-binary for spdroute/spdcount, binroute/count and daccount
+binary for spdroute/spdcount, binroute/count and daccount, movement and timed change of modes is important
 
 - added headc macro for modec speed/no freeze in basis.h
 - adconebitsx for sigma/delta works ok - int32 version doesn't work so leave out from adcetc.h
@@ -369,7 +403,7 @@ SR\Rrungs: some same/just changes in speed - add new speed mod thing:
 
 DONE:try with CV as -+ offset
 
-make table for routings/speedfrom here... 
+make table for routings/speedfrom here...
 
 q of generators with cv for select and cv for param
 
@@ -406,7 +440,7 @@ permuted modes/basic modes
 
 *binroutes:*
 
-1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos, 7trigger, 8toggle//orOR
+0none1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos, 7trigger, 8toggle//orOR
 
 + Gshiftswithin: no shift, shift on trigger [and choices/prob/toggle of these] - for binroute only
 

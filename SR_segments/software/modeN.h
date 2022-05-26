@@ -192,7 +192,7 @@ uint8_t strobemodes[16]={8,9,10,11, 12,13,14,15, 16,24,28,31, 87,96,98,99};
 // new stream test
 
 /*
-void adc0S(uint8_t w){ // basic ADC in with XOR route in
+void adc0S(uint8_t w){ // basic ADC in with XOR route in // null
   ADCSTREAMXORIN(4);
 }
 */
@@ -1905,7 +1905,7 @@ void adcLseladc(uint8_t w){ // select ADC 0-31 ***
   GSHIFT_;
   tmp=(CVL[w]>>7); // 5 bits = 32 or we can have a list of preferred modes TODO !!!
   bitn^=ADC_(w,SRlength[w],tmp,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // or we can use adcchoice to fill in
-  BINROUTE_;
+  BINROUTE_; // 
   BITN_AND_OUTV_;
   ENDER;
   }
@@ -2271,7 +2271,7 @@ void adcLrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     tmp=CVL[w]>>8;
-    bitn^=ADC_(w,SRlength[w],dacmodes[tmp],gate[w].trigger,2, param[w], &gate[w].shift_);  // from leftDAC
+    bitn^=ADC_(w,SRlength[w],dacmodes[tmp],gate[w].trigger,2, param[w], &gate[w].shift_);  // from leftDAC but is now dacC
     //    BINROUTE_; // did have this but try now with:
     JUSTCYCLE_;
     if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
@@ -2300,7 +2300,7 @@ void adcLrung1(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
     tmp=CVL[w]>>8;
-    bitn^=ADC_(w,SRlength[w],dacmodes[tmp],gate[w].trigger,2, param[w], &gate[w].shift_);  // from leftDAC
+    bitn^=ADC_(w,SRlength[w],dacmodes[tmp],gate[w].trigger,2, param[w], &gate[w].shift_);  // from leftDAC - should be 1 fixed 26/5
     BINROUTE_; // did have this but try now with:
     //    JUSTCYCLE_;
     if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;

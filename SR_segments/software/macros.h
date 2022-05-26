@@ -67,7 +67,6 @@
     alpha = gate[w].time_now - (float)gate[w].int_time;			\
     gate[w].dac = ((float)delay_buffer[w][1] * alpha) + ((float)delay_buffer[w][0] * (1.0f - alpha)); \
     if (gate[w].dac>4095) gate[w].dac=4095;				\
-    else if (gate[w].dac<0) gate[w].dac=0;				\
     gate[w].time_now += speedf__;					\
     gate[w].last_time = gate[w].int_time;				\
     gate[w].int_time = gate[w].time_now;				\
@@ -86,22 +85,22 @@
 
 //#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
 
-#define HEAD float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; \
+#define HEAD float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; \
 
-#define HEADC float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=lookuplenall[CVL[w]>>7]; speedf_[w]=logspeedd[CV[w]>>2];
+#define HEADC float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=lookuplenall[CVL[w]>>7]; speedf_[w]=logspeedd[CV[w]>>2];
 
 // these ones are for NO SRlength - stays as is and we can use CVL 12 bits
 
-#define HEADSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w]; \
+#define HEADSIN float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w]; \
 
 // these ones are for no speed changes
 
-#define HEADSSIN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; \
+#define HEADSSIN float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; \
 
 // and for NADA both the same
-#define HEADSSINNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+#define HEADSSINNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
-#define HEADNADA float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; \
+#define HEADNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
 //
 
@@ -141,7 +140,7 @@
   }
 
 #define BINROUTEalt_ {				\
-    tmp=binroute[count][w];			\
+    tmp=binroute[count][w]|binary[w];		\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
   if (gate[x].reset[w]){			\
@@ -187,7 +186,7 @@
 
 
 #define BINROUTEZERO_ {			\
-  tmp=binroute[count][w];			\
+    tmp=binroute[count][w]|binary[w];		\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
   if (gate[x].reset[w]){				\
@@ -245,7 +244,7 @@
 
 // same as binroute??????
 #define BINROUTENOS_ {				\
-  tmp=binroute[count][w];				\
+    tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
@@ -255,10 +254,11 @@
   tmp=tmp>>1;						\
   }							\
   }
+// was no strobey
 
 // same more or less as BINROUTENOG_ but not with gshift
 #define BINROUTESR_ {				\
-    tmp=binroute[count][w];				\
+    tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].shift_>>SRlength[x]) & 0x01;		\
@@ -281,7 +281,7 @@
 
 // shared binroute/gshift - only makes sense if we share routes or if there are functions to shift on...
 #define BINROUTESHARE_ {				\
-  tmp=binroute[count][w];				\
+    tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01;		\
@@ -307,7 +307,7 @@
 
 // we don't cycle incoming ghost just get bits
 #define BINROUTENOG_ {				\
-  tmp=binroute[count][w];				\
+    tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
@@ -341,7 +341,7 @@
   }
 
 #define BINROUTEOR_ {				\
-  tmp=binroute[count][w];				\
+    tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
@@ -366,7 +366,7 @@
   }
 
 #define BINROUTEANDCYCLE_ {				\
-  tmp=binroute[count][w];				\
+    tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
     if (tmp&0x01 || (x==w)){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\

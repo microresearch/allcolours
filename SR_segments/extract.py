@@ -3,6 +3,7 @@ import os.path
 import pickle
 import re
 import sys
+import re
 type_list = ['int', 'char', 'float', 'double', 'bool', 'void', 'short', 'long', 'signed', 'struct']
 
 def pickle_dump(root_path, data, file_name):
@@ -31,7 +32,7 @@ def is_func_own(line):
     line = line.strip()
     if len(line) < 2:
         return None
-    if 'void ' in line and '(uint8_t w)' in line:
+    if 'void ' in line and '(uint8_t w)' in line and 'null' not in line:
         countt+=1
         return line
     return None
@@ -110,6 +111,30 @@ def func_name_extract(file_path):
     fp.close()
     return func_list
 
+def strip_it(name): # extract void adc0S(uint8_t w){ // basic ADC in with XOR route in // first spc to bracket
+    #    stripped=re.match(r"^.* '(.*)'\(.*$",name)
+    #strip=stripped.group(1)
+    strip=name[ name.find(" ")+1 : name.find("(") ]
+    return strip
+    
+def func_name_extract_strip(file_path):
+
+    if not os.path.isfile(file_path):
+        return
+
+    fp = open(file_path, "r")
+
+    func_list = []
+
+    for line in fp.readlines():
+        func_name = is_func_own(line)
+        if func_name != None:
+            func_name=strip_it(func_name)
+            func_list.append(func_name)
+    fp.close()
+    return func_list
+
+
 def write_to_file(filoen, func_list, output_file):
     fp = open(output_file, "a")
     fp.write("\n\nxxxxx " + filen + "\n\n")
@@ -119,17 +144,26 @@ def write_to_file(filoen, func_list, output_file):
 
 if __name__ == '__main__':
 
-    file_list=['experiment.h', 'modeN.h', 'modeC.h', 'modeL.h', 'modeR.h', 'bit.h', 'probability.h', 'prob.h']
+    file_list=['experiment.h', 'modeN.h', 'modeC.h', 'modeL.h', 'modeR.h', 'bit.h', 'probability.h']
+    #file_list=['probability.h']
     countt=0
 
     for file in file_list:
+        print
         filen="software/"+file
-        func_list = func_name_extract(filen)
-        write_to_file(filen, func_list, "extracted2")
+        print
+        print filen
+        #        func_list = func_name_extract(filen)
+        #        write_to_file(filen, func_list, "extracted2")
+        func_list = func_name_extract_strip(filen) # now for stripped functions
+        for ll in func_list:
+            print ll+",",
+        
     
     # if len(sys.argv) != 3:
     #     print '''Usage: python func_name_extract.py <file_path> <output_file>\n'''
     #     exit(-1)
     # func_list = func_name_extract(sys.argv[1])
+    print
     print "functions: ", countt
 
