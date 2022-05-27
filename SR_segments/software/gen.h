@@ -622,6 +622,7 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as r
   depth=depth>>1;
   }
     }
+  bt=0;
   return bt;
 }
 

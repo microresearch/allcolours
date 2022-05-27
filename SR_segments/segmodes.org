@@ -192,9 +192,37 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 27/5/2022
+
+- still think on major/minor modes: 4x16 or 8x8 
+1-vienna (with interpoll or not and R as tail -> see above)
+2-runglers as matched/groups - expand options for these alongside some TM/typical SR/classics - slidings
+3-mixed selection of modes
+4-prob modes/classic TM etc
+5-all is bits
+6-mix of experimental new modes and traditional
+others? dacbus model?
+
+- wierdness with dac on srrrung0 (dac3) - bits run but no dac out, to do with delay in dacmode 30 -removed and runs well
+
+DONE: generic rungler:
+
+2 heads: generator, speedfrom body 
+body: data from 1 head, speedfrom other
+tails: routes from any above (we have)
+
+generic: generator/or/data from one/speedfrom other (table) - not from itself...
+
+eg.
+
+0 - data from: 1,1 2,2 3,3
+    speedfrom: 2,3 1,3 1,2
+
+bitmode rungler: spd is binroute bits
+
 ** 26/5/2022
 
-// how rungler can be more independent - not matched double and other. how doublke could be in itself
+// how rungler can be more independent - not matched double and other. how double could be in itself
 
 - fixed errors in runglers but sounds ok/maybe is just no movement: error in tmp being uint and in wrong spd entry - we left as is just fixed in rungler.h
 - fixed crash in SR5_feedback
@@ -871,7 +899,7 @@ bitstream selects CV source/influences it... *[how to abstract bit choice of DAC
 ** 26/4/2022
 
 *primary question of recursion - heads and tails and how these are connected, what recurs, feedsback on what and how Rmode can change this*
-*recursion of geomancy - 4x4 = 16 optiosn, 4 major modes???*
+*recursion of geomancy - 4x4 = 16 options, 4 major modes???*
 *also recursion by way of jacks, and param[w] not to forget*
 
 - *also forgot about lengthsel functions like adcLSRlengthsel0 in modeN.h*

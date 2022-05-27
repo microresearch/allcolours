@@ -380,7 +380,7 @@ void SR_routeSRbits02(uint8_t w){ //CV chooses SR for route bits for SR for rout
   BITN_AND_OUTV_;
   ENDER;
   }
-  
+  }
 }
 
 

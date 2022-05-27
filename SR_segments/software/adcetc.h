@@ -919,7 +919,8 @@ uint32_t (*dacbitstreams[16])(uint32_t depth)={dacxbits, dacpadbits, dac12bits, 
 static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR){
   static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
   static int32_t integrator[4]={0}, oldvalue[4]={0};
-  static int32_t k[4]={0}, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
+  static int32_t k[4]={0};
+  static uint32_t lastbt[4]={0,0,0,0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
   //  static uint8_t lc=0;
   static uint32_t toggle[4]={0,0,0,0};
   uint32_t bt=0;
@@ -2175,7 +2176,7 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
 
 //0-15 so 16 modes
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
-  int32_t x=0;
+  uint32_t x=0;
   float f=0.0f;
   static uint32_t n[9]={0,0,0,0,0,0,0,0,0};
   static uint32_t nom[9]={0,0,0,0};
@@ -2201,14 +2202,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
   case 67: // 4 bit DAC aside from length - try now with delay
-    if (n[wh]>3) {
-      n[wh]=0;      
       x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
-      lastout[wh]=x;
-    }
-    x=lastout[wh];
-    //    x=0;
-    n[wh]++;              
     break;
 
   case 68: // straight 4 bit dac

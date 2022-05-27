@@ -130,7 +130,7 @@ static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt
 
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
 uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
-uint32_t dactype[4]={66,66,66,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
+//uint32_t dactype[4]={66,66,66,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
 
@@ -300,7 +300,7 @@ static uint32_t counterr=0, counterl=0;
 #define DELAY_SIZE 6 // was 40 --- 3*width=16 = 3*16=48-5=43 - use 7 for simplea
 static int32_t delay_buffer[9][2] = { 0 }; // was 48 but it doesn't need to be so big
 
-void new_data(uint32_t data, uint32_t ww)
+static inline void new_data(uint32_t data, uint32_t ww)
 {
   delay_buffer[ww][0] = delay_buffer[ww][1];
     delay_buffer[ww][1] = data;
@@ -326,7 +326,7 @@ static uint32_t resetz=1;
 //#include "modeC.h"
 //#include "probability.h" // probability modes
 
-//#include "basis.h" // basics from commented ones just to speed up tests
+#include "basis.h" // basics from commented ones just to speed up tests
 #include "experiment.h" // more functional modes - can also shift some things here... trials
 //#include "bit.h" // bitmodes but some are still in modeL
 #include "rungler.h"
@@ -344,15 +344,32 @@ uint32_t testmodes[4]={0,0,0,0};
 
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
-{//NLcutfeedback86
-  {SRrunghead0N}, // 7 // binroute type not so important here
-  {SRrunghead0L}, // SRX0 is basic route/xor // 25 prob modes
+{
+  {SRrunggenericbitsadc}, // 7 // binroute type not so important here
+  {SRrunggenericbits}, // SRX0 is basic route/xor // 25 prob modes
   {SRrungout}, 
-  {SRrungbody0}
+  {SRrunggenericbits}
 };
 
 /*
 nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
+//NLcutfeedback86
+
+  {SRrunggenericbitsadc}, // 7 // binroute type not so important here
+  {SRrunggenericbits}, // SRX0 is basic route/xor // 25 prob modes
+  {SRrungout}, 
+  {SRrunggenericbits}
+
+  {SRrunghead0N}, // 7 // binroute type not so important here
+  {SRrunghead0L}, // SRX0 is basic route/xor // 25 prob modes
+  {SRrungout}, 
+  {SRrungbody0}
+
+ {adcLrung0}, // 7 // binroute type not so important here
+  {SRrung0}, // SRX0 is basic route/xor // 25 prob modes
+  {dacLrung0}, 
+  {SRRrung0}
+
 
   {adcLbinprob}, //adcLseladcdac5th //adcbumproutebin0 // adc95bins // adcLpatternbin95 // adcbin1_0 // adccipher2 // ADCholdcycle
   {adcLbinprob}, //adcLabstractI binspeedcycle SRsigma noSRxorroutes noSRdelay_line SRmultiplespeednewdac0 SRmatch SRprobxortogx SR_switchspeed SR_switchspeed SR_vienna SRxorroutes SRaddroutes SR_clksrG SRothers dacbusothers_clk dacbusothers_sr dacbusothers_own SRhold SRholdspd SR_speedx SR_splitx SR_recbin
@@ -361,15 +378,15 @@ nogshift=SR0nogstrobe, SR0nogtoggle, SRLprobnog, SRintprobnog
 */
 
 // TODO: start to catalogue groups of modes - but this could also be dofunc? // eg. first group is runglers
-/*
+
 void (*funcgroups[4][64])(uint8_t w)=
 {
-  {adc0, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s,adcLabstractLD, stream4_unshare}, 
-  {SR_layer1, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
-  {dac0, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
-  {SR5_feedback, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
-}; // 10 so far
-*/
+  {adc0, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s,adcLabstractLD, stream4_unshare}, 
+  {SR_layer1, SRrunggenericbits, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
+  {dac0, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
+  {SR5_feedback, SRrunggenericbits, SRrungbody0, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
+}; // 12 so far
+
 // problist
 
  //void (*problist[64])(uint8_t w)={basicprobint, basicadcprobint, SRINquestion0, probintprob1, probintprob2, probintprob3, probintprob5_0, probintprob6_0, probintprobdac1_0, probtempst, probtoggle1, probtoggle2, probtoggle3, probtoggle4, probtoggle5, probstrobe1, probstrobe2, probstrobe3, probintgenericprob0, probintgenericprobx, probLintgenericprobx, probintgenericprobxxx, probintgenericprobxx, probintgenericprob1, probintgenericprob2, probgenericprobx}; // 26 total
@@ -415,11 +432,11 @@ void mode_init(void){
   
   gate[0].adctype=0;
 
-  gate[0].dactype=66;
-  gate[1].dactype=66; // default simpler version - now 4 bit version 
+  gate[0].dactype=67;
+  gate[1].dactype=67; // default simpler version - now 4 bit version 
   gate[2].dactype=0; // set for out
-  gate[3].dactype=66;
-  gate[8].dactype=66;  
+  gate[3].dactype=67;
+  gate[8].dactype=67;  
 }
 
 
@@ -480,40 +497,40 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   */
 
    ///   adcallone(0); // TESTY all onebits in
-    mde=0;
+  //    mde=0;
   //  if (www==0) mde=mode[0];
   //  if (mde>6) mde=6;
   
-      (*dofunc[www][mde])(www);
+  //  (*dofunc[www][mde])(www);
 
   // for void (*funcgroups[4][64])(uint8_t w)=
-    /*
+    
     mde=mode[3];
-  if (mde>9) mde=9; // 10 groups so far
+  if (mde>11) mde=11; // 12 groups so far
   (*funcgroups[www][mde])(www);
-    */  
+      
    // test to call 
    // static modez newmodes[128]={ // then call mode by number
    //  {0,0,0,0, SRx_x, innertest}
    //};
-   uint8_t choice=0;
+      //   uint8_t choice=0;
    //   (*newmodes[choice].func)(www, newmodes[choice].strobey, newmodes[choice].detachlen, newmodes[choice].detachspeed, newmodes[choice].interpoll, newmodes[choice].innerfunc);   
    
    //   (*moodsfuncs[0])(www, &moodsw[0]); //see experiment.h - mode=0;b
   
   // this runs at full speed? - can also be in functions/modes // do we have option to have another DAC out?
     if (www==2)  {
-      //              kk^=1; // test code
-	      //    	  if (kk)    gate[2].dac=4095;
-      //    	  else gate[2].dac=0; // 20 KHz!
+      //      kk^=1; // test code
+      //      if (kk)    gate[3].dac=4095;
+      //else gate[3].dac=0; // 20 KHz!
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
-      ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
+      //      ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
       //      ADC_SoftwareStartConv(ADC1); 
       //      while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
       //      kk=ADC_GetConversionValue(ADC1);
     //    kk=2050;
       //      DAC_SetChannel1Data(DAC_Align_12b_R, 4095-kk); // 1000/4096 * 3V3 == 0V8 
-      //int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
+      ///int j = DAC_GetDataOutputValue (DAC_Channel_1); // DACout is inverting  
       }
 
     

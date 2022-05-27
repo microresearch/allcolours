@@ -1,3 +1,4 @@
+# -E expands macros
 
 #TOOL_PREFIX = /opt/ARM/arm-linaro-eabi-4.6
 #TOOL_PREFIX = /root/ARM/gcc-arm-none-eabi-4_9-2015q2

@@ -7,6 +7,10 @@
 
 - USE headc macro for modec speed/no freeze in basis.h
 
+- check we are calling correct outv so there is a dac out!
+
+- check logspeed, logspeedd vs. slowerlog etc...
+
 - start to extract and order list of modes so we can test these, how to arrive at groups of modes, easier naming and need to specify modeC modes
 
 list modes per SR: cvspeed, strobe, dacspeed

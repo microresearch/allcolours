@@ -84,12 +84,69 @@ independent runglers - double themselves - 2 heads
 
 */
 
+// this could head towards generic - fix speedfrom and binroute! - we have 2 bits
+// we have 2/1 - we are 3
+// converted to right format
+uint32_t otherrungspd[2][4]={
+{2,1,2,1},
+{8,8,8,2}
+};
+
+uint32_t otherrungroute[2][4]={
+{4,8,8,2},
+{2,4,1,4}
+};
+
+void SRrunggenericbitsadc(uint8_t w){ 
+  HEADNADA; //
+  tmp=(CVL[w]>>6)&3;
+  if (binroutebits(otherrungspd[tmp&1][w]<<8,w) | gate[w].trigger){ // 2<<8 is L 
+      GSHIFT_;
+      bitn=binroutebits(otherrungroute[tmp>>1][w]<<8,w); // bits from N
+      bitn^=(*adcbitstreams[CVL[w]>>8])(CV[w]);  // option for adc in here or?
+      BITN_AND_OUTVINT_;
+      }
+}
+
+// can include adc as option or seperate rungler there
+void SRrunggenericbits(uint8_t w){ 
+  HEADNADA; //
+  tmp=(CVL[w]>>6)&3;
+  if (binroutebits(otherrungspd[tmp&1][w]<<8,w) | gate[w].trigger){ // 2<<8 is L 
+      GSHIFT_;
+      bitn=binroutebits(otherrungroute[tmp>>1][w]<<8,w); // bits from N
+      bitn^=(*abstractbitstreams[CVL[w]>>8])(CV[w],w);  // option for adc in here or?
+      BITN_AND_OUTVINT_;
+      }
+}
+
+// bitmode rungler - speed is bitfrom
+
+void SRrungheadbits(uint8_t w){ // L and N. speedfrom R 
+  HEADNADA; // 
+  if (binroutebits(8<<8,w) | gate[w].trigger){ // 8<<8 is R side I think // can also be moddded with other bits eg. trigger.
+      GSHIFT_;
+      bitn=(*abstractbitstreams[CVL[w]>>8])(CV[w],w); // oops need 2 CVs - 4 bits for first one - leaves 2 bits spare...
+      BITN_AND_OUTVINT_;
+      }
+}
+
+void SRrungbodybits(uint8_t w){ // R - speedbits from L - but no use of CV so far
+  HEADNADA; // 
+  if (binroutebits(2<<8,w) | gate[w].trigger){ // 2<<8 is L 
+      GSHIFT_;
+      bitn=binroutebits(1<<8,w); // bits from N
+      bitn^=(*abstractbitstreams[CVL[w]>>8])(CV[w],w);
+      BITN_AND_OUTVINT_;
+      }
+}
+
+// route bodyR to C= void SRrungout(uint8_t w) 
+
 // for head/permutations but this is not very flexible:
 
 // adc/gen // routein or not from z/zz // is type important
 // speedfrom- N, L or C - to match/table?
-
-//uint32_t rung[4]={
 
 void SRrunghead0N(uint8_t w){ // for N
   HEADNADA; // we can also have own type of dac but only for speed one N
@@ -105,8 +162,8 @@ void SRrunghead0N(uint8_t w){ // for N
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    //    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
-    bitn=adc4bits_unshare(11,w); // from exp
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
+    //    bitn=adc4bits_unshare(11,w); // from exp
     // routein from R or not? yes try
     //    tmp=4; // route now from C -> 4
     //    BINROUTEstrip_;
@@ -127,8 +184,8 @@ void SRrunghead0L(uint8_t w){ // for L
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    //    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
-        bitn=adc4bits_unshare(11,w); // from exp
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
+    //    bitn=adc4bits_unshare(11,w); // from exp
     // routein from R or not? yes try
     //    tmp=4; // route now from C -> 4
 	if (((LFSR_[w] & 4095 ) > CVL[w])){   // this way round?
@@ -149,7 +206,6 @@ void SRrungout(uint8_t w){ //
   if(gate[w].last_time<gate[w].int_time)      {
     tmp=CVL[w]>>8;// 4 bits for DACtype - excess bits
     gate[w].dactype=tmp; gate[w].dacpar=param[w];
-    
   GSHIFT_;
   tmp=8; // route from R which is body
   BINROUTEstrip_; 
@@ -200,7 +256,7 @@ void adcLrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   tmp=(gate[3].dac)%(ADC_GetConversionValue(ADC1)); // ADC for mod - speedfrom R
-  off=(2048-CV[w]); // CV for offset
+  off=(CV[w]-2048); // CV for offset
   tmp+=off; // off is -2048 to 2048
   if (tmp<0) tmp=0;
   tmp=tmp>>2; // 10 bits
@@ -444,6 +500,7 @@ void SRLrung0(uint8_t w){// DETACHED> with oscillator
 // from moder.h - check if is same as above
 
 //SRL, SRR: speed from SRN: (both run OSC with no binroute) - is as RB0 above
+
 void SRRrung0(uint8_t w){// with oscillator
   HEAD;
   int32_t cv;
@@ -454,7 +511,7 @@ void SRRrung0(uint8_t w){// with oscillator
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator // options?
     BITN_AND_OUTV_;
     ENDER;
   }
@@ -470,7 +527,7 @@ void SRRrung1(uint8_t w){// with oscillator - other minus - but is same as above
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
-    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator
+    bitn=ADC_(w,SRlength[w],30,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); // oscillator // options?
     BITN_AND_OUTV_;
     ENDER;
   }
