@@ -2616,6 +2616,7 @@ void TIM4_IRQHandler(void)
   lastlastmoden=lastmoden;
   lastmoden=temp;
   lastmode[0]=mode[0];
+  CVM[0]=temp;    
   mode[0]=(temp>>6); // 64 modes = 6 bits  
   if (lastmode[0]!=mode[0]) gate[0].changed=1;
   else gate[0].changed=0;
@@ -2630,6 +2631,7 @@ void TIM4_IRQHandler(void)
   lastlastmodec=lastmodec;
   lastmodec=temp;
   lastmode[2]=mode[2];
+  CVM[2]=temp;
   mode[2]=(temp>>6); // 64 modes = 6 bits  
   if (lastmode[2]!=mode[2]) gate[2].changed=1;
   else gate[2].changed=0;
@@ -2644,7 +2646,8 @@ void TIM4_IRQHandler(void)
   lastlastmodel=lastmodel;
   lastmodel=temp;
   lastmode[1]=mode[1];
-  mode[1]=(temp>>6); // 64 modes = 6 bits  
+  CVM[1]=temp;
+  mode[1]=(temp>>6); // 64 modes = 6 bits
   if (lastmode[1]!=mode[1]) gate[1].changed=1;
   else gate[1].changed=0;
 
@@ -2658,6 +2661,7 @@ void TIM4_IRQHandler(void)
   lastlastmoder=lastmoder;
   lastmoder=temp;
   lastmode[3]=mode[3];
+  CVM[3]=temp;
   mode[3]=(temp>>6); // 64 modes = 6 bits  
   if (lastmode[3]!=mode[0]) gate[3].changed=1;
   else gate[3].changed=0;

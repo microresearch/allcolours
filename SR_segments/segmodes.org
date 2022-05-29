@@ -1,5 +1,7 @@
 * sketch modes
 
+module for one bit landscape gardening...
+
 discard basic 64x64x64x64 modes with some overlap for other models...
 
 double/ghost tail - how to do this without slowing down...
@@ -191,6 +193,30 @@ make new dir/files
 - 5th tail as processor, generator and what_would_have_been
 - check all above: speed, clkin, pulsin etc.
 - sort modes
+
+** 29/5/2022
+
+major modes:
+
+EXPLORING/IN PROGRESS...
+1-vienna re-work: 4 bits route/speed, 1 bit strobe/prob (when strobe use CV/prob only), 1 or 2 bits recursion 
+
+recursion: speedfrom (CV/none, self, other, other tempered with CV), in strobe recurse onto route temper with ownroute
+
+2-runglers/classics
+
+3-geomantic/with all is bits/stacks and recursion
+
+4-classic TM modes/or/all is bits
+
+notebook/notes:
+
+- we can always do speedfrom by strobe bits manually
+- TAIL: stack of modes (do we have this on exit/change), stack of
+  values at speed (circulate), overlay whole caput d. on itself and
+  feedback, recursion of previous stack (what it could have been).
+
+*TODO: strobey is set by function itself*
 
 ** 27/5/2022
 

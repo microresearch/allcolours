@@ -5,13 +5,99 @@ static uint32_t delayline[512]; //shared delay line
 static uint32_t delaylineUN[4][512]; //UNshared delay line
 
 // define spdmodes - need to think which ones work... and maybe expand with new binroutes to 32 // 5 bits
-uint32_t (*spdmodes[16])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
+uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
 
 // added new binroutes in gen.h also new speedfracint puts dac into mode
 // where do we use sadcfrac?
 
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
+
+// 29/5/2022
+
+// questions for this major mode: if we only have 16x=4 bits
+// ///for right hand side (just route?), mode/route=0 for modeC make no
+// sense, routes which don't include all, recurse via CVL trial now and is improved so CVL is MODE!
+
+// we can still do 5th tail here which would be entry for mode/route=0 on w==2! 
+
+// how we can use this as generic SR mode (TODO: convert and explore other options)
+
+// this is new major mode 
+ // options: recurse fully onto mode, swop CVL and mode so length is on mode, use CVL as mode and free up more bits?
+void major_vienna(uint8_t w){  
+  HEADNADA; 
+  uint32_t tmpp, tmppp, str=0, recurse=0, speedy;
+  uint8_t spdfrom; 
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  // swopping mode and length - can also detach length for other bits
+  SRlength[w]=lookuplenall[31-(CVM[w]>>7)]; // 5 bits - so we could even use extra 2 bits there 
+  
+  // 7 bits from mode/now CVL - 
+  tmpp=127-(CVL[w]>>5); // 7 bits  - added CVM 29/5/2022
+  if (tmpp>>6) // top bit
+    {
+      spdfrom=2; str=1; // strobe
+    }
+  else {
+    spdfrom=0; // fractional speed
+    speedy=CV[w];
+  }
+  
+  if (spdfrom==0)   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
+  // TODO: recursion: spdfrom==0 then speedfrom (CV/none, self, other, other tempered with CV), in strobe recurse onto route temper with ownroute
+  // so we have two bits 1[spd]11[recur] [1111]route
+  recurse=(7-(CVL[w]>>4))&3; // 2 bits
+
+  if (spdfrom==0 && recurse!=0){ // recurse on to speed
+    speedy=CV[w]+gate[others[w][recurse-1]].dac; // can also be different versions such as modulus or mid version
+    if (speedy>4095) speedy=4095;
+  }
+  
+  if (spdfrom==2 && recurse!=0){ // recurse on to route
+    tmpp|=(gate[others[w][recurse-1]].shift_)&15;    
+  }
+    
+  if (spdmodes[spdfrom](speedy,w)){  // we dont use CV for strobe
+    GSHIFT_;
+    // bitn opp can be inserted... eg. LFSR
+    // XX
+    if (w==0) {// not necessarily?
+      bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);   // could be otherwise or another set of bits//
+    }
+    // 4 bits for route
+    tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+
+    // and prob thing
+    /*
+    doit[w]=(mode[w]>>4)&0x01; // top bit maybe
+    if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
+    */
+    if (str) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob?
+      if (gate[dacfrom[count][w]].dac<CV[w]) bitn^=1;
+	}
+      
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
 
 // 25/5/2022
 
@@ -29,7 +115,6 @@ all is bits//cv into SRetc
 */
 
 // 1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos-noshift, 7trigger, 8newaltone-noreset
-
 
 //TODO: modeR manipulations: for spdcount(speedfrom), count(binroute), daccount(dacfrom) - also used for lengthfrom
 /*
