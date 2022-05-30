@@ -13,6 +13,9 @@ uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, stro
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
+// 30/5/2022
+// generic version again of vienna below
+
 // 29/5/2022
 
 // questions for this major mode: if we only have 16x=4 bits
@@ -27,11 +30,13 @@ uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strob
  // options: recurse fully onto mode, swop CVL and mode so length is on mode, use CVL as mode and free up more bits?
 void major_vienna(uint8_t w){  
   HEADNADA; 
-  uint32_t tmpp, tmppp, str=0, recurse=0, speedy;
+  uint32_t tmpp, tmppp, str=0, recursespeed=0, recurseroute=0, speedy;
   uint8_t spdfrom; 
   gate[w].dactype=0; gate[w].dacpar=param[w];
   // swopping mode and length - can also detach length for other bits
-  SRlength[w]=lookuplenall[31-(CVM[w]>>7)]; // 5 bits - so we could even use extra 2 bits there 
+  SRlength[w]=lookuplenall[31-((CVM[w]>>5)&31)]; // lowest 5 bits - so we could even use extra 2 bits there - for what????
+  
+  // could we recurse on to route AND speed (but how speed works with strobe? as a bit from SR)
   
   // 7 bits from mode/now CVL - 
   tmpp=127-(CVL[w]>>5); // 7 bits  - added CVM 29/5/2022
@@ -55,17 +60,24 @@ void major_vienna(uint8_t w){
 
   // TODO: recursion: spdfrom==0 then speedfrom (CV/none, self, other, other tempered with CV), in strobe recurse onto route temper with ownroute
   // so we have two bits 1[spd]11[recur] [1111]route
-  recurse=(7-(CVL[w]>>4))&3; // 2 bits
-
-  if (spdfrom==0 && recurse!=0){ // recurse on to speed
-    speedy=CV[w]+gate[others[w][recurse-1]].dac; // can also be different versions such as modulus or mid version
+  recurseroute=(7-(CVL[w]>>4))&3; // 2 bits
+  recursespeed=(7-(CVM[w]>>10)); // 2 bits
+  
+  
+  if (spdfrom==0 && recursespeed!=0){
+    speedy=CV[w]+gate[others[w][recursespeed-1]].dac; // can also be different versions such as modulus or mid version
     if (speedy>4095) speedy=4095;
   }
   
-  if (spdfrom==2 && recurse!=0){ // recurse on to route
-    tmpp|=(gate[others[w][recurse-1]].shift_)&15;    
+  if (spdfrom==2 && recursespeed!=0){ 
+    gate[w].trigger^=gate[others[w][recursespeed-1]].shift_&0x01;
   }
-    
+
+  if (recurseroute!=0){     
+    tmpp|=(gate[others[w][recurseroute-1]].shift_)&15;    
+  }
+
+  
   if (spdmodes[spdfrom](speedy,w)){  // we dont use CV for strobe
     GSHIFT_;
     // bitn opp can be inserted... eg. LFSR
@@ -89,7 +101,7 @@ void major_vienna(uint8_t w){
     doit[w]=(mode[w]>>4)&0x01; // top bit maybe
     if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
     */
-    if (str) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob?
+    if (str) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob? such as... test if we notice this!?
       if (gate[dacfrom[count][w]].dac<CV[w]) bitn^=1;
 	}
       
