@@ -416,12 +416,7 @@
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
-//DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
-// this one is for fractional speeds/interpol
-#define BITN_AND_OUTV_ {						\
-    PULSIN_XOR;								\
-    gate[w].shift_+=bitn;						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+#define PULSOUT {							\
     if (w!=0){								\
     tmp=(w<<1);								\
     if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];				\
@@ -434,108 +429,52 @@
     if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
     else *pulsoutHI[tmp]=pulsouts[tmp];				\
     }								\
+}
+
+//DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
+// this one is for fractional speeds/interpol
+// added pulsout macro to simplify 30/5/2022
+#define BITN_AND_OUTV_ {						\
+    PULSIN_XOR;								\
+    gate[w].shift_+=bitn;						\
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+    PULSOUT;								\
 }
 // added pulsin_xor
 
 #define BITN_AND_OUTVXOR_ {						\
     gate[w].shift_^=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-    if (w!=0){								\
-    tmp=(w<<1);								\
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];				\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    lengthbit=(SRlength[w]>>1);					\
-    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
-    prev_stat[w]=new_stat;					\
-    tmp++;							\
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    }								\
+    PULSOUT;								\
 }
 
 // for local changes to dactype 
 #define BITN_AND_OUTVDACT_ {						\
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], tmp, gate[w].dacpar, gate[w].trigger); \
-    if (w!=0){								\
-    tmp=(w<<1);								\
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];				\
-    else *pulsoutHI[tmp]=pulsouts[tmp];					\
-    lengthbit=(SRlength[w]>>1);						\
-    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;			\
-    prev_stat[w]=new_stat;						\
-    tmp++;							\
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    }								\
-}
+    PULSOUT;								\
+  }
 
 
 #define BITN_AND_OUTVNOSHIFT_ {						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-    if (w!=0){								\
-    tmp=(w<<1);								\
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    lengthbit=(SRlength[w]>>1);					\
-    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
-    prev_stat[w]=new_stat;					\
-    tmp++;							\
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    }								\
-}
+    PULSOUT;								\
+  }
 
 #define BITN_AND_OUTVINT_ {						\
     PULSIN_XOR;								\
     gate[w].shift_+=bitn;						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-    if (w!=0){								\
-    tmp=(w<<1);								\
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    lengthbit=(SRlength[w]>>1);					\
-    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
-    prev_stat[w]=new_stat;					\
-    tmp++;							\
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    }								\
+    PULSOUT;								\
 }
 
 #define BITN_AND_OUTNODAC_ {						\
-    if (w!=0){								\
-    tmp=(w<<1);								\
-    if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    lengthbit=(SRlength[w]>>1);					\
-    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
-    prev_stat[w]=new_stat;					\
-    tmp++;							\
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    }								\
+    PULSOUT;								\
 }
 
 #define BITN_AND_OUTVINTNO_ {						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-   if (w!=0){								\
-    tmp=(w<<1);								\
-     if (bitn) *pulsoutLO[tmp]=pulsouts[tmp];			\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    lengthbit=(SRlength[w]>>1);					\
-    new_stat=(gate[w].shift_ & (1<<lengthbit))>>lengthbit;		\
-    if (prev_stat[w]==0 && new_stat==1) flipd[w]^=1;		\
-    prev_stat[w]=new_stat;					\
-    tmp++;							\
-    if (flipd[w]) *pulsoutLO[tmp]=pulsouts[tmp];		\
-    else *pulsoutHI[tmp]=pulsouts[tmp];				\
-    }								\
+    PULSOUT;								\
 }
 
 // these all had     if (w==3) count=0; 10/1/2021				\

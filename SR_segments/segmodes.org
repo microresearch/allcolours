@@ -194,6 +194,29 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 30/5/2022
+
+- paths.py calculates all paths with constraints: there are around 40,000 combinations. each route is 4 bits, 4x4=16, so 80k storage
+
+otherwise is 16x16x16x16 combo
+
+what could be extra constraints?
+
+- DONE: added more recursion options for major_vienna
+added strobed in gate[w] struct for use with normed clocks, take care itself of bit
+
+*TODO: how and where we implement 5th/8th tail SR?*
+
+recurs-not-on-itself through recursion on not-on-itself
+
+majors:
+1-vienna/redux/recursion
+2-sliding groups
+3-modes+Rsideglobal mods
+4-???bitmodes all... more generator style, all is bits and functions operating on bits
+
+no clksr?
+
 ** 29/5/2022
 
 major modes:

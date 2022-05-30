@@ -2,6 +2,35 @@ offset. vca is multiplier so is not inserting signals...
 
 - one slower mindlin controls another...
 
+** 30/5/2022
+
+- input into mindlin? could also be VCA - so total of 6 VCA??? also
+  need to try with proper inv - (remove r9 fixed feedback or just use
+  074 on breadboard - tried)
+
+- what are possible outs from Mindlin? from 1st int, 2nd int - v and w... we tried and v (first int) is harder and louder
+
+- *from Sprott?*
+
+... and one is in [enclosed G function] - so does it matter if that is shared with one Mindlin out?
+
+- test switch - ADG 412 BRZ  SO16 slim
+
+- check we can just enter into either Mindlin or Sprott and switch outs?
+
+- number of VCAs for each - should be equal if we have/try vca from inv to first integrator
+
+each has 5 VCAs so far (for mindline: 4+1 if we test new mindlin one - tested and works ok - +VCA as sprott)
+
+but in sprott one VCA is in [G/signum] - control goes to both? split?
+
+// -[inv]-[int 1]->[int 2]->[G/signumetc->feedback to inv]
+                 ->feedback+/- to inv [mind is +, sprott is -         
+
+// just to document: idea is now to have as above - two integrators and switch in difference of mindlin, sprott....
+
+5 VCA in, 2 clock in, 2 or 3 outs, touch in // size//design is central toad from Ripley
+
 ** 12/5/2022
 
 - extend with extra integrator/bintic and signum neg into signum but
@@ -9,7 +38,7 @@ offset. vca is multiplier so is not inserting signals...
 
 tried from out of 2nd integrator/not neg -> bb3 then r1 into signum and back into first integrator - 
 
-mindlin: 
+mindlin test layout: 
 R1 highest - C3 x
 R2 lowest - C1
 R3 mid - C2 x

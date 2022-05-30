@@ -1,4 +1,4 @@
-// TODO: deal with PULSIN_XOR!
+// TODO: deal with PULSIN_XOR! and new strobey...
 
 // enlarge - 4096 bits=128x32 // say for 4x4096=512 4x4096=16384
 static uint32_t delayline[512]; //shared delay line
@@ -14,7 +14,9 @@ uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, stro
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
 // 30/5/2022
-// generic version again of vienna below
+// generic version again of vienna below would need 2xCV - but just have one recurse as we had before...
+
+
 
 // 29/5/2022
 
@@ -30,7 +32,7 @@ uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strob
  // options: recurse fully onto mode, swop CVL and mode so length is on mode, use CVL as mode and free up more bits?
 void major_vienna(uint8_t w){  
   HEADNADA; 
-  uint32_t tmpp, tmppp, str=0, recursespeed=0, recurseroute=0, speedy;
+  uint32_t tmpp, tmppp, recursespeed=0, recurseroute=0, speedy;
   uint8_t spdfrom; 
   gate[w].dactype=0; gate[w].dacpar=param[w];
   // swopping mode and length - can also detach length for other bits
@@ -42,11 +44,13 @@ void major_vienna(uint8_t w){
   tmpp=127-(CVL[w]>>5); // 7 bits  - added CVM 29/5/2022
   if (tmpp>>6) // top bit
     {
-      spdfrom=2; str=1; // strobe
+      spdfrom=2; 
+      gate[w].strobed=1; // strobey replacement
     }
   else {
     spdfrom=0; // fractional speed
     speedy=CV[w];
+    gate[w].strobed=0;
   }
   
   if (spdfrom==0)   {
@@ -61,9 +65,8 @@ void major_vienna(uint8_t w){
   // TODO: recursion: spdfrom==0 then speedfrom (CV/none, self, other, other tempered with CV), in strobe recurse onto route temper with ownroute
   // so we have two bits 1[spd]11[recur] [1111]route
   recurseroute=(7-(CVL[w]>>4))&3; // 2 bits
-  recursespeed=(7-(CVM[w]>>10)); // 2 bits
-  
-  
+  recursespeed=(CVM[w]>>10); // 2 bits
+    
   if (spdfrom==0 && recursespeed!=0){
     speedy=CV[w]+gate[others[w][recursespeed-1]].dac; // can also be different versions such as modulus or mid version
     if (speedy>4095) speedy=4095;
@@ -76,16 +79,20 @@ void major_vienna(uint8_t w){
   if (recurseroute!=0){     
     tmpp|=(gate[others[w][recurseroute-1]].shift_)&15;    
   }
-
   
   if (spdmodes[spdfrom](speedy,w)){  // we dont use CV for strobe
     GSHIFT_;
-    // bitn opp can be inserted... eg. LFSR
-    // XX
     if (w==0) {// not necessarily?
       bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);   // could be otherwise or another set of bits//
     }
-    // 4 bits for route
+
+    if (tmp==0 && w==2) { // SR5 is 8th which is outside these bits - for modeC only
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
+    gate[w].shift_ ^=gate[8].Gshare_;
+    bitn^=bitrr;
+  }
+    else
+      {
     tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
     for (x=0;x<4;x++){
       if (tmp&0x01){
@@ -95,16 +102,17 @@ void major_vienna(uint8_t w){
       }
       tmp=tmp>>1; // 4 bits
     }
-
+      }
     // and prob thing
     /*
     doit[w]=(mode[w]>>4)&0x01; // top bit maybe
     if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
     */
-    if (str) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob? such as... test if we notice this!?
-      if (gate[dacfrom[count][w]].dac<CV[w]) bitn^=1;
+    if (gate[w].strobed) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob? such as... test if we notice this!?
+      if (gate[dacfrom[count][w]].dac<CV[w]) bitn^=1; // use CV here as not for speed...
 	}
-      
+    else bitn|=gate[w].trigger;	// instead of strobey
+    
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
@@ -528,6 +536,7 @@ void SR_layer12(uint8_t w){ // also use extra bits - use sr for this one instaed
     gate[w].shift_ ^=gate[8].Gshare_;
     bitn^=bitrr;
   }
+    else {
     for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -536,6 +545,7 @@ void SR_layer12(uint8_t w){ // also use extra bits - use sr for this one instaed
 	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; // versions which just use SR and no gshift or don;t shift it
       }
       tmp=tmp>>1; // 4 bits
+    }
     }
     // clear lowest bit
     gate[w].shift_&=invmasky[0];

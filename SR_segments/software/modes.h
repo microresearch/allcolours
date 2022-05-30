@@ -24,6 +24,7 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   int32_t gsrcnt[4];
   uint32_t latch;
   uint32_t index;
+  uint32_t strobed;
 } heavens;
 
 typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 
