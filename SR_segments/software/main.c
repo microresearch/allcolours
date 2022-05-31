@@ -74,6 +74,7 @@ void io_config2 (void) {
        DAC_Init(DAC_Channel_1, &DAC_InitStructure1);
        /* Enable DAC Channel 1 */
        DAC_Cmd(DAC_Channel_1, ENABLE);
+       DAC_Cmd(DAC_Channel_2, DISABLE); // added 31/5/2022 to fix mode 1
 }
 
 //Initialize clock config

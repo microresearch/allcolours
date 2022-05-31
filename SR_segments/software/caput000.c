@@ -65,6 +65,8 @@ uint8_t strobey[4][64]={
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
 };
 
+static uint8_t strobed[4]={0,0,0,0};
+
 #include "macros.h"
 
 //extern __IO uint16_t adc_buffer[13];
@@ -341,19 +343,22 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {
-  {SRrunggenericbitsadc}, // 7 // binroute type not so important here
-  {SRrunggenericbits}, // SRX0 is basic route/xor // 25 prob modes
-  {SRrungout}, 
-  {SRrunggenericbits}
+  {adc0}, 
+  {SRX0}, // SRX0 is basic route/xor 
+  {dac0}, 
+  {SRX0}
 };
+
+// how many groups
+#define GROUP 13 
 
 void (*funcgroups[4][64])(uint8_t w)=
 {
-  {adc0, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s,adcLabstractLD, stream4_unshare}, 
-  {SR_layer1, SRrunggenericbits, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
-  {dac0, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
-  {SR5_feedback, SRrunggenericbits, SRrungbody0, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
-}; // 12 so far
+  {adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare}, 
+  {SRX0, SR_layer1, SRminor_vienna, SRrunggenericbits, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
+  {dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
+  {SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbits, SRrungbody0, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
+}; // 13 so far
 
 void mode_init(void){
   uint32_t x;
@@ -402,6 +407,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (www>3) {
     www=0;
     resetz=1;
+    // for the 5th tail here, experiment maybe with stacks here. for now if alt route full speed for moder
+    dotail(8);
+
   }
   
   if (intflag[www]) { // process INT
@@ -420,16 +428,20 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   LFSR_[www] = (LFSR_[www]<<1) + tmp;
 
-  /*
-    mde=mode[3];
-  if (mde>11) mde=11; // 12 groups so far
+  // sliding modes 
+    
+  mde=mode[3];
+  //mde=0;
+  if (mde>GROUP) mde=GROUP; 
   (*funcgroups[www][mde])(www);
-  */   
+      
 
   // trial here different version of Vienna with interpoll and new bit recurse options
-  // do as a a function
+  //  major_vienna(www);
 
-  major_vienna(www);
+  // do func
+  //  (*dofunc[www][0])(www);
+
   
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8

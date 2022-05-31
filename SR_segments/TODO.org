@@ -5,6 +5,8 @@
 - match up binroutes, spdroutes and dacfroms so they make sense
 - for extraction be sure to exclude template modes and clean up commented outs, label modes in comments, mark and seperate strobe and other modes
 
+- fix stop on modeC in all macros etc...
+
 - USE headc macro for modec speed/no freeze in basis.h
 
 - check we are calling correct outv so there is a dac out!

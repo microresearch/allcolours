@@ -2,6 +2,19 @@ offset. vca is multiplier so is not inserting signals...
 
 - one slower mindlin controls another...
 
+** 31/5/2022
+
+- added in 3rd/int->sprott from 1st int (v out) and back into feedback path and seems to work well - maybe doesn't need switch...
+
+[into BB3, R1 to sig1 and sig2/outfromisg to 1st inv in (no inv), so we keep original mindlin feedback
+
+still on mindlin input is a odd as cuts so much...
+
+- test switch - ADG 412 BRZ  SO16 slim: switch working in itself, but need to test with finger thing and comparator setup
+
+- re-test sprott with manual connection for r9/feedback
+
+
 ** 30/5/2022
 
 - input into mindlin? could also be VCA - so total of 6 VCA??? also
@@ -13,8 +26,6 @@ offset. vca is multiplier so is not inserting signals...
 - *from Sprott?*
 
 ... and one is in [enclosed G function] - so does it matter if that is shared with one Mindlin out?
-
-- test switch - ADG 412 BRZ  SO16 slim
 
 - check we can just enter into either Mindlin or Sprott and switch outs?
 

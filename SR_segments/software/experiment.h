@@ -13,10 +13,92 @@ uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, stro
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
-// 30/5/2022
+// 31/30/5/2022
 // generic version again of vienna below would need 2xCV - but just have one recurse as we had before...
+// can also be with different variations
 
+// as major but no strobe option
+// we can also have whole mode as strobe option
+void SRminor_vienna(uint8_t w){  // works ok 
+  HEADNADA; 
+  uint32_t tmpp, tmppp, recurse=0, recurs=0, speedy;
+  uint8_t spdfrom; 
+  gate[w].dactype=0; gate[w].dacpar=param[w];
+  
+  // 7 bits from mode/now CVL - 
+  tmpp=127-(CVL[w]>>5); // 7 bits  
+  if (tmpp>>6) recurs=1; // top bit
+  
+  gate[w].dac = delay_buffer[w][1];
 
+  // TODO: recursion: spdfrom==0 then speedfrom (CV/none, self, other, other tempered with CV), in strobe recurse onto route temper with ownroute
+  // so we have two bits 1[spd]11[recur] [1111]route
+  recurse=(7-(CVL[w]>>4))&3; // 2 bits
+    
+  if (recurse!=0){
+    speedy=CV[w]+gate[others[w][recurse-1]].dac; // can also be different versions such as modulus or mid version
+    if (speedy>4095) speedy=4095;
+  }
+  else speedy=CV[w];
+  
+  if (recurs!=0){ // for C only 
+    tmpp|=(gate[others[w][0]].shift_)&15;    
+  }
+  
+  if (spdmodes[0](speedy,w)){
+    GSHIFT_;
+    if (w==0) {// not necessarily?
+      bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);   // could be otherwise or another set of bits//
+    }
+
+    if (tmpp==0 && w==2) { // SR5 is 8th which is outside these bits - for modeC only
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
+    gate[w].shift_ ^=gate[8].Gshare_;
+    bitn^=bitrr;
+  }
+else
+  {
+    tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn^=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+  }
+    // and prob thing
+    /*
+    doit[w]=(mode[w]>>4)&0x01; // top bit maybe
+    if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
+    */
+    if (gate[w].strobed) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob? such as... test if we notice this!?
+      if (gate[dacfrom[count][w]].dac<CV[w]) bitn^=1; // use CV here as not for speed...
+	}
+    else bitn|=gate[w].trigger;	// instead of strobey
+    
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+/// for caput000, experiment with other tails, stacked tails but how do we control the tail, if at all...
+
+void dotail(uint8_t w){ // tail here is basic 4th at full speed - not very exciting for major_vienna as just loops
+  HEADNADA;
+  GSHIFT_;
+  tmp=binroute[count][2];
+  for (x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+      bitn^=bitrr;    
+    }
+    tmp=tmp>>1;
+  }
+  gate[w].shift_+=bitn;
+}
 
 // 29/5/2022
 
@@ -29,7 +111,11 @@ uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strob
 // how we can use this as generic SR mode (TODO: convert and explore other options)
 
 // this is new major mode 
- // options: recurse fully onto mode, swop CVL and mode so length is on mode, use CVL as mode and free up more bits?
+ // optionsTODO: recurse fully onto mode,
+// DONE: swop CVL and mode so length is on mode, use CVL as mode and free up more bits?
+
+// try as no interpoll - commented below
+// also with no stops in speed!
 void major_vienna(uint8_t w){  
   HEADNADA; 
   uint32_t tmpp, tmppp, recursespeed=0, recurseroute=0, speedy;
@@ -38,11 +124,9 @@ void major_vienna(uint8_t w){
   // swopping mode and length - can also detach length for other bits
   SRlength[w]=lookuplenall[31-((CVM[w]>>5)&31)]; // lowest 5 bits - so we could even use extra 2 bits there - for what????
   
-  // could we recurse on to route AND speed (but how speed works with strobe? as a bit from SR)
-  
   // 7 bits from mode/now CVL - 
   tmpp=127-(CVL[w]>>5); // 7 bits  - added CVM 29/5/2022
-  if (tmpp>>6) // top bit
+  if (tmpp>>6) // top bit - best if is on CVM though but how to re-org
     {
       spdfrom=2; 
       gate[w].strobed=1; // strobey replacement
@@ -54,9 +138,12 @@ void major_vienna(uint8_t w){
   }
   
   if (spdfrom==0)   {
+    /*
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
     if (gate[w].dac>4095) gate[w].dac=4095;
+    */
+    gate[w].dac = delay_buffer[w][1];
   }
   else {
     gate[w].dac = delay_buffer[w][1];
@@ -72,7 +159,7 @@ void major_vienna(uint8_t w){
     if (speedy>4095) speedy=4095;
   }
   
-  if (spdfrom==2 && recursespeed!=0){ 
+  if (spdfrom==2 && recursespeed!=0){ // for C only 
     gate[w].trigger^=gate[others[w][recursespeed-1]].shift_&0x01;
   }
 
@@ -86,13 +173,13 @@ void major_vienna(uint8_t w){
       bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);   // could be otherwise or another set of bits//
     }
 
-    if (tmp==0 && w==2) { // SR5 is 8th which is outside these bits - for modeC only
+    if (tmpp==0 && w==2) { // SR5 is 8th which is outside these bits - for modeC only
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
     gate[w].shift_ ^=gate[8].Gshare_;
     bitn^=bitrr;
   }
-    else
-      {
+else
+  {
     tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
     for (x=0;x<4;x++){
       if (tmp&0x01){
@@ -102,7 +189,7 @@ void major_vienna(uint8_t w){
       }
       tmp=tmp>>1; // 4 bits
     }
-      }
+  }
     // and prob thing
     /*
     doit[w]=(mode[w]>>4)&0x01; // top bit maybe

@@ -10,15 +10,28 @@ import re
 
 path=[0,1,2,3]
 names=['N_ ', 'L_ ', 'C_ ', 'R_ '] 
+decoder=['0', ' N_  ', ' L_  ', ' N_  L_  ', ' C_  ', ' N_  C_  ', ' L_  C_  ', ' N_  L_  C_  ', ' R_  ', ' N_  R_  ', ' L_  R_  ', ' N_  L_  R_  ', ' C_  R_  ', ' N_  C_  R_  ', ' L_  C_  R_  ' , ' L_  C_  R_ N_ ']
+
 paths=[]
 route=[0,0,0,0]
 lookup=[1,2,4,8]
 routes=[]
 
-# encoding
+# encoding for decoder
+for x in range(15):
+    cn=0
+    print "[",
+    for look in lookup:
+        if look&x:
+            #print names[cn],
+            print str(cn+1)+",", 
+        cn+=1
+    print "],",
 
 # start with permute basic path, what are constraints?
 # eg. N-L-C-R-N -
+
+# 
 
 # so there are single paths which begin and end with N and use all just once...
 for x in range(1000):
@@ -56,7 +69,7 @@ for path in paths:
 lastpath=255
 
 count=0
-for x in range(1000000):
+for x in range(10000000):
     pathy=[]
     for y in range(8):
         addon=random.choice(path)
@@ -93,13 +106,13 @@ for path in paths:
 #  C cannot be zero or itself(4), N must be routed in (not just itself) somewhere, so slots 1,2,3 must have a one (be odd)
 #  cannot have more than 4 ins - >15
 
-
 # select x routes at random
 finalroutes=[]
 
 counter=0
 newselect=[0,0,0,0]
-for x in range(2000000):
+haventyet=[0,0,0,0]
+for x in range(20000000):
     newselect=[0,0,0,0]
     for y in range(random.randint(1,8)):
         select=random.choice(routes)
@@ -109,17 +122,37 @@ for x in range(2000000):
             if newselect[count]>15:
                 newselect[count]=15
             count+=1
-    if newselect!=[15,15,15,15] and newselect not in finalroutes and newselect[2]!=0 and newselect[2]!=4 and (newselect[1]&1 or newselect[2]&1 or newselect[3]&1):
-        finalroutes.append(newselect)
-        counter+=1
+    if newselect!=[15,15,15,15] and (newselect not in finalroutes) and newselect[2]!=0 and newselect[2]!=4 and newselect[1]!=0 and newselect[3]!=0 :
+        # new constraints:
+        # no dead ends - except N which doesn't need a route in - so can be 0
+        # which means each node goes somewhere (can be itself) - means someone has a route from it
+
+        goessomewhere=0
+        haventyet=[1,1,1,1]
+        for el in newselect:
+            # routes 1,2,4,8 lookup
+            if el&lookup[0] and haventyet[0]:
+                goessomewhere+=1
+                haventyet[0]=0
+            if el&lookup[1] and haventyet[1]:
+                goessomewhere+=1
+                haventyet[1]=0
+            if el&lookup[2] and haventyet[2]:
+                goessomewhere+=1
+                haventyet[2]=0
+            if el&lookup[3] and haventyet[3]:
+                goessomewhere+=1
+                haventyet[3]=0
+        if goessomewhere==4:
+            finalroutes.append(newselect)
+            counter+=1
 
 print finalroutes
 
 # save to file:
 def write_to_file(output_file):
     fp = open(output_file, "a")
-    for one in finalroutes:
-        fp.write(str(one) + ", ")
+    fp.writelines("%s\n" % cc for cc in finalroutes)
     fp.close()
 
 write_to_file("testingggg")    

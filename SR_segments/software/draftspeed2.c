@@ -274,6 +274,8 @@ static uint32_t train[4]={0,0,0,0};
 static uint32_t prev_stat[4]={0,0,0,0};
 static uint32_t CV[4]={0,0,0,0};
 static uint32_t CVL[4]={0,0,0,0};
+static uint32_t CVM[4]={0,0,0,0};
+
 static volatile float speedf_[9]={1.0f,1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f};
 static volatile float speedf[9]={1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
@@ -345,10 +347,10 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {
-  {SRrunggenericbitsadc}, // 7 // binroute type not so important here
-  {SRrunggenericbits}, // SRX0 is basic route/xor // 25 prob modes
-  {SRrungout}, 
-  {SRrunggenericbits}
+  {adc0}, // 7 // binroute type not so important here
+  {SRX0}, // SRX0 is basic route/xor // 25 prob modes
+  {dac0}, 
+  {SRX0}
 };
 
 /*
@@ -497,17 +499,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   */
 
    ///   adcallone(0); // TESTY all onebits in
-  //    mde=0;
+  mde=0;
   //  if (www==0) mde=mode[0];
   //  if (mde>6) mde=6;
   
-  //  (*dofunc[www][mde])(www);
+    (*dofunc[www][mde])(www);
 
   // for void (*funcgroups[4][64])(uint8_t w)=
     
-    mde=mode[3];
-  if (mde>11) mde=11; // 12 groups so far
-  (*funcgroups[www][mde])(www);
+  //  mde=mode[3];
+    //  if (mde>11) mde=11; // 12 groups so far
+    //  (*funcgroups[www][mde])(www);
       
    // test to call 
    // static modez newmodes[128]={ // then call mode by number

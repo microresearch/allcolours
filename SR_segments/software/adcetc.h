@@ -2713,7 +2713,7 @@ void TIM4_IRQHandler(void)
     // speedc
   totc=totc-smoothc[cc];
   //  smoothc[cc]=adc_buffer[9];
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_144Cycles);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_144Cycles); // was 10
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   smoothc[cc]=ADC_GetConversionValue(ADC1);
