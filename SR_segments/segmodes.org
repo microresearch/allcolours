@@ -194,11 +194,53 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 1/6/2022
+
+- param[w] is always from clock and handled in adcetc
+
+- q of range of speeds and how that influences dacspeed feedback
+
+- back to all minor modes with dacspeed on modeR - 16 global modes for: count(route), daccount, spdcount and tailcount // bump, recurse onto, CVonto
+- also add in adctype and dactype with cleaned/tested lists of types
+
+adclist was:
+
+[check any params to pass in from modeN]
+
+checking: 
+
+add: 114, 90, 91, 93, 94, 106cv, 95, 99
+
+// note these are lists for ADC_ - we have adc bit functions which are in: adcbitstreams:
+uint32_t (*adcbitstreams[16])(uint32_t depth)={adcxbits, adcpadbits, adc12bits, adc8bits, adc4bits, adconebits, adceqbits, adcenergybits, adc12compbits, adc8compbits, adc4compbits, adccompbits, adc12onecompbits, adc8onecompbits, adc4onecompbits, adconecompbits};
+
+there is also list of dacbitstreams[16]
+
+uint32_t adclist[32]={0,1,2,3,4,5,6,7,8,22,23,25,26,27,30,68,71,72,73,74,75,76,77,78,79,80,81,82,1010,22,23,25};
+
+uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,21,81,82,77,78,79,80,22,23,24,25,26,27,28,29,30,31,101,64,65,66,67,68,71,72,73,74, 0,1,2,3,4,5,6,7,25,26,27,29,30}; //6 bits
+
+uint8_t parammodes[16]={17,18,19,20, 21,22,29,33, 34,35,37,38, 39,66,67,68}; // preferred modes with param[w] as param
+
+uint8_t modes16[16]={0,1,2,3,4,6,101,32,82,75,81,28,29,30,79,80}; // choose again maybe temp list TODO
+
+uint8_t dacmodes[16]={25,26,27,71,72,73,74,75,  77,78,79,80,86,88,91,105};
+
+uint8_t strobemodes[16]={8,9,10,11, 12,13,14,15, 16,24,28,31, 87,96,98,99};
+
+dacs was only 16 but now: we have 10 more
+
+- DONEadded in dotail[tailcount])(); for tail - but should this be in www==4???
+
+- or is tail the RSR itself????
+
+- DONEfixedbitrunglers
+
 ** 31/5/2022
 
 40,109 paths in firstpaths from paths.py
 
-*TODO: trial major_vienna with reduced rightside bits, how integrate paths, stacks and new abstractions*
+*how to integrate paths, stacks and new abstractions*
 
 think more on holds of dac/adc types and length etc... so more of stack approach...
 

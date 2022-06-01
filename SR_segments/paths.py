@@ -124,9 +124,9 @@ for x in range(20000000):
             count+=1
     if newselect!=[15,15,15,15] and (newselect not in finalroutes) and newselect[2]!=0 and newselect[2]!=4 and newselect[1]!=0 and newselect[3]!=0 :
         # new constraints:
-        # no dead ends - except N which doesn't need a route in - so can be 0
-        # which means each node goes somewhere (can be itself) - means someone has a route from it
-
+        # that all except N cannpot be zero ie. have no route in
+        ## we should still have 15,15,15,15
+        
         goessomewhere=0
         haventyet=[1,1,1,1]
         for el in newselect:

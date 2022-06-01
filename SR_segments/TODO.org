@@ -2,7 +2,60 @@
 
 ** TODO
 
+//new architecture: still divide all CV/CVdetach // strobe // cvdac
+except modeR no cvdac but global modes
+
+- individual modes as outlined: categories: runglers, bits, probs, classics, adc/gens... get dacs over with
+
+64 = 4x16 only // so 32 for cv/cvdetach...
+
+=detach and double up with CVL - but no modes which depend on CVL - classify maybe...
+
+
+, routes and globals in modeR,  genericise binroutes with 5th tail,
+  5th tail functions based on mode and past frames stack, rework state
+  of each SR, SR of SRs!
+- new paths/binroutes encoded - so more about manipulations of spdfrom, rungler model
+- dacbus also from modeR or modeC
+
+SR->defined as
+speed - speedfrom, freeze or not
+length
+bit/route/function or logic of... - logic/bits/functions - type of binroute/gshift
+dac out - interpol or not
+-> recurs
+
+- TAIL: stack of modes (do we have this on exit/change), stack of
+  values at speed (circulate), overlay whole caput d. on itself and
+  feedback, recursion of previous stack (what it could have been).
+
+
+layers of shed length, speed...
+
+idea of frame: do we have any mode where we record SR frames...
+
++ special modes...
+
+analyze/check modes in all files:
+experiment.h
+bit.h
+probability.h
+modeC etc
+
+where else?
+
+/////
+
+- select preferred way of dacspeeds or any speedmods eg. modulus, midway etc?
+
+- start to extract and order list of modes so we can test these, how to arrive at groups of modes, easier naming and need to specify modeC modes
+
+- set on general speeds for feedback etc.
+
+- clean adc and dacs for new adcfrom, dacfrom globals template driven by modeR
+
 - match up binroutes, spdroutes and dacfroms so they make sense
+
 - for extraction be sure to exclude template modes and clean up commented outs, label modes in comments, mark and seperate strobe and other modes
 
 - fix stop on modeC in all macros etc...
@@ -15,7 +68,7 @@
 
 - xor or or of pulsins.../and strobe/clk
 
-- start to extract and order list of modes so we can test these, how to arrive at groups of modes, easier naming and need to specify modeC modes
+- TODO: strobey is set by function itself
 
 list modes per SR: cvspeed, strobe, dacspeed
 

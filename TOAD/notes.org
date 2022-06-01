@@ -2,6 +2,16 @@ offset. vca is multiplier so is not inserting signals...
 
 - one slower mindlin controls another...
 
+** 1/6/2022
+
+- 2x parallel filters with control and cross routing/switches - or just possibility of this for 2 of them
+
+- TODO: basic touch switch module with ADG412 instead of 4066 and changed logic/power (see touch_toggle_smd)
+
+working with touch_toggle and use _Q (pin 2) for inversion - so for 2x spdt we have lower 412 as on/upper as inverted
+
+[need to add comparator and test this]
+
 ** 31/5/2022
 
 - added in 3rd/int->sprott from 1st int (v out) and back into feedback path and seems to work well - maybe doesn't need switch...
@@ -13,7 +23,6 @@ still on mindlin input is a odd as cuts so much...
 - test switch - ADG 412 BRZ  SO16 slim: switch working in itself, but need to test with finger thing and comparator setup
 
 - re-test sprott with manual connection for r9/feedback
-
 
 ** 30/5/2022
 

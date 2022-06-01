@@ -52,9 +52,13 @@ static uint32_t binary[9]={0,0,0,0}; // binary global routing
 
 #define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
 
-static uint32_t count=0;
-static uint32_t daccount=0;
-static uint32_t spdcount=0;
+static uint32_t count=0; // for route
+static uint32_t daccount=0; // for dacfrom
+static uint32_t spdcount=0; // for spdfrom
+static uint32_t tailcount=0; // for tail choice
+static uint32_t adctypecount=0; // for adctype
+static uint32_t dactypecount=0; // for dactype
+
 
 // 1 means its used so do normed clocks - all one for testing
 // replace this with just strobed set by mode/function itself and then passed to final part for normed clocks
@@ -268,7 +272,7 @@ uint32_t singroute[4][4]={ // singular table for single routes - old prob modes
   {3,0,0,1},
   {3,0,2,1}
 };
-  
+
 uint32_t sieve[4]={3,3,3,3}; // previous one... - changed to R 21/12/2021
 uint32_t oppose[4]={2,3,0,1};
 
@@ -349,15 +353,19 @@ void (*dofunc[4][64])(uint8_t w)=
   {SRX0}
 };
 
+void (*dotail[64])(void)= {basictail};
+
+
+
 // how many groups
 #define GROUP 13 
 
 void (*funcgroups[4][64])(uint8_t w)=
 {
   {adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare}, 
-  {SRX0, SR_layer1, SRminor_vienna, SRrunggenericbits, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
-  {dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2,noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
-  {SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbits, SRrungbody0, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
+  {SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
+  {dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2, noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
+  {SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
 }; // 13 so far
 
 void mode_init(void){
@@ -407,9 +415,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (www>3) {
     www=0;
     resetz=1;
-    // for the 5th tail here, experiment maybe with stacks here. for now if alt route full speed for moder
-    dotail(8);
-
+    (*dotail[tailcount])(); // or this is 5th [www==4] www    
   }
   
   if (intflag[www]) { // process INT
@@ -430,8 +436,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // sliding modes 
     
-  mde=mode[3];
-  //mde=0;
+  mde=mode[www];
+  //  mde=3; // upto13 - test for the frozen one // 11odd 3/genericbitsissilentmostly
   if (mde>GROUP) mde=GROUP; 
   (*funcgroups[www][mde])(www);
       

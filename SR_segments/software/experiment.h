@@ -13,6 +13,24 @@ uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, stro
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
+// 1/6/2022
+// adc set by rmode even
+uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,21,81,82,77,78,79,80,22,23,24,25,26,27,28,29,30,31,101,64,65,66,67,68,71,72,73,74, 0,1,2,3,4,5,6,7,25,26,27,29,30}; //6 bits - renew this list and check params if any
+
+void adcnew(uint8_t w){ 
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  bitn^=ADC_(w,SRlength[w],seladc[adctypecount],gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
 // 31/30/5/2022
 // generic version again of vienna below would need 2xCV - but just have one recurse as we had before...
 // can also be with different variations
@@ -85,8 +103,9 @@ else
 
 /// for caput000, experiment with other tails, stacked tails but how do we control the tail, if at all...
 
-void dotail(uint8_t w){ // tail here is basic 4th at full speed - not very exciting for major_vienna as just loops
+void basictail(void){ // tail here is basic 4th at full speed - not very exciting for major_vienna as just loops
   HEADNADA;
+  uint32_t w=8;
   GSHIFT_;
   tmp=binroute[count][2];
   for (x=0;x<4;x++){
@@ -324,7 +343,6 @@ void SRdacplusminus(uint8_t w){
 // TODO: or can be CV and CVL and we select binroutes and probs - x bits
 
 // 1binroute_/2binroutesr_/3binroutealt/4zeroes/5shared/6nos-noshift, 7trigger, 8newaltone-noreset
-
 
 void SR_binr_fixed(uint8_t w){ // fixed route but we have 3 bits for selection only??? // prob= // or sel per bit...
   HEADSIN;  
@@ -1151,7 +1169,7 @@ if bitfromC bitn=binroutebits... or generator...
 
 */
 // trial - untie routes...? - layers from geomantic cards...
-void SR_recbin(uint8_t w){ // 
+void SR_recbin(uint8_t w){ // ????
   HEADSIN;
   if (speedf_[w]!=2.0f){
   CVOPEN;

@@ -64,13 +64,25 @@ for cc in finalroutes:
                                 finalfinal.append(cx)
                                 done=1
 
-                    
+finalfinalfinal=[]
+
+for ll in finalfinal:
+    routeto=[0,0,0,0]
+    count=0
+    for el in ll:
+        cnt=0
+        for eff in lookup:
+            if int(el)&eff:
+                routeto[cnt]+=lookup[count]
+                cnt+=1
+        count+=1
+    if 0 not in routeto:
+        finalfinalfinal.append(ll)
+        
 count=0
-for lin in finalfinal:
+for lin in finalfinalfinal:
        print lin
        count+=1
-
-print count
     
 # decode finalroutes:
 # for cc in finalroutes:
@@ -89,4 +101,41 @@ print count
 #         print names[count]+": "+ decoder[int(el)]
 #         count+=1
 
+# decode finalfinalfinal:
+for cc in finalfinalfinal:
+    print str(cc)
+    cnt=0
+    for el in cc:
+        print names[cnt]+": "+ decoder[int(el)]
+        cnt+=1
+
+print "finalcount= " + str(count)
+
+# total now is 8215 which is 8215 x 4bitsx4=16 bits = 16k - how to encode and decode these to 32 bits
+# write out to table // 12 bits is 4096 so is approx 11 bits now
+
+
+
+# 1/6/2022:
+
+# no dead ends - has to go somewhere - means that 0123 must have at least one route from 1,2 or 3 (not itself),
+
+# but 0 is route in which doesn't mean no dead ends...
+# which means each node goes somewhere (can be itself) - means someone has a route from it
+
+# [all must route somewhere eventually - what that means? - C has to route to N so all needs to route to C or N in some way]
+
+# translate routefrom to route to
+# eg. 3 6 11 9 - route to N is 
+
+# routeto=[0,0,0,0]
+# cc=[0,1,1,4]
+# count=0
+# for el in cc:
+#     cnt=0
+#     for eff in lookup:
+#         if int(el)&eff:
+#             routeto[cnt]+=lookup[count]
+#         cnt+=1
+#     count+=1
 

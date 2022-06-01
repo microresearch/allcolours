@@ -162,6 +162,7 @@
   }
 
 // this one for ones which use strobe and cv
+
 // no strobes, nor otherpar (as that is CV or we need to free up a CV)
 uint32_t adclist[32]={0,1,2,3,4,5,6,7,8,22,23,25,26,27,30,68,71,72,73,74,75,76,77,78,79,80,81,82,1010,22,23,25};
 
@@ -1884,7 +1885,7 @@ void adcLBURST0(uint8_t w){
   }
   if (train[w]!=0 && train[w]< (1024-(CVL[w]>>2))){
   train[w]++;
-  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // or we can use adcchoice to fill in
+  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
   }
   else {
     train[w]=0;
@@ -1904,7 +1905,7 @@ void adcLseladc(uint8_t w){ // select ADC 0-31 ***
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   tmp=(CVL[w]>>7); // 5 bits = 32 or we can have a list of preferred modes TODO !!!
-  bitn^=ADC_(w,SRlength[w],tmp,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // or we can use adcchoice to fill in
+  bitn^=ADC_(w,SRlength[w],tmp,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
   BINROUTE_; // 
   BITN_AND_OUTV_;
   ENDER;
@@ -1935,7 +1936,7 @@ void adcLseladc1(uint8_t w){ // select ADC 0-63 - preferred modes with param[w] 
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
   tmp=(CVL[w]>>6); // 6 bits = 64 or we can have a list of preferred modes TODO !!!
-  bitn^=ADC_(w,SRlength[w],seladc[tmp],gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // or we can use adcchoice to fill in
+  bitn^=ADC_(w,SRlength[w],seladc[tmp],gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
   BINROUTE_;
   BITN_AND_OUTV_;
   ENDER;
@@ -1949,7 +1950,7 @@ void adcLseladc2(uint8_t w){ // speed from cv, cvl as type and dac as param   //
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
-  bitn^=ADC_(w,SRlength[w],parammodes[CVL[w]>>8],gate[w].trigger,dacfrom[daccount][w], gate[dacfrom[daccount][w]].dac, &gate[w].shift_); // or we can use adcchoice to fill in
+  bitn^=ADC_(w,SRlength[w],parammodes[CVL[w]>>8],gate[w].trigger,dacfrom[daccount][w], gate[dacfrom[daccount][w]].dac, &gate[w].shift_);
   BINROUTE_;
   BITN_AND_OUTV_;
   ENDER;
@@ -2015,7 +2016,7 @@ void adcLpulse89(uint8_t w){ // test 89 impulse  // DETACH LENGTH
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
-  bitn^=ADC_(w,SRlength[w],89,gate[w].trigger,dacfrom[daccount][w], CVL[w]>>2, &gate[w].shift_); // or we can use adcchoice to fill in
+  bitn^=ADC_(w,SRlength[w],89,gate[w].trigger,dacfrom[daccount][w], CVL[w]>>2, &gate[w].shift_);
   BINROUTE_;
   BITN_AND_OUTV_;
   ENDER;
@@ -2036,7 +2037,7 @@ void adcLSRlengthsel(uint8_t w){ //use other SR bits to determine length of SR, 
 
     GSHIFT_;
   tmp=(CVL[w]>>7); // 5 bits = 32
-  bitn^=ADC_(w,SRlength[w],tmp,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // or we can use adcchoice to fill in
+  bitn^=ADC_(w,SRlength[w],tmp,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
   //  BINROUTE_; // with or without route in
   if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
   BITN_AND_OUTV_;
@@ -2057,7 +2058,7 @@ void adcLSRlengthsel0(uint8_t w){ //use other SR bits to determine length of SR,
     //    SRlength[w]=lookuplenall[CVL[w]>>7]; // 5 bits
     GSHIFT_;
 
-  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_); // or we can use adcchoice to fill in
+  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
   //  BINROUTE_; // with or without route in // ***
   if (!strobey[w][mode[w]]) bitn=bitn|gate[w].trigger;
   BITN_AND_OUTV_;

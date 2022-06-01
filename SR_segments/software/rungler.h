@@ -97,46 +97,75 @@ uint32_t otherrungroute[2][4]={
 {2,4,1,4}
 };
 
+
 void SRrunggenericbitsadc(uint8_t w){ 
   HEADNADA; //
   tmp=(CVL[w]>>6)&3;
-  if (binroutebits(otherrungspd[tmp&1][w]<<8,w) | gate[w].trigger){ // 2<<8 is L 
+  if (binroutebitsI(otherrungspd[tmp&1][w]<<8,w) | gate[w].trigger){ // 2<<8 is L 
       GSHIFT_;
-      bitn=binroutebits(otherrungroute[tmp>>1][w]<<8,w); // bits from N
+      //      bitn=binroutebits(otherrungroute[tmp>>1][w]<<8,w); // bits from N
       bitn^=(*adcbitstreams[CVL[w]>>8])(CV[w]);  // option for adc in here or?
       BITN_AND_OUTVINT_;
       }
 }
 
+
+//uint32_t (*abstractbitstreams[16])(uint32_t depth, uint8_t wh)={binroutebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, TMsimplebits, compbits, compdacbits, compdaccbits, pattern4bits, pattern8bits, patternadcbits, lfsrbits, llfsrbits, flipbits};
+
+
 // can include adc as option or seperate rungler there
 void SRrunggenericbits(uint8_t w){ 
   HEADNADA; //
   tmp=(CVL[w]>>6)&3;
-  if (binroutebits(otherrungspd[tmp&1][w]<<8,w) | gate[w].trigger){ // 2<<8 is L 
+  if (binroutebitsI(otherrungspd[tmp&1][w]<<8,w) | gate[w].trigger){ // 2<<8 is L 
       GSHIFT_;
-      bitn=binroutebits(otherrungroute[tmp>>1][w]<<8,w); // bits from N
-      bitn^=(*abstractbitstreams[CVL[w]>>8])(CV[w],w);  // option for adc in here or?
+      bitn=binroutebitsI(otherrungroute[tmp>>1][w]<<8,w); // bits from N
+      bitn^=(*abstractbitstreamsI[CVL[w]>>8])(CV[w],w);  // option for adc in here or? // top 4 bits - includes also binroutebits
       BITN_AND_OUTVINT_;
       }
 }
+
+void SRrunggenericbitsgen(uint8_t w){ 
+  HEADNADA; //
+  tmp=(CVL[w]>>6)&3;
+  if (binroutebitsI(otherrungspd[tmp&1][w]<<8,w) | gate[w].trigger){ // 2<<8 is L 
+      GSHIFT_;
+      //      bitn=binroutebitsI(otherrungroute[tmp>>1][w]<<8,w); // bits from N
+      bitn^=(*abstractbitstreamsI[CVL[w]>>8])(CV[w],w);  // option for adc in here or? // top 4 bits - includes also binroutebits
+      BITN_AND_OUTVINT_;
+      }
+}
+
+void SRrunggenericbitsgenopp(uint8_t w){ 
+  HEADNADA; //
+  tmp=(CVL[w]>>6)&3;
+  if ((*abstractbitstreamsI[CVL[w]>>8])(CV[w],w)){ // 2<<8 is L 
+      GSHIFT_;
+      //      bitn=binroutebitsI(otherrungroute[tmp>>1][w]<<8,w); // bits from N
+      //bitn^=(*abstractbitstreamsI[CVL[w]>>8])(CV[w],w);  // option for adc in here or? // top 4 bits - includes also binroutebits
+      bitn=binroutebitsI(otherrungspd[tmp&1][w]<<8,w);
+      BITN_AND_OUTVINT_;
+      }
+}
+
 
 // bitmode rungler - speed is bitfrom
 
 void SRrungheadbits(uint8_t w){ // L and N. speedfrom R 
   HEADNADA; // 
-  if (binroutebits(8<<8,w) | gate[w].trigger){ // 8<<8 is R side I think // can also be moddded with other bits eg. trigger.
+  if (binroutebitsI(8<<8,w) | gate[w].trigger){ // 8<<8 is R side I think // can also be moddded with other bits eg. trigger.
       GSHIFT_;
-      bitn=(*abstractbitstreams[CVL[w]>>8])(CV[w],w); // oops need 2 CVs - 4 bits for first one - leaves 2 bits spare...
+      bitn=(*abstractbitstreamsI[CVL[w]>>8])(CV[w],w); // oops need 2 CVs - 4 bits for first one - leaves 2 bits spare...
       BITN_AND_OUTVINT_;
       }
 }
 
 void SRrungbodybits(uint8_t w){ // R - speedbits from L - but no use of CV so far
   HEADNADA; // 
-  if (binroutebits(2<<8,w) | gate[w].trigger){ // 2<<8 is L 
+  if (binroutebitsI(2<<8,w) | gate[w].trigger){ // 2<<8 is L 
       GSHIFT_;
-      bitn=binroutebits(1<<8,w); // bits from N
-      bitn^=(*abstractbitstreams[CVL[w]>>8])(CV[w],w);
+      bitn=binroutebitsI(1<<8,w); // bits from N
+      bitn^=(*abstractbitstreamsI[CVL[w]>>8])(CV[w],w);
       BITN_AND_OUTVINT_;
       }
 }
