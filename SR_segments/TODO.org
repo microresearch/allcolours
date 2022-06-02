@@ -52,7 +52,7 @@ where else?
 
 - set on general speeds for feedback etc.
 
-- clean adc and dacs for new adcfrom, dacfrom globals template driven by modeR
+- clean adc and dacs for new adcfrom, dacfrom globals template driven by modeR - lists of adc/gens and dacs to work from!
 
 - match up binroutes, spdroutes and dacfroms so they make sense
 

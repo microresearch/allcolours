@@ -13,6 +13,40 @@ uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, stro
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
+// 2/6/2022
+// for Rmode
+//uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount, &logiccount};
+// CV for field - 3 bits, and CVl for value say 0-64
+void globalsetall(uint8_t w){ 
+  HEADNADA;
+  //run all at full speed...
+  tmp=CV[w]>>9; // only 3 bits
+  uint8_t tmpp=CVL[w]>>6; // 6 bits - but we have not implemented all counts
+  *countfield[tmp]=tmpp;
+  CVOPEN;
+  GSHIFT_;
+  BINROUTE_;
+  PULSIN_XOR;
+  BITN_AND_OUTV_; 
+  ENDER;
+  }
+
+void globalresetall(uint8_t w){  // set all to zero using macro
+  HEAD;
+  RESETR;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+
 // 1/6/2022
 // adc set by rmode even
 uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,21,81,82,77,78,79,80,22,23,24,25,26,27,28,29,30,31,101,64,65,66,67,68,71,72,73,74, 0,1,2,3,4,5,6,7,25,26,27,29,30}; //6 bits - renew this list and check params if any
@@ -127,7 +161,7 @@ void basictail(void){ // tail here is basic 4th at full speed - not very excitin
 
 // we can still do 5th tail here which would be entry for mode/route=0 on w==2! 
 
-// how we can use this as generic SR mode (TODO: convert and explore other options)
+//DONE// how we can use this as generic SR mode (TODO: convert and explore other options)
 
 // this is new major mode 
  // optionsTODO: recurse fully onto mode,

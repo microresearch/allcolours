@@ -194,6 +194,51 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 2/6/2022
+
+*leave and don;t reset counts and routemask/binary // do we want masks for other counts - new model eg. we have tmp=binroute[count][w]|binary*
+
+- also to try to integrate long encoded list of modes...
+
+- as one of new global Rmodes, probability of shifting these counts /// also use CV/CVL to shift these
+
+- could global spdcount/from also include strobe option // spdfrom dac/spdfrom bit as 2 distinct types
+
+- add generators into adctypes
+
+- more emphasis on Rmodes - can set type of binroute, final Rmode 63 resets all counts and types to 0, own modes can also set/reset these
+
+count/route
+daccount - which dac as param
+spdcount - which dac as spd
+tailcount - what is tail function?
+adctypecount
+dactypecount 
+
+*and add binroutetypecount! redo generic/abstract models following this*
+
+DONE: low pass before speed so runs at full speed and is fixed - newdac2 - but not so promising // decimation???
+
+basis again...
+1- if we have length/or/speed from SRX we don't necessarily need a route from SRX - exclusive OR
+
+spdfrom X
+routefrom x [xor] - tables or some op -> between speedfrom multiple routes (bits) or dac from one (or mix of dacs even/bus), how to generalise that
+
+eg. bit is routefrom/or/spdfrom 
+
+2- not to fixate on 4 routes. 
+TM prob model of recursion/circulation - *TODO: prob of recursion on itself, prob across all SR*
+Rungler has different routings
+
+3-order can also change eg. 0012, to determine from a table...
+
+4-basicSR - it has length and speed [from sr], it can input[route,ADC,gen], it can cycle/types of binroute 
+
+is type of binroute just part of input...
+in our case basic SRs and basic GSRs?
+
+
 ** 1/6/2022
 
 - param[w] is always from clock and handled in adcetc
