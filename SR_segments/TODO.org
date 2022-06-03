@@ -36,14 +36,6 @@ idea of frame: do we have any mode where we record SR frames...
 
 + special modes...
 
-analyze/check modes in all files:
-experiment.h
-bit.h
-probability.h
-modeC etc
-
-where else?
-
 /////
 
 - select preferred way of dacspeeds or any speedmods eg. modulus, midway etc?

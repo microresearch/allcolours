@@ -122,10 +122,10 @@ for x in range(20000000):
             if newselect[count]>15:
                 newselect[count]=15
             count+=1
-    if newselect!=[15,15,15,15] and (newselect not in finalroutes) and newselect[2]!=0 and newselect[2]!=4 and newselect[1]!=0 and newselect[3]!=0 :
+    if 15 not in newselect and (newselect not in finalroutes) and newselect[2]!=0 and newselect[2]!=4 and newselect[1]!=0 and newselect[3]!=0 :
         # new constraints:
         # that all except N cannpot be zero ie. have no route in
-        ## we should still have 15,15,15,15
+        ## we should still have 15,15,15,15 or maybe no 15s ever!
         
         goessomewhere=0
         haventyet=[1,1,1,1]

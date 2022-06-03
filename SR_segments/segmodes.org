@@ -194,6 +194,19 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 3/6/2022
+
+- make lists/extract for gen.h and longer adc lists...
+
+- comment/extract and organise modes from:
+
+experiment.h
+bit.h
+probability.h
+modeC, N, L, R - what are repeats?
+where else?
+
+
 ** 2/6/2022
 
 *leave and don;t reset counts and routemask/binary // do we want masks for other counts - new model eg. we have tmp=binroute[count][w]|binary*

@@ -2,11 +2,31 @@ offset. vca is multiplier so is not inserting signals...
 
 - one slower mindlin controls another...
 
+** 3/6/2022
+
+- we will have to redo mindlin as we had all feedback on one 10k into first invertor
+
+- remake of sprott but still sign of 1st int is wrong (+ still) when we use invertor on breadboard, but not on pcb???
+
+pcb one has 1k dd1 into inv // and on sprott we go straight in (try this) - so that was solution
+
+*TODO: solo mindlin with corrections, switched sprott/mindlin, extended mindlin/switched*
+
+
+** 2/6/2022
+
+- testing with switch across both (top of ADG is inv of lower section so switches in 1st int feedback and Gsprott section)
+works ok, bit switchy but problem/question is int1 (d1-dd1) now works only with NON-INV ??? 
+
+- to re-test +sprott+ and mindlin alone, finally remake extended mindlin, test switch in or out extension
+
+// whichever decision input on mindlin is dominating and out is too heavy/strong
+
 ** 1/6/2022
 
 - 2x parallel filters with control and cross routing/switches - or just possibility of this for 2 of them
 
-- TODO: basic touch switch module with ADG412 instead of 4066 and changed logic/power (see touch_toggle_smd)
+- TODO: basic touch switch module with ADG412 instead of 4066 and changed logic/power (see touch_toggle_smd) - make up in KICAD
 
 working with touch_toggle and use _Q (pin 2) for inversion - so for 2x spdt we have lower 412 as on/upper as inverted
 
@@ -16,7 +36,7 @@ working with touch_toggle and use _Q (pin 2) for inversion - so for 2x spdt we h
 
 - added in 3rd/int->sprott from 1st int (v out) and back into feedback path and seems to work well - maybe doesn't need switch...
 
-[into BB3, R1 to sig1 and sig2/outfromisg to 1st inv in (no inv), so we keep original mindlin feedback
+[into BB3, R1 to sig1 and sig2/outfromsig to 1st inv in (no inv), so we keep original mindlin feedback
 
 still on mindlin input is a odd as cuts so much...
 
@@ -143,7 +163,7 @@ try sans signum(still inversion issue)
 
 - fixed up all VCAs with new values (not think on CV in now) 
 
-- test BINTIC [d1=dd1 inv], rest +
+- test BINTIC [d1->dd1 inv], rest +
 
 bintic is fine, but still SIGNUM thing on positive vca (so minus back in) just bumps down/up to rails...
 

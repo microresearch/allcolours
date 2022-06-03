@@ -29,7 +29,9 @@ def read_from_file(output_file):
         finalroutes.append(current)
     fp.close()
 
-read_from_file("first_paths")    
+read_from_file("second_paths")    
+
+#print finalroutes
 
 # future constraint - that all somehow connects following: C has route from N in some way via [], others route in to 
 
@@ -39,14 +41,17 @@ read_from_file("first_paths")
 # find who has route from routefrom N - do they route to C? - if so add
 # find who has route from route from routefrom N
 
+# something is wrong as they all have a 15 in them! FIXED indent 3/6/2022
+
 for cc in finalroutes:
     #    print cc+": "
-    cx=cc.split(",")
+    cx=cc.split(", ")
     count=0
     # each route is cx
     routefrom=[]
     # work back from C/2 - does 1 at any point route in to C/2
     if 1 in decodenum[int(cx[2])]: # direct route
+        print cx
         finalfinal.append(cx)
     else:
         done=0
@@ -69,15 +74,17 @@ finalfinalfinal=[]
 for ll in finalfinal:
     routeto=[0,0,0,0]
     count=0
-    for el in ll:
+    for el in ll: # el is element
         cnt=0
-        for eff in lookup:
+        for eff in lookup: # 1,2,4,8
             if int(el)&eff:
                 routeto[cnt]+=lookup[count]
-                cnt+=1
+            cnt+=1
+#        print routeto
         count+=1
-    if 0 not in routeto:
+    if 0 not in routeto and ('7' not in ll and '11' not in ll and '14' not in ll and '13' not in ll):
         finalfinalfinal.append(ll)
+# 2258 routes we have now
         
 count=0
 for lin in finalfinalfinal:
@@ -102,19 +109,19 @@ for lin in finalfinalfinal:
 #         count+=1
 
 # decode finalfinalfinal:
-for cc in finalfinalfinal:
-    print str(cc)
-    cnt=0
-    for el in cc:
-        print names[cnt]+": "+ decoder[int(el)]
-        cnt+=1
+# for cc in finalfinalfinal:
+#     print str(cc)
+#     cnt=0
+    # for el in cc:
+    #     print names[cnt]+": "+ decoder[int(el)]
+    #     cnt+=1
 
 print "finalcount= " + str(count)
 
 # total now is 8215 which is 8215 x 4bitsx4=16 bits = 16k - how to encode and decode these to 32 bits
 # write out to table // 12 bits is 4096 so is approx 11 bits now
 
-
+# 15322 now
 
 # 1/6/2022:
 
