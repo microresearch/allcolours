@@ -1,6 +1,6 @@
 // for new struct sets of modes:
 
-#define RESETR count=0; daccount=0; spdcount=0; tailcount=0; adctypecount=0; dactypecount=0; binroutetypecount=0; lengthcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
+#define RESETR count=0; daccount=0; spdcount=0; tailcount=0; adctypecount=0; dactypecount=0; binroutetypecount=0; lengthcount=0; dactypecnt=0; spdfunccnt=0; lengthfunccnt=0; adctypecnt=0;bitfunccnt=0, binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
 
 #define STR0 (gate[w].trigger)
 
@@ -172,6 +172,20 @@
   }								\
   }
 
+#define BINROUTEnoalt_ {				\
+    tmp=binroute[count][w]|binary[w];			\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
+    gate[w].gsrcnt[x]--;					\
+    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitn^=bitrr;						\
+  }								\
+  tmp=tmp>>1;							\
+  }								\
+  }
+
+
 #define BINROUTEnoaltstrip_ {				\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
@@ -327,6 +341,18 @@
   tmp=tmp>>1;						\
   }							\
   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+#define BINROUTEtrig_ {				\
+    tmp=binroute[count][w]|binary[w];			\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;							\
+  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
   }
 
 #define BINROUTEtrigstrip_ {				\

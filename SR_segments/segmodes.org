@@ -194,6 +194,42 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 6/6/2022
+
+*PLAN: new generic scheme gives us 64 modes which don't need take account of speeds, length etc. as these are all in matrices set by 16 global modeRs*
+
+*TODO: test, implement, genericise chosen modes/document and add pulse/trigger other points, decide on speed as: and wrap with new tail functions and stacks!*
+
+// 5th tail to resolve and work into Rmodes (or generic modes)
+
+*dacbitstreams we also have to use somewhere*
+
+// how does binary thing work??? we take 4 bit mask from x bits of chosen SR and use this:     tmp=binroute[count][w]|binary[w];
+// *so implement in speeddac functions as this* spd as bitfrom multiple dacs??? - we have that already
+
+- adapt modes we have to generic speed:   if (speedfroms[speedfunc[spdfunccnt][w]](w)){ // speedfunc in abstraction
+
+- test general globals abstraction we have now with adc which can be on LRCN any. indicate with non-null mode in matrix
+
+- what those matrices look like?
+
+- can also be locally set,,,,
+
+x,y of globals need to match up (eg. in their use of CV) so we can only shift them in groups...
+what needs to match and what doesn't
+
+*questions: of dac in speedmodes always, of cv for use by dacmodes as param, all abstractbitstreams use depth*
+
+** 4/6/2022
+
+- 16 global modes on modeR
+- *binary type thing from binroute extended also to speed???* generic speed/function - *speedbinary*
+
+- possibly no subdivision of modes as to cv/dac speed but this is set in generic/tables...
+
+- 16x 4 sets of modes so matches geomancy figures
+
+
 ** 3/6/2022
 
 - make lists/extract for gen.h and longer adc lists...
@@ -205,7 +241,6 @@ bit.h
 probability.h
 modeC, N, L, R - what are repeats?
 where else?
-
 
 ** 2/6/2022
 

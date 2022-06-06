@@ -12,6 +12,50 @@ we need generators with no params... we can take some from speedgens...
  */
 
 //////////////////////////////////////////////////////////////////////////
+// for new geomantic abstraction: start again again with generics - this one for binroutes
+// need better labelling scheme
+//////////////////////////////////////////////////////////////////////////
+
+static inline uint32_t Gbinroute(uint8_t w){   // depth as routesel... shared bits now
+  uint32_t x, tmp, bitrr, bitn=0;
+    uint32_t tmpp=binroutetypes[binroutetypecount][w];
+    switch(tmpp){
+    case 0:
+      BINROUTE_;
+    break;
+    case 1:
+      BINROUTESR_;
+    break;
+    case 2:
+      BINROUTEalt_;
+    break;
+    case 3:
+      BINROUTEZERO_;
+    break;
+    case 4:
+      BINROUTESHARE_;
+    break;
+    case 5:
+      BINROUTENOG_;
+    break;
+    case 6:
+      BINROUTEtrig_;
+    break;
+    case 7:
+      BINROUTEnoalt_;  // new one which just cycles and doesn't reset
+    break;
+    }
+    return bitn;
+}
+
+// now for length
+static inline uint32_t lcvl(uint8_t wh){ 
+  uint32_t bt=lookuplenall[CVL[wh]>>7]; // 5 bits
+  return bt;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
 // abstract GENERATORS... adc ones are in adcetc.h
 // some don't use depth, how to deal with this? can also be more INVERTED ones!
 
@@ -168,6 +212,7 @@ static inline uint32_t sadcfrac(uint8_t wh){
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
   if(gate[wh].last_time<gate[wh].int_time) {
+    gate[wh].dac = delay_buffer[wh][1];
     bt=1; // move on
     gate[wh].time_now-=1.0f;
     gate[wh].int_time=0;
@@ -206,6 +251,7 @@ static inline uint32_t sadcfracstop(uint8_t wh){
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
   if(gate[wh].last_time<gate[wh].int_time) {
+    gate[wh].dac = delay_buffer[wh][1];
     bt=1; // move on
     gate[wh].time_now-=1.0f;
     gate[wh].int_time=0;
@@ -223,6 +269,7 @@ static inline uint32_t sdacfrac(uint8_t wh){ // variations where we temper the d
   gate[wh].int_time = gate[wh].time_now;
 
   if(gate[wh].last_time<gate[wh].int_time) {
+    gate[wh].dac = delay_buffer[wh][1];
     bt=1; // move on
     gate[wh].time_now-=1.0f;
     gate[wh].int_time=0;
@@ -233,6 +280,7 @@ static inline uint32_t sdacfrac(uint8_t wh){ // variations where we temper the d
 static inline uint32_t sstrobe(uint8_t wh){   // strobe - no depth
   uint32_t bt;
   bt=gate[wh].trigger;
+  gate[wh].dac = delay_buffer[wh][1];
   return bt;
 }
 
@@ -245,6 +293,7 @@ static inline uint32_t sstrobeint(uint8_t wh){
   gate[wh].int_time = gate[wh].time_now;
   gate[wh].lastest++;
   if(gate[wh].trigger) {
+    gate[wh].dac = delay_buffer[wh][1];
     bt=1; // move on
     speed=1.0f/(float)gate[wh].lastest; 
     gate[wh].time_now-=1.0f;
@@ -256,7 +305,7 @@ static inline uint32_t sstrobeint(uint8_t wh){
 
 static inline uint32_t sbinroute(uint8_t wh){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr, depth;
-  depth=binroute[count][wh];
+  depth=binroute[count][wh]|binary[wh];
 
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
@@ -266,54 +315,56 @@ static inline uint32_t sbinroute(uint8_t wh){   // depth as routesel... shared b
   }
   depth=depth>>1;
   }
+  gate[wh].dac = delay_buffer[wh][1];
   return bt;
 }
 
 static inline uint32_t sbinroute0(uint8_t w){   // depth as routesel... shared bits now
   uint32_t bitn=0, bitrr, tmp,x;
-  tmp=binroute[count][w];
-  BINROUTESRstrip_;  
+  tmp=binroute[count][w]|binary[w];
+  BINROUTESRstrip_;
+  gate[w].dac = delay_buffer[w][1];
   return bitn;
 }
 
 static inline uint32_t sbinroute1(uint8_t w){   // depth as routesel... shared bits now
   uint32_t bitn=0, bitrr, tmp,x;
-  tmp=binroute[count][w];
+  tmp=binroute[count][w]|binary[w];
   BINROUTEaltstrip_;
   return bitn;
 }
 
 static inline uint32_t sbinroute2(uint8_t w){   // depth as routesel... shared bits now
   uint32_t bitn=0, bitrr, tmp,x;
-  tmp=binroute[count][w];
+  tmp=binroute[count][w]|binary[w];
   BINROUTEZEROstrip_;
   return bitn;
 }
 
 static inline uint32_t sbinroute3(uint8_t w){   // depth as routesel... shared bits now
   uint32_t bitn=0, bitrr, tmp,x;
-  tmp=binroute[count][w];
+  tmp=binroute[count][w]|binary[w];
   BINROUTESHAREstrip_;
   return bitn;
 }
 
 static inline uint32_t sbinroute4(uint8_t w){   // depth as routesel... shared bits now
   uint32_t bitn=0, bitrr, tmp,x;
-  tmp=binroute[count][w];
+  tmp=binroute[count][w]|binary[w];
   BINROUTENOGstrip_;
   return bitn;
 }
 
 static inline uint32_t sbinroute5(uint8_t w){   // depth as routesel... shared bits now
   uint32_t bitn=0, bitrr, tmp,x;
-  tmp=binroute[count][w];
+  tmp=binroute[count][w]|binary[w];
   BINROUTEtrigstrip_;
   return bitn;
 }
 
 static inline uint32_t sbinroute6(uint8_t w){   // depth as routesel... shared bits now
   uint32_t bitn=0, bitrr, tmp,x;
-  tmp=binroute[count][w];
+  tmp=binroute[count][w]|binary[w];
   BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
   return bitn;
 }
@@ -327,18 +378,21 @@ static inline uint32_t scycle(uint8_t wh){   // itself/cycle
 static inline uint32_t sprob(uint8_t wh){   // PROBability mode - against LFSR - uses cv
   uint32_t bt=0;
   if (CV[wh]<(LFSR_[wh]&4095)) bt=1;
+  gate[wh].dac = delay_buffer[wh][1];
   return bt;
 }
 
 static inline uint32_t sprobdac(uint8_t wh){   // PROBability mode - against DAC  - uses cv
   uint32_t bt=0;
   if (CV[wh]<gate[dacfrom[count][wh]].dac) bt=1;
+  gate[wh].dac = delay_buffer[wh][1];
   return bt;
 }
 
 static inline uint32_t sclksr(uint8_t wh){ 
   uint32_t bt=0;
   bt=(clksr_[wh]>>SRlength[wh])&0x01;
+  gate[wh].dac = delay_buffer[wh][1];
   return bt;
 }
 
@@ -413,6 +467,7 @@ static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed 
   gate[wh].int_time = gate[wh].time_now;
 
   if(gate[wh].last_time<gate[wh].int_time) {
+    gate[wh].dac = delay_buffer[wh][1];
     bt=1; // move on
     gate[wh].time_now-=1.0f;
     gate[wh].int_time=0;
@@ -454,6 +509,7 @@ static inline uint32_t speedfracnoint(uint32_t depth, uint8_t wh){ // depth is s
   gate[wh].dac = delay_buffer[wh][1];
   
   if(gate[wh].last_time<gate[wh].int_time) {
+    gate[wh].dac = delay_buffer[wh][1];
     bt=1; // move on
     gate[wh].time_now-=1.0f;
     gate[wh].int_time=0;
@@ -471,6 +527,7 @@ static inline uint32_t strobeint(uint32_t depth, uint8_t wh){ // kind of works..
   gate[wh].int_time = gate[wh].time_now;
   gate[wh].lastest++;
   if(gate[wh].trigger) {
+    gate[wh].dac = delay_buffer[wh][1];
     bt=1; // move on
     speed=1.0f/(float)gate[wh].lastest; 
     gate[wh].time_now-=1.0f;
@@ -895,7 +952,7 @@ static inline uint32_t wiardbits(uint32_t depth, uint8_t wh){
   uint32_t bt=0, bitrr, tmp;
   if (depth>(LFSR_[wh]&4095)){
   for (uint8_t x=0;x<4;x++){
-    tmp=binroute[count][wh];
+    tmp=binroute[count][wh]|binary[wh];
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
@@ -914,7 +971,7 @@ static inline uint32_t wiardinvbits(uint32_t depth, uint8_t wh){
   uint32_t bt=0, bitrr, tmp;
   if (depth>(LFSR_[wh]&4095)){
   for (uint8_t x=0;x<4;x++){
-    tmp=binroute[count][wh];
+    tmp=binroute[count][wh]|binary[wh];
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
@@ -1215,7 +1272,7 @@ static inline uint32_t wiardbitsI(uint32_t depth, uint8_t wh){
   uint32_t bt=0, bitrr, tmp;
   if (depth>(LFSR_[wh]&4095)){
   for (uint8_t x=0;x<4;x++){
-    tmp=binroute[count][wh];
+    tmp=binroute[count][wh]|binary[wh];
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
@@ -1234,7 +1291,7 @@ static inline uint32_t wiardinvbitsI(uint32_t depth, uint8_t wh){
   uint32_t bt=0, bitrr, tmp;
   if (depth>(LFSR_[wh]&4095)){
   for (uint8_t x=0;x<4;x++){
-    tmp=binroute[count][wh];
+    tmp=binroute[count][wh]|binary[wh];
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;

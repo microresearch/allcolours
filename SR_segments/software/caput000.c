@@ -64,10 +64,12 @@ static uint32_t lengthcount=0; // for type of logic - UNUSED
 
 uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount, &lengthcount};
 
-// TODO: we need lists for these new ones... sketched in abstraction
-uint32_t blist[64][4]={ // this is for binroutetypecount - there are 0-7 types
-  {0,0,0,0},
-};
+//uint32_t *funcfield[8]={&dactypecnt, &spdfuncnt, &lengthfunccnt, &adctypecnt, &bitfunccnt}; // only 5 there
+static uint32_t dactypecnt=0;
+static uint32_t spdfunccnt=0;
+static uint32_t lengthfunccnt=0;
+static uint32_t adctypecnt=0;
+static uint32_t bitfunccnt=0;
 
 // 1 means its used so do normed clocks - all one for testing
 // replace this with just strobed set by mode/function itself and then passed to final part for normed clocks
@@ -234,10 +236,10 @@ uint32_t testmodes[4]={0,0,0,0};
 // collect modes: Lmultiplespeednew // tag modesx modex
 void (*dofunc[4][64])(uint8_t w)=
 {
-  {adc0}, 
-  {SRX0}, // SRX0 is basic route/xor 
-  {dac0}, 
-  {SRX0}
+  {SR_geomantic}, 
+  {SR_geomantic}, 
+  {SR_geomantic}, 
+  {SR_geomantic}
 };
 
 void (*dotail[64])(void)= {basictail};
@@ -257,6 +259,8 @@ void (*funcgroups[4][64])(uint8_t w)=
 
 void mode_init(void){
   uint32_t x;
+
+  RESETR;
   
   for (x=0;x<4;x++){
     gate[x].delcnt=0;
@@ -323,17 +327,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // sliding modes 
     
-  mde=mode[www];
+  //  mde=mode[www];
   //  mde=3; // upto13 - test for the frozen one // 11odd 3/genericbitsissilentmostly
-  if (mde>GROUP) mde=GROUP; 
-  (*funcgroups[www][mde])(www);
+  //  if (mde>GROUP) mde=GROUP; 
+  //  (*funcgroups[www][mde])(www);
       
 
   // trial here different version of Vienna with interpoll and new bit recurse options
   //  major_vienna(www);
 
   // do func
-  //  (*dofunc[www][0])(www);
+  (*dofunc[www][0])(www);
 
   
   if (www==2)  {

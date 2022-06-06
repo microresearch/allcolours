@@ -1,3 +1,36 @@
+// pulling in from abstraction.h for testing:
+// grids as follows
+
+//1speed 
+uint32_t speedfunc[64][4]={ 
+{0,0,0,0}, // eg. all speeds from func0=CVreturned
+};
+
+//2length
+uint32_t lengthfunc[64][4]={ 
+{0,0,0,0}, // 
+};
+
+//3bits
+// but all abstractbitstreams use depth: so can pass in others not just cv... how to abstract this eg. so we can use dacfrom...
+uint32_t bitfunc[64][4]={ 
+{0,0,0,0}, // 
+};
+
+uint32_t whichadc[64][4]={
+{0,777,777,777},
+};
+
+uint32_t whichdac[64][4]={
+{0,0,0,0},
+};
+
+uint32_t binroutetypes[64][4]={
+{0,0,0,0},
+};
+
+/////////////////////////////
+
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[17][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes

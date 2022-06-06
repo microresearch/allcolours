@@ -1,16 +1,38 @@
-offset. vca is multiplier so is not inserting signals...
-
+- switched sprott/mindlin
 - one slower mindlin controls another...
+- sort mult outs and level of outs is too hot
+- direction of knobs - eg. vca1 from 1st int back to inv should be inverted as goes high to low
+
+** 6/6/2022
+
+Mindlin:
+
+Mindlin extended justnow: we go to invert from 2nd integ then into 3rd integ->sprott
+*but before we had extension after 2nd mult! - better/kindof... still not convinced on extension
+
+- think about double mindlin, controlled slews into mindlin VCA???
+
+no vca between inv and 1st int... 
+
+** 4/6/2022
+
+- redo solo with corrections- so all 10k input into invertor - works much better with input (re-check again)
+
+- try sprott extension - works well with out from 2nd int to pot to
+  bb3/r1 (3rd int) then into signum and then into independent inv and back in 10k first
+  inv
+
+TRY: could also replace pot with inv vca and do without inv here... TEST with extra VCA borrowed from input - tested.fine
 
 ** 3/6/2022
 
-- we will have to redo mindlin as we had all feedback on one 10k into first invertor
+- we will have to redo mindlin as we had all feedback on one 10k into first invertorDONEimproved...
 
 - remake of sprott but still sign of 1st int is wrong (+ still) when we use invertor on breadboard, but not on pcb???
 
 pcb one has 1k dd1 into inv // and on sprott we go straight in (try this) - so that was solution
 
-*TODO: solo mindlin with corrections, switched sprott/mindlin, extended mindlin/switched*
+TODO: solo mindlin with correctionsGOOD, switched sprott/mindlin, extended mindlinYES/switchedNON
 
 
 ** 2/6/2022
@@ -20,7 +42,7 @@ works ok, bit switchy but problem/question is int1 (d1-dd1) now works only with 
 
 - to re-test +sprott+ and mindlin alone, finally remake extended mindlin, test switch in or out extension
 
-// whichever decision input on mindlin is dominating and out is too heavy/strong
+// +whichever decision input on mindlin is dominating-was mistake on ins+ and out is too heavy/strong
 
 ** 1/6/2022
 
@@ -76,7 +98,7 @@ but in sprott one VCA is in [G/signum] - control goes to both? split?
 - extend with extra integrator/bintic and signum neg into signum but
   we don't have spare VCA so just use pot/inv (not inv4)// also hard to know where to extend from....
 
-tried from out of 2nd integrator/not neg -> bb3 then r1 into signum and back into first integrator - 
+tried from out of 2nd integrator/not neg -> bb3 then r1 into signum and back into first integrator - (invertor)
 
 mindlin test layout: 
 R1 highest - C3 x
