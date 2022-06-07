@@ -65,8 +65,10 @@ void SR_geomantic(uint8_t w){  // working now for basics
     gate[w].dactype=whichdac[dactypecnt][w]; // question of dactypes which need param/cv also
     SRlength[w]=(*lengthfroms[lengthfunc[lengthfunccnt][w]])(w); // lengthfunc
     GSHIFT_;  // replace with types of gshift - gshiftfuncs...
-    // CORE 
+    // CORE
+    // param[w]
     bitn=ADC_(w,SRlength[w], whichadc[adctypecnt][w],bitn,dacfrom[daccount][w],param[w], &gate[w].shift_); // as adc functions or as bitfuncs????
+    // adcbitstreams ??? which use depth
     bitn^=(*bitfroms[bitfunc[bitfunccnt][w]])(w);// includes logic - would be nice deal with whole SR but pulsins etc. comes later // bitfunc
     // ENDCORE
     //    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function

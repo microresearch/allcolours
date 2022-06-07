@@ -3,6 +3,23 @@
 - sort mult outs and level of outs is too hot
 - direction of knobs - eg. vca1 from 1st int back to inv should be inverted as goes high to low
 
+** 7/6/2022
+
+// as it is now switched version seems cover different frequencies and
+also we have vca of mindlin isolated - only works for that one, we
+would need to share signal to vca for entry into sprott 3rd
+
+*retry addition: addition now from 2nd integrator looks good so far - with standard sprott!*
+
+- reworked some loose conns on smd pcb
+
+- forgot one fixed 10k feedback path (from 2nd int to inv) on switched sprott - to re-try.,..
+seems more unstable/oscillating at high freq with switch in... but that could just be breadboarding
+
+- need take account of both feedbacks... or just leave in mindlin one... 
+
+// measured 7.5v comes out as 5v
+
 ** 6/6/2022
 
 Mindlin:

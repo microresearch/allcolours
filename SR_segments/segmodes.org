@@ -194,6 +194,47 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 7/6/2022
+
+how we could write matrices:
+
+MATRIX of: speedfunc, lengthfunc, bitfunc // binroutetypes // whichdac, whichadc[none] //// routes-> speedfrom, binroute, dacfrom
+
+but first we need to define what those functions are and whether it is hardcoded what they use (as in depth var)?
+
+
+- 16 cards = main modes x4 - fire/air/water/earth
+
+- overlay DAC values???
+
+- resolve split of DAC/CV for abstractbits etc.. - 2 different functions or???
+
+*also how we resolve use of multiple CV eg. for adc modes which use CV - is there an indicator? eg. CVfree, CVLfree - set/reset by funcs*
+
+// draft for cvfree, cvlfree??? we need to resolve use of CV, CVL and DACs...
+// but how to use this: if cv is free use cv, if not is cvl free, use ...
+
+// then we would need to select from say groups of modes which use certain params
+
+we have: routed DAC, mix of DACs, bitmix of SRs, CV, CVL
+
+CV: speed, if strobe for example then we have it free
+CVL: length, if length is from elsewhere we have it free, or we just detach it
+
+- *if both are free how do we make sure we use them?* and do we always need to do this?
+- or does set up of matrices always not allow/allow this?
+
+adc can use param[w] from clk or use cv/dac as param? is that built in or???
+dac use can be tempered with cv or with held_over cv if we use it elsewhere...
+
+should this be accounted for in set of geomantic functions/abstractions???
+
+////
+
+- test if spd and route can share same binroute (multiple)
+
+adc/dac major Rmodes
+
 ** 6/6/2022
 
 *PLAN: new generic scheme gives us 64 modes which don't need take account of speeds, length etc. as these are all in matrices set by 16 global modeRs*
@@ -279,7 +320,9 @@ eg. bit is routefrom/or/spdfrom
 TM prob model of recursion/circulation - *TODO: prob of recursion on itself, prob across all SR*
 Rungler has different routings
 
-3-order can also change eg. 0012, to determine from a table...
+3- *order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?*
+
+- what is the length of that table? and it must have all routes in it.. how to generate this? compress table, operations on table
 
 4-basicSR - it has length and speed [from sr], it can input[route,ADC,gen], it can cycle/types of binroute 
 

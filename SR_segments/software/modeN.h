@@ -87,8 +87,7 @@
   }
 
 /*
-#define ADCSTREAMXORIN(X) {			\
-  HEAD;						\
+#define ADCSTREAMXORIN(X) {			\  HEAD;						\
   if (speedf_[w]!=2.0f){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
