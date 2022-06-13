@@ -1090,7 +1090,7 @@ F 3 "~" H 2125 4950 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:Q_NPN_BEC-device Q?
+L toad2-rescue:Q_NPN_BEC-device-allcolours_analogue-rescue Q?
 U 1 1 5C0D25DC
 P 900 4875
 AR Path="/5C0D25DC" Ref="Q?"  Part="1" 
@@ -1808,7 +1808,7 @@ F 3 "~" H 7300 1975 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR?
 U 1 1 5ED65D4A
 P 6975 1850
 AR Path="/5ED966D6/5ED65D4A" Ref="#PWR?"  Part="1" 
@@ -1906,7 +1906,7 @@ F 3 "~" H 10850 2375 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR?
 U 1 1 5ED84216
 P 10525 2275
 AR Path="/5ED966D6/5ED84216" Ref="#PWR?"  Part="1" 
@@ -2002,7 +2002,7 @@ F 3 "~" H 4800 7300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR?
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR?
 U 1 1 5EDA30D9
 P 4475 7175
 AR Path="/5ED966D6/5EDA30D9" Ref="#PWR?"  Part="1" 
@@ -2375,7 +2375,7 @@ $EndComp
 Wire Wire Line
 	7200 6145 7220 6145
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M1
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M1
 U 1 1 608ECFCF
 P 1100 1950
 F 0 "M1" H 772 1912 45  0000 R CNN
@@ -2386,7 +2386,7 @@ F 3 "" H 1100 1950 60  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M2
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M2
 U 1 1 60905295
 P 2175 5925
 F 0 "M2" H 2181 6144 45  0000 C CNN
@@ -2397,7 +2397,7 @@ F 3 "" H 2175 5925 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M3
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M3
 U 1 1 6091EF80
 P 10775 1500
 F 0 "M3" H 10448 1462 45  0000 R CNN

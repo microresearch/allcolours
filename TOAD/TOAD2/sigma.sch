@@ -17,7 +17,7 @@ $EndDescr
 Text Notes 1750 935  0    79   ~ 0
 SIGMA/DELTA encoding with jumpers for in/out and for processings...
 $Comp
-L 4ms-ic:TL084 U21
+L toad2-rescue:TL084-4ms-ic U21
 U 1 1 6082B463
 P 1975 3545
 F 0 "U21" H 2316 3591 50  0000 L CNN
@@ -201,7 +201,7 @@ Wire Wire Line
 Text Notes 1990 5100 0    79   ~ 0
 clock\n
 $Comp
-L 4ms-ic:TL084 U21
+L toad2-rescue:TL084-4ms-ic U21
 U 3 1 608335EA
 P 2890 4920
 F 0 "U21" H 2995 5095 50  0000 L CNN
@@ -529,7 +529,7 @@ Wire Wire Line
 Wire Wire Line
 	5020 5850 5020 5890
 $Comp
-L 4ms-ic:TL084 U21
+L toad2-rescue:TL084-4ms-ic U21
 U 2 1 6082B49D
 P 2850 3645
 F 0 "U21" H 3010 3875 50  0000 L CNN
@@ -562,7 +562,7 @@ F 3 "" H 2790 4570 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 4ms-ic:TL084 U21
+L toad2-rescue:TL084-4ms-ic U21
 U 4 1 6082B520
 P 3365 2610
 F 0 "U21" H 3365 3088 50  0000 C CNN

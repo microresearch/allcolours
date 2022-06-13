@@ -3,13 +3,19 @@
 - sort mult outs and level of outs is too hot
 - direction of knobs - eg. vca1 from 1st int back to inv should be inverted as goes high to low
 
+** 13/6/2022
+
+- DONE-draw up schematic we have bit *we still need to consider level of outs and different outs*
+
+- drawn up/to re-check, check and check again...
+
 ** 7/6/2022
 
 // as it is now switched version seems cover different frequencies and
 also we have vca of mindlin isolated - only works for that one, we
 would need to share signal to vca for entry into sprott 3rd
 
-*retry addition: addition now from 2nd integrator looks good so far - with standard sprott!*
+*retry addition: addition now from 2nd integrator looks good so far - with standard sprott with inversion!*
 
 - reworked some loose conns on smd pcb
 

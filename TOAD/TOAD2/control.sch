@@ -125,7 +125,7 @@ F 3 "" H 1140 1015 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR064
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR064
 U 1 1 5ED973F7
 P -1020 970
 F 0 "#PWR064" H -1020 820 50  0001 C CNN
@@ -269,7 +269,7 @@ F 3 "" H 45  -1170 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR075
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR075
 U 1 1 5ED9B4A3
 P -400 1070
 F 0 "#PWR075" H -400 920 50  0001 C CNN
@@ -299,7 +299,7 @@ L Device:R_Small R69
 U 1 1 5ED9B4C8
 P 8455 1815
 F 0 "R69" V 8259 1815 50  0000 C CNN
-F 1 "470K" V 8350 1815 50  0000 C CNN
+F 1 "470K" V 8350 1660 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 8455 1815 50  0001 C CNN
 F 3 "~" H 8455 1815 50  0001 C CNN
 	1    8455 1815
@@ -627,7 +627,7 @@ F 3 "" H 7805 1765 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0128
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0128
 U 1 1 5EDB86BB
 P 7805 835
 F 0 "#PWR0128" H 7805 685 50  0001 C CNN
@@ -667,7 +667,7 @@ L Device:R_Small R68
 U 1 1 5EDDD9F4
 P 8380 1415
 F 0 "R68" V 8184 1415 50  0000 C CNN
-F 1 "470K" V 8275 1415 50  0000 C CNN
+F 1 "470K-2M" V 8305 1370 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805" H 8380 1415 50  0001 C CNN
 F 3 "~" H 8380 1415 50  0001 C CNN
 	1    8380 1415
@@ -804,7 +804,7 @@ F 3 "~" H 1085 5115 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR079
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR079
 U 1 1 5EB346E1
 P 610 5115
 F 0 "#PWR079" H 610 4965 50  0001 C CNN
@@ -854,7 +854,7 @@ F 3 "~" H 1110 7465 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR080
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR080
 U 1 1 5EB4FD30
 P 635 7465
 F 0 "#PWR080" H 635 7315 50  0001 C CNN
@@ -904,7 +904,7 @@ F 3 "~" H 4210 7435 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR098
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR098
 U 1 1 5EB55502
 P 3735 7435
 F 0 "#PWR098" H 3735 7285 50  0001 C CNN
@@ -954,7 +954,7 @@ F 3 "~" H 4085 5115 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR097
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR097
 U 1 1 5EB5A9C6
 P 3610 5115
 F 0 "#PWR097" H 3610 4965 50  0001 C CNN
@@ -1045,7 +1045,7 @@ F 3 "~" H 4285 5815 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0109
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0109
 U 1 1 5EC833BB
 P 3960 5690
 AR Path="/5ED966D6/5EC833BB" Ref="#PWR0109"  Part="1" 
@@ -1139,7 +1139,7 @@ F 3 "~" H -170 2490 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0115
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0115
 U 1 1 5EC89412
 P -495 2365
 AR Path="/5ED966D6/5EC89412" Ref="#PWR0115"  Part="1" 
@@ -1321,7 +1321,7 @@ F 3 "~" H 7395 5635 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0117
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0117
 U 1 1 5EE2F0AD
 P 6920 5635
 F 0 "#PWR0117" H 6920 5485 50  0001 C CNN
@@ -1366,7 +1366,7 @@ F 3 "~" H -1015 3310 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR01
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR01
 U 1 1 5EEEC61F
 P -1020 2395
 AR Path="/5ED966D6/5EEEC61F" Ref="#PWR01"  Part="1" 
@@ -1487,7 +1487,7 @@ F 3 "" H -1380 -775 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0110
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0110
 U 1 1 5EF4A272
 P -1380 -1490
 F 0 "#PWR0110" H -1380 -1640 50  0001 C CNN
@@ -1526,7 +1526,7 @@ F 3 "~" H -560 -1195 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0128
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0128
 U 1 1 5EF60809
 P -885 -1320
 AR Path="/5ED966D6/5EF60809" Ref="#PWR0128"  Part="1" 
@@ -1620,7 +1620,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 8445 5060 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0123
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0123
 U 1 1 5F0717FA
 P 8195 4345
 F 0 "#PWR0123" H 8195 4195 50  0001 C CNN
@@ -1672,7 +1672,7 @@ F 3 "~" H 9905 4160 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR0122
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR0122
 U 1 1 5F083C81
 P 9580 4000
 AR Path="/5ED966D6/5F083C81" Ref="#PWR0122"  Part="1" 
@@ -1794,7 +1794,7 @@ F 3 "~" H 7090 1885 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR046
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR046
 U 1 1 5EDD1E85
 P 6765 1725
 AR Path="/5ED966D6/5EDD1E85" Ref="#PWR046"  Part="1" 
@@ -1860,7 +1860,7 @@ Wire Wire Line
 Wire Wire Line
 	6765 1725 6765 1810
 $Comp
-L allcolours_analogue-rescue:1N4148-Diode D5
+L toad2-rescue:1N4148-Diode-allcolours_analogue-rescue D5
 U 1 1 5EE021C3
 P 2135 4845
 F 0 "D5" H 2135 5061 50  0000 C CNN
@@ -1871,7 +1871,7 @@ F 3 "" H 2135 4845 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:1N4148-Diode D6
+L toad2-rescue:1N4148-Diode-allcolours_analogue-rescue D6
 U 1 1 5EE02649
 P 5250 4905
 F 0 "D6" H 5250 5121 50  0000 C CNN
@@ -1882,7 +1882,7 @@ F 3 "" H 5250 4905 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:1N4148-Diode D7
+L toad2-rescue:1N4148-Diode-allcolours_analogue-rescue D7
 U 1 1 5EE02816
 P 5265 7190
 F 0 "D7" H 5265 7406 50  0000 C CNN
@@ -1893,7 +1893,7 @@ F 3 "" H 5265 7190 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:1N4148-Diode D4
+L toad2-rescue:1N4148-Diode-allcolours_analogue-rescue D4
 U 1 1 5EE0295E
 P 2110 7205
 F 0 "D4" H 2110 7421 50  0000 C CNN
@@ -1904,7 +1904,7 @@ F 3 "" H 2110 7205 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:1N4148-Diode D8
+L toad2-rescue:1N4148-Diode-allcolours_analogue-rescue D8
 U 1 1 5EE02DB1
 P 8505 5680
 F 0 "D8" H 8505 5896 50  0000 C CNN
@@ -2092,7 +2092,7 @@ $EndComp
 Wire Wire Line
 	-990 4560 -990 4600
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR052
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR052
 U 1 1 5F5A4D69
 P -990 3915
 AR Path="/5ED966D6/5F5A4D69" Ref="#PWR052"  Part="1" 
@@ -2871,7 +2871,7 @@ $EndComp
 Wire Wire Line
 	9270 4160 9270 4195
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M4
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M4
 U 1 1 60920E36
 P 960 4340
 F 0 "M4" H 966 4559 45  0000 C CNN
@@ -2882,7 +2882,7 @@ F 3 "" H 960 4340 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M5
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M5
 U 1 1 6092160C
 P 985 6615
 F 0 "M5" H 991 6834 45  0000 C CNN
@@ -2893,7 +2893,7 @@ F 3 "" H 985 6615 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M8
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M8
 U 1 1 60923008
 P 7170 4810
 F 0 "M8" H 7176 5029 45  0000 C CNN
@@ -2904,7 +2904,7 @@ F 3 "" H 7170 4810 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M6
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M6
 U 1 1 609238BF
 P 3960 4340
 F 0 "M6" H 3966 4559 45  0000 C CNN
@@ -2915,7 +2915,7 @@ F 3 "" H 3960 4340 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours-rescue:AUDIO-JACKERTHENVAR-PJ398 M7
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M7
 U 1 1 60924107
 P 4085 6565
 F 0 "M7" H 4091 6784 45  0000 C CNN

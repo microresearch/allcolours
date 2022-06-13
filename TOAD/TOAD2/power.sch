@@ -17,7 +17,7 @@ $EndDescr
 Text Notes 3225 2225 0    60   ~ 0
 euro_conn
 $Comp
-L allcolours_analogue-rescue:CONN_02X05-allcolours-rescue P1
+L toad2-rescue:CONN_02X05-allcolours-rescue-allcolours_analogue-rescue P1
 U 1 1 5C3AA485
 P 3425 2575
 F 0 "P1" H 3425 2875 50  0000 C CNN
@@ -28,7 +28,7 @@ F 3 "" H 3425 1375 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:+12V-power #PWR02
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR02
 U 1 1 5C3AA48C
 P 2670 2265
 F 0 "#PWR02" H 2670 2115 50  0001 C CNN
@@ -39,7 +39,7 @@ F 3 "" H 2670 2265 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:GND-power #PWR03
+L toad2-rescue:GND-power-allcolours_analogue-rescue #PWR03
 U 1 1 5C3AA492
 P 3875 2575
 F 0 "#PWR03" H 3875 2325 50  0001 C CNN
@@ -74,7 +74,7 @@ $EndComp
 Wire Wire Line
 	3675 2575 3875 2575
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C1
+L toad2-rescue:CP1_Small-device-allcolours_analogue-rescue C1
 U 1 1 5C3AA4AB
 P 2600 2450
 F 0 "C1" H 2610 2520 50  0000 L CNN
@@ -85,7 +85,7 @@ F 3 "" H 2600 2450 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L allcolours_analogue-rescue:CP1_Small-device C2
+L toad2-rescue:CP1_Small-device-allcolours_analogue-rescue C2
 U 1 1 5C3AA4B4
 P 3050 2800
 F 0 "C2" H 3060 2870 50  0000 L CNN

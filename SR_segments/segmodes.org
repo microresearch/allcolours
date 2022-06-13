@@ -194,14 +194,17 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 13/6/2022
+
+
+
 ** 7/6/2022
 
 how we could write matrices:
 
 MATRIX of: speedfunc, lengthfunc, bitfunc // binroutetypes // whichdac, whichadc[none] //// routes-> speedfrom, binroute, dacfrom
 
-but first we need to define what those functions are and whether it is hardcoded what they use (as in depth var)?
-
+but first we need to define what those functions are and whether it is hardcoded what they use (as in depth variable)?
 
 - 16 cards = main modes x4 - fire/air/water/earth
 
