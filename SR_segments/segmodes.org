@@ -29,6 +29,8 @@ prob/bitin is: CVvsDACx, CVvsLFSR, DACvsLFSR, strobe
 
 *what are models to choose from // for major minor modes:*
 
+*new geomantic/generic model*
+
 dacbus?
 
 generic vienna model: redo with interpoll (also if this is for major/minor modes how does RSR fit with reduced bits of course?, then RSR is more like tail)
@@ -198,7 +200,9 @@ make new dir/files
 
 *- new abstraction to fill in/// how we could translate geomantic figures and/or minor_vienna to that scheme?*
 
-// major work is on porting functions... and in work on tails...
+adding extra param for abstraction so we can deal with adcin! copied IN!
+
+// *work on porting functions... matrices and histories of SRs and functions/foldbacks and in work on tails...*
 
 DONE: geomantic.h - transfer all from exp to here...
 
@@ -347,7 +351,9 @@ eg. bit is routefrom/or/spdfrom
 TM prob model of recursion/circulation - *TODO: prob of recursion on itself, prob across all SR*
 Rungler has different routings
 
-3- *order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?*
+3- order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?
+TESTED 14/6/2022 but maybe just complicates matters
+
 
 - what is the length of that table? and it must have all routes in it.. how to generate this? compress table, operations on table
 

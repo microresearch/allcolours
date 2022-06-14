@@ -8,16 +8,19 @@
 
 //1speed 
 // now with depth/CV
-uint32_t (*speedfromsd[32])(uint32_t depth, uint8_t wh)={adcfrac};
+uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac}; // one interp, next not - see interp below... interp is extracted...
+
+// TODO match with interp
+uint8_t interp[32]={1,0};
 
 //2length
-uint32_t (*lengthfromsd[32])(uint32_t depth, uint8_t wh)={rlen}; 
+uint32_t (*lengthfromsd[32])(uint32_t depth, uint32_t wh)={rlen}; 
 
 //3adc
-uint32_t (*adcfromsd[32])(uint32_t depth, uint8_t wh)={noadc, adcxbitsx}; 
+uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, adcx}; 
 
 //4bits
-uint32_t (*bitfromsd[32])(uint32_t depth, uint8_t wh)={osceqbits, binroutebits}; // add in funcs which use also binroutetypecount - this one with depth from variable CV
+uint32_t (*bitfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, osceq, binrout, binroutfixed}; // add in funcs which use also binroutetypecount - this one with depth from variable CV
 
 // counts for maps eg. routes, dacfrom, lengthfrom...
 // maps below... for routes
@@ -36,11 +39,11 @@ uint32_t *funcfield[8]={&dactypecnt, &spdfunccnt, &lengthfunccnt, &adcfunccnt, &
 // ... but Gshift is 32 bits and clksr we don't use...
 
 uint32_t *CVlist[4][16]={
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &Gshift_[0], &clksr_[0], &param[0]},
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &Gshift_[1], &clksr_[1], &param[1]},
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &Gshift_[2], &clksr_[2], &param[2]},
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &Gshift_[3], &clksr_[3], &param[3]}
-  // 0,    1             2             3             4             5       6        7            8           9   
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift_[0], &clksr_[0], &param[0]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &ADCin, &Gshift_[1], &clksr_[1], &param[1]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &ADCin, &Gshift_[2], &clksr_[2], &param[2]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &ADCin, &Gshift_[3], &clksr_[3], &param[3]}
+  // 0,    1             2             3             4             5       6        7            8           9         10
 }; // DONE: how to remedy/gshift - only thing would be a copy of lowest 12 bits &4095: DONE in macro!
 
 // TODO: but this over-rides dacfrom - alternative would be to index as CVlist[dacfrom[w]] !!!
@@ -48,7 +51,7 @@ uint32_t *CVlist[4][16]={
 //......
 //1speed 
 uint32_t speedfunc[64][4]={ 
-{0,0,0,0}, // 
+{1,1,0,1}, // 
 };
 
 //2length
@@ -58,14 +61,14 @@ uint32_t lengthfunc[64][4]={ // these need to return a value 3->31
 
 //3adc
 uint32_t adcfunc[64][4]={ 
-{0,0,0,0}, // 
+{1,0,0,0}, // 
 };
 
 //4bits
 uint32_t bitfunc[64][4]={ 
-{1,1,1,1}, // 
+{2,2,2,1}, // 
 };
-//......
+//......//
 
 uint32_t whichdac[64][4]={ // some dacs use param/cv??? which -> 10,12,13,14,16
 {0,0,0,0},
@@ -76,10 +79,15 @@ uint32_t whichdac[64][4]={ // some dacs use param/cv??? which -> 10,12,13,14,16
 // just for speedfrom and bitfrom maybe or...
 // so we need index into this list eg.
 
-// should cvcount be for all - so is gridlike
+// TEST: should cvcount be for all - so is gridlike
+// 4x4 - geomantic figures - now we have 6 sets here
+
+uint32_t speedcvin[64][4]={ 
+  {5,5,5,5}, // all appropriate CV
+};
 
 uint32_t speedcv[64][4]={ 
-  {5,5,5,5}, // all appropriate CV
+  {0,0,4,0}, // this is the modifier
 };
 
 uint32_t lengthcv[64][4]={ 
@@ -87,26 +95,37 @@ uint32_t lengthcv[64][4]={
 };
 
 uint32_t adccv[64][4]={ 
-  {6,6,1,6}, // 0 is for nulll=0 == no depth used!
+  {6,6,6,6}, 
+};
+
+uint32_t adccvv[64][4]={ // this is adc itself IN
+  {7,0,0,0}, 
 };
 
 uint32_t bitcv[64][4]={ 
-  {6,6,1,6}, // 0 is for nulll=0 == no depth used!
+  {6,6,4,1}, 
 };
-
-/// reworking for adjustable CVs - TODO: adc as a function also...
 
 // as prototype with modeR global functions but this one can also be adapted... eg. changes of gshift etc...
 void SR_geomantic(uint8_t w){  // working now for basics
   HEADNADA;
-  if ((*speedfromsd[speedfunc[spdfunccnt][w]])(*CVlist[w][speedcv[cvcount][w]],w)){ // speedfunc
+  if (interp[speedfunc[spdfunccnt][w]]){   // pulled out interp:
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+  if ((*speedfromsd[speedfunc[spdfunccnt][w]])(*CVlist[w][speedcvin[cvcount][w]],*CVlist[w][speedcv[cvcount][w]], w)){ // speedfunc
     CLKSR; // new macro deals with intflag within speed
     gate[w].dactype=whichdac[dactypecnt][w]; // question of dactypes which need param/cv also
     SRlength[w]=(*lengthfromsd[lengthfunc[lengthfunccnt][w]])(*CVlist[w][lengthcv[cvcount][w]],w); // lengthfunc
     GSHIFT_;  // replace with types of gshift - gshiftfuncs...
     // CORE
-    bitn=(*adcfromsd[adcfunc[adcfunccnt][w]])(*CVlist[w][adccv[cvcount][w]],w); // trial this! seems to work
-    bitn^=(*bitfromsd[bitfunc[bitfunccnt][w]])(*CVlist[w][bitcv[cvcount][w]],w); // trial this! seems to work
+        if (adccvv[cvcount][w]==7){ // real ADC
+    ADCgeneric2; // input into shared one..
+        }
+    bitn=(*adcfromsd[adcfunc[adcfunccnt][w]])(*CVlist[w][adccv[cvcount][w]], *CVlist[w][adccvv[cvcount][w]],w); // added extra param
+    bitn^=(*bitfromsd[bitfunc[bitfunccnt][w]])(*CVlist[w][bitcv[cvcount][w]],0,w); // 
     // ENDCORE
     //    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function
     BITN_AND_OUTV_; // pulsin is in there

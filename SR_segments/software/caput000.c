@@ -50,7 +50,10 @@ static heavens gate[9]; // for paralell SR doubled + tail
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 
+static uint32_t ADCin;
+
 #define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
+
 
 static uint32_t count=0; // for route
 static uint32_t daccount=0; // for dacfrom
@@ -214,11 +217,19 @@ uint32_t options[4][24]={
       {0,3,3, 1,3,3, 2,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 3,3,3}
     };
 
+uint32_t orderings[16][16]={ // orderings - first is length
+  {4,0,1,2,3},
+  {7,0,0,1,2,1,2,3}
+};
+
+uint32_t ordercount=1;
+
 static uint32_t resetz=1;
 
 // extra files to check...
 
 #include "gen.h" // new generators
+#include "geogen.h" // newer generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 
 //#include "modeN.h"
@@ -235,7 +246,6 @@ static uint32_t resetz=1;
 
 void testnull(void){
 }
-
 
 uint32_t testmodes[4]={0,0,0,0};
 
@@ -302,19 +312,30 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  static uint32_t flipper[4]={1}, www=0, kk=0;
+  static uint32_t flipper[4]={1}, www=0, kk=0, ww=1;
   uint32_t tmp;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
   //////////////////////////////////////////////////////
-  
+  /* 
   www++;
+ 
   if (www>3) {
     www=0;
     resetz=1;
-    (*dotail[tailcount])(); // or this is 5th [www==4] www    
+    (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
   }
-
+  */
+  
+  // trial of new: *order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?*
+  // or table can be XORed - with SR or somehow altered from there - as a skip could be an option so maybe we don't need tables...
+  ww++;
+  if (ww>orderings[ordercount][0]){
+    ww=1;
+    resetz=1;
+  }
+  www=orderings[ordercount][ww];
+  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
   
   // genericLFSR for all probability modes
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
@@ -338,11 +359,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
       }
-      
-      counter[4]++; counter[5]++; counter[6]++;
-      counter[0]++; counter[1]++; counter[2]++; counter[3]++;
-      counterd[0]++; counterd[1]++; counterd[2]++; counterd[3]++;
-      counterl++; counterr++;
+
+  // where are these used and is too long as counts every time
+  //      counter[4]++; counter[5]++; counter[6]++;
+  counter[www]++; 
+  counterd[www]++; 
 
 }
  

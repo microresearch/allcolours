@@ -1431,6 +1431,7 @@ void SRmultiplespeed3(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gs
 }
 
 // we can also have multiplespeeds that also use DAC and some don't need CVL in that case
+/*
 void SRmultiplespeeddac0(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
   HEADSIN;
 
@@ -1457,6 +1458,7 @@ void SRmultiplespeeddac0(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming
   }
   }
 }
+*/
 
 // version with DAC and speed so no CVL
 void SRmultiplespeeddac1(uint8_t w){ // - NO LENGTH - speeds of gshift, incoming gsr and bits/dac
@@ -1573,6 +1575,7 @@ void SRmultspeed3(uint8_t w){ //  speeds of gshift, incoming gsr and bits/dac
 }
 
 // we can also have multiplespeeds that also use DAC and some don't need CVL in that case // FOR R OR L: counterl//counterr
+/*
 void SRmultspeeddac0(uint8_t w){ // speeds of gshift, incoming gsr and bits/dac
   HEADSSIN;
 
@@ -1600,6 +1603,7 @@ void SRmultspeeddac0(uint8_t w){ // speeds of gshift, incoming gsr and bits/dac
   }
   }
 }
+*/
 
 // speed as probability (from?)
 void SRprobcvspeed(uint8_t w){ 

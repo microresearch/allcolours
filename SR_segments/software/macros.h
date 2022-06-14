@@ -52,6 +52,14 @@
   k=ADC_GetConversionValue(ADC1);					\
   }
 
+#define ADCgeneric2 {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  ADCin=ADC_GetConversionValue(ADC1);					\
+  }
+
+
 #define ADCgeneric11 {				\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
   ADC_SoftwareStartConv(ADC1);						\
