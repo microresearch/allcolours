@@ -5,7 +5,7 @@ static uint32_t delayline[512]; //shared delay line
 static uint32_t delaylineUN[4][512]; //UNshared delay line
 
 // define spdmodes - need to think which ones work... and maybe expand with new binroutes to 32 // 5 bits
-uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfrac, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
+uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfracint, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
 
 // speeds with no params....
 // as functions: 
@@ -19,97 +19,17 @@ uint8_t freecv[8]={0,1,1,1, 1,0,0,1};
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
-// 6/6/2022
-// pulling in from abstraction.h for testing:
-// grids as follows
-
-//1speed 
-uint32_t (*speedfroms[32])(uint8_t wh)={sadcfrac, sdacfrac, sstrobe, sstrobeint, sbinroute, sprob, sprobdac, sclksr}; // sycycle also... // expand for dacs etc...
-
-//2length
-uint32_t (*lengthfroms[32])(uint8_t wh)={lcvl}; 
-
-//3bits
-// but all abstractbitstreams use depth: so can pass in others not just cv... how to abstract this eg. so we can use dacfrom...
-uint32_t (*bitfroms[32])(uint8_t wh)={Gbinroute}; // add in funcs which use also binroutetypecount
-
-// counts for maps eg. routes, dacfrom, lengthfrom...
-// maps below... for routes
-// uint32_t *countfield[8]={&count, &daccount, &spdcount, &adccount, &dactcount, &binroutetypecount, &lengthcount};
-
-// for functions we need to have: 
-
-uint32_t *funcfield[8]={&dactypecnt, &spdfunccnt, &lengthfunccnt, &adctypecnt, &bitfunccnt}; // only 5 there
-
-// TODO: versions of this...
-// possibly more generic with grid of CV, CVL, DAC[x] which we index from table and pass to speedfrom/bitfroms etc????
-
-// we already have: uint32_t *CVlist[4][16]={
-//  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &gate[0].Gshift_[0], &clksr_[0]}, // etc
-// ... but Gshift is 32 bits and clksr we don't use...
-
-// just for speedfrom and bitfrom maybe or...
-// so we need index into this list eg.
-uint32_t speedcv[64][4]={ 
-{4,4,4,4}, // all appropriate CV
-};
-
-uint32_t bitcv[64][4]={ 
-{0,0,0,0}, // all DAC[0] - but is a bit odd or we just have in bit functions with dacfrom etc...
-};
-
-///
-void SR_geomantic(uint8_t w){  // working now for basics
-  HEADNADA;
-  if (speedfroms[speedfunc[spdfunccnt][w]](w)){ // speedfunc
-    gate[w].dactype=whichdac[dactypecnt][w]; // question of dactypes which need param/cv also
-    SRlength[w]=(*lengthfroms[lengthfunc[lengthfunccnt][w]])(w); // lengthfunc
-    GSHIFT_;  // replace with types of gshift - gshiftfuncs...
-    // CORE
-    // param[w]
-    bitn=ADC_(w,SRlength[w], whichadc[adctypecnt][w],bitn,dacfrom[daccount][w],param[w], &gate[w].shift_); // as adc functions or as bitfuncs????
-    // adcbitstreams ??? which use depth
-    bitn^=(*bitfroms[bitfunc[bitfunccnt][w]])(w);// includes logic - would be nice deal with whole SR but pulsins etc. comes later // bitfunc
-    // ENDCORE
-    //    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function
-    BITN_AND_OUTV_; // pulsin is in there
-    new_data(val,w);
-  }    
-}
-
-/*
-- what the sixteen rmodes could be to manipulate these counts: list what we manipulate here and what needs to stay in groups and 
-  what can change independently
-
-// uint32_t *countfield[8]={&count, &daccount, &spdcount, &adccount, &dactcount, &binroutetypecount, &lengthcount}; // do we use all of these?
-// uint32_t *funcfield[8]={&dactypecnt, &spdfunccnt, &lengthfunccnt, &adctypecnt, &bitfunccnt}; // only 5 there
-
-// countfield is routings, funcfield always needs to match in uses of CV - or could double up?
-
-- we have some below. resetall is on last stop! 63
-
-we have 8 counts we can shift independently with setall below which is clocked by strobe...
-or we can have 8 functions for select...
-
-we can bump on all, just one set/group, with strobe, with cv
-
-binary manipulations we have below (one)
-
-also advanced and more recursion of SR (which?) on to groups eg. we can use another speedfrom to bump on counts
-
- */
-
 // 2/6/2022
 // for Rmode
 //uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount, &lengthcount};
 // CV for field - 3 bits, and CVl for value say 0-64
-void globalsetall(uint8_t w){ 
+void globalsetall(uint8_t w){  // TODO: REDO
   HEADNADA;
   //run all at full speed... but then problem as it gets set at full speed - when we turn knob sets all
   // so either we use strobe mode or is less bits
   tmp=CV[w]>>9; // only 3 bits
   uint8_t tmpp=CVL[w]>>6; // 6 bits - but we have not implemented all counts
-  *countfield[tmp]=tmpp;
+  //  *countfield[tmp]=tmpp;
   CVOPEN;
   GSHIFT_;
   BINROUTE_;
@@ -137,6 +57,7 @@ void globalresetall(uint8_t w){  // set all to zero using macro
 // 1/6/2022
 // adc set by rmode even
 // this is now in generic/geomantic
+/*
 uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,21,81,82,77,78,79,80,22,23,24,25,26,27,28,29,30,31,101,64,65,66,67,68,71,72,73,74, 0,1,2,3,4,5,6,7,25,26,27,29,30}; //6 bits - renew this list and check params if any
 
 void adcnew(uint8_t w){ 
@@ -152,6 +73,7 @@ void adcnew(uint8_t w){
   }
   }
 }
+*/
 
 // 31/30/5/2022
 // generic version again of vienna below would need 2xCV - but just have one recurse as we had before...
@@ -1544,6 +1466,7 @@ void dacbusothers_own(uint8_t w){ //
 
 
 // new template following this:
+/*
 void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. otherwise not... so we can free it check freecv above
   HEAD;
   uint32_t tmpp;
@@ -1573,6 +1496,7 @@ void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. ot
     new_data(val,w);
   }
 }
+*/
 
 // test SRclksrG ghosts
 void SR_clksrG(uint8_t w){ // 
@@ -1676,6 +1600,7 @@ void SR_genspeed3(uint8_t w){ // working now
 // towards generic sets of functions but...
 
 // *[how to abstract bit choice of DACs, CVL, CV, SR raw, past SR, clksr_, with masks for 12 bits?, tails... more pointers?]*
+/*
 uint32_t *CVlist[4][16]={
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &gate[0].Gshift_[0], &clksr_[0]},
     {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &gate[0].Gshift_[1], &clksr_[1]}
@@ -1694,6 +1619,7 @@ void SR_test(uint8_t w){ // null
   }
   }
 }
+*/
 
 /*
 - store previous SR value (every time or...), rotating store, also what happened to our longer storage? // dac value or whole SR

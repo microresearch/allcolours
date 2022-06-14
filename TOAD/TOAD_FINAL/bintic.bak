@@ -1619,7 +1619,7 @@ BB2
 Text GLabel 5875 1450 2    50   Input ~ 0
 B3
 Text GLabel 7775 1500 0    50   Input ~ 0
-BB3
+OUTX2
 Text GLabel 6675 800  0    50   Input ~ 0
 R1
 $Comp
@@ -2221,7 +2221,7 @@ F 3 "" H 10775 1500 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	1700 1750 1800 1750
+	1700 1750 1740 1750
 $Comp
 L Device:R_Small R9
 U 1 1 5ED0CAE4
@@ -2293,4 +2293,26 @@ Text GLabel 1535 2165 0    50   Input ~ 0
 B3RET
 Text GLabel 1545 2350 0    50   Input ~ 0
 SIGG1
+$Comp
+L Device:R_Small R81
+U 1 1 630B232A
+P 1310 1575
+F 0 "R81" V 1114 1575 50  0000 C CNN
+F 1 "10K" V 1205 1575 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 1310 1575 50  0001 C CNN
+F 3 "~" H 1310 1575 50  0001 C CNN
+	1    1310 1575
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1210 1575 1090 1575
+Text GLabel 1090 1575 0    50   Input ~ 0
+VCAA6
+Wire Wire Line
+	1410 1575 1740 1575
+Wire Wire Line
+	1740 1575 1740 1750
+Connection ~ 1740 1750
+Wire Wire Line
+	1740 1750 1800 1750
 $EndSCHEMATC

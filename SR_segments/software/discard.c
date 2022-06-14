@@ -1,3 +1,17 @@
+// but all abstractbitstreams use depth: so can pass in others not just cv... how to abstract this eg. so we can use dacfrom...
+uint32_t (*bitfroms[32])(uint8_t wh)={Gbinroute}; // add in funcs which use also binroutetypecount
+
+//uint32_t (*speedfroms[32])(uint8_t wh)={sadcfracint, sadcfrac, sdacfrac, sdacfracint, sstrobe, sstrobeint, sbinroute, sprob, sprobdac, sclksr}; // sycycle also... // expand for dacs etc...
+
+    //    bitn=ADC_(w,SRlength[w], whichadc[adctypecnt][w],bitn,dacfrom[daccount][w],param[w], &gate[w].shift_); // as adc functions or as bitfuncs????
+
+// now for length
+static inline uint32_t lcvl(uint8_t wh){ 
+  uint32_t bt=lookuplenall[CVL[wh]>>7]; // 5 bits
+  return bt;
+}
+
+
 
 /*
 // for manual binroute

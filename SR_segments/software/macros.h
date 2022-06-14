@@ -1,6 +1,6 @@
 // for new struct sets of modes:
 
-#define RESETR count=0; daccount=0; spdcount=0; tailcount=0; adctypecount=0; dactypecount=0; binroutetypecount=0; lengthcount=0; dactypecnt=0; spdfunccnt=0; lengthfunccnt=0; adctypecnt=0;bitfunccnt=0, binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
+#define RESETR count=0; daccount=0; spdcount=0; tailcount=0; dactypecount=0; binroutetypecount=0; dactypecnt=0; spdfunccnt=0; lengthfunccnt=0; adcfunccnt=0;bitfunccnt=0, binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
 
 #define STR0 (gate[w].trigger)
 
@@ -15,6 +15,20 @@
 #define SHFT     gate[w].shift_=gate[w].shift_<<1;
 
 ////////
+
+#define CLKSR {					\
+  if (intflag[w]) {				\
+  gate[w].trigger=1;				\
+  intflag[w]=0;					\
+  clksrG_[w]=clksr_[w];				\
+  tmp=(clksr_[w]>>31)& 0x01;						\
+  clksr_[w]=(clksr_[w]<<1)+tmp;					\
+  }									\
+  else  {								\
+  gate[w].trigger=0;							\
+  clksr_[w]=(clksr_[w]<<1);						\
+  }									\
+}
 
 #define ADCone {					\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
@@ -120,6 +134,7 @@
     gate[w].Gshift_[3]=gate[w].shift_;			\
     gate[w].Gshift_[8]=gate[w].shift_;			\
     gate[w].Gshare_=gate[w].shift_;			\
+    Gshift_[w]=gate[w].shift_&4095;			\
     gate[w].shift_=gate[w].shift_<<1;			\
 }
 
@@ -131,6 +146,7 @@
     gate[w].Gshift_[3]=gate[w].shift_;			\
     gate[w].Gshift_[8]=gate[w].shift_;			\
     gate[w].Gshare_=gate[w].shift_;			\
+    Gshift_[w]=gate[w].shift_&4095;			\
 }
 
 

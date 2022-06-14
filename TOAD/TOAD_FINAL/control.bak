@@ -3125,7 +3125,7 @@ Wire Wire Line
 Wire Wire Line
 	5175 1350 5115 1350
 Text GLabel 5115 1350 0    79   Input ~ 0
-OUTX2
+R1
 $Comp
 L Amplifier_Operational:LM13700 U12
 U 4 1 62ECFC88

@@ -9,6 +9,10 @@
 
 - drawn up/to re-check, check and check again...
 
+// mark which way pots should go for VCA - on damp/1st inv vca should be other way round
+
+test signum out//out we have is 1st int//2nd int - would be 3 outs - working but 1st can be with 10k to our regular schematic out..
+
 ** 7/6/2022
 
 // as it is now switched version seems cover different frequencies and

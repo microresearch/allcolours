@@ -1,22 +1,19 @@
 //// comment/ catalogue...
 
 /*
+older:
+
 - processors: hold bits, bits to value, value to bits and independent versions
 - speedgens with no params and default routes: sadcfrac, sdacfrac, sstrobe, sstrobeint, sbinroute, scycle, sprob, sprobdac, sclksr
 - generators: depth, wh
 
 - independent generators - so no shared stuff
 
-we need generators with no params... we can take some from speedgens...
-
  */
 
 //////////////////////////////////////////////////////////////////////////
-// for new geomantic abstraction: start again again with generics - this one for binroutes
-// need better labelling scheme
-//////////////////////////////////////////////////////////////////////////
 
-static inline uint32_t Gbinroute(uint8_t w){   // depth as routesel... shared bits now
+static inline uint32_t Gbinroute(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now
   uint32_t x, tmp, bitrr, bitn=0;
     uint32_t tmpp=binroutetypes[binroutetypecount][w];
     switch(tmpp){
@@ -48,12 +45,26 @@ static inline uint32_t Gbinroute(uint8_t w){   // depth as routesel... shared bi
     return bitn;
 }
 
-// now for length
-static inline uint32_t lcvl(uint8_t wh){ 
-  uint32_t bt=lookuplenall[CVL[wh]>>7]; // 5 bits
-  return bt;
+//////////////////////////////////////////////////////////////////////////
+// lengths
+
+static uint8_t held[4]={0,0,0,0};
+
+static inline uint32_t rlen(uint32_t depth, uint8_t wh){
+  held[wh]=0; // release hold
+  uint32_t bt=lookuplenall[depth>>7]; // 5 bits
+  return bt; // bt is a value
 }
 
+// hold old [CVL/depth] length
+static inline uint32_t holdlen(uint32_t depth, uint8_t wh){
+  static uint32_t oldd=0;
+  if (held[wh]==0) oldd=depth;
+  held[wh]=1;  
+  uint32_t bt=lookuplenall[oldd>>7]; // 5 bits
+  return bt; // bt is a value
+
+}
 
 //////////////////////////////////////////////////////////////////////////
 // abstract GENERATORS... adc ones are in adcetc.h
@@ -204,6 +215,27 @@ static inline uint32_t SRproc_bitsI(uint32_t depth, uint32_t bit, uint8_t wh){
 
 ////////////////////////////////////////////////////////////// GENS
 // speedgens with no params, just wh and use default routes
+
+// rework so is with depth eg.
+static inline uint32_t adcfrac(uint32_t depth, uint8_t wh){ 
+  uint32_t bt=0;
+  float speed;
+  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    gate[wh].dac = delay_buffer[wh][1];
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+
+//////////////////////////////////////////////////////////////
+
 static inline uint32_t sadcfrac(uint8_t wh){ 
   uint32_t bt=0;
   float speed;
@@ -276,6 +308,28 @@ static inline uint32_t sdacfrac(uint8_t wh){ // variations where we temper the d
   }
   return bt;
 }
+
+static inline uint32_t sdacfracint(uint8_t wh){ // variations where we temper the dac
+  uint32_t bt=0;
+  float speed;
+  speed=logspeedd[gate[speedfrom[count][wh]].dac>>2]; // 12 bits to 10 bits
+  gate[wh].alpha = gate[wh].time_now - (float)gate[wh].int_time;
+  gate[wh].dac = ((float)delay_buffer[wh][DELAY_SIZE-5] * gate[wh].alpha) + ((float)delay_buffer[wh][DELAY_SIZE-6] * (1.0f - gate[wh].alpha));
+  if (gate[wh].dac>4095) gate[wh].dac=4095;
+
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+
+  if(gate[wh].last_time<gate[wh].int_time) {
+    gate[wh].dac = delay_buffer[wh][1];
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
 
 static inline uint32_t sstrobe(uint8_t wh){   // strobe - no depth
   uint32_t bt;
@@ -887,7 +941,7 @@ static inline uint32_t returnnotbits(uint32_t depth, uint8_t wh){
 // what else.... more on static patterns from dac or adc
 
 // non-independent ones
-static inline uint32_t osceqbits(uint32_t depth, uint8_t wh){  
+static inline uint32_t osceqbits(uint32_t depth, uint8_t wh){  // so all share
   uint32_t bt;
   static int32_t n=0,nn=0;
      if (n>depth) {
@@ -1228,7 +1282,7 @@ static inline uint32_t binroutebitscyclestrI(uint32_t depth, uint8_t wh){   // d
   return bt;
 }
 
-static inline uint32_t osceqbitsI(uint32_t depth, uint8_t wh){  
+static inline uint32_t osceqbitsI(uint32_t depth, uint8_t wh){   
   uint32_t bt;
   static int32_t n[4]={0};
   static int32_t nn[4]={0};

@@ -194,8 +194,32 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 14/6/2022
+
+*- new abstraction to fill in/// how we could translate geomantic figures and/or minor_vienna to that scheme?*
+
+// major work is on porting functions... and in work on tails...
+
+DONE: geomantic.h - transfer all from exp to here...
+
+clksr: re-test but wondering if should be inside our speed or just runs at full speed... TEST move clksr // DONE
+
 ** 13/6/2022
 
+// question of new generic/geomantic modes as final for all ...
+
+speed:
+length:
+bit:
+
+adc/dac - if these use CV/otherDAC? how we free up selection if they
+use CV also? or just ignore this, or we just have divisions/wrap them
+but is a lot of work
+
+for example there are: adcbitstreams, dacbitstreams which use depth as param which can be CV, CVL or dacfromx (not dacfrom in dacbitstream cases) 
+dacbitstreams uses defdac... which is fixed as 3 - maybe change to ref - 
+
+CV, CVL, DAC/SR
 
 
 ** 7/6/2022
@@ -403,8 +427,6 @@ majors:
 2-sliding groups
 3-modes+Rsideglobal mods
 4-???bitmodes all... more generator style, all is bits and functions operating on bits
-
-no clksr?
 
 ** 29/5/2022
 

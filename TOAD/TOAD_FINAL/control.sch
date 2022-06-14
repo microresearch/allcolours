@@ -3223,4 +3223,8 @@ F 3 "" H 10020 2955 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	10020 2955 10020 2990
+Text Notes 820  5700 0    50   ~ 0
+B2ret could be pot other way\n
+Text Notes 990  3020 0    50   ~ 0
+needs adjust or something
 $EndSCHEMATC

@@ -56,19 +56,20 @@ static uint32_t count=0; // for route
 static uint32_t daccount=0; // for dacfrom
 static uint32_t spdcount=0; // for spdfrom
 static uint32_t tailcount=0; // for tail choice
-static uint32_t adctypecount=0; // for adctype
+static uint32_t adcfunccount=0; // for adctype
 static uint32_t dactypecount=0; // for dactype
-static uint32_t binroutetypecount=0; // for type of binroute - UNUSED
-static uint32_t lengthcount=0; // for type of logic - UNUSED
+static uint32_t binroutetypecount=0; // for type of binroute - UNUSED?
+static uint32_t cvcount=0; // for type of CV
+
 // would be nice to have 8 so is 3 bits - logic? logiccount
 
-uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount, &lengthcount};
+//uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount};
 
 //uint32_t *funcfield[8]={&dactypecnt, &spdfuncnt, &lengthfunccnt, &adctypecnt, &bitfunccnt}; // only 5 there
 static uint32_t dactypecnt=0;
 static uint32_t spdfunccnt=0;
 static uint32_t lengthfunccnt=0;
-static uint32_t adctypecnt=0;
+static uint32_t adcfunccnt=0;
 static uint32_t bitfunccnt=0;
 
 // 1 means its used so do normed clocks - all one for testing
@@ -104,7 +105,7 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 //uint16_t whichDAC=2;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
-volatile uint32_t param[4]={0,0,0,0}; // interrupt flag...
+uint32_t param[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength_[9]={31,31,31,31,31,31,31,31,31};
 uint32_t SRlength[9]={31,31,31,31,31,31,31,31,31};
 
@@ -128,6 +129,7 @@ static uint32_t clk_route[8]={0,
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
+static uint32_t Gshift_[4]={0xffff,0xffff,0xffff,0xffff};
 
 static uint32_t GGshift_[4][4]={ // for freezers
  {0xff,0xff,0xff,0xff},
@@ -142,6 +144,8 @@ static uint32_t storedlength[4][4]={
   {31,31,31,31},
   {31,31,31,31}
 };
+
+static uint32_t nulll=0;
 
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
 static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt[4]={0,0,0,0};
@@ -224,12 +228,14 @@ static uint32_t resetz=1;
 //#include "probability.h" // probability modes
 
 #include "basis.h" // basics from commented ones just to speed up tests
+#include "geomantic.h" // new geomantic codebase in progress
 #include "experiment.h" // more functional modes - can also shift some things here... trials
 //#include "bit.h" // bitmodes but some are still in modeL
 #include "rungler.h"
 
 void testnull(void){
 }
+
 
 uint32_t testmodes[4]={0,0,0,0};
 
@@ -308,19 +314,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     resetz=1;
     (*dotail[tailcount])(); // or this is 5th [www==4] www    
   }
-  
-  if (intflag[www]) { // process INT
-    gate[www].trigger=1;
-    intflag[www]=0;
-    clksrG_[www]=clksr_[www]; // copy in to ghost
-    tmp=(clksr_[www]>>31)& 0x01; // length is 31
-    clksr_[www]=(clksr_[www]<<1)+tmp;     // shift round CLKSR - we can also insert in/copy in
-  }
-  else  {
-    gate[www].trigger=0;
-    //    clksr_[www]=(clksr_[www]<<1); 
-  }
 
+  
   // genericLFSR for all probability modes
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   LFSR_[www] = (LFSR_[www]<<1) + tmp;

@@ -165,6 +165,25 @@ static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *
 */
 
 
+// port so is always with wh even if we don't used it so is compatible with abstracts
+static inline uint32_t adcxbitsx(uint32_t depth, uint8_t wh){ // max 12 bits
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      if (depth>11) depth=11; // max depth
+      ADCgeneric11; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      bc=depth; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t noadc(uint32_t depth, uint8_t wh){
+  return 0;  
+}
+
 // what are variations on this? - for padding (x bits treated as y bits):
 // restrict to 12 bits (can also be x bits fixed), pad to x bits, always static number of bits
 static inline uint32_t adcxbits(uint32_t depth){ // max 12 bits
@@ -196,7 +215,7 @@ static inline uint32_t adcpadbits(uint32_t depth){ // TODO: eg. what happens if 
   return bt;
 }
 
-static inline uint32_t adc12bits(uint32_t depth){ // fixed 12,8,4 
+static inline uint32_t adc12bits(uint32_t depth){ // fixed 12,8,4  - no depth!
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
@@ -209,7 +228,7 @@ static inline uint32_t adc12bits(uint32_t depth){ // fixed 12,8,4
   return bt;
 }
 
-static inline uint32_t adc8bits(uint32_t depth){ // fixed 12,8,4 
+static inline uint32_t adc8bits(uint32_t depth){ // fixed 12,8,4 - no depth!
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
@@ -218,12 +237,12 @@ static inline uint32_t adc8bits(uint32_t depth){ // fixed 12,8,4
       k=k>>4;
       bc=7; 
   }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bt = (k>>bc)&0x01; // this means that MSB comes out first - no depth!
   bc--;
   return bt;
 }
 
-static inline uint32_t adc4bits(uint32_t depth){ // fixed 12,8,4
+static inline uint32_t adc4bits(uint32_t depth){ // fixed 12,8,4 - no depth!
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
@@ -286,7 +305,7 @@ static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could 
 
 #define GAIN 0.5f
 
-static inline uint32_t adconebitsx(void){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
+static inline uint32_t adconebitsx(void){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta - no depth!
   uint32_t bt, k;
   static float integratorf=0.0f, oldvaluef=0.0f;
   float inb;
@@ -313,7 +332,7 @@ static inline uint32_t adconebitsx(void){ // depth is ignored or could be parame
   return bt;
 }
 
-static inline uint32_t adconebitsmid(uint32_t depth, uint8_t w){ // set midpoint
+static inline uint32_t adconebitsmid(uint32_t depth, uint8_t w){ // set midpoint NO! IGNORE
   uint32_t bt, k;
   static float integratorf=0.0f, oldvaluef=0.0f;
   static float inb;
@@ -464,7 +483,7 @@ static inline uint32_t adc12compbits(uint32_t depth){ // fixed 12 bits 2s comple
   return bt;
 }
 
-static inline uint32_t adc8compbits(uint32_t depth){ // fixed 8 bits 2s complement
+static inline uint32_t adc8compbits(uint32_t depth){ // fixed 8 bits 2s complement - no depth!
   uint32_t bt, bitwise;
   static int32_t bc=31;
   static uint32_t k;
@@ -482,7 +501,7 @@ static inline uint32_t adc8compbits(uint32_t depth){ // fixed 8 bits 2s compleme
   return bt;
 }
 
-static inline uint32_t adc4compbits(uint32_t depth){ // fixed 4 bits 2s complement
+static inline uint32_t adc4compbits(uint32_t depth){ // fixed 4 bits 2s complement - no depth!
   uint32_t bt, bitwise;
   static int32_t bc=31;
   static uint32_t k;
@@ -520,7 +539,7 @@ static inline uint32_t adccompbits(uint32_t depth){ // variable depth 2s complem
   return bt;
 }
 
-static inline uint32_t adc12onecompbits(uint32_t depth){ // fixed 12 bits 1s complement
+static inline uint32_t adc12onecompbits(uint32_t depth){ // fixed 12 bits 1s complement - no depth!
   uint32_t bt, bitwise;
   static int32_t bc=31;
   static uint32_t k;
@@ -538,7 +557,7 @@ static inline uint32_t adc12onecompbits(uint32_t depth){ // fixed 12 bits 1s com
   return bt;
 }
 
-static inline uint32_t adc8onecompbits(uint32_t depth){ // fixed 8 bits 1s complement
+static inline uint32_t adc8onecompbits(uint32_t depth){ // fixed 8 bits 1s complement - no depth!
   uint32_t bt, bitwise;
   static int32_t bc=31;
   static uint32_t k;
@@ -557,7 +576,7 @@ static inline uint32_t adc8onecompbits(uint32_t depth){ // fixed 8 bits 1s compl
   return bt;
 }
 
-static inline uint32_t adc4onecompbits(uint32_t depth){ // fixed 12 bits 1s complement
+static inline uint32_t adc4onecompbits(uint32_t depth){ // fixed 12 bits 1s complement - no depth!
   uint32_t bt, bitwise;
   static int32_t bc=31;
   static uint32_t k;
@@ -600,7 +619,7 @@ static inline uint32_t adconecompbits(uint32_t depth){ // variable 12 bits 1s co
 }
 
 // could even be list of functions here - how we integrate...
-uint32_t (*adcbitstreams[16])(uint32_t depth)={adcxbits, adcpadbits, adc12bits, adc8bits, adc4bits, adconebits, adceqbits, adcenergybits, adc12compbits, adc8compbits, adc4compbits, adccompbits, adc12onecompbits, adc8onecompbits, adc4onecompbits, adconecompbits};
+uint32_t (*adcbitstreams[16])(uint32_t depth)={adcxbits, adcpadbits, adc12bits, adc8bits, adc4bits, adconebits, adceqbits, adcenergybits, adc12compbits, adc8compbits, adc4compbits, adccompbits, adc12onecompbits, adc8onecompbits, adc4onecompbits, adconecompbits}; // which ones use depth parameter
 
 //DACs
 
