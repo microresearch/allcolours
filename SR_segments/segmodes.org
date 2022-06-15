@@ -29,18 +29,22 @@ prob/bitin is: CVvsDACx, CVvsLFSR, DACvsLFSR, strobe
 
 *what are models to choose from // for major minor modes:*
 
-*new geomantic/generic model*
+1-new geomantic/generic model
 
-dacbus?
+2-dacbus?  // how?
 
-generic vienna model: redo with interpoll (also if this is for major/minor modes how does RSR fit with reduced bits of course?, then RSR is more like tail)
+3-generic vienna model: redo with interpoll (also if this is for major/minor modes how does RSR fit with reduced bits of course?, then RSR is more like tail)
 
-abstractions: list these? but still have param shortage...
+4-abstractions: list these? but still have param shortage...
 
-expanded rungler model with different options and switched routings TODO
+5-expanded rungler model with different options and switched routings TODO
 
-mishmash here: bitmodes, probmodes, recursions, esoteric modes
+6-mishmash here: bitmodes, probmodes, recursions, esoteric modes
 minor/major modes,
+
+7-bitmodes
+
+8-?
 
 ghost/tails - where do we use these?
 
@@ -196,9 +200,31 @@ make new dir/files
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 15/6/2022
+
+- if we include Rmodes in generic then they can de-select themselves - so we cannot have this recursion, or is run as extra function/tail...
+// but we need CVL and sometimes CV to select... how we can put these on hold - version where all is per SR TODO
+
+// *how to program for lisbon - more generic?*
+
+// *how to implement right hand major modes in generic mode itself? or are these outside?*
+
+- *TODO: binroutesel from a counter ?? but do we need to do select for all binroutes - or just put as functions...*
+
+- realizing that latest scheme is now more like groups - groups of functions for each SR
+
+matrices of functions, of CV/DAC allocations
+
+- investigate recursion: promoting absolute generics for recursion
+- how a generic function could look in the real world
+
+what recursions new geomantic allows...? eg. selected SR bumps along matrices. matrix is an index of indexes/functions/cv?
+
 ** 14/6/2022
 
-*- new abstraction to fill in/// how we could translate geomantic figures and/or minor_vienna to that scheme?*
+*- new abstraction to fill in/// how we could translate geomantic figures to that scheme*
+
+minor vienna is just merge of binroute from CV and binroute from SR 
 
 adding extra param for abstraction so we can deal with adcin! copied IN!
 
@@ -316,7 +342,9 @@ where else?
 
 ** 2/6/2022
 
-*leave and don;t reset counts and routemask/binary // do we want masks for other counts - new model eg. we have tmp=binroute[count][w]|binary*
+*leave and don;t reset counts and routemask/binary*
+
+*// do we want masks for other counts - new model eg. we have tmp=binroute[count][w]|binary - but we need size of mask/count?*
 
 - also to try to integrate long encoded list of modes...
 

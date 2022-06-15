@@ -229,8 +229,10 @@ static uint32_t resetz=1;
 // extra files to check...
 
 #include "gen.h" // new generators
-#include "geogen.h" // newer generators
 #include "adcetc.h" // now all of the other functions so can work on modes
+#include "geogen.h" // newer generators
+
+//#include "handler.h" // now for interrupts
 
 //#include "modeN.h"
 //#include "modeL.h"
@@ -242,7 +244,7 @@ static uint32_t resetz=1;
 #include "geomantic.h" // new geomantic codebase in progress
 #include "experiment.h" // more functional modes - can also shift some things here... trials
 //#include "bit.h" // bitmodes but some are still in modeL
-#include "rungler.h"
+//#include "rungler.h"
 
 void testnull(void){
 }
@@ -255,7 +257,7 @@ void (*dofunc[4][64])(uint8_t w)=
   {SR_geomantic}, 
   {SR_geomantic}, 
   {SR_geomantic}, 
-  {SR_geomantic}
+  {SR_globalbin}
 };
 
 void (*dotail[64])(void)= {basictail};
@@ -264,7 +266,7 @@ void (*dotail[64])(void)= {basictail};
 
 // how many groups
 #define GROUP 13 
-
+/*
 void (*funcgroups[4][64])(uint8_t w)=
 {
   {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare}, 
@@ -272,6 +274,7 @@ void (*funcgroups[4][64])(uint8_t w)=
   {newdac2, dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2, noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
   {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
 }; // 13 so far
+*/
 
 void mode_init(void){
   uint32_t x;
@@ -312,7 +315,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  static uint32_t flipper[4]={1}, www=0, kk=0, ww=1;
+  static uint32_t flipper[4]={1}, www=0, kk=0, ww=0;
   uint32_t tmp;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed

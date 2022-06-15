@@ -135,32 +135,15 @@ else
     doit[w]=(mode[w]>>4)&0x01; // top bit maybe
     if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
     */
-    if (gate[w].strobed) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob? such as... test if we notice this!?
+    /*    if (gate[w].strobed) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob? such as... test if we notice this!?
       if (gate[dacfrom[count][w]].dac<CV[w]) bitn^=1; // use CV here as not for speed...
-	}
-    else bitn|=gate[w].trigger;	// instead of strobey
+      }
+      else */
+      bitn|=gate[w].trigger;	// instead of strobey
     
     BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
     new_data(val,w);
   }
-}
-
-/// for caput000, experiment with other tails, stacked tails but how do we control the tail, if at all...
-
-void basictail(void){ // tail here is basic 4th at full speed - not very exciting for major_vienna as just loops
-  HEADNADA;
-  uint32_t w=8;
-  GSHIFT_;
-  tmp=binroute[count][2];
-  for (x=0;x<4;x++){
-    if (tmp&0x01){
-      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
-      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
-      bitn^=bitrr;    
-    }
-    tmp=tmp>>1;
-  }
-  gate[w].shift_+=bitn;
 }
 
 // 29/5/2022
@@ -305,7 +288,7 @@ we need: sync counts/routes, count/route from which dac/sr?, CV/CVL
 
 void SR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast without pulsin
   HEADSIN;
-  SRlength[w]=CVL[w]>>7; // 5 bits
+  //  SRlength[w]=CVL[w]>>7; // 5 bits
   if (speedf_[w]!=2.0f){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
