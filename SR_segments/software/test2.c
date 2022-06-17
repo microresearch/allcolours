@@ -4,6 +4,14 @@
 #include "stdlib.h"
 #include "time.h"
 
+static inline uint32_t countbits(uint32_t i){
+  i = i - ((i >> 1) & 0x55555555);        // add pairs of bits
+  i = (i & 0x33333333) + ((i >> 2) & 0x33333333);  // quads
+  i = (i + (i >> 4)) & 0x0F0F0F0F;        // groups of 8
+  return (i * 0x01010101) >> 24;          // horizontal sum of bytes
+}
+
+
 #define MAXVALUE 4095
 
 ///#include "resources.h"
@@ -333,10 +341,6 @@ static inline int DAC_(uint32_t reg, uint32_t length, uint32_t type){ // 3 types
   return x;
 }
 
-static inline uint32_t countbits(uint32_t i)
-{
-  //    return( countbts[i&0xFFFF] + countbts[i>>16] );
-}
 
 //void fun1() { printf("Fun1\n"); }
 
@@ -1020,11 +1024,13 @@ heavens gate[4];
       }
     printf("integrator: %f bt: %d\n",integratorf,bt);
     }*/
-    int32_t yum=101;
+    int32_t yum=0b1000111101110;
+
+    yum=countbits(yum);
     
     for (x=0;x<4;x++){
-      yum=yum>>1;
-      printf("%d\n",yum);
+          printf("%d\n",yum);
     }
+
     
 }

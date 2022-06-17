@@ -199,7 +199,7 @@ static inline uint32_t SRproc_bitsI(uint32_t depth, uint32_t bit, uint8_t wh){
 static inline uint32_t adcfrac(uint32_t depth, uint8_t wh){ 
   uint32_t bt=0;
   float speed;
-  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed[depth>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -218,7 +218,7 @@ static inline uint32_t adcfrac(uint32_t depth, uint8_t wh){
 static inline uint32_t sadcfrac(uint8_t wh){ 
   uint32_t bt=0;
   float speed;
-  speed=logspeedd[CV[wh]>>2]; // 12 bits to 10 bits
+  speed=logspeed[CV[wh]>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -234,7 +234,7 @@ static inline uint32_t sadcfrac(uint8_t wh){
 static inline uint32_t sadcfracint(uint8_t w){  // interpol/dacout is inside now
   uint32_t bt=0;
   float speed;
-  speed=logspeedd[CV[w]>>2]; // 12 bits to 10 bits
+  speed=logspeed[CV[w]>>2]; // 12 bits to 10 bits
   //
   gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
   gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
@@ -257,7 +257,7 @@ static inline uint32_t sadcfracstop(uint8_t wh){
   uint32_t bt=0;
   float speed;
   speed=logspeed[CV[wh]>>2]; // 12 bits to 10 bits
-  if (wh==2 || speed!=2.0f){ 
+  if (wh==2 || speed!=LOWEST){ 
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -274,7 +274,7 @@ static inline uint32_t sadcfracstop(uint8_t wh){
 static inline uint32_t sdacfrac(uint8_t wh){ // variations where we temper the dac
   uint32_t bt=0;
   float speed;
-  speed=logspeedd[gate[speedfrom[spdcount][wh]].dac>>2]; // 12 bits to 10 bits
+  speed=logspeed[gate[speedfrom[spdcount][wh]].dac>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -291,7 +291,7 @@ static inline uint32_t sdacfrac(uint8_t wh){ // variations where we temper the d
 static inline uint32_t sdacfracint(uint8_t wh){ // variations where we temper the dac
   uint32_t bt=0;
   float speed;
-  speed=logspeedd[gate[speedfrom[spdcount][wh]].dac>>2]; // 12 bits to 10 bits
+  speed=logspeed[gate[speedfrom[spdcount][wh]].dac>>2]; // 12 bits to 10 bits
   gate[wh].alpha = gate[wh].time_now - (float)gate[wh].int_time;
   gate[wh].dac = ((float)delay_buffer[wh][DELAY_SIZE-5] * gate[wh].alpha) + ((float)delay_buffer[wh][DELAY_SIZE-6] * (1.0f - gate[wh].alpha));
   if (gate[wh].dac>4095) gate[wh].dac=4095;
@@ -320,7 +320,7 @@ static inline uint32_t sstrobe(uint8_t wh){   // strobe - no depth
 static inline uint32_t sstrobeint(uint8_t wh){
   uint32_t bt=0;
   static float speed;
-  //  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  //  speed=logspeed[depth>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -493,8 +493,8 @@ static inline uint32_t SRsigmadelta(uint32_t depth, uint8_t wh){  // processor f
 static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage - trial with stopps
   uint32_t bt=0;
   float speed;
-  speed=slowerlog[depth>>2]; // 12 bits to 10 bits
-  if (speed!=2.0f){
+  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  if (speed!=LOWEST){
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -512,8 +512,8 @@ static inline uint32_t speedfrac(uint32_t depth, uint8_t wh){ // depth is speed 
 static inline uint32_t speedfracint(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage - trial with stopps
   uint32_t bt=0;
   float speed;
-  speed=slowerlog[depth>>2]; // 12 bits to 10 bits
-  if (speed!=2.0f){
+  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  if (speed!=LOWEST){
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -534,8 +534,8 @@ static inline uint32_t speedfracint(uint32_t depth, uint8_t wh){ // depth is spe
 static inline uint32_t speedfracnoint(uint32_t depth, uint8_t wh){ // depth is speed - can be dacspeed but for now we dont do ==2/stoppage - trial with stopps
   uint32_t bt=0;
   float speed;
-  speed=slowerlog[depth>>2]; // 12 bits to 10 bits
-  if (speed!=2.0f){
+  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  if (speed!=LOWEST){
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -554,7 +554,7 @@ static inline uint32_t speedfracnoint(uint32_t depth, uint8_t wh){ // depth is s
 static inline uint32_t strobeint(uint32_t depth, uint8_t wh){ // kind of works...
   uint32_t bt=0;
   static float speed;
-  //  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  //  speed=logspeed[depth>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;

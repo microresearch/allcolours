@@ -187,9 +187,10 @@ void SR_geomantic(uint8_t w){  // working now for basics
     if (gate[w].dac>4095) gate[w].dac=4095;
   }
   else gate[w].dac = delay_buffer[w][1];
-  
+
+  CLKSR; // new macro deals with intflag outside speed
   if ((*speedfromsd[speedfunc[spdfunccnt][w]])(*CVlist[w][speedcvin[cvcount][w]],*CVlist[w][speedcv[cvcount][w]], w)){ // speedfunc
-    CLKSR; // new macro deals with intflag within speed
+    LASTSPEED; // new macro to deal with lastspeed 16/6
     gate[w].dactype=whichdac[dactypecnt][w]; // question of dactypes which need param/cv also
     if (lengthfunc[lengthfunccnt][w]!=0){ // so function 0 null should just hold length
     SRlength[w]=(*lengthfromsd[lengthfunc[lengthfunccnt][w]])(*CVlist[w][lengthcv[cvcount][w]],w); // lengthfunc

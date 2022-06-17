@@ -52,7 +52,7 @@ static uint32_t binary[9]={0,0,0,0}; // binary global routing
 
 static uint32_t ADCin;
 
-#define LOWEST 0.000063f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022
+#define LOWEST 0.000062f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022 // this is now our STOP
 
 
 static uint32_t count=0; // for route
@@ -230,21 +230,21 @@ static uint32_t resetz=1;
 
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
-#include "geogen.h" // newer generators
+//#include "geogen.h" // newer generators
 
 //#include "handler.h" // now for interrupts
 
-//#include "modeN.h"
-//#include "modeL.h"
-//#include "modeR.h"
-//#include "modeC.h"
+#include "modeN.h"
+#include "modeL.h"
+#include "modeR.h"
+#include "modeC.h"
 //#include "probability.h" // probability modes
 
-#include "basis.h" // basics from commented ones just to speed up tests
-#include "geomantic.h" // new geomantic codebase in progress
+//#include "basis.h" // basics from commented ones just to speed up tests
+//#include "geomantic.h" // new geomantic codebase in progress
 #include "experiment.h" // more functional modes - can also shift some things here... trials
-//#include "bit.h" // bitmodes but some are still in modeL
-//#include "rungler.h"
+#include "bit.h" // bitmodes but some are still in modeL
+#include "rungler.h"
 
 void testnull(void){
 }
@@ -252,29 +252,35 @@ void testnull(void){
 uint32_t testmodes[4]={0,0,0,0};
 
 // collect modes: Lmultiplespeednew // tag modesx modex
-void (*dofunc[4][64])(uint8_t w)=
+/*void (*dofunc[4][64])(uint8_t w)=
 {
   {SR_geomantic}, 
   {SR_geomantic}, 
   {SR_geomantic}, 
   {SR_globalbin}
 };
+*/
 
-void (*dotail[64])(void)= {basictail};
+//void (*dotail[64])(void)= {basictail};
 
 
 
 // how many groups
-#define GROUP 13 
-/*
-void (*funcgroups[4][64])(uint8_t w)=
+#define GROUP 15 // for 16
+
+void (*funcgroups[4][128])(uint8_t w)=
 {
-  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare}, 
-  {SRX0, SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare}, 
-  {newdac2, dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin,dacNLRinlogic, adcLbinprob, dac2, noSRdac2s,dacNLRprobin,   stream4_unshare}, // dacNLRprobinINT1311
-  {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2,SRRrung3,     adcLbinprob, SRX0,     SRX0,adcLabstractLD, stream4_unshare}
-}; // 13 so far
-*/
+  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream, }, //128
+  
+  {SRX0, SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare, stream},  // 128
+
+  {newdac2, dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin,   stream4_unshare, stream}, 
+  
+  {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2, SRRrung3,     adcLbinprob, SRX0,     SRX0, adcLabstractLD, stream4_unshare, stream} //64 
+}; // 13 so far -- to add more for lisbon - select at random from 50 - how to do from cards...
+
+// card for each = 16 possibles... we need 50! - q of slidings - we can slide +-64 except modeR cannot slide so should be most generic
+
 
 void mode_init(void){
   uint32_t x;
@@ -338,7 +344,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     resetz=1;
   }
   www=orderings[ordercount][ww];
-  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
+  //  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
   
   // genericLFSR for all probability modes
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
@@ -346,17 +352,22 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // sliding modes 
     
-  //  mde=mode[www];
-  //  mde=3; // upto13 - test for the frozen one // 11odd 3/genericbitsissilentmostly
-  //  if (mde>GROUP) mde=GROUP; 
-  //  (*funcgroups[www][mde])(www);
+      mde=mode[3]; // upto13 - test for the frozen one // 11odd 3/genericbitsissilentmostly
+      if (mde>GROUP) mde=GROUP;
+      /*  if (www==0) mde=((mode[3]+mode[0])%128);
+  else if (www==1) mde=((mode[3]+mode[1])%128);
+  else if (www==2) mde=((mode[3]+mode[2])%128);
+  else mde=mode[3]; // case for 3:
+      */    
+
+  (*funcgroups[www][mde])(www);
       
 
   // trial here different version of Vienna with interpoll and new bit recurse options
   //  major_vienna(www);
 
   // do func
-  (*dofunc[www][0])(www);
+  //  (*dofunc[www][0])(www);
 
   
   if (www==2)  {
@@ -365,7 +376,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // where are these used and is too long as counts every time
   //      counter[4]++; counter[5]++; counter[6]++;
-  counter[www]++; 
+  counter[www]++; // used I think for multiple speeds
   counterd[www]++; 
 
 }

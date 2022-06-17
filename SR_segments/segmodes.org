@@ -189,8 +189,6 @@ RESOLVE ARCH:
 
 ** TODO
 
-make new dir/files
-
 *modes which manipulate other SRs ???*
 
 - co-ordinate and check lists of routes, dacfrom, speedfrom routes
@@ -199,6 +197,67 @@ make new dir/files
 - 5th tail as processor, generator and what_would_have_been
 - check all above: speed, clkin, pulsin etc.
 - sort modes
+
+** 17/6/2022
+
+- we try to cram in functions into groups but running out of FLASH space so:
+-- -Os and other Makefile/gcc optimisations, cutting countbts and logspeedd arrays...
+
+with all crammed in randomly crashes sometimes -> reverted back to limited first set of grouped functions
+
+// tried with just exp modes and one of those is crashing...
+
+//Qs/reflections: we need to know where strobe is really in use as speed so can't be so generic
+use of length for other params can be glitchy
+
+- test functions???
+
+** 16/6/2022
+
+///JEKYLL/HYDE
+
+- how can we mix major and minor modes (eg. vienna mode on top, rungler on side) - do they make sense like this?
+
+[4 major modes/2 bits leaves 4 bits]
+
+somehow we want to run parallel modes - as remnants, remains, layers, revenants, leftovers, palimpsest
+
+SR as itself a layering - 16/32 layers
+
+*secret of the tail? also here: - if we include Rmodes in generic then they can de-select themselves - so we cannot have this recursion, or is run as extra function/tail...*
+
+----[but vienna mode is not so challenging]
+
+- 16 geomantic figures
+
+- record speed as distance/count between last 2 triggers (in struct) DONE: but how do we test this...
+
+- geomantic.g is a mess:
+
+recursion cannot include control
+
+we just need generic speed, length, route[if needed]/binroutetype /adc/dac other types set globally
+
+routing table is too complex - we need always a route in of either
+speed, length or bits (eg. if modeC is just a generator the others are
+redundant, but the others can be generators with no route in?)
+
+*either we have as completely generic - dacbus/any can be dac/out - or we assign functions and constrain routes?*
+
+constrained by: synced routing tables (in geo.h we have tables partly in the cv arrays which is a problem)
+
+speedroute
+lengthroute
+binroute
+
+should we have properties of each SR in struct: eg. index into functions?
+so each SR has:
+ADCtype index, DACtype
+functions index
+
+length is held or value (eg. CVL, DAC) so need to express more simply
+
+what to do with all the mode functions we have...? re-wrap?
 
 ** 15/6/2022
 

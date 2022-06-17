@@ -1,8 +1,13 @@
 /// from here
 static inline uint32_t countbits(uint32_t i)
 {
-    return( countbts[i&0xFFFF] + countbts[i>>16] );
+  i = i - ((i >> 1) & 0x55555555);        // add pairs of bits
+  i = (i & 0x33333333) + ((i >> 2) & 0x33333333);  // quads
+  i = (i + (i >> 4)) & 0x0F0F0F0F;        // groups of 8
+  return (i * 0x01010101) >> 24;          // horizontal sum of bytes
 }
+  
+  //    return( countbts[i&0xFFFF] + countbts[i>>16] );
 
 
 static inline uint8_t probableCV(uint32_t reg, uint32_t type){
@@ -2303,7 +2308,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 7: // 4 spaced bits out! equiv bits
     x= ( ((shift& (1<<lastspac[length][0]))>>lastspacbac[length][0]) + ((shift& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((shift& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((shift& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
-    x=countbts[x]*1023;
+    //    x=countbits[x]*1023;
     if (x>4095) x=4095;
     break;
 
@@ -2697,7 +2702,7 @@ void TIM4_IRQHandler(void)
   if (nn>=SMOOTHINGS) nn=0;
   temp=totn/SMOOTHINGS;  
   CV[0]=temp;
-  speedf[0]=slowerlog[temp>>2]; // was logspeed
+  speedf[0]=logspeed[temp>>2]; // was logspeed
   //  speedf_[0]=0.1f;
   
   // speedl
@@ -2713,7 +2718,7 @@ void TIM4_IRQHandler(void)
   if (ll>=SMOOTHINGS) ll=0;
   temp=totl/SMOOTHINGS;  
   CV[1]=temp;
-  speedf[1]=slowerlog[temp>>2];
+  speedf[1]=logspeed[temp>>2];
   
   // speedr
   totr=totr-smoothr[rr];
@@ -2727,7 +2732,7 @@ void TIM4_IRQHandler(void)
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
   CV[3]=temp;
-  speedf[3]=slowerlog[temp>>2];
+  speedf[3]=logspeed[temp>>2];
   
     // speedc
   totc=totc-smoothc[cc];
@@ -2742,7 +2747,7 @@ void TIM4_IRQHandler(void)
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
   CV[2]=temp;
-  speedf[2]=slowerlog[temp>>2];
+  speedf[2]=logspeed[temp>>2];
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!
 

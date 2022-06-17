@@ -16,6 +16,11 @@
 
 ////////
 
+#define LASTSPEED {				\
+  gate[w].lastspeed=gate[w].countspeed;		\
+  gate[w].countspeed=0;				\
+  }
+
 #define CLKSR {					\
   if (intflag[w]) {				\
   gate[w].trigger=1;				\
@@ -109,7 +114,7 @@
 
 #define HEAD float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; \
 
-#define HEADC float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=lookuplenall[CVL[w]>>7]; speedf_[w]=logspeedd[CV[w]>>2];
+#define HEADC float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=lookuplenall[CVL[w]>>7]; speedf_[w]=logspeed[CV[w]>>2];
 
 // these ones are for NO SRlength - stays as is and we can use CVL 12 bits
 
@@ -132,8 +137,7 @@
   gate[w].int_time=0;							\
   }
 
-// redefining for struct
-
+// redefining for struct - adding in count for lastspeed
 #define GSHIFT_ {				\
     gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
     gate[w].Gshift_[0]=gate[w].shift_;					\
@@ -144,6 +148,7 @@
     gate[w].Gshare_=gate[w].shift_;			\
     Gshift_[w]=gate[w].shift_&4095;			\
     gate[w].shift_=gate[w].shift_<<1;			\
+    gate[w].countspeed++;				\
 }
 
 #define GSHIFTNOS_ {				\

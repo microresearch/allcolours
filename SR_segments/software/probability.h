@@ -26,7 +26,7 @@ SRown<CV - own ghost SR: gate[w].Gshift_[w]
 SRown<CV+DAC
   SRown<SRincoming
 
-void probintnew(uint8_t w){ // uses CVL for bits - can also be full detached
+void probintnew(uint8_t w){ // uses CVL for bits - can also be full detached // null
   uint32_t tmpp, bit, lower;
   uint32_t prob[4]={0};
   uint32_t left[2]={0}; uint32_t right[2]={0};
@@ -105,7 +105,7 @@ void SRINquestion0(uint8_t w){ // NO LENGTH NOR SPEEDS - length is now bits, spe
   uint32_t left[2]={0}; uint32_t right[2]={0};
   static uint8_t toggle;
   
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -288,7 +288,7 @@ void probintprobdac1_0(uint8_t w){ // example - as prob1 above but against DAC
 void probtempst(uint8_t w){
 uint8_t prob;
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -308,7 +308,7 @@ void probtoggle1(uint8_t w){
 uint8_t prob;
   static uint8_t tug[4]={0};
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -327,7 +327,7 @@ void probtoggle2(uint8_t w){
   uint8_t prob;
   static uint8_t tug[4]={0};
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -348,7 +348,7 @@ void probtoggle3(uint8_t w){
 uint8_t prob;
   static uint8_t tug[4]={0};
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -369,7 +369,7 @@ void probtoggle4(uint8_t w){ // new one for ZERO entry
 uint8_t prob;
   static uint8_t tug[4]={0};
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -390,7 +390,7 @@ void probtoggle5(uint8_t w){ // new one for ZERO entry against binroute/cycling
 uint8_t prob;
   static uint8_t tug[4]={0};
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -412,7 +412,7 @@ uint8_t prob;
 void probstrobe1(uint8_t w){
 uint8_t prob;
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -429,7 +429,7 @@ uint8_t prob;
 void probstrobe2(uint8_t w){
 uint8_t prob;
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -448,7 +448,7 @@ uint8_t prob;
 void probstrobe3(uint8_t w){
 uint8_t prob;
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -743,7 +743,7 @@ void probgenericprobx(uint8_t w){ // porting to strobe - ported to N
   uint32_t prob[4]={0};
   HEAD;  
 
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
     CVOPEN;
 
     GSHIFT_;

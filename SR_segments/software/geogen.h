@@ -502,6 +502,17 @@ static inline uint32_t zbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint3
 //////////////////////////////////////////////////////////////////////////
 //3
 //speeds - which can also be generic bit functions! and vice versa...
+static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // lastspeed processor - no use of depth, no interpol
+  uint32_t bt=0;
+  static uint32_t counters[4]={0,0,0,0};
+  counters[wh]++;
+  if (counters[wh]>gate[wh].lastspeed){
+    counters[wh]=0;
+    bt=1;
+  }
+  return bt;
+}
+  
 
 // hold old [CVL/depth] length
 static inline uint32_t holdlspdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
@@ -511,7 +522,7 @@ static inline uint32_t holdlspdfrac(uint32_t depth, uint32_t in, uint32_t wh){ /
 
   if (helds[wh]!=0) oldd=helds[wh];
   helds[wh]=0;  
-  speed=logspeedd[helds[wh]>>2]; // 12 bits to 10 bits
+  speed=logspeed[helds[wh]>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -527,7 +538,7 @@ static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // for
   uint32_t bt=0;
   float speed;
   helds[wh]=depth;
-  speed=logspeedd[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed[depth>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -551,7 +562,7 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we
   if (in==0) tmp=depth;
   else tmp=depth%in;
   helds[wh]=tmp;
-  speed=logspeedd[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -1489,7 +1500,7 @@ static inline uint32_t Rtest(uint32_t depth, uint32_t in, uint32_t wh){
 void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast without pulsin
   HEADSIN;
   //  SRlength[w]=CVL[w]>>7; // 5 bits
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;

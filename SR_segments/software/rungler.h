@@ -1,4 +1,4 @@
-uint8_t dacmodes[16]={25,26,27,71,72,73,74,75,  77,78,79,80,86,88,91,105};
+//uint8_t dacmodes[16]={25,26,27,71,72,73,74,75,  77,78,79,80,86,88,91,105};
 
 /*
 
@@ -256,7 +256,7 @@ void SRrungbody0(uint8_t w){ // body on R
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
 
-  speedf__=logspeedd[tmp];
+  speedf__=logspeed[tmp];
   //  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -272,7 +272,7 @@ void SRrungbody0(uint8_t w){ // body on R
 
 
 //////////////////// previous
-
+/*
 // from modeN.h
 
 //SRN: speed from SRR, data from SRL - new route XOR with loopback: rung - body!
@@ -291,7 +291,7 @@ void adcLrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  speedf__=logspeedd[tmp];
+  speedf__=logspeed[tmp];
   //  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -322,7 +322,7 @@ void adcLrung1(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  speedf__=logspeedd[tmp];
+  speedf__=logspeed[tmp];
   //  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -395,6 +395,7 @@ void adcrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC input
     ENDER;
   }
 }
+
 
 // from  model:
 
@@ -475,13 +476,11 @@ void SRrung3(uint8_t w){// with oscillator - add
 
 // 2bits speed ops, how many oscs we have...
 
-  /* what are speed ops? 
 
-  speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
-  cv=(CV[w]>>2)-(gate[0].dac>>2);  speedf__ = logspeed[cv] // minus
-  speedf__=logspeed[(CV[w]&511)+(gate[0].dac>>3)]; // add
-  cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
-*/
+//  speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
+//  cv=(CV[w]>>2)-(gate[0].dac>>2);  speedf__ = logspeed[cv] // minus
+//  speedf__=logspeed[(CV[w]&511)+(gate[0].dac>>3)]; // add
+//  cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
 
 // oscs: 21adcandsharedbitsotherpar, 29otherpar, 28strobe, 30osc, 31tm, 34osc/otherpar, 77oscdac, 78oscdac, 79oscdac, 80oscdac, 89impulses/strobe/otherpar, 95otherpar/patterns, 107osc1bits +3: 19.adcpadbits, 18adcbits, 22lfsr
 uint8_t oscmode[16]={107,21,29,28, 30,31,34,77,  78,79,80,89, 95,19,18,22};
@@ -536,7 +535,7 @@ void SRRrung0(uint8_t w){// with oscillator
   float speedf__;
   cv=(gate[0].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
-  speedf__=logspeedd[cv];
+  speedf__=logspeed[cv];
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -552,7 +551,7 @@ void SRRrung1(uint8_t w){// with oscillator - other minus - but is same as above
   float speedf__;
   cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
   if (cv<0) cv=0;
-  speedf__=logspeedd[cv];
+  speedf__=logspeed[cv];
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -567,7 +566,7 @@ void SRRrung2(uint8_t w){// with oscillator - mod
   int32_t cv;
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
-  speedf__=logspeedd[(gate[0].dac>>2)%cv]; // mod
+  speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -645,7 +644,7 @@ void dacLrung0(uint8_t w){ // detached length
   HEADSIN;
   tmp=CVL[w]>>6;// 2 bits for route, 4 bits for DACtype = 6 bits
   gate[w].dactype=tmp>>2; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){ // remove!
+  if (w==2 || speedf_[w]!=LOWEST){ // remove!
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -663,3 +662,4 @@ void dacLrung0(uint8_t w){ // detached length
   }  
 }
 
+*/

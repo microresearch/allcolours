@@ -37,9 +37,9 @@ CFLAGS  =  -I. -IInclude -Iinc -std=gnu99 \
 	 -D'__FPU_PRESENT=1' -DARM_MATH_CM4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
-	-c -lm -lc -fno-common -O3 -funroll-loops \
+	-c -lm -lc -fno-common -Os -s -funroll-loops \
 	-mcpu=cortex-m4 \
-	-mfloat-abi=hard \
+	-mfloat-abi=hard -ffast-math -fomit-frame-pointer \
 	-fsingle-precision-constant -fsigned-char -Wdouble-promotion -ffunction-sections -fdata-sections
 
 
@@ -53,7 +53,7 @@ AFLAGS  = -mlittle-endian -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -mfl
 
 LFLAGS  = -T $(LDSCRIPT) -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 
 #LFLAGS_END = -larm_cortexM4lf_math -ldsplib_lm4f -Wl,--gc-sections,-Map=myfile.map -lm -lc
-LFLAGS_END =  -Wl,--print-memory-usage,--gc-sections,-Map=myfile.map -lm -lc  
+LFLAGS_END =  -Wl,--print-memory-usage,--gc-sections,-Map=myfile.map -lm -lc -dead_strip
 
 # Executables
 ARCH = arm-none-eabi

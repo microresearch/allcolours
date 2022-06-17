@@ -7,7 +7,7 @@ void SRRLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
   uint32_t lin, lout;
   HEADSSINNADA;
 
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -31,7 +31,7 @@ void SRRLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
 // basic route in prototype
 void SRR0(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -46,7 +46,7 @@ void SRR0(uint8_t w){
 // no << gshift
 void SRR0nog(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -60,7 +60,7 @@ void SRR0nog(uint8_t w){
 
 void SRRnada(uint8_t w){  // no route in. nada
    HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -75,7 +75,7 @@ void SRRnada(uint8_t w){  // no route in. nada
 
 void SRR1(uint8_t w){ // route and cycle
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -89,7 +89,7 @@ void SRR1(uint8_t w){ // route and cycle
 
 void SRRmod(uint8_t w){ // modulo route in 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -116,7 +116,7 @@ void SRRmod(uint8_t w){ // modulo route in
 
 void SRRosc0(uint8_t w){ // basic route in with oscillator
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -133,7 +133,7 @@ void SRRosc0(uint8_t w){ // basic route in with oscillator
 
 void SRRaccelghosts0(uint8_t w){ // route in // exp mode to accelerate/bump on all ghosts except own - could also select which ones for intmode
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -165,7 +165,7 @@ void SRRaccelghosts0(uint8_t w){ // route in // exp mode to accelerate/bump on a
 void SRRstroberoute(uint8_t w){ // kill all routes
   HEAD;
   
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -194,7 +194,7 @@ void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute  // what of spdcou
       daccount=count;
     }
     
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -208,7 +208,7 @@ void SRRglobalbump0(uint8_t w){ // bump dacroute and binroute  // what of spdcou
 
 void SRRglobaldac0(uint8_t w){ // dac as global route table 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
     CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     count=(gate[w].dac)>>8; // 4 bits now    from ITSELF
@@ -226,7 +226,7 @@ void SRRglobaldac0(uint8_t w){ // dac as global route table
 // locals
 void SRRbumproute0(uint8_t w){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -252,7 +252,7 @@ void SRRbumproute0(uint8_t w){ // trigger bumps up our local route - add one to 
 
 void SRRDACroute0(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -276,7 +276,7 @@ void SRRDACroute0(uint8_t w){
 
 void SRRSRroute0(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -302,7 +302,7 @@ void SRRSRroute0(uint8_t w){
 
 void SRR32(uint8_t w){ // multiple bits in as case 19 in draftdec
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -334,7 +334,7 @@ void SRR32(uint8_t w){ // multiple bits in as case 19 in draftdec
 void SRRBITlengthdac(uint8_t w){ 
   uint32_t bits;
   HEAD;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -354,7 +354,7 @@ void SRRBITlengthdac(uint8_t w){
 void SRRLBITlengthdac(uint8_t w){ // detach length and just have dactype 
   uint32_t bits;
   HEADSIN;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -381,7 +381,7 @@ void SRRdacoffset0(uint8_t w){
   HEADSIN;
   tmp=(1024-(CV[w]>>2)) + (int)((float)(gate[speedfrom[spdcount][w]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
-  speedf__=logspeedd[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -397,7 +397,6 @@ void SRRdacadditself0(uint8_t w){ // tested//trial itself as DAC - can also be o
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+(gate[w].dac>>3)];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -412,7 +411,6 @@ void SRRdacghostitself0(uint8_t w){ // own ghost from next 1 - could also select
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+((gate[w].Gshift_[1])&511)];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -436,7 +434,6 @@ void SRRdacseladd0(uint8_t w){
   //  if (speedf__>1.0f) speedf__=1.0f;
   // if (speedf__<LOWEST) speedf__=LOWEST;
   //  speedf__=1.0f;
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -451,7 +448,6 @@ void SRRdacadd0(uint8_t w){
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+(gate[speedfrom[spdcount][w]].dac>>3)];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -468,7 +464,6 @@ void SRRdacmod(uint8_t w){
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
   speedf__=logspeed[(gate[speedfrom[spdcount][w]].dac>>2)%cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -485,7 +480,6 @@ void SRRB0(uint8_t w){// with oscillator
   cv=(gate[speedfrom[spdcount][w]].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -506,7 +500,7 @@ void SRRrung0(uint8_t w){// with oscillator
   float speedf__;
   cv=(gate[0].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
-  speedf__=logspeedd[cv];
+  speedf__=logspeed[cv];
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -522,7 +516,7 @@ void SRRrung1(uint8_t w){// with oscillator - other minus - but is same as above
   float speedf__;
   cv=(gate[0].dac>>2)-(1024-(CV[w]>>2)); // other minus
   if (cv<0) cv=0;
-  speedf__=logspeedd[cv];
+  speedf__=logspeed[cv];
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -537,7 +531,7 @@ void SRRrung2(uint8_t w){// with oscillator - mod
   int32_t cv;
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
-  speedf__=logspeedd[(gate[0].dac>>2)%cv]; // mod
+  speedf__=logspeed[(gate[0].dac>>2)%cv]; // mod
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -554,7 +548,6 @@ void SRRrung3(uint8_t w){// with oscillator - add
   int32_t cv;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+(gate[0].dac>>3)]; // add
-  if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -594,7 +587,6 @@ void SRRLrung0(uint8_t w){// DETACHED> with oscillator
   speedf__ = logspeed[cv]; 
   }
 
-  if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -616,7 +608,6 @@ void SRRdacminus0(uint8_t w){
   cv=(gate[speedfrom[spdcount][w]].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -634,7 +625,6 @@ void SRRdacspeedminus0(uint8_t w){
   cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -651,7 +641,6 @@ void SRRdacmod0(uint8_t w){
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
   speedf__=logspeed[(gate[speedfrom[spdcount][w]].dac>>2)%cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -765,7 +754,7 @@ void SR5_feedback(uint8_t w){ // detached
   HEADSIN; // use CVL[w] for tail entry speed... // can also use as INTmode with speed as this speed...
   // tail trial1
   uint8_t old;
-  speedf_[8]=logspeedd[CVL[w]>>2];
+  speedf_[8]=logspeed[CVL[w]>>2];
   old=w;
   w=8;
   //  gate[w].dac = delay_buffer[w][1]; // no interpol so we have gate[8].dac as 5th tail

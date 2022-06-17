@@ -36,7 +36,7 @@ INTmodes
 /*
 void SRLproto(uint8_t w){
   HEADSIND;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -65,7 +65,7 @@ void SRintproto(uint8_t w){
 //- route and logop - 8 bits + 2 from other dac: LSRroutelogxx and LSRroutelogxxx
 void bitSRroutelog(uint8_t w){ // SR: 4 bits for route in... other bits for logop
   HEAD;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -92,7 +92,7 @@ void bitSRroutelog(uint8_t w){ // SR: 4 bits for route in... other bits for logo
 void bitSRroutelogxx(uint8_t w){ // SR: 4 bits for route in... other bits for logop - try changing srfrom
   uint8_t tmpp;
   HEAD;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -122,7 +122,7 @@ void bitLcvsrroute(uint8_t w){ // simpler routing and cv also selects dacfrom as
  HEADSIN;
   uint32_t mmm=(63-(CVL[w]>>6)); // 6 bits // dacfrom 2 = total 6
 
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -149,7 +149,7 @@ void bitSRroutelogxxx(uint8_t w){ // recursive use of dacfrom SR: 4 bits for rou
   uint8_t tmpp;
   static uint32_t lastdacfrom=0;
   HEAD;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -190,7 +190,7 @@ void bitSRroutedoit(uint8_t w){ // SR: 4 bits for route in, doit options and pro
   // can have bits from CV/SR/ and CV also for prob... but...
   uint8_t tmpp;				       
   HEAD;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -227,7 +227,7 @@ void bitLSRlen(uint8_t w){
   uint8_t tmpp; 
   HEADSIN; // so we have CVL free for
   // to select DACfrom and route///
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -260,7 +260,7 @@ void bitLSRlen(uint8_t w){
 // basic route and AND length CV with standard SR
 void bitSRlen(uint8_t w){ 
   HEADSIN;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {    
     GSHIFT_;
@@ -289,7 +289,7 @@ void bitLBITdactype(uint8_t w){ // CVL and dacfrom set temporary local dactype
   uint32_t mmm=CVL[w]>>8; // to 4 bits
   tmp=(mmm)&(SRFROM&15); // dactype
   gate[w].dacpar=param[w]; 
-    if (speedf_[w]!=2.0f){ 
+    if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -305,7 +305,7 @@ void bitLcvtyperoute(uint8_t w){ // CVL sets temporary local dactype - now with 
  HEADSIN;
   uint32_t mmm=(255-(CVL[w]>>4)); // 12 bits to 8 bits
   gate[w].dacpar=param[w]; 
-    if (speedf_[w]!=2.0f){ 
+    if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -332,7 +332,7 @@ void bitLBITdactyperoute(uint8_t w){ // CVL and dacfrom set temporary local dact
  HEADSIN;
   uint32_t mmm=(255-(CVL[w]>>4)); // 12 bits to 8 bits
   gate[w].dacpar=param[w]; 
-    if (speedf_[w]!=2.0f){ 
+    if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -359,7 +359,7 @@ void bitLBITdactyperoute(uint8_t w){ // CVL and dacfrom set temporary local dact
 void bitLBITlengthdactype(uint8_t w){ //sets length and dactype - so we have spare CV to logop in
  uint32_t bits;
   HEADSIN;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -379,7 +379,7 @@ void bitLBITlengthdactype(uint8_t w){ //sets length and dactype - so we have spa
 
 void bitLSRroutexxxlog(uint8_t w){ // SR: 4 bits for route in... 8 other bits for logop PLUS logopxxx for maskings
   HEADSIN;  
- if (speedf_[w]!=2.0f){
+ if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 

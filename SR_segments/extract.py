@@ -144,8 +144,8 @@ def write_to_file(filoen, func_list, output_file):
 
 if __name__ == '__main__':
 
-    file_list=['experiment.h', 'modeN.h', 'modeC.h', 'modeL.h', 'modeR.h', 'bit.h', 'probability.h']
-    #file_list=['probability.h']
+    #    file_list=['experiment.h', 'modeN.h', 'modeC.h', 'modeL.h', 'modeR.h', 'bit.h', 'probability.h']
+    file_list=['rungler.h']
     countt=0
 
     for file in file_list:

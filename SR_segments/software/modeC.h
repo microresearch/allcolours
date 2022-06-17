@@ -2,7 +2,7 @@
 
 #define DACOUT {				\
   HEAD;						\
-  if (w==2 || speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=LOWEST){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -15,7 +15,7 @@
 
 #define DACOUTNOV {				\
   HEAD;						\
-  if (w==2 || speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=LOWEST){				\
     CVOPENNOINTERPOL;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -29,7 +29,7 @@
 
 #define DACOUTGGG {				\
   HEAD;						\
-  if (w==2 || speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=LOWEST){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -43,7 +43,7 @@
 
 #define DACOUTX {				\
   HEADSIN;						\
-  if (w==2 || speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=LOWEST){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -58,7 +58,7 @@
 // no << in gshift
 #define DACOUTNOG {				\
   HEAD;						\
-  if (w==2 || speedf_[w]!=2.0f){				\
+  if (w==2 || speedf_[w]!=LOWEST){				\
     CVOPEN;						\
     if (gate[w].last_time<gate[w].int_time)      {	\
       GSHIFT_;						\
@@ -78,7 +78,7 @@
 void dacNLRin(uint8_t w){  // this one is just fixed XOR
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -103,7 +103,7 @@ void dacNLRinlogic(uint8_t w){  // figure out bits for logic - also as possible 
   HEADSIN;
   uint8_t what=CVL[w]>>6; // 6 bits - 2 bits per NLC
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -128,7 +128,7 @@ void dacNLRinlogic(uint8_t w){  // figure out bits for logic - also as possible 
 void dacLRprob(uint8_t w){  
   HEADSIN;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -151,7 +151,7 @@ void dacLRprob(uint8_t w){
 void dacLRprobxorN(uint8_t w){  // and XOR N in now...
   HEADSIN;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -180,7 +180,7 @@ void dacLRprobxorN(uint8_t w){  // and XOR N in now...
 void dacNLRprobin(uint8_t w){  // this one is just fixed XOR
   HEADSIN; // detach
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -210,7 +210,7 @@ void dacNLRprobin(uint8_t w){  // this one is just fixed XOR
 void dacNLRprobin1311(uint8_t w){  // this one is just fixed XOR
   HEADSIN; // detach
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -240,7 +240,7 @@ void dacLNLRin(uint8_t w){  // this one is just fixed XOR - detach length to pic
   HEADSIN;
   gate[w].dactype=CVL[w]>>8; // 16 so 4 bits
   gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -266,7 +266,7 @@ void dacLNLRin(uint8_t w){  // this one is just fixed XOR - detach length to pic
 void dacadc(uint8_t w){
   HEAD;				
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;				
@@ -282,7 +282,7 @@ void dacadc(uint8_t w){
 void dacosc0(uint8_t w){ // test oscillator
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -298,7 +298,7 @@ void dacLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
   uint32_t lin, lout;
   HEADSSINNADA;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -322,7 +322,7 @@ void dacLLswop(uint8_t w){ // swop in or logop SR - cv and cvl ***
 void dacN(uint8_t w){ 
   gate[w].dactype=0; gate[w].dacpar=param[w];
   HEAD;
-  if (w==2 || speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -339,7 +339,7 @@ void dacLBURST0(uint8_t w){
   HEADSIN;
   gate[w].dactype=0; gate[w].dacpar=param[w];
 
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -364,7 +364,7 @@ void dacLBURST0(uint8_t w){
 void dacL16slide(uint8_t w){   // DETACH SPEED
   gate[w].dactype=16; gate[w].dacpar=CV[w]>>7;
  HEADSSIN
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -380,7 +380,7 @@ void dacL16slide(uint8_t w){   // DETACH SPEED
 // general purpose: what are variations?
 void dacLrung0(uint8_t w){ // detached length
   HEADSIN;
-  if (w==2 || speedf_[w]!=2.0f){ // remove!
+  if (w==2 || speedf_[w]!=LOWEST){ // remove!
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   tmp=CVL[w]>>6;// 2 bits for route, 4 bits for DACtype = 6 bits
@@ -403,7 +403,7 @@ void dacLrung0(uint8_t w){ // detached length
 void dacN17_0(uint8_t w){ 
   gate[w].dactype=0; gate[w].dacpar=param[w];
   HEAD;
-  if (w==2 || speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -422,7 +422,7 @@ void dacN18_0(uint8_t w){
   static uint8_t tug[4]={0};
   gate[w].dactype=0; gate[w].dacpar=param[w];
   HEAD;
-  if (w==2 || speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -631,7 +631,7 @@ void dactest(uint8_t w){ // for speed 1hz to 20hz triangle here...
 void dacbumproute0(uint8_t w){ // trigger bumps up our local route - add one to this (what value) - gate[0].route
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -657,7 +657,7 @@ void dacbumproute0(uint8_t w){ // trigger bumps up our local route - add one to 
 void dacDACroute0(uint8_t w){ 
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -681,7 +681,7 @@ void dacDACroute0(uint8_t w){
 void dacSRroute0(uint8_t w){ 
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){
+  if (w==2 || speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -705,7 +705,7 @@ void dacSRroute0(uint8_t w){
 void dac32(uint8_t w){ // multiple bits in as case 19 in draftdec
   HEAD;
   gate[w].dactype=0; gate[w].dacpar=param[w];
-  if (w==2 || speedf_[w]!=2.0f){ 
+  if (w==2 || speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -739,7 +739,6 @@ void dacdacadditself0(uint8_t w){ // tested//trial itself as DAC - can also be o
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+(gate[w].dac>>3)];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -753,7 +752,6 @@ void dacdacghostitself0(uint8_t w){ // own ghost from next 1 - could also select
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+((gate[w].Gshift_[routeto[count][w]])&511)];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -767,7 +765,6 @@ void dacdacghostincoming0(uint8_t w){ // own ghost from next 1 - could also sele
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+((gate[w].Gshift_[inroute[count][w]])&511)];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -782,7 +779,6 @@ void dacdacseladd0(uint8_t w){
   float speedf__;
   uint8_t whic=(CV[w]>>9)&3; //12 bits -> 2 bits
   speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -796,7 +792,6 @@ void dacdacadd0(uint8_t w){
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+(gate[dacfrom[daccount][w]].dac>>3)];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -813,7 +808,6 @@ void dacdacminus0(uint8_t w){
   cv=(gate[dacfrom[daccount][w]].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -830,7 +824,6 @@ void dacdacspeedminus0(uint8_t w){
   cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2); 
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -847,7 +840,6 @@ void dacdacmod0(uint8_t w){
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
   speedf__=logspeed[(gate[speedfrom[spdcount][w]].dac>>2)%cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -865,7 +857,6 @@ void dacB0(uint8_t w){// with oscillator
   cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -884,7 +875,6 @@ void dacdacoffset0(uint8_t w){
   tmp=(1024-(CV[w]>>2)) + (int)((float)(gate[speedfrom[spdcount][w]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  if (speedf__==2.0f) speedf__=LOWEST;
 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {

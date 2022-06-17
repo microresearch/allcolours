@@ -19,6 +19,24 @@ uint8_t freecv[8]={0,1,1,1, 1,0,0,1};
 // 2x speedfrac - one interpol, one no interpol
 uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strobeint=interpol=6
 
+// 17/6/2022 copied in from basis.h
+
+void newdac2(uint8_t w){ // one bit audio - run filter at full speed but output on speed
+  HEADSIN;
+  gate[w].dactype=2; gate[w].dacpar=4096-CVL[w]; //     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
+  val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);
+  if (w==2 || speedf_[w]!=LOWEST){
+    CVOPEN;
+    if (gate[w].last_time<gate[w].int_time)      {
+      GSHIFT_;
+      BINROUTE_;
+      //      BITN_AND_OUTV_;
+      BITN_AND_OUTNODAC2_; // no val business as we do that always
+      ENDER;
+    }
+  }
+}
+
 // 2/6/2022
 // for Rmode
 //uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount, &lengthcount};
@@ -41,7 +59,7 @@ void globalsetall(uint8_t w){  // TODO: REDO
 void globalresetall(uint8_t w){  // set all to zero using macro
   HEAD;
   RESETR;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -62,7 +80,7 @@ uint8_t seladc[63]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,75,76,2
 
 void adcnew(uint8_t w){ 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -162,94 +180,6 @@ else
 
 // try as no interpoll - commented below
 // also with no stops in speed!
-void major_vienna(uint8_t w){  
-  HEADNADA; 
-  uint32_t tmpp, tmppp, recursespeed=0, recurseroute=0, speedy;
-  uint8_t spdfrom; 
-  gate[w].dactype=0; gate[w].dacpar=param[w];
-  // swopping mode and length - can also detach length for other bits
-  SRlength[w]=lookuplenall[31-((CVM[w]>>5)&31)]; // lowest 5 bits - so we could even use extra 2 bits there - for what????
-  
-  // 7 bits from mode/now CVL - 
-  tmpp=127-(CVL[w]>>5); // 7 bits  - added CVM 29/5/2022
-  if (tmpp>>6) // top bit - best if is on CVM though but how to re-org
-    {
-      spdfrom=2; 
-      gate[w].strobed=1; // strobey replacement
-    }
-  else {
-    spdfrom=0; // fractional speed
-    speedy=CV[w];
-    gate[w].strobed=0;
-  }
-  
-  if (spdfrom==0)   {
-    /*
-    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
-    if (gate[w].dac>4095) gate[w].dac=4095;
-    */
-    gate[w].dac = delay_buffer[w][1];
-  }
-  else {
-    gate[w].dac = delay_buffer[w][1];
-    }
-
-  // TODO: recursion: spdfrom==0 then speedfrom (CV/none, self, other, other tempered with CV), in strobe recurse onto route temper with ownroute
-  // so we have two bits 1[spd]11[recur] [1111]route
-  recurseroute=(7-(CVL[w]>>4))&3; // 2 bits
-  recursespeed=(CVM[w]>>10); // 2 bits
-    
-  if (spdfrom==0 && recursespeed!=0){
-    speedy=CV[w]+gate[others[w][recursespeed-1]].dac; // can also be different versions such as modulus or mid version
-    if (speedy>4095) speedy=4095;
-  }
-  
-  if (spdfrom==2 && recursespeed!=0){ // for C only 
-    gate[w].trigger^=gate[others[w][recursespeed-1]].shift_&0x01;
-  }
-
-  if (recurseroute!=0){     
-    tmpp|=(gate[others[w][recurseroute-1]].shift_)&15;    
-  }
-  
-  if (spdmodes[spdfrom](speedy,w)){  // we dont use CV for strobe
-    GSHIFT_;
-    if (w==0) {// not necessarily?
-      bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);   // could be otherwise or another set of bits//
-    }
-
-    if (tmpp==0 && w==2) { // SR5 is 8th which is outside these bits - for modeC only
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
-    gate[w].shift_ ^=gate[8].Gshare_;
-    bitn^=bitrr;
-  }
-else
-  {
-    tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
-    for (x=0;x<4;x++){
-      if (tmp&0x01){
-	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
-	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
-	bitn^=bitrr;
-      }
-      tmp=tmp>>1; // 4 bits
-    }
-  }
-    // and prob thing
-    /*
-    doit[w]=(mode[w]>>4)&0x01; // top bit maybe
-    if (doit[w] && dac[whichdoit[w]]<param) bitn^=1; //     if (tmp<adc_buffer[0]) bitn^=1; - 12 bits TO TEST!
-    */
-    if (gate[w].strobed) { // if strobe then we use ALWAYS CV for prob of inversion - or could be other prob? such as... test if we notice this!?
-      if (gate[dacfrom[count][w]].dac<CV[w]) bitn^=1; // use CV here as not for speed...
-	}
-    else bitn|=gate[w].trigger;	// instead of strobey
-    
-    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
-    new_data(val,w);
-  }
-}
 
 
 // 25/5/2022
@@ -289,7 +219,7 @@ we need: sync counts/routes, count/route from which dac/sr?, CV/CVL
 void SR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast without pulsin
   HEADSIN;
   //  SRlength[w]=CVL[w]>>7; // 5 bits
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -311,7 +241,7 @@ void SR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast
 
 void SR_cvbits(uint8_t w){ //- if we treat all as bits then some CV should go into SRs as a mask - function for this
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -325,9 +255,9 @@ void SR_cvbits(uint8_t w){ //- if we treat all as bits then some CV should go in
 }
 
 // check how many bits we can hit - 6 or 7 bits is max unless is more continuous
-void SR_testbits(uint8_t w){ // 
+void SR_testbits(uint8_t w){ // null
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -350,7 +280,7 @@ void SRdacplusminus(uint8_t w){
   cv=(gate[speedfrom[spdcount][w]].dac>>2) + tmpp;  
   if (cv<0) cv=0;
   else if (cv>1023) cv=1023;
-  speedf__=logspeedd[cv]; // no stop
+  speedf__=logspeed[cv]; // no stop
   CVOPENDACNOINTERPOL; // or with interpoll
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -376,7 +306,7 @@ void SR_binr_fixed(uint8_t w){ // fixed route but we have 3 bits for selection o
   uint32_t tmpp;
   gate[w].dactype=0; gate[w].dacpar=param[w];
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -420,7 +350,7 @@ void SR_binr_fixed(uint8_t w){ // fixed route but we have 3 bits for selection o
 void SR_binr(uint8_t w){ // 
   HEADSIN;
   uint32_t tmpp;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -464,7 +394,7 @@ void SR_binr_dac0(uint8_t w){ // same as above with dac=0
   uint32_t tmpp;
   gate[w].dactype=0; gate[w].dacpar=param[w];
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -508,7 +438,7 @@ void SR_binr_adc0(uint8_t w){ // same as above with adc=0
   uint32_t tmpp;
   gate[w].dactype=0; gate[w].dacpar=param[w];
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -555,7 +485,7 @@ void SR_binr_adc0(uint8_t w){ // same as above with adc=0
 
 void SR_routeSRbits00(uint8_t w){ // fixed SR for route bits: gate[dacfrom[count][w]].Gshift_[w]
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -569,7 +499,7 @@ void SR_routeSRbits00(uint8_t w){ // fixed SR for route bits: gate[dacfrom[count
 
 void SR_routeSRbits01(uint8_t w){ //CVL chooses SR for route bits (only 4 SRs so 2 bits, or we route in/xor a 4 bit route)
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -591,7 +521,7 @@ void SR_routeSRbits01(uint8_t w){ //CVL chooses SR for route bits (only 4 SRs so
 
 void SR_routeSRbits02(uint8_t w){ //CV chooses SR for route bits for SR for route bits
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -627,7 +557,7 @@ void SR_routeSRbits02(uint8_t w){ //CV chooses SR for route bits for SR for rout
 // so select route in from CVL
 void SR_layer1(uint8_t w){ // also use extra bits
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -657,7 +587,7 @@ void SR_layer1(uint8_t w){ // also use extra bits
 
 void SR_layer12(uint8_t w){ // also use extra bits - use sr for this one instaed of CVL
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -692,7 +622,7 @@ void SR_layer12(uint8_t w){ // also use extra bits - use sr for this one instaed
 // try adjust mid point for sigma/delta/
 void adc_onebitmidnof(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -712,7 +642,7 @@ void adc_onebitmidnof(uint8_t w){ //
 void SRX0_len(uint8_t w){ // basic route in XOR puls 
   HEADSIN;
   //  speedf_[w]=0.5f;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     SRlength[w]=lookuplenall[(dacfrom[daccount][w]>>7)];//%(CVL[w]>>7)]; // 32 is 5 bits or use CVL for something
@@ -741,7 +671,7 @@ static inline void adcallone(uint8_t w){ // null
 // try adjust mid point for sigma/delta/
 void adc_onebitmid(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   bitn=adconebitsmid(CVL[w]>>1,w);
   if(gate[w].last_time<gate[w].int_time)      {
@@ -759,7 +689,7 @@ void adc_onebitmid(uint8_t w){ //
 // try for oversample - run 1 bit at full speed...
 void adc_overonebit(uint8_t w){ // 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   bitn=adconebitsx();
   if(gate[w].last_time<gate[w].int_time)      {
@@ -777,7 +707,7 @@ void adc_overonebit(uint8_t w){ //
 // reflect - sr cycles in opposite direction with incoming bitn from gshift or... >>
 void SR_reflect(uint8_t w){ // 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -802,7 +732,7 @@ void SR_reflect(uint8_t w){ //
 //eg. we keep cycling in until we finish one length and there is a reset
 void SR_altbin1(uint8_t w){ // 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -833,7 +763,7 @@ void SR_altbin1(uint8_t w){ //
 //maybe new GSHIFT_ with selective updates - can also be mask (from where?) - not so exciting
 void adc0_altgshift(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     //  GSHIFT_;
@@ -878,7 +808,7 @@ void SR_binspdx(uint8_t w){ // TODO: make use of CV here - just a trial model
 // further if we are faster then insert a zero sample
 void SR_insert_zero(uint8_t w){ // 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -896,7 +826,7 @@ void SR_insert_zero(uint8_t w){ //
 void SR_insert_zero_dac2(uint8_t w){ // 
   HEADSIN;
   gate[w].dactype=2; gate[w].dacpar=4096-CVL[w]; //     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPENNOINTERPOL;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -954,7 +884,7 @@ void SRdelay_lineIN(uint8_t w){  // could also be shared version of this
   BINROUTESR_; // or other forms
   delay_line_in(bitn,w);
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -975,7 +905,7 @@ void SRintodel(uint8_t w){ //
   HEAD;
   uint32_t tmpp;
   
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -997,7 +927,7 @@ void SRintodel(uint8_t w){ //
 // needs own delcnt
 void SRfromdel(uint8_t w){ // null unfinished
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1015,7 +945,7 @@ void SRfromdel(uint8_t w){ // null unfinished
 // prob for 2 sorts of binroute/or toggle between the two
 void SR_probbin(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1036,7 +966,7 @@ void SR_probbin(uint8_t w){ //
 // test it here
 void adcone_bitreset(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1054,7 +984,7 @@ void adcone_bitreset(uint8_t w){ //
 void SRspeedtest(uint8_t w){ // null
   static uint32_t tgg=0;
   HEADSIN;
-  speedf_[w]=logspeedd[CV[w]>>2]; // 10 bits
+  speedf_[w]=logspeed[CV[w]>>2]; // 10 bits
   //  speedf_[w]=slowerlog[CV[w]>>2]; // 10 bits
   gate[w].time_now += speedf_[w];
   gate[w].last_time = gate[w].int_time;
@@ -1080,7 +1010,7 @@ void SRspeedtest(uint8_t w){ // null
 
 void SRX0_newgsr(uint8_t w){ // basic route in XOR puls
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPENNOINTERPOL;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_; // resets added to macro 9/5/2022
@@ -1095,7 +1025,7 @@ void SRX0_newgsr(uint8_t w){ // basic route in XOR puls
 // 
 void SRX0_newgsr_nores(uint8_t w){ // basic route in XOR puls
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPENNOINTERPOL;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_; // resets added to macro 9/5/2022
@@ -1119,7 +1049,7 @@ void SRX0_newgsr_nores(uint8_t w){ // basic route in XOR puls
 // and now for adc
 void adc0_newgsr(uint8_t w){ // basic route in XOR pulse and ADC0
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPENNOINTERPOL;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_; // resets added to macro 9/5/2022
@@ -1149,7 +1079,7 @@ void adc0_newgsr(uint8_t w){ // basic route in XOR pulse and ADC0
 // processors for values eg. holds of speeds... SRproc_hold(uint32_t depth, uint32_t bit){  // bit=value, depth=how long
 void SRholdspd(uint8_t w){ // sample and hold on speed
   HEADNADA;
-  speedf_[w]=logspeedd[SRproc_hold(CVL[w]<<2, CV[w])>>2]; // detached
+  speedf_[w]=logspeed[SRproc_hold(CVL[w]<<2, CV[w])>>2]; // detached
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1199,7 +1129,7 @@ if bitfromC bitn=binroutebits... or generator...
 // trial - untie routes...? - layers from geomantic cards...
 void SR_recbin(uint8_t w){ // ????
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1264,7 +1194,7 @@ void SR_splitx(uint8_t w){ // 3 params for spdfrom, length, spdmode // + 2 for b
 // trial static inline uint32_t SRproc_hold(uint32_t depth, uint8_t bit){
 void SRhold(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1279,7 +1209,7 @@ void SRhold(uint8_t w){ //
 
 void SRholdfromdac(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1328,7 +1258,7 @@ void SRothers(uint8_t w){ // length could also be as value/probability against
 // straight route in so we need params for who to add and maybe type of dac
 void dacbus(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1348,7 +1278,7 @@ void dacbus(uint8_t w){ //
 // others[4][3]={ all but itself
 void dacbusothers(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1372,7 +1302,7 @@ void dacbusothers(uint8_t w){ //
 // using the others clkbits
 void dacbusothers_clk(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1395,7 +1325,7 @@ void dacbusothers_clk(uint8_t w){ //
 
 void dacbusothers_sr(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1418,7 +1348,7 @@ void dacbusothers_sr(uint8_t w){ //
 
 void dacbusothers_own(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1450,7 +1380,7 @@ void dacbusothers_own(uint8_t w){ //
 
 // new template following this:
 /*
-void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. otherwise not... so we can free it check freecv above
+void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. otherwise not... so we can free it check freecv above //null
   HEAD;
   uint32_t tmpp;
   uint8_t spdfrom=1; // fixed 
@@ -1484,7 +1414,7 @@ void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. ot
 // test SRclksrG ghosts
 void SR_clksrG(uint8_t w){ // 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1499,7 +1429,7 @@ void SR_clksrG(uint8_t w){ //
 // test SRclksr
 void SR_clksr(uint8_t w){ // 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1592,7 +1522,7 @@ uint32_t *CVlist[4][16]={
 // test this with binroutebits TESTED!
 void SR_test(uint8_t w){ // null
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1619,7 +1549,7 @@ delayline would make more sense and bitn goes in - shared delayline or otherwise
 void SRghost(uint8_t w){ // needs something as CVL seems not do much
   HEADSIN;
   uint32_t tmpp,depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1654,7 +1584,7 @@ void SRghostlatch(uint8_t w){ // needs something as CVL seems not do much - adde
   HEADSIN;
   uint32_t tmpp,depth;
   if (gate[w].trigger) gate[w].latch=1;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1753,7 +1683,7 @@ uint32_t xorroutes[4][2]={
 // simpler trial version
 void SRxorroutes(uint8_t w){ // XOR in 
   HEAD; 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   // copy mask of bits from inroute
@@ -1780,7 +1710,7 @@ void SRxorroutes(uint8_t w){ // XOR in
 void SRaddroutes(uint8_t w){ // how to add without overflow - long
   HEAD;
   long temp;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   // copy mask of bits from inroute
@@ -1810,7 +1740,7 @@ void SRaddroutes(uint8_t w){ // how to add without overflow - long
 /*
 void noSRxorroutes(uint8_t w){ // XOR in // null
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   // copy mask of bits from inroute
@@ -1976,7 +1906,7 @@ void SR_selspeed(uint8_t w){ // TEST!
 // xortoggle-PROBability mode xor strobe in gen.h
 void SRprobxortog(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1996,7 +1926,7 @@ void SRprobxortog(uint8_t w){ //
 // other version of above
 void SRprobxortogx(uint8_t w){ // 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2038,7 +1968,7 @@ void SR_strobeint(uint8_t w){ // testing - not sure... this is generic one as al
 void SRmatch(uint8_t w){ // pattern matcher - could be longer pattern
   HEADSIN;
   uint32_t tmpp;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2098,7 +2028,7 @@ void SRRcutallroutes(uint8_t w){
   if (gate[w].trigger) count=16; // placed outside speed
   else count=0;
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2117,7 +2047,7 @@ void SRRtoggcutallroutes(uint8_t w){ // toggle version of above
   if (toggle) count=16; // placed outside speed
   else count=0;
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2132,7 +2062,7 @@ void SRRtoggcutallroutes(uint8_t w){ // toggle version of above
 // again how to generalise that kind of structure
 void SRRbinrcutallroutes(uint8_t w){  
   HEADSIN; // we use CVl for param in
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2188,7 +2118,7 @@ static inline uint32_t shared(uint32_t depth, uint8_t wh){
 
 void SRshare(uint8_t w){ // shared bits
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2430,7 +2360,7 @@ void abstractoutinterpolnoshift(uint8_t w){
 
 void base(uint8_t w){ // basic template // null
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2552,7 +2482,7 @@ void ADCovers(uint8_t w){
   gate[w].shift_+=bitn;
   }
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2567,7 +2497,7 @@ void ADCovers(uint8_t w){
 void ADCoverss(uint8_t w){   // 2nd round - was inside loop - fix << though 
   HEAD;
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2591,7 +2521,7 @@ void ADCoverss(uint8_t w){   // 2nd round - was inside loop - fix << though
 void ADCoversss(uint8_t w){   // 2nd round - was inside loop - fix << though 
   HEAD;
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2635,7 +2565,7 @@ void ADCoverssss(uint8_t w){   // 2nd round - was inside loop - fix << though
   gate[w].shift_+=bitn;
   }
   
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2650,7 +2580,7 @@ void ADCoverssss(uint8_t w){   // 2nd round - was inside loop - fix << though
 // start with sample and holds on trigger...
 void ADChold(uint8_t w){   // 2nd round - was inside loop - fix << though 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   
   if(gate[w].last_time<gate[w].int_time)      {
@@ -2696,7 +2626,7 @@ static inline uint32_t adcpadholdcyclebits(uint32_t depth, uint8_t reset){ // TO
 
 void ADCholdcycle(uint8_t w){   // 2nd round - was inside loop - fix << though 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2716,7 +2646,7 @@ void ADCnoisecmp(uint8_t w){  // for top modeN
   //  HEADSIN;
   HEADSSINNADA; // or do as strobe
   uint32_t k;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2774,7 +2704,7 @@ void SRmultiplespeednewdac0(uint8_t w){ // - NO LENGTH - speeds of gshift, incom
     BINROUTEADV_;
   }
 
-  speedf__=logspeedd[gate[speedfrom[spdcount][w]].dac>>2]; // that's 10 bits only - can also have scaling by CV 
+  speedf__=logspeed[gate[speedfrom[spdcount][w]].dac>>2]; // that's 10 bits only - can also have scaling by CV 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     gate[w].shift_=gate[w].shift_<<1; 
@@ -2835,7 +2765,7 @@ void SRmultiplespeednewdac(uint8_t w){ // NO LENGTH - try 4 speeds as above - mu
     gate[w].shift_=gate[w].shift_<<1; // 1. shifter
   }
   
-  speedf__=logspeedd[gate[speedfrom[spdcount][w]].dac>>2]; // that's 10 bits only - can also have scaling by CV 
+  speedf__=logspeed[gate[speedfrom[spdcount][w]].dac>>2]; // that's 10 bits only - can also have scaling by CV 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     //    gate[w].shift_=gate[w].shift_<<1; // but no shift makes odd with add... anyways
@@ -2858,7 +2788,7 @@ eg. noSRxorroutes: XOR with mask of incoming lengths... of routes in - which now
 void noSRdelay_line(uint8_t w){ 
   HEAD;
   static uint32_t counter[4]={0,0,0,0}; // shared // unshared counter
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;
@@ -3003,7 +2933,7 @@ static inline uint32_t delay_line_unshared(uint32_t depth, uint8_t wh){
 
 void SRdelay_lineSH(uint8_t w){ 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3016,7 +2946,7 @@ void SRdelay_lineSH(uint8_t w){
 
 void SRdelay_lineSH2(uint8_t w){ 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3029,7 +2959,7 @@ void SRdelay_lineSH2(uint8_t w){
 
 void SRdelay_line(uint8_t w){ 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3063,7 +2993,7 @@ static inline uint32_t pattern_unshare(uint32_t depth, uint8_t wh){
 
 void SRpattern_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3096,7 +3026,7 @@ void SRLdecaying(uint8_t w){
   HEADSIN;
   int tt, dec;
   uint32_t highestprob=4095;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3141,7 +3071,7 @@ static inline uint32_t adc4bits_unshare(uint32_t depth, uint8_t wh){ // use wh t
 
 void stream4_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3162,7 +3092,7 @@ void stream4_unshare(uint8_t w){ // sequential 12 bit in - use also for L, R, N
 // more like cipher entering SR
 void adccipher(uint8_t w){ // generator is contained so is different to one below which can have binroute inside
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3181,7 +3111,7 @@ void adccipher(uint8_t w){ // generator is contained so is different to one belo
 void adccipher2(uint8_t w){    //accumulate into GGGshift and then bang in to realSR on a CLKIN (how many accumulated bits or just whole SR length?)
 uint8_t prob;
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFTNOS_; // we dont shift our own SR
@@ -3373,7 +3303,7 @@ static uint32_t itself(uint32_t (*f)(uint32_t depth, uint8_t wh), uint32_t (*g)(
 void SRitself(uint8_t w){ // null
 uint8_t prob;
   HEADSSINNADA;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3394,7 +3324,7 @@ uint8_t prob;
 void SRGswop(uint8_t w){// swap over SRs on pulse in?!! or swop in only (can swop in previous SR or another?) 
 uint8_t prob;
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -3411,7 +3341,7 @@ uint8_t prob;
 // 2 routes into one//XOR full TRY!
 void noSRxorroutes(uint8_t w){ // XOR in 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   // copy mask of bits from inroute
@@ -3445,7 +3375,7 @@ void noSRxorroutes(uint8_t w){ // XOR in
 // // 2 routes into one//XOR full TRY! - select route and logic - 6 bits
 void noSRselxorroutes(uint8_t w){ // XOR in
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   // copy mask of bits from inroute
@@ -3476,7 +3406,7 @@ void noSRselxorroutes(uint8_t w){ // XOR in
 void SRshroute(uint8_t w){ // strobe could also shift on
   HEAD;
   int32_t mw;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3510,7 +3440,7 @@ void SRshroute(uint8_t w){ // strobe could also shift on
 // so needs some sync - is question across all of new idea of functions
 void SRprobwheel(uint8_t w){ // new detached mode with prob wheel as generator only // for L
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3526,7 +3456,7 @@ void SRprobwheel(uint8_t w){ // new detached mode with prob wheel as generator o
 void dacNbinprob(uint8_t w){ 
   gate[w].dactype=0; gate[w].dacpar=param[w];
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -3557,7 +3487,7 @@ void dacNbinprob(uint8_t w){
 
 void SR0nogstrobe(uint8_t w){ // basic route in no GSHIFT<< strobed
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -3577,7 +3507,7 @@ void SR0nogstrobe(uint8_t w){ // basic route in no GSHIFT<< strobed
 void SR0nogtoggle(uint8_t w){ // basic route in no GSHIFT<< toggles
   HEAD;
   static uint8_t toggle[4]={0,0,0,0};
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -3600,7 +3530,7 @@ void SR0nogtoggle(uint8_t w){ // basic route in no GSHIFT<< toggles
 // and finally prob from CVL - detached... - and can also be an intmode TODO
 void SRLprobnog(uint8_t w){
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3643,7 +3573,7 @@ void SRsigma(uint8_t w){
   HEAD;
   int32_t cycle;
   static int32_t integrator;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -3665,9 +3595,9 @@ void SRsigma(uint8_t w){
 // unmoving XOR on strobe - parallel streams - we can have 4 unmoving copy across SRs - they are not SRs... 
 
 /*
-void noSRproto(uint8_t w){
+void noSRproto(uint8_t w){ // null
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;
@@ -3684,7 +3614,7 @@ void noSRproto(uint8_t w){
 // trial 12 bits of adc in 
 void noSRadc(uint8_t w){
   HEAD; uint32_t k;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;
@@ -3704,7 +3634,7 @@ void noSRadc(uint8_t w){
 void noSRadc2s(uint8_t w){
   HEAD; uint32_t k;
   uint32_t bt, bitwise;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;
@@ -3728,7 +3658,7 @@ void noSRadc2s(uint8_t w){
 void noSRdac(uint8_t w){ 
   HEAD;
   gate[w].dactype=23; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFTNOS_;
@@ -3743,7 +3673,7 @@ void noSRdac(uint8_t w){
 void noSRdac2s(uint8_t w){ 
   HEAD;
   gate[w].dactype=22; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFTNOS_;
@@ -3758,7 +3688,7 @@ void noSRdac2s(uint8_t w){
 void noSRdac2sRLxor(uint8_t w){  // xor of left and right
   HEAD;
   gate[w].dactype=22; gate[w].dacpar=param[w];
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFTNOS_;
@@ -3772,7 +3702,7 @@ void noSRdac2sRLxor(uint8_t w){  // xor of left and right
 
 void noSRcopy(uint8_t w){ // copy in with mask of length
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;

@@ -8,7 +8,7 @@
 
 #define ADCORIN(X){				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -23,7 +23,7 @@
 // special one!
 #define ADCORXORIN(X){				\
   HEADSIN;					\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
     SRlength[w]=lookuplenall[((CVL[w]>>6)%32)];		\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
@@ -44,7 +44,7 @@
 // added strobe in binroute
 #define ADCXORIN(X){				\
   HEAD;					\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -59,7 +59,7 @@
 /// ????? BINROUTENOS_
 #define ADCXORINBIN(X){				\
   HEAD;					\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -74,7 +74,7 @@
 
 #define ADCXORINX(X){				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -88,7 +88,7 @@
 
 /*
 #define ADCSTREAMXORIN(X) {			\  HEAD;						\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -103,7 +103,7 @@
 
 #define ADCXORINNOG(X){				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -117,7 +117,7 @@
 
 #define ADCXORIN_NOROUTE(X){				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){			\
+  if (speedf_[w]!=LOWEST){			\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -131,7 +131,7 @@
 
 #define ADCXORINdac(X){				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){				\
+  if (speedf_[w]!=LOWEST){				\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -147,7 +147,7 @@
 // not used?
 #define ADCXORINdacitself(X){				\
   HEAD;						\
-  if (speedf_[w]!=2.0f){				\
+  if (speedf_[w]!=LOWEST){				\
   CVOPEN;					\
   if(gate[w].last_time<gate[w].int_time)      {	\
   GSHIFT_;								\
@@ -201,7 +201,7 @@ void adc0S(uint8_t w){ // basic ADC in with XOR route in // null
 
 void stream(uint8_t w){ // sequential 12 bit in - use also for L, R, N
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -228,7 +228,7 @@ void adcdraft0(uint8_t w){
   BINROUTE_;
   gate[w].gshift_+=bitn;
   
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFTNOS_;
@@ -247,7 +247,7 @@ void adcdraft1(uint8_t w){
   gate[w].gshift_+=bitn;
   bitn = (gate[w].gshift_>>SRlength[w]) & 0x01; // length can also be independent
 
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -269,7 +269,7 @@ void adcLparallel(uint8_t w){ //
   w=4;
   HEADSIN;
   speedf_[w]=logspeed[(CVL[w]>>2)]; // logspeed is already inverted
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -279,7 +279,7 @@ void adcLparallel(uint8_t w){ //
   }
   }
   w=0;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -296,7 +296,7 @@ void adcLparallel2(uint8_t w){ //
   HEADSIN;
   w=4;
   speedf_[w]=logspeed[(CVL[w]>>2)]; // logspeed is already inverted
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -306,7 +306,7 @@ void adcLparallel2(uint8_t w){ //
   }
   }
   w=0;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -325,7 +325,7 @@ void adcLparallel2(uint8_t w){ //
 void adcLdraft2(uint8_t w){ // detach
   int32_t top;
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -446,7 +446,6 @@ void adc95bins(uint8_t w){ // strobe toggle in - otherpar selects pattern which 
 
 void adc97only(uint8_t w){ // only pull in on speed otherwise route // ***
   HEAD;
-  if (speedf_[w]==2.0f) speedf_[w]=LOWEST;
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFTNOS_; // no shift
@@ -466,7 +465,6 @@ void adc97only(uint8_t w){ // only pull in on speed otherwise route // ***
 
 void adc98adcordac(uint8_t w){ // only pull in on speed otherwise route 
   HEAD;
-  if (speedf_[w]==2.0f) speedf_[w]=LOWEST;
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFTNOS_; // no shift
@@ -486,7 +484,7 @@ void adc98adcordac(uint8_t w){ // only pull in on speed otherwise route
 
 void adc32(uint8_t w){ // multiple bits in as case 19 in draftdec // ***
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -743,7 +741,7 @@ void adc112(uint8_t w){ // dac  with ONEs complement
 // TODO: just bump within a restricted range or array which make sense?
 void adcbumproute0(uint8_t w){ // trigger bumps up our local route - add one to this (what value) - gate[w].route
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -770,7 +768,7 @@ void adcbumproute0(uint8_t w){ // trigger bumps up our local route - add one to 
 //TODO: could also use trigger for ADC in
 void adcbumproutebin0(uint8_t w){ // incoming binroute bumps up our local route - add one to this (what value) - gate[w].route
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -800,7 +798,7 @@ void adcbumproutebin0(uint8_t w){ // incoming binroute bumps up our local route 
 void adcghostroute0(uint8_t w){ // but which ghost? our own moved on by 1? so here is default of 1...
   // so what we route int
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -824,7 +822,7 @@ void adcghostroute0(uint8_t w){ // but which ghost? our own moved on by 1? so he
 
 void adcDACroute0(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -848,7 +846,7 @@ void adcDACroute0(uint8_t w){
 
 void adcSRroute0(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -873,7 +871,7 @@ void adcSRroute0(uint8_t w){
 void adcDACroutestrobe0(uint8_t w){ // dacroute with strobe
   // strobe can also select adc in, or choose adc/routed
   HEAD;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -914,7 +912,7 @@ STROBE - 1invert ADC BIT - XOR/OR routed
 
 void adcstrobe1_0(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -929,7 +927,7 @@ void adcstrobe1_0(uint8_t w){
 
 void adcbin1_0(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -945,7 +943,7 @@ void adcbin1_0(uint8_t w){
 
 void adcstrobe2_0(uint8_t w){ // basic ADC in - strobe= bitn or route
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -959,7 +957,7 @@ void adcstrobe2_0(uint8_t w){ // basic ADC in - strobe= bitn or route
 
 void adcstrobe3_0(uint8_t w){ // basic ADC in - see above table - 3ADC BIT vs [ADC/xor/or/routed] - NONE
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -985,7 +983,7 @@ void adcstrobe3_0(uint8_t w){ // basic ADC in - see above table - 3ADC BIT vs [A
 void adcLstrobe1(uint8_t w){ 
   uint8_t bits, bitss;
   HEADSIN; // detach length
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1021,7 +1019,7 @@ void adcLstrobe1(uint8_t w){
 void adcLstrobe2(uint8_t w){ // 2nd version covering abstract modes and returns - check adc selection TODO
   uint8_t bits, bitss;
   HEADSIN; // detach length
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1061,7 +1059,7 @@ void adcLstrobe2(uint8_t w){ // 2nd version covering abstract modes and returns 
 
 void adcstrobe4_29(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1077,7 +1075,7 @@ void adcstrobe4_29(uint8_t w){
 
 void adcstrobe5_29(uint8_t w){ 
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1093,7 +1091,7 @@ void adcstrobe5_29(uint8_t w){
 
 void adcstrobe6_29(uint8_t w){  // 6- ADCBIT xor routed vs returnbit
   HEAD;
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -1118,7 +1116,7 @@ void adcLCVDACroute(uint8_t w){ // CV: 4 bits for route in...
   // 
   uint32_t tmpp=0, which;				       
   HEADSIN;  
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1174,7 +1172,7 @@ void adcmultiplespeednew0(uint8_t w){ // NO LENGTH - try 4 speeds as above - mul
     gate[w].shift_=gate[w].shift_<<1; // 1. shifter
   }
   
-  if (speedf_[w]!=2.0f){ // 4.main DAC
+  if (speedf_[w]!=LOWEST){ // 4.main DAC
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     //    gate[w].shift_=gate[w].shift_<<1; // but no shift makes odd with add... anyways
@@ -1189,7 +1187,7 @@ void adcmultiplespeednew0(uint8_t w){ // NO LENGTH - try 4 speeds as above - mul
 void adcLdoublelength(uint8_t w){   // DETACH LENGTH
   uint8_t tmplength;
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     tmplength=63-(CVL[w]>>6); // 0-63=6bits
@@ -1227,9 +1225,9 @@ void adcLdoublelength(uint8_t w){   // DETACH LENGTH
 }
 
 /*
-void adcLproto(uint8_t w){
+void adcLproto(uint8_t w){// null
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1243,7 +1241,7 @@ void adcLproto(uint8_t w){
 
 // TODO: can also be other abstract modes (but how to select these), can detach and select strobemodes
 /*
-void adcflip(uint8_t w){ // full speed 1/0 flipflop and fake strobe - TODO: fake strobe can also be used for other strobe modes...
+void adcflip(uint8_t w){ // full speed 1/0 flipflop and fake strobe - TODO: fake strobe can also be used for other strobe modes...// null
   static uint32_t flipflop=0;
   flipflop^=1;
   gate[w].trigger=flipflop;
@@ -1254,7 +1252,7 @@ void adcLflip(uint8_t w){ // select strobemode (we have 20 but just 16 now) - as
   HEADSIN;
   static uint32_t flipflop=0;
   flipflop^=1;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1270,7 +1268,7 @@ void adcLflip(uint8_t w){ // select strobemode (we have 20 but just 16 now) - as
 
 void adcLstrobe(uint8_t w){ // select strobemode (we have 20 but just 16 now)
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1285,7 +1283,7 @@ void adcLstrobe(uint8_t w){ // select strobemode (we have 20 but just 16 now)
 
 void adcLbinrstr(uint8_t w){ // route in as strobe: select strobemode (we have 20 but just 16 now)
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1301,7 +1299,7 @@ void adcLbinrstr(uint8_t w){ // route in as strobe: select strobemode (we have 2
 // so we could use in LSR
 void adcLbitprob(uint8_t w){
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1328,7 +1326,7 @@ void adcLbitprob(uint8_t w){
 // TODO: can be different adc generators>independent ones... - abstract ones would need extra param which we don't have - unless we strobe
 void adcLbinprob(uint8_t w){ // binroute in as prob of entry of new bit from adc or cycle
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1425,7 +1423,7 @@ void adcbinspeedstreamINT(uint8_t w){ // would be nice to be able to slow down b
 
 void binspeedcycle(uint8_t w){ // but what do we do with speed then? - run binroute at speed
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   BINROUTENOS_;
@@ -1474,7 +1472,7 @@ binroute/binroutessansadd
 void adcLabstract(uint8_t w){ // abstract modes with option now binroute or not
   HEADSSINNADA;
   uint32_t depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1495,7 +1493,7 @@ void adcLabstract(uint8_t w){ // abstract modes with option now binroute or not
 void adcLabstractNOG(uint8_t w){ // abstract modes with option now binroute or not - no bitoruteGshift option
   HEADSSINNADA;
   uint32_t depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1520,7 +1518,7 @@ void adcLabstractNOG(uint8_t w){ // abstract modes with option now binroute or n
 void adcLabstractLD(uint8_t w){ // abstract modes with option now binroute or not - now with fixed length=depth so we have speed
   HEADSIN; // detach length
   uint32_t depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1541,7 +1539,7 @@ void adcLabstractLD(uint8_t w){ // abstract modes with option now binroute or no
 void adcLabstractI(uint8_t w){ // just to test abstract modes - could be used but we lose speed and wastes bits - detached both
   HEADSSINNADA;
   uint32_t depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1558,7 +1556,7 @@ void adcLabstractI(uint8_t w){ // just to test abstract modes - could be used bu
 void adcLabstractQIN(uint8_t w){ // abstract modes select IN? again we lose speed and bits
   HEADSSINNADA;
   uint32_t depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1587,7 +1585,7 @@ void adcLabstractQIN(uint8_t w){ // abstract modes select IN? again we lose spee
 void adcLTMinTM(uint8_t w){ // abstract modes select IN? again we lose speed and bits DETACH length - TM in TM
   HEADSIN;
   uint32_t depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1609,7 +1607,7 @@ void adcLTMinTM(uint8_t w){ // abstract modes select IN? again we lose speed and
 void adcLabstractTM(uint8_t w){ // abstract modes select IN? again we lose speed and bits DETACH BOTH
   HEADSSINNADA;
   uint32_t depth;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1633,7 +1631,7 @@ void adcLabstractTM(uint8_t w){ // abstract modes select IN? again we lose speed
 void adcLFROM(uint8_t w){  // FROM? - we use both params - can also be detached strobe modeTODO
   HEADSSINNADA;
   uint32_t depth, tmpp;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1678,7 +1676,7 @@ void adcLmix0(uint8_t w){
   float pp,mult;
   uint32_t k;
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1701,7 +1699,7 @@ void adcLmix1(uint8_t w){
   uint32_t k;
   uint32_t tmpp;
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1724,7 +1722,7 @@ void adcLmix1(uint8_t w){
 
 void adcLpattern95(uint8_t w){   // DETACH LENGTH and select one of 16 patterns insert on strobe
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1739,7 +1737,7 @@ void adcLpattern95(uint8_t w){   // DETACH LENGTH and select one of 16 patterns 
 
 void adcLpatternbin95(uint8_t w){   // DETACH LENGTH and select one of 16 patterns insert on strobe
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1756,7 +1754,7 @@ void adcLpatternbin95(uint8_t w){   // DETACH LENGTH and select one of 16 patter
 
 void adcLtm101(uint8_t w){   // DETACH LENGTH and use CVL for classic TM
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1770,7 +1768,7 @@ void adcLtm101(uint8_t w){   // DETACH LENGTH and use CVL for classic TM
 
 void adcLtm102(uint8_t w){   // DETACH LENGTH and use CVL for classic TM
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1784,7 +1782,7 @@ void adcLtm102(uint8_t w){   // DETACH LENGTH and use CVL for classic TM
 
 void adcLtm103(uint8_t w){   // DETACH LENGTH and use CVL for classic TM
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1798,7 +1796,7 @@ void adcLtm103(uint8_t w){   // DETACH LENGTH and use CVL for classic TM
 
 void adcLtm104(uint8_t w){   // DETACH LENGTH and TM in TM
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1812,7 +1810,7 @@ void adcLtm104(uint8_t w){   // DETACH LENGTH and TM in TM
 
 void adcLtm105(uint8_t w){   // DETACH LENGTH and use CVL for classic TM with DAC
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1828,7 +1826,7 @@ void adcLtm105(uint8_t w){   // DETACH LENGTH and use CVL for classic TM with DA
 
 void adcLcomp20(uint8_t w){   // DETACH LENGTH - comparator 12 bits
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1842,7 +1840,7 @@ void adcLcomp20(uint8_t w){   // DETACH LENGTH - comparator 12 bits
 
 void adcLsub92(uint8_t w){   // DETACH LENGTH - subtract 12 bits
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1856,7 +1854,7 @@ void adcLsub92(uint8_t w){   // DETACH LENGTH - subtract 12 bits
 
 void adcLsplice100(uint8_t w){   // DETACH LENGTH - splice in 4 bits at position
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1875,7 +1873,7 @@ void adcLsplice100(uint8_t w){   // DETACH LENGTH - splice in 4 bits at position
 void adcLBURST0(uint8_t w){ 
   // DETACH LENGTH
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1899,7 +1897,7 @@ void adcLBURST0(uint8_t w){
 void adcLseladc(uint8_t w){ // select ADC 0-31 ***
   // DETACH LENGTH
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1915,7 +1913,7 @@ void adcLseladc(uint8_t w){ // select ADC 0-31 ***
 void adcLcutfeedback86(uint8_t w){ //    //    TODO/TEST: *cut feedback between dacs 1 and 3 - eg. cut for CV count clk pulses/on off* STROBE
   // DETACH LENGTH
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1930,7 +1928,7 @@ void adcLcutfeedback86(uint8_t w){ //    //    TODO/TEST: *cut feedback between 
 
 void adcLseladc1(uint8_t w){ // select ADC 0-63 - preferred modes with param[w] as param   // DETACH LENGTH
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1945,7 +1943,7 @@ void adcLseladc1(uint8_t w){ // select ADC 0-63 - preferred modes with param[w] 
 
 void adcLseladc2(uint8_t w){ // speed from cv, cvl as type and dac as param   // DETACH LENGTH
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1961,7 +1959,7 @@ void adcLseladc2(uint8_t w){ // speed from cv, cvl as type and dac as param   //
 //5th tails - trials
 void adcLseladc5th(uint8_t w){ // speed from cv, cvl as type and TAIL5 as param   // DETACH LENGTH - parammodes
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1975,7 +1973,7 @@ void adcLseladc5th(uint8_t w){ // speed from cv, cvl as type and TAIL5 as param 
 
 void adcLseladcdac5th(uint8_t w){ // speed from cv, cvl as type and TAIL5 as param   // DETACH LENGTH - dacmodes
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -1994,7 +1992,6 @@ void adcdacmod5th(uint8_t w){ // was adcdacmod0
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
   speedf__=logspeed[(gate[8].dac>>2)%cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2011,7 +2008,7 @@ void adcdacmod5th(uint8_t w){ // was adcdacmod0
 
 void adcLpulse89(uint8_t w){ // test 89 impulse  // DETACH LENGTH
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
   GSHIFT_;
@@ -2027,7 +2024,7 @@ void adcLpulse89(uint8_t w){ // test 89 impulse  // DETACH LENGTH
 void adcLSRlengthsel(uint8_t w){ //use other SR bits to determine length of SR, eg. can be modded or...*   // DETACH LENGTH
   // in this case we select ADC as above and use SR as length 
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -2048,7 +2045,7 @@ void adcLSRlengthsel(uint8_t w){ //use other SR bits to determine length of SR, 
 // adc0
 void adcLSRlengthsel0(uint8_t w){ //use other SR bits to determine length of SR, eg. can be modded or...*   // DETACH LENGTH
   HEADSIN;
-  if (speedf_[w]!=2.0f){
+  if (speedf_[w]!=LOWEST){
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
 
@@ -2070,7 +2067,7 @@ void adcLLswop0(uint8_t w){ // swop in or logop SR - cv and cvl- not so good for
   uint32_t lin, lout;
   HEADSSINNADA;
 
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
   CVOPEN;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2095,7 +2092,7 @@ void adcgenericprobx(uint8_t w){ // porting to strobe - ported to N - detach CVL
   uint32_t prob[4]={0};
   HEADSIN;  
 
-  if (speedf_[w]!=2.0f){ 
+  if (speedf_[w]!=LOWEST){ 
     CVOPEN;
 
     GSHIFT_;
@@ -2132,7 +2129,7 @@ void adcdacadditself0(uint8_t w){ // tested//trial itself as DAC - can also be o
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+(gate[w].dac>>3)];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2146,8 +2143,8 @@ void adcdacadditself0(uint8_t w){ // tested//trial itself as DAC - can also be o
 void adcdacghostitself0(uint8_t w){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[w]//gate[x].Gshift_[w]
   HEAD;
   float speedf__;
-  speedf__=logspeedd[(CV[w]&511)+((gate[w].Gshift_[routeto[count][w]])&511)];
-  //  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeed[(CV[w]&511)+((gate[w].Gshift_[routeto[count][w]])&511)];
+  //
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2161,8 +2158,8 @@ void adcdacghostitself0(uint8_t w){ // own ghost from next 1 - could also select
 void adcdacghostincoming0(uint8_t w){ // own ghost from next 1 - could also select incoming ghost which would be: gate[3].Gshift_[w]//gate[x].Gshift_[w]
   HEAD;
   float speedf__;
-  speedf__=logspeedd[(CV[w]&511)+((gate[w].Gshift_[inroute[count][w]])&511)];
-  //  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeed[(CV[w]&511)+((gate[w].Gshift_[inroute[count][w]])&511)];
+  //
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2181,8 +2178,8 @@ void adcdacseladd0(uint8_t w){
   HEAD;
   float speedf__;
   uint8_t whic=(CV[w]>>9)&3; //12 bits -> 2 bits
-  speedf__=logspeedd[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  //  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  //
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2209,8 +2206,8 @@ void adcdacseloffosc(uint8_t w){ // ADC_ is offset, and cv is amount of dac / TE
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  speedf__=logspeedd[tmp];
-  //  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeed[tmp];
+  //
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2237,8 +2234,8 @@ void adcdacseloffosc2(uint8_t w){ // ADC_ is offset, and cv is amount of dac / T
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  speedf__=logspeedd[tmp];
-  //  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeed[tmp];
+  //
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2265,8 +2262,8 @@ void adcLrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  speedf__=logspeedd[tmp];
-  //  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeed[tmp];
+  //
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2294,8 +2291,8 @@ void adcLrung1(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  speedf__=logspeedd[tmp];
-  //  if (speedf__==2.0f) speedf__=LOWEST;
+  speedf__=logspeed[tmp];
+  //
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2324,7 +2321,7 @@ void adcLrung2(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2353,7 +2350,7 @@ void adcrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC input
   if (tmp>1023) tmp=1023;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2371,7 +2368,7 @@ void adcdacadd0(uint8_t w){
   HEAD;
   float speedf__;
   speedf__=logspeed[(CV[w]&511)+(gate[speedfrom[spdcount][w]].dac>>3)];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2390,7 +2387,7 @@ void adcdacaddmax0(uint8_t w){ // REMOVE?
   cv=(CV[w]>>2)+(gate[speedfrom[spdcount][w]].dac>>2);
   if (cv>1023) cv=1023;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2409,7 +2406,7 @@ void adcdacminus0(uint8_t w){
   cv=(gate[speedfrom[spdcount][w]].dac>>2)-(1024-(CV[w]>>2));
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2428,7 +2425,7 @@ void adcdacspeedminus0(uint8_t w){
   cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2); 
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2446,7 +2443,7 @@ void adcdacmod0(uint8_t w){
   float speedf__;
   cv=((CV[w]>>2)+1); // modulo code
   speedf__=logspeed[(gate[speedfrom[spdcount][w]].dac>>2)%cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2465,7 +2462,7 @@ void adcdacB0(uint8_t w){// with oscillator could use CVL also?
   cv=(CV[w]>>2)-(gate[speedfrom[spdcount][w]].dac>>2);
   if (cv<0) cv=0;
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;  
+  
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
@@ -2483,7 +2480,7 @@ void adcdacoffset0(uint8_t w){
   tmp=(1024-(CV[w]>>2)) + (int)((float)(gate[speedfrom[spdcount][w]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-  if (speedf__==2.0f) speedf__=LOWEST;
+
 
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
@@ -2502,7 +2499,7 @@ void adcLdacadc(uint8_t w){ // speed is from dac, use cv to select type and cvl 
   float speedf__;
   cv=(gate[speedfrom[spdcount][w]].dac>>2);
   speedf__=logspeed[cv];
-  if (speedf__==2.0f) speedf__=LOWEST;
+
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;
