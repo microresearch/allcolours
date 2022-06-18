@@ -874,6 +874,7 @@ void dacdacoffset0(uint8_t w){
   HEADSSINNADA;
   tmp=(1024-(CV[w]>>2)) + (int)((float)(gate[speedfrom[spdcount][w]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
+  if (tmp<0) tmp=0;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
 
   CVOPENDAC;

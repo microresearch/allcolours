@@ -2205,6 +2205,7 @@ void adcdacseloffosc(uint8_t w){ // ADC_ is offset, and cv is amount of dac / TE
   tmp+=off;
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
+  if (tmp<0) tmp=0;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
   //
@@ -2233,6 +2234,7 @@ void adcdacseloffosc2(uint8_t w){ // ADC_ is offset, and cv is amount of dac / T
   tmp+=off;
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
+  if (tmp<0) tmp=0;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
   //
@@ -2261,6 +2263,7 @@ void adcLrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   tmp+=off;
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
+  if (tmp<0) tmp=0;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
   //
@@ -2290,6 +2293,7 @@ void adcLrung1(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   tmp+=off;
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
+  if (tmp<0) tmp=0;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
   //
@@ -2319,7 +2323,8 @@ void adcLrung2(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC inpu
   tmp+=off;
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
-    //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
+  if (tmp<0) tmp=0;
+  //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
 
   CVOPENDAC;
@@ -2348,6 +2353,7 @@ void adcrung0(uint8_t w){ // rung: use CVL[w]>>8 to select 1 of 16type DAC input
   tmp+=off;
   tmp=tmp>>2; // 10 bits
   if (tmp>1023) tmp=1023;
+    if (tmp<0) tmp=0;
     //  speedf__=logspeed[(CV[w]&511)+(gate[whic].dac>>3)]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
   speedf__=logspeed[tmp];
 
@@ -2479,9 +2485,8 @@ void adcdacoffset0(uint8_t w){
   HEADSIN;
   tmp=(1024-(CV[w]>>2)) + (int)((float)(gate[speedfrom[spdcount][w]].dac>>2)*mmm);
   if (tmp>1023) tmp=1023;
+  if (tmp<0) tmp=0;
   speedf__=logspeed[tmp]; // 9 bits + 9 to 10 bits - we still have one bit - must  be outside...
-
-
   CVOPENDAC;
   if(gate[w].last_time<gate[w].int_time)      {
     GSHIFT_;

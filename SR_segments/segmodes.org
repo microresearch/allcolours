@@ -198,6 +198,10 @@ RESOLVE ARCH:
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 18/6/2022
+
+- fixed major bug/overflow access into speedlog in modeN.h/runglers... check for more of these...DONE and fixed across multiple files...
+
 ** 17/6/2022
 
 - we try to cram in functions into groups but running out of FLASH space so:

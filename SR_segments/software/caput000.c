@@ -222,7 +222,7 @@ uint32_t orderings[16][16]={ // orderings - first is length
   {7,0,0,1,2,1,2,3}
 };
 
-uint32_t ordercount=1;
+uint32_t ordercount=0;
 
 static uint32_t resetz=1;
 
@@ -266,11 +266,14 @@ uint32_t testmodes[4]={0,0,0,0};
 
 
 // how many groups
-#define GROUP 15 // for 16
+#define GROUP 14 // for 16
+
+  //re-test all new for crash  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadcX, SRrunghead0NX, adcLrung0-fixed18/6, adcLrung1fixed, adcLrung2fixed,   adcrung0fixed, adcLbinprobX, noSRadc2sX, noSRadc2sX, adcLabstractLDX, stream4_unshareX, streamX}, //128
 
 void (*funcgroups[4][128])(uint8_t w)=
 {
-  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream, }, //128
+    {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream}, //128
+  //    {adc2, adc0, adc2, adc0,  adc2,   adc0, adc2, adc0,adc2,  adc0,adc2, adc0, adc2, adc0, adc2, adc0},
   
   {SRX0, SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare, stream},  // 128
 
