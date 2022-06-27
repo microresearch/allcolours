@@ -198,6 +198,46 @@ RESOLVE ARCH:
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 27/6/2022
+
+geogen.h - what else we have so far?
+
+- *we decide on major/grouped modes - base some on geomantic.h*
+
+To resolve:
+
+- is R tail or do we have extra tail?
+- what special modes we have (from all modes?)
+- what discrete parameters we have?
+- how far can we go with geomantic mode?
+- overlays of runglers and notation/rungler in geomantic.h // plus how we can easier notate matrices?
+- try global manipulation modes
+- new order of operations eg. 0,0,1,2,3 - how we modify this and is global - what are global constraints?
+- new use of held speed: LASTSPEED macro and lastspd to hold.../how we deal with speed in general? 
+
+TODO:
+1/ *rungler with probability* - break down rungler into basics -> added binroutfixed_prob functions so we can describe runglers in geo...h
+
+2/ *mix of routed in dacs - what mixes do we have already? - all with adc, so we need to mix 2 dacs - own and other/daccfrom using param - as new dac mode...*
+
+3/ new speed mode where strobe/dac sets speed of CV in - eg. CVspeed so CV in is more discontinuous
+
+as special modes... on top of geomantic? how?
+
+4/ circulation of top of rungler routes - again do in geo as altroutes...... subroutes which we can enter or???
+
+- how we can shift rungler towards more generic code -> geomantic.h - just define sets of matrices and test these...
+
+rungler is defined by: bitrouting, spdrouting/offset, bitfunction/adc
+
+     bitroute // spdroute // function
+0 1 N - none  // 8        // bits/osc 
+1 2 L - as above
+2 4 C - 1    //  2        // prob in/cycle
+3 8 R - 4    // none/cv   // prob in/cycle
+
+*new routeprobs to use//can also have adcprobs with depth -> prob of cycle, prob of hold last value etc...*
+
 ** 18/6/2022
 
 - fixed major bug/overflow access into speedlog in modeN.h/runglers... check for more of these...DONE and fixed across multiple files...
@@ -236,7 +276,7 @@ SR as itself a layering - 16/32 layers
 
 - record speed as distance/count between last 2 triggers (in struct) DONE: but how do we test this...
 
-- geomantic.g is a mess:
+- geomantic.h is a mess:
 
 recursion cannot include control
 
@@ -1937,7 +1977,7 @@ generators->prob/etc/mix
 
 *TODO: other basic SR options*  
 
-WIARD: noise/comp selects new input or loop back/inverted loop back (jumper) //options relating to new input: adc/dac, mix, routein - how to select these options
+gWIARD: noise/comp selects new input or loop back/inverted loop back (jumper) //options relating to new input: adc/dac, mix, routein - how to select these options
 
 EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
 DONE: as a generator, we have variations otherwise in moden for adc in 

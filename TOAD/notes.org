@@ -3,13 +3,25 @@
 - sort mult outs and level of outs is too hot
 - direction of knobs - eg. vca1 from 1st int back to inv should be inverted as goes high to low
 
+** 27/6/2022
+
+- working on schematic, added 3x OUTS: B2->OUT1, B3->OUT2, new OUT3 from sigg/sprott
+
+3out
+1clkin
+1input
+
+6xCvins 6xknobs 
+
 ** 13/6/2022
 
-- DONE-draw up schematic we have bit *we still need to consider level of outs and different outs*
+- DONE-draw up schematic we have bit - *we still need to consider level - do when we prototype* of outs and different outs
+
+3x OUTs: B2, B3, 
 
 - drawn up/to re-check, check and check again...
 
-// mark which way pots should go for VCA - on damp/1st inv vca should be other way round
+// mark which way pots should go for VCA - *on damp/1st inv vca should be other way round*
 
 test signum out//out we have is 1st int//2nd int - would be 3 outs - working but 1st can be with 10k to our regular schematic out..
 

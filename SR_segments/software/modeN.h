@@ -1683,7 +1683,7 @@ void adcLmix0(uint8_t w){
   mult=mixer[CVL[w]>>2]; // 10 bits - 0 is 1.0f so full dac
   //    mult=0.0f;
   ADCgeneric;
-  pp=(float)(k *  (1.0f-mult)) + ((float)(gate[2].dac)*mult); // mix with param
+  pp=(float)(k *  (1.0f-mult)) + ((float)(dacfrom[daccount][w]].dac)*mult); // mix with param
   //    //    pp=(float)(adc_buffer[12]*(1.0f-mult)+((float)(gate[3].dac)*mult); // mix with param - optional
   tmp=(int)pp;
   if (tmp>4095) tmp=4095;

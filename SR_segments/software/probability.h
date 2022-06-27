@@ -201,7 +201,7 @@ void probintprob2(uint8_t w){  // route or cycling
   } 
 }
 
-void probintprob3(uint8_t w){  // routed vs routed_cycing
+void probintprob3(uint8_t w){  // routed vs routed_cycling
   HEAD;  
   if (gate[w].trigger)      {
     GSHIFT_;

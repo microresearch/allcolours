@@ -24,6 +24,99 @@ could we even abstract out further so adc/13 is depth input - but also look at a
 and function is a processor of these to return bits
 
 */
+
+//////////////////////////////////////////////////////////////////////////
+// generic probability to test for adapted rungler in
+static inline uint32_t genericprob(uint32_t cv, uint32_t against, uint32_t bit1, uint32_t bit2){
+  if (cv>against) return bit1;
+  else return bit2;
+}
+
+/*
+
+- how that looks for inputs - what we compare to what?
+- or we just have list of probs to make things easier...
+
+- and for bits: bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;
+
+*invert routed/bit*
+*routed vs cycling// routed vs inverted cycling*
+*routed vs [routed^cycling]*
+
+ */
+
+static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling
+  uint32_t bt=0, bitrr;
+  if (depth<(LFSR_[wh]&4095)) {
+  depth=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  }
+  else
+    {
+    bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01; 
+    }
+  return bt;
+}
+
+static inline uint32_t binroutfixed_prob2(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - // prob of inverting routed bit
+  uint32_t bt=0, bitrr;
+  depth=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  if (depth<(LFSR_[wh]&4095)) bt=!bt;
+  return bt;
+}
+
+static inline uint32_t binroutfixed_prob3(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling INV
+  uint32_t bt=0, bitrr;
+  if (depth<(LFSR_[wh]&4095)) {
+  depth=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  }
+  else
+    {
+      bt = !((gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01); 
+    }
+  return bt;
+}
+
+static inline uint32_t binroutfixed_prob4(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - *routed vs [routed^cycling]*
+  uint32_t bt=0, bitrr;
+  depth=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  if (depth<(LFSR_[wh]&4095)) {
+    bt^=(gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;
+  }
+  return bt;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // tails
 void basictail(void){ // tail here is basic 4th at full speed - not very exciting for major_vienna as just loops

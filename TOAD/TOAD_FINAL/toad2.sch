@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
+Sheet 1 6
 Title ""
 Date ""
 Rev ""
@@ -40,4 +40,10 @@ F1 "anlog.sch" 50
 $EndSheet
 Text Notes 3165 1855 0    79   ~ 0
 Updating for final TOAD layout - towards Mindlin and with extra incoming VCA.
+$Sheet
+S 905  3750 1965 610 
+U 62BD4879
+F0 "OUTS" 50
+F1 "outs.sch" 50
+$EndSheet
 $EndSCHEMATC

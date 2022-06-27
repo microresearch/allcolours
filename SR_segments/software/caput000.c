@@ -230,21 +230,19 @@ static uint32_t resetz=1;
 
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
-//#include "geogen.h" // newer generators
+#include "geogen.h" // newer generators
 
-//#include "handler.h" // now for interrupts
-
-#include "modeN.h"
-#include "modeL.h"
-#include "modeR.h"
-#include "modeC.h"
+//#include "modeN.h"
+//#include "modeL.h"
+//#include "modeR.h"
+//#include "modeC.h"
 //#include "probability.h" // probability modes
 
 //#include "basis.h" // basics from commented ones just to speed up tests
-//#include "geomantic.h" // new geomantic codebase in progress
-#include "experiment.h" // more functional modes - can also shift some things here... trials
-#include "bit.h" // bitmodes but some are still in modeL
-#include "rungler.h"
+#include "geomantic.h" // new geomantic codebase in progress
+//#include "experiment.h" // more functional modes - can also shift some things here... trials
+//#include "bit.h" // bitmodes but some are still in modeL
+//#include "rungler.h"
 
 void testnull(void){
 }
@@ -270,6 +268,7 @@ uint32_t testmodes[4]={0,0,0,0};
 
   //re-test all new for crash  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadcX, SRrunghead0NX, adcLrung0-fixed18/6, adcLrung1fixed, adcLrung2fixed,   adcrung0fixed, adcLbinprobX, noSRadc2sX, noSRadc2sX, adcLabstractLDX, stream4_unshareX, streamX}, //128
 
+ /*
 void (*funcgroups[4][128])(uint8_t w)=
 {
     {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream}, //128
@@ -281,7 +280,8 @@ void (*funcgroups[4][128])(uint8_t w)=
   
   {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2, SRRrung3,     adcLbinprob, SRX0,     SRX0, adcLabstractLD, stream4_unshare, stream} //64 
 }; // 13 so far -- to add more for lisbon - select at random from 50 - how to do from cards...
-
+ */
+ 
 // card for each = 16 possibles... we need 50! - q of slidings - we can slide +-64 except modeR cannot slide so should be most generic
 
 
@@ -363,7 +363,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   else mde=mode[3]; // case for 3:
       */    
 
-  (*funcgroups[www][mde])(www);
+      //  (*funcgroups[www][mde])(www);
       
 
   // trial here different version of Vienna with interpoll and new bit recurse options

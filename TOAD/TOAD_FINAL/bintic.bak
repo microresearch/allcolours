@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 5
+Sheet 3 6
 Title ""
 Date ""
 Rev ""
@@ -295,50 +295,6 @@ F 2 "" H 3250 1250 50  0001 C CNN
 F 3 "" H 3250 1250 50  0001 C CNN
 	1    3250 1250
 	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R25
-U 1 1 5BC9AC9D
-P 9050 1400
-F 0 "R25" V 9246 1400 50  0000 C CNN
-F 1 "10K" V 9155 1400 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 9050 1400 50  0001 C CNN
-F 3 "~" H 9050 1400 50  0001 C CNN
-	1    9050 1400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:R_Small R29
-U 1 1 5BC9BCB6
-P 10075 1300
-F 0 "R29" V 9879 1300 50  0000 C CNN
-F 1 "330R" V 9970 1300 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 10075 1300 50  0001 C CNN
-F 3 "~" H 10075 1300 50  0001 C CNN
-	1    10075 1300
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R_Small R28
-U 1 1 5BC9C3DA
-P 9575 2125
-F 0 "R28" V 9650 2100 50  0000 C CNN
-F 1 "10K" V 9500 2250 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 9575 2125 50  0001 C CNN
-F 3 "~" H 9575 2125 50  0001 C CNN
-	1    9575 2125
-	0    1    1    0   
-$EndComp
-$Comp
-L power:-12V #PWR055
-U 1 1 5BC9CFCE
-P 9450 1675
-F 0 "#PWR055" H 9450 1775 50  0001 C CNN
-F 1 "-12V" H 9465 1848 50  0000 C CNN
-F 2 "" H 9450 1675 50  0001 C CNN
-F 3 "" H 9450 1675 50  0001 C CNN
-	1    9450 1675
-	-1   0    0    1   
 $EndComp
 Text Notes 1350 4325 0    60   ~ 0
 +-6v supply
@@ -832,42 +788,14 @@ Wire Wire Line
 	3250 1250 3375 1250
 Wire Wire Line
 	3475 1450 3375 1450
-$Comp
-L power:+12V #PWR054
-U 1 1 5BD36CEA
-P 9450 715
-F 0 "#PWR054" H 9450 565 50  0001 C CNN
-F 1 "+12V" H 9465 888 50  0000 C CNN
-F 2 "" H 9450 715 50  0001 C CNN
-F 3 "" H 9450 715 50  0001 C CNN
-	1    9450 715 
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	9450 950  9450 1000
-Wire Wire Line
-	9450 1600 9450 1675
-Wire Wire Line
-	4075 1550 4125 1550
+	4075 1550 4095 1550
 Wire Wire Line
 	7775 1500 7825 1500
 Wire Wire Line
 	8075 1500 8200 1500
 Wire Wire Line
 	8800 1400 8850 1400
-Wire Wire Line
-	9150 1400 9250 1400
-Wire Wire Line
-	9175 1200 9250 1200
-Wire Wire Line
-	9850 1300 9975 1300
-Wire Wire Line
-	9150 1400 9150 1950
-Wire Wire Line
-	9150 1950 9475 1950
-Connection ~ 9150 1400
-Wire Wire Line
-	9675 1950 9850 1950
 Wire Wire Line
 	1800 2350 1975 2350
 Wire Wire Line
@@ -878,38 +806,9 @@ Connection ~ 2450 1650
 Wire Wire Line
 	1800 1550 1700 1550
 Wire Wire Line
-	10175 1300 10250 1300
-Wire Wire Line
 	7975 1100 8100 1100
 Wire Wire Line
 	8100 1300 8200 1300
-$Comp
-L power:GND #PWR053
-U 1 1 5BDA6C9B
-P 9000 950
-F 0 "#PWR053" H 9000 700 50  0001 C CNN
-F 1 "GND" H 9005 777 50  0000 C CNN
-F 2 "" H 9000 950 50  0001 C CNN
-F 3 "" H 9000 950 50  0001 C CNN
-	1    9000 950 
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C34
-U 1 1 5BDAC979
-P 9575 1950
-F 0 "C34" V 9425 2025 50  0000 C CNN
-F 1 "100pF" V 9500 2075 50  0000 C CNN
-F 2 "Capacitors_SMD:C_0805" H 9575 1950 50  0001 C CNN
-F 3 "~" H 9575 1950 50  0001 C CNN
-	1    9575 1950
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	9150 1950 9150 2125
-Wire Wire Line
-	9150 2125 9475 2125
-Connection ~ 9150 1950
 Wire Wire Line
 	3300 2475 3300 2675
 Connection ~ 3300 2675
@@ -952,13 +851,6 @@ Wire Wire Line
 	8850 2625 8800 2625
 Wire Wire Line
 	8875 800  8875 1400
-Wire Wire Line
-	9850 1300 9850 1950
-Wire Wire Line
-	10250 2125 10250 1300
-Wire Wire Line
-	9675 2125 10250 2125
-Connection ~ 10250 1300
 Wire Wire Line
 	7500 3925 9500 3925
 $Comp
@@ -1141,23 +1033,6 @@ Wire Wire Line
 Wire Wire Line
 	9800 3425 9800 3450
 Connection ~ 9800 3425
-$Comp
-L Device:R_Small R26
-U 1 1 5EAA9661
-P 9175 1025
-F 0 "R26" H 9116 979 50  0000 R CNN
-F 1 "10K" H 9116 1070 50  0000 R CNN
-F 2 "Resistors_SMD:R_0805" H 9175 1025 50  0001 C CNN
-F 3 "~" H 9175 1025 50  0001 C CNN
-	1    9175 1025
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	9000 950  9000 925 
-Wire Wire Line
-	9000 925  9175 925 
-Wire Wire Line
-	9175 1125 9175 1200
 Wire Wire Line
 	700  4825 700  4875
 Connection ~ 700  4875
@@ -1165,17 +1040,6 @@ Wire Wire Line
 	700  4875 700  4950
 Text Notes 2150 5600 0    79   ~ 0
 comp in
-$Comp
-L power:GND #PWR058
-U 1 1 5EADB544
-P 10475 1650
-F 0 "#PWR058" H 10475 1400 50  0001 C CNN
-F 1 "GND" H 10480 1477 50  0000 C CNN
-F 2 "" H 10475 1650 50  0001 C CNN
-F 3 "" H 10475 1650 50  0001 C CNN
-	1    10475 1650
-	1    0    0    -1  
-$EndComp
 $Comp
 L Amplifier_Operational:TL071 U3
 U 1 1 5EAFE965
@@ -1611,7 +1475,7 @@ Wire Wire Line
 	4750 1550 4800 1550
 Connection ~ 5775 1450
 Wire Wire Line
-	5775 1450 5875 1450
+	5775 1450 5800 1450
 Text GLabel 4200 1550 2    50   Input ~ 0
 B2
 Text GLabel 4700 1550 0    50   Input ~ 0
@@ -1649,8 +1513,6 @@ Wire Wire Line
 Connection ~ 4000 6550
 Wire Wire Line
 	4000 6800 4000 6850
-Wire Wire Line
-	10475 1600 10475 1650
 $Comp
 L Amplifier_Operational:TL074 U1
 U 1 1 5ED29C48
@@ -1833,102 +1695,6 @@ Wire Wire Line
 	7300 2075 7300 2125
 $Comp
 L Device:C_Small C?
-U 1 1 5ED84208
-P 10525 2400
-AR Path="/5EC7DA76/5ED84208" Ref="C?"  Part="1" 
-AR Path="/5EB3CA17/5ED84208" Ref="C42"  Part="1" 
-AR Path="/60663579/5ED84208" Ref="C38"  Part="1" 
-F 0 "C38" H 10617 2446 50  0000 L CNN
-F 1 "100N" H 10617 2355 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 10525 2400 50  0001 C CNN
-F 3 "~" H 10525 2400 50  0001 C CNN
-	1    10525 2400
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C?
-U 1 1 5ED8420F
-P 10850 2375
-AR Path="/5EC7DA76/5ED8420F" Ref="C?"  Part="1" 
-AR Path="/5EB3CA17/5ED8420F" Ref="C43"  Part="1" 
-AR Path="/60663579/5ED8420F" Ref="C39"  Part="1" 
-F 0 "C39" H 10942 2421 50  0000 L CNN
-F 1 "100N" H 10942 2330 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 10850 2375 50  0001 C CNN
-F 3 "~" H 10850 2375 50  0001 C CNN
-	1    10850 2375
-	1    0    0    -1  
-$EndComp
-$Comp
-L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR?
-U 1 1 5ED84216
-P 10525 2275
-AR Path="/5ED966D6/5ED84216" Ref="#PWR?"  Part="1" 
-AR Path="/5EC7DA76/5ED84216" Ref="#PWR?"  Part="1" 
-AR Path="/5EB3CA17/5ED84216" Ref="#PWR096"  Part="1" 
-AR Path="/60663579/5ED84216" Ref="#PWR059"  Part="1" 
-F 0 "#PWR059" H 10525 2125 50  0001 C CNN
-F 1 "+12V-power" H 10525 2425 50  0000 C CNN
-F 2 "" H 10525 2275 50  0001 C CNN
-F 3 "" H 10525 2275 50  0001 C CNN
-	1    10525 2275
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:-12V #PWR?
-U 1 1 5ED8421C
-P 10850 2525
-AR Path="/5ED966D6/5ED8421C" Ref="#PWR?"  Part="1" 
-AR Path="/5EC7DA76/5ED8421C" Ref="#PWR?"  Part="1" 
-AR Path="/5EB3CA17/5ED8421C" Ref="#PWR099"  Part="1" 
-AR Path="/60663579/5ED8421C" Ref="#PWR061"  Part="1" 
-F 0 "#PWR061" H 10850 2625 50  0001 C CNN
-F 1 "-12V" H 10865 2698 50  0000 C CNN
-F 2 "" H 10850 2525 50  0001 C CNN
-F 3 "" H 10850 2525 50  0001 C CNN
-	1    10850 2525
-	-1   0    0    1   
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5ED84222
-P 10525 2550
-AR Path="/5ED966D6/5ED84222" Ref="#PWR?"  Part="1" 
-AR Path="/5EC7DA76/5ED84222" Ref="#PWR?"  Part="1" 
-AR Path="/5EB3CA17/5ED84222" Ref="#PWR097"  Part="1" 
-AR Path="/60663579/5ED84222" Ref="#PWR060"  Part="1" 
-F 0 "#PWR060" H 10525 2300 50  0001 C CNN
-F 1 "GND" H 10475 2675 50  0000 C CNN
-F 2 "" H 10525 2550 50  0001 C CNN
-F 3 "" H 10525 2550 50  0001 C CNN
-	1    10525 2550
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5ED84228
-P 10950 2100
-AR Path="/5ED966D6/5ED84228" Ref="#PWR?"  Part="1" 
-AR Path="/5EC7DA76/5ED84228" Ref="#PWR?"  Part="1" 
-AR Path="/5EB3CA17/5ED84228" Ref="#PWR0100"  Part="1" 
-AR Path="/60663579/5ED84228" Ref="#PWR062"  Part="1" 
-F 0 "#PWR062" H 10950 1850 50  0001 C CNN
-F 1 "GND" H 10900 2225 50  0000 C CNN
-F 2 "" H 10950 2100 50  0001 C CNN
-F 3 "" H 10950 2100 50  0001 C CNN
-	1    10950 2100
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	10525 2500 10525 2550
-Wire Wire Line
-	10850 2275 10850 2100
-Wire Wire Line
-	10850 2100 10950 2100
-Wire Wire Line
-	10850 2475 10850 2525
-$Comp
-L Device:C_Small C?
 U 1 1 5EDA30CB
 P 4475 7325
 AR Path="/5EC7DA76/5EDA30CB" Ref="C?"  Part="1" 
@@ -2064,23 +1830,9 @@ Wire Wire Line
 Wire Wire Line
 	6675 800  8875 800 
 Wire Wire Line
-	10250 1300 10475 1300
-Wire Wire Line
 	2700 6325 2850 6325
 Wire Wire Line
 	2775 6125 2850 6125
-Connection ~ 9850 1300
-$Comp
-L Amplifier_Operational:TL071 U7
-U 1 1 5BC901A7
-P 9550 1300
-F 0 "U7" H 9700 1550 50  0000 L CNN
-F 1 "TL071" H 9650 1450 50  0000 L CNN
-F 2 "SMD_Packages:SOIC-8-N" H 9600 1350 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 9700 1450 50  0001 C CNN
-	1    9550 1300
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R_Small R11
 U 1 1 5ED97115
@@ -2156,21 +1908,6 @@ Wire Wire Line
 Wire Wire Line
 	3050 5585 3050 5635
 $Comp
-L Device:R_Small R27
-U 1 1 5EE1E6C4
-P 9450 850
-F 0 "R27" V 9254 850 50  0000 C CNN
-F 1 "100R" V 9345 850 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805" H 9450 850 50  0001 C CNN
-F 3 "~" H 9450 850 50  0001 C CNN
-	1    9450 850 
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	10525 2275 10525 2300
-Wire Wire Line
-	9450 715  9450 750 
-$Comp
 L Device:R_Small R6
 U 1 1 606BA0FB
 P 1700 1450
@@ -2194,10 +1931,6 @@ F 3 "" H 1620 1350 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1620 1350 1700 1350
-Wire Wire Line
-	8950 1400 8950 1500
-Text GLabel 8950 1500 3    50   Input ~ 0
-OUT
 $Comp
 L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M2
 U 1 1 60905295
@@ -2208,17 +1941,6 @@ F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 2205 6075
 F 3 "" H 2175 5925 60  0001 C CNN
 	1    2175 5925
 	1    0    0    -1  
-$EndComp
-$Comp
-L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M3
-U 1 1 6091EF80
-P 10775 1500
-F 0 "M3" H 10448 1462 45  0000 R CNN
-F 1 "AUDIO-JACKERTHENVAR-PJ398" H 10775 1500 45  0001 L BNN
-F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 10805 1650 20  0001 C CNN
-F 3 "" H 10775 1500 60  0001 C CNN
-	1    10775 1500
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	1700 1750 1740 1750
@@ -2315,4 +2037,22 @@ Wire Wire Line
 Connection ~ 1740 1750
 Wire Wire Line
 	1740 1750 1800 1750
+Text GLabel 4055 1325 2    50   Input ~ 0
+OUT1
+Text GLabel 5800 1235 2    50   Input ~ 0
+OUT2
+Wire Wire Line
+	4055 1325 4055 1505
+Wire Wire Line
+	4055 1505 4095 1505
+Wire Wire Line
+	4095 1505 4095 1550
+Connection ~ 4095 1550
+Wire Wire Line
+	4095 1550 4125 1550
+Wire Wire Line
+	5800 1235 5800 1450
+Connection ~ 5800 1450
+Wire Wire Line
+	5800 1450 5875 1450
 $EndSCHEMATC

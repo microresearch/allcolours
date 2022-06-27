@@ -16,7 +16,7 @@
 // now with depth/CV
 uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG}; // one interp, next not - see interp below... interp is extracted...
 //0 is strobe
-// TODO match with interp
+// TODO match with interp////////
 uint8_t interp[32]={0,1,0,0,0,0,0,0,0,0,0,0,0,0};
 
 //2length
