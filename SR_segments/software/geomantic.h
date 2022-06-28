@@ -63,6 +63,8 @@ uint32_t *CVlist[4][16]={
 
 // then each would need ref into 4 functions +dac5 + 6 sets of CV???? = 10 or 11 counters each...
 
+enum refs {fspeed, flength, fadc, fbit, fdac, cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
+
 //1speed 
 uint32_t speedfunc[64][4]={ 
 {1,1,1,1}, // 
@@ -80,7 +82,7 @@ uint32_t adcfunc[64][4]={
 
 //4bits
 uint32_t bitfunc[64][4]={  //  below just to test things 16 so far - but problem is it can select itself out of the equation unless all are there...
-{3,3,3,1},
+  {3,3,3,1}, // was 3,3,3,1
 {3,3,4,1},
 {3,3,5,1},
 {3,3,6,1},
@@ -141,6 +143,11 @@ uint32_t lengthcv[64][4]={
   {6,6,6,6}, // all appropriate CVL  
 };
 
+uint32_t daccv[64][4]={ 
+  {0,0,0,0}, // 
+};
+
+
 uint32_t adccv[64][4]={ 
   {6,6,6,6}, 
 };
@@ -150,7 +157,7 @@ uint32_t adccvv[64][4]={ // this is adc itself IN
 };
 
 uint32_t bitcv[64][4]={ 
-  {1,1,4,6}, // CVL for tests now 
+  {5,5,5,5}, // CVL for tests now = 5,5,5,5
   {4,4,4,2}, // default - brought in from dacfrom and incremented
   {2,4,2,2}, // new one for rungling 24/1/2022
   {4,1,2,3}, // from latest notebook prev ones: 3,0,1,2
@@ -192,6 +199,7 @@ void SR_geomantic(uint8_t w){  // working now for basics
   if ((*speedfromsd[speedfunc[spdfunccnt][w]])(*CVlist[w][speedcvin[cvcount][w]],*CVlist[w][speedcv[cvcount][w]], w)){ // speedfunc
     LASTSPEED; // new macro to deal with lastspeed 16/6
     gate[w].dactype=whichdac[dactypecnt][w]; // question of dactypes which need param/cv also
+    gate[w].dacpar=*CVlist[w][daccv[cvcount][w]];
     if (lengthfunc[lengthfunccnt][w]!=0){ // so function 0 null should just hold length
     SRlength[w]=(*lengthfromsd[lengthfunc[lengthfunccnt][w]])(*CVlist[w][lengthcv[cvcount][w]],w); // lengthfunc
     }
@@ -208,6 +216,43 @@ void SR_geomantic(uint8_t w){  // working now for basics
     new_data(val,w);
 }  
 }
+
+void SR_geomanticx(uint8_t w){  // for alternative arrays... working now
+  HEADNADA;
+  if (interp[gate[w].func[spdfunccnt][fspeed]]){ // gate[w].func[spdfunccnt][fspeed]
+
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  CLKSR; // new macro deals with intflag outside speed
+  if ((*speedfromsd[gate[w].func[spdfunccnt][fspeed]])(*CVlist[w][gate[w].func[cvcount][cvspeed]],*CVlist[w][gate[w].func[cvcount][cvspeedmod]], w)){ // speedfunc
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    gate[w].dactype=gate[w].func[dactypecnt][fdac]; // question of dactypes which need param/cv also
+    gate[w].dacpar=*CVlist[w][gate[w].func[cvcount][cvdac]];
+
+    
+    if (gate[w].func[lengthfunccnt][flength]!=0){ // so function 0 null should just hold length
+    SRlength[w]=(*lengthfromsd[gate[w].func[lengthfunccnt][flength]])(*CVlist[w][gate[w].func[cvcount][cvlength]],w); // lengthfunc
+    }
+    GSHIFT_;  // replace with types of gshift - gshiftfuncs...
+    // CORE
+    
+    if (gate[w].func[cvcount][cvadcIN]==7){ // real ADC
+    ADCgeneric2; // input into shared one..
+    }
+    bitn=(*adcfromsd[gate[w].func[adcfunccnt][fadc]])(*CVlist[w][gate[w].func[cvcount][cvadc]], *CVlist[w][gate[w].func[cvcount][cvadcIN]],w);
+    bitn^=(*bitfromsd[gate[w].func[bitfunccnt][fbit]])(*CVlist[w][gate[w].func[cvcount][cvbit]], *CVlist[w][gate[w].func[cvcount][cvbitcomp]],w);
+    // ENDCORE
+    //    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function
+    BITN_AND_OUTV_; // pulsin is in there
+    new_data(val,w);
+}  
+}
+
+//enum refs {fspeed, flength, fadc, fbit, fdac, cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
 
 /*
 

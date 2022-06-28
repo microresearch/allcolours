@@ -2210,7 +2210,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   static uint32_t toggle[9]={0,0,0,0};
   static uint32_t mask[4]={0,0,0,0};
 
-  float betaf=0.4f;
+  float betaf=0.4f, mult,pp;
   int32_t rem;
   uint32_t y,tmp;
   
@@ -2504,7 +2504,19 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     case 23: // regular 12 bits in one go
       x=((shift>>rightshift[length])<<leftshift[length])&masky[11];
     break;
+
+  case 24: // mix own basic dac and dacfrom
+    if (length==3){
+      if ((shift&4)==4) x=4095; // changed 28/12
+      else x=0;
+    }
+    else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
     
+    if (otherpar>4095) otherpar=4095;
+    mult=mixer[otherpar>>2]; // 10 bits - 0 is 1.0f so full dac
+    pp=((float)(x) *  (1.0f-mult)) + ((float)(gate[dacfrom[daccount][wh]].dac)*mult); // mix with param
+    x=(int)pp;
+    break;
     ///////
   } // switch    
   return x;

@@ -198,6 +198,12 @@ RESOLVE ARCH:
 - check all above: speed, clkin, pulsin etc.
 - sort modes
 
+** 28/6/2022
+
+- *SR_geomanticx with new notation for modes/groups/cv which can be better dealt with, maybe even use python to generate*
+
+- *new model seems ok, how we can implement recursions and also leave some params open to cv, etc...*
+
 ** 27/6/2022
 
 geogen.h - what else we have so far?
@@ -218,7 +224,8 @@ To resolve:
 TODO:
 1/ *rungler with probability* - break down rungler into basics -> added binroutfixed_prob functions so we can describe runglers in geo...h
 
-2/ *mix of routed in dacs - what mixes do we have already? - all with adc, so we need to mix 2 dacs - own and other/daccfrom using param - as new dac mode...*
+TESTED/DONE2/ mix of routed in dacs - what mixes do we have already? - all with adc, so we need to mix 2 dacs - own and other/daccfrom using param - as new dac mode...
+as dac case 24: we need to TEST - need solid framework from geomantic.h
 
 3/ new speed mode where strobe/dac sets speed of CV in - eg. CVspeed so CV in is more discontinuous
 

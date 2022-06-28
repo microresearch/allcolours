@@ -48,6 +48,25 @@
 
 static heavens gate[9]; // for paralell SR doubled + tail
 
+//enum refs {fspeed, flength, fadc, fbit, fdac, // cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
+
+uint32_t funcN[64][13]={
+  {1,1,1,3,0, 5,0,6,0,6,7,1,0}, // first set is from geomantic.h with test of dacmix!
+};
+
+uint32_t funcL[64][13]={
+  {1,1,0,3,0, 5,0,6,0,6,0,1,0},
+};
+
+uint32_t funcC[64][13]={
+  {1,1,0,3,24, 5,0,6,2,6,0,4,0},
+};
+
+uint32_t funcR[64][13]={
+  {1,0,0,1,0, 5,0,6,0, 6,0,6,0},
+};
+
+
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 
 static uint32_t ADCin;
@@ -284,10 +303,28 @@ void (*funcgroups[4][128])(uint8_t w)=
  
 // card for each = 16 possibles... we need 50! - q of slidings - we can slide +-64 except modeR cannot slide so should be most generic
 
+ /*
+- how else we can express matrices which makes sense - to match up:
 
+as array for each side:
+
+eg. speed, length, bit FUNCS, adc, which dac // them CV indices
+
+thus:
+*/
+ 
 void mode_init(void){
-  uint32_t x;
+  uint32_t x,y;
 
+  for (x=0;x<64;x++){
+    for (y=0;y<13;y++){
+      gate[0].func[x][y]=funcN[x][y];
+      gate[1].func[x][y]=funcL[x][y];
+      gate[2].func[x][y]=funcC[x][y];
+      gate[3].func[x][y]=funcR[x][y];
+    }
+  }
+        
   RESETR;
   
   for (x=0;x<4;x++){
@@ -371,7 +408,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do func
   //  (*dofunc[www][0])(www);
-
+      SR_geomanticx(www);
   
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8

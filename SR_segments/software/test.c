@@ -24,6 +24,51 @@
   else {						\
 }
 
+typedef struct heavens_ { // fill out with trigger, routes, types, bits and other attributes,,,
+  uint32_t trigger;  
+  uint32_t adctype, adcpar;
+  uint32_t dactype, dacpar;
+  uint32_t Gshift_[9];
+  uint32_t localGSR[9];
+  uint32_t Gshare_;
+  uint32_t shift_;
+  uint32_t gshift_;
+  uint32_t extrashift_;
+  uint32_t lastdac; // speed stuff
+  uint32_t dac;
+  int32_t route;
+  float time_now;
+  uint32_t lastest;
+  float alpha;
+  long last_time;
+ long int_time;
+  uint32_t delay[512]; // 128x32 bits=4096 // 512=16384
+  uint32_t delcnt;
+  uint32_t paramx; // for param holds - could be more than one param...
+  uint32_t changed;
+  uint32_t reset[4];
+  int32_t gsrcnt[4];
+  uint32_t latch;
+  uint32_t index;
+  uint32_t strobed;
+  uint32_t lastspeed;
+  uint32_t countspeed;
+/*
+- how else we can express matrices which makes sense - to match up:
+
+as array for each side:
+
+eg. speed, length, bit FUNCS, adc, which dac // them CV indices
+
+thus:
+*/
+
+  uint32_t (*func)[13];
+//  uint32_t func[64][13];
+   /// speed, length, adc, bit, dac, cv indices: speedcvin, speedcv(mod), lengthcv, daccv, adccv, addccvv(IN),  bitcv, bitcvv - and indexes for these
+
+
+} heavens;
 
 
 
@@ -1142,6 +1187,48 @@ for (cd=1024;cd>0;cd--){
  }
 */
 
+enum refs {vspeed, vlength, vadc};
+
+//printf("length: %d", vlength);
+
+/*
+- how else we can express matrices which makes sense - to match up:
+
+as array for each side:
+
+eg. speed, length, bit FUNCS, adc, which dac // them CV indices
+
+thus:
+*/
+
+
+uint32_t funcN[64][13]={
+  {1,1,1,19,0, 5,0,6,0,6,7,1,0},
+};
+
+uint32_t funcL[64][13]={
+  {1,1,0,19,0, 5,0,6,0,6,0,1,0},
+};
+
+uint32_t funcC[64][13]={
+  {1,1,0,19,0, 5,0,6,0,6,0,4,0},
+};
+
+uint32_t funcR[64][13]={
+  {1,0,0,19,0, 5,0,6,0, 6,0,6,0},
+};
+
+static heavens gate[9]; // for paralell SR doubled + tail
+
+
+  gate[0].func=funcN; // pointers...
+  gate[1].func=funcL;
+  gate[2].func=funcC;
+  gate[3].func=funcR;
+
+
+
+printf("funcy %d\n",gate[3].func[0][11]);
 
 return 0;
 }

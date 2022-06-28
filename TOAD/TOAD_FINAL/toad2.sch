@@ -41,7 +41,7 @@ $EndSheet
 Text Notes 3165 1855 0    79   ~ 0
 Updating for final TOAD layout - towards Mindlin and with extra incoming VCA.
 $Sheet
-S 905  3750 1965 610 
+S 760  3320 1965 610 
 U 62BD4879
 F0 "OUTS" 50
 F1 "outs.sch" 50

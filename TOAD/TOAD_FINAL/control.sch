@@ -3238,4 +3238,6 @@ Wire Wire Line
 	1160 7340 1460 7340
 Wire Wire Line
 	1460 7115 1460 7340
+Text Notes 1340 2750 0    50   ~ 0
+this one is for int1 feedback 
 $EndSCHEMATC
