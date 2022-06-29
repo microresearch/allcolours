@@ -65,6 +65,34 @@ static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t 
   return bt;
 }
 
+static inline uint32_t binroutfixed_prob1R(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling // route from R
+  uint32_t bt=0, bitrr;
+  if (depth<(LFSR_[wh]&4095)) {
+    bitrr = (gate[3].Gshift_[wh]>>SRlength[3]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[3].Gshift_[wh]=(gate[3].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+    else
+    {
+    bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01; 
+    }
+  return bt;
+}
+
+static inline uint32_t binroutfixed_prob1L(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling // route from R
+  uint32_t bt=0, bitrr;
+    if (depth<(LFSR_[wh]&4095)) {
+    bitrr = (gate[1].Gshift_[wh]>>SRlength[1]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[1].Gshift_[wh]=(gate[1].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+     }
+    else
+    {
+      bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;
+    }
+  return bt;
+}
+
 static inline uint32_t binroutfixed_prob2(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - // prob of inverting routed bit
   uint32_t bt=0, bitrr;
   depth=binroute[count][wh]|binary[wh];
@@ -654,6 +682,8 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we
   //  else if (tmp>1023) tmp=1023;
   if (in==0) tmp=depth;
   else tmp=depth%in;
+  //  tmp=in+depth;
+  //  if (tmp>4095) tmp=4095;
   helds[wh]=tmp;
   speed=logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
@@ -666,6 +696,28 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we
   }
   return bt;
 }
+
+static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // depth is offset, in is constraint -- and speed from dac = gate[speedfrom[spdcount][w]].dac
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  tmp=gate[speedfrom[spdcount][wh]].dac%in;
+  tmp+=depth;
+  if (tmp>4095) tmp=4095;    
+
+  helds[wh]=tmp;
+  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
 
 static inline uint32_t strobe(uint32_t depth, uint32_t in, uint32_t wh){   // strobe - no depth
   uint32_t bt;
@@ -1249,6 +1301,7 @@ static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t wh){ // max 1
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
+  
     if (bc<0) {
       if (depth>11) depth=11; // max depth
       k=in>>(11-depth); 
@@ -1609,5 +1662,15 @@ void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fas
   ENDER;
   }
   }
+}
+
+uint32_t (*genericfuncs[64])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bits,        zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits}; // doubled up a bit to hit 64 // 
+
+static inline uint32_t gensel(uint32_t depth, uint32_t in, uint32_t wh){  // select from a generic list - depth is param and in is the selection
+  // in is not used in generic functions...
+  // so for rungler we use CVM as that IN=cvbitcomp
+   uint32_t bt;
+   bt=(*genericfuncs[in>>6])(depth, 0, wh); // 6 bits=64 generic functions to collect
+   return bt;
 }
 

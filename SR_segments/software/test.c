@@ -1230,5 +1230,10 @@ static heavens gate[9]; // for paralell SR doubled + tail
 
 printf("funcy %d\n",gate[3].func[0][11]);
 
+uint32_t monk=9;
+x=y=monk;
+
+printf("x %d y %d\n",y, x);
+
 return 0;
 }

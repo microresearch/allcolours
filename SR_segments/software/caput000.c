@@ -49,21 +49,33 @@
 static heavens gate[9]; // for paralell SR doubled + tail
 
 //enum refs {fspeed, flength, fadc, fbit, fdac, // cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
+//           1       2        3     4     5     // 1        2           3         4      5       6        7      8 
+
+//  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[3], &clksr_[3], &param[3]}
+//   0,      1             2             3             4             5       6        7        8       9            10          11
+
+
+uint32_t funcmax[64][13]={
+  {8,2,17,61,23, 11,11,11,11,11,11,11,11}, // maximum value if x>funcmax... // update these as we add more functions
+};
 
 uint32_t funcN[64][13]={
-  {1,1,1,3,0, 5,0,6,0,6,7,1,0}, // first set is from geomantic.h with test of dacmix!
+  //  {1,1,1,0,0, 5,0,6,0,6,8,0,0}, // first set is from geomantic.h with test of dacmix!
+      {2,0,1,59,0, 5,6,6,0,6,8,6,7}, // for rungler with speed from R
 };
 
 uint32_t funcL[64][13]={
-  {1,1,0,3,0, 5,0,6,0,6,0,1,0},
+  //    {1,1,0,2,0, 5,0,6,0,6,0,1,0},
+    {2,0,0,59,0, 5,6,6,0,6,0,6,7}, // rung2
 };
 
 uint32_t funcC[64][13]={
-  {1,1,0,3,24, 5,0,6,2,6,0,4,0},
+  //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
+  {1,1,0,60,0, 5,0,0,7,0,0,4,0}, // rung - speed from cv, route from R //
 };
 
 uint32_t funcR[64][13]={
-  {1,0,0,1,0, 5,0,6,0, 6,0,6,0},
+  {2,1,0,61,0, 5,6,6,0,0,0,1,0}, // route from L, speed from N
 };
 
 
@@ -361,7 +373,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  static uint32_t flipper[4]={1}, www=0, kk=0, ww=0;
+  static uint32_t flipper[4]={1}, www=0, kk=0, ww=0, glob=0; // global count for sync=glob
   uint32_t tmp;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
@@ -375,6 +387,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
   }
   */
+
+  // testing
+//  spdfunccnt=cvcount=dactypecnt=lengthfunccnt=adcfunccnt=bitfunccnt=glob;
   
   // trial of new: *order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?*
   // or table can be XORed - with SR or somehow altered from there - as a skip could be an option so maybe we don't need tables...
@@ -408,7 +423,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do func
   //  (*dofunc[www][0])(www);
-      SR_geomanticx(www);
+      SR_geomanticx(www); // just for testings
   
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8

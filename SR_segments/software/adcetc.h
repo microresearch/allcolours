@@ -2249,7 +2249,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
     
   case 1:// equivalent bit DAC for x bits - 3/11 - 32 bits max now
-    x=countbits(shift &masky[length]); // lower length bits only
+    x=countbits(shift& masky[length]); // lower length bits only
     y=divy[length]; // added table for this 7/10 - updated for 32 bits
     x*=y;
     if (x>4095) x=4095;
