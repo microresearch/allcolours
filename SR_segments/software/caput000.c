@@ -54,6 +54,11 @@ static heavens gate[9]; // for paralell SR doubled + tail
 //  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[3], &clksr_[3], &param[3]}
 //   0,      1             2             3             4             5       6        7        8       9            10          11
 
+// we can also divide up into matrices for functions and CV as seperate
+// eg...
+uint32_t funcNN[64][5]={2,0,1,59,0};
+uint32_t cvNN[64][8]={5,6,6,0,6,8,6,7};
+
 
 uint32_t funcmax[64][13]={
   {8,2,17,61,23, 11,11,11,11,11,11,11,11}, // maximum value if x>funcmax... // update these as we add more functions
@@ -71,8 +76,9 @@ uint32_t funcL[64][13]={
 
 uint32_t funcC[64][13]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {1,1,0,60,0, 5,0,0,7,0,0,4,0}, // rung - speed from cv, route from R //
+  {1,1,0,60,1, 5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
 };
+
 
 uint32_t funcR[64][13]={
   {2,1,0,61,0, 5,6,6,0,0,0,1,0}, // route from L, speed from N
@@ -83,7 +89,7 @@ static uint32_t binary[9]={0,0,0,0}; // binary global routing
 
 static uint32_t ADCin;
 
-#define LOWEST 0.000062f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022 // this is now our STOP
+#define LOWEST 0.000031f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022 // this is now our STOP
 
 
 static uint32_t count=0; // for route

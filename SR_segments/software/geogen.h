@@ -718,6 +718,17 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // de
   return bt;
 }
 
+// TODO: add in different spdfrac doubles:
+
+/*
+
+  tmpp=(CV[w]>>2)-512;
+  cv=(gate[speedfrom[spdcount][w]].dac>>2) + tmpp;  
+  if (cv<0) cv=0;
+  else if (cv>1023) cv=1023;
+
+*/
+
 
 static inline uint32_t strobe(uint32_t depth, uint32_t in, uint32_t wh){   // strobe - no depth
   uint32_t bt;

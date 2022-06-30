@@ -52,8 +52,6 @@ layers/hold/detach,
 modes initiate streams (below), 
 all as bits and functions/gens, 
 
-*sliding of matched functions - so there is major one and others deviate from that by wrapped value... versions of this*
-
 what are probable/possible recursions? of dac/sr onto ANY parameter, of dac/sr onto choice of parameter, of dac/sr onto parameter of function outputing parameter...
 
 SR is function, SR recurs... smaller loops eg. N->L->N->C->R->N
@@ -158,9 +156,9 @@ older notes:
   covers 2^10 - so 10 octaves...we want say 13 or 14 octaves - 0.1Hz
   to 5K for 14 octaves/doublings
 
-*can we have knob covering this and 0-10v as 1v/OCT*
+can we have knob covering this and 0-10v as 1v/OCT
 
-*100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)*
+100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)
 
 // 14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
 
@@ -170,22 +168,19 @@ or 100k cv in, 23k feedback, and -10v is 70k
 
 *figure out calc for filter speeds (once we settle on speeds)*
 
-*TODO: check newmodes, bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...*
+TODO: check newmodes, bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...
 *TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
 *TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
 
-*settle on final speeds across all and check*
-
 RESOLVE ARCH:
 
-*static/frozen speeds in general or not - yes but just not on lowest*
+*static/frozen speeds in general or not - yes but just not on lowest - but how to implement*
 *slower speeds/cv to fix*
 *check use of clk, pulsin, out*
 *5th tail always running and how we switch in to it different streams from SRs*
 *dacs with interpol or not*
 *also potential global speeds from moder - how this can over-ride // sets of global modes*
 *reset global speeds and binary[all] in moder - RESETR macro to use*
-*logspeedd for no stops eg. in all modeC*
 
 ** TODO
 
@@ -195,10 +190,44 @@ RESOLVE ARCH:
 - clean up generators/adc/dac - gens for adc
 - ghost routed layers trial/also 5th tail for all modeC - how to do this fast... is it always default single route in from C?
 - 5th tail as processor, generator and what_would_have_been
-- check all above: speed, clkin, pulsin etc.
+- check all above: speed, clkin, pulsin etc, strobey thing
 - sort modes
 
+** 30/6/2022
+
+*how to insert say dac/adc values into matrices eg. dactype is from CVM???*
+
+// but we do this using meta-functions which can select others eg.
+// eg. gensel for bits
+// to add for dac etc... -> but dac is type and not function so... has otherpar-cvdac so how do we select?
+// for adc functions we also use 2x CV/ins - we need extra param for these in MATRIX -> expand...
+// *or we fix functions to use CV, CVL or certain DAC to select TODO*
+
+
+DONE:decide on speeds so we can make divider changes on hardware -> 15 octaves now in resources.h
+
+*twisted, dis-articulating algorithmic, worming, segmented body without organs/modes*
+
+- how that works with CVM and major modes... articulations?
+
+- SR shifts modes on, cv moves on
+
+meta-modes manipulate geomanticx modes - move on count... sets of geomanticx modes...
+
+- *how we will use stack? matrices is also some kind of stack - a stack of unattached values? - which can be SRs or GSRs -- push/pop. a state. a place to return to*
+- *place or point in matrix*
+
+how we fix something on to the stack?
+
 ** 29/6/2022
+
+*// organism without modes, a body without organs, ultimate recursions///* - changes to counts, global local and interior modes/layers
+
+each sr as a layer.mode
+
+arch: CVM/modes, all around geomantic or.... layers, tails, small changes in matrices
+
+matrix indicators of range/what can change....
 
 layerings: stacks of values for each SR
 
@@ -209,14 +238,13 @@ fill in from all functions now - also more about concepts, divide into abstract,
 
 //// skewing of counts, that mode0 in groups (if we have groups - still need decide how geomantic and matrices are used) resets all counts, length etc...
 
-*// countbits dac mode doesn;t work - retest*
+countbits dac mode doesn;t work - retest // works in test2.c but -> DONE: reverted to large array
 
 *we need to fix on total architecture and then fill in gaps - major modes with use of CVM always or...*
 
 *how to permute smaller changes in matrices - eg. change of dac/etc*
 
 // do we have major/counter mode on R or just change counters there... // but then what of use of CVM ???
-// organism without modes, a body without organs, ultimate recursions///
 
 
 *if we decide to CVM then we need to use it ALWAYS - in all modes but do we use modeR seperately as groupsel:*
@@ -275,7 +303,7 @@ To resolve:
 - new use of held speed: LASTSPEED macro and lastspd to hold.../how we deal with speed in general? 
 
 TODO:
-1/ *rungler with probability* - break down rungler into basics -> added binroutfixed_prob functions so we can describe runglers in geo...h
+DONEingeo1/ rungler with probability - break down rungler into basics -> added binroutfixed_prob functions so we can describe runglers in geo...h
 
 TESTED/DONE2/ mix of routed in dacs - what mixes do we have already? - all with adc, so we need to mix 2 dacs - own and other/daccfrom using param - as new dac mode...
 as dac case 24: we need to TEST - need solid framework from geomantic.h

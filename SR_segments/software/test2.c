@@ -1024,12 +1024,12 @@ heavens gate[4];
       }
     printf("integrator: %f bt: %d\n",integratorf,bt);
     }*/
-    int32_t yum=0b1000111101110;
+    int32_t yum=0b1000;
 
     yum=countbits(yum);
     
     for (x=0;x<4;x++){
-          printf("%d\n",yum);
+          printf("count %d\n",yum);
     }
 
     
