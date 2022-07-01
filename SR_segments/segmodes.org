@@ -193,16 +193,33 @@ RESOLVE ARCH:
 - check all above: speed, clkin, pulsin etc, strobey thing
 - sort modes
 
+** 1/7/2022
+
+- started to wrap DAC functions... so we can use CVL, CVM to select
+
+TODO below.
+
+- TODO: seperate out function and CV matrix//DONE
+
+- how we have matric select by CVM when/if matrix has cvm within it - seperate matrix sets???
+
+- permute matrices so is always CV,M,L???
+
 ** 30/6/2022
 
-*how to insert say dac/adc values into matrices eg. dactype is from CVM???*
+- maybe 4 layers somehow for 4 possible routes in and their logics
+
+- do we just have one geomanticx function?
+
+how to insert say dac/adc values into matrices eg. dactype is from CVM???
 
 // but we do this using meta-functions which can select others eg.
 // eg. gensel for bits
 // to add for dac etc... -> but dac is type and not function so... has otherpar-cvdac so how do we select?
 // for adc functions we also use 2x CV/ins - we need extra param for these in MATRIX -> expand...
-// *or we fix functions to use CV, CVL or certain DAC to select TODO*
+// *or we fix functions to use CVL,CVM to select TODO*
 
+// just for adc and for dac
 
 DONE:decide on speeds so we can make divider changes on hardware -> 15 octaves now in resources.h
 

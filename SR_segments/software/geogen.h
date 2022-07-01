@@ -1675,7 +1675,7 @@ void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fas
   }
 }
 
-uint32_t (*genericfuncs[64])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bits,        zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits}; // doubled up a bit to hit 64 // 
+uint32_t (*genericfuncs[64])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bits,        zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits}; // doubled up a bit to hit 64 //  TEST
 
 static inline uint32_t gensel(uint32_t depth, uint32_t in, uint32_t wh){  // select from a generic list - depth is param and in is the selection
   // in is not used in generic functions...
@@ -1683,5 +1683,30 @@ static inline uint32_t gensel(uint32_t depth, uint32_t in, uint32_t wh){  // sel
    uint32_t bt;
    bt=(*genericfuncs[in>>6])(depth, 0, wh); // 6 bits=64 generic functions to collect
    return bt;
+}
+
+uint32_t (*adcfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits}; // doubled up // TEST!
+
+// do similar for dac and adc...
+// need dacfunctions for wrap dac access
+static inline uint32_t adcselcvl(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVL
+   uint32_t bt;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+   bt=(*adcfromsdd[CVL[wh]>>7])(depth, in, wh); // 5 bits
+   return bt;
+}
+
+static inline uint32_t adcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM
+   uint32_t bt;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+   bt=(*adcfromsdd[CVM[wh]>>7])(depth, in, wh); // 5 bits
+   return bt;
+}
+
+// start to wrap dac functions
+static inline uint32_t ddac0(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 0, depth, gate[wh].trigger);
+return val;
 }
 

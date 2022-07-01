@@ -23,7 +23,9 @@ uint8_t interp[32]={0,1,1,0,0,0,0,0,0,0,0,0,0,0};
 uint32_t (*lengthfromsd[32])(uint32_t depth, uint32_t wh)={nlen, rlen, holdlen}; // we only have 2 functions here so far - nlen is null/hold, what other functions
 
 //3adc
-uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits}; 
+uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, adcselcvm, adcselcvl}; 
+
+uint32_t (*dacfunc[32])(uint32_t depth, uint32_t wh)={ddac0};
 
 //4bits
 uint32_t (*bitfromsd[62])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRclksr, zSRclksrG, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, Rtest, gensel, binroutfixed_prob1R, binroutfixed_prob1L}; // add in funcs which use also binroutetypecount - this one with depth from variable CV
@@ -63,7 +65,8 @@ uint32_t *CVlist[4][16]={
 
 // then each would need ref into 4 functions +dac5 + 6 sets of CV???? = 10 or 11 counters each...
 
-enum refs {fspeed, flength, fadc, fbit, fdac, cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
+enum refs {fspeed, flength, fadc, fbit, fdac};
+enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
 
 //1speed 
 uint32_t speedfunc[64][4]={ 
@@ -257,6 +260,38 @@ void SR_geomanticx(uint8_t w){  // for alternative arrays... working now
     // ENDCORE
     //    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function
     BITN_AND_OUTV_; // pulsin is in there
+    new_data(val,w);
+}  
+}
+
+void SR_geomanticxx(uint8_t w){  // for split func/cv
+  HEADNADA;
+  if (interp[gate[w].func[spdfunccnt][fspeed]]){ // gate[w].func[spdfunccnt][fspeed]
+
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+   if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  CLKSR; // new macro deals with intflag outside speed
+  if ((*speedfromsd[gate[w].func[spdfunccnt][fspeed]])(*CVlist[w][gate[w].cv[cvcount][cvspeed]],*CVlist[w][gate[w].cv[cvcount][cvspeedmod]], w)){ // speedfunc
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    
+    if (gate[w].func[lengthfunccnt][flength]!=0){ // so function 0 null should just hold length
+    SRlength[w]=(*lengthfromsd[gate[w].func[lengthfunccnt][flength]])(*CVlist[w][gate[w].cv[cvcount][cvlength]],w); // lengthfunc
+    }
+    GSHIFT_;  // replace with types of gshift - gshiftfuncs...
+    // CORE
+    
+    if (gate[w].func[cvcount][cvadcIN]==8){ // real ADC
+    ADCgeneric2; // input into shared one..
+    }
+    bitn=(*adcfromsd[gate[w].func[adcfunccnt][fadc]])(4095-(*CVlist[w][gate[w].cv[cvcount][cvadc]]), *CVlist[w][gate[w].cv[cvcount][cvadcIN]],w); // invert?
+    bitn^=(*bitfromsd[gate[w].func[bitfunccnt][fbit]])(*CVlist[w][gate[w].cv[cvcount][cvbit]], *CVlist[w][gate[w].cv[cvcount][cvbitcomp]],w);
+    // ENDCORE
+    //    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function
+    BITN_AND_OUTVgen_; // pulsin is in there - added new DAC
     new_data(val,w);
 }  
 }

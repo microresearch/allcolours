@@ -497,6 +497,14 @@
 }
 // added pulsin_xor
 
+#define BITN_AND_OUTVgen_ {						\
+    PULSIN_XOR;								\
+    gate[w].shift_+=bitn;						\
+    val=(*dacfunc[gate[w].func[dactypecnt][fdac]])(*CVlist[w][gate[w].cv[cvcount][cvdac]], w); \
+    PULSOUT;								\
+}
+
+
 #define BITN_AND_OUTVXOR_ {						\
     gate[w].shift_^=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \

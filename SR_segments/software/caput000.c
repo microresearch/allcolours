@@ -56,12 +56,17 @@ static heavens gate[9]; // for paralell SR doubled + tail
 
 // we can also divide up into matrices for functions and CV as seperate
 // eg...
-uint32_t funcNN[64][5]={2,0,1,59,0};
-uint32_t cvNN[64][8]={5,6,6,0,6,8,6,7};
-
 
 uint32_t funcmax[64][13]={
   {8,2,17,61,23, 11,11,11,11,11,11,11,11}, // maximum value if x>funcmax... // update these as we add more functions
+};
+
+uint32_t funccmax[64][5]={
+  {8,2,17,61,23}, // maximum value if x>funcmax... // update these as we add more functions
+};
+
+uint32_t cvmax[64][8]={
+  {11,11,11,11,11,11,11,11}, // maximum value if x>funcmax... // update these as we add more functions
 };
 
 uint32_t funcN[64][13]={
@@ -69,9 +74,25 @@ uint32_t funcN[64][13]={
       {2,0,1,59,0, 5,6,6,0,6,8,6,7}, // for rungler with speed from R
 };
 
+uint32_t funcNN[64][5]={
+  {2,0,18,0,0},
+};
+
+uint32_t cvNN[64][8]={
+  {5,6,6,0,6,8,6,7},
+};
+
 uint32_t funcL[64][13]={
   //    {1,1,0,2,0, 5,0,6,0,6,0,1,0},
     {2,0,0,59,0, 5,6,6,0,6,0,6,7}, // rung2
+};
+
+uint32_t funcLL[64][5]={
+  {2,0,0,59,0},
+};
+
+uint32_t cvLL[64][8]={
+    {5,6,6,0,6,0,6,7}, // rung2
 };
 
 uint32_t funcC[64][13]={
@@ -79,9 +100,26 @@ uint32_t funcC[64][13]={
   {1,1,0,60,1, 5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
 };
 
+uint32_t funcCC[64][5]={
+  //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
+  {1,1,0,60,0}, // rung - speed from cv, route from R //
+};
+
+uint32_t cvCC[64][8]={
+  //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
+  {5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
+};
 
 uint32_t funcR[64][13]={
   {2,1,0,61,0, 5,6,6,0,0,0,1,0}, // route from L, speed from N
+};
+
+uint32_t funcRR[64][5]={
+  {2,1,0,61,0}, // route from L, speed from N
+};
+
+uint32_t cvRR[64][8]={
+  {5,6,6,0,0,0,1,0}, // route from L, speed from N
 };
 
 
@@ -335,14 +373,24 @@ void mode_init(void){
   uint32_t x,y;
 
   for (x=0;x<64;x++){
-    for (y=0;y<13;y++){
-      gate[0].func[x][y]=funcN[x][y];
-      gate[1].func[x][y]=funcL[x][y];
-      gate[2].func[x][y]=funcC[x][y];
-      gate[3].func[x][y]=funcR[x][y];
+    for (y=0;y<5;y++){
+      gate[0].func[x][y]=funcNN[x][y];
+      gate[1].func[x][y]=funcLL[x][y];
+      gate[2].func[x][y]=funcCC[x][y];
+      gate[3].func[x][y]=funcRR[x][y];
     }
   }
-        
+
+  for (x=0;x<64;x++){
+    for (y=0;y<8;y++){
+      gate[0].cv[x][y]=cvNN[x][y];
+      gate[1].cv[x][y]=cvLL[x][y];
+      gate[2].cv[x][y]=cvCC[x][y];
+      gate[3].cv[x][y]=cvRR[x][y];
+    }
+  }
+
+  
   RESETR;
   
   for (x=0;x<4;x++){
@@ -429,7 +477,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do func
   //  (*dofunc[www][0])(www);
-      SR_geomanticx(www); // just for testings
+      SR_geomanticxx(www); // just for testings
   
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
