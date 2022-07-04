@@ -1026,11 +1026,16 @@ heavens gate[4];
     }*/
     int32_t yum=0b1000;
 
+enum refs {fspeed, flength, fadc, fbit, fdac};
+enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
+
+    
     yum=countbits(yum);
     
     for (x=0;x<4;x++){
           printf("count %d\n",yum);
     }
 
+    printf("xx %d\n",cvspeed);
     
 }

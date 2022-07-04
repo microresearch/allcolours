@@ -1314,6 +1314,7 @@ static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t wh){ // max 1
   static uint32_t k;
   
     if (bc<0) {
+      depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
       k=in>>(11-depth); 
       bc=depth; 
@@ -1328,7 +1329,7 @@ static inline uint32_t zadconebitsx(uint32_t depth, uint32_t in, uint32_t wh){
   static uint32_t bc=31;
   static float integratorf=0.0f, oldvaluef=0.0f;
   float inb;
-
+  depth=depth>>7; // 5 bits
   if (bc>depth){
   inb=(float)(in);
   //  inb=inb-2048.0; //sounds better without this
@@ -1357,7 +1358,7 @@ static inline uint32_t zadconebitsxreset(uint32_t depth, uint32_t in, uint32_t w
   static uint32_t bc=31;
   static float integratorf=0.0f, oldvaluef=0.0f;
   float inb;
-
+  depth=depth>>7; // 5 bits
   if (bc>depth){
   inb=(float)(in);
   //  inb=inb-2048.0; //sounds better without this
@@ -1388,6 +1389,7 @@ static inline uint32_t zadcpadbits(uint32_t depth, uint32_t in, uint32_t wh){
   static uint32_t k;
   if (bc<0) {
     k=in;
+    depth=depth>>7; // 5 bits
     if (depth<12) k=k>>(11-depth);
     else k=k<<(depth-11);
     bc=depth; 
@@ -1444,6 +1446,7 @@ static inline uint32_t zadceqbits(uint32_t depth, uint32_t in, uint32_t wh){
   static uint32_t k;
   if (bc<0) {
     k=in;
+    depth=depth>>7; // 5 bits
     if (depth>31) depth=31; // and if depth is higher?
     k=k/divy[depth];
     bc=depth;
@@ -1464,6 +1467,7 @@ static inline uint32_t zadcenergybits(uint32_t depth, uint32_t in, uint32_t wh){
   int32_t tmp;
   static uint32_t k;
   if (bc>depth) {
+    depth=depth>>7; // 5 bits
       k=in;
       tmp=k-2048;
       k=abs(tmp);
@@ -1538,6 +1542,7 @@ static inline uint32_t zadccompbits(uint32_t depth, uint32_t in, uint32_t wh){ /
   static uint32_t k;
     if (bc<0) {
       k=in;//   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      depth=depth>>7; // 5 bits
       if (depth<12) k=k>>(11-depth);
       else k=k<<(depth-11);
       bc=depth; 
@@ -1614,6 +1619,7 @@ static inline uint32_t zadconecompbits(uint32_t depth, uint32_t in, uint32_t wh)
   static uint32_t k;
     if (bc<0) {
       k=in;
+      depth=depth>>7; // 5 bits
       if (depth<12) k=k>>(11-depth);
       else k=k<<(depth-11);
       bc=depth; 
@@ -1703,10 +1709,170 @@ static inline uint32_t adcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // 
    return bt;
 }
 
-// start to wrap dac functions
+// start to wrap dac functions - there are 24!
 static inline uint32_t ddac0(uint32_t depth, uint32_t wh){
   uint32_t val;
   val=DAC_(wh, gate[wh].shift_, SRlength[wh], 0, depth, gate[wh].trigger);
 return val;
 }
 
+static inline uint32_t ddac1(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 1, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac2(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 2, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac3(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 3, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac4(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 4, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac5(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 5, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac6(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 6, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac7(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 7, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac8(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 8, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac9(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 9, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac10(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 10, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac11(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 11, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac12(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 12, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac13(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 13, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac14(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 14, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac15(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 15, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac16(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 16, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac17(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 17, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac18(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 18, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac19(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 19, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac20(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 20, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac21(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 21, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac22(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 22, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac23(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 23, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac24(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 24, depth, gate[wh].trigger);
+return val;
+}
+
+uint32_t (*dacfromsdd[32])(uint32_t depth, uint32_t wh)={ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6, ddac7, ddac8, ddac9, ddac10, ddac11, ddac12, ddac13, ddac14, ddac15, ddac16, ddac17, ddac18, ddac19, ddac20, ddac21, ddac22, ddac23, ddac24, ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6};
+
+
+static inline uint32_t dacselcvl(uint32_t depth, uint32_t wh){  // select adc using CVL
+   uint32_t bt;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+   bt=(*dacfromsdd[CVL[wh]>>7])(depth, wh); // 5 bits
+   return bt;
+}
+
+static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc using CVL
+   uint32_t bt;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+   bt=(*dacfromsdd[CVM[wh]>>7])(depth, wh); // 5 bits
+   return bt;
+}

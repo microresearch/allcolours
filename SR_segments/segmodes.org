@@ -193,6 +193,10 @@ RESOLVE ARCH:
 - check all above: speed, clkin, pulsin etc, strobey thing
 - sort modes
 
+** 4/7/2022
+
+- finished wrapping DAC - TESTED
+
 ** 1/7/2022
 
 - started to wrap DAC functions... so we can use CVL, CVM to select

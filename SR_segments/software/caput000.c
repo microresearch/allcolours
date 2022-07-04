@@ -48,7 +48,7 @@
 
 static heavens gate[9]; // for paralell SR doubled + tail
 
-//enum refs {fspeed, flength, fadc, fbit, fdac, // cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
+//enum refs {fspeed, flength, fadc, fbit, fdac, // cvspeed, cvspeedmodo, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
 //           1       2        3     4     5     // 1        2           3         4      5       6        7      8 
 
 //  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[3], &clksr_[3], &param[3]}
@@ -75,10 +75,12 @@ uint32_t funcN[64][13]={
 };
 
 uint32_t funcNN[64][5]={
+  {1,1,18,2,0}, // most simple
   {2,0,18,0,0},
 };
 
 uint32_t cvNN[64][8]={
+  {5,0,6,0,6,8,0,0},
   {5,6,6,0,6,8,6,7},
 };
 
@@ -88,25 +90,29 @@ uint32_t funcL[64][13]={
 };
 
 uint32_t funcLL[64][5]={
+  {1,1,0,2,0}, // most simple
   {2,0,0,59,0},
 };
 
 uint32_t cvLL[64][8]={
-    {5,6,6,0,6,0,6,7}, // rung2
+  {5,0,6,0,6,0,0,0},
+  {5,6,6,0,6,0,6,7}, // rung2
 };
 
 uint32_t funcC[64][13]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {1,1,0,60,1, 5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
+  {1,0,0,60,1, 5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
 };
 
 uint32_t funcCC[64][5]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
+  {1,1,0,2,26}, // most simple
   {1,1,0,60,0}, // rung - speed from cv, route from R //
 };
 
 uint32_t cvCC[64][8]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
+  {5,0,6,6,6,0,0,0},
   {5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
 };
 
@@ -115,10 +121,12 @@ uint32_t funcR[64][13]={
 };
 
 uint32_t funcRR[64][5]={
+  {1,1,0,1,0}, // most simple
   {2,1,0,61,0}, // route from L, speed from N
 };
 
 uint32_t cvRR[64][8]={
+  {5,0,6,0,6,0,7,7},
   {5,6,6,0,0,0,1,0}, // route from L, speed from N
 };
 
