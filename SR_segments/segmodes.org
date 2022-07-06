@@ -193,19 +193,111 @@ RESOLVE ARCH:
 - check all above: speed, clkin, pulsin etc, strobey thing
 - sort modes
 
+** 6/7/2022
+
+*we need to fix clksr and gclksr spdfuncs*
+
+- draft: scheme to hold speedfunc and values (for how long, how to hold, hold on exit/entry)
+
+DONE to some extent - to TEST speedselcvm is 11
+
+// so we set speedfunc in a function then hold it when we leave...
+// implies was set by a CV rather than matrix...
+
+eg. gate[0].func[x][0] is speedfunc - x can be area we reserve for overwriting or...
+
+or can we have old values in cv array/copy in = but for funcs too - but if generic func uses CVL, CVM or... gate[x].oldcv oldcvl, oldcvm TRIAL!!
+
+///try/sketch...
+
+how do we hold eg. if we use CVL and oldCVL at same time - old one is the one when we entered the function which uses oldCVL
+but is not a function???
+
+cvcount becomes part of gate[x] so each one has one and is untied from funcs - funcs could also have own count
+
+
+*more flexible way of handling - see below, how there can be room for variation, also how an advance through modeR/matrices becomes more complex in terms of recursion etc*
+
+or we have geomantic for holdings/..
+
+[- vienna mode on x,y fades across new modes, stack/fade/heap]
+
+KEYS:
+- tail as 5th mode or modeR
+- ghosts/GSR/ghost for someone else
+- disarticulation - what this means - that parts become flexible/open - how this can work with our matrices that certain params are on hold or are open to influences
+
+what part of matrix needs to be open - how to make substitutes?
+
+- stack in time
+- detach/attach of params
+- routes to frozen params???? - if we use X for process Y then freeze old X as param Z ???
+
+eg. if we use CVM then freeze old CVM as another param... 
+
+freeze on entry. entry and exit of functions as key
+
+- switch/bump/jump - on trigger, on bit 1/0, on x bits as say a value (eg 4 bits as 0b1111)
+- probability
+- all is bits
+- routes
+- 4 layers
+
+** 5/7/2022
+
+STILL thinking on general architecture//fill in more adcs//more geogen functions/how much to integrate with older code?
+
+what are possible architectures to sketch?
+
+// there are routes/there are functions/adc/dac...
+
+- single geomantic with all matrices manipulated by modeR
+- more geo functions as above with matrices and modes manipulated by modeR
+- mix with older functions as above
+
+- *maybe 4 layers somehow for 4 possible routes in and their logics*
+
+- strobe and speed on which modeN/L/R/C?  // where to place/assign?
+
+- recursive - hold CVx on stack when we enter recursion?
+
+- new idea of timed stacks of functions which can recur.... SR is a stack...
+
+//////
+
+- added extra function for modifying SR/things and generating params eg. so can also modify SR a la cvbits
+
+- if we want function to generate a param (we have only own gshift) - but that function needs params...
+eg. binroute generates route for a binroute... [can that be circular?] // in another geomanticx ?
+
+- how to think about disarticulation - if we dis-articulate ourselves
+  (means also all modeR can't use CVM is we go for that scheme)...
+
+N is disarticulated by [L,R,C] which is disarticulated by [x,x,x]
+
+- stack model with timing... do X for time Y (new param)... 
+
+double for R: itself determined by matrix and determining other matrices/slippage...
+
+question of matrices AND function(other geomantic functions)...
+
+also if we always have CVM for adc in modeN???
+
+-  how to generate more matrices...
+
+- override of dacfrom is in matrices?????
+
 ** 4/7/2022
 
 - finished wrapping DAC - TESTED
 
 ** 1/7/2022
 
-- started to wrap DAC functions... so we can use CVL, CVM to select
-
 TODO below.
 
-- TODO: seperate out function and CV matrix//DONE
+- DONEseperate out function and CV matrix//DONE
 
-- how we have matric select by CVM when/if matrix has cvm within it - seperate matrix sets???
+- how we have matrix select by CVM when/if matrix has cvm within it - seperate matrix sets???
 
 - permute matrices so is always CV,M,L???
 
@@ -214,16 +306,6 @@ TODO below.
 - maybe 4 layers somehow for 4 possible routes in and their logics
 
 - do we just have one geomanticx function?
-
-how to insert say dac/adc values into matrices eg. dactype is from CVM???
-
-// but we do this using meta-functions which can select others eg.
-// eg. gensel for bits
-// to add for dac etc... -> but dac is type and not function so... has otherpar-cvdac so how do we select?
-// for adc functions we also use 2x CV/ins - we need extra param for these in MATRIX -> expand...
-// *or we fix functions to use CVL,CVM to select TODO*
-
-// just for adc and for dac
 
 DONE:decide on speeds so we can make divider changes on hardware -> 15 octaves now in resources.h
 
@@ -335,6 +417,16 @@ as special modes... on top of geomantic? how?
 
 4/ circulation of top of rungler routes - again do in geo as altroutes...... subroutes which we can enter or???
 
+fill in:
+
+N L C R
+{0,0,8,1}
+{0,8,2,0}
+{2,0,1,0}
+{2,0,1,0}
+{0,0,8,2}
+{0,1,2,0}
+
 - how we can shift rungler towards more generic code -> geomantic.h - just define sets of matrices and test these...
 
 rungler is defined by: bitrouting, spdrouting/offset, bitfunction/adc
@@ -345,7 +437,7 @@ rungler is defined by: bitrouting, spdrouting/offset, bitfunction/adc
 2 4 C - 1    //  2        // prob in/cycle
 3 8 R - 4    // none/cv   // prob in/cycle
 
-*new routeprobs to use//can also have adcprobs with depth -> prob of cycle, prob of hold last value etc...*
+*TODO: new routeprobs to use//can also have adcprobs with depth -> prob of cycle, prob of hold last value etc...*
 
 ** 18/6/2022
 

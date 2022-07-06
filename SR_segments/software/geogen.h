@@ -187,10 +187,10 @@ static inline uint32_t nlen(uint32_t depth, uint32_t wh){
 
 // hold old [CVL/depth] length
 static inline uint32_t holdlen(uint32_t depth, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
-  static uint32_t oldd=0;
-  if (held[wh]!=0) oldd=held[wh];
+  static uint32_t oldd[4]={0,0,0,0};
+  if (held[wh]!=0) oldd[wh]=held[wh];
   held[wh]=0;  
-  uint32_t bt=lookuplenall[oldd>>7]; // 5 bits
+  uint32_t bt=lookuplenall[oldd[wh]>>7]; // 5 bits
   return bt; // bt is a value
 }
 
@@ -623,6 +623,7 @@ static inline uint32_t zbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint3
 //////////////////////////////////////////////////////////////////////////
 //3
 //speeds - which can also be generic bit functions! and vice versa...
+// also speeds need to set helds[wh]
 static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // lastspeed processor - no use of depth, no interpol
   uint32_t bt=0;
   static uint32_t counters[4]={0,0,0,0};
@@ -637,13 +638,13 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // las
 
 // hold old [CVL/depth] length
 static inline uint32_t holdlspdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
-  static uint32_t oldd=0;
+  static uint32_t oldd[4]={0,0,0,0};
   uint32_t bt=0;
   float speed;
 
-  if (helds[wh]!=0) oldd=helds[wh];
+  if (helds[wh]!=0) oldd[wh]=helds[wh];
   helds[wh]=0;  
-  speed=logspeed[helds[wh]>>2]; // 12 bits to 10 bits
+  speed=logspeed[oldd[wh]>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -737,9 +738,9 @@ static inline uint32_t strobe(uint32_t depth, uint32_t in, uint32_t wh){   // st
 }
 
 static inline uint32_t ztogglebits(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  if (gate[wh].trigger) bt=bt^1;
-  return bt;
+  static uint32_t bt[4]={0,0,0,0};
+  if (gate[wh].trigger) bt[wh]=bt[wh]^1;
+  return bt[wh];
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -753,8 +754,7 @@ static inline uint32_t zeros(uint32_t depth, uint32_t in, uint32_t wh){  // retu
 
 // one - can also be for speeds or otherwise
 static inline uint32_t ones(uint32_t depth, uint32_t in, uint32_t wh){ 
-  uint32_t bt=1;
-  return bt;
+  return 1;
 }
 
 // top bit of clksr 
@@ -771,6 +771,23 @@ static inline uint32_t clksrG(uint32_t depth, uint32_t in, uint32_t wh){
   clksrG_[wh]=(clksrG_[wh]<<1)+bt; // this also changes patterns there
   return bt;
 }
+
+
+uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, spdfrac, spdfrac};
+// but not interped // doubles up TODO more
+
+
+static inline uint32_t speedselcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[CVL[wh]>>7])(depth, in, wh));
+  return bt;
+  }
+
+static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[CVM[wh]>>7])(depth, in, wh));
+  return bt;
+  }
 
 static inline uint32_t sigmadelta(uint32_t depth, uint32_t in, uint32_t wh){  // processor for any int/depth
   uint32_t bt=0;
@@ -1874,5 +1891,14 @@ static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc us
    uint32_t bt;
    // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
    bt=(*dacfromsdd[CVM[wh]>>7])(depth, wh); // 5 bits
+   return bt;
+}
+
+
+// new modifier functions
+
+static inline uint32_t bitsmod(uint32_t depth, uint32_t wh){  // select adc using CVL
+   uint32_t bt=0;
+   gate[wh].shift_^=depth;
    return bt;
 }

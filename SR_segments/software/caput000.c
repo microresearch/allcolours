@@ -48,86 +48,61 @@
 
 static heavens gate[9]; // for paralell SR doubled + tail
 
-//enum refs {fspeed, flength, fadc, fbit, fdac, // cvspeed, cvspeedmodo, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp};
-//           1       2        3     4     5     // 1        2           3         4      5       6        7      8 
 
-//  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[3], &clksr_[3], &param[3]}
-//   0,      1             2             3             4             5       6        7        8       9            10          11
 
-// we can also divide up into matrices for functions and CV as seperate
-// eg...
-
-uint32_t funcmax[64][13]={
-  {8,2,17,61,23, 11,11,11,11,11,11,11,11}, // maximum value if x>funcmax... // update these as we add more functions
-};
-
-uint32_t funccmax[64][5]={
+uint32_t funccmax[64][6]={
   {8,2,17,61,23}, // maximum value if x>funcmax... // update these as we add more functions
 };
 
-uint32_t cvmax[64][8]={
-  {11,11,11,11,11,11,11,11}, // maximum value if x>funcmax... // update these as we add more functions
+uint32_t cvmax[64][9]={
+  {21,21,21,21,21,21,21,21,21}, // maximum value if x>funcmax... // update these as we add more functions
 };
 
-uint32_t funcN[64][13]={
-  //  {1,1,1,0,0, 5,0,6,0,6,8,0,0}, // first set is from geomantic.h with test of dacmix!
-      {2,0,1,59,0, 5,6,6,0,6,8,6,7}, // for rungler with speed from R
+//fspeed, flength, fadc, fbit, fdac, fnew
+//1       2        3     4     5     6
+// cvspeed, cvspeedmodo, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew
+// 1        2            3         4      5       6        7      8          9 
+
+uint32_t funcNN[64][6]={
+  {1,1,18,2,0,0}, // most simple - 18 is select adc with CVM
+  {2,0,18,0,0,0},
 };
 
-uint32_t funcNN[64][5]={
-  {1,1,18,2,0}, // most simple
-  {2,0,18,0,0},
+uint32_t cvNN[64][9]={
+  {5,0,6,0,6,8,0,0,0},
+  {5,6,6,0,6,8,6,7,0},
 };
 
-uint32_t cvNN[64][8]={
-  {5,0,6,0,6,8,0,0},
-  {5,6,6,0,6,8,6,7},
+uint32_t funcLL[64][6]={
+  {1,1,0,2,0,0}, // most simple
+  {2,0,0,59,0,0},
 };
 
-uint32_t funcL[64][13]={
-  //    {1,1,0,2,0, 5,0,6,0,6,0,1,0},
-    {2,0,0,59,0, 5,6,6,0,6,0,6,7}, // rung2
+uint32_t cvLL[64][9]={
+  {5,0,6,0,6,0,0,0,0},
+  {5,6,6,0,6,0,6,7,0}, // rung2 but modded...
 };
 
-uint32_t funcLL[64][5]={
-  {1,1,0,2,0}, // most simple
-  {2,0,0,59,0},
-};
-
-uint32_t cvLL[64][8]={
-  {5,0,6,0,6,0,0,0},
-  {5,6,6,0,6,0,6,7}, // rung2
-};
-
-uint32_t funcC[64][13]={
+uint32_t funcCC[64][6]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {1,0,0,60,1, 5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
+  {8,1,0,2,0,0}, // most simple - 11 is select speed with CVM 26 dac with cvm
+  {1,1,0,60,0,0}, // rung - speed from cv, route from R //
 };
 
-uint32_t funcCC[64][5]={
+uint32_t cvCC[64][9]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {1,1,0,2,26}, // most simple
-  {1,1,0,60,0}, // rung - speed from cv, route from R //
+  {5,0,6,6,6,0,0,0,0},
+  {5,0,6,7,0,0,4,0,0}, // rung - speed from cv, route from R //
 };
 
-uint32_t cvCC[64][8]={
-  //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {5,0,6,6,6,0,0,0},
-  {5,0,6,7,0,0,4,0}, // rung - speed from cv, route from R //
+uint32_t funcRR[64][6]={
+  {1,1,0,1,0,0}, // most simple
+  {2,1,0,61,0,0}, // route from L, speed from N
 };
 
-uint32_t funcR[64][13]={
-  {2,1,0,61,0, 5,6,6,0,0,0,1,0}, // route from L, speed from N
-};
-
-uint32_t funcRR[64][5]={
-  {1,1,0,1,0}, // most simple
-  {2,1,0,61,0}, // route from L, speed from N
-};
-
-uint32_t cvRR[64][8]={
-  {5,0,6,0,6,0,7,7},
-  {5,6,6,0,0,0,1,0}, // route from L, speed from N
+uint32_t cvRR[64][9]={
+  {5,1,6,0,6,0,7,7,0},
+  {5,6,6,0,0,0,1,0,0}, // route from L, speed from N
 };
 
 
@@ -145,7 +120,7 @@ static uint32_t tailcount=0; // for tail choice
 static uint32_t adcfunccount=0; // for adctype
 static uint32_t dactypecount=0; // for dactype
 static uint32_t binroutetypecount=0; // for type of binroute - UNUSED?
-static uint32_t cvcount=0; // for type of CV
+//static uint32_t cvcount=0; // for type of CV
 
 // would be nice to have 8 so is 3 bits - logic? logiccount
 
@@ -157,6 +132,7 @@ static uint32_t spdfunccnt=0;
 static uint32_t lengthfunccnt=0;
 static uint32_t adcfunccnt=0;
 static uint32_t bitfunccnt=0;
+static uint32_t extfunccnt=0;
 
 // 1 means its used so do normed clocks - all one for testing
 // replace this with just strobed set by mode/function itself and then passed to final part for normed clocks
@@ -381,7 +357,7 @@ void mode_init(void){
   uint32_t x,y;
 
   for (x=0;x<64;x++){
-    for (y=0;y<5;y++){
+    for (y=0;y<6;y++){
       gate[0].func[x][y]=funcNN[x][y];
       gate[1].func[x][y]=funcLL[x][y];
       gate[2].func[x][y]=funcCC[x][y];
@@ -390,7 +366,7 @@ void mode_init(void){
   }
 
   for (x=0;x<64;x++){
-    for (y=0;y<8;y++){
+    for (y=0;y<9;y++){
       gate[0].cv[x][y]=cvNN[x][y];
       gate[1].cv[x][y]=cvLL[x][y];
       gate[2].cv[x][y]=cvCC[x][y];
@@ -403,6 +379,7 @@ void mode_init(void){
   
   for (x=0;x<4;x++){
     gate[x].delcnt=0;
+    gate[x].cvcnt=0;
     gate[x].changed=0;
     gate[x].paramx=0;
     gate[x].shift_=0x15;

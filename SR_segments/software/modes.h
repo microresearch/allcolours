@@ -8,9 +8,7 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t shift_;
   uint32_t gshift_;
   uint32_t extrashift_;
-  uint32_t lastdac; // speed stuff
   uint32_t dac;
-  int32_t route;
   float time_now;
   uint32_t lastest;
   float alpha;
@@ -27,8 +25,14 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t strobed;
   uint32_t lastspeed;
   uint32_t countspeed;
-  uint32_t func[64][5];
-  uint32_t cv[64][8];
+  uint32_t func[64][6];
+  uint32_t cv[64][9];
+  uint32_t cvcnt;
+  uint32_t oldcvcnt;
+  uint32_t par;
+  uint32_t oldcv;
+  uint32_t oldcvl;
+  uint32_t oldcvm;
   uint32_t stack[128];
   uint32_t stack_counter;
 } heavens;

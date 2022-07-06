@@ -500,7 +500,7 @@
 #define BITN_AND_OUTVgen_ {						\
     PULSIN_XOR;								\
     gate[w].shift_+=bitn;						\
-    val=(*dacfunc[gate[w].func[dactypecnt][fdac]])(*CVlist[w][gate[w].cv[cvcount][cvdac]], w); \
+    val=(*dacfunc[gate[w].func[dactypecnt][fdac]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvdac]], w); \
     PULSOUT;								\
 }
 
