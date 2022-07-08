@@ -193,13 +193,44 @@ RESOLVE ARCH:
 - check all above: speed, clkin, pulsin etc, strobey thing
 - sort modes
 
+** 7/7/2022
+
+do we have major modes with geomantic as one of these. what are the approaches:
+
+1-vienna/all is bits?
+2-more advanced bitmodes - all is bits
+3-classics/basic functions/modes 
+4-geomantic/advanced
+
+- fixed [matrix] modes vs flexible matrix modes // funcs which use cv
+  to select or oldcv -> we have these already as generic funcs but
+  what about feedback of dac on to these (as a new function)
+
+*attach a function/cv, leave it there - new model...*
+
+functions which do the attaching/detaching... // attached... 
+
+1spdfunc
+2lengthfunc
+3adcfunc
+4parfunc
+5bitfunc
+
+- how to increment complexity, still haven't really defined stack
+
+sr as stack, parameters as stack, matrix as stack (simplified)... - copy into and generate local matrices
+
+how we can overlay SR on to matrix stack???
+
+
+
 ** 6/7/2022
 
-*we need to fix clksr and gclksr spdfuncs*
+we need to fix clksr and gclksr spdfuncs//fixed
 
 - draft: scheme to hold speedfunc and values (for how long, how to hold, hold on exit/entry)
 
-DONE to some extent - to TEST speedselcvm is 11
+DONE to some extent - to TEST speedselcvm is 11 - but that cannot use a held value for sel as is fixed as cvm/lastcv ->oldcvm etc.
 
 // so we set speedfunc in a function then hold it when we leave...
 // implies was set by a CV rather than matrix...
@@ -211,12 +242,11 @@ or can we have old values in cv array/copy in = but for funcs too - but if gener
 ///try/sketch...
 
 how do we hold eg. if we use CVL and oldCVL at same time - old one is the one when we entered the function which uses oldCVL
-but is not a function???
+DONE as saving as oldcv on a change in local cvcount or in function/which????
 
-cvcount becomes part of gate[x] so each one has one and is untied from funcs - funcs could also have own count
+DONE:cvcount becomes part of gate[x] so each one has one and is untied from funcs - funcs could also have own count?
 
-
-*more flexible way of handling - see below, how there can be room for variation, also how an advance through modeR/matrices becomes more complex in terms of recursion etc*
+*more flexible way of handling - see below, how there can be room for variation, also how an advance through modeR/matrices becomes more complex in terms of recursion*
 
 or we have geomantic for holdings/..
 

@@ -26,8 +26,7 @@
   gate[w].trigger=1;				\
   intflag[w]=0;					\
   clksrG_[w]=clksr_[w];				\
-  tmp=(clksr_[w]>>31)& 0x01;						\
-  clksr_[w]=(clksr_[w]<<1)+tmp;					\
+  clksr_[w]=(clksr_[w]<<1)+1;						\
   }									\
   else  {								\
   gate[w].trigger=0;							\

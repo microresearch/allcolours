@@ -789,6 +789,19 @@ static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   
   return bt;
   }
 
+static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
+  return bt;
+  }
+
+static inline uint32_t speedseloldcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
+  return bt;
+  }
+
+
 static inline uint32_t sigmadelta(uint32_t depth, uint32_t in, uint32_t wh){  // processor for any int/depth
   uint32_t bt=0;
   static int32_t integrator=0, oldValue=0;

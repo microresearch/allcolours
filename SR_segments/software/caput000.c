@@ -85,7 +85,7 @@ uint32_t cvLL[64][9]={
 
 uint32_t funcCC[64][6]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {8,1,0,2,0,0}, // most simple - 11 is select speed with CVM 26 dac with cvm
+  {11,1,0,2,0,0}, // most simple - 11 is select speed with CVM 26 dac with cvm
   {1,1,0,60,0,0}, // rung - speed from cv, route from R //
 };
 

@@ -14,7 +14,7 @@
 
 //1speed 
 // now with depth/CV
-uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, speedselcvl, speedselcvm}; // one interp, next not - see interp below... interp is extracted...
+uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, speedselcvl, speedselcvm, speedseloldcvl, speedseloldcvm}; // one interp, next not - see interp below... interp is extracted...
 
 // 5,6,8,9 dont work-> all to do with trigger!
 
@@ -58,6 +58,7 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
 
 
 void SR_geomanticxx(uint8_t w){  // for split func/cv
+  static uint32_t oldspdfunccnt;
   HEADNADA;
   if (interp[gate[w].func[spdfunccnt][fspeed]]){ // gate[w].func[spdfunccnt][fspeed]
 
@@ -71,12 +72,13 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
   if ((*speedfromsd[gate[w].func[spdfunccnt][fspeed]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvspeed]],*CVlist[w][gate[w].cv[gate[w].cvcnt][cvspeedmod]], w)){ // speedfunc
     LASTSPEED; // new macro to deal with lastspeed 16/6
 
-    if (gate[w].cvcnt!=gate[w].oldcvcnt){ // we have a CV change // can be other changes or strobe or.... ??? - wrap in macro 
+    if (gate[w].cvcnt!=gate[w].oldcvcnt || spdfunccnt!=oldspdfunccnt ){ // we have a CV change // can be other changes or strobe or.... ??? - wrap in macro 
       gate[w].oldcv=CV[w];
       gate[w].oldcvl=CVL[w];
       gate[w].oldcvm=CVM[w];
     }
     gate[w].oldcvcnt=gate[w].cvcnt;
+    oldspdfunccnt=spdfunccnt;
     
     if (gate[w].func[lengthfunccnt][flength]!=0){ // so function 0 null should just hold length
     SRlength[w]=(*lengthfromsd[gate[w].func[lengthfunccnt][flength]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvlength]],w); // lengthfunc
