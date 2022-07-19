@@ -175,7 +175,7 @@ TODO: check newmodes, bits_and_prob.org and other c and org files for modes/prob
 RESOLVE ARCH:
 
 *static/frozen speeds in general or not - yes but just not on lowest - but how to implement*
-*slower speeds/cv to fix*
+*slower speeds/cv to fix and re-do/test hardware*
 *check use of clk, pulsin, out*
 *5th tail always running and how we switch in to it different streams from SRs*
 *dacs with interpol or not*
@@ -191,7 +191,61 @@ RESOLVE ARCH:
 - ghost routed layers trial/also 5th tail for all modeC - how to do this fast... is it always default single route in from C?
 - 5th tail as processor, generator and what_would_have_been
 - check all above: speed, clkin, pulsin etc, strobey thing
-- sort modes
+
+** 19/7/2022 after break
+
+how we can break down more into tasks and not all so general
+
+  eg. python code to generate matrices, possible generic functions and
+  new recursions, functions for order, porting of functions, stack functions, 5th tail, how
+  we can interfere and disarticulate matrices... and then using insights from these
+  start to resolve structure eg. if we have more general geomantic
+  functions and not just the geomanticxx
+
+resolve structure: 
+
+*how we can slide modes across each mode - more simple mixed with complex - comes down to if we use CVM as a simple parameter or as selector!*
+
+*and/or somehow individual strange loops and recursions with CVM and dacs as a selector also*
+
+- how
+- functions which play with matrices but then we need to restore matrices, entry of SR into matrices...
+- mode0 as basic reset and just most basic route in... - resets itself or is just modeR
+- order and how we change order of ops (in modeR? again modeR question)
+- if we can split across different major modes (if there are 4 major modes?) = 4x16param
+- major modes including geomantic or not - or all is in geomantic - what modeR does (global bumps, mods etc. check)
+- idea of attach/detach but not sure how this works?
+- stack prototypes: how we can simplify matrix, 
+- freeze on entry. entry and exit of functions as key - how this could change geomanticxx 
+- what needs to be done concretely???
+- how can we enter into the matrix/grid of parameters...
+- *how we could generate matrices which use CVM (we do funcs by hand but we need to know which use CVs, multiple CVs)
+
+- other/older TODOs/sketches:
+ew routeprobs to use//can also have adcprobs with depth -> prob of cycle, prob of hold last value etc... TRIAL in new geogen/adc - in progress
+
+MATRICES:
+
+func matrix: eg. 1,1,0,60,0,0 // gate[0].func[x][y] (we copy in from funcNN say)
+
+X:6 fspeed, flength, fadc, fbit, fdac, fnew
+
+Y:64? lists of functions depend on X but say max 64// 6 bits
+
+CV matrix: eg. 5,0,6,0,6,0,0,0,0 // gate[0].cv[x][y]
+
+X:9 (index) cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew
+
+Y:19   {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &gate[0].par, &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm} 
+
+/// *CVlist[w][gate[w].cv[gate[w].cvcnt][cvspeed] - each has its own count
+
+stack of matrices=15 numbers (15x6/or/8 bits) vs. SR which is 32 bits 
+
+15x64x4=4k
+
+but if we change the matrices we need to copy back in (function 0 as a reset)! // *journey on from function 0*
+// fixed matrices, variable matrices
 
 ** 7/7/2022
 
@@ -222,15 +276,13 @@ sr as stack, parameters as stack, matrix as stack (simplified)... - copy into an
 
 how we can overlay SR on to matrix stack???
 
-
-
 ** 6/7/2022
 
 we need to fix clksr and gclksr spdfuncs//fixed
 
 - draft: scheme to hold speedfunc and values (for how long, how to hold, hold on exit/entry)
 
-DONE to some extent - to TEST speedselcvm is 11 - but that cannot use a held value for sel as is fixed as cvm/lastcv ->oldcvm etc.
+*???* DONE to some extent - to TEST speedselcvm is 11 - but that cannot use a held value for sel as is fixed as cvm/lastcv ->oldcvm etc.
 
 // so we set speedfunc in a function then hold it when we leave...
 // implies was set by a CV rather than matrix...
@@ -242,9 +294,9 @@ or can we have old values in cv array/copy in = but for funcs too - but if gener
 ///try/sketch...
 
 how do we hold eg. if we use CVL and oldCVL at same time - old one is the one when we entered the function which uses oldCVL
-DONE as saving as oldcv on a change in local cvcount or in function/which????
+DONE as saving as oldcv on a change in local cvcnt or in function/which????
 
-DONE:cvcount becomes part of gate[x] so each one has one and is untied from funcs - funcs could also have own count?
+DONE:cvcount becomes part of gate[x] so each one has one and is untied from funcs - *funcs could also have own count?*
 
 *more flexible way of handling - see below, how there can be room for variation, also how an advance through modeR/matrices becomes more complex in terms of recursion*
 
@@ -265,7 +317,7 @@ what part of matrix needs to be open - how to make substitutes?
 
 eg. if we use CVM then freeze old CVM as another param... 
 
-freeze on entry. entry and exit of functions as key
+*freeze on entry. entry and exit of functions as key*
 
 - switch/bump/jump - on trigger, on bit 1/0, on x bits as say a value (eg 4 bits as 0b1111)
 - probability
@@ -538,8 +590,6 @@ what to do with all the mode functions we have...? re-wrap?
 
 - if we include Rmodes in generic then they can de-select themselves - so we cannot have this recursion, or is run as extra function/tail...
 // but we need CVL and sometimes CV to select... how we can put these on hold - version where all is per SR TODO
-
-// *how to program for lisbon - more generic?*
 
 // *how to implement right hand major modes in generic mode itself? or are these outside?*
 

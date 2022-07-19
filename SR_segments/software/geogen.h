@@ -26,11 +26,6 @@ and function is a processor of these to return bits
 */
 
 //////////////////////////////////////////////////////////////////////////
-// generic probability to test for adapted rungler in
-static inline uint32_t genericprob(uint32_t cv, uint32_t against, uint32_t bit1, uint32_t bit2){
-  if (cv>against) return bit1;
-  else return bit2;
-}
 
 /*
 
@@ -1336,7 +1331,64 @@ static inline uint32_t zpattern8bitsI(uint32_t depth, uint32_t in, uint32_t wh){
 
 //////////////////////////////////////////////////////////////////////////
 //5
-//adc - these just become interpreters for depth values which can be adc!
+//adc - these just become interpreters for IN values which can be adc! depth is control/CV
+
+// *TODO: new routeprobs to use//can also have adcprobs with depth -> prob of cycle, prob of hold last value etc... TRIAL in new geogen/adc*
+// we either repeat each one, and then sel these or alter all so takes a reset and have these all as generic one
+// eg. repeat below
+
+static inline uint32_t zpadcx(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset){ // max 12 bits
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  
+    if (bc<0 || reset) {
+      depth=depth>>7; // 5 bits
+      if (depth>11) depth=11; // max depth
+      k=in>>(11-depth); 
+      bc=depth; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+uint32_t (*adcfromsddprob[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset)={zpadcx};
+
+// how many CVs do we need for this? 3x - one for sel, prob and for depth 
+static inline uint32_t probcvladcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
+  uint32_t bt, prob;
+  if (CVL[wh]<(LFSR_[wh]&4095)) prob=1; // which way round
+  else prob=0;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+  //   bt=(*adcfromsddprob[CVM[wh]>>7])(depth, in, wh, prob); // 5 bits
+  bt=(*adcfromsddprob[0])(depth, in, wh, prob); // TESTING
+  // test
+  return bt;
+}
+
+// we can have fixed versions against dac 
+static inline uint32_t probdacadcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
+  uint32_t bt, prob;
+  if (gate[dacfrom[daccount][wh]].dac<(LFSR_[wh]&4095)) prob=1; // which way round
+  else prob=0;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+  //   bt=(*adcfromsddprob[CVM[wh]>>7])(depth, in, wh, prob); // 5 bits
+  bt=(*adcfromsddprob[0])(depth, in, wh, prob); // TESTING
+  // test
+  return bt;
+}
+
+//and also using trigger 
+static inline uint32_t probtrigadcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
+  uint32_t bt, prob;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+  //   bt=(*adcfromsddprob[CVM[wh]>>7])(depth, in, wh, prob); // 5 bits
+  bt=(*adcfromsddprob[0])(depth, in, wh, gate[wh].trigger); // TESTING
+  // test
+  return bt;
+}
+
 
 static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t wh){ // max 12 bits
   uint32_t bt;
@@ -1721,7 +1773,8 @@ static inline uint32_t gensel(uint32_t depth, uint32_t in, uint32_t wh){  // sel
    return bt;
 }
 
-uint32_t (*adcfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits}; // doubled up // TEST!
+uint32_t (*adcfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, 
+zadccompbits}; // doubled up // TEST!
 
 // do similar for dac and adc...
 // need dacfunctions for wrap dac access

@@ -48,14 +48,12 @@
 
 static heavens gate[9]; // for paralell SR doubled + tail
 
-
-
 uint32_t funccmax[64][6]={
   {8,2,17,61,23}, // maximum value if x>funcmax... // update these as we add more functions
 };
 
 uint32_t cvmax[64][9]={
-  {21,21,21,21,21,21,21,21,21}, // maximum value if x>funcmax... // update these as we add more functions
+  {19,19,19,19,19,19,19,19,19}, // update for max number of cv options
 };
 
 //fspeed, flength, fadc, fbit, fdac, fnew
@@ -63,13 +61,15 @@ uint32_t cvmax[64][9]={
 // cvspeed, cvspeedmodo, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew
 // 1        2            3         4      5       6        7      8          9 
 
+// CV 5, CVL 6, CVM, 7 old cv 16,17,18
+
 uint32_t funcNN[64][6]={
-  {1,1,18,2,0,0}, // most simple - 18 is select adc with CVM
+  {1,1,21,2,0,0}, // most simple - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
   {2,0,18,0,0,0},
 };
 
 uint32_t cvNN[64][9]={
-  {5,0,6,0,6,8,0,0,0},
+  {5,0,6,0,6,8,0,0,0}, // 8 is ADC itself IN
   {5,6,6,0,6,8,6,7,0},
 };
 
@@ -391,7 +391,8 @@ void mode_init(void){
     gate[x].reset[1]=0;
     gate[x].reset[2]=0;
     gate[x].reset[3]=0;
-
+    gate[x].oldcvcnt=1;    
+    
     gate[0].gsrcnt[x]=31;
     gate[1].gsrcnt[x]=31;
     gate[2].gsrcnt[x]=31;	

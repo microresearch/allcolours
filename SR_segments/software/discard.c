@@ -1,3 +1,10 @@
+// generic probability to test for adapted rungler in // unused
+static inline uint32_t genericprob(uint32_t cv, uint32_t against, uint32_t bit1, uint32_t bit2){
+  if (cv>against) return bit1;
+  else return bit2;
+}
+
+
 
 uint32_t funcmax[64][13]={
   {8,2,17,61,23, 11,11,11,11,11,11,11,11}, // maximum value if x>funcmax... // update these as we add more functions
