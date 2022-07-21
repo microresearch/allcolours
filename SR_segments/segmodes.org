@@ -1,4 +1,4 @@
-* sketch modes
+** sketch modes
 
 module for one bit landscape gardening...
 
@@ -192,15 +192,58 @@ RESOLVE ARCH:
 - 5th tail as processor, generator and what_would_have_been
 - check all above: speed, clkin, pulsin etc, strobey thing
 
+
+** 21/7/2022
+
+models for former sets of modes// eg. in experiment.h
+
+*matrix mode which can encapsulate former modes (without running out of memory, also all the adc/dac types we had there)*
+
+a study in recursion
+
+recursion is a process
+
+SRx determines route SRy to give value to determine route SRz to  ...
+
+types of recursion...
+
+to identify points of recursion, recurse and return up the stack...
+change its own mode and return to original mode...
+
+[mode] determines [new mode] - timed/triggered? return to [mode]
+
+////
+
+disarticulation means no major modes // itself not itself/others 
+
+** 20/7/2022
+
+*Qs:*
+- use of CVM and modeR side/major modes...
+
+- q of gens which use CV/value or not? all use depth but not in which
+  is cvbitcomp: gensel uses in and a few others, also for spd but not
+  many at all... so how can we generate matrices if functions use it or not... or function dictates values/??
+
+- how we can port functions to geogens/geomanticxx if they use speed
+  in different ways (eg. functions which run at full speed, different
+  types of gshift, multiple speeds (if necessary)
+
+- that we have so many older functions which maybe can't directly port into one geomanticxx function, how to combine models?
+
+what can be taken from one model to the other...
+
 ** 19/7/2022 after break
 
 how we can break down more into tasks and not all so general
 
-  eg. python code to generate matrices, possible generic functions and
-  new recursions, functions for order, porting of functions, stack functions, 5th tail, how
-  we can interfere and disarticulate matrices... and then using insights from these
-  start to resolve structure eg. if we have more general geomantic
-  functions and not just the geomanticxx
+  eg. python code to generate matrices: but question of which functions use which values, possible generic functions and
+  new recursions, functions for order of SRs 0123, porting of functions, stack functions, 5th tail, how
+  we can interfere and disarticulate matrices, new geomantic function sketches eg. for split speeds...
+
+  and then using insights from these start to resolve structure eg. if
+  we have more general geomantic functions and not just the
+  geomanticxx
 
 resolve structure: 
 

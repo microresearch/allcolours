@@ -452,6 +452,7 @@ inline static float mod0(float value, float length)
 
 //	    values[daccount]=speedsample(speed, rec_cnt[daccount], recordings[daccount]);
 // no filtering and we can't slow down here
+// unused
 uint16_t upspeedsample(uint32_t speedy, uint32_t lengthy, uint16_t dacc, uint16_t *samples){
   uint16_t value;
   // test construction in most basic mode
@@ -469,7 +470,7 @@ uint16_t upspeedsample(uint32_t speedy, uint32_t lengthy, uint16_t dacc, uint16_
 }
 
 // try now for float and interpolate speedsample - this seems to work but we need to figure out speed range
-// with speed as 0.125 to 4.0f - or use logspeed.
+// with speed as 0.125 to 4.0f - or use logspeed. - we use logspeed now to call this
 uint16_t speedsample(float speedy, uint32_t lengthy, uint16_t dacc, uint16_t *samples){
   int lowerPosition, upperPosition;
   
@@ -480,9 +481,9 @@ uint16_t speedsample(float speedy, uint32_t lengthy, uint16_t dacc, uint16_t *sa
   upperPosition = mod0(lowerPosition + 1, lengthy);
 
     //  Return interpolated table value
-      float sample= (samples[lowerPosition] +
-              ((play_cnt[dacc] - lowerPosition) *
-               (samples[upperPosition] - samples[lowerPosition])));
+  float sample= (samples[lowerPosition] + 
+		 ((play_cnt[dacc] - lowerPosition) *
+		  (samples[upperPosition] - samples[lowerPosition]))); // TODO: do we need to adapt for top bits
 
       return (int)sample;
 }
@@ -525,7 +526,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
 	    LASTPLAY;
 	    if (overlap[daccount]) rec_cnt[daccount]=7000;
-	    	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    //	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
 	  else {
 	    lastplay=0;
@@ -563,7 +564,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (daccount==8) {
 	    daccount=0;
 	    count++;
-	    // speed only increasing
+	    // speed only increasing above
 	    DOSPEED;
 	    TOGGLES;      
 	  }       

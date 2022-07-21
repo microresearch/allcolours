@@ -1,5 +1,17 @@
 * see also software/modes.org
 
+** 20/7/2022: REVISIT
+
+- test what is working: basic functions, freezers, rec/play but is 1/8 speed correct - re-test as 1.0
+
+- where are we up to with speed ranges - we have logspeed
+
+- check/test code for mode switch and re-acquaint code: top bits to implement, basic schemes
+
+- what modes still need to be implemented: list these - see modes.org for list there and older code...
+
+** xxx
+
 30/12/2021:
 
 - switched over to HSE in system_stm32 rather than other clock init and seems to work fine but will need to recalibrate timings/re-check but freeze works

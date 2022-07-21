@@ -74,7 +74,7 @@ static inline uint32_t binroutfixed_prob1R(uint32_t depth, uint32_t in, uint32_t
   return bt;
 }
 
-static inline uint32_t binroutfixed_prob1L(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling // route from R
+static inline uint32_t binroutfixed_prob1L(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling // route from L
   uint32_t bt=0, bitrr;
     if (depth<(LFSR_[wh]&4095)) {
     bitrr = (gate[1].Gshift_[wh]>>SRlength[1]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
@@ -215,6 +215,7 @@ static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // d
   return bt;
 }
 
+// TODO: adapt for binroute alts
 static inline uint32_t binroutfixed(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count
   uint32_t bt=0, bitrr;
   depth=binroute[count][wh]|binary[wh];

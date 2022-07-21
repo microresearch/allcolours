@@ -1,3 +1,17 @@
+Sprott extended Mindlin now:
+
+3out, 1clkin, 1input
+
+6xCvins 6xknobs 
+
+norms: OUT3(sprott) for feedback in, OUT1 for clk
+
+// 21/7/2022 error on prototype as we had last stage of multiplier going back to B3 and not on to BB3 (and B3 was straight to BB3)
+
+// we need to re-check all...///
+
+** previous:
+
 - switched sprott/mindlin
 - one slower mindlin controls another...
 - sort mult outs and level of outs is too hot

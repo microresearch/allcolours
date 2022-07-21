@@ -38,12 +38,22 @@ U 60663E79
 F0 "anlog" 50
 F1 "anlog.sch" 50
 $EndSheet
-Text Notes 3165 1855 0    79   ~ 0
-Updating for final TOAD layout - towards Mindlin and with extra incoming VCA.
+Text Notes 1100 835  0    118  ~ 0
+Updated for final TOAD layout - towards Mindlin and with extra incoming VCA.\nChecking again 21/7/2022 
 $Sheet
 S 760  3320 1965 610 
 U 62BD4879
 F0 "OUTS" 50
 F1 "outs.sch" 50
 $EndSheet
+Text Notes 9225 1190 0    79   ~ 0
+checked
+Text Notes 1045 3750 0    79   ~ 0
+checked
+Text Notes 1270 2860 0    79   ~ 0
+checked\n
+Text Notes 1310 1500 0    79   ~ 0
+checked
+Text Notes 1180 2200 0    79   ~ 0
+checked
 $EndSCHEMATC

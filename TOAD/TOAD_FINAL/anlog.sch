@@ -21,7 +21,7 @@ L toad2-rescue:AD633JR-eec U15
 U 1 1 6073FD6A
 P 3795 2765
 F 0 "U15" H 4295 3030 50  0000 C CNN
-F 1 "AD633JN" H 4295 2939 50  0000 C CNN
+F 1 "AD633JR" H 4295 2939 50  0000 C CNN
 F 2 "SMD_Packages:SOIC-8-N" H 3795 3165 50  0001 L CNN
 F 3 "http://www.analog.com/media/en/technical-documentation/data-sheets/AD633.pdf" H 3795 3265 50  0001 L CNN
 F 4 "Manufacturer URL" H 3795 3365 50  0001 L CNN "Component Link 1 Description"
@@ -191,7 +191,7 @@ L toad2-rescue:AD633JR-eec U17
 U 1 1 60A8A762
 P 5930 2805
 F 0 "U17" H 6430 3070 50  0000 C CNN
-F 1 "AD633JN" H 6430 2979 50  0000 C CNN
+F 1 "AD633JR" H 6430 2979 50  0000 C CNN
 F 2 "SMD_Packages:SOIC-8-N" H 5930 3205 50  0001 L CNN
 F 3 "http://www.analog.com/media/en/technical-documentation/data-sheets/AD633.pdf" H 5930 3305 50  0001 L CNN
 F 4 "Manufacturer URL" H 5930 3405 50  0001 L CNN "Component Link 1 Description"
@@ -358,98 +358,6 @@ Wire Wire Line
 	6030 3105 5770 3105
 Wire Wire Line
 	6830 2805 6895 2805
-$Comp
-L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR?
-U 1 1 60AA7393
-P 2880 2230
-AR Path="/5ED966D6/60AA7393" Ref="#PWR?"  Part="1" 
-AR Path="/5EC7DA76/60AA7393" Ref="#PWR?"  Part="1" 
-AR Path="/60663957/60AA7393" Ref="#PWR?"  Part="1" 
-AR Path="/60663E79/60AA7393" Ref="#PWR0164"  Part="1" 
-F 0 "#PWR0164" H 2880 2080 50  0001 C CNN
-F 1 "+12V-power" H 2895 2403 50  0000 C CNN
-F 2 "" H 2880 2230 50  0001 C CNN
-F 3 "" H 2880 2230 50  0001 C CNN
-	1    2880 2230
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:-12V #PWR?
-U 1 1 60AA73B8
-P 3180 2100
-AR Path="/5ED966D6/60AA73B8" Ref="#PWR?"  Part="1" 
-AR Path="/5EC7DA76/60AA73B8" Ref="#PWR?"  Part="1" 
-AR Path="/60663957/60AA73B8" Ref="#PWR?"  Part="1" 
-AR Path="/60663E79/60AA73B8" Ref="#PWR0166"  Part="1" 
-F 0 "#PWR0166" H 3180 2200 50  0001 C CNN
-F 1 "-12V" H 3195 2273 50  0000 C CNN
-F 2 "" H 3180 2100 50  0001 C CNN
-F 3 "" H 3180 2100 50  0001 C CNN
-	1    3180 2100
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:C_Small C?
-U 1 1 60AA7411
-P 2880 2365
-AR Path="/5EC7DA76/60AA7411" Ref="C?"  Part="1" 
-AR Path="/5ED966D6/60AA7411" Ref="C?"  Part="1" 
-AR Path="/60663957/60AA7411" Ref="C?"  Part="1" 
-AR Path="/60663E79/60AA7411" Ref="C63"  Part="1" 
-F 0 "C63" H 2972 2411 50  0000 L CNN
-F 1 "100N" H 2972 2320 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 2880 2365 50  0001 C CNN
-F 3 "~" H 2880 2365 50  0001 C CNN
-	1    2880 2365
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C?
-U 1 1 60AA760F
-P 3270 2205
-AR Path="/5EC7DA76/60AA760F" Ref="C?"  Part="1" 
-AR Path="/5ED966D6/60AA760F" Ref="C?"  Part="1" 
-AR Path="/60663957/60AA760F" Ref="C?"  Part="1" 
-AR Path="/60663E79/60AA760F" Ref="C64"  Part="1" 
-F 0 "C64" H 3362 2251 50  0000 L CNN
-F 1 "100N" H 3362 2160 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 3270 2205 50  0001 C CNN
-F 3 "~" H 3270 2205 50  0001 C CNN
-	1    3270 2205
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0165
-U 1 1 60AA76E5
-P 2880 2500
-F 0 "#PWR0165" H 2880 2250 50  0001 C CNN
-F 1 "GND" H 2885 2327 50  0000 C CNN
-F 2 "" H 2880 2500 50  0001 C CNN
-F 3 "" H 2880 2500 50  0001 C CNN
-	1    2880 2500
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0167
-U 1 1 60AA7768
-P 3270 2335
-F 0 "#PWR0167" H 3270 2085 50  0001 C CNN
-F 1 "GND" H 3275 2162 50  0000 C CNN
-F 2 "" H 3270 2335 50  0001 C CNN
-F 3 "" H 3270 2335 50  0001 C CNN
-	1    3270 2335
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2880 2230 2880 2265
-Wire Wire Line
-	2880 2465 2880 2500
-Wire Wire Line
-	3270 2305 3270 2335
-Wire Wire Line
-	3180 2100 3270 2100
-Wire Wire Line
-	3270 2100 3270 2105
 Text Notes 3550 2355 0    79   ~ 0
 fixed for smd version! AD633JR
 Wire Wire Line
@@ -473,4 +381,6 @@ Text GLabel 5770 3105 0    79   Input ~ 0
 B2
 Text GLabel 6895 2805 2    79   Input ~ 0
 OUTX2
+Text Notes 4705 2110 0    79   ~ 0
+checked\n
 $EndSCHEMATC

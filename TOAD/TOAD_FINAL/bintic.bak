@@ -2055,4 +2055,14 @@ Wire Wire Line
 Connection ~ 5800 1450
 Wire Wire Line
 	5800 1450 5875 1450
+Text Notes 525  7415 0    79   ~ 0
+tested norm from OUT1\n
+Text GLabel 2620 5720 2    79   Input ~ 0
+OUT1
+Wire Wire Line
+	2475 5925 2620 5925
+Wire Wire Line
+	2620 5925 2620 5720
+Text Notes 565  2525 0    79   ~ 0
+SIGG1: maybe change res 33k\n
 $EndSCHEMATC

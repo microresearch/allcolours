@@ -33,6 +33,7 @@ uint32_t (*dacfunc[32])(uint32_t depth, uint32_t wh)={ddac0, ddac1, ddac2, ddac3
 //4bits
 uint32_t (*bitfromsd[62])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRclksr, zSRclksrG, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, Rtest, gensel, binroutfixed_prob1R, binroutfixed_prob1L}; // add in funcs which use also binroutetypecount - this one with depth from variable CV // gensel is important
 
+
 //5newfunc
 uint32_t (*newfunc[32])(uint32_t depth, uint32_t wh)={bitsmod}; //
 
@@ -79,7 +80,8 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
     gate[w].oldcvcnt=gate[w].cvcnt;
     oldspdfunccnt=spdfunccnt;
 
-
+    // TODO: possible function outside speed...
+    
   if ((*speedfromsd[gate[w].func[spdfunccnt][fspeed]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvspeed]],*CVlist[w][gate[w].cv[gate[w].cvcnt][cvspeedmod]], w)){ // speedfunc
     LASTSPEED; // new macro to deal with lastspeed 16/6
     
