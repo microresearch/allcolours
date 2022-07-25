@@ -1,4 +1,40 @@
-Sprott extended Mindlin now:
+** newer 22/7/2022+
+
+*** 25/7
+
+- we calculate sprott res r68 as 2.5M - what do we have? 2.2M
+
+- testing fully extended with vca also 1st inv->1st int so 7x vca if we include input.. works well
+
+// multiplier always seems a bit lacking... but *now realising that was we lost other 2x mults which divide by 10 is all out of scale*
+
+- but if we return those we lose VCAs or is over complex - then fixed paths back...
+
+or we amplify output of 2nd mult with inv op-amp then non-inv vca WORKING - multiply by 10 to scale up
+
+still q of switch feedback 1st inv
+
+- test other options and switching of +- 1st int return... (clk norm to sprott out, out1 from 1st int to input)
+
+
+*** 23/7
+
+- start from scratch, tested all VCA and all switched capsDONE - on basic bintic damping does little, trial also with 10k to gnd, still nothing much, 
+- test multipliers...DONE
+
+TODO:
+- DONEtrial straight Mindlin // working well - again B2->return invertor is inverted pot // extended from b3 2nd int with extra INT and sprott also works ok
+
+Q of first invertor vca to int (some odd sounds but), extended vca b3 to 3rd int - could be// not so exciting...
+
+= trial again with first invertor to vca without extension
+
+- trial straight sprott
+- try just potTODO on cgs/bintic
+
+** oops
+
+Sprott extended Mindlin now // mistake in proto so no more so...
 
 3out, 1clkin, 1input
 
@@ -8,7 +44,7 @@ norms: OUT3(sprott) for feedback in, OUT1 for clk
 
 // 21/7/2022 error on prototype as we had last stage of multiplier going back to B3 and not on to BB3 (and B3 was straight to BB3)
 
-// we need to re-check all...///
+// we need to re-check all.../// in bintic 1st integrator return is inverted//
 
 ** previous:
 

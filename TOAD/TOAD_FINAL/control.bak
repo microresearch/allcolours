@@ -3240,9 +3240,9 @@ Wire Wire Line
 Text Notes 5355 2370 0    79   ~ 0
 removed signum res as we can just change sigg1 input res
 Text GLabel 9500 2085 2    79   Input ~ 0
-OUT1
+OUT3
 Wire Wire Line
 	9435 2085 9500 2085
 Text Notes 9540 2335 0    79   ~ 0
-test norm from out1 here
+tested norm from out3 here
 $EndSCHEMATC

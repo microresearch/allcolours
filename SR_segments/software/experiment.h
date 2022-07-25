@@ -21,7 +21,7 @@ uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strob
 
 // 17/6/2022 copied in from basis.h
 
-void newdac2(uint8_t w){ // one bit audio - run filter at full speed but output on speed
+void newdac2(uint8_t w){ // one bit audio - run filter at full speed but output on speed // cant prot geo
   HEADSIN;
   gate[w].dactype=2; gate[w].dacpar=4096-CVL[w]; //     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
   val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);
@@ -687,7 +687,7 @@ void adc_onebitmid(uint8_t w){ //
 // 13/5/2022
 
 // try for oversample - run 1 bit at full speed...
-void adc_overonebit(uint8_t w){ // 
+void adc_overonebit(uint8_t w){ //  XX
   HEAD;
   if (speedf_[w]!=LOWEST){
   CVOPEN;
@@ -853,7 +853,7 @@ void SR_insert_zero_dac2(uint8_t w){ //
 }
 
 // 11/5/2022
-static inline uint32_t delay_line_in(uint32_t depth, uint8_t wh){
+static inline uint32_t delay_line_in(uint32_t depth, uint8_t wh){ //XX
   uint32_t bt=0, bitrr, tmp, tmpp;
   static uint32_t bits[4]; // 32 bits of bits
   // put into delay line - need index and bit index
@@ -878,7 +878,7 @@ static inline uint32_t delay_line_out(uint32_t depth, uint8_t wh){
 // if we are slower than route in: delay line, intercepted value, overlap?
 // if we are faster: same as we have, cycle gsr or just hold sr value
 
-void SRdelay_lineIN(uint8_t w){  // could also be shared version of this
+void SRdelay_lineIN(uint8_t w){  // could also be shared version of this //XX
   HEADSIN;
   static uint32_t cnt=0;
   BINROUTESR_; // or other forms
@@ -1150,6 +1150,7 @@ void SR_recbin(uint8_t w){ // ????
   }
 }
 
+/////////////////////////
 
 // routes in as elements of split speeds - sbinroute
 void SR_splitx(uint8_t w){ // 3 params for spdfrom, length, spdmode // + 2 for bitn// =5params//// +2 for prob

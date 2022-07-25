@@ -12,9 +12,15 @@
 
 // zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits
 
+//0function outside speed
+uint32_t (*outside[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros};
+
+//0.5gshift
+uint32_t (*gshifts[32])(uint32_t wh)={gshift0, gshiftnull};
+
 //1speed 
 // now with depth/CV
-uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, speedselcvl, speedselcvm, speedseloldcvl, speedseloldcvm}; // one interp, next not - see interp below... interp is extracted...
+uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, speedselcvl, speedselcvm, speedseloldcvl, speedseloldcvm}; // one interp, next not - see interp below... interp is extracted... add in binroutes
 
 // 5,6,8,9 dont work-> all to do with trigger!
 
@@ -54,9 +60,24 @@ uint32_t *CVlist[4][19]={
 
 // then each would need ref into 4 functions +dac5 + 6 sets of CV???? = 10 or 11 counters each...
 
-enum refs {fspeed, flength, fadc, fbit, fdac, fnew};
-enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew};
+enum refs {fspeed, flength, fadc, fbit, fdac, fnew, fout, gs, out}; // 9
+enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew, cvout, cvoutmod}; //11
 
+// out functions
+static inline uint32_t vgen(uint32_t bitn, uint32_t w){
+  int32_t tmp; uint32_t bitrr, val, x, xx, lengthbit=15, new_stat;
+  BITN_AND_OUTVgen_;
+}
+
+//    BITN_AND_OUTVXOR_;
+static inline uint32_t vxor(uint32_t bitn, uint32_t w){
+  int32_t tmp; uint32_t bitrr, val, x, xx, lengthbit=15, new_stat;
+  BITN_AND_OUTVXOR_;
+}
+
+
+//6 out
+uint32_t (*outs[32])(uint32_t bitn, uint32_t wh)={vgen, vxor};
 
 void SR_geomanticxx(uint8_t w){  // for split func/cv
   static uint32_t oldspdfunccnt;
@@ -81,6 +102,7 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
     oldspdfunccnt=spdfunccnt;
 
     // TODO: possible function outside speed...
+    bitn=(*outside[gate[w].func[outfunccnt][fout]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvout]], *CVlist[w][gate[w].cv[gate[w].cvcnt][cvoutmod]],w);
     
   if ((*speedfromsd[gate[w].func[spdfunccnt][fspeed]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvspeed]],*CVlist[w][gate[w].cv[gate[w].cvcnt][cvspeedmod]], w)){ // speedfunc
     LASTSPEED; // new macro to deal with lastspeed 16/6
@@ -88,7 +110,8 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
     if (gate[w].func[lengthfunccnt][flength]!=0){ // so function 0 null should just hold length
     SRlength[w]=(*lengthfromsd[gate[w].func[lengthfunccnt][flength]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvlength]],w); // lengthfunc - not many?
     }
-    GSHIFT_;  // replace with types of gshift - gshiftfuncs...
+    
+    (*gshifts[gate[w].func[gscnt][gs]])(w);
     // CORE
     
     if (gate[w].cv[gate[w].cvcnt][cvadcIN]==8){ // real ADC
@@ -99,11 +122,15 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
     // param needs to have pointer in struct
     gate[w].par=(*newfunc[gate[w].func[extfunccnt][fnew]])(4095-(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvnew]]), w); // invert?
     
-    bitn=(*adcfromsd[gate[w].func[adcfunccnt][fadc]])(4095-(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvadc]]), *CVlist[w][gate[w].cv[gate[w].cvcnt][cvadcIN]],w); // invert?
+    bitn^=(*adcfromsd[gate[w].func[adcfunccnt][fadc]])(4095-(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvadc]]), *CVlist[w][gate[w].cv[gate[w].cvcnt][cvadcIN]],w); // invert?
     bitn^=(*bitfromsd[gate[w].func[bitfunccnt][fbit]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvbit]], *CVlist[w][gate[w].cv[gate[w].cvcnt][cvbitcomp]],w);
     // ENDCORE
     //    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function
-    BITN_AND_OUTVgen_; // pulsin is in there - added new DAC
+    //    BITN_AND_OUTVgen_; // pulsin is in there - added new DAC - but we need alter     gate[w].shift_+=bitn; function in there/
+    //    final bitnout
+    (*outs[gate[w].func[outcnt][out]])(bitn, w);
+    
     new_data(val,w);
-}  
-}
+    }
+  }
+

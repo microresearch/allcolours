@@ -184,33 +184,71 @@ RESOLVE ARCH:
 
 ** TODO
 
-*modes which manipulate other SRs ???*
-
-- co-ordinate and check lists of routes, dacfrom, speedfrom routes
+- co-ordinate and check lists of routes, dacfrom, speedfrom routes // resets and manipulations, all lengths of lists
 - clean up generators/adc/dac - gens for adc
 - ghost routed layers trial/also 5th tail for all modeC - how to do this fast... is it always default single route in from C?
 - 5th tail as processor, generator and what_would_have_been
 - check all above: speed, clkin, pulsin etc, strobey thing
 
+- basic functionality as matrices implemented
 
-** 21/7/2022
+** 25/7/2022
 
-models for former sets of modes// eg. in experiment.h
+*recursion/disarticulated*
 
-*matrix mode which can encapsulate former modes (without running out of memory, also all the adc/dac types we had there)*
+// re-work eg. vienna_minor for geomantic modes -> as speed and bitmodesDONE, 
+try more advanced and also implement outside function/null TODO
 
-a study in recursion
+DONEwe need to add in gshift functions and final dac/out ones too - so 2 more funcs but no extra cvs i think
+
+- added in extra OUTSIDE function for a bitn/or modifying function outside the speed/implement and TEST!
+
+- OUTSIDEs should be paired with INSIDE bit functions and with gshifts/out functions
+
+- for C,L,N, CVM is INSIDE the mode as a local or global parameter
+- for R CVM is outside as a mode determiner - eg. major mode, shift of matrix, type of geomantic mode ...
+
+models for former sets of modes// eg. in experiment.h:
+
+void base(uint8_t w){ // basic template // null
+  HEAD;
+  if (speedf_[w]!=LOWEST){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_; 
+    BITN_AND_OUTV_;
+    ENDER;
+  }
+  }
+}
+
+** 21/7/2022 
+
+*matrix mode which +can encapsulate former modes+ also all the adc/dac types we had there*
+
+//should be able to use adc/dac -> static inline int ADC_(uint32_t reg, uint32_t length, uint32_t type, uint32_t strobe, uint32_t regg, uint32_t otherpar, uint32_t *SR){
+//question of 2nd reg -> from dacfrom
+
+but former modes would need different geomantic/not doable - ways in which these could be ported???
+
+// focus on basics/most generic -> need to take stock of what we have
+
+
+*a study in recursion*
 
 recursion is a process
 
-SRx determines route SRy to give value to determine route SRz to  ...
+SRx determines route SRy to give value to determine route SRz to  ... value from route...
 
-types of recursion...
+//return a value from bits (this is what dacs do)... process a value... generate a value (eg. from a route)//
+
+types of recursion... nesting, counted//
 
 to identify points of recursion, recurse and return up the stack...
 change its own mode and return to original mode...
 
-[mode] determines [new mode] - timed/triggered? return to [mode]
+*[mode] determines [new mode] - timed/triggered? return to [mode] - within modeR - and that timing can be from SRx*
 
 ////
 

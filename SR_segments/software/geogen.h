@@ -23,6 +23,11 @@ how to label/categorise:
 could we even abstract out further so adc/13 is depth input - but also look at adcs
 and function is a processor of these to return bits
 
+return a value from bits (this is what dacs do)... process a value... generate a value (eg. from a route)
+
+value to bits (adc)
+bits to values (dac)
+
 */
 
 //////////////////////////////////////////////////////////////////////////
@@ -39,6 +44,14 @@ and function is a processor of these to return bits
 *routed vs [routed^cycling]*
 
  */
+
+// gshifts
+static inline uint32_t gshift0(uint32_t w){ 
+  GSHIFT_; 
+}
+
+static inline uint32_t gshiftnull(uint32_t w){ 
+}
 
 static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling
   uint32_t bt=0, bitrr;
@@ -1794,6 +1807,8 @@ static inline uint32_t adcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // 
 }
 
 // start to wrap dac functions - there are 24!
+// static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
+// length coulkd also be generic so is just a processor
 static inline uint32_t ddac0(uint32_t depth, uint32_t wh){
   uint32_t val;
   val=DAC_(wh, gate[wh].shift_, SRlength[wh], 0, depth, gate[wh].trigger);
@@ -1964,8 +1979,161 @@ static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc us
 
 // new modifier functions
 
-static inline uint32_t bitsmod(uint32_t depth, uint32_t wh){  // select adc using CVL
+static inline uint32_t bitsmod(uint32_t depth, uint32_t wh){  
    uint32_t bt=0;
    gate[wh].shift_^=depth;
    return bt;
 }
+
+/////////////////////////////////////////////////////////////////
+// value functions
+// return a value from bits (this is what dacs do)... process a value... generate a value (eg. from a route)
+// but question is how many bits... always 12
+
+//SRx determines route SRy to give value to determine route SRz to  ... value from route... ->  routevalue(routevalue(x,in,w),in,w) - how much depth
+//followed by binroute
+//single route or multiples
+//try multiples...
+
+static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t wh){ //
+  uint32_t bt=0, bitrr;
+  depth=depth>>8; // 12 bits to 4 bits
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshift_[wh]>>SRlength[8]) & 0x01; 
+    gate[8].Gshift_[wh]=(gate[8].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 4095; // 12 bits no shift
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+    }
+  return bt; // as a value 12 bits
+}
+
+  
+/////////////////////////////////////////////////////////////////
+
+// newer/ports from experiment.h
+
+// vienna: divide into speedmode and bitmode
+
+static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t wh){ //
+  uint32_t bt=0, speedy;
+  // say CVL as depth, CV as in
+  uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  if (recurse!=0){
+    speedy=in+gate[others[wh][recurse-1]].dac; // can also be different versions such as modulus or mid version
+    if (speedy>4095) speedy=4095;
+  }
+  else speedy=in;
+  
+  bt=spdfrac(speedy, in, wh);
+  return bt;
+}
+
+static inline uint32_t viennabits(uint32_t depth, uint32_t in, uint32_t wh){
+  uint32_t bt=0, tmp, tmpp, recurs, bitrr,x;
+  // say CVL as depth as above - in is not used
+  
+  // 7 bits from mode/now CVL - 
+  tmpp=127-(depth>>5); // 7 bits  
+  if (tmpp>>6) recurs=1; // top bit
+  
+  if (recurs!=0 && wh==2){ // for C only  // why?
+    tmpp|=(gate[others[wh][0]].shift_)&15;    
+  }
+  
+  if (tmpp==0 && wh==2) { // SR5 is 8th which is outside these bits - for modeC only
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
+    gate[wh].shift_ ^=gate[8].Gshare_;
+    bt=bitrr;
+  }
+else
+  {
+    tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
+    for (x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr; 
+	bt=bitrr;
+      }
+      tmp=tmp>>1; // 4 bits
+    }
+  }
+  return bt;
+}
+
+//////////////// outside functions and ports from experiment.h - observation that most OUTSIDE functions should be paired with specific inside/bits
+
+uint32_t OUT_adc_overonebit(uint8_t w){ // oversample one bit
+  uint8_t bt;
+  bt=adconebitsx();
+  return bt;
+}
+
+static uint32_t delayline[512]; //shared delay line
+static uint32_t delaylineUN[4][512]; //UNshared delay line
+
+static inline uint32_t delay_line_in(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits[4]; // 32 bits of bits
+  // put into delay line - need index and bit index
+  tmp=bits[wh]/32;
+  tmpp=bits[wh]%32;
+  delaylineUN[wh][tmp]&=bitmasky[tmpp];
+  delaylineUN[wh][tmp]|=(depth<<(tmpp));
+  bits[wh]++;
+  if (bits[wh]>16383) bits[wh]=0;
+}
+
+static inline uint32_t delay_line_out(uint32_t depth, uint8_t wh){
+  uint32_t bt=0, tmp;
+  tmp=depth/32;
+  bt=(delaylineUN[wh][tmp]>>(depth%32))&0x01;
+  return bt;
+}
+
+uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint8_t w){  // could also be shared version of this // we need delay_lineOUT to match
+  uint32_t bitn, tmp,x, bitrr;
+  BINROUTESR_; // or other forms
+  delay_line_in(bitn,w);
+  return 0;
+}
+
+uint32_t SRdelay_lineOUT(uint32_t depth, uint8_t w){  // could also be shared version of this //XX  -- well cnt was shared so...
+  static uint32_t cnt[4]={0,0,0,0};
+  uint32_t bitn;
+  bitn=delay_line_out(cnt[w],w); // or detach - length not used - this is our binroute
+  cnt[w]++;
+  if (cnt[w]>16383) cnt[w]=0;
+  return bitn;
+}
+
+// split speeds
+// temp:  static inline uint32_t OUT_temp(uint32_t depth, uint8_t wh){
+static inline uint32_t OUT_splitx(uint32_t depth, uint8_t w){
+  int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
+  if (!sbinroute(others[w][0])) { // inversion to avoid running out
+      GSHIFTNOS_; // 2.copy gshift on trigger // gate[XX].Gshift[w]&0x01...
+    }
+
+  if (!sbinroute(others[w][1])) { //3.advance incoming ghost
+    BINROUTEADV_;
+  }
+
+  if (!sbinroute(others[w][2])) {
+    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
+  }
+
+}
+
+static inline uint32_t IN_splitx(uint32_t depth, uint8_t w){ // matches above and must match outfunction     BITN_AND_OUTVXOR_;
+  int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
+    BINROUTENOG_; // or not
+    return bitn;
+}  

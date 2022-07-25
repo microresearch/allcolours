@@ -56,53 +56,53 @@ uint32_t cvmax[64][9]={
   {19,19,19,19,19,19,19,19,19}, // update for max number of cv options
 };
 
-//fspeed, flength, fadc, fbit, fdac, fnew
-//1       2        3     4     5     6
-// cvspeed, cvspeedmodo, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew
-// 1        2            3         4      5       6        7      8          9 
+//fspeed, flength, fadc, fbit, fdac, fnew, fout
+//1       2        3     4     5     6    7,
+// cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew, cvout, cvoutmod
+// 1        2            3         4      5       6        7      8          9      10     11
 
 // CV 5, CVL 6, CVM, 7 old cv 16,17,18
 
-uint32_t funcNN[64][6]={
-  {1,1,21,2,0,0}, // most simple - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
-  {2,0,18,0,0,0},
+uint32_t funcNN[64][9]={
+  {1,1,21,2, 0,0,0,0,0}, // most simple - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
+  {2,0,18,0, 0,0,0,0,0},
 };
 
-uint32_t cvNN[64][9]={
-  {5,0,6,0,6,8,0,0,0}, // 8 is ADC itself IN
-  {5,6,6,0,6,8,6,7,0},
+uint32_t cvNN[64][11]={
+  {5,0,6,0,6,8,0,0,0,0,0}, // 8 is ADC itself IN
+  {5,6,6,0,6,8,6,7,0,0,0},
 };
 
-uint32_t funcLL[64][6]={
-  {1,1,0,2,0,0}, // most simple
-  {2,0,0,59,0,0},
+uint32_t funcLL[64][9]={
+  {1,1,0,2,0,0,0,0,0}, // most simple
+  {2,0,0,59,0,0,0,0,0},
 };
 
-uint32_t cvLL[64][9]={
-  {5,0,6,0,6,0,0,0,0},
-  {5,6,6,0,6,0,6,7,0}, // rung2 but modded...
+uint32_t cvLL[64][11]={
+  {5,0,6,0,6,0,0,0,0,0,0},
+  {5,6,6,0,6,0,6,7,0,0,0}, // rung2 but modded...
 };
 
-uint32_t funcCC[64][6]={
+uint32_t funcCC[64][9]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {11,1,0,2,0,0}, // most simple - 11 is select speed with CVM 26 dac with cvm
-  {1,1,0,60,0,0}, // rung - speed from cv, route from R //
+  {11,1,0,2,0,0,0,0,0}, // most simple - 11 is select speed with CVM 26 dac with cvm
+  {1,1,0,60,0,0,0,0,0}, // rung - speed from cv, route from R //
 };
 
-uint32_t cvCC[64][9]={
+uint32_t cvCC[64][11]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {5,0,6,6,6,0,0,0,0},
-  {5,0,6,7,0,0,4,0,0}, // rung - speed from cv, route from R //
+  {5,0,6,6,6,0,0,0,0,0,0},
+  {5,0,6,7,0,0,4,0,0,0,0}, // rung - speed from cv, route from R //
 };
 
-uint32_t funcRR[64][6]={
-  {1,1,0,1,0,0}, // most simple
-  {2,1,0,61,0,0}, // route from L, speed from N
+uint32_t funcRR[64][9]={
+  {1,1,0,1,0,0,0,0,0}, // most simple
+  {2,1,0,61,0,0,0,0,0}, // route from L, speed from N
 };
 
-uint32_t cvRR[64][9]={
-  {5,1,6,0,6,0,7,7,0},
-  {5,6,6,0,0,0,1,0,0}, // route from L, speed from N
+uint32_t cvRR[64][11]={
+  {5,1,6,0,6,0,7,7,0,0,0},
+  {5,6,6,0,0,0,1,0,0,0,0}, // route from L, speed from N
 };
 
 
@@ -133,6 +133,9 @@ static uint32_t lengthfunccnt=0;
 static uint32_t adcfunccnt=0;
 static uint32_t bitfunccnt=0;
 static uint32_t extfunccnt=0;
+static uint32_t outfunccnt=0;
+static uint32_t gscnt=0;
+static uint32_t outcnt=0;
 
 // 1 means its used so do normed clocks - all one for testing
 // replace this with just strobed set by mode/function itself and then passed to final part for normed clocks
@@ -357,7 +360,7 @@ void mode_init(void){
   uint32_t x,y;
 
   for (x=0;x<64;x++){
-    for (y=0;y<6;y++){
+    for (y=0;y<9;y++){
       gate[0].func[x][y]=funcNN[x][y];
       gate[1].func[x][y]=funcLL[x][y];
       gate[2].func[x][y]=funcCC[x][y];
@@ -366,7 +369,7 @@ void mode_init(void){
   }
 
   for (x=0;x<64;x++){
-    for (y=0;y<9;y++){
+    for (y=0;y<11;y++){
       gate[0].cv[x][y]=cvNN[x][y];
       gate[1].cv[x][y]=cvLL[x][y];
       gate[2].cv[x][y]=cvCC[x][y];

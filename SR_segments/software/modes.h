@@ -25,8 +25,8 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t strobed;
   uint32_t lastspeed;
   uint32_t countspeed;
-  uint32_t func[64][6];
-  uint32_t cv[64][9];
+  uint32_t func[64][9];
+  uint32_t cv[64][11];
   uint32_t cvcnt;
   uint32_t oldcvcnt;
   uint32_t par;

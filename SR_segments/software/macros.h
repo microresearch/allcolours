@@ -1,6 +1,18 @@
 // for new struct sets of modes:
 
-#define RESETR count=0; daccount=0; spdcount=0; tailcount=0; dactypecount=0; binroutetypecount=0; dactypecnt=0; spdfunccnt=0; lengthfunccnt=0; adcfunccnt=0;bitfunccnt=0, binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
+/*
+static uint32_t dactypecnt=0;
+static uint32_t spdfunccnt=0;
+static uint32_t lengthfunccnt=0;
+static uint32_t adcfunccnt=0;
+static uint32_t bitfunccnt=0;
+static uint32_t extfunccnt=0;
+static uint32_t outfunccnt=0;
+static uint32_t gscnt=0;
+static uint32_t outcnt=0;
+*/
+
+#define RESETR count=0; daccount=0; spdcount=0; tailcount=0; dactypecount=0; binroutetypecount=0; dactypecnt=0; spdfunccnt=0; lengthfunccnt=0; adcfunccnt=0;bitfunccnt=0; extfunccnt=0; outfunccnt=0; gscnt=0; outcnt=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
 
 #define STR0 (gate[w].trigger)
 
@@ -544,7 +556,7 @@
 #define BITN_AND_OUTVINTNO_ {						\
     gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     PULSOUT;								\
-}
+  }
 
 // these all had     if (w==3) count=0; 10/1/2021				\
 

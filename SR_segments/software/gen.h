@@ -348,7 +348,7 @@ static inline uint32_t sbinroute(uint8_t wh){   // depth as routesel... shared b
   }
   depth=depth>>1;
   }
-  gate[wh].dac = delay_buffer[wh][1];
+  gate[wh].dac = delay_buffer[wh][1]; // ???
   return bt;
 }
 
