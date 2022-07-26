@@ -190,7 +190,47 @@ RESOLVE ARCH:
 - 5th tail as processor, generator and what_would_have_been
 - check all above: speed, clkin, pulsin etc, strobey thing
 
-- basic functionality as matrices implemented
+- basic functionality as matrices implemented  - list these
+- python code to pull out basic header and function body
+
+** 26/7/2022
+
+*BINROUTEalt...: non-destructive*
+
+TODO: test latest new codes eg.  loopback par (cvmod), bitsmod, outside modes such as delay (add delayoutDONE),
+
+
+
+- extracting function bodies with emacs macro - but leaves ints DONE
+- added loopback -> par so cv selects cv
+
+*0- decide on model: how easy can we write and decode matrices?* code to encode//decode matrices...
+
+we have python script but how do we decide on endless range of oldCV, CVs etc...
+how do we signal which functions take dual cv 
+
+all adcs take IN, some comps, some spd: spd takes IN as modifier for cv or otherwise speed
+
+///////
+
+1- port functions into geogen:
+
+adc, dac, bits/routes/probs, special, changingSRetc-outsides, gshifts, finaldacs/outs, values
+
+more generic selection functions - more adc/dac/routes etc. and each one has generic selection
+
+*more probs*
+
+2- *do we cover all basic SR models? including runglers, probs?*
+
+2.5- start to organise matrices...
+
+3- move on to recursion and major modes
+
+4- resolve speed, strobe, and all pulses and general issues
+
+5- clean up and test
+
 
 ** 25/7/2022
 

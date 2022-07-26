@@ -44,6 +44,7 @@ static uint32_t outcnt=0;
   gate[w].trigger=0;							\
   clksr_[w]=(clksr_[w]<<1);						\
   }									\
+  clksr_[w]&=4095;							\
 }
 
 #define ADCone {					\

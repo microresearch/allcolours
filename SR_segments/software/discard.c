@@ -1,3 +1,49 @@
+// for new geomantic abstraction: start again again with generics - this one for binroutes
+//     [need better labelling scheme]
+
+/*
+
+- how that looks for inputs - what we compare to what?
+- or we just have list of probs to make things easier...
+
+- and for bits: bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;
+
+*invert routed/bit*
+*routed vs cycling// routed vs inverted cycling*
+*routed vs [routed^cycling]*
+
+ */
+
+
+/*
+
+- for speeds/bits - return bits - for adc=bits: can be adc, dac (as input with adc style processing), or bits as for speed/bits - make more generic
+
+but speed ones handle dac/interpol
+
+- for length: return length/0-31 - could plug in other functions
+// so length as seperate or as a re-processor...
+
+merge all bits for speeds, for adc
+
+how to label/categorise: 
+
+- deal with a route
+- abstract bit routines
+- process a value
+- deal with adc
+- deal with dac but:
+
+could we even abstract out further so adc/13 is depth input - but also look at adcs
+and function is a processor of these to return bits
+
+return a value from bits (this is what dacs do)... process a value... generate a value (eg. from a route)
+
+value to bits (adc)
+bits to values (dac)
+
+*/  
+
 // generic probability to test for adapted rungler in // unused
 static inline uint32_t genericprob(uint32_t cv, uint32_t against, uint32_t bit1, uint32_t bit2){
   if (cv>against) return bit1;

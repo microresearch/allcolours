@@ -1445,7 +1445,7 @@ void SR_clksr(uint8_t w){ //
 
 // 27/4/2022
 
-//- *hold/perform last function with frozen params but change say length as CVL?*
+//- *hold/perform last function with frozen params but change say length as CVL?* ???
 // how??? - how do we enter? is more a case of freezing last param which was CVL and using for length
 // what means last function?
 

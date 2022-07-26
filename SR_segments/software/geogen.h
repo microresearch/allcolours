@@ -1,57 +1,26 @@
 /*
 
-// for new geomantic abstraction: start again again with generics - this one for binroutes
-//     [need better labelling scheme]
-
-- for speeds/bits - return bits - for adc=bits: can be adc, dac (as input with adc style processing), or bits as for speed/bits - make more generic
-
-but speed ones handle dac/interpol
-
-- for length: return length/0-31 - could plug in other functions
-// so length as seperate or as a re-processor...
-
-merge all bits for speeds, for adc
-
-how to label/categorise: 
-
-- deal with a route
-- abstract bit routines
-- process a value
-- deal with adc
-- deal with dac but:
-
-could we even abstract out further so adc/13 is depth input - but also look at adcs
-and function is a processor of these to return bits
-
-return a value from bits (this is what dacs do)... process a value... generate a value (eg. from a route)
-
-value to bits (adc)
-bits to values (dac)
+// new geomantic functions abstracted
 
 */
 
 //////////////////////////////////////////////////////////////////////////
-
-/*
-
-- how that looks for inputs - what we compare to what?
-- or we just have list of probs to make things easier...
-
-- and for bits: bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;
-
-*invert routed/bit*
-*routed vs cycling// routed vs inverted cycling*
-*routed vs [routed^cycling]*
-
- */
-
 // gshifts
 static inline uint32_t gshift0(uint32_t w){ 
-  GSHIFT_; 
+  GSHIFT_;
+  return 0;
 }
 
-static inline uint32_t gshiftnull(uint32_t w){ 
+static inline uint32_t gshiftnull(uint32_t w){
+  return 0;
 }
+
+// what other gshifts there are...
+
+//////////////////////////////////////////////////////////////////////////
+// binroute_probabilities - fixed routes
+
+// other probs with 2x CV
 
 static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling
   uint32_t bt=0, bitrr;
@@ -155,6 +124,7 @@ static inline uint32_t binroutfixed_prob4(uint32_t depth, uint32_t in, uint32_t 
 
 //////////////////////////////////////////////////////////////////////////
 // tails
+
 void basictail(void){ // tail here is basic 4th at full speed - not very exciting for major_vienna as just loops
   HEADNADA;
   uint32_t w=8;
@@ -171,8 +141,6 @@ void basictail(void){ // tail here is basic 4th at full speed - not very excitin
   gate[w].shift_+=bitn;
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////
 //0
 //lengths
@@ -180,8 +148,7 @@ void basictail(void){ // tail here is basic 4th at full speed - not very excitin
 static uint32_t held[4]={0,0,0,0}; // for length
 static uint32_t helds[4]={0,0,0,0}; // for speed
 
-
-// we can fork in processors here...
+// we can fork in processors here... ???
 
 static inline uint32_t rlen(uint32_t depth, uint32_t wh){
   uint32_t bt=lookuplenall[depth>>7]; // 5 bits
@@ -631,8 +598,9 @@ static inline uint32_t zbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint3
 
 //////////////////////////////////////////////////////////////////////////
 //3
-//speeds - which can also be generic bit functions! and vice versa...
-// also speeds need to set helds[wh]
+// speeds - which can also be generic bit functions! and vice versa...
+// speeds need to set helds[wh]
+
 static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // lastspeed processor - no use of depth, no interpol
   uint32_t bt=0;
   static uint32_t counters[4]={0,0,0,0};
@@ -644,7 +612,6 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // las
   return bt;
 }
   
-
 // hold old [CVL/depth] length
 static inline uint32_t holdlspdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
   static uint32_t oldd[4]={0,0,0,0};
@@ -681,7 +648,8 @@ static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // for
   return bt;
 }
 
-static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in
+//INx
+static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in //INx
   uint32_t bt=0;
   float speed;
   int32_t tmp;
@@ -707,6 +675,7 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we
   return bt;
 }
 
+//INx
 static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // depth is offset, in is constraint -- and speed from dac = gate[speedfrom[spdcount][w]].dac
   uint32_t bt=0;
   float speed;
@@ -728,7 +697,7 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // de
   return bt;
 }
 
-// TODO: add in different spdfrac doubles:
+// TODO: add in different spdfrac doubles: //INx
 
 /*
 
@@ -754,7 +723,7 @@ static inline uint32_t ztogglebits(uint32_t depth, uint32_t in, uint32_t wh){   
 
 //////////////////////////////////////////////////////////////////////////
 //4
-//generic
+//generic bits
 
 // zero/nada
 static inline uint32_t zeros(uint32_t depth, uint32_t in, uint32_t wh){  // returns only zeroes
@@ -778,54 +747,6 @@ static inline uint32_t clksrG(uint32_t depth, uint32_t in, uint32_t wh){
   uint32_t bt=0;
   bt=(clksrG_[wh]>>depth)&0x01;
   clksrG_[wh]=(clksrG_[wh]<<1)+bt; // this also changes patterns there
-  return bt;
-}
-
-
-uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, spdfrac, spdfrac};
-// but not interped // doubles up TODO more
-
-
-static inline uint32_t speedselcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[CVL[wh]>>7])(depth, in, wh));
-  return bt;
-  }
-
-static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[CVM[wh]>>7])(depth, in, wh));
-  return bt;
-  }
-
-static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
-  return bt;
-  }
-
-static inline uint32_t speedseloldcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
-  return bt;
-  }
-
-
-static inline uint32_t sigmadelta(uint32_t depth, uint32_t in, uint32_t wh){  // processor for any int/depth
-  uint32_t bt=0;
-  static int32_t integrator=0, oldValue=0;
-  
-  integrator+=(depth-oldValue);
-   if(integrator>2048)
-  {
-     oldValue=4095;
-     bt=1;
-  }
-   else
-   {
-      oldValue=0;
-      bt=0;
-   }   
   return bt;
 }
 
@@ -1272,14 +1193,14 @@ static inline uint32_t zflipbitsI(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zcompbits(uint32_t depth, uint32_t in, uint32_t wh){ 
+static inline uint32_t zcompbits(uint32_t depth, uint32_t in, uint32_t wh){  //INx
   uint32_t bt;
   if (in>depth) bt=1; // which way round?
   else bt=0;
   return bt;
 }
 
-static inline uint32_t zpattern4bits(uint32_t depth, uint32_t in, uint32_t wh){
+static inline uint32_t zpattern4bits(uint32_t depth, uint32_t in, uint32_t wh){ //INx
   uint32_t bt;
   static uint32_t k,n,nn;
   //grab 4 bits pattern every depth
@@ -1295,7 +1216,7 @@ static inline uint32_t zpattern4bits(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zpattern8bits(uint32_t depth, uint32_t in, uint32_t wh){
+static inline uint32_t zpattern8bits(uint32_t depth, uint32_t in, uint32_t wh){ //INx
   uint32_t bt;
   static uint32_t k,n,nn;
   //grab 4 bits pattern every depth
@@ -1311,7 +1232,7 @@ static inline uint32_t zpattern8bits(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zpattern4bitsI(uint32_t depth, uint32_t in, uint32_t wh){
+static inline uint32_t zpattern4bitsI(uint32_t depth, uint32_t in, uint32_t wh){ //INx
   uint32_t bt;
   static uint32_t k[4],n[4],nn[4];
   //grab 4 bits pattern every depth
@@ -1327,7 +1248,7 @@ static inline uint32_t zpattern4bitsI(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zpattern8bitsI(uint32_t depth, uint32_t in, uint32_t wh){
+static inline uint32_t zpattern8bitsI(uint32_t depth, uint32_t in, uint32_t wh){ //INx
   uint32_t bt;
   static uint32_t k[4],n[4],nn[4];
   //grab 4 bits pattern every depth
@@ -1341,6 +1262,34 @@ static inline uint32_t zpattern8bitsI(uint32_t depth, uint32_t in, uint32_t wh){
   bt=k[wh]>>nn[wh];
   n[wh]++; nn[wh]++;
   return bt;
+}
+
+static inline uint32_t sigmadelta(uint32_t depth, uint32_t in, uint32_t wh){  // processor for any int/depth
+  uint32_t bt=0;
+  static int32_t integrator=0, oldValue=0;
+  
+  integrator+=(depth-oldValue);
+   if(integrator>2048)
+  {
+     oldValue=4095;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+  return bt;
+}
+
+uint32_t (*genericfuncs[64])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bits,        zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits}; // doubled up a bit to hit 64 //  TEST
+
+static inline uint32_t gensel(uint32_t depth, uint32_t in, uint32_t wh){  // select from a generic list - depth is param and in is the selection
+  // in is not used in generic functions...
+  // so for rungler we use CVM as that IN=cvbitcomp
+   uint32_t bt;
+   bt=(*genericfuncs[in>>6])(depth, 0, wh); // 6 bits=64 generic functions to collect
+   return bt;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1733,60 +1682,6 @@ static inline uint32_t zadconecompbits(uint32_t depth, uint32_t in, uint32_t wh)
   return bt;
 }
 
-////// right hand functions which change things...
-// just a test here - uses CVL to select bitfunc
-// but can't be in generic
-
-static inline uint32_t Rtest(uint32_t depth, uint32_t in, uint32_t wh){ 
-  uint32_t bt=0, bitrr, tmp;
-  // fixed binroute
-  tmp=binroute[count][wh]|binary[wh];
-  for (uint8_t x=0;x<4;x++){
-  if (tmp&0x01){
-    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
-    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
-    bt^=bitrr;
-  }
-  tmp=tmp>>1;
-  }
-  // do changes using depth which can be CVL or...
-  bitfunccnt=depth>>8; // 16 is 4 bits
-  
-  return bt;
-}
-
-///// global functions here from exp
-void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast without pulsin
-  HEADSIN;
-  //  SRlength[w]=CVL[w]>>7; // 5 bits
-  if (speedf_[w]!=LOWEST){
-  CVOPEN;
-  if(gate[w].last_time<gate[w].int_time)      {
-  GSHIFT_;
-  count=16; // sets to zero - but could also be ORed with route we already have as another version
-  tmp=(CVL[w]>>5)&3;
-  binary[0]=gate[tmp].shift_&15; // which SR? itself/runs out - binary will also need to be reset 
-  binary[1]=(gate[tmp].shift_>>4)&15;
-  binary[2]=(gate[tmp].shift_>>8)&15;
-  binary[3]=(gate[tmp].shift_>>12)&15;
-  
-  BINROUTE_;
-  BITN_AND_OUTV_;
-  ENDER;
-  }
-  }
-}
-
-uint32_t (*genericfuncs[64])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bits,        zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits}; // doubled up a bit to hit 64 //  TEST
-
-static inline uint32_t gensel(uint32_t depth, uint32_t in, uint32_t wh){  // select from a generic list - depth is param and in is the selection
-  // in is not used in generic functions...
-  // so for rungler we use CVM as that IN=cvbitcomp
-   uint32_t bt;
-   bt=(*genericfuncs[in>>6])(depth, 0, wh); // 6 bits=64 generic functions to collect
-   return bt;
-}
-
 uint32_t (*adcfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, 
 zadccompbits}; // doubled up // TEST!
 
@@ -1806,6 +1701,7 @@ static inline uint32_t adcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // 
    return bt;
 }
 
+//////////////////////////////////////////////////////////////////////////
 // start to wrap dac functions - there are 24!
 // static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
 // length coulkd also be generic so is just a processor
@@ -1976,13 +1872,34 @@ static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc us
    return bt;
 }
 
+/////////////////////////////////////////////////////////////////
+// new modifier functions - generate value for gate[x].par or just intervene 
 
-// new modifier functions
 
-static inline uint32_t bitsmod(uint32_t depth, uint32_t wh){  
+uint32_t *newCVlist[4][16]={
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &CVM[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[3], &clksr_[2], &param[2], &gate[2].oldcv, &gate[2].oldcvl, &gate[2].oldcvm},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &clksr_[3], &param[3], &gate[3].oldcv, &gate[3].oldcvl, &gate[3].oldcvm}
+};
+
+
+static inline uint32_t bitsmod(uint32_t depth, uint32_t wh){   // was cvbits
    uint32_t bt=0;
    gate[wh].shift_^=depth;
    return bt;
+}
+
+static inline uint32_t zero(uint32_t depth, uint32_t wh){  
+  //   uint32_t bt=0;
+   return 0;
+}
+
+static inline uint32_t cvmod(uint32_t depth, uint32_t wh){  
+  // 19 in cvlist -> 16 in new cvlist
+  uint32_t bt=*newCVlist[wh][depth>>8];// 4 bits=16
+  //  uint32_t bt=*newCVlist[wh][0];// 4 bits=16
+  return bt;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -2017,12 +1934,10 @@ static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t wh){ //
 
   
 /////////////////////////////////////////////////////////////////
-
 // newer/ports from experiment.h
 
 // vienna: divide into speedmode and bitmode
-
-static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t wh){ //
+static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t wh){ // //INx
   uint32_t bt=0, speedy;
   // say CVL as depth, CV as in
   uint32_t recurse=(7-(depth>>4))&3; // 2 bits
@@ -2070,7 +1985,11 @@ else
 
 //////////////// outside functions and ports from experiment.h - observation that most OUTSIDE functions should be paired with specific inside/bits
 
-uint32_t OUT_adc_overonebit(uint8_t w){ // oversample one bit
+static inline uint32_t OUT_zero(uint32_t depth, uint32_t w){ 
+  return 0;
+}
+
+static inline uint32_t OUT_adc_overonebit(uint8_t w){ // oversample one bit
   uint8_t bt;
   bt=adconebitsx();
   return bt;
@@ -2079,7 +1998,7 @@ uint32_t OUT_adc_overonebit(uint8_t w){ // oversample one bit
 static uint32_t delayline[512]; //shared delay line
 static uint32_t delaylineUN[4][512]; //UNshared delay line
 
-static inline uint32_t delay_line_in(uint32_t depth, uint8_t wh){
+static inline uint32_t delay_line_in(uint32_t depth, uint32_t wh){
   uint32_t bt=0, bitrr, tmp, tmpp;
   static uint32_t bits[4]; // 32 bits of bits
   // put into delay line - need index and bit index
@@ -2091,21 +2010,21 @@ static inline uint32_t delay_line_in(uint32_t depth, uint8_t wh){
   if (bits[wh]>16383) bits[wh]=0;
 }
 
-static inline uint32_t delay_line_out(uint32_t depth, uint8_t wh){
+static inline uint32_t delay_line_out(uint32_t depth, uint32_t wh){
   uint32_t bt=0, tmp;
   tmp=depth/32;
   bt=(delaylineUN[wh][tmp]>>(depth%32))&0x01;
   return bt;
 }
 
-uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint8_t w){  // could also be shared version of this // we need delay_lineOUT to match
+uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
   uint32_t bitn, tmp,x, bitrr;
   BINROUTESR_; // or other forms
   delay_line_in(bitn,w);
   return 0;
 }
 
-uint32_t SRdelay_lineOUT(uint32_t depth, uint8_t w){  // could also be shared version of this //XX  -- well cnt was shared so...
+uint32_t SRdelay_lineOUT(uint32_t depth, uint32_t in, uint32_t w){  // could also be shared version of this //XX  -- well cnt was shared so...
   static uint32_t cnt[4]={0,0,0,0};
   uint32_t bitn;
   bitn=delay_line_out(cnt[w],w); // or detach - length not used - this is our binroute
@@ -2116,7 +2035,7 @@ uint32_t SRdelay_lineOUT(uint32_t depth, uint8_t w){  // could also be shared ve
 
 // split speeds
 // temp:  static inline uint32_t OUT_temp(uint32_t depth, uint8_t wh){
-static inline uint32_t OUT_splitx(uint32_t depth, uint8_t w){
+static inline uint32_t OUT_splitx(uint32_t depth, uint32_t w){
   int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
   if (!sbinroute(others[w][0])) { // inversion to avoid running out
       GSHIFTNOS_; // 2.copy gshift on trigger // gate[XX].Gshift[w]&0x01...
@@ -2132,8 +2051,84 @@ static inline uint32_t OUT_splitx(uint32_t depth, uint8_t w){
 
 }
 
-static inline uint32_t IN_splitx(uint32_t depth, uint8_t w){ // matches above and must match outfunction     BITN_AND_OUTVXOR_;
+static inline uint32_t IN_splitx(uint32_t depth, uint32_t w){ // matches above and must match outfunction     BITN_AND_OUTVXOR_;
   int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
     BINROUTENOG_; // or not
     return bitn;
 }  
+
+//////////////////////////////////////////////////////////////////////////
+// speedsels
+
+uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, spdfrac, spdfrac};
+// but not interped // doubles up TODO more
+
+
+static inline uint32_t speedselcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[CVL[wh]>>7])(depth, in, wh));
+  return bt;
+  }
+
+static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[CVM[wh]>>7])(depth, in, wh));
+  return bt;
+  }
+
+static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
+  return bt;
+  }
+
+static inline uint32_t speedseloldcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
+  return bt;
+  }
+
+//////////////////////////////////////////////////////////////////////////
+////// right hand functions which change things...
+// just a test here - uses CVL to select bitfunc
+// but can't be in generic
+
+static inline uint32_t Rtest(uint32_t depth, uint32_t in, uint32_t wh){ 
+  uint32_t bt=0, bitrr, tmp;
+  // fixed binroute
+  tmp=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  // do changes using depth which can be CVL or...
+  bitfunccnt=depth>>8; // 16 is 4 bits
+  
+  return bt;
+}
+
+///// global functions here from exp
+void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast without pulsin
+  HEADSIN;
+  //  SRlength[w]=CVL[w]>>7; // 5 bits
+  if (speedf_[w]!=LOWEST){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  count=16; // sets to zero - but could also be ORed with route we already have as another version
+  tmp=(CVL[w]>>5)&3;
+  binary[0]=gate[tmp].shift_&15; // which SR? itself/runs out - binary will also need to be reset 
+  binary[1]=(gate[tmp].shift_>>4)&15;
+  binary[2]=(gate[tmp].shift_>>8)&15;
+  binary[3]=(gate[tmp].shift_>>12)&15;
+  
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
