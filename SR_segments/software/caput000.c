@@ -48,6 +48,7 @@
 
 static heavens gate[9]; // for paralell SR doubled + tail
 
+
 uint32_t funccmax[64][9]={
   {8,2,17,61,23}, // maximum value if x>funcmax... // update these as we add more functions
 };
@@ -59,23 +60,32 @@ uint32_t cvmax[64][10]={
 //fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
 //1       2        3     4     5     6     7     8   9
 
+//basic but remeove adc
+//{1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+//{5, 0, 6, 0, 0, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
+
+
 uint32_t funcNN[64][9]={
-  {1,1,21,2, 0,0,0,0,0}, //  - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
+  {1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+  {1,1,18,2, 0,0,0,0,0}, //  - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
   {2,0,18,0, 0,0,0,0,0},
 };
 
 uint32_t funcLL[64][9]={
+  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
   {1,1,0,1, 0,0,0,0,0}, // 
   {2,0,0,59,0,0,0,0,0},
 };
 
 uint32_t funcCC[64][9]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {1,1,0,1, 26,2,0,0,0}, //  - 11 is select speed with CVM 26 dac with cvm
+  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+  {1,1,0,1, 26,0,0,0,0}, //  - 11 is select speed with CVM 26 dac with cvm
   {1,1,0,60, 0,0,0,0,0}, // rung - speed from cv, route from R //
 };
 
 uint32_t funcRR[64][9]={
+  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
   {1,1,0,1, 0,0,0,0,0}, // 
   {2,1,0,61,0,0,0,0,0}, // route from L, speed from N
 };
@@ -86,33 +96,35 @@ uint32_t funcRR[64][9]={
 // 0 null 1 0dac 2 1dac 3 2dac 4 3dac 5 CV 6 CVL 7 CVM 8 ADCin 9 Gs0 10 Gs1 11 Gs2 12 Gs3 13 clksr_ 14 param 15 par 16 oldcv 17 oldcvl 18 oldcvm
 
 uint32_t cvNN[64][10]={
+  {5, 0, 6, 0, 6, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
   {5,0,6,0,6,8, 0,0,0,0}, // 8 is ADC itself IN
   {5,6,6,0,6,8,6,7,0,0},
 };
 
 uint32_t cvLL[64][10]={
+  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
   {5,0,6,0,6,0,4,0,0,0},
   {5,6,6,0,6,0,6,7,0,0}, // rung2 but modded...
 };
 
 uint32_t cvCC[64][10]={
   //{1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {5,0,6,15, 6,0,4,0,7,0},
+  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
+  {5,0,6,7, 6,0,7,0,0,0},
   {5,0,6,7, 0,0,4,0,0,0}, // rung - speed from cv, route from R //
 };
 
 uint32_t cvRR[64][10]={
+  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
   {5,1,6,0,6, 0,7,7,0,0},
   {5,6,6,0,0, 0,1,0,0,0}, // route from L, speed from N
 };
-
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 
 static uint32_t ADCin;
 
 #define LOWEST 0.000031f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022 // this is now our STOP
-
 
 static uint32_t count=0; // for route
 static uint32_t daccount=0; // for dacfrom
@@ -294,6 +306,7 @@ static uint32_t resetz=1;
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 #include "geogen.h" // newer generators
+#include "geomantic.h" // new geomantic codebase in progress
 
 //#include "modeN.h"
 //#include "modeL.h"
@@ -302,7 +315,6 @@ static uint32_t resetz=1;
 //#include "probability.h" // probability modes
 
 //#include "basis.h" // basics from commented ones just to speed up tests
-#include "geomantic.h" // new geomantic codebase in progress
 //#include "experiment.h" // more functional modes - can also shift some things here... trials
 //#include "bit.h" // bitmodes but some are still in modeL
 //#include "rungler.h"
@@ -331,7 +343,7 @@ uint32_t testmodes[4]={0,0,0,0};
 
   //re-test all new for crash  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadcX, SRrunghead0NX, adcLrung0-fixed18/6, adcLrung1fixed, adcLrung2fixed,   adcrung0fixed, adcLbinprobX, noSRadc2sX, noSRadc2sX, adcLabstractLDX, stream4_unshareX, streamX}, //128
 
- /*
+ /* 
 void (*funcgroups[4][128])(uint8_t w)=
 {
     {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream}, //128
@@ -343,8 +355,7 @@ void (*funcgroups[4][128])(uint8_t w)=
   
   {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2, SRRrung3,     adcLbinprob, SRX0,     SRX0, adcLabstractLD, stream4_unshare, stream} //64 
 }; // 13 so far -- to add more for lisbon - select at random from 50 - how to do from cards...
- */
- 
+*/  
 // card for each = 16 possibles... we need 50! - q of slidings - we can slide +-64 except modeR cannot slide so should be most generic
 
  /*
@@ -360,6 +371,7 @@ thus:
 void mode_init(void){
   uint32_t x,y;
 
+  
   for (x=0;x<64;x++){
     for (y=0;y<9;y++){
       gate[0].func[x][y]=funcNN[x][y];
@@ -451,15 +463,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // sliding modes 
     
-      mde=mode[3]; // upto13 - test for the frozen one // 11odd 3/genericbitsissilentmostly
-      if (mde>GROUP) mde=GROUP;
+  //      mde=mode[3]; // upto13 - test for the frozen one // 11odd 3/genericbitsissilentmostly
+  //      if (mde>GROUP) mde=GROUP;
       /*  if (www==0) mde=((mode[3]+mode[0])%128);
   else if (www==1) mde=((mode[3]+mode[1])%128);
   else if (www==2) mde=((mode[3]+mode[2])%128);
   else mde=mode[3]; // case for 3:
       */    
 
-      //  (*funcgroups[www][mde])(www);
+      //      (*funcgroups[www][mde])(www);
       
 
   // trial here different version of Vienna with interpoll and new bit recurse options

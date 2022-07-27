@@ -1,4 +1,4 @@
-//uint8_t dacmodes[16]={25,26,27,71,72,73,74,75,  77,78,79,80,86,88,91,105};
+uint8_t dacmodes[16]={25,26,27,71,72,73,74,75,  77,78,79,80,86,88,91,105};
 
 /*
 
@@ -272,7 +272,7 @@ void SRrungbody0(uint8_t w){ // body on R
 
 
 //////////////////// previous
-/*
+
 // from modeN.h
 
 //SRN: speed from SRR, data from SRL - new route XOR with loopback: rung - body!
@@ -662,4 +662,3 @@ void dacLrung0(uint8_t w){ // detached length
   }  
 }
 
-*/

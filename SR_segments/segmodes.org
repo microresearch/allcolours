@@ -193,13 +193,33 @@ RESOLVE ARCH:
 - basic functionality as matrices implemented  - list these
 - python code to pull out basic header and function body
 
+** 27/7/2022
+
+OR NOT - as we can do base modes in matrices and have more flexibility???
+
+- Tending to return to base modes (edited) with some use of latest generics:
+
+if so:
+
+- +basic trial...WORKING (without modeNetc)+
+
+- clean up and cut down
+- keep recursions and add new stack ideas
+
+- port in generic ops from matrices.. what else? lastspeed, holds
+- matrix as function???
+- port in new functions: prob within ADC, what else?
+- stack and previous functions/timings
+- question of memory - 64 modes each side
+
+what was layout we have of 8/8/8/8CVspeed 8/8DACspeed 8/8 strobe or just last 8 strobe...?
+
+
 ** 26/7/2022
 
 *BINROUTEalt...: non-destructive*
 
 TODO: test latest new codes eg.  loopback par (cvmod), bitsmod, outside modes such as delay (add delayoutDONE),
-
-
 
 - extracting function bodies with emacs macro - but leaves ints DONE
 - added loopback -> par so cv selects cv
