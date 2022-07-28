@@ -61,31 +61,32 @@ uint32_t cvmax[64][10]={
 //1       2        3     4     5     6     7     8   9
 
 //basic but remeove adc
-//{1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+//out and fout mixed up in comments
+
+//{1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
 //{5, 0, 6, 0, 0, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
 
-
 uint32_t funcNN[64][9]={
-  {1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+  {1, 1, 21, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
   {1,1,18,2, 0,0,0,0,0}, //  - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
   {2,0,18,0, 0,0,0,0,0},
 };
 
 uint32_t funcLL[64][9]={
-  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+  {1, 1, 0, 2, 0, 2, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero'] // altering some
   {1,1,0,1, 0,0,0,0,0}, // 
   {2,0,0,59,0,0,0,0,0},
 };
 
 uint32_t funcCC[64][9]={
   //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero'] // altered for delaylineIn and OUT
   {1,1,0,1, 26,0,0,0,0}, //  - 11 is select speed with CVM 26 dac with cvm
   {1,1,0,60, 0,0,0,0,0}, // rung - speed from cv, route from R //
 };
 
 uint32_t funcRR[64][9]={
-  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'bitsmod', 'vgen', 'gshift0', 'OUT_zero']
+  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
   {1,1,0,1, 0,0,0,0,0}, // 
   {2,1,0,61,0,0,0,0,0}, // route from L, speed from N
 };
@@ -102,7 +103,7 @@ uint32_t cvNN[64][10]={
 };
 
 uint32_t cvLL[64][10]={
-  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
+  {15, 0, 6, 0, 0, 0, 0, 0, 7, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null'] // altering some
   {5,0,6,0,6,0,4,0,0,0},
   {5,6,6,0,6,0,6,7,0,0}, // rung2 but modded...
 };
@@ -407,8 +408,16 @@ void mode_init(void){
     gate[x].reset[1]=0;
     gate[x].reset[2]=0;
     gate[x].reset[3]=0;
-    gate[x].oldcvcnt=1;    
+    gate[x].oldcvcnt=1;
+    gate[x].lengthindex=6; // all CVL now    
+
     
+    gate[x].oldspeedfunc=0;
+    gate[x].speedfunc=3;
+
+    gate[x].oldspeedcv=0;
+    gate[x].speedcv=1;
+        
     gate[0].gsrcnt[x]=31;
     gate[1].gsrcnt[x]=31;
     gate[2].gsrcnt[x]=31;	
@@ -479,7 +488,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do func
   //  (*dofunc[www][0])(www);
-      SR_geomanticxx(www); // just for testings
+  //      SR_geomanticxx(www); // just for testings
+  SR_geomanticxxx(www); // xxx new one just for testings
   
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8

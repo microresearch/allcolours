@@ -193,9 +193,27 @@ RESOLVE ARCH:
 - basic functionality as matrices implemented  - list these
 - python code to pull out basic header and function body
 
+
+** 28/7/2022
+
+*tail maybe as param SR!*
+
+- new simplifications and new model with stack in geomantic.h WORKING in part
+
+how we can move forward with that model...
+
+1.move outside, gshift, think about length ops (how?), [newfunc and par?]
+2.attach function on entry into new function counter (stack of these - how we can code stack?)
+
+
+
 ** 27/7/2022
 
+// *how we can start to think (and list these kind of recursions or ideas) - of overlays of dacs/cvs - bus or mix rather than fixed and how an SR can perform this mix ITSELF*
+
 OR NOT - as we can do base modes in matrices and have more flexibility???
+
+but question was that we had to slow down main.c speed for full geomantic // *how can we speed up???*
 
 - Tending to return to base modes (edited) with some use of latest generics:
 
@@ -214,15 +232,14 @@ if so:
 
 what was layout we have of 8/8/8/8CVspeed 8/8DACspeed 8/8 strobe or just last 8 strobe...?
 
-
 ** 26/7/2022
 
 *BINROUTEalt...: non-destructive*
 
-TODO: test latest new codes eg.  loopback par (cvmod), bitsmod, outside modes such as delay (add delayoutDONE),
+TODO: test latest new codes eg.  loopback par (cvmod), bitsmod, TESToutside modes such as delay (add delayoutDONE), - not so exciting as no param (see delay_line_shared) but doesn't crash
 
 - extracting function bodies with emacs macro - but leaves ints DONE
-- added loopback -> par so cv selects cv
+- added loopback -> par so cv selects cv -> cvmod
 
 *0- decide on model: how easy can we write and decode matrices?* code to encode//decode matrices...
 
@@ -233,7 +250,7 @@ all adcs take IN, some comps, some spd: spd takes IN as modifier for cv or other
 
 ///////
 
-1- port functions into geogen:
+1- port extracted functions into geogen and notate matrices as we do this
 
 adc, dac, bits/routes/probs, special, changingSRetc-outsides, gshifts, finaldacs/outs, values
 
@@ -243,9 +260,9 @@ more generic selection functions - more adc/dac/routes etc. and each one has gen
 
 2- *do we cover all basic SR models? including runglers, probs?*
 
-2.5- start to organise matrices...
+2.5- start to organise matrices... // list and document modes
 
-3- move on to recursion and major modes
+3- move on to recursion and major modes // how we organise CVM inside and outside
 
 4- resolve speed, strobe, and all pulses and general issues
 

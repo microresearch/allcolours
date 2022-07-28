@@ -1321,7 +1321,7 @@ uint32_t (*adcfromsddprob[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_
 // how many CVs do we need for this? 3x - one for sel, prob and for depth 
 static inline uint32_t probcvladcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
   uint32_t bt, prob;
-  if (CVL[wh]<(LFSR_[wh]&4095)) prob=1; // which way round
+  if (CVM[wh]<(LFSR_[wh]&4095)) prob=1; // which way round
   else prob=0;
    // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
   //   bt=(*adcfromsddprob[CVM[wh]>>7])(depth, in, wh, prob); // 5 bits
@@ -1331,7 +1331,7 @@ static inline uint32_t probcvladcselcvm(uint32_t depth, uint32_t in, uint32_t wh
 }
 
 // we can have fixed versions against dac 
-static inline uint32_t probdacadcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
+static inline uint32_t probdacadcsel(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
   uint32_t bt, prob;
   if (gate[dacfrom[daccount][wh]].dac<(LFSR_[wh]&4095)) prob=1; // which way round
   else prob=0;
@@ -1343,7 +1343,7 @@ static inline uint32_t probdacadcselcvm(uint32_t depth, uint32_t in, uint32_t wh
 }
 
 //and also using trigger 
-static inline uint32_t probtrigadcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
+static inline uint32_t probtrigadcsel(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
   uint32_t bt, prob;
    // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
   //   bt=(*adcfromsddprob[CVM[wh]>>7])(depth, in, wh, prob); // 5 bits
@@ -2000,7 +2000,7 @@ static uint32_t delaylineUN[4][512]; //UNshared delay line
 
 static inline uint32_t delay_line_in(uint32_t depth, uint32_t wh){
   uint32_t bt=0, bitrr, tmp, tmpp;
-  static uint32_t bits[4]; // 32 bits of bits
+  static uint32_t bits[4]={0,0,0,0}; // 32 bits of bits
   // put into delay line - need index and bit index
   tmp=bits[wh]/32;
   tmpp=bits[wh]%32;

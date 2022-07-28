@@ -1235,5 +1235,37 @@ x=y=monk;
 
 printf("x %d y %d\n",y, x);
 
+// stack test
+
+uint32_t buffer[4];
+uint32_t size=3;
+uint32_t head=0;
+
+void push(uint32_t value){
+  buffer[head] = value;
+  head = (head + 1) % size;
+}
+
+uint32_t peek()    {
+  int32_t ed;
+  ed=(head - 1 + size) % size;
+  return buffer[ed];
+}
+
+uint32_t pop()    {
+  head = (head - 1 + size) % size;
+  return buffer[head];
+}
+
+push(1);
+push(2);
+push(3);
+push(4);
+
+printf("pop %d\n",pop());
+//printf("pop %d\n",pop());
+//printf("pop %d\n",pop());
+printf("peek %d\n",peek());
+
 return 0;
 }

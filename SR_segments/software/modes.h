@@ -33,8 +33,13 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t oldcv;
   uint32_t oldcvl;
   uint32_t oldcvm;
-  uint32_t stack[128];
-  uint32_t stack_counter;
+  uint32_t lengthindex; // index now into CVlist
+  // for stack
+  uint32_t (*speedfrom[64])(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t speedfromindex, oldspeedfunc, speedfunc;
+  uint32_t speedcvindex, oldspeedcv, speedcv;  
+  uint32_t *speedfromcv1[64];
+  uint32_t *speedfromcv2[64];
 } heavens;
 
 typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 

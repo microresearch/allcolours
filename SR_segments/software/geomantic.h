@@ -32,7 +32,7 @@ uint8_t interp[32]={0,1,1,0,0,0,0,0,0,0,0,0,0,0};
 uint32_t (*lengthfromsd[32])(uint32_t depth, uint32_t wh)={nlen, rlen, holdlen}; // we only have 2 functions here so far - nlen is null/hold, what other functions
 
 //3adc
-uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, adcselcvm, adcselcvl, probcvladcselcvm, probdacadcselcvm}; 
+uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, adcselcvm, adcselcvl, probcvladcselcvm, probdacadcsel}; 
 
 uint32_t (*dacfunc[32])(uint32_t depth, uint32_t wh)={ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6, ddac7, ddac8, ddac9, ddac10, ddac11, ddac12, ddac13, ddac14, ddac15, ddac16, ddac17, ddac18, ddac19, ddac20, ddac21, ddac22, ddac23, ddac24, dacselcvl, dacselcvm};
 
@@ -86,7 +86,6 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
   static uint32_t oldspdfunccnt;
   HEADNADA;
   if (interp[gate[w].func[spdfunccnt][fspeed]]){ // gate[w].func[spdfunccnt][fspeed]
-
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
    if (gate[w].dac>4095) gate[w].dac=4095;
@@ -129,7 +128,6 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
     // 26/7 eg. par can select one of cvs and copy value
     
     gate[w].par=(*newfunc[gate[w].func[extfunccnt][fnew]])(4095-(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvnew]]), w); // invert?
-    
     bitn^=(*adcfromsd[gate[w].func[adcfunccnt][fadc]])(4095-(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvadc]]), *CVlist[w][gate[w].cv[gate[w].cvcnt][cvadcIN]],w); // invert?
     bitn^=(*bitfromsd[gate[w].func[bitfunccnt][fbit]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvbit]], *CVlist[w][gate[w].cv[gate[w].cvcnt][cvbitcomp]],w);
     // ENDCORE
@@ -142,3 +140,138 @@ void SR_geomanticxx(uint8_t w){  // for split func/cv
     }
   }
 
+/*
+
+new geomantic _ what we can simplify it to...
+
+1.remove outside, gshift, think about length ops (how?), [newfunc and par?]
+
+//// we had 8 functions
+
+1outside - we can combine speed and general
+2speedfrom
+3lengthfrom X we use param for length // length from SR
+4gshifts -> what they are. as switch or...
+5param (do length here)
+6adc - now if we have adc
+7bitfrom **
+8outs - ???? leave for moment as fixed...
+
+simple model -. no param as this should be another SR  - tail maybe as param SR!
+
+processors for SRs:
+
+value->bits (adc) // valtobits
+bits-> value (dac od SRx) // bitstoval
+
+//paramx/length=bitstoval>>xx
+
+//maybe we should head to 8 bits as standard for all - but speed is 10 bits, etc.... so maybe leave as is/open/recheck ADCs // leave for now but...
+
+return to only: speedfrom, bitfrom
+
+2.attach function on entry into new function counter (stack of these)
+
+what stack does - stack overwrites oldest when full  - see test.c (and when is empty?)
+
+function counter for all functions//
+
+*/
+
+typedef uint32_t (* funcy)(uint32_t depth, uint32_t in, uint32_t wh); // use this to simplify matters
+
+typedef struct pair_ {
+  uint32_t* cv1;
+  uint32_t* cv2;
+    } pair;
+
+#define SIZEY 64 
+
+/// new template with push, pop, peek
+// but only peek makes sense... as if we repeat pops every time we call function or...
+void pushspeed(funcy func, uint32_t w){
+  gate[w].speedfrom[gate[w].speedfromindex] = func;
+  gate[w].speedfromindex = (gate[w].speedfromindex + 1) % SIZEY;
+}
+
+void pushspeedcv(uint32_t *cv1, uint32_t *cv2, uint32_t w){
+  gate[w].speedfromcv1[gate[w].speedcvindex] = cv1;
+  gate[w].speedfromcv2[gate[w].speedcvindex] = cv2;
+  gate[w].speedcvindex = (gate[w].speedcvindex + 1) % SIZEY;  
+}
+
+funcy peekspeed(uint32_t w){ // returns a function
+  uint32_t ed=(gate[w].speedfromindex - 1 + SIZEY) % SIZEY;
+  return gate[w].speedfrom[ed];
+}
+
+funcy popspeed(uint32_t w){ // returns a function
+  gate[w].speedfromindex=(gate[w].speedfromindex - 1 + SIZEY) % SIZEY;
+  return gate[w].speedfrom[gate[w].speedfromindex];
+}
+
+pair peekspeedcv(uint32_t w){ //returns two pointers
+  pair cvs;
+  uint32_t ed=(gate[w].speedcvindex - 1 + SIZEY) % SIZEY;
+  cvs.cv1=gate[w].speedfromcv1[ed];
+  cvs.cv2=gate[w].speedfromcv2[ed];
+  return cvs;
+} 
+
+uint32_t cvpair[64][2]={ // pairs of CVs which we index into 
+  {5,6}, // eg. CV and CVL
+  {5,6}, // eg. CV and CVL
+  {5,6}, // eg. CV and CVL
+};
+
+uint32_t (*speedff[4])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2,spdfrac2,spdfrac2,spdfrac2}; // why did we need to initialise this?
+
+void SR_geomanticxxx(uint8_t w){  // for split func/cv
+  HEADNADA;
+  static pair cvs[4];
+
+  // where do we get that speedfunc and CV indexes from - from a modeR which can allow local changes or change/move from matrices...
+  
+  if (gate[w].oldspeedfunc!=gate[w].speedfunc){ // these are just indexes we arrive at somehow... we need be able change this and CVs on the fly...
+    pushspeed(speedfromsd[gate[w].speedfunc], w); //push pointer to speedfunc - all functions need same format now: 2x CV, 
+    gate[w].oldspeedfunc=gate[w].speedfunc;
+    speedff[w]=peekspeed(w);
+  }
+
+  // attach 2x cv pointers which should be a pair - again abstract out how we arrive at these - 2 uint32_t pointers - lookup for these
+  if (gate[w].oldspeedcv!=gate[w].speedcv){ 
+    pushspeedcv(CVlist[w][cvpair[gate[w].speedcv][0]], CVlist[w][cvpair[gate[w].speedcv][1]], w);
+    gate[w].oldspeedcv=gate[w].speedcv;
+    cvs[w]=peekspeedcv(w);
+  }
+  
+  // does it need interpol?
+  if (interp[gate[w].speedfunc]){ // gate[w].func[spdfunccnt][fspeed]
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+   if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+  
+  // do speed
+    if ((*speedff[w])(*(cvs[w].cv1), *(cvs[w].cv2), w)){
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+ 
+    GSHIFT_;
+    // CORE
+    // deal with length too
+    SRlength[w]=lookuplenall[(*CVlist[w][6])>>7];
+    
+    if (w==0){ // real ADC - TESTY - how we will handle adc across all
+      ADCgeneric2; // input into shared one..
+      // and do ADC
+      bitn=(*adcfromsd[1])(4095-CVL[0], ADCin, w); 
+    }
+    // BITN test
+    bitn^=(*bitfromsd[2])(0, 0, w); // binroutefixed
+    // ENDCORE
+    BITN_AND_OUTVgen_; // pulsin is in there - added new DAC - but we need alter     gate[w].shift_+=bitn; function in there/
+    //final bitnout
+    new_data(val,w);
+    }
+}
