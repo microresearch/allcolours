@@ -172,8 +172,8 @@ static uint32_t outcnt=0;
     gate[w].Gshift_[8]=gate[w].shift_;			\
     gate[w].Gshare_=gate[w].shift_;			\
     Gshift_[w]=gate[w].shift_&4095;			\
+    gate[w].countspeed++;				\
 }
-
 
 #define JUSTCYCLE_ {					\
   bitrr = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;		\

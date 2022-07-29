@@ -1,13 +1,15 @@
-/*
-
-// new geomantic functions abstracted
-
-*/
-
 //////////////////////////////////////////////////////////////////////////
+// new geomantic functions abstracted
+//////////////////////////////////////////////////////////////////////////
+
 // gshifts
 static inline uint32_t gshift0(uint32_t w){ 
   GSHIFT_;
+  return 0;
+}
+
+static inline uint32_t gshiftNOS(uint32_t w){ 
+  GSHIFTNOS_;
   return 0;
 }
 
@@ -15,12 +17,10 @@ static inline uint32_t gshiftnull(uint32_t w){
   return 0;
 }
 
-// what other gshifts there are...
+// what other gshifts there are: only noshift of own SR //GSHIFTNOS_// - so we have 3 options
 
 //////////////////////////////////////////////////////////////////////////
 // binroute_probabilities - fixed routes
-
-// other probs with 2x CV
 
 static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling
   uint32_t bt=0, bitrr;
@@ -125,7 +125,7 @@ static inline uint32_t binroutfixed_prob4(uint32_t depth, uint32_t in, uint32_t 
 //////////////////////////////////////////////////////////////////////////
 // tails
 
-void basictail(void){ // tail here is basic 4th at full speed - not very exciting for major_vienna as just loops
+void basictail(void){ // tail here is basic 4th at full speed
   HEADNADA;
   uint32_t w=8;
   GSHIFT_;
@@ -992,7 +992,6 @@ static inline uint32_t zENbits(uint32_t prob, uint32_t in, uint32_t wh){
   uint32_t bt, tmp;
   // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
   // if all as switches are 1... 
-
   //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
   prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
     if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
@@ -1032,7 +1031,6 @@ static inline uint32_t zllfsrbits(uint32_t depth, uint32_t in, uint32_t wh){ // 
   return bt;
 }
 
-
 static inline uint32_t zflipbits(uint32_t depth, uint32_t in, uint32_t wh){  
   uint32_t bt;
   static uint32_t lastbt,n;
@@ -1045,7 +1043,6 @@ static inline uint32_t zflipbits(uint32_t depth, uint32_t in, uint32_t wh){
   n++;
   return bt;
 }
-
 
 static inline uint32_t zosceqbitsI(uint32_t depth, uint32_t in, uint32_t wh){   
   uint32_t bt;
@@ -1161,7 +1158,6 @@ static inline uint32_t zENsbitsI(uint32_t prob, uint32_t in, uint32_t wh){
   else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
   return bt;
 }
-
 
 static inline uint32_t zlfsrbitsI(uint32_t depth, uint32_t in, uint32_t wh){
   uint32_t bt;
@@ -1317,7 +1313,6 @@ static inline uint32_t zpadcx(uint32_t depth, uint32_t in, uint32_t wh, uint32_t
 }
 
 uint32_t (*adcfromsddprob[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset)={zpadcx};
-
 // how many CVs do we need for this? 3x - one for sel, prob and for depth 
 static inline uint32_t probcvladcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
   uint32_t bt, prob;
@@ -1351,7 +1346,6 @@ static inline uint32_t probtrigadcsel(uint32_t depth, uint32_t in, uint32_t wh){
   // test
   return bt;
 }
-
 
 static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t wh){ // max 12 bits
   uint32_t bt;
@@ -1702,6 +1696,7 @@ static inline uint32_t adcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // 
 }
 
 //////////////////////////////////////////////////////////////////////////
+// DACOUT
 // start to wrap dac functions - there are 24!
 // static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
 // length coulkd also be generic so is just a processor
@@ -1875,7 +1870,6 @@ static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc us
 /////////////////////////////////////////////////////////////////
 // new modifier functions - generate value for gate[x].par or just intervene 
 
-
 uint32_t *newCVlist[4][16]={
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm},
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm},
@@ -1911,7 +1905,7 @@ static inline uint32_t cvmod(uint32_t depth, uint32_t wh){
 //followed by binroute
 //single route or multiples
 //try multiples...
-
+// value from value
 static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t wh){ //
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
@@ -1931,7 +1925,6 @@ static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t wh){ //
     }
   return bt; // as a value 12 bits
 }
-
   
 /////////////////////////////////////////////////////////////////
 // newer/ports from experiment.h

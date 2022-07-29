@@ -194,6 +194,44 @@ RESOLVE ARCH:
 - python code to pull out basic header and function body
 
 
+** 29/7/2022
+
+*descending depths of functions - generic stack depth of generic functions*
+
+- break down to functions/generic-macro functions: processors, generators(routes).. probability is a processor-> takes a value and returns a bit 
+and meta-functions on modeR CVM recursion...
+
+bit->value (dac): can be timed with various sample/holds we have in DAC_ function.
+
+what other bit->value functions there are? checked geogen: routevalue (SR value from route) so is more value from value
+
+value->bit (adc/probability): spread out in space (multiple bits into own or other SRs, SRs as contiguous)  or in time (as for adc timed entry
+
+- order/port functions
+
+- modeR functions which deal with matrix/own functions - defer CVM to select own function but these cannot include CVM as a parameter...
+
+*notes that our geogen.h adc functions share counters and bits if used by different SRs*
+
+*CVM as question still - how we co-ordinate mixed uses - it cannot be inside and outside or?*
+///// *notion of inside and outside could be revealing - also ref to geomancy // internal/external*
+
+// also if local cvm changes local mode and modeR changes global mode
+what happens to cvm? or cvm is always a local parameter but has no CV (good for selecting generic options only)
+
+then deal with details (including also oldcvm, oldcv, holding of speeds/length etc.)
+
+*param as tail! to replace in cvlist // where we execute the tail -- is tail also a stack?*
+
+so we have: *speedfuncindex, CV1, CV2(unusedmostly), bitfuncindex, CV1, CV2(unusedmostly), lengthindex(into CVlist) - these are in stack...*
+[gshift and out are set by function index so we need to keep track of this]
+
+how we deal with adc???, length is index into CVlist
+how we deal with gshifts and outs (if out changes much)... 
+gshifts can be important for staggerings - gshift as limited cases set by function (which comes after or we maintain an index when we change modes)
+
+*remind of timed entry/exit into stack (as a modeR function). recur on stack ops/ SR moves stack up or down or provides timing*
+
 ** 28/7/2022
 
 *tail maybe as param SR!*
@@ -205,11 +243,9 @@ how we can move forward with that model...
 1.move outside, gshift, think about length ops (how?), [newfunc and par?]
 2.attach function on entry into new function counter (stack of these - how we can code stack?)
 
-
-
 ** 27/7/2022
 
-// *how we can start to think (and list these kind of recursions or ideas) - of overlays of dacs/cvs - bus or mix rather than fixed and how an SR can perform this mix ITSELF*
+// *how we can start to think (and list these kind of recursions or ideas) - of overlays of dacs/cvs - bus or mix rather than fixed and how an SR can perform this mix ITSELF dacbus mode/function*
 
 OR NOT - as we can do base modes in matrices and have more flexibility???
 

@@ -371,7 +371,6 @@ thus:
  
 void mode_init(void){
   uint32_t x,y;
-
   
   for (x=0;x<64;x++){
     for (y=0;y<9;y++){
@@ -395,6 +394,17 @@ void mode_init(void){
   RESETR;
   
   for (x=0;x<4;x++){
+
+      
+    // tests for stack
+  pushspeed(3, x); // spdfrac
+  pushspeedcv(CVlist[x][cvpair[0][0]], CVlist[x][cvpair[0][1]], x);
+  pushbit(2, x);  // fixed binroute
+  pushbitcv(CVlist[x][0], CVlist[x][0], x);
+
+  gate[x].adcindex=1;
+  gate[x].adccvindex=6; // CVL
+
     gate[x].delcnt=0;
     gate[x].cvcnt=0;
     gate[x].changed=0;
@@ -411,6 +421,10 @@ void mode_init(void){
     gate[x].oldcvcnt=1;
     gate[x].lengthindex=6; // all CVL now    
 
+    gate[x].changedspeed=1;
+    gate[x].changedspeedcv=1;
+    gate[x].changedbit=1;
+    gate[x].changedbitcv=1;
     
     gate[x].oldspeedfunc=0;
     gate[x].speedfunc=3;
@@ -462,6 +476,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   if (ww>orderings[ordercount][0]){
     ww=1;
     resetz=1;
+    // do the tail here
   }
   www=orderings[ordercount][ww];
   //  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...

@@ -44,11 +44,11 @@ uint32_t (*newfunc[32])(uint32_t depth, uint32_t wh)={zero, bitsmod, cvmod}; //
 
 
 uint32_t *CVlist[4][19]={
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &gate[0].par, &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm},
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &gate[1].par, &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm},
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &CVM[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[2], &param[2], &gate[2].par, &gate[2].oldcv, &gate[2].oldcvl, &gate[2].oldcvm},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &Gshift_[8], &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &CVM[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[2], &param[2], &Gshift_[8], &gate[2].oldcv, &gate[2].oldcvl, &gate[2].oldcvm},
   
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[3], &param[3], &gate[3].par, &gate[3].oldcv, &gate[3].oldcvl, &gate[3].oldcvm}
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[3], &param[3], &Gshift_[8], &gate[3].oldcv, &gate[3].oldcvl, &gate[3].oldcvm}
 };
   // 0,    1             2             3             4             5       6        7            8           9         10     11 -> 19
 
@@ -81,8 +81,8 @@ static inline uint32_t vxor(uint32_t bitn, uint32_t w){
 
 //6 out
 uint32_t (*outs[32])(uint32_t bitn, uint32_t wh)={vgen, vxor};
-  
-void SR_geomanticxx(uint8_t w){  // for split func/cv
+
+void SR_geomanticxx(uint8_t w){  
   static uint32_t oldspdfunccnt;
   HEADNADA;
   if (interp[gate[w].func[spdfunccnt][fspeed]]){ // gate[w].func[spdfunccnt][fspeed]
@@ -187,10 +187,12 @@ typedef struct pair_ {
 
 #define SIZEY 64 
 
+// how to make more generic? we can also think about descending/ascending through a stack of functions which don't differentiate speed, bit etc...
+//
+
 /// new template with push, pop, peek
-// but only peek makes sense... as if we repeat pops every time we call function or...
-void pushspeed(funcy func, uint32_t w){
-  gate[w].speedfrom[gate[w].speedfromindex] = func;
+void pushspeed(uint32_t index, uint32_t w){ // we just push index
+  gate[w].speedfrom[gate[w].speedfromindex] = speedfromsd[index];
   gate[w].speedfromindex = (gate[w].speedfromindex + 1) % SIZEY;
 }
 
@@ -205,7 +207,7 @@ funcy peekspeed(uint32_t w){ // returns a function
   return gate[w].speedfrom[ed];
 }
 
-funcy popspeed(uint32_t w){ // returns a function
+funcy popspeed(uint32_t w){ // returns a function // but what if there is no function?
   gate[w].speedfromindex=(gate[w].speedfromindex - 1 + SIZEY) % SIZEY;
   return gate[w].speedfrom[gate[w].speedfromindex];
 }
@@ -218,6 +220,31 @@ pair peekspeedcv(uint32_t w){ //returns two pointers
   return cvs;
 } 
 
+void pushbit(uint32_t index, uint32_t w){ // we just push index
+  gate[w].bit[gate[w].bitindex] = bitfromsd[index]; 
+  gate[w].bitindexy=index;
+  gate[w].bitindex = (gate[w].bitindex + 1) % SIZEY;
+}
+
+funcy peekbit(uint32_t w){ // returns a function
+  uint32_t ed=(gate[w].bitindex - 1 + SIZEY) % SIZEY;
+  return gate[w].bit[ed];
+}
+
+pair peekbitcv(uint32_t w){ //returns two pointers
+  pair cvs;
+  uint32_t ed=(gate[w].bitcvindex - 1 + SIZEY) % SIZEY;
+  cvs.cv1=gate[w].bitcv1[ed];
+  cvs.cv2=gate[w].bitcv2[ed];
+  return cvs;
+} 
+
+void pushbitcv(uint32_t *cv1, uint32_t *cv2, uint32_t w){
+  gate[w].bitcv1[gate[w].bitcvindex] = cv1;
+  gate[w].bitcv2[gate[w].bitcvindex] = cv2;
+  gate[w].bitcvindex = (gate[w].bitcvindex + 1) % SIZEY;  
+}
+
 uint32_t cvpair[64][2]={ // pairs of CVs which we index into 
   {5,6}, // eg. CV and CVL
   {5,6}, // eg. CV and CVL
@@ -226,23 +253,35 @@ uint32_t cvpair[64][2]={ // pairs of CVs which we index into
 
 uint32_t (*speedff[4])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2,spdfrac2,spdfrac2,spdfrac2}; // why did we need to initialise this?
 
-void SR_geomanticxxx(uint8_t w){  // for split func/cv
+uint32_t (*bitff[8])(uint32_t depth, uint32_t in, uint32_t wh)={binroutfixed,binroutfixed,binroutfixed,binroutfixed,binroutfixed,binroutfixed,binroutfixed,binroutfixed}; 
+
+uint32_t lengthindexindex[64]={6,6,6,6,6,6,6,6}; // index into CVlist which matches function index into bitfunction array -- 6 is CVL[w]
+uint32_t GSlist[64]={0,0,0,0}; // matching GS types for function index
+uint32_t OUTlist[64]={0,0,0,0}; // matching OUT types for function index 
+
+// INSIDE // OUTSIDE functions
+// INSIDE flips inside IN to OUTSIDE
+
+// need to take care of which adc and which dac!
+void SR_geomanticxxx(uint8_t w){  // with stacks - we push these all in init/caput000 - seems to be working // how to make more generic!
   HEADNADA;
   static pair cvs[4];
-
-  // where do we get that speedfunc and CV indexes from - from a modeR which can allow local changes or change/move from matrices...
+  static pair bitcvs[8];
   
-  if (gate[w].oldspeedfunc!=gate[w].speedfunc){ // these are just indexes we arrive at somehow... we need be able change this and CVs on the fly...
-    pushspeed(speedfromsd[gate[w].speedfunc], w); //push pointer to speedfunc - all functions need same format now: 2x CV, 
-    gate[w].oldspeedfunc=gate[w].speedfunc;
+  // where do we get that speedfunc and CV indexes from - from a modeR which can allow local changes or change/move from matrices...
+  // but why do we have stack... as is all fixed in this change here?
+  
+  if (gate[w].changedspeed){ 
+    //pushspeed(gate[w].speedfunc, w);
     speedff[w]=peekspeed(w);
+    gate[w].changedspeed=0;
   }
 
   // attach 2x cv pointers which should be a pair - again abstract out how we arrive at these - 2 uint32_t pointers - lookup for these
-  if (gate[w].oldspeedcv!=gate[w].speedcv){ 
-    pushspeedcv(CVlist[w][cvpair[gate[w].speedcv][0]], CVlist[w][cvpair[gate[w].speedcv][1]], w);
-    gate[w].oldspeedcv=gate[w].speedcv;
+  if (gate[w].changedspeedcv){ 
+    //pushspeedcv(CVlist[w][cvpair[gate[w].speedcv][0]], CVlist[w][cvpair[gate[w].speedcv][1]], w);
     cvs[w]=peekspeedcv(w);
+    gate[w].changedspeedcv=0;
   }
   
   // does it need interpol?
@@ -256,22 +295,56 @@ void SR_geomanticxxx(uint8_t w){  // for split func/cv
   // do speed
     if ((*speedff[w])(*(cvs[w].cv1), *(cvs[w].cv2), w)){
     LASTSPEED; // new macro to deal with lastspeed 16/6
- 
-    GSHIFT_;
-    // CORE
-    // deal with length too
-    SRlength[w]=lookuplenall[(*CVlist[w][6])>>7];
-    
+
+    switch (GSlist[gate[w].bitindexy])
+      {
+      case 0:
+	GSHIFT_;
+	break;
+      case 1:
+	GSHIFTNOS_;
+	break;
+      }
+	
+    // CORE   
     if (w==0){ // real ADC - TESTY - how we will handle adc across all
       ADCgeneric2; // input into shared one..
       // and do ADC
-      bitn=(*adcfromsd[1])(4095-CVL[0], ADCin, w); 
+      bitn=(*adcfromsd[gate[w].adcindex])(4095-(*CVlist[w][gate[w].adccvindex]), ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
     }
-    // BITN test
-    bitn^=(*bitfromsd[2])(0, 0, w); // binroutefixed
-    // ENDCORE
-    BITN_AND_OUTVgen_; // pulsin is in there - added new DAC - but we need alter     gate[w].shift_+=bitn; function in there/
-    //final bitnout
-    new_data(val,w);
+    
+    // BITN
+    if (gate[w].changedbit){
+    //    pushbit(gate[w].bitfunc, w); // pushes chosen function onto indexy to match length etc...
+      bitff[w]=peekbit(w);
+      gate[w].lengthindex=lengthindexindex[gate[w].bitindexy];  // there are 64 bitfuncs - but how we access bitfunc
+      gate[w].changedbit=0;
+  }
+
+    // deal with length too - length is lengthindex[stackindexfrombitfunctionbelow]
+    SRlength[w]=lookuplenall[(*CVlist[w][gate[w].lengthindex])>>7];
+   
+    // and now we need our CVs
+    if (gate[w].changedbitcv){ 
+    //pushspeedcv(CVlist[w][cvpair[gate[w].speedcv][0]], CVlist[w][cvpair[gate[w].speedcv][1]], w);
+    bitcvs[w]=peekbitcv(w);
+    gate[w].changedbitcv=0;
+  }
+    
+    bitn^=(*bitff[w])(*bitcvs[w].cv1, *bitcvs[w].cv2, w); // fix CVs
+    // ENDCORE // what are possible OUTs? with/without DAC and     gate[w].shift_+=bitn; - we can use switch here
+      switch (OUTlist[gate[w].bitindexy])
+      {
+      case 0:
+	BITN_AND_OUTV_; // revert to this one which does not used dacfunc but gate[w].dactype which we need to set... where? TODO!
+	break;
+      case 1:
+	BITN_AND_OUTVXOR_;
+      case 2:
+	BITN_AND_OUTVNOSHIFT_; // no bitn in!
+	break;
+      }
+
+      new_data(val,w);
     }
 }
