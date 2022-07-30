@@ -68,7 +68,7 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
 // out functions
 static inline uint32_t vgen(uint32_t bitn, uint32_t w){
   int32_t tmp; uint32_t xx,val,lengthbit=15, new_stat;
-  BITN_AND_OUTVgen_;
+  //  BITN_AND_OUTVgen_;
   return val;
 }
 
@@ -82,6 +82,7 @@ static inline uint32_t vxor(uint32_t bitn, uint32_t w){
 //6 out
 uint32_t (*outs[32])(uint32_t bitn, uint32_t wh)={vgen, vxor};
 
+/*
 void SR_geomanticxx(uint8_t w){  
   static uint32_t oldspdfunccnt;
   HEADNADA;
@@ -139,6 +140,7 @@ void SR_geomanticxx(uint8_t w){
     new_data(val,w);
     }
   }
+*/
 
 /*
 
@@ -190,8 +192,27 @@ typedef struct pair_ {
 // how to make more generic? we can also think about descending/ascending through a stack of functions which don't differentiate speed, bit etc...
 //
 
+// how to do all as one stack ?? length, end and gshift??? stack in modes.h
+/*
+typedef struct stack_ {
+  uint32_t* bitcv1;
+  uint32_t* bitcv2;
+  uint32_t* speedcv1;
+  uint32_t* speedcv2;
+  uint32_t (*bit)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t (*speedfrom)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t bitindexy;
+} stack;
+
+// so all will share index - is that ok?!
+
+*/
+
+
 /// new template with push, pop, peek
 void pushspeed(uint32_t index, uint32_t w){ // we just push index
+  //  
+  //  gate[w].stacky[gate[w].stackindex].speedfrom= speedfromsd[index]; // TESTING new scheme
   gate[w].speedfrom[gate[w].speedfromindex] = speedfromsd[index];
   gate[w].speedfromindex = (gate[w].speedfromindex + 1) % SIZEY;
 }

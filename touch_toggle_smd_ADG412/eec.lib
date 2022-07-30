@@ -1,0 +1,56 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Analog Devices ADG412BNZ
+#
+DEF ADG412BNZ U 0 40 Y Y 1 L N
+F0 "U" 0 200 50 H V L CNN 
+F1 "ADG412BNZ" 0 300 50 H V L CNN 
+F2 "Analog_Devices-ADG412BNZ-*" 0 400 50 H I L CNN 
+F3 "http://www.analog.com/static/imported-files/data_sheets/ADG411_412_413.pdf" 0 500 50 H I L CNN 
+F4 "MS-001" 0 600 50 H I L CNN "Code  JEDEC"
+F5 "Manufacturer URL" 0 700 50 H I L CNN "Component Link 1 Description"
+F6 "http://www.analog.com/en/index.html" 0 800 50 H I L CNN "Component Link 1 URL"
+F7 "Package Specification" 0 900 50 H I L CNN "Component Link 3 Description"
+F8 "http://www.analog.com/static/imported-files/packages/44768431550332N_16.pdf" 0 1000 50 H I L CNN "Component Link 3 URL"
+F9 "SPST" 0 1100 50 H I L CNN "Configuration"
+F10 "Rev. D" 0 1200 50 H I L CNN "Datasheet Version"
+F11 "-16.5V" 0 1300 50 H I L CNN "Max Neg Supply"
+F12 "+16.5V" 0 1400 50 H I L CNN "Max Pos Supply"
+F13 "Through Hole" 0 1500 50 H I L CNN "Mounting Technology"
+F14 "16-Pin Plastic Dual In-Line Package, Row spacing 7.62 mm, Pitch 2.54 mm" 0 1600 50 H I L CNN "Package Description"
+F15 "070706-A, 07/2006" 0 1700 50 H I L CNN "Package Version"
+F16 "Tube" 0 1800 50 H I L CNN "Packing"
+F17 "25, 40" 0 1900 50 H I L CNN "Ron ohms"
+F18 "4" 0 2000 50 H I L CNN "Sw Functions"
+F19 "IC" 0 2100 50 H I L CNN "category"
+F20 "981419" 0 2200 50 H I L CNN "ciiva ids"
+F21 "ebc36f5b426c068f" 0 2300 50 H I L CNN "library id"
+F22 "Analog Devices" 0 2400 50 H I L CNN "manufacturer"
+F23 "N-16" 0 2500 50 H I L CNN "package"
+F24 "1391088444" 0 2600 50 H I L CNN "release date"
+F25 "13124825-32E4-4E40-8C2F-DCD97D360CD0" 0 2700 50 H I L CNN "vault revision"
+F26 "yes" 0 2800 50 H I L CNN "imported"
+F27 "110ns, 175ns" 0 2900 50 H I L CNN "t ON"
+DRAW
+X IN1 1 100 -500 100 R 40 40 1 1 I 
+X D1 2 900 0 100 L 40 40 1 1 P 
+X S1 3 100 0 100 R 40 40 1 1 P 
+X VSS 4 900 -1000 100 L 40 40 1 1 W 
+X GND 5 900 -1100 100 L 40 40 1 1 W 
+X S4 6 100 -300 100 R 40 40 1 1 P 
+X D4 7 900 -300 100 L 40 40 1 1 P 
+X IN4 8 100 -800 100 R 40 40 1 1 I 
+X IN3 9 100 -700 100 R 40 40 1 1 I 
+X D3 10 900 -200 100 L 40 40 1 1 P 
+X S3 11 100 -200 100 R 40 40 1 1 P 
+X VL 12 100 -1000 100 R 40 40 1 1 W 
+X VDD 13 100 -1100 100 R 40 40 1 1 W 
+X S2 14 100 -100 100 R 40 40 1 1 P 
+X D2 15 900 -100 100 L 40 40 1 1 P 
+X IN2 16 100 -600 100 R 40 40 1 1 I 
+S 200 100 800 -1200 1 1 0 f
+ENDDRAW
+ENDDEF
+#
+# End Library

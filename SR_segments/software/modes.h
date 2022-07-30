@@ -1,3 +1,14 @@
+typedef struct stack_ {
+  uint32_t* bitcv1;
+  uint32_t* bitcv2;
+  uint32_t* speedcv1;
+  uint32_t* speedcv2;
+  uint32_t (*bit)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t (*speedfrom)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t bitindexy;
+} stack;
+
+
 typedef struct heavens_ { // fill out with trigger, routes, types, bits and other attributes,,,
   uint32_t trigger;  
   uint32_t adctype, adcpar;
@@ -25,8 +36,8 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t strobed;
   uint32_t lastspeed;
   uint32_t countspeed;
-  uint32_t func[64][9];
-  uint32_t cv[64][10];
+  //uint32_t func[64][9];
+  //  uint32_t cv[64][10];
   uint32_t cvcnt;
   uint32_t oldcvcnt;
   uint32_t par;
@@ -45,7 +56,8 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t *speedfromcv2[64];
   uint32_t *bitcv1[64];
   uint32_t *bitcv2[64];
-
+  stack stacky[64]; // full stack
+  uint32_t stackindex;
 } heavens;
 
 typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 

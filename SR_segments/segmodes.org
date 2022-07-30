@@ -194,6 +194,10 @@ RESOLVE ARCH:
 - python code to pull out basic header and function body
 
 
+** 307/2022
+
+- all of stack as single structure with push pop and peek - same index (but is that a good thing?)
+
 ** 29/7/2022
 
 *descending depths of functions - generic stack depth of generic functions*
@@ -234,7 +238,7 @@ gshifts can be important for staggerings - gshift as limited cases set by functi
 
 ** 28/7/2022
 
-*tail maybe as param SR!*
+*tail maybe as param SR! YES*
 
 - new simplifications and new model with stack in geomantic.h WORKING in part
 

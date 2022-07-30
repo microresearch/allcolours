@@ -65,7 +65,7 @@ uint32_t cvmax[64][10]={
 
 //{1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
 //{5, 0, 6, 0, 0, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
-
+/*
 uint32_t funcNN[64][9]={
   {1, 1, 21, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
   {1,1,18,2, 0,0,0,0,0}, //  - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
@@ -90,12 +90,12 @@ uint32_t funcRR[64][9]={
   {1,1,0,1, 0,0,0,0,0}, // 
   {2,1,0,61,0,0,0,0,0}, // route from L, speed from N
 };
-
+*/
 // cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew, cvout
 // 1        2            3         4      5       6        7      8          9      10  
 
 // 0 null 1 0dac 2 1dac 3 2dac 4 3dac 5 CV 6 CVL 7 CVM 8 ADCin 9 Gs0 10 Gs1 11 Gs2 12 Gs3 13 clksr_ 14 param 15 par 16 oldcv 17 oldcvl 18 oldcvm
-
+/*
 uint32_t cvNN[64][10]={
   {5, 0, 6, 0, 6, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
   {5,0,6,0,6,8, 0,0,0,0}, // 8 is ADC itself IN
@@ -120,7 +120,7 @@ uint32_t cvRR[64][10]={
   {5,1,6,0,6, 0,7,7,0,0},
   {5,6,6,0,0, 0,1,0,0,0}, // route from L, speed from N
 };
-
+*/
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 
 static uint32_t ADCin;
@@ -371,7 +371,7 @@ thus:
  
 void mode_init(void){
   uint32_t x,y;
-  
+  /*  
   for (x=0;x<64;x++){
     for (y=0;y<9;y++){
       gate[0].func[x][y]=funcNN[x][y];
@@ -389,7 +389,7 @@ void mode_init(void){
       gate[3].cv[x][y]=cvRR[x][y];
     }
   }
-
+  */
   
   RESETR;
   
