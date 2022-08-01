@@ -193,10 +193,134 @@ RESOLVE ARCH:
 - basic functionality as matrices implemented  - list these
 - python code to pull out basic header and function body
 
+** xxTOP
+** 1/8/2022
 
-** 307/2022
+*ramble:*
 
-- all of stack as single structure with push pop and peek - same index (but is that a good thing?)
+old detachlen ideas comeback....
+
+to rethink:
+
+internal/external // eg. ordering is external
+
+each SR is a value/set of bits with parameters->[eg. speed and length, route] with incoming bits and outputs (bits->values, bits->pulses)
+
+with ADC in for all, with 3x CVs for each, 1x clock in, and some pulse ins LR
+
+a process with infinite set of possible interactions
+
+interpreters:
+// bits->value DAC -> params
+// value->bits ADC -> SR/itself...other
+
+arbitrary value->bits: route is a value -> bits, route can be bits->bits
+
+bitfunc[value]->bits etc... arbitrary but a conversion
+
+//fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
+//1       2        3     4     5     6     7     8   9
+
+fnew becomes TAIL
+flength, fout, gs and out seperate out...
+
+length is cv, foutX, gs is index from func, out is ...
+
+leaves speed, adc, bit, dac // 4 functions/layers
+
+QUESTIONS: specificity of modes/routes (N as ADC), use of CVM(internal ext, major.minor.), lack of CV/controls eg. for TAIL . which TAIL function, TAIL speed is set by what?
+
+eg.
+spd CV
+length CVL
+adcsel/dacsel and value - x4 we need / 2x
+bitsel - DAC or... old CVL
+
+notes: length is more essential as a changing parameter, speed as fixed... // if we can free up CVM...
+
+speed: function. value/s
+bit: function. value/s
+length: value
+adc/dac: function. value (as length)
+
+CV, CVM, CVL... 
+
+speed: value
+bit/adc/dac: value/length = length: value held or otherwise...
+
+// set and hold - how we hold - when we change modes we record oldcvs!
+
+4 different INTERPRETERS: what they could be?
+
+table and index: all CVs, values accessible (as CVlist but that is divided and also repeats):
+
+{&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, //5
+
+&CV[0], &CVL[0], &CVM[0], x4 //12.17
+
+&ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], //5.22
+
+&clksr_[0], &param[0], x4 //8.30
+
+&Gshift_[8], 31
+
+&gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm} x4 12/43 43 TOTAL CVs
+
+binroutetypes - what are other globals? LIST: count/binroute, daccount/dacfrom, binary[x]  
+
+4x generic functions: adc, dac, bit, spd: adcsel, dacsel, gensel, speedsel
+
+adcN, dacC 
+CLRN: gen, speed // select and attach... how
+
+CV, CVL, CVM?, 
+
+bit->value
+value->bit
+
+// if modechanged pop new mode (on trigger or other sign?)
+
+- *we need a plan to finish!*
+
+- simple architecture is still missing, all depends on CVM internal/external
+
+interior and meta functions - all interior by way of reduced matrix (or not)
+
+META: a set of interpreters and recursions (are say changes to global routes and binary also thus - but could also be interior?)
+
+INTERIOR: bit and other functions from geogen.h and ports
+
+how we select and influence meta functions (only by reducing modeR)
+
+or refine to matrix and expand from there - new functions...
+
+//////REALISED:
+- that we can't use PUSH for CV-led changes (as will push all as we turn knob/cv!) - we *can* use pulses or some timing scheme...
+
+// re-write push/pop as series of matrices with direct refs:
+
+*speedfuncindex, CV1, CV2(unusedmostly), bitfuncindex, CV1, CV2(unusedmostly), lengthindex(into CVlist) - these are in stack...*
+[gshift and out are set by function index so we need to keep track of this]
+
+{2, &CV[0], &nulll, 2, &CVL[0], &nulll, &CVL[0]} // values and pointers, or even just names of function pointers so we don't lookup ...
+// spd             ,bit               , len      
+
+or:
+{&spdfrac, &CV[0], &nulll, &binroutfixed, &CVL[0], &nulll, &CVL[0]} // and adcindex
+
+what of dac though // add this
+
+// still need to resolve CVM on all sides - how to match modeR functions interior and exterior...
+
+basics:
+- matrix/control as in above stack or otherwise // generic and base functions to port/list...
+- tail as a parameter (runs seperate to modeR but how to control it?)
+
+TAIL runs at speed X
+
+** 30/7/2022
+
+-PUSH issues above/// all of stack as single structure with push pop and peek - same index (but is that a good thing?) // we didn't finish that
 
 ** 29/7/2022
 
@@ -230,7 +354,7 @@ then deal with details (including also oldcvm, oldcv, holding of speeds/length e
 so we have: *speedfuncindex, CV1, CV2(unusedmostly), bitfuncindex, CV1, CV2(unusedmostly), lengthindex(into CVlist) - these are in stack...*
 [gshift and out are set by function index so we need to keep track of this]
 
-how we deal with adc???, length is index into CVlist
+how we deal with adc???, length is index into CVlist, adc is adcindex for each one...
 how we deal with gshifts and outs (if out changes much)... 
 gshifts can be important for staggerings - gshift as limited cases set by function (which comes after or we maintain an index when we change modes)
 

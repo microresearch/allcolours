@@ -21,7 +21,7 @@ uint8_t interpoll[16]={1,0,0,0,0,0,1,0, 0,0,0,0, 0,0,0,0};// match above - strob
 
 // 17/6/2022 copied in from basis.h
 
-void newdac2(uint8_t w){ // one bit audio - run filter at full speed but output on speed // cant prot geo
+void newdac2(uint8_t w){ // one bit audio - run filter at full speed but output on speed // cant port to geo???
   HEADSIN;
   gate[w].dactype=2; gate[w].dacpar=4096-CVL[w]; //     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
   val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger);

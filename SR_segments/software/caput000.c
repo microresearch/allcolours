@@ -335,7 +335,7 @@ uint32_t testmodes[4]={0,0,0,0};
 };
 */
 
-//void (*dotail[64])(void)= {basictail};
+void (*dotail[64])(void)= {basictail};
 
 
 
@@ -399,7 +399,11 @@ void mode_init(void){
     // tests for stack
   pushspeed(3, x); // spdfrac
   pushspeedcv(CVlist[x][cvpair[0][0]], CVlist[x][cvpair[0][1]], x);
-  pushbit(2, x);  // fixed binroute
+  // trial functions with length
+
+  //   0:zeros 1:binrout 2:binroutfixed 3:binroutor 4:zsingleroutebits 5:zbinrouteINVbits 6:zbinroutebits_noshift_transit 7:zbinroutebits_noshift 8:zbinroutebitscycle 9:zbinroutebitscyclestr 10:zbinroutebitscycle_noshift 11:zbinroutebitscyclestr_noshift 12:zbinrouteORbits 13:zbinrouteANDbits 14:zbinrouteSRbits 15:zbinroutebitsI 16:zbinroutebitsI_noshift 17:zbinroutebitscycleI_noshift 18:zbinroutebitscyclestrI 19:zosc1bits 20:sigmadelta 21:cipher 22:osceq 23:zSRclksr 24:zSRclksrG 25:zSRNbits 26:zSRLbits 27:zSRCbits 28:zSRRbits 29:zpulsebits 30:zprobbits 31:zprobbitsxorstrobe 32:zprobbitsxortoggle 33:zsuccbits 34:zsuccbitsI 35:zreturnbits 36:zreturnnotbits 37:zosc1bits 38:zwiardbits 39:zwiardinvbits 40:zTMsimplebits 41:zonebits 42:zlfsrbits 43:zllfsrbits 44:zflipbits 45:zosceqbitsI 46:zosc1bitsI 47:zTMsimplebitsI 48:zwiardbitsI 49:zwiardinvbitsI 50:zonebitsI 51:zlfsrbitsI 52:zllfsrbitsI 53:zflipbitsI 54:zpattern4bits 55:zpattern8bits 56:zpattern4bitsI 57:zpattern8bitsI 58:Rtest 59:gensel 60:binroutfixed_prob1R 61:binroutfixed_prob1L 62:binroutfixed_prob2 63:binroutfixed_prob3 64:binroutfixed_prob4 65:SRdelay_lineOUT
+
+  pushbit(28, x);  //2: fixed binroute
   pushbitcv(CVlist[x][0], CVlist[x][0], x);
 
   gate[x].adcindex=1;
@@ -477,6 +481,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     ww=1;
     resetz=1;
     // do the tail here
+    (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
   }
   www=orderings[ordercount][ww];
   //  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
@@ -503,8 +508,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   // do func
   //  (*dofunc[www][0])(www);
-  //      SR_geomanticxx(www); // just for testings
-  SR_geomanticxxx(www); // xxx new one just for testings
+  //      SR_geomanticxx(www); // just for testings -> is full matrix one
+  // run as META function...
+  
+  SR_geomanticxxx(www); // xxx new one just for testings, is stack one... xxxx is new one which needs reduced matrices...
   
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8

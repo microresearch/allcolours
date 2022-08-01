@@ -810,7 +810,7 @@ static inline uint32_t zSRclksrG(uint32_t depth, uint32_t in, uint32_t wh){
 //four SRbits
 static inline uint32_t zSRNbits(uint32_t depth, uint32_t in, uint32_t wh){
   uint32_t bt=0;
-  depth=depth>>7; // 5 bits
+  depth=depth>>7; // 5 bits as max 32
   bt = (gate[0].Gshift_[wh]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
   return bt;
 }
@@ -1679,8 +1679,6 @@ static inline uint32_t zadconecompbits(uint32_t depth, uint32_t in, uint32_t wh)
 uint32_t (*adcfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, 
 zadccompbits}; // doubled up // TEST!
 
-// do similar for dac and adc...
-// need dacfunctions for wrap dac access
 static inline uint32_t adcselcvl(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVL
    uint32_t bt;
    // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
@@ -1696,10 +1694,17 @@ static inline uint32_t adcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // 
 }
 
 //////////////////////////////////////////////////////////////////////////
-// DACOUT
+// DACOUT : as generic bits->value
 // start to wrap dac functions - there are 24!
 // static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
-// length coulkd also be generic so is just a processor
+// length could also be generic so is just a processor
+
+static inline uint32_t BVddac0(uint32_t depth, uint32_t in, uint32_t wh){ // version for any 12 bit IN value -> bits
+  uint32_t val;
+  val=DAC_(wh, in, SRlength[wh], 0, depth, gate[wh].trigger);
+  return val;
+}
+
 static inline uint32_t ddac0(uint32_t depth, uint32_t wh){
   uint32_t val;
   val=DAC_(wh, gate[wh].shift_, SRlength[wh], 0, depth, gate[wh].trigger);
@@ -2069,7 +2074,7 @@ static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   
   return bt;
   }
 
-static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth 
   static uint32_t bt=0;
   bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
   return bt;

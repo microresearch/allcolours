@@ -1267,5 +1267,7 @@ printf("pop %d\n",pop());
 //printf("pop %d\n",pop());
 printf("peek %d\n",peek());
 
+head=9;
+printf("sss %d\n", (head-1+8)%8);
 return 0;
 }

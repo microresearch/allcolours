@@ -1,11 +1,13 @@
 typedef struct stack_ {
-  uint32_t* bitcv1;
-  uint32_t* bitcv2;
+  uint32_t (*speedfrom)(uint32_t depth, uint32_t in, uint32_t wh);
   uint32_t* speedcv1;
   uint32_t* speedcv2;
   uint32_t (*bit)(uint32_t depth, uint32_t in, uint32_t wh);
-  uint32_t (*speedfrom)(uint32_t depth, uint32_t in, uint32_t wh);
-  uint32_t bitindexy;
+  uint32_t* bitcv1;
+  uint32_t* bitcv2;
+  uint32_t* lencv;
+  uint32_t bitindexy; // bit index for reference
+  uint32_t speedindexy; // speed index
 } stack;
 
 

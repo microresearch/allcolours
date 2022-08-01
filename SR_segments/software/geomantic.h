@@ -28,7 +28,7 @@ uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, s
 // TODO match with interp////////
 uint8_t interp[32]={0,1,1,0,0,0,0,0,0,0,0,0,0,0};
 
-//2length
+//2length IGNORE!
 uint32_t (*lengthfromsd[32])(uint32_t depth, uint32_t wh)={nlen, rlen, holdlen}; // we only have 2 functions here so far - nlen is null/hold, what other functions
 
 //3adc
@@ -37,18 +37,17 @@ uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadc
 uint32_t (*dacfunc[32])(uint32_t depth, uint32_t wh)={ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6, ddac7, ddac8, ddac9, ddac10, ddac11, ddac12, ddac13, ddac14, ddac15, ddac16, ddac17, ddac18, ddac19, ddac20, ddac21, ddac22, ddac23, ddac24, dacselcvl, dacselcvm};
 
 //4bits
-uint32_t (*bitfromsd[66])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRclksr, zSRclksrG, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, Rtest, gensel, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4, SRdelay_lineOUT}; // 
+uint32_t (*bitfromsd[66])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRclksr, zSRclksrG, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, Rtest, gensel, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4, SRdelay_lineOUT}; // viennabits 
 
 //5newfunc
 uint32_t (*newfunc[32])(uint32_t depth, uint32_t wh)={zero, bitsmod, cvmod}; //
 
 
-uint32_t *CVlist[4][19]={
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm},
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &Gshift_[8], &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm},
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &CVM[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[2], &param[2], &Gshift_[8], &gate[2].oldcv, &gate[2].oldcvl, &gate[2].oldcvm},
-  
-  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[3], &param[3], &Gshift_[8], &gate[3].oldcv, &gate[3].oldcvl, &gate[3].oldcvm}
+uint32_t *CVlist[4][22]={ // TAIL is &Gshift_[8] // add in statics for adc, dac and length
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm, &gate[0].adctype, &gate[0].dactype, &SRlength[0]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &Gshift_[8], &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm, &gate[1].adctype, &gate[1].dactype, &SRlength[1]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &CVM[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[2], &param[2], &Gshift_[8], &gate[2].oldcv, &gate[2].oldcvl, &gate[2].oldcvm, &gate[2].adctype, &gate[2].dactype, &SRlength[2]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[3], &param[3], &Gshift_[8], &gate[3].oldcv, &gate[3].oldcvl, &gate[3].oldcvm, &gate[3].adctype, &gate[3].dactype, &SRlength[3]}
 };
   // 0,    1             2             3             4             5       6        7            8           9         10     11 -> 19
 
@@ -208,7 +207,6 @@ typedef struct stack_ {
 
 */
 
-
 /// new template with push, pop, peek
 void pushspeed(uint32_t index, uint32_t w){ // we just push index
   //  
@@ -293,7 +291,7 @@ void SR_geomanticxxx(uint8_t w){  // with stacks - we push these all in init/cap
   // but why do we have stack... as is all fixed in this change here?
   
   if (gate[w].changedspeed){ 
-    //pushspeed(gate[w].speedfunc, w);
+    //pushspeed(gate[w].speedfunc, w); // pushes as test now in caput000
     speedff[w]=peekspeed(w);
     gate[w].changedspeed=0;
   }
@@ -369,3 +367,177 @@ void SR_geomanticxxx(uint8_t w){  // with stacks - we push these all in init/cap
       new_data(val,w);
     }
 }
+
+  /*
+typedef struct stack_ {
+  uint32_t (*speedfrom)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t* speedcv1;
+  uint32_t* speedcv2;
+  uint32_t (*bit)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t* bitcv1;
+  uint32_t* bitcv2;
+  uint32_t* lencv;
+  uint32_t bitindexy;
+  uint32_t speedindexy;
+} stack;
+  */
+
+//   {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm, &gate[0].adctype, &gate[0].dactype, &SRlength[0]},
+// example // copy to stacky in caput000 
+stack stackNN[64]={
+  {&spdfrac, &CV[0], &nulll, &binroutfixed, &CVL[0], &nulll, &SRlength[0], 2, 3}, // values and pointers, or even just names of function pointers so we don't lookup ... but speedindex is function index for interpoll lookup eg. spdfrac=3
+};
+
+// we need to alter to fix adc/dac parameters and selections // in stack or not
+void SR_geomanticxxxx(uint8_t w){  // non-stack version with reduced index (but we use stacky as structure)
+  // gate[w].stacky[gate[w].stackindex].speedfrom
+  HEADNADA;
+  
+  // does it need interpol?
+  if (interp[gate[w].stacky[gate[w].stackindex].speedindexy]){ // gate[w].func[spdfunccnt][fspeed] // bitindexy is not speedfunc
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+   if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+  
+  // do speed
+    if ((*gate[w].stacky[gate[w].stackindex].speedfrom)(*(gate[w].stacky[gate[w].stackindex].speedcv1), *(gate[w].stacky[gate[w].stackindex].speedcv2), w)){
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+
+    switch (GSlist[gate[w].stacky[gate[w].stackindex].bitindexy])
+      {
+      case 0:
+	GSHIFT_;
+	break;
+      case 1:
+	GSHIFTNOS_;
+	break;
+      }
+	
+    // CORE   
+    if (w==0){ // real ADC - TESTY - how we will handle adc across all
+      // TODO: adctype= // adcpar=
+      ADCgeneric2; // input into shared one..
+      //            bitn=(*gate[w].stacky[gate[w].stackindex].adcfunc)(4095-(*gate[w].stacky[gate[w].stackindex].adccv), ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
+      bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
+    }
+    
+    // deal with length too - length is lengthindex[stackindexfrombitfunctionbelow]
+    SRlength[w]=lookuplenall[(*gate[w].stacky[gate[w].stackindex].lencv)>>7];
+       
+    bitn^=(*gate[w].stacky[gate[w].stackindex].bit)(*gate[w].stacky[gate[w].stackindex].bitcv1, *gate[w].stacky[gate[w].stackindex].bitcv2, w); // fix CVs
+    // ENDCORE // what are possible OUTs? with/without DAC and     gate[w].shift_+=bitn; - we can use switch here - dac is now just dactype but where can we set this?
+    // TODO: dactype= // dacpar=
+      switch (OUTlist[gate[w].stacky[gate[w].stackindex].bitindexy])
+      {
+      case 0:
+	BITN_AND_OUTV_; // revert to this one which does not used dacfunc but gate[w].dactype, dacpar which we need to set... where? TODO!
+	break;
+      case 1:
+	BITN_AND_OUTVXOR_;
+      case 2:
+	BITN_AND_OUTVNOSHIFT_; // no bitn in!
+	break;
+      }
+
+      new_data(val,w);
+    }
+}
+
+/*
+latest geomantic:
+
+- CVM more as attaching parameters and functions... but how...// matrix of fixings rather than a stack
+
+
+     // entry into new modes
+
+how that works... mode as an interpreter...
+
+execution of a matrix that is changed by CVM and feedback onto that matrix... can also be a stack though or...
+
+CVM can only be a meta/mode selector - but then we can't use CV, or CVL as these are part of internals...
+
+unless they get fixed...
+
+//or or modeR CVM - in 4 sections for attachments (also using strobe)... but again we can't use CVL or CV
+
+////
+
+matrix is maybe just values -> indexes and values, no pointers eg.
+
+typedef struct matrix_ {
+  uint32_t speedfrom;
+  uint32_t speedcv1;
+  uint32_t speedcv2;
+  uint32_t bitin;
+  uint32_t bitcv1;
+  uint32_t bitcv2;
+  uint32_t lencv;
+} matrix;
+
+gate[w].matrix
+
+{speedfrom/index, speedcv1, speedcv2, bit/index, bitcv1, bitcv2, lencv}
+
+so body is interpreter here - each has an inner and an outer function (what speed does outer run at?) ghost and ghost
+
+could also hold adc there?
+
+and we choose functions to change these: for example copy a matrix to this one - according to what do we choose?  problem is to repeatedly do this...
+
+eg. outer function: on functionchange select speedfrom using CVL, speedcv is CV, bitin is unchanged, bitcv is unchanged, lencv is unchanged...
+
+can also apply a function to a value...
+
+again how to seperate INT/EXT?
+
+4x16 as key ... geomantic figures
+
+*/
+
+// leave details such as interpol out
+
+void SR_geomanticxxxxx(uint8_t w){  
+  HEADNADA;
+
+  gate[w].dac = delay_buffer[w][1];
+  
+  // do speed
+    if ((*gate[w].stacky[gate[w].stackindex].speedfrom)(*(gate[w].stacky[gate[w].stackindex].speedcv1), *(gate[w].stacky[gate[w].stackindex].speedcv2), w)){
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+
+    GSHIFT_;
+	
+    // CORE   
+    if (w==0){ // real ADC - TESTY - how we will handle adc across all
+      // TODO: adctype= // adcpar=
+      ADCgeneric2; // input into shared one..
+      //            bitn=(*gate[w].stacky[gate[w].stackindex].adcfunc)(4095-(*gate[w].stacky[gate[w].stackindex].adccv), ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
+      bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
+    }
+    
+    // deal with length too - length is lengthindex[stackindexfrombitfunctionbelow]
+    SRlength[w]=lookuplenall[(*gate[w].stacky[gate[w].stackindex].lencv)>>7];
+       
+    bitn^=(*gate[w].stacky[gate[w].stackindex].bit)(*gate[w].stacky[gate[w].stackindex].bitcv1, *gate[w].stacky[gate[w].stackindex].bitcv2, w); // fix CVs
+    // ENDCORE // what are possible OUTs? with/without DAC and     gate[w].shift_+=bitn; - we can use switch here - dac is now just dactype but where can we set this?
+    // TODO: dactype= // dacpar=
+      switch (OUTlist[gate[w].stacky[gate[w].stackindex].bitindexy])
+      {
+      case 0:
+	BITN_AND_OUTV_; // revert to this one which does not used dacfunc but gate[w].dactype, dacpar which we need to set... where? TODO!
+	break;
+      case 1:
+	BITN_AND_OUTVXOR_;
+      case 2:
+	BITN_AND_OUTVNOSHIFT_; // no bitn in!
+	break;
+      }
+
+      new_data(val,w);
+    }
+}
+
+
