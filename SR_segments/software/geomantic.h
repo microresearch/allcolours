@@ -368,6 +368,8 @@ void SR_geomanticxxx(uint8_t w){  // with stacks - we push these all in init/cap
     }
 }
 
+//unused below!
+
   /*
 typedef struct stack_ {
   uint32_t (*speedfrom)(uint32_t depth, uint32_t in, uint32_t wh);
@@ -384,7 +386,9 @@ typedef struct stack_ {
 
 //   {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm, &gate[0].adctype, &gate[0].dactype, &SRlength[0]},
 // example // copy to stacky in caput000 
-stack stackNN[64]={
+/*
+
+stack stackNN[64]={ //unused and we can't copy or...
   {&spdfrac, &CV[0], &nulll, &binroutfixed, &CVL[0], &nulll, &SRlength[0], 2, 3}, // values and pointers, or even just names of function pointers so we don't lookup ... but speedindex is function index for interpoll lookup eg. spdfrac=3
 };
 
@@ -445,6 +449,8 @@ void SR_geomanticxxxx(uint8_t w){  // non-stack version with reduced index (but 
     }
 }
 
+*/
+
 /*
 latest geomantic:
 
@@ -467,17 +473,9 @@ unless they get fixed...
 
 matrix is maybe just values -> indexes and values, no pointers eg.
 
-typedef struct matrix_ {
-  uint32_t speedfrom;
-  uint32_t speedcv1;
-  uint32_t speedcv2;
-  uint32_t bitin;
-  uint32_t bitcv1;
-  uint32_t bitcv2;
-  uint32_t lencv;
-} matrix;
+as array, speedfunc, cv1, cv2, bitin, cv1, cv2, len
 
-gate[w].matrix
+gate[w].matrix[0] etc...
 
 {speedfrom/index, speedcv1, speedcv2, bit/index, bitcv1, bitcv2, lencv}
 
@@ -487,8 +485,6 @@ could also hold adc there?
 
 and we choose functions to change these: for example copy a matrix to this one - according to what do we choose?  problem is to repeatedly do this...
 
-eg. outer function: on functionchange select speedfrom using CVL, speedcv is CV, bitin is unchanged, bitcv is unchanged, lencv is unchanged...
-
 can also apply a function to a value...
 
 again how to seperate INT/EXT?
@@ -497,46 +493,42 @@ again how to seperate INT/EXT?
 
 */
 
-// leave details such as interpol out
+// 16 inner x 4 outer??? or vice versa
 
-void SR_geomanticxxxxx(uint8_t w){  
+//uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, spdfrac, spdfrac};
+
+uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac3, spdfrac, holdlspdfrac, ones};//
+
+// trial INNER
+//eg. outer function: on functionchange select speedfrom using CVL, speedcv is CV, bitin is unchanged, bitcv is unchanged, lencv is unchanged...
+// but not ON functionchange we set... as we need CV and to change speedfrom but can be variations:
+void SR_geomantic_outer(uint8_t w){  // do as array of functions
+  gate[w].matrix[0]=CVL[w]>>10;// 5 bits is 32 //2 bits
+  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //???
+  gate[w].matrix[2]=0;//gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
+  gate[w].matrix[6]=CVL[w]; //length
+  // rest is unchanged but we need to set/reset a default - so we will have a reset function
+}  
+
+// INNER
+// leave details such as interpol etc out so we can just try minimal and fill in details
+void SR_geomantic_inner(uint8_t w){  
   HEADNADA;
-
   gate[w].dac = delay_buffer[w][1];
-  
-  // do speed
-    if ((*gate[w].stacky[gate[w].stackindex].speedfrom)(*(gate[w].stacky[gate[w].stackindex].speedcv1), *(gate[w].stacky[gate[w].stackindex].speedcv2), w)){
-    LASTSPEED; // new macro to deal with lastspeed 16/6
+  if ((*speedfromnostrobe[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
 
+    LASTSPEED; // new macro to deal with lastspeed 16/6
     GSHIFT_;
-	
-    // CORE   
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    
     if (w==0){ // real ADC - TESTY - how we will handle adc across all
-      // TODO: adctype= // adcpar=
-      ADCgeneric2; // input into shared one..
-      //            bitn=(*gate[w].stacky[gate[w].stackindex].adcfunc)(4095-(*gate[w].stacky[gate[w].stackindex].adccv), ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
+      //      ADCgeneric2; // input into shared one... not if we use ADC_
       bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
     }
     
-    // deal with length too - length is lengthindex[stackindexfrombitfunctionbelow]
-    SRlength[w]=lookuplenall[(*gate[w].stacky[gate[w].stackindex].lencv)>>7];
-       
-    bitn^=(*gate[w].stacky[gate[w].stackindex].bit)(*gate[w].stacky[gate[w].stackindex].bitcv1, *gate[w].stacky[gate[w].stackindex].bitcv2, w); // fix CVs
-    // ENDCORE // what are possible OUTs? with/without DAC and     gate[w].shift_+=bitn; - we can use switch here - dac is now just dactype but where can we set this?
-    // TODO: dactype= // dacpar=
-      switch (OUTlist[gate[w].stacky[gate[w].stackindex].bitindexy])
-      {
-      case 0:
-	BITN_AND_OUTV_; // revert to this one which does not used dacfunc but gate[w].dactype, dacpar which we need to set... where? TODO!
-	break;
-      case 1:
-	BITN_AND_OUTVXOR_;
-      case 2:
-	BITN_AND_OUTVNOSHIFT_; // no bitn in!
-	break;
-      }
-
-      new_data(val,w);
+    bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+    BITN_AND_OUTV_; 
+    new_data(val,w);
     }
 }
 

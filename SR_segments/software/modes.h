@@ -58,8 +58,9 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t *speedfromcv2[64];
   uint32_t *bitcv1[64];
   uint32_t *bitcv2[64];
-  stack stacky[64]; // full stack
+  //  stack stacky[64]; // full stack
   uint32_t stackindex;
+  uint32_t matrix[8];
 } heavens;
 
 typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 

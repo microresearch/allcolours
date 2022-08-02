@@ -57,6 +57,14 @@ uint32_t cvmax[64][10]={
   {19,19,19,19,19,19,19,19,19,19}, // update for max number of cv options
 };
 
+//{speedfrom/index, speedcv1, speedcv2, bit/index, bitcv1, bitcv2, lencv}
+
+// matrices for new 2/8/2022 external/internal geomantic functions
+uint32_t matrixNN[8]={0,0,0, 2,0,0,31<<7}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[8]={0,0,0, 2,0,0,31<<7};
+uint32_t matrixCC[8]={0,0,0, 2,0,0,31<<7};
+uint32_t matrixRR[8]={0,0,0, 2,0,0,31<<7}; 
+
 //fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
 //1       2        3     4     5     6     7     8   9
 
@@ -186,7 +194,7 @@ uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 uint32_t param[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength_[9]={31,31,31,31,31,31,31,31,31};
-uint32_t SRlength[9]={31,31,31,31,31,31,31,31,31};
+static uint32_t SRlength[9]={31,31,31,31,31,31,31,31,31};
 
 uint32_t clksr_[4]={HALB,HALB,HALB,HALB};
 uint32_t clksrG_[4]={0,0,0,0};
@@ -208,7 +216,7 @@ static uint32_t clk_route[8]={0,
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
-static uint32_t Gshift_[4]={0xffff,0xffff,0xffff,0xffff};
+static uint32_t Gshift_[8]={0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
 
 static uint32_t GGshift_[4][4]={ // for freezers
  {0xff,0xff,0xff,0xff},
@@ -390,21 +398,28 @@ void mode_init(void){
     }
   }
   */
+
+  for (y=0;y<7;y++){
+      gate[0].matrix[y]=matrixNN[y];
+      gate[1].matrix[y]=matrixLL[y];
+      gate[2].matrix[y]=matrixCC[y];
+      gate[3].matrix[y]=matrixRR[y];
+    }
+
   
   RESETR;
   
   for (x=0;x<4;x++){
 
-      
     // tests for stack
-  pushspeed(3, x); // spdfrac
-  pushspeedcv(CVlist[x][cvpair[0][0]], CVlist[x][cvpair[0][1]], x);
+    //  pushspeed(3, x); // spdfrac
+    //  pushspeedcv(CVlist[x][cvpair[0][0]], CVlist[x][cvpair[0][1]], x);
   // trial functions with length
 
   //   0:zeros 1:binrout 2:binroutfixed 3:binroutor 4:zsingleroutebits 5:zbinrouteINVbits 6:zbinroutebits_noshift_transit 7:zbinroutebits_noshift 8:zbinroutebitscycle 9:zbinroutebitscyclestr 10:zbinroutebitscycle_noshift 11:zbinroutebitscyclestr_noshift 12:zbinrouteORbits 13:zbinrouteANDbits 14:zbinrouteSRbits 15:zbinroutebitsI 16:zbinroutebitsI_noshift 17:zbinroutebitscycleI_noshift 18:zbinroutebitscyclestrI 19:zosc1bits 20:sigmadelta 21:cipher 22:osceq 23:zSRclksr 24:zSRclksrG 25:zSRNbits 26:zSRLbits 27:zSRCbits 28:zSRRbits 29:zpulsebits 30:zprobbits 31:zprobbitsxorstrobe 32:zprobbitsxortoggle 33:zsuccbits 34:zsuccbitsI 35:zreturnbits 36:zreturnnotbits 37:zosc1bits 38:zwiardbits 39:zwiardinvbits 40:zTMsimplebits 41:zonebits 42:zlfsrbits 43:zllfsrbits 44:zflipbits 45:zosceqbitsI 46:zosc1bitsI 47:zTMsimplebitsI 48:zwiardbitsI 49:zwiardinvbitsI 50:zonebitsI 51:zlfsrbitsI 52:zllfsrbitsI 53:zflipbitsI 54:zpattern4bits 55:zpattern8bits 56:zpattern4bitsI 57:zpattern8bitsI 58:Rtest 59:gensel 60:binroutfixed_prob1R 61:binroutfixed_prob1L 62:binroutfixed_prob2 63:binroutfixed_prob3 64:binroutfixed_prob4 65:SRdelay_lineOUT
 
-  pushbit(28, x);  //2: fixed binroute
-  pushbitcv(CVlist[x][0], CVlist[x][0], x);
+    //  pushbit(28, x);  //2: fixed binroute
+    //  pushbitcv(CVlist[x][0], CVlist[x][0], x);
 
   gate[x].adcindex=1;
   gate[x].adccvindex=6; // CVL
@@ -481,7 +496,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     ww=1;
     resetz=1;
     // do the tail here
-    (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
+    (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case... // fixed bug in use of Gshift_[8] now...
   }
   www=orderings[ordercount][ww];
   //  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
@@ -511,7 +526,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //      SR_geomanticxx(www); // just for testings -> is full matrix one
   // run as META function...
   
-  SR_geomanticxxx(www); // xxx new one just for testings, is stack one... xxxx is new one which needs reduced matrices...
+  //  SR_geomanticxxx(www); // xxx new one just for testings, is stack one... xxxx is new one which needs reduced matrices...
+  SR_geomantic_outer(www);
+  SR_geomantic_inner(www);
   
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8

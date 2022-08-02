@@ -194,6 +194,11 @@ RESOLVE ARCH:
 - python code to pull out basic header and function body
 
 ** xxTOP
+
+** 2/8/2022
+
+- new inner and outer scheme but dotail->basictail leaks/overwrites SRlength...
+
 ** 1/8/2022
 
 *ramble:*
