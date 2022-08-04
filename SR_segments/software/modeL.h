@@ -697,7 +697,6 @@ uint32_t ss[4]={0,0,0,0};
   }
 }
 
-
 void SRN36(uint8_t w){ // pulse triggers exchange between ghost and real
 uint8_t prob;
   HEAD;

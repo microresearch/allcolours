@@ -10,7 +10,7 @@ typedef struct stack_ {
   uint32_t speedindexy; // speed index
 } stack;
 
-
+// what can be removed from here?
 typedef struct heavens_ { // fill out with trigger, routes, types, bits and other attributes,,,
   uint32_t trigger;  
   uint32_t adctype, adcpar;
@@ -34,6 +34,7 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t reset[4];
   int32_t gsrcnt[4];
   uint32_t latch;
+  uint32_t route;
   uint32_t index;
   uint32_t strobed;
   uint32_t lastspeed;
@@ -60,13 +61,13 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t *bitcv2[64];
   //  stack stacky[64]; // full stack
   uint32_t stackindex;
-  uint32_t matrix[8];
+  uint32_t matrix[9];
 } heavens;
 
 typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 
   uint32_t strobey;
   uint32_t interpoll;
-  uint32_t detachlen;
+  //  uint32_t detachlen;
   uint32_t detachspeed;
   void (*func)(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspeed, uint32_t interpoll, uint32_t (*innerfunc)(uint8_t w));
   uint32_t (*innerfunc)(uint8_t w);

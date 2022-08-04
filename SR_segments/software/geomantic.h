@@ -495,19 +495,32 @@ again how to seperate INT/EXT?
 
 // 16 inner x 4 outer??? or vice versa
 
+/// we need to list/catalogue: ADCs, speeds, bits of various descriptions... // overlap/overlay of bits and speeds
+
+// that catalogues can also be kind of matrices, with holes and exceptions... used by different interpreters eg. speedfromnostrobe, speedfromabstract, speedfromroutes
+
 //uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, spdfrac, spdfrac};
 
 uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac3, spdfrac, holdlspdfrac, ones};//
 
-// trial INNER
+uint32_t (*speedfromnew[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, zbinroutebits_noshift, zbinroutebits_noshift_transit, zprobbits, zTMsimplebits, osceq, zosc1bits, zonebits, zENbits, zENsbits, zcompbits, zosc1bits, sigmadelta, cipher, osceq, zpulsebits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, spdfrac}; //21+11
+// also indie versions
+
+// trial INNER/OUTER - but for now is just another matrix op/array/could also be stack so we need to do more inside it! it does allow us to leave elements remaining...
+// we could have stack with index an mark unchanging as what? - as top bit of 32 bits
+
+//        {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv}
 //eg. outer function: on functionchange select speedfrom using CVL, speedcv is CV, bitin is unchanged, bitcv is unchanged, lencv is unchanged...
 // but not ON functionchange we set... as we need CV and to change speedfrom but can be variations:
 void SR_geomantic_outer(uint8_t w){  // do as array of functions
-  gate[w].matrix[0]=CVL[w]>>10;// 5 bits is 32 //2 bits
+  gate[w].matrix[0]=CVL[w]>>7;// 5 bits is 32 //2 bits
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //???
-  gate[w].matrix[2]=0;//gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
+  gate[w].matrix[2]=CVL[w];//gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
   gate[w].matrix[6]=CVL[w]; //length
   // rest is unchanged but we need to set/reset a default - so we will have a reset function
+  if (w==0) { // set adc in adcfromsd
+    gate[w].matrix[8]=CVL[w]; // was 4095- but we shift that to the ADC
+  }
 }  
 
 // INNER
@@ -515,15 +528,15 @@ void SR_geomantic_outer(uint8_t w){  // do as array of functions
 void SR_geomantic_inner(uint8_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
-  if ((*speedfromnostrobe[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
-
+  //
+  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
     LASTSPEED; // new macro to deal with lastspeed 16/6
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
     
     if (w==0){ // real ADC - TESTY - how we will handle adc across all
-      //      ADCgeneric2; // input into shared one... not if we use ADC_
-      bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
+      ADCgeneric2; // input into shared one... not if we use ADC_ - this should really be a function so we can have prob...
+      bitn=(*adcfromsd[gate[w].matrix[7]])(4095-gate[w].matrix[8], ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too // adc could also be DAC in? how?
     }
     
     bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
@@ -532,4 +545,128 @@ void SR_geomantic_inner(uint8_t w){
     }
 }
 
+void SR_geomantic_innerADCprob(uint8_t w){  // ADC only so only call from 0
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+  //
+  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    
+    if (w==0){ // CAN just be for w==0
+      ADCgeneric2; // input into shared one... not if we use ADC_ - this should really be a function so we can have prob...
+      bitn=(*adcfromsd[gate[w].matrix[7]])(4095-gate[w].matrix[6], ADCin, w); // now is length as we use 8 for prob!
+      if (gate[w].matrix[8]<(LFSR_[w]&4095)) { // way round?
+	bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+      }
+      else bitn=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+    }
+    else {  
+    bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+    }
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
 
+void SR_geomantic_innerNOS(uint8_t w){   // GSHIFTNOS_; no shift
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+  //
+  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    GSHIFTNOS_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    
+    if (w==0){ // real ADC - TESTY - how we will handle adc across all
+      ADCgeneric2; // input into shared one... not if we use ADC_ - this should really be a function so we can have prob...
+      //      bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
+      bitn=(*adcfromsd[gate[w].matrix[7]])(gate[w].matrix[8], ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
+    }
+    
+    bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+// what other inners could be? split speeds for adc, different GSHIFTs and OUTs, inner stack interpreter..., recur?, can also be different lookups!
+// also splits as top speeds but add in interpoll maybe...
+void SR_geomantic_inner_split1(uint8_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+  if (gate[w].trigger){
+    GSHIFT_;
+  }
+  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    
+    if (w==0){ // real ADC - TESTY - how we will handle adc across all
+      ADCgeneric2; // input into shared one... not if we use ADC_ - this should really be a function so we can have prob...
+      //      bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
+      bitn=(*adcfromsd[gate[w].matrix[7]])(gate[w].matrix[8], ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
+    }
+    
+    bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geomantic_inner_split2(uint8_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+  if (gate[w].trigger){
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    if (w==0){ // real ADC - TESTY - how we will handle adc across all
+      ADCgeneric2; // input into shared one... not if we use ADC_ - this should really be a function so we can have prob...
+      //      bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
+      bitn=(*adcfromsd[gate[w].matrix[7]])(gate[w].matrix[8], ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
+    }
+
+  }
+  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    GSHIFT_;
+        
+    bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geomantic_inner_split3(uint8_t w){  // can also have OUTSIDE Func in... top
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+  if (gate[w].trigger){
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    GSHIFT_;
+    if (w==0){ // real ADC - TESTY - how we will handle adc across all
+      ADCgeneric2; // input into shared one... not if we use ADC_ - this should really be a function so we can have prob...
+      //      bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); // fill in regg as 3 and adcpar needs changes, length too or???
+      bitn=(*adcfromsd[gate[w].matrix[7]])(gate[w].matrix[8], ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too
+    }
+
+  }
+  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc -speedfromsdd!
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+/*
+
+// what split speeds could be...
+
+outer: on strobe/full speed/ adc, gshift
+
+thus:
+
+out: strobe: gshift, adc, gshift and adc full: gshift, adc, gshift and adc 
+inner: nogs, noadc, noadc/gs full: nogs, noadc, noadc/gs
+
+ */

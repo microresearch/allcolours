@@ -57,13 +57,13 @@ uint32_t cvmax[64][10]={
   {19,19,19,19,19,19,19,19,19,19}, // update for max number of cv options
 };
 
-//{speedfrom/index, speedcv1, speedcv2, bit/index, bitcv1, bitcv2, lencv}
+//{speedfrom/index, speedcv1, speedcv2, bit/index, bitcv1, bitcv2, lencv, adcfuncindex, adccv}
 
 // matrices for new 2/8/2022 external/internal geomantic functions
-uint32_t matrixNN[8]={0,0,0, 2,0,0,31<<7}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[8]={0,0,0, 2,0,0,31<<7};
-uint32_t matrixCC[8]={0,0,0, 2,0,0,31<<7};
-uint32_t matrixRR[8]={0,0,0, 2,0,0,31<<7}; 
+uint32_t matrixNN[9]={0,0,0, 2,0,0,31<<7, 1, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[9]={0,0,0, 2,0,0,31<<7, 0, 0};
+uint32_t matrixCC[9]={0,0,0, 2,0,0,31<<7, 0, 0};
+uint32_t matrixRR[9]={0,0,0, 2,0,0,31<<7, 0, 0}; 
 
 //fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
 //1       2        3     4     5     6     7     8   9
@@ -315,6 +315,8 @@ static uint32_t resetz=1;
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 #include "geogen.h" // newer generators
+#include "exp_port.h" // ports from exp...++etc
+#include "L_port.h" // ports from L
 #include "geomantic.h" // new geomantic codebase in progress
 
 //#include "modeN.h"
@@ -399,7 +401,7 @@ void mode_init(void){
   }
   */
 
-  for (y=0;y<7;y++){
+  for (y=0;y<9;y++){
       gate[0].matrix[y]=matrixNN[y];
       gate[1].matrix[y]=matrixLL[y];
       gate[2].matrix[y]=matrixCC[y];
@@ -420,9 +422,10 @@ void mode_init(void){
 
     //  pushbit(28, x);  //2: fixed binroute
     //  pushbitcv(CVlist[x][0], CVlist[x][0], x);
-
+    // clean up
   gate[x].adcindex=1;
   gate[x].adccvindex=6; // CVL
+  gate[x].route=0;
 
     gate[x].delcnt=0;
     gate[x].cvcnt=0;

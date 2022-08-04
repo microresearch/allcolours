@@ -1313,7 +1313,8 @@ static inline uint32_t zpadcx(uint32_t depth, uint32_t in, uint32_t wh, uint32_t
 }
 
 uint32_t (*adcfromsddprob[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset)={zpadcx};
-// how many CVs do we need for this? 3x - one for sel, prob and for depth 
+// how many CVs do we need for this? 3x - one for sel, prob and for depth
+
 static inline uint32_t probcvladcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // select adc using CVM, prob from CVL which leaves CV(speed)
   uint32_t bt, prob;
   if (CVM[wh]<(LFSR_[wh]&4095)) prob=1; // which way round

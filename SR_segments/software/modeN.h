@@ -331,7 +331,7 @@ void adcLdraft2(uint8_t w){ // detach
   GSHIFT_;
   tmp=31-(CVL[w]>>7); //5 bits
   bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],0, &gate[w].shift_); 
-  gate[w].shift_+=bitn;				\
+  gate[w].shift_+=bitn;
   // slide in using CVL/tmp as amount from top of GSR
   if ((SRlength[dacfrom[daccount][w]]-tmp)<0) tmp=SRlength[dacfrom[daccount][w]];
   top=SRlength[dacfrom[daccount][w]]-tmp; // length-tmp as long as tmp is less than length

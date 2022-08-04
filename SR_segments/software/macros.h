@@ -213,6 +213,7 @@ static uint32_t outcnt=0;
   }								\
   }
 
+// was newgsr_nores
 #define BINROUTEnoalt_ {				\
     tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){				\
