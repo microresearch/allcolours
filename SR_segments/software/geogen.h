@@ -1,3 +1,9 @@
+/// new functions for prob - comparator
+static inline uint32_t comp(uint32_t depth, uint32_t in, uint32_t wh){
+  if (depth>in) return 1;
+  else return 0;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // new geomantic functions abstracted
 //////////////////////////////////////////////////////////////////////////
@@ -846,6 +852,22 @@ static inline uint32_t zpulsebits(uint32_t depth, uint32_t in, uint32_t wh){   /
 
 static inline uint32_t zprobbits(uint32_t depth, uint32_t in, uint32_t wh){   // PROBability mode
   uint32_t bt=0;
+  if (depth<(LFSR_[wh]&4095)) bt=1;
+  return bt;
+}
+
+static inline uint32_t zinvprobbits(uint32_t depth, uint32_t in, uint32_t wh){   // PROBability mode - other way round
+  uint32_t bt=0;
+  if (depth>(LFSR_[wh]&4095)) bt=1;
+  return bt;
+}
+
+static inline uint32_t zsprobbits(uint32_t depth, uint32_t in, uint32_t wh){   // PROBability mode - other way round depends on strobe
+  uint32_t bt=0;
+  if (gate[wh].trigger) {
+  if (depth>(LFSR_[wh]&4095)) bt=1;
+    }
+  else 
   if (depth<(LFSR_[wh]&4095)) bt=1;
   return bt;
 }

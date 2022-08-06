@@ -174,6 +174,15 @@ TODO: check newmodes, bits_and_prob.org and other c and org files for modes/prob
 
 RESOLVE ARCH:
 
+//
+- strip down and test // new ops and add operations on ghosts 
+- test that we have basic classic SR operations and flexibility for prob, toggle and strobe
+- new functions and catalogue these 
+- adc and dac to work through (from N and C)
+- final arch
+- final details and questions
+//
+
 *static/frozen speeds in general or not - yes but just not on lowest - but how to implement*
 *slower speeds/cv to fix and re-do/test hardware*
 *check use of clk, pulsin, out*
@@ -195,16 +204,43 @@ RESOLVE ARCH:
 
 ** xxTOP
 
+** 6/8/2022
+
+- 64 modes on mode knob: from fixed/fixed to fixed/unfixed, to
+  flexible to recursions and ops on local/global routes and counts, www order etc.
+  (how much we reset of these in earlier modes)
+
+divide up 16x4
+- 16: level 1: set base functions/matrix. RESETR? - mix of CV/DAC etc onto CVs?
+- 16: level 2: CVs change base functions: speed/prob/bit/adc/dac - mix of CV/DAC etc onto CVs?
+- 16: level 3: resursion eg. DAC/SR changes base functions. how? or local/global recursions/influences and changes 
+- 16: level 4: meta-level of recursion. work through/recur onto geomantics. 
+
+where we deal with tail? start to sketch this... but do we need so many seperate functions???
+
+*how then we select inner index?*
+
+- ADDED - meta-outer/meta-inner functions - lists of these according to mode // do we need these or is too much meta? // that we can just use mode[www] to select
+
+meta means we can manipulate eg. walk through geo modes,,,
+
+** 5/8/2022
+
+- framework and how modes are selected
+
+DONE: add prob bit, one cv and alt function
+
+DONE- factor adc out so we have different internals for w==0, and maybe start to make lists of these
+
+1 - how we select int/ext - feedback and recursion here...
+or/on that relation... 
+
+index into selection [or interior recursion: int in int/ext in ext/ext in int/int in ext
+
+2- prob and single bit/s also as value-> bits
+
 ** 4/8/2022
 
-//
-- strip down and test // new ops and add operations on ghosts 
-- test that we have basic classic SR operations and flexibility for prob, toggle and strobe
-- new functions and catalogue these 
-- adc and dac to work through (from N and C)
-- final arch
-- final details and questions
-//
 
 *again if prob/strobe/toggle for a bit should be abstracted out in new scheme - also flipflop as faked strobe which could be OR/XORed with real one somehow - not if is a 1*
 

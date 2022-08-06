@@ -57,14 +57,13 @@ uint32_t cvmax[64][10]={
   {19,19,19,19,19,19,19,19,19,19}, // update for max number of cv options
 };
 
-//{speedfrom/index, speedcv1, speedcv2, bit/index, bitcv1, bitcv2, lencv, adcfuncindex, adccv}
 
-// matrices for new 2/8/2022 external/internal geomantic functions
-uint32_t matrixNN[9]={0,0,0, 2,0,0,31<<7, 1, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[9]={0,0,0, 2,0,0,31<<7, 0, 0};
-uint32_t matrixCC[9]={0,0,0, 2,0,0,31<<7, 0, 0};
-uint32_t matrixRR[9]={0,0,0, 2,0,0,31<<7, 0, 0}; 
-
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv, 11altfuncindex}
+uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[12]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0};
+uint32_t matrixCC[12]={0,0,0, 2,0,0, 31<<7, 0,0, 2,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
+uint32_t matrixRR[12]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0}; 
+//                     speed  bit    len    adc  prob
 //fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
 //1       2        3     4     5     6     7     8   9
 
@@ -330,6 +329,31 @@ static uint32_t resetz=1;
 //#include "bit.h" // bitmodes but some are still in modeL
 //#include "rungler.h"
 
+  uint32_t itself(uint8_t w, uint32_t mood){ //
+    return mood;
+  }
+
+// list of metaout functions... examples?
+uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};    
+
+ void (*SRgeo_outer[4][64])(uint32_t w)=
+{
+  {SR_geomantic_outer_binr},
+  {SR_geomantic_outer_binr},
+  {SR_geomantic_outer_binr},
+  {SR_geomantic_outer_binr}
+};
+
+uint32_t (*metain[64])(uint8_t w, uint32_t mood)={itself};    
+
+ void (*SRgeo_inner[4][64])(uint32_t w)=
+{
+{SR_geomantic_inneradc},
+{SR_geomantic_innernoadc},
+{SR_geomantic_innernoadc},
+{SR_geomantic_innernoadc}
+};
+
 void testnull(void){
 }
 
@@ -401,7 +425,7 @@ void mode_init(void){
   }
   */
 
-  for (y=0;y<9;y++){
+  for (y=0;y<12;y++){
       gate[0].matrix[y]=matrixNN[y];
       gate[1].matrix[y]=matrixLL[y];
       gate[2].matrix[y]=matrixCC[y];
@@ -530,9 +554,22 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // run as META function...
   
   //  SR_geomanticxxx(www); // xxx new one just for testings, is stack one... xxxx is new one which needs reduced matrices...
-  SR_geomantic_outer(www);
-  SR_geomantic_inner(www);
-  
+  //      SR_geomantic_outer(www);
+      //    SR_geomantic_innernadcp(www); // these are workings
+
+  // testings for meta mode handlers
+
+ //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
+
+ uint32_t outindex=0;
+ (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
+ // SR_geomantic_outer(www);
+
+   //uint32_t inindex=(*metain[mode[www]])(www, mode[www]); // - functions which generate indices
+ uint32_t inindex=0;
+ (*SRgeo_inner[www][inindex])(www); // different indexes for this 
+ // SR_geomantic_inner(www); 
+ 
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
       }

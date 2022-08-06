@@ -37,7 +37,7 @@ CFLAGS  =  -I. -IInclude -Iinc -std=gnu99 \
 	 -D'__FPU_PRESENT=1' -DARM_MATH_CM4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
-	-c -lm -lc -fno-common -Os -funroll-loops \
+	-c -lm -lc -fno-common -O3 -funroll-loops \
 	-mcpu=cortex-m4 \
 	-mfloat-abi=hard \
 	-fsingle-precision-constant -fsigned-char -Wdouble-promotion -ffunction-sections -fdata-sections
