@@ -618,7 +618,7 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // las
   return bt;
 }
   
-// hold old [CVL/depth] length
+// hold old [CVL/depth] speed // do we still need this?
 static inline uint32_t holdlspdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
   static uint32_t oldd[4]={0,0,0,0};
   uint32_t bt=0;
@@ -653,6 +653,25 @@ static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // for
   }
   return bt;
 }
+
+static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t wh){ // for speed now with dac/interpol pulled out // version with STOP on lowest
+  uint32_t bt=0;
+  float speed;
+  helds[wh]=depth;
+  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  if (speed!=LOWEST){
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  }
+  return bt;
+}
+
 
 //INx
 static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in //INx
@@ -1897,14 +1916,14 @@ static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc us
 
 /////////////////////////////////////////////////////////////////
 // new modifier functions - generate value for gate[x].par or just intervene 
-
+/*
 uint32_t *newCVlist[4][16]={
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm},
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm},
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &CVM[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[3], &clksr_[2], &param[2], &gate[2].oldcv, &gate[2].oldcvl, &gate[2].oldcvm},
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &clksr_[3], &param[3], &gate[3].oldcv, &gate[3].oldcvl, &gate[3].oldcvm}
 };
-
+*/
 
 static inline uint32_t bitsmod(uint32_t depth, uint32_t wh){   // was cvbits
    uint32_t bt=0;
@@ -1917,12 +1936,14 @@ static inline uint32_t zero(uint32_t depth, uint32_t wh){
    return 0;
 }
 
+/*
 static inline uint32_t cvmod(uint32_t depth, uint32_t wh){  
   // 19 in cvlist -> 16 in new cvlist
   uint32_t bt=*newCVlist[wh][depth>>8];// 4 bits=16
   //  uint32_t bt=*newCVlist[wh][0];// 4 bits=16
   return bt;
 }
+*/
 
 /////////////////////////////////////////////////////////////////
 // value functions
@@ -2097,6 +2118,7 @@ static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   
   return bt;
   }
 
+/*
 static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth 
   static uint32_t bt=0;
   bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
@@ -2108,7 +2130,7 @@ static inline uint32_t speedseloldcvl(uint32_t depth, uint32_t in, uint32_t wh){
   bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
   return bt;
   }
-
+*/
 //////////////////////////////////////////////////////////////////////////
 ////// right hand functions which change things...
 // just a test here - uses CVL to select bitfunc

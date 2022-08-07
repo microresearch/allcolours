@@ -28,8 +28,6 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   long last_time;
   long int_time;
   uint32_t delay[512]; // 128x32 bits=4096 // 512=16384
-  uint32_t delcnt;
-  uint32_t paramx; // for param holds - could be more than one param...
   uint32_t changed;
   uint32_t reset[4];
   int32_t gsrcnt[4];
@@ -39,29 +37,12 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t strobed;
   uint32_t lastspeed;
   uint32_t countspeed;
-  //uint32_t func[64][9];
-  //  uint32_t cv[64][10];
-  uint32_t cvcnt;
-  uint32_t oldcvcnt;
-  uint32_t par;
-  uint32_t oldcv;
-  uint32_t oldcvl;
-  uint32_t oldcvm;
-  // for stack
-  uint32_t (*bit[64])(uint32_t depth, uint32_t in, uint32_t wh);
-  uint32_t (*speedfrom[64])(uint32_t depth, uint32_t in, uint32_t wh);
-  uint32_t changedspeed, changedspeedcv, changedbit, changedbitcv;
-  uint32_t speedfromindex, oldspeedfunc, speedfunc;
-  uint32_t speedcvindex, oldspeedcv, speedcv;
-  uint32_t bitindex, oldbitfunc, bitfunc, bitindexy, adcindex, adccvindex, bitcvindex;
-  uint32_t lengthindex; // into lookup table
-  uint32_t *speedfromcv1[64];
-  uint32_t *speedfromcv2[64];
-  uint32_t *bitcv1[64];
-  uint32_t *bitcv2[64];
+  //  uint32_t (*bit[64])(uint32_t depth, uint32_t in, uint32_t wh);
+  //  uint32_t (*speedfrom[64])(uint32_t depth, uint32_t in, uint32_t wh);
   //  stack stacky[64]; // full stack
   uint32_t stackindex;
   uint32_t matrix[12];
+  void (*inner)(uint32_t w);
 } heavens;
 
 typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 

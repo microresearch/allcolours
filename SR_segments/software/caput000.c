@@ -61,7 +61,7 @@ uint32_t cvmax[64][10]={
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv, 11altfuncindex}
 uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 uint32_t matrixLL[12]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0};
-uint32_t matrixCC[12]={0,0,0, 2,0,0, 31<<7, 0,0, 2,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
+uint32_t matrixCC[12]={0,0,0, 1,0,0, 31<<7, 0,0, 2,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
 uint32_t matrixRR[12]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0}; 
 //                     speed  bit    len    adc  prob
 //fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
@@ -447,14 +447,7 @@ void mode_init(void){
     //  pushbit(28, x);  //2: fixed binroute
     //  pushbitcv(CVlist[x][0], CVlist[x][0], x);
     // clean up
-  gate[x].adcindex=1;
-  gate[x].adccvindex=6; // CVL
-  gate[x].route=0;
-
-    gate[x].delcnt=0;
-    gate[x].cvcnt=0;
-    gate[x].changed=0;
-    gate[x].paramx=0;
+    gate[x].route=0;
     gate[x].shift_=0x15;
     gate[x].Gshift_[0]=0;
     gate[x].Gshift_[1]=0;
@@ -464,20 +457,7 @@ void mode_init(void){
     gate[x].reset[1]=0;
     gate[x].reset[2]=0;
     gate[x].reset[3]=0;
-    gate[x].oldcvcnt=1;
-    gate[x].lengthindex=6; // all CVL now    
-
-    gate[x].changedspeed=1;
-    gate[x].changedspeedcv=1;
-    gate[x].changedbit=1;
-    gate[x].changedbitcv=1;
-    
-    gate[x].oldspeedfunc=0;
-    gate[x].speedfunc=3;
-
-    gate[x].oldspeedcv=0;
-    gate[x].speedcv=1;
-        
+            
     gate[0].gsrcnt[x]=31;
     gate[1].gsrcnt[x]=31;
     gate[2].gsrcnt[x]=31;	
@@ -562,13 +542,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
  //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
  uint32_t outindex=0;
- (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
- // SR_geomantic_outer(www);
+ // (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
+ SR_geomantic_outer(www); // now this one sets inner function
 
    //uint32_t inindex=(*metain[mode[www]])(www, mode[www]); // - functions which generate indices
  uint32_t inindex=0;
- (*SRgeo_inner[www][inindex])(www); // different indexes for this 
+ // (*SRgeo_inner[www][inindex])(www); // different indexes for this 
  // SR_geomantic_inner(www); 
+ (*gate[www].inner)(www);
+
  
   if (www==2)  {
       DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
