@@ -1,4 +1,427 @@
-// from latest geomantic.h
+//////////////////////////////////////////////////////////////////////////
+// new geomantic functions abstracted
+//////////////////////////////////////////////////////////////////////////
+
+// gshifts
+static inline uint32_t gshift0(uint32_t w){ 
+  GSHIFT_;
+  return 0;
+}
+
+static inline uint32_t gshiftNOS(uint32_t w){ 
+  GSHIFTNOS_;
+  return 0;
+}
+
+static inline uint32_t gshiftnull(uint32_t w){
+  return 0;
+}
+
+// what other gshifts there are: only noshift of own SR //GSHIFTNOS_// - so we have 3 options
+
+// split speeds
+// temp:  static inline uint32_t OUT_temp(uint32_t depth, uint8_t wh){
+static inline uint32_t OUT_splitx(uint32_t depth, uint32_t w){
+  int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
+  if (!sbinroute(others[w][0])) { // inversion to avoid running out
+      GSHIFTNOS_; // 2.copy gshift on trigger // gate[XX].Gshift[w]&0x01...
+    }
+
+  if (!sbinroute(others[w][1])) { //3.advance incoming ghost
+    BINROUTEADV_;
+  }
+
+  if (!sbinroute(others[w][2])) {
+    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
+  }
+
+}
+
+static inline uint32_t IN_splitx(uint32_t depth, uint32_t w){ // matches above and must match outfunction     BITN_AND_OUTVXOR_;
+  int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
+    BINROUTENOG_; // or not
+    return bitn;
+}  
+
+
+static inline uint32_t OUT_zero(uint32_t depth, uint32_t w){ 
+  return 0;
+}
+
+static inline uint32_t OUT_adc_overonebit(uint8_t w){ // oversample one bit
+  uint8_t bt;
+  bt=adconebitsx();
+  return bt;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// DACOUT : as generic bits->value
+// start to wrap dac functions - there are 24!
+// static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
+// length could also be generic so is just a processor
+
+static inline uint32_t BVddac0(uint32_t depth, uint32_t in, uint32_t wh){ // version for any 12 bit IN value -> bits
+  uint32_t val;
+  val=DAC_(wh, in, SRlength[wh], 0, depth, gate[wh].trigger);
+  return val;
+}
+
+static inline uint32_t ddac0(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 0, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac1(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 1, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac2(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 2, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac3(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 3, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac4(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 4, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac5(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 5, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac6(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 6, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac7(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 7, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac8(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 8, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac9(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 9, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac10(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 10, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac11(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 11, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac12(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 12, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac13(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 13, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac14(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 14, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac15(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 15, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac16(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 16, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac17(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 17, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac18(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 18, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac19(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 19, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac20(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 20, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac21(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 21, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac22(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 22, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac23(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 23, depth, gate[wh].trigger);
+return val;
+}
+
+static inline uint32_t ddac24(uint32_t depth, uint32_t wh){
+  uint32_t val;
+  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 24, depth, gate[wh].trigger);
+return val;
+}
+
+uint32_t (*dacfromsdd[32])(uint32_t depth, uint32_t wh)={ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6, ddac7, ddac8, ddac9, ddac10, ddac11, ddac12, ddac13, ddac14, ddac15, ddac16, ddac17, ddac18, ddac19, ddac20, ddac21, ddac22, ddac23, ddac24, ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6};
+
+
+static inline uint32_t dacselcvl(uint32_t depth, uint32_t wh){  // select adc using CVL
+   uint32_t bt;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+   bt=(*dacfromsdd[CVL[wh]>>7])(depth, wh); // 5 bits
+   return bt;
+}
+
+static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc using CVL
+   uint32_t bt;
+   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
+   bt=(*dacfromsdd[CVM[wh]>>7])(depth, wh); // 5 bits
+   return bt;
+}
+
+
+
+
+//eg. outer function: on functionchange select speedfrom using CVL, speedcv is CV, bitin is unchanged, bitcv is unchanged, lencv is unchanged...
+// but not ON functionchange we set... as we need CV and to change speedfrom but can be variations:
+
+// 5/8/2022 adding prob/bit
+
+
+
+
+//static uint8_t strobed[4]={0,0,0,0};
+
+
+
+/*
+latest geomantic:
+
+- CVM more as attaching parameters and functions... but how...// matrix of fixings rather than a stack
+
+
+     // entry into new modes
+
+how that works... mode as an interpreter...
+
+execution of a matrix that is changed by CVM and feedback onto that matrix... can also be a stack though or...
+
+CVM can only be a meta/mode selector - but then we can't use CV, or CVL as these are part of internals...
+
+unless they get fixed...
+
+//or or modeR CVM - in 4 sections for attachments (also using strobe)... but again we can't use CVL or CV
+
+////
+
+matrix is maybe just values -> indexes and values, no pointers eg.
+
+as array, speedfunc, cv1, cv2, bitin, cv1, cv2, len
+
+gate[w].matrix[0] etc...
+
+{speedfrom/index, speedcv1, speedcv2, bit/index, bitcv1, bitcv2, lencv}
+
+so body is interpreter here - each has an inner and an outer function (what speed does outer run at?) ghost and ghost
+
+could also hold adc there?
+
+and we choose functions to change these: for example copy a matrix to this one - according to what do we choose?  problem is to repeatedly do this...
+
+can also apply a function to a value...
+
+again how to seperate INT/EXT?
+
+4x16 as key ... geomantic figures
+
+*/
+
+// 16 inner x 4 outer??? or vice versa
+
+// trial INNER/OUTER - but for now is just another matrix op/array/could also be stack so we need to do more inside it! it does allow us to leave elements remaining...
+// we could have stack with index an mark unchanging as what? - as top bit of 32 bits
+
+
+// list of functions:
+
+///TODO: still to add some which got left out... // left out from where?
+
+// routes: binrout, binroutfixed, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI,
+
+// speeds: spdfrac, spdfrac2, strobe, ones, clksr, clksrG
+
+// bits: sigmadelta, cipher, osceq, zSRclksr, zSRclksrG, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI,
+
+// zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits
+
+//1speed 
+// now with depth/CV
+
+/// we need to list/catalogue: ADCs, speeds, bits of various descriptions... // overlap/overlay of bits and speeds
+
+// that catalogues can also be kind of matrices, with holes and exceptions... used by different interpreters eg. speedfromnostrobe, speedfromabstract, speedfromroutes
+
+//uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, spdfrac, spdfrac}; // is in geogen.h
+
+
+uint32_t (*metain[64])(uint8_t w, uint32_t mood)={itself};    
+
+ void (*SRgeo_inner[4][64])(uint32_t w)=
+{
+{SR_geomantic_inneradc},
+{SR_geomantic_innernoadc},
+{SR_geomantic_innernoadc},
+{SR_geomantic_innernoadc}
+};
+
+
+//uint32_t inindex=(*metain[mode[www]])(www, mode[www]); // - functions which generate indices
+ uint32_t inindex=0;
+ // (*SRgeo_inner[www][inindex])(www); // different indexes for this 
+ // SR_geomantic_inner(www); 
+
+
+// from latest geomantic.h and geogen
+
+//////////////////////////////////////////////////////////////////////////
+// speedsels
+
+
+static inline uint32_t speedselcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[CVL[wh]>>7])(depth, in, wh));
+  return bt;
+  }
+
+static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[CVM[wh]>>7])(depth, in, wh));
+  return bt;
+  }
+
+/*
+static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth 
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
+  return bt;
+  }
+
+static inline uint32_t speedseloldcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;
+  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
+  return bt;
+  }
+*/
+
+
+//////////////////////////////////////////////////////////////////////////
+//0
+//lengths
+
+
+// we can fork in processors here... ???
+
+static inline uint32_t rlen(uint32_t depth, uint32_t wh){
+  uint32_t bt=lookuplenall[depth>>7]; // 5 bits
+  return bt; // bt is a value
+}
+
+static inline uint32_t nlen(uint32_t depth, uint32_t wh){
+  return 0; // is just holder
+}
+
+// hold old [CVL/depth] length
+static inline uint32_t holdlen(uint32_t depth, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
+  static uint32_t oldd[4]={0,0,0,0};
+  if (held[wh]!=0) oldd[wh]=held[wh];
+  held[wh]=0;  
+  uint32_t bt=lookuplenall[oldd[wh]>>7]; // 5 bits
+  return bt; // bt is a value
+}
+
+
+//0function outside speed
+uint32_t (*outside[32])(uint32_t depth, uint32_t wh)={OUT_zero, OUT_SRdelay_lineIN}; // delay bin needs to match with delay out, or shared delay lines...
+
+//0.5gshift
+uint32_t (*gshifts[32])(uint32_t wh)={gshift0, gshiftnull};
+
+uint32_t (*dacfunc[32])(uint32_t depth, uint32_t wh)={ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6, ddac7, ddac8, ddac9, ddac10, ddac11, ddac12, ddac13, ddac14, ddac15, ddac16, ddac17, ddac18, ddac19, ddac20, ddac21, ddac22, ddac23, ddac24, dacselcvl, dacselcvm};
+
+//2length IGNORE!
+uint32_t (*lengthfromsd[32])(uint32_t depth, uint32_t wh)={nlen, rlen, holdlen}; // we only have 2 functions here so far - nlen is null/hold, what other functions
+
+
+
+//5newfunc
+//uint32_t (*newfunc[32])(uint32_t depth, uint32_t wh)={zero, bitsmod, cvmod}; //
+
+/*
+uint32_t *CVlist[4][22]={ // TAIL is &Gshift_[8] // add in statics for adc, dac and length
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &CVM[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &gate[0].oldcv, &gate[0].oldcvl, &gate[0].oldcvm, &gate[0].adctype, &gate[0].dactype, &SRlength[0]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &CVM[1], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &Gshift_[8], &gate[1].oldcv, &gate[1].oldcvl, &gate[1].oldcvm, &gate[1].adctype, &gate[1].dactype, &SRlength[1]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &CVM[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[2], &param[2], &Gshift_[8], &gate[2].oldcv, &gate[2].oldcvl, &gate[2].oldcvm, &gate[2].adctype, &gate[2].dactype, &SRlength[2]},
+  {&nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &CVM[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[3], &param[3], &Gshift_[8], &gate[3].oldcv, &gate[3].oldcvl, &gate[3].oldcvm, &gate[3].adctype, &gate[3].dactype, &SRlength[3]}
+};
+
+  // 0,    1             2             3             4             5       6        7            8           9         10     11 -> 19
+
+// 0 null 1 0dac 2 1dac 3 2dac 4 3dac 5 CV 6 CVL 7 CVM 8 ADCin 9 Gs0 10 Gs1 11 Gs2 12 Gs3 13 clksr_ 14 param 15 par 16 oldcv 17 oldcvl 18 oldcvm
+
 
 // TODO: but this over-rides dacfrom - alternative would be to index as CVlist[dacfrom[w]+1] !!!
 

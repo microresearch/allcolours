@@ -94,8 +94,19 @@ RESOLVE ARCH:
 ** xxTOP
 
 
-- test and catalogue geogens... and new exp_port.h - focus a bit more on strobes and toggles...
 - different tails and how we select these... can also be fake strobe/flipflop ... mix of generators, and copies of SRs at full speeds... as tail is new param
+
+** 8/8/2022
+
+- *test and catalogue geogens... and new exp_port.h - focus a bit more on strobes and toggles... also need to fill in missing ghost modes*
+
+// have test outer function - try different arrays of functions for:
+DONE-speed: fix fake strobe for tests... but we need strobe and interpoll arrays - proof of concept and deal with/test later
+
+-bits
+-prob
+-adc
++ port/test
 
 ** 7/8/2022
 

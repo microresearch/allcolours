@@ -5,27 +5,6 @@ static inline uint32_t comp(uint32_t depth, uint32_t in, uint32_t wh){
 }
 
 //////////////////////////////////////////////////////////////////////////
-// new geomantic functions abstracted
-//////////////////////////////////////////////////////////////////////////
-
-// gshifts
-static inline uint32_t gshift0(uint32_t w){ 
-  GSHIFT_;
-  return 0;
-}
-
-static inline uint32_t gshiftNOS(uint32_t w){ 
-  GSHIFTNOS_;
-  return 0;
-}
-
-static inline uint32_t gshiftnull(uint32_t w){
-  return 0;
-}
-
-// what other gshifts there are: only noshift of own SR //GSHIFTNOS_// - so we have 3 options
-
-//////////////////////////////////////////////////////////////////////////
 // binroute_probabilities - fixed routes
 
 static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling
@@ -135,7 +114,7 @@ void basictail(void){ // tail here is basic 4th at full speed
   HEADNADA;
   uint32_t w=8;
   GSHIFT_;
-  tmp=binroute[count][2];
+  tmp=binroute[count][2]; // routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
     if (tmp&0x01){
       bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -148,38 +127,10 @@ void basictail(void){ // tail here is basic 4th at full speed
 }
 
 //////////////////////////////////////////////////////////////////////////
-//0
-//lengths
-
-static uint32_t held[4]={0,0,0,0}; // for length
-static uint32_t helds[4]={0,0,0,0}; // for speed
-
-// we can fork in processors here... ???
-
-static inline uint32_t rlen(uint32_t depth, uint32_t wh){
-  uint32_t bt=lookuplenall[depth>>7]; // 5 bits
-  held[wh]=depth; // release hold for all lengths
-  return bt; // bt is a value
-}
-
-static inline uint32_t nlen(uint32_t depth, uint32_t wh){
-  return 0; // is just holder
-}
-
-// hold old [CVL/depth] length
-static inline uint32_t holdlen(uint32_t depth, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
-  static uint32_t oldd[4]={0,0,0,0};
-  if (held[wh]!=0) oldd[wh]=held[wh];
-  held[wh]=0;  
-  uint32_t bt=lookuplenall[oldd[wh]>>7]; // 5 bits
-  return bt; // bt is a value
-}
-
-//////////////////////////////////////////////////////////////////////////
 //1
 //routes
 
-static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now
+static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now // TODO: indie version
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
     // deal with no route
@@ -201,7 +152,7 @@ static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // d
   return bt;
 }
 
-// TODO: adapt for binroute alts
+// TODO: adapt for binroute alts ???
 static inline uint32_t binroutfixed(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count
   uint32_t bt=0, bitrr;
   depth=binroute[count][wh]|binary[wh];
@@ -618,30 +569,9 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // las
   return bt;
 }
   
-// hold old [CVL/depth] speed // do we still need this?
-static inline uint32_t holdlspdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // we don;t use depth as we just hold // can have same for speed...
-  static uint32_t oldd[4]={0,0,0,0};
-  uint32_t bt=0;
-  float speed;
-
-  if (helds[wh]!=0) oldd[wh]=helds[wh];
-  helds[wh]=0;  
-  speed=logspeed[oldd[wh]>>2]; // 12 bits to 10 bits
-  gate[wh].time_now += speed;
-  gate[wh].last_time = gate[wh].int_time;
-  gate[wh].int_time = gate[wh].time_now;
-  if(gate[wh].last_time<gate[wh].int_time) {
-    bt=1; // move on
-    gate[wh].time_now-=1.0f;
-    gate[wh].int_time=0;
-  }
-  return bt;
-}
-
 static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // for speed now with dac/interpol pulled out
   uint32_t bt=0;
   float speed;
-  helds[wh]=depth;
   speed=logspeed[depth>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
@@ -657,7 +587,6 @@ static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // for
 static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t wh){ // for speed now with dac/interpol pulled out // version with STOP on lowest
   uint32_t bt=0;
   float speed;
-  helds[wh]=depth;
   speed=logspeed[depth>>2]; // 12 bits to 10 bits
   if (speed!=LOWEST){
   gate[wh].time_now += speed;
@@ -687,7 +616,6 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we
   else tmp=depth%in;
   //  tmp=in+depth;
   //  if (tmp>4095) tmp=4095;
-  helds[wh]=tmp;
   speed=logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
@@ -709,7 +637,6 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // de
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
 
-  helds[wh]=tmp;
   speed=logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
@@ -737,6 +664,7 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // de
 static inline uint32_t strobe(uint32_t depth, uint32_t in, uint32_t wh){   // strobe - no depth
   uint32_t bt;
   bt=gate[wh].trigger;
+  //  gate[wh].strobed=1; // we are in a mode which uses strobe - TODO: set to 0 in other potential speed modes
   return bt;
 }
 
@@ -1735,184 +1663,6 @@ static inline uint32_t adcselcvm(uint32_t depth, uint32_t in, uint32_t wh){  // 
    return bt;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// DACOUT : as generic bits->value
-// start to wrap dac functions - there are 24!
-// static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
-// length could also be generic so is just a processor
-
-static inline uint32_t BVddac0(uint32_t depth, uint32_t in, uint32_t wh){ // version for any 12 bit IN value -> bits
-  uint32_t val;
-  val=DAC_(wh, in, SRlength[wh], 0, depth, gate[wh].trigger);
-  return val;
-}
-
-static inline uint32_t ddac0(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 0, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac1(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 1, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac2(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 2, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac3(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 3, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac4(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 4, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac5(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 5, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac6(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 6, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac7(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 7, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac8(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 8, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac9(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 9, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac10(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 10, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac11(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 11, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac12(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 12, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac13(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 13, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac14(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 14, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac15(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 15, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac16(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 16, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac17(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 17, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac18(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 18, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac19(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 19, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac20(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 20, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac21(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 21, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac22(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 22, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac23(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 23, depth, gate[wh].trigger);
-return val;
-}
-
-static inline uint32_t ddac24(uint32_t depth, uint32_t wh){
-  uint32_t val;
-  val=DAC_(wh, gate[wh].shift_, SRlength[wh], 24, depth, gate[wh].trigger);
-return val;
-}
-
-uint32_t (*dacfromsdd[32])(uint32_t depth, uint32_t wh)={ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6, ddac7, ddac8, ddac9, ddac10, ddac11, ddac12, ddac13, ddac14, ddac15, ddac16, ddac17, ddac18, ddac19, ddac20, ddac21, ddac22, ddac23, ddac24, ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6};
-
-
-static inline uint32_t dacselcvl(uint32_t depth, uint32_t wh){  // select adc using CVL
-   uint32_t bt;
-   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
-   bt=(*dacfromsdd[CVL[wh]>>7])(depth, wh); // 5 bits
-   return bt;
-}
-
-static inline uint32_t dacselcvm(uint32_t depth, uint32_t wh){  // select adc using CVL
-   uint32_t bt;
-   // *adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)
-   bt=(*dacfromsdd[CVM[wh]>>7])(depth, wh); // 5 bits
-   return bt;
-}
 
 /////////////////////////////////////////////////////////////////
 // new modifier functions - generate value for gate[x].par or just intervene 
@@ -2025,17 +1775,7 @@ else
   return bt;
 }
 
-//////////////// outside functions and ports from experiment.h - observation that most OUTSIDE functions should be paired with specific inside/bits
-
-static inline uint32_t OUT_zero(uint32_t depth, uint32_t w){ 
-  return 0;
-}
-
-static inline uint32_t OUT_adc_overonebit(uint8_t w){ // oversample one bit
-  uint8_t bt;
-  bt=adconebitsx();
-  return bt;
-}
+//////////////// [+outside functions+] and ports from experiment.h - observation that most OUTSIDE functions should be paired with specific inside/bits
 
 static uint32_t delayline[512]; //shared delay line
 static uint32_t delaylineUN[4][512]; //UNshared delay line
@@ -2075,62 +1815,6 @@ uint32_t SRdelay_lineOUT(uint32_t depth, uint32_t in, uint32_t w){  // could als
   return bitn;
 }
 
-// split speeds
-// temp:  static inline uint32_t OUT_temp(uint32_t depth, uint8_t wh){
-static inline uint32_t OUT_splitx(uint32_t depth, uint32_t w){
-  int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
-  if (!sbinroute(others[w][0])) { // inversion to avoid running out
-      GSHIFTNOS_; // 2.copy gshift on trigger // gate[XX].Gshift[w]&0x01...
-    }
-
-  if (!sbinroute(others[w][1])) { //3.advance incoming ghost
-    BINROUTEADV_;
-  }
-
-  if (!sbinroute(others[w][2])) {
-    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
-  }
-
-}
-
-static inline uint32_t IN_splitx(uint32_t depth, uint32_t w){ // matches above and must match outfunction     BITN_AND_OUTVXOR_;
-  int32_t tmp; uint32_t bitn, bitrr, val, x, xx, lengthbit=15, new_stat;
-    BINROUTENOG_; // or not
-    return bitn;
-}  
-
-//////////////////////////////////////////////////////////////////////////
-// speedsels
-
-uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksr, clksrG, spdfrac, spdfrac};
-// but not interped // doubles up TODO more
-
-
-static inline uint32_t speedselcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[CVL[wh]>>7])(depth, in, wh));
-  return bt;
-  }
-
-static inline uint32_t speedselcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[CVM[wh]>>7])(depth, in, wh));
-  return bt;
-  }
-
-/*
-static inline uint32_t speedseloldcvm(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth 
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
-  return bt;
-  }
-
-static inline uint32_t speedseloldcvl(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
-  static uint32_t bt=0;
-  bt=((*speedfromsdd[gate[wh].oldcvm>>7])(depth, in, wh));
-  return bt;
-  }
-*/
 //////////////////////////////////////////////////////////////////////////
 ////// right hand functions which change things...
 // just a test here - uses CVL to select bitfunc
@@ -2155,6 +1839,7 @@ static inline uint32_t Rtest(uint32_t depth, uint32_t in, uint32_t wh){
 }
 
 ///// global functions here from exp
+/*
 void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fast without pulsin
   HEADSIN;
   //  SRlength[w]=CVL[w]>>7; // 5 bits
@@ -2175,3 +1860,21 @@ void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fas
   }
   }
 }
+*/
+
+// adding new functions 8/8 which can be for speed or bits or ported ones...
+static inline uint32_t tailbits(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
+  uint32_t bt=0, bitrr;
+  bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+  gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+  bt^=bitrr;
+  return bt;
+}  
+
+static inline uint32_t tailbitsI(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
+  uint32_t bt=0, bitrr;
+  bitrr = (gate[8].Gshift_[wh]>>SRlength[8]) & 0x01; 
+  gate[8].Gshift_[wh]=(gate[8].Gshift_[wh]<<1)+bitrr;
+  bt^=bitrr;
+  return bt;
+}  

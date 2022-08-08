@@ -58,11 +58,11 @@ uint32_t cvmax[64][10]={
 };
 
 
-// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv, 11altfuncindex}
-uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[12]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0};
-uint32_t matrixCC[12]={0,0,0, 1,0,0, 31<<7, 0,0, 2,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
-uint32_t matrixRR[12]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0}; 
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
+uint32_t matrixNN[13]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[13]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0,0};
+uint32_t matrixCC[13]={0,0,0, 1,0,0, 31<<7, 0,0, 2,0,1,0}; // C has sprobbits, altfunc is 1 but then that needs cv too
+uint32_t matrixRR[13]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0,0}; 
 //                     speed  bit    len    adc  prob
 //fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
 //1       2        3     4     5     6     7     8   9
@@ -167,8 +167,6 @@ uint8_t strobey[4][64]={
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
 };
 
-static uint8_t strobed[4]={0,0,0,0};
-
 #include "macros.h"
 
 //extern __IO uint16_t adc_buffer[13];
@@ -211,6 +209,15 @@ static uint32_t clk_route[8]={0,
 			      (1<<14) | (1<<13),
 			      (1<<12) | (1<<13) | (1<<14)
 };
+
+// for single clk routes
+static uint32_t clk_route_new[4]={0, // no clk route 0 
+			      (1<<12),
+  			      (1<<14),
+			      (1<<13)
+};
+
+
 
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
@@ -329,29 +336,20 @@ static uint32_t resetz=1;
 //#include "bit.h" // bitmodes but some are still in modeL
 //#include "rungler.h"
 
-  uint32_t itself(uint8_t w, uint32_t mood){ //
+uint32_t itself(uint8_t w, uint32_t mood){ //
     return mood;
   }
 
 // list of metaout functions... examples?
-uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};    
+uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep for moment 
+
 
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
   {SR_geomantic_outer_binr},
   {SR_geomantic_outer_binr},
-  {SR_geomantic_outer_binr},
+  {SR_geomantic_outer_test}, // test for various functions eg speed/strobe now...
   {SR_geomantic_outer_binr}
-};
-
-uint32_t (*metain[64])(uint8_t w, uint32_t mood)={itself};    
-
- void (*SRgeo_inner[4][64])(uint32_t w)=
-{
-{SR_geomantic_inneradc},
-{SR_geomantic_innernoadc},
-{SR_geomantic_innernoadc},
-{SR_geomantic_innernoadc}
 };
 
 void testnull(void){
@@ -425,7 +423,7 @@ void mode_init(void){
   }
   */
 
-  for (y=0;y<12;y++){
+  for (y=0;y<13;y++){
       gate[0].matrix[y]=matrixNN[y];
       gate[1].matrix[y]=matrixLL[y];
       gate[2].matrix[y]=matrixCC[y];
@@ -493,11 +491,24 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   }
   */
 
+  if (intflag[www]) { // process INT
+    gate[www].trigger=1;
+    intflag[www]=0;
+    clksrG_[www]=clksr_[www]; // copy in to ghost
+    tmp=(clksr_[www]>>31)& 0x01; // length is 31
+    clksr_[www]=(clksr_[www]<<1)+tmp;     // shift round CLKSR - we can also insert in/copy in
+  }
+  else  {
+    gate[www].trigger=0;
+  }
+
+  
   // testing
 //  spdfunccnt=cvcount=dactypecnt=lengthfunccnt=adcfunccnt=bitfunccnt=glob;
   
   // trial of new: *order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?*
   // or table can be XORed - with SR or somehow altered from there - as a skip could be an option so maybe we don't need tables...
+
   ww++;
   if (ww>orderings[ordercount][0]){
     ww=1;
@@ -542,19 +553,37 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
  //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
  uint32_t outindex=0;
- // (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
- SR_geomantic_outer(www); // now this one sets inner function
+  (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
+ // SR_geomantic_outer(www); // now this one sets inner function
 
-   //uint32_t inindex=(*metain[mode[www]])(www, mode[www]); // - functions which generate indices
- uint32_t inindex=0;
- // (*SRgeo_inner[www][inindex])(www); // different indexes for this 
- // SR_geomantic_inner(www); 
- (*gate[www].inner)(www);
+ (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
 
- 
-  if (www==2)  {
-      DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
-      }
+ if (www==2)  {
+   DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
+ }
+
+ // implement fake strobe using gate[w].strobed (we will miss the first one but...)
+
+ if (www!=0){ 
+ if (gate[www].strobed){ // still q of strobey
+   if (gate[8].shift_ &0x01) GPIOB->BSRRH=clk_route_new[www]; // we get from tail
+     else GPIOB->BSRRL=clk_route_new[www];
+   }
+ } /// www==0
+ else
+   {
+     if (gate[www].strobed){ // still q of strobey
+      tmp= gate[dacfrom[daccount][0]].dac; // now is set by count/array
+      tmp+=320; 
+      TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
+      TIM1->CCR1 = tmp/2; // pulse width
+     }
+  else 
+    {
+      TIM1->ARR =0; 
+      TIM1->CCR1 = 0;
+    }
+   }
 
   // where are these used and is too long as counts every time
   //      counter[4]++; counter[5]++; counter[6]++;

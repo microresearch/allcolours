@@ -12,7 +12,8 @@ typedef struct stack_ {
 
 // what can be removed from here?
 typedef struct heavens_ { // fill out with trigger, routes, types, bits and other attributes,,,
-  uint32_t trigger;  
+  uint32_t trigger;
+  uint32_t strobed; // set this when we need fake strobe...  
   uint32_t adctype, adcpar;
   uint32_t dactype, dacpar;
   uint32_t Gshift_[9];
@@ -34,14 +35,13 @@ typedef struct heavens_ { // fill out with trigger, routes, types, bits and othe
   uint32_t latch;
   uint32_t route;
   uint32_t index;
-  uint32_t strobed;
   uint32_t lastspeed;
   uint32_t countspeed;
   //  uint32_t (*bit[64])(uint32_t depth, uint32_t in, uint32_t wh);
   //  uint32_t (*speedfrom[64])(uint32_t depth, uint32_t in, uint32_t wh);
   //  stack stacky[64]; // full stack
   uint32_t stackindex;
-  uint32_t matrix[12];
+  uint32_t matrix[13];
   void (*inner)(uint32_t w);
 } heavens;
 

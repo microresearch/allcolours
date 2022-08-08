@@ -107,6 +107,17 @@ static uint32_t clk_route[8]={0,
 			      (1<<12) | (1<<13) | (1<<14)
 };
 
+static uint32_t clk_route_new[8]={0,
+			      (1<<12),
+			      (1<<13),
+			      (1<<12) | (1<<13),
+			      (1<<14),
+			      (1<<12) | (1<<14),
+			      (1<<14) | (1<<13),
+			      (1<<12) | (1<<13) | (1<<14)
+};
+
+
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
