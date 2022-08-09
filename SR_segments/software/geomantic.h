@@ -1,6 +1,5 @@
-// TODO: start to test and sort all grouped functiosn here, new groups, see exp_port.h
+// TODO: start to test and sort all grouped functions here, new groups, see exp_port.h
 //
-
 
 // speeds
 
@@ -11,7 +10,7 @@ uint32_t (*speedfromnew[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, 
 
 uint32_t strobo[32]={1,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};// matches speedfromnew
 
-uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, spdfracend, strobe, ztogglebits, ones, clksr, clksrG}; // one interp, next not - see interp below... interp is extracted... add in binroutes // retest--->5,6,8,9 dont work-> all to do with trigger!
+uint32_t (*speedfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, spdfracend, strobe, ztogglebits, ones, clksr, clksrG}; // one interp, next not - see interp below... interp is extracted... add in binroutes // retest--->5,6,8,9 dont work-> all to do with trigger! // spdfracend = 4 which is stopping version on LOWEST
 
 uint8_t interp[32]={0,1,1,0,0,0,0,0,0,0,0,0,0,0}; // TODO match with interp//////// but depends on which speedfrom we use!
 
@@ -92,10 +91,12 @@ void SR_geomantic_outer(uint32_t w){  // do as array of functions // keep this a
   gate[w].inner=SR_geomantic_inner;
 }  
 
+
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
 // 8/8/2022 testing strobe and fake pulses/normed pulses in caput000.c
 void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different functions eg. now try different speedfuncs
-  gate[w].matrix[0]=0;// strobe // CVL[w]>>7;// 5 bits is 32 //2 bits //speedFUNC
+  if (gate[w].changed==0) { // 1=change 0= no change
+  gate[w].matrix[0]=3;// 0 was strobe // CVL[w]>>7;// 5 bits is 32 //2 bits //speedFUNC
   // but if we use strobe then we can free up CV say for route or prob but how do we know - need match up but then we don't need set in func
   if (strobo[gate[w].matrix[0]]) {
     gate[w].strobed=1;
@@ -104,8 +105,7 @@ void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different fu
     gate[w].matrix[12]=8; // altfuncindex
   }
   else gate[w].strobed=0;
-  
-  //  gate[w].matrix[1]=CV[w];//
+  gate[w].matrix[1]=CV[w];//
   gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
   gate[w].matrix[3]=2; // fixed route
   //  gate[w].matrix[4]=CVL[w]; // unused in case2: bintroutfixed // but used by altfunc
@@ -117,6 +117,7 @@ void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different fu
   //  gate[w].matrix[8]=CVL[w]; // was 4095- but we shift that to the ADC
 
   gate[w].inner=SR_geomantic_innernoadcp; // prob one
+    }
 }  
 
 void SR_geomantic_outer_binr(uint32_t w){ // test just simplest binroute in/spdfrac

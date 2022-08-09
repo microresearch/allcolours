@@ -394,7 +394,7 @@ int main(void)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBase_InitStructure.TIM_Period = 256; // was 256/2 but maybe is too fast... at 50KHz pulse
+  TIM_TimeBase_InitStructure.TIM_Period = 256; // was 256/2 but maybe is too fast... at 50KHz pulse - what is speed now...?
   TIM_TimeBase_InitStructure.TIM_Prescaler = 128; 
   TIM_TimeBaseInit(TIM4, &TIM_TimeBase_InitStructure);
   

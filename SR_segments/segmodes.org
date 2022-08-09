@@ -96,6 +96,20 @@ RESOLVE ARCH:
 
 - different tails and how we select these... can also be fake strobe/flipflop ... mix of generators, and copies of SRs at full speeds... as tail is new param
 
+** 9/8/2022
+
+// 9/8/2022 - DONEalso prototype *how to resolve dialing across setting all inbetween variables - TEST: if (mode[w]==oldmode[w] // will depend on timings* - we already have changed
+//other forms of slur eg. only set these on strobe or pull speed into this one... but would need to match inner
+// well inner would need to be called from here and we would call a null inner!
+// explore these possibilities
+
+- also as *slurrings!* slurred by external speed, delay of "modes assignment" // how to build layers of speed feedback
+
+other ways - bump by CVM (move forwards - but again where do we stop?), by strobe, strobe can also do settings
+
+- *blank modes which dont fill all gaps but allow others to fill these*
+
+
 ** 8/8/2022
 
 - *test and catalogue geogens... and new exp_port.h - focus a bit more on strobes and toggles... also need to fill in missing ghost modes*
