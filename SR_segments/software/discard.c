@@ -1,3 +1,213 @@
+/// cleaning caput000
+
+
+uint32_t funccmax[64][9]={
+  {8,2,17,61,23}, // maximum value if x>funcmax... // update these as we add more functions
+};
+
+uint32_t cvmax[64][10]={
+  {19,19,19,19,19,19,19,19,19,19}, // update for max number of cv options
+};
+
+
+//fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
+//1       2        3     4     5     6     7     8   9
+
+//basic but remeove adc
+//out and fout mixed up in comments
+
+//{1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
+//{5, 0, 6, 0, 0, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
+/*
+uint32_t funcNN[64][9]={
+  {1, 1, 21, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
+  {1,1,18,2, 0,0,0,0,0}, //  - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
+  {2,0,18,0, 0,0,0,0,0},
+};
+
+uint32_t funcLL[64][9]={
+  {1, 1, 0, 2, 0, 2, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero'] // altering some
+  {1,1,0,1, 0,0,0,0,0}, // 
+  {2,0,0,59,0,0,0,0,0},
+};
+
+uint32_t funcCC[64][9]={
+  //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
+  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero'] // altered for delaylineIn and OUT
+  {1,1,0,1, 26,0,0,0,0}, //  - 11 is select speed with CVM 26 dac with cvm
+  {1,1,0,60, 0,0,0,0,0}, // rung - speed from cv, route from R //
+};
+
+uint32_t funcRR[64][9]={
+  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
+  {1,1,0,1, 0,0,0,0,0}, // 
+  {2,1,0,61,0,0,0,0,0}, // route from L, speed from N
+};
+*/
+// cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew, cvout
+// 1        2            3         4      5       6        7      8          9      10  
+
+// 0 null 1 0dac 2 1dac 3 2dac 4 3dac 5 CV 6 CVL 7 CVM 8 ADCin 9 Gs0 10 Gs1 11 Gs2 12 Gs3 13 clksr_ 14 param 15 par 16 oldcv 17 oldcvl 18 oldcvm
+/*
+uint32_t cvNN[64][10]={
+  {5, 0, 6, 0, 6, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
+  {5,0,6,0,6,8, 0,0,0,0}, // 8 is ADC itself IN
+  {5,6,6,0,6,8,6,7,0,0},
+};
+
+uint32_t cvLL[64][10]={
+  {15, 0, 6, 0, 0, 0, 0, 0, 7, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null'] // altering some
+  {5,0,6,0,6,0,4,0,0,0},
+  {5,6,6,0,6,0,6,7,0,0}, // rung2 but modded...
+};
+
+uint32_t cvCC[64][10]={
+  //{1,1,0,2,1, 5,0,6,0,6,0,1,0},
+  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
+  {5,0,6,7, 6,0,7,0,0,0},
+  {5,0,6,7, 0,0,4,0,0,0}, // rung - speed from cv, route from R //
+};
+
+uint32_t cvRR[64][10]={
+  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
+  {5,1,6,0,6, 0,7,7,0,0},
+  {5,6,6,0,0, 0,1,0,0,0}, // route from L, speed from N
+};
+*/
+
+//static uint32_t cvcount=0; // for type of CV
+
+// would be nice to have 8 so is 3 bits - logic? logiccount
+
+//uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount};
+
+//uint32_t *funcfield[8]={&dactypecnt, &spdfuncnt, &lengthfunccnt, &adctypecnt, &bitfunccnt}; // only 5 there
+
+
+uint32_t options[4][24]={
+      {1,3,3, 2,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 0,3,3},
+      {0,3,3, 2,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 1,3,3},
+      {0,3,3, 1,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 2,3,3},
+      {0,3,3, 1,3,3, 2,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 3,3,3}
+    };
+
+// extra files to check...
+
+
+//#include "modeN.h"
+//#include "modeL.h"
+//#include "modeR.h"
+//#include "modeC.h"
+//#include "probability.h" // probability modes
+
+//#include "basis.h" // basics from commented ones just to speed up tests
+//#include "experiment.h" // more functional modes - can also shift some things here... trials
+//#include "bit.h" // bitmodes but some are still in modeL
+//#include "rungler.h"
+
+
+
+// how many groups
+#define GROUP 14 // for 16
+
+  //re-test all new for crash  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadcX, SRrunghead0NX, adcLrung0-fixed18/6, adcLrung1fixed, adcLrung2fixed,   adcrung0fixed, adcLbinprobX, noSRadc2sX, noSRadc2sX, adcLabstractLDX, stream4_unshareX, streamX}, //128
+
+ /* 
+void (*funcgroups[4][128])(uint8_t w)=
+{
+    {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream}, //128
+  //    {adc2, adc0, adc2, adc0,  adc2,   adc0, adc2, adc0,adc2,  adc0,adc2, adc0, adc2, adc0, adc2, adc0},
+  
+  {SRX0, SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare, stream},  // 128
+
+  {newdac2, dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin,   stream4_unshare, stream}, 
+  
+  {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2, SRRrung3,     adcLbinprob, SRX0,     SRX0, adcLabstractLD, stream4_unshare, stream} //64 
+}; // 13 so far -- to add more for lisbon - select at random from 50 - how to do from cards...
+*/  
+// card for each = 16 possibles... we need 50! - q of slidings - we can slide +-64 except modeR cannot slide so should be most generic
+
+ /*
+- how else we can express matrices which makes sense - to match up:
+
+as array for each side:
+
+eg. speed, length, bit FUNCS, adc, which dac // them CV indices
+
+thus:
+*/
+
+// collect modes: Lmultiplespeednew // tag modesx modex
+/*void (*dofunc[4][64])(uint8_t w)=
+{
+  {SR_geomantic}, 
+  {SR_geomantic}, 
+  {SR_geomantic}, 
+  {SR_globalbin}
+};
+*/
+  /*  
+  for (x=0;x<64;x++){
+    for (y=0;y<9;y++){
+      gate[0].func[x][y]=funcNN[x][y];
+      gate[1].func[x][y]=funcLL[x][y];
+      gate[2].func[x][y]=funcCC[x][y];
+      gate[3].func[x][y]=funcRR[x][y];
+    }
+  }
+
+  for (x=0;x<64;x++){
+    for (y=0;y<10;y++){
+      gate[0].cv[x][y]=cvNN[x][y];
+      gate[1].cv[x][y]=cvLL[x][y];
+      gate[2].cv[x][y]=cvCC[x][y];
+      gate[3].cv[x][y]=cvRR[x][y];
+    }
+  }
+  */
+
+
+    // tests for stack
+    //  pushspeed(3, x); // spdfrac
+    //  pushspeedcv(CVlist[x][cvpair[0][0]], CVlist[x][cvpair[0][1]], x);
+  // trial functions with length
+
+  //   0:zeros 1:binrout 2:binroutfixed 3:binroutor 4:zsingleroutebits 5:zbinrouteINVbits 6:zbinroutebits_noshift_transit 7:zbinroutebits_noshift 8:zbinroutebitscycle 9:zbinroutebitscyclestr 10:zbinroutebitscycle_noshift 11:zbinroutebitscyclestr_noshift 12:zbinrouteORbits 13:zbinrouteANDbits 14:zbinrouteSRbits 15:zbinroutebitsI 16:zbinroutebitsI_noshift 17:zbinroutebitscycleI_noshift 18:zbinroutebitscyclestrI 19:zosc1bits 20:sigmadelta 21:cipher 22:osceq 23:zSRclksr 24:zSRclksrG 25:zSRNbits 26:zSRLbits 27:zSRCbits 28:zSRRbits 29:zpulsebits 30:zprobbits 31:zprobbitsxorstrobe 32:zprobbitsxortoggle 33:zsuccbits 34:zsuccbitsI 35:zreturnbits 36:zreturnnotbits 37:zosc1bits 38:zwiardbits 39:zwiardinvbits 40:zTMsimplebits 41:zonebits 42:zlfsrbits 43:zllfsrbits 44:zflipbits 45:zosceqbitsI 46:zosc1bitsI 47:zTMsimplebitsI 48:zwiardbitsI 49:zwiardinvbitsI 50:zonebitsI 51:zlfsrbitsI 52:zllfsrbitsI 53:zflipbitsI 54:zpattern4bits 55:zpattern8bits 56:zpattern4bitsI 57:zpattern8bitsI 58:Rtest 59:gensel 60:binroutfixed_prob1R 61:binroutfixed_prob1L 62:binroutfixed_prob2 63:binroutfixed_prob3 64:binroutfixed_prob4 65:SRdelay_lineOUT
+
+    //  pushbit(28, x);  //2: fixed binroute
+    //  pushbitcv(CVlist[x][0], CVlist[x][0], x);
+
+  /* 
+  www++;
+ 
+  if (www>3) {
+    www=0;
+    resetz=1;
+    (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
+  }
+  */
+
+  
+  // testing
+//  spdfunccnt=cvcount=dactypecnt=lengthfunccnt=adcfunccnt=bitfunccnt=glob;
+
+  // where are these used and is too long as counts every time
+  //      counter[4]++; counter[5]++; counter[6]++;
+
+ //SR_geomantic_outer(www); // now this one sets inner function
+
+  //  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
+  
+  // genericLFSR for all probability modes
+
+
+void testnull(void){
+}
+
+uint32_t testmodes[4]={0,0,0,0};
+
+
+
 //////////////////////////////////////////////////////////////////////////
 // new geomantic functions abstracted
 //////////////////////////////////////////////////////////////////////////

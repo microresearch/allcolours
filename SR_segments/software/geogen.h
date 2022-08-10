@@ -151,7 +151,12 @@ static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // d
     }
   return bt;
 }
-
+static inline uint32_t zjustcycle(uint32_t depth, uint32_t in, uint32_t wh){ // just cycle// no depth
+  uint32_t bt;
+  bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
+  return bt;
+}
+  
 // TODO: adapt for binroute alts ???
 static inline uint32_t binroutfixed(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count
   uint32_t bt=0, bitrr;
@@ -689,8 +694,9 @@ static inline uint32_t ones(uint32_t depth, uint32_t in, uint32_t wh){
 }
 
 // top bit of clksr 
-static inline uint32_t clksr(uint32_t depth, uint32_t in, uint32_t wh){ 
+static inline uint32_t clksr(uint32_t depth, uint32_t in, uint32_t wh){  // but these still need set strobe bit but..
   uint32_t bt=0;
+    depth=depth>>7; //  5 bits
   bt=(clksr_[wh]>>depth)&0x01;
   return bt;
 }
@@ -698,6 +704,7 @@ static inline uint32_t clksr(uint32_t depth, uint32_t in, uint32_t wh){
 // how could we cycle through clksr if it is not moving - we need gsr for them -clksrG_
 static inline uint32_t clksrG(uint32_t depth, uint32_t in, uint32_t wh){
   uint32_t bt=0;
+  depth=depth>>7; //  5 bits
   bt=(clksrG_[wh]>>depth)&0x01;
   clksrG_[wh]=(clksrG_[wh]<<1)+bt; // this also changes patterns there
   return bt;
@@ -711,7 +718,7 @@ static inline uint32_t cipher(uint32_t depth, uint32_t in, uint32_t wh){
   static uint32_t gs[4]={0,0,0,0};
   //  kw[wh]=depth;
   //  depth=(depth-2048)<<1;
-  if (depth>(2000)) bt=1; // we ignore depth - what it could be used for...
+  if (depth<in) bt=1; // we ignore depth - what it could be used for...
   else bt=0;
   
   // onto SR
@@ -789,7 +796,7 @@ static inline uint32_t zSRRbits(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zpulsebits(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+static inline uint32_t zpulsebits(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth // on N and C we have no pulse in...
   uint32_t bt=0;
   if (pulse[wh]){
     bt=!(GPIOC->IDR & pulsins[wh]);
@@ -799,7 +806,7 @@ static inline uint32_t zpulsebits(uint32_t depth, uint32_t in, uint32_t wh){   /
 
 static inline uint32_t zprobbits(uint32_t depth, uint32_t in, uint32_t wh){   // PROBability mode
   uint32_t bt=0;
-  if (depth<(LFSR_[wh]&4095)) bt=1;
+  if (depth>(LFSR_[wh]&4095)) bt=1; // chnaged direction
   return bt;
 }
 
@@ -944,10 +951,13 @@ static inline uint32_t zonebits(uint32_t depth, uint32_t in, uint32_t wh){ // de
   uint32_t bt;
   static int32_t bc=31;
   //  static uint32_t k;
-  if (gate[wh].trigger) depth=0;  
+  if (gate[wh].trigger) {
+    depth=4095-depth;
+    bc=depth;
+  }
   if (bc<0) {
     bt=0;
-    if (depth>0) bc=depth;
+    //    if (depth>0) bc=depth;
   }
   else{
   bt = 1; // this means that MSB comes out first
@@ -962,9 +972,11 @@ static inline uint32_t zENbits(uint32_t prob, uint32_t in, uint32_t wh){
   // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
   // if all as switches are 1... 
   //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
-  prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
-    if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
-  else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
+    prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+      if ( ( ( ((LFSR_[wh]&1)>>0) + ((LFSR_[wh]&4)>>1) + ((LFSR_[wh]&32)>>3) + ((LFSR_[wh]&16384)>>11) + ((LFSR_[wh]&131072)>>13) + ((LFSR_[wh]&524288)>>14) + ((LFSR_[wh]&2097152)>>15) + ((LFSR_[wh]&8388608)>>16)) | prob)==255) bt=(LFSR_[wh]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+    else   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
+  //  bt=(LFSR_[wh]>>24)&0x01;
+  //  bt=1;
   return bt;
 }
 
@@ -1158,10 +1170,10 @@ static inline uint32_t zflipbitsI(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zcompbits(uint32_t depth, uint32_t in, uint32_t wh){  //INx
+static inline uint32_t zcompbits(uint32_t depth, uint32_t in, uint32_t wh){  //INx we need 
   uint32_t bt;
-  if (in>depth) bt=1; // which way round?
-  else bt=0;
+  if (in>depth) bt=0; // which way round?
+  else bt=1;
   return bt;
 }
 
@@ -1232,7 +1244,7 @@ static inline uint32_t zpattern8bitsI(uint32_t depth, uint32_t in, uint32_t wh){
 static inline uint32_t sigmadelta(uint32_t depth, uint32_t in, uint32_t wh){  // processor for any int/depth
   uint32_t bt=0;
   static int32_t integrator=0, oldValue=0;
-  
+  depth=4095-depth;
   integrator+=(depth-oldValue);
    if(integrator>2048)
   {

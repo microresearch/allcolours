@@ -26,8 +26,6 @@
 1  0  0  0  0  0  0  0  1  0  1  0  0  0  0  0  0  0  0  0  0  0  1  1  1  0  0  1  1  1  1  0  
 1  0  0  0  0  0  0  0  0  1  0  1  0  0  0  0  0  0  0  0  0  0  0  1  1  1  0  0  1  1  1  1  
 
-*at the moment we don't deal with fake CLKouts...*
-
   */ 
 
 #include "stm32f4xx.h"
@@ -46,17 +44,7 @@
 #include "resources.h"
 #include "modes.h"
 
-static heavens gate[9]; // for paralell SR doubled + tail
-
-
-uint32_t funccmax[64][9]={
-  {8,2,17,61,23}, // maximum value if x>funcmax... // update these as we add more functions
-};
-
-uint32_t cvmax[64][10]={
-  {19,19,19,19,19,19,19,19,19,19}, // update for max number of cv options
-};
-
+static heavens gate[9]; // for parallell SR doubled + tail
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
 uint32_t matrixNN[13]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
@@ -64,72 +52,8 @@ uint32_t matrixLL[13]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0,0};
 uint32_t matrixCC[13]={0,0,0, 1,0,0, 31<<7, 0,0, 2,0,1,0}; // C has sprobbits, altfunc is 1 but then that needs cv too
 uint32_t matrixRR[13]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0,0}; 
 //                     speed  bit    len    adc  prob
-//fspeed, flength, fadc, fbit, fdac,  fnew, fout, gs, out // fnew is parameter function // fout outside
-//1       2        3     4     5     6     7     8   9
 
-//basic but remeove adc
-//out and fout mixed up in comments
-
-//{1, 1, 1, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
-//{5, 0, 6, 0, 0, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
-/*
-uint32_t funcNN[64][9]={
-  {1, 1, 21, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'zadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
-  {1,1,18,2, 0,0,0,0,0}, //  - 18 is select adc with CVM // 20 is new prob test on CVL select on CVM
-  {2,0,18,0, 0,0,0,0,0},
-};
-
-uint32_t funcLL[64][9]={
-  {1, 1, 0, 2, 0, 2, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero'] // altering some
-  {1,1,0,1, 0,0,0,0,0}, // 
-  {2,0,0,59,0,0,0,0,0},
-};
-
-uint32_t funcCC[64][9]={
-  //  {1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero'] // altered for delaylineIn and OUT
-  {1,1,0,1, 26,0,0,0,0}, //  - 11 is select speed with CVM 26 dac with cvm
-  {1,1,0,60, 0,0,0,0,0}, // rung - speed from cv, route from R //
-};
-
-uint32_t funcRR[64][9]={
-  {1, 1, 0, 2, 0, 0, 0, 0, 0}, //['spdfrac2', 'rlen', 'noadcx', 'binroutfixed', 'ddac0', 'zero', 'vgen', 'gshift0', 'OUT_zero']
-  {1,1,0,1, 0,0,0,0,0}, // 
-  {2,1,0,61,0,0,0,0,0}, // route from L, speed from N
-};
-*/
-// cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcomp, cvnew, cvout
-// 1        2            3         4      5       6        7      8          9      10  
-
-// 0 null 1 0dac 2 1dac 3 2dac 4 3dac 5 CV 6 CVL 7 CVM 8 ADCin 9 Gs0 10 Gs1 11 Gs2 12 Gs3 13 clksr_ 14 param 15 par 16 oldcv 17 oldcvl 18 oldcvm
-/*
-uint32_t cvNN[64][10]={
-  {5, 0, 6, 0, 6, 8, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
-  {5,0,6,0,6,8, 0,0,0,0}, // 8 is ADC itself IN
-  {5,6,6,0,6,8,6,7,0,0},
-};
-
-uint32_t cvLL[64][10]={
-  {15, 0, 6, 0, 0, 0, 0, 0, 7, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null'] // altering some
-  {5,0,6,0,6,0,4,0,0,0},
-  {5,6,6,0,6,0,6,7,0,0}, // rung2 but modded...
-};
-
-uint32_t cvCC[64][10]={
-  //{1,1,0,2,1, 5,0,6,0,6,0,1,0},
-  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
-  {5,0,6,7, 6,0,7,0,0,0},
-  {5,0,6,7, 0,0,4,0,0,0}, // rung - speed from cv, route from R //
-};
-
-uint32_t cvRR[64][10]={
-  {5, 0, 6, 0, 0, 0, 0, 0, 0, 0}, //['CV', 'null', 'CVL', 'null', 'null', 'ADCin', 'null', 'null', 'null', 'null']
-  {5,1,6,0,6, 0,7,7,0,0},
-  {5,6,6,0,0, 0,1,0,0,0}, // route from L, speed from N
-};
-*/
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
-
 static uint32_t ADCin;
 
 #define LOWEST 0.000031f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022 // this is now our STOP
@@ -141,13 +65,8 @@ static uint32_t tailcount=0; // for tail choice
 static uint32_t adcfunccount=0; // for adctype
 static uint32_t dactypecount=0; // for dactype
 static uint32_t binroutetypecount=0; // for type of binroute - UNUSED?
-//static uint32_t cvcount=0; // for type of CV
 
-// would be nice to have 8 so is 3 bits - logic? logiccount
-
-//uint32_t *countfield[8]={&count, &daccount, &spdcount, &adctypecount, &dactypecount, &binroutetypecount};
-
-//uint32_t *funcfield[8]={&dactypecnt, &spdfuncnt, &lengthfunccnt, &adctypecnt, &bitfunccnt}; // only 5 there
+// TODO: clean these - do we use???
 static uint32_t dactypecnt=0;
 static uint32_t spdfunccnt=0;
 static uint32_t lengthfunccnt=0;
@@ -160,6 +79,7 @@ static uint32_t outcnt=0;
 
 // 1 means its used so do normed clocks - all one for testing
 // replace this with just strobed set by mode/function itself and then passed to final part for normed clocks
+// TODO: fix
 uint8_t strobey[4][64]={
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
@@ -168,8 +88,6 @@ uint8_t strobey[4][64]={
 };
 
 #include "macros.h"
-
-//extern __IO uint16_t adc_buffer[13];
 
 #define FULL 0b11111111111111111111111111111111 //32 bits full
 #define HALB 0b10101010101010101010101010101010 //32 bits 1010
@@ -196,7 +114,6 @@ static uint32_t SRlength[9]={31,31,31,31,31,31,31,31,31};
 uint32_t clksr_[4]={HALB,HALB,HALB,HALB};
 uint32_t clksrG_[4]={0,0,0,0};
  
-
 // for generic CLK fake puls routing
 //LSRCLK-pulse9=PB12, RSRCLK-pulse10=PB13, CSRCLCK-pulse11=PB14
 // 000,001,010,011,100,101,110,111
@@ -300,13 +217,6 @@ static inline void new_data(uint32_t data, uint32_t ww)
     delay_buffer[ww][1] = data;
 }
 
-uint32_t options[4][24]={
-      {1,3,3, 2,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 0,3,3},
-      {0,3,3, 2,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 1,3,3},
-      {0,3,3, 1,3,3, 3,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 2,3,3},
-      {0,3,3, 1,3,3, 2,3,3, 0,1,3, 0,2,3, 2,1,3, 0,1,2, 3,3,3}
-    };
-
 uint32_t orderings[16][16]={ // orderings - first is length
   {4,0,1,2,3},
   {7,0,0,1,2,1,2,3}
@@ -316,25 +226,31 @@ uint32_t ordercount=0;
 
 static uint32_t resetz=1;
 
-// extra files to check...
-
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
 #include "geogen.h" // newer generators
-#include "exp_port.h" // ports from exp...++etc
-#include "L_port.h" // ports from L
+#include "exp_port.h" // ports from exp...++etc includes L now
 #include "geomantic.h" // new geomantic codebase in progress
 
-//#include "modeN.h"
-//#include "modeL.h"
-//#include "modeR.h"
-//#include "modeC.h"
-//#include "probability.h" // probability modes
+// check slowest speed
+void SRspeedtest(uint8_t w){ // null
+  static uint32_t tgg[4]={0,0,0,0};
+  //  HEADSIN;
+  speedf_[w]=logspeed[CV[w]>>2]; // 10 bits
+  //  speedf_[w]=slowerlog[CV[w]>>2]; // 10 bits
+  gate[w].time_now += speedf_[w];
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
 
-//#include "basis.h" // basics from commented ones just to speed up tests
-//#include "experiment.h" // more functional modes - can also shift some things here... trials
-//#include "bit.h" // bitmodes but some are still in modeL
-//#include "rungler.h"
+  if(gate[w].last_time<gate[w].int_time)      {
+    tgg[w]^=1;
+    if (tgg[w]==1) gate[w].dac=4095;
+    else gate[w].dac=0;
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;	
+
+  }
+}
 
 uint32_t itself(uint8_t w, uint32_t mood){ //
     return mood;
@@ -343,85 +259,20 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
 // list of metaout functions... examples?
 uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep for moment 
 
-
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
-  {SR_geomantic_outer_binr},
-  {SR_geomantic_outer_binr},
-  {SR_geomantic_outer_test}, // test for various functions eg speed/strobe now...
-  {SR_geomantic_outer_binr}
+   {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geomantic_outer_binrpp, SR_geomantic_outer_bitchangeS, SR_geomantic_outer_testT1, SR_geomantic_outer_testT1, SR_geomantic_outer_testT3, SR_geomantic_outer_testT3, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2}, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
+ {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
 };
 
-void testnull(void){
-}
-
-uint32_t testmodes[4]={0,0,0,0};
-
-// collect modes: Lmultiplespeednew // tag modesx modex
-/*void (*dofunc[4][64])(uint8_t w)=
-{
-  {SR_geomantic}, 
-  {SR_geomantic}, 
-  {SR_geomantic}, 
-  {SR_globalbin}
-};
-*/
+//  {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
 
 void (*dotail[64])(void)= {basictail};
-
-
-
-// how many groups
-#define GROUP 14 // for 16
-
-  //re-test all new for crash  {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadcX, SRrunghead0NX, adcLrung0-fixed18/6, adcLrung1fixed, adcLrung2fixed,   adcrung0fixed, adcLbinprobX, noSRadc2sX, noSRadc2sX, adcLabstractLDX, stream4_unshareX, streamX}, //128
-
- /* 
-void (*funcgroups[4][128])(uint8_t w)=
-{
-    {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream}, //128
-  //    {adc2, adc0, adc2, adc0,  adc2,   adc0, adc2, adc0,adc2,  adc0,adc2, adc0, adc2, adc0, adc2, adc0},
-  
-  {SRX0, SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare, stream},  // 128
-
-  {newdac2, dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin,   stream4_unshare, stream}, 
-  
-  {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2, SRRrung3,     adcLbinprob, SRX0,     SRX0, adcLabstractLD, stream4_unshare, stream} //64 
-}; // 13 so far -- to add more for lisbon - select at random from 50 - how to do from cards...
-*/  
-// card for each = 16 possibles... we need 50! - q of slidings - we can slide +-64 except modeR cannot slide so should be most generic
-
- /*
-- how else we can express matrices which makes sense - to match up:
-
-as array for each side:
-
-eg. speed, length, bit FUNCS, adc, which dac // them CV indices
-
-thus:
-*/
  
 void mode_init(void){
   uint32_t x,y;
-  /*  
-  for (x=0;x<64;x++){
-    for (y=0;y<9;y++){
-      gate[0].func[x][y]=funcNN[x][y];
-      gate[1].func[x][y]=funcLL[x][y];
-      gate[2].func[x][y]=funcCC[x][y];
-      gate[3].func[x][y]=funcRR[x][y];
-    }
-  }
-
-  for (x=0;x<64;x++){
-    for (y=0;y<10;y++){
-      gate[0].cv[x][y]=cvNN[x][y];
-      gate[1].cv[x][y]=cvLL[x][y];
-      gate[2].cv[x][y]=cvCC[x][y];
-      gate[3].cv[x][y]=cvRR[x][y];
-    }
-  }
-  */
 
   for (y=0;y<13;y++){
       gate[0].matrix[y]=matrixNN[y];
@@ -430,21 +281,10 @@ void mode_init(void){
       gate[3].matrix[y]=matrixRR[y];
     }
 
-  
   RESETR;
   
   for (x=0;x<4;x++){
 
-    // tests for stack
-    //  pushspeed(3, x); // spdfrac
-    //  pushspeedcv(CVlist[x][cvpair[0][0]], CVlist[x][cvpair[0][1]], x);
-  // trial functions with length
-
-  //   0:zeros 1:binrout 2:binroutfixed 3:binroutor 4:zsingleroutebits 5:zbinrouteINVbits 6:zbinroutebits_noshift_transit 7:zbinroutebits_noshift 8:zbinroutebitscycle 9:zbinroutebitscyclestr 10:zbinroutebitscycle_noshift 11:zbinroutebitscyclestr_noshift 12:zbinrouteORbits 13:zbinrouteANDbits 14:zbinrouteSRbits 15:zbinroutebitsI 16:zbinroutebitsI_noshift 17:zbinroutebitscycleI_noshift 18:zbinroutebitscyclestrI 19:zosc1bits 20:sigmadelta 21:cipher 22:osceq 23:zSRclksr 24:zSRclksrG 25:zSRNbits 26:zSRLbits 27:zSRCbits 28:zSRRbits 29:zpulsebits 30:zprobbits 31:zprobbitsxorstrobe 32:zprobbitsxortoggle 33:zsuccbits 34:zsuccbitsI 35:zreturnbits 36:zreturnnotbits 37:zosc1bits 38:zwiardbits 39:zwiardinvbits 40:zTMsimplebits 41:zonebits 42:zlfsrbits 43:zllfsrbits 44:zflipbits 45:zosceqbitsI 46:zosc1bitsI 47:zTMsimplebitsI 48:zwiardbitsI 49:zwiardinvbitsI 50:zonebitsI 51:zlfsrbitsI 52:zllfsrbitsI 53:zflipbitsI 54:zpattern4bits 55:zpattern8bits 56:zpattern4bitsI 57:zpattern8bitsI 58:Rtest 59:gensel 60:binroutfixed_prob1R 61:binroutfixed_prob1L 62:binroutfixed_prob2 63:binroutfixed_prob3 64:binroutfixed_prob4 65:SRdelay_lineOUT
-
-    //  pushbit(28, x);  //2: fixed binroute
-    //  pushbitcv(CVlist[x][0], CVlist[x][0], x);
-    // clean up
     gate[x].route=0;
     gate[x].shift_=0x15;
     gate[x].Gshift_[0]=0;
@@ -481,15 +321,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
   //////////////////////////////////////////////////////
-  /* 
-  www++;
- 
-  if (www>3) {
-    www=0;
-    resetz=1;
-    (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
-  }
-  */
 
   if (intflag[www]) { // process INT
     gate[www].trigger=1;
@@ -503,12 +334,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   }
 
   
-  // testing
-//  spdfunccnt=cvcount=dactypecnt=lengthfunccnt=adcfunccnt=bitfunccnt=glob;
-  
   // trial of new: *order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?*
   // or table can be XORed - with SR or somehow altered from there - as a skip could be an option so maybe we don't need tables...
-
   ww++;
   if (ww>orderings[ordercount][0]){
     ww=1;
@@ -517,48 +344,21 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case... // fixed bug in use of Gshift_[8] now...
   }
   www=orderings[ordercount][ww];
-  //  if (www==3) (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case...
-  
-  // genericLFSR for all probability modes
+
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   LFSR_[www] = (LFSR_[www]<<1) + tmp;
 
-  // sliding modes 
-    
-  //      mde=mode[3]; // upto13 - test for the frozen one // 11odd 3/genericbitsissilentmostly
-  //      if (mde>GROUP) mde=GROUP;
-      /*  if (www==0) mde=((mode[3]+mode[0])%128);
-  else if (www==1) mde=((mode[3]+mode[1])%128);
-  else if (www==2) mde=((mode[3]+mode[2])%128);
-  else mde=mode[3]; // case for 3:
-      */    
-
-      //      (*funcgroups[www][mde])(www);
-      
-
-  // trial here different version of Vienna with interpoll and new bit recurse options
-  //  major_vienna(www);
-
-  // do func
-  //  (*dofunc[www][0])(www);
-  //      SR_geomanticxx(www); // just for testings -> is full matrix one
-  // run as META function...
-  
-  //  SR_geomanticxxx(www); // xxx new one just for testings, is stack one... xxxx is new one which needs reduced matrices...
-  //      SR_geomantic_outer(www);
-      //    SR_geomantic_innernadcp(www); // these are workings
-
   // testings for meta mode handlers
+  //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
- //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
-
- uint32_t outindex=0;
-  (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
- // SR_geomantic_outer(www); // now this one sets inner function
+  uint32_t outindex=0;//mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...
+ (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
 
  (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
 
- if (www==2)  {
+     //SRspeedtest(www); // test slowest speed
+ 
+if (www==2)  {
    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
  }
 
@@ -585,8 +385,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     }
    }
 
-  // where are these used and is too long as counts every time
-  //      counter[4]++; counter[5]++; counter[6]++;
   counter[www]++; // used I think for multiple speeds
   counterd[www]++; 
 

@@ -96,9 +96,39 @@ RESOLVE ARCH:
 
 - different tails and how we select these... can also be fake strobe/flipflop ... mix of generators, and copies of SRs at full speeds... as tail is new param
 
+- v/oct issue: resolve 1v octave issue finally  // where we are at:  
+
+logspeed[] is 15 octaves: slowest speed measured with speedtexst now is 1Hz -> 16Khz
+
+*100k cv in, 22k feedback, 60k -10knob - check this! for modeC we have R65 as 66.5k, R71 as 22K* // see sheet
+
+[why do we have as 66.5K and not 60k as earlier - 66.5/22k = 1/3rd for 10v to 3.3v full range]
+[22k is for cv in 100/22 = 4.54 which is what we want. *1v source pls - 11/8* ]
+
+** 10/8/2022
+
+*geomantic: gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095; // detach this too // or rather one new form of re-attachment - we can also use value functions here!! // another layer of attach*
+
+- *we can also break down CVs to smaller chunks and have smaller selections eg. of just routing modes*
+
+foreseeable issues: if we are left with a probmode but no CV - then is fixed or always have one in reserve just in case eg. dac... // how we can use hanging probs to our advantage?
+
+- DONEtesting/fixing speedfromnew functions - some fixed/others unused (bitsnot, zpulsebits) but realise we need both strobe and general flag for free CV speed CV[x] TODO// 
+for functions which don't use depth
+
+- TODO:so now we need to set strobed in functions again/take care of strobey and strobe/trigger pulse in
+
+- DONE:test transition params -> fixed/unfixed scheme - test mid-transition//working
+
+
+- if we keep to 16/16/16-strobe/16meta scheme
+- intersperse fixed and free modes...
+
+- further on - *if we can attach DAC/mix with CV // add and subtract live*
+
 ** 9/8/2022
 
-// 9/8/2022 - DONEalso prototype *how to resolve dialing across setting all inbetween variables - TEST: if (mode[w]==oldmode[w] // will depend on timings* - we already have changed
+// 9/8/2022 - DONEalso prototype //how to resolve dialing across setting all inbetween variables - TEST: if (mode[w]==oldmode[w] // will depend on timings - we already have changed
 //other forms of slur eg. only set these on strobe or pull speed into this one... but would need to match inner
 // well inner would need to be called from here and we would call a null inner!
 // explore these possibilities
