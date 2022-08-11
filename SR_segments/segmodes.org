@@ -4,62 +4,18 @@ By degrees the idea of cultivation subsided into that of merely
 pastoral care. This slowly became merged in a sense of retirement —
 this again in a consciousness of solitude.
 
-*module for one bit landscape gardening...*
+module for one bit landscape gardening...
 
-*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it*
+*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???*
 
-* plan
+*what this means: that we associate each SR with a GSR function*
 
 serpent's head, caput draconis (rather than heavens\) - lunar node and
 link of geomantic figures with dots/dot matrix/bits... (see CCRU also)
 
-dragon with 5 heads!
+A dragon with 5 heads!
 
-for calibration use unipolar out/gnded from Quad slope
-
-CODE: modes? normed clocks, how fast we can run?
-
-basic speed and new CV hardware tests, MANUAL
-
-*20Kz fastest dac speed with 32/16 divider...*
-
-signals are inverted so unipolar 0-5v is from 0-2048 values and bipolar -5 to 5v is 0-4095
-
--2.5 to +2 is 1024 to 1024+2048 = 3072
-
-/////////////////////////////////////////////////////////
-
-- implement sketch of all modes as below with DAC and ADC options
-- check all pulsins, outs and clks/clk norm functions
-- test/play
-- tweaks for slower speed, CLK norms, what else? how we handle one bit audio filter?
-
-* 2022++
-
-*check all logic, pulsins, outs, strobey and implement strobey finally*
-
-settle speeds and test new voltage/CV scheme: what is Hz for 16 octaves slowest and fastest? 0.25 Hz to 16KHz
-
-older notes:
-- thinking on scale/speeds - at the moment we have 0-5v CV input and
-  covers 2^10 - so 10 octaves...we want say 13 or 14 octaves - 0.1Hz
-  to 5K for 14 octaves/doublings
-
-can we have knob covering this and 0-10v as 1v/OCT
-
-100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)
-
-// 14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
-
-http://lushprojects.com/circuitjs/circuitjs.html?ctz=CQAgjCAMB0l3BWcMBMcUHYMGZIA4UA2ATmIxAUgoqoQFMBaMMAKACVwU9wwURCALDz5UIA2lEkwELAIYgUCQp24DsfXt27Zo2EAx16w8ePpgnMkBMQQoU4-Bkgoyk4yZYAnFcIX5foiaQ7D4C3MTKYVIg4vrG0dJeodxoqtxUTvAsAO5+3Mx8isoFUElF-EJqfIKSKLhwLADGCkog6jHt7VQC0JlB-WCMxPoovVZkxC4RkMRqkOTmkKy55SXlNcErrTXlUZstkSn+ezkHMSmtXadVbXw3G9ftNTeapQDmZ2ACQuWpUo8aLgxCI+YIAe0kG3OhHI8UWcDIhCUilqkmwLAhYCQULUCCQSHhMwwSMIKIgGiQ6KAA
-
-or 100k cv in, 23k feedback, and -10v is 70k
-
-*figure out calc for filter speeds (once we settle on speeds)*
-
-TODO: check newmodes, bits_and_prob.org and other c and org files for modes/prob, what we have so far, how to maybe make more generic/new versions...
-*TODO: for dac_out/modeC we don't have speed to freeze/no OUT, also make sure we select DACs, modeC needs more work, also params to fix*
-*TODO: if we use adc/modeN.h modes on L,R then check we have pulsins, esp if we use binroute as strobe etc!*
+* 2022++ TODO:
 
 RESOLVE ARCH:
 
@@ -72,46 +28,62 @@ RESOLVE ARCH:
 - final details and questions
 //
 
-*static/frozen speeds in general or not - yes but just not on lowest - but how to implement*
-*slower speeds/cv to fix and re-do/test hardware*
-*check use of clk, pulsin, out*
+*static/frozen speeds in general or not - yes but just not on lowest - but how to implement - implemented now as spdfracend -> speedfunc 6 // new default*
+*check use of clk, pulsin, pulsout, strobey and implement strobey finally*
+*figure out calc for filter speeds - for 15 octaves*
+
 *5th tail always running and how we switch in to it different streams from SRs*
-*dacs with interpol or not*
+*setting of dactypes*
 *also potential global speeds from moder - how this can over-ride // sets of global modes*
 *reset global speeds and binary[all] in moder - RESETR macro to use*
 
-** TODO
-
 - co-ordinate and check lists of routes, dacfrom, speedfrom routes // resets and manipulations, all lengths of lists
 - clean up generators/adc/dac - gens for adc
-- ghost routed layers trial/also 5th tail for all modeC - how to do this fast... is it always default single route in from C?
-- 5th tail as processor, generator and what_would_have_been
-- check all above: speed, clkin, pulsin etc, strobey thing
 
 - basic functionality as matrices implemented  - list these
-//- python code to pull out basic header and function body
+
+- different tails and how we select these... can also be fake
+  strobe/flipflop say at moder speed ... mix of generators, and copies
+  of SRs at full speeds... as tail is new param, and a potential route
+  in
 
 ** xxTOP
 
+** 11/8/2022
 
-- different tails and how we select these... can also be fake strobe/flipflop ... mix of generators, and copies of SRs at full speeds... as tail is new param
+*use in outer modes:  &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[x], &CVL[x], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[x], &param[x], &Gshift_[8] // TAIL!*
 
-- v/oct issue: resolve 1v octave issue finally  // where we are at:  
+create areas of modes and detachments: what the possibilities are...
 
-logspeed[] is 15 octaves: slowest speed measured with speedtexst now is 1Hz -> 16Khz
+- *TODO: re-think Cv attachment:*
+-                attach and detach - add, subtract but how? add/sub from an array
 
-*100k cv in, 22k feedback, 60k -10knob - check this! for modeC we have R65 as 66.5k, R71 as 22K* // see sheet
+                 *return to pointers but need double up - pointer and value - we have example of this: SR_geomantic_outer1attach but is more complex - figure out*
 
-[why do we have as 66.5K and not 60k as earlier - 66.5/22k = 1/3rd for 10v to 3.3v full range]
-[22k is for cv in 100/22 = 4.54 which is what we want. *1v source pls - 11/8* ]
+- options attach say DAC and stays there, when we enter new mode &CV // or last value stays there when we enter new mode
+
+///
+
+- DONE: test new spdfracs: 2,3,4, 
+
+adding new rungler and splits - seems to work well - split so binr is full speed and osc/fliflop at other spds
+
+//
+
+DONE: checked speed cv (C) with 1v source so confirm:
+
+logspeed[] is 15 octaves: slowest speed measured with speedtest now is 1Hz -> 16Khz
+
+*We will have 100k cv in, 22k feedback, 66.5k -10knob - for testing on modeC we have R65 as 66.5k, R71 as 22K* // see sheet/list
 
 ** 10/8/2022
 
 *geomantic: gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095; // detach this too // or rather one new form of re-attachment - we can also use value functions here!! // another layer of attach*
+///but is temporary attachment
 
 - *we can also break down CVs to smaller chunks and have smaller selections eg. of just routing modes*
 
-foreseeable issues: if we are left with a probmode but no CV - then is fixed or always have one in reserve just in case eg. dac... // how we can use hanging probs to our advantage?
+foreseeable issues: if we are left with a probmode but no CV - then is fixed or always have one in reserve just in case eg. dac... // *how we can use hanging probs to our advantage?*
 
 - DONEtesting/fixing speedfromnew functions - some fixed/others unused (bitsnot, zpulsebits) but realise we need both strobe and general flag for free CV speed CV[x] TODO// 
 for functions which don't use depth
@@ -4758,6 +4730,8 @@ one option suggest as clkin flips that routing (or any routing, or advances rout
 
 
 11/10/2021:
+
+*Q. type of binroute - if this should be fixed/detached by function/CV?*
 
 - what we can salvage from it.c: overlaps, SR in SR, how we could pick up or work with other ghost regs, revenants, various 4 bit in variations
 

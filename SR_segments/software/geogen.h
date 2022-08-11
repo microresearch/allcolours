@@ -110,7 +110,7 @@ static inline uint32_t binroutfixed_prob4(uint32_t depth, uint32_t in, uint32_t 
 //////////////////////////////////////////////////////////////////////////
 // tails
 
-void basictail(void){ // tail here is basic 4th at full speed
+void basictail(void){ // tail here is basic 4th binroute at full speed
   HEADNADA;
   uint32_t w=8;
   GSHIFT_;
@@ -124,6 +124,15 @@ void basictail(void){ // tail here is basic 4th at full speed
     tmp=tmp>>1;
   }
   gate[w].shift_+=bitn;
+}
+
+// tail which is flipflop at speed of modeR - could be faster to always do in modeR rather than re-calc spd. or just a flag//same thing but if w==3 slows
+void fliptail(void){ //
+  // we can also use other gate[w].flips or even move through these
+  HEADNADA;
+  uint32_t w=8;
+  GSHIFT_;
+  gate[8].shift_+=gate[3].flip;  
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -151,13 +160,20 @@ static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // d
     }
   return bt;
 }
+
 static inline uint32_t zjustcycle(uint32_t depth, uint32_t in, uint32_t wh){ // just cycle// no depth
   uint32_t bt;
   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
   return bt;
 }
-  
-// TODO: adapt for binroute alts ???
+
+static inline uint32_t zjusttail(uint32_t depth, uint32_t in, uint32_t wh){ // just tail// no depth
+  uint32_t bt;
+  bt = (gate[8].Gshift_[8]>>SRlength[8]) & 0x01;// tail
+  return bt;
+}
+
+// TODO: adapt for binroute alts ??? what are these??
 static inline uint32_t binroutfixed(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count
   uint32_t bt=0, bitrr;
   depth=binroute[count][wh]|binary[wh];
@@ -558,6 +574,29 @@ static inline uint32_t zbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint3
   return bt;
 }
 
+// copy GSR to another and keep there (so only on entry or on strobe...// to shared array)
+static inline uint32_t zcopyGSR(uint32_t depth, uint32_t in, uint32_t wh){
+  static uint32_t sharey;
+  uint32_t bt=0;
+  if (gate[wh].changed==0) {
+    sharey=gate[wh].Gshare_;
+  }
+  bt=(sharey>>(depth>>7)) & 0x01;
+  sharey=(sharey<<1)+bt;
+  return bt;
+}
+
+static inline uint32_t zcopyGSR_s(uint32_t depth, uint32_t in, uint32_t wh){ // strobe
+  static uint32_t sharey;
+  uint32_t bt=0;
+  if (gate[wh].trigger) {
+    sharey=gate[wh].Gshare_;
+  }
+  bt=(sharey>>(depth>>7)) & 0x01;
+  sharey=(sharey<<1)+bt;
+  return bt;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //3
 // speeds - which can also be generic bit functions! and vice versa...
@@ -612,11 +651,6 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we
   uint32_t bt=0;
   float speed;
   int32_t tmp;
-
-  //  tmp=(depth>>2)-512;
-  //  tmp+=(in>>2);  
-  //  if (tmp<0) tmp=0;
-  //  else if (tmp>1023) tmp=1023;
   if (in==0) tmp=depth;
   else tmp=depth%in;
   //  tmp=in+depth;
@@ -634,7 +668,48 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we
 }
 
 //INx
-static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // depth is offset, in is constraint -- and speed from dac = gate[speedfrom[spdcount][w]].dac
+static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in //INx
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  tmp=in+depth;
+  if (tmp>4095) tmp=4095;
+  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+//INx
+static inline uint32_t spdfrac4(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in //INx
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  tmp=(depth>>2)-512;
+  tmp+=(in>>2);  
+  if (tmp<0) tmp=0;
+  else if (tmp>1023) tmp=1023;
+
+  speed=logspeed[tmp]; 
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+//INx
+static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t wh){ // depth is offset, in is constraint -- and speed from dac = gate[speedfrom[spdcount][w]].dac
   uint32_t bt=0;
   float speed;
   int32_t tmp;
@@ -653,18 +728,6 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // de
   }
   return bt;
 }
-
-// TODO: add in different spdfrac doubles: //INx
-
-/*
-
-  tmpp=(CV[w]>>2)-512;
-  cv=(gate[speedfrom[spdcount][w]].dac>>2) + tmpp;  
-  if (cv<0) cv=0;
-  else if (cv>1023) cv=1023;
-
-*/
-
 
 static inline uint32_t strobe(uint32_t depth, uint32_t in, uint32_t wh){   // strobe - no depth
   uint32_t bt;
@@ -749,6 +812,42 @@ static inline uint32_t osceq(uint32_t depth, uint32_t in, uint32_t wh){  // so a
      }         
      return bt;
 }
+
+static inline uint32_t flipflop(uint32_t depth, uint32_t in, uint32_t wh){  // so all share // NO DEPTH
+  uint32_t bt;
+  static uint32_t fl=0;
+  fl^=1;
+  bt=fl;
+  return bt;
+}
+
+static inline uint32_t flipflopandroute(uint32_t depth, uint32_t in, uint32_t wh){  // so all share // NO DEPTH - but depth could be route
+  uint32_t bt, bitrr;
+  static uint32_t fl=0;
+  fl^=1;
+  bt=fl;
+  depth=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+
+  return bt;
+}
+
+
+static inline uint32_t flipflopI(uint32_t depth, uint32_t in, uint32_t wh){  // so all share// NO DEPTH
+  uint32_t bt;
+  static uint32_t fl[4]={0,0,0,0};
+  fl[wh]^=1;
+  bt=fl[wh];
+  return bt;
+}
+
 
 // generic in from gen.h
 

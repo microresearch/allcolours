@@ -504,6 +504,7 @@ static uint32_t outcnt=0;
 // added pulsout macro to simplify 30/5/2022
 #define BITN_AND_OUTV_ {						\
     PULSIN_XOR;								\
+    gate[w].flip^=1;							\
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
     PULSOUT;								\

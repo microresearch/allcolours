@@ -46,12 +46,18 @@
 
 static heavens gate[9]; // for parallell SR doubled + tail
 
+static uint32_t CV[4]={0,0,0,0};
+static uint32_t CVL[4]={0,0,0,0};
+static uint32_t CVM[4]={0,0,0,0};
+
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
 uint32_t matrixNN[13]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 uint32_t matrixLL[13]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0,0};
 uint32_t matrixCC[13]={0,0,0, 1,0,0, 31<<7, 0,0, 2,0,1,0}; // C has sprobbits, altfunc is 1 but then that needs cv too
 uint32_t matrixRR[13]={0,0,0, 2,0,0, 31<<7, 0,0, 0,0,0,0}; 
 //                     speed  bit    len    adc  prob
+
+uint32_t *matrixNNN[13]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 static uint32_t ADCin;
@@ -182,9 +188,6 @@ uint32_t oppose[4]={2,3,0,1};
 static uint32_t train[4]={0,0,0,0};
 
 static uint32_t prev_stat[4]={0,0,0,0};
-static uint32_t CV[4]={0,0,0,0};
-static uint32_t CVL[4]={0,0,0,0};
-static uint32_t CVM[4]={0,0,0,0};
 static volatile float speedf_[9]={1.0f,1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f};
 static volatile float speedf[9]={1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
@@ -263,13 +266,13 @@ uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep
 {
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geomantic_outer_binrpp, SR_geomantic_outer_bitchangeS, SR_geomantic_outer_testT1, SR_geomantic_outer_testT1, SR_geomantic_outer_testT3, SR_geomantic_outer_testT3, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2}, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
+   {SR_geomantic_outer_rung1, SR_geomantic_outer_bitchangeS, SR_geomantic_outer_testT1, SR_geomantic_outer_testT1, SR_geomantic_outer_testT3, SR_geomantic_outer_testT3, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2}, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
  {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
 };
 
 //  {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
 
-void (*dotail[64])(void)= {basictail};
+void (*dotail[64])(void)= {fliptail, basictail};
  
 void mode_init(void){
   uint32_t x,y;
@@ -279,12 +282,18 @@ void mode_init(void){
       gate[1].matrix[y]=matrixLL[y];
       gate[2].matrix[y]=matrixCC[y];
       gate[3].matrix[y]=matrixRR[y];
-    }
+
+      gate[0].matrixp[y]=matrixNNN[y]; // these are just defaults
+      gate[1].matrixp[y]=matrixNNN[y];
+      gate[2].matrixp[y]=matrixNNN[y];
+      gate[3].matrixp[y]=matrixNNN[y];
+
+  }
 
   RESETR;
   
   for (x=0;x<4;x++){
-
+    gate[x].flip=0;
     gate[x].route=0;
     gate[x].shift_=0x15;
     gate[x].Gshift_[0]=0;
@@ -352,11 +361,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
   uint32_t outindex=0;//mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...
- (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
+  (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
+  (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
 
- (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
-
-     //SRspeedtest(www); // test slowest speed
+  //    SRspeedtest(www); // test slowest speed
  
 if (www==2)  {
    DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8

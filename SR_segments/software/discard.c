@@ -1,3 +1,48 @@
+/*
+
+
+* plan
+
+
+for calibration use unipolar out/gnded from Quad slope
+
+CODE: modes? normed clocks, how fast we can run?
+
+basic speed and new CV hardware tests, MANUAL
+
+*20Kz fastest dac speed with 32/16 divider...*
+
+signals are inverted so unipolar 0-5v is from 0-2048 values and bipolar -5 to 5v is 0-4095
+
+-2.5 to +2 is 1024 to 1024+2048 = 3072
+
+/////////////////////////////////////////////////////////
+
+- implement sketch of all modes as below with DAC and ADC options
+- check all pulsins, outs and clks/clk norm functions
+- test/play
+- tweaks for slower speed, CLK norms, what else? how we handle one bit audio filter?
+
+
+settle speeds and test new voltage/CV scheme: what is Hz for 16 octaves slowest and fastest? 0.25 Hz to 16KHz
+
+older notes:
+- thinking on scale/speeds - at the moment we have 0-5v CV input and
+  covers 2^10 - so 10 octaves...we want say 13 or 14 octaves - 0.1Hz
+  to 5K for 14 octaves/doublings
+
+
+can we have knob covering this and 0-10v as 1v/OCT
+
+100k instead of 200k for -10v and 33k in loop - as in Tides! (and can we adjust/scale input cv)
+
+// 14 octs in 1024 =73 per octave =140K of cv in maybe approx... (for 730 max)
+
+http://lushprojects.com/circuitjs/circuitjs.html?ctz=CQAgjCAMB0l3BWcMBMcUHYMGZIA4UA2ATmIxAUgoqoQFMBaMMAKACVwU9wwURCALDz5UIA2lEkwELAIYgUCQp24DsfXt27Zo2EAx16w8ePpgnMkBMQQoU4-Bkgoyk4yZYAnFcIX5foiaQ7D4C3MTKYVIg4vrG0dJeodxoqtxUTvAsAO5+3Mx8isoFUElF-EJqfIKSKLhwLADGCkog6jHt7VQC0JlB-WCMxPoovVZkxC4RkMRqkOTmkKy55SXlNcErrTXlUZstkSn+ezkHMSmtXadVbXw3G9ftNTeapQDmZ2ACQuWpUo8aLgxCI+YIAe0kG3OhHI8UWcDIhCUilqkmwLAhYCQULUCCQSHhMwwSMIKIgGiQ6KAA
+
+or 100k cv in, 23k feedback, and -10v is 70k
+*/
+
 /// cleaning caput000
 
 

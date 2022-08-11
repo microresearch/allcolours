@@ -85,15 +85,14 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  
   {1,3,1,1}
 };
 
-uint32_t speedfrom[16][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
+uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
   {3,0,0,0}, // default
   {0,0,0,0}, // synced...
   {1,1,1,1}, // synced...
   {2,2,2,2}, // synced...
   {3,3,3,3}, // synced...
-  {0,1,2,3}, // itself...
-  /*  
-  {1,3,1,1}, // new one for rungling 24/1/2022
+  {0,1,2,3}, // itself...???
+  {2,2,0,0}, // was 1,3,1,1 -new one for rungling 24/1/2022
   {3,0,1,2}, // from latest notebook prev ones: 3,0,1,2
   {0,1,2,3}, // itself
   {3,2,1,0}, // reverse
@@ -107,7 +106,7 @@ uint32_t speedfrom[16][4]={ // now for speedfrom just copied from above! TODO: c
   {1,2,3,0}, // nexts
   {3,2,1,0}, /// rev
   {1,3,1,1},
-  {1,3,1,1}*/
+  {1,3,1,1}
 };
 
 
