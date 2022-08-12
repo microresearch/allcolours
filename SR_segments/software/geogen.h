@@ -742,6 +742,14 @@ static inline uint32_t ztogglebits(uint32_t depth, uint32_t in, uint32_t wh){   
   return bt[wh];
 }
 
+// can also have shared toggles
+static inline uint32_t ztogglebitssh(uint32_t depth, uint32_t in, uint32_t wh){   // toggle - no depth
+  static uint32_t bt=0;//,0,0,0};
+  if (gate[wh].trigger) bt=bt^1;
+  return bt;
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 //4
 //generic bits
@@ -1974,6 +1982,7 @@ void zSR_globalbin(uint8_t w){ // global binary route for modeR. can run out fas
 */
 
 // adding new functions 8/8 which can be for speed or bits or ported ones...
+
 static inline uint32_t tailbits(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
   uint32_t bt=0, bitrr;
   bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 

@@ -19,12 +19,16 @@ A dragon with 5 heads!
 
 RESOLVE ARCH:
 
+*baisc model, test basic geogens inc. ported//classic SRs, ADC and DAC, arrange, layout of inner and outer - new pointer arch, tails, interpol/strobe etc, recursions/gaps/attach/detachments, final tests/tweaks*
+
 //
+-  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
+
+
 - strip down and test // new ops and add operations on ghosts 
-- test that we have basic classic SR operations and flexibility for prob, toggle and strobe
-- new functions and catalogue these 
+- test that we have basic classic SR operations and flexibility for prob, toggle and strobe within basic functions...
 - adc and dac to work through (from N and C)
-- final arch
+- final arch/details and pulse/triggers
 - final details and questions
 //
 
@@ -44,20 +48,61 @@ RESOLVE ARCH:
 
 - different tails and how we select these... can also be fake
   strobe/flipflop say at moder speed ... mix of generators, and copies
-  of SRs at full speeds... as tail is new param, and a potential route
-  in
+  of SRs at full speeds... as tail is new param, and a potential route in
 
 ** xxTOP
 
+** 12/8/2022
+
+DONE// shift the >>7 to inner so CV attachment is more consistent but best to have several bit arrays // all arrays should have 32 elements  // divide these up
+
+for manual - hints such as HF in (last mode of AC) into CLKins 
+
+outer modes can have different ways of dealing with modes but needs to have some consistency. eg. a group which deal with gaps...
+
+///
+
+*16 basic modes with gaps. can the gaps move? still one step away from final arch*
+
+basic modes:
+
+- pass on/resetr
+- TMs/prob
+- runglers
+
+*outer defines a mode but are they different for L, R, C, N - means 4x64 outer modes with some repeats*
+
+what basic modes did we outline in the past? // what were groups of modes?
+
+eg.
+
+void (*funcgroups[4][128])(uint8_t w)=
+{
+    {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream}, //128
+  //    {adc2, adc0, adc2, adc0,  adc2,   adc0, adc2, adc0,adc2,  adc0,adc2, adc0, adc2, adc0, adc2, adc0},
+  
+  {SRX0, SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare, stream},  // 128
+
+  {newdac2, dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin,   stream4_unshare, stream}, 
+  
+  {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2, SRRrung3,     adcLbinprob, SRX0,     SRX0, adcLabstractLD, stream4_unshare, stream} //64 
+}; 
+
+
+but q. such as what is DAC, what is ADC (seperate outers for these?) - leave these unset except for say first few modes: RESET/SET all to base!
+
+too many: ALL to set spdmode, bitmode, length, adc, dac, cvsources, inner mdoes
+
 ** 11/8/2022
 
-*use in outer modes:  &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[x], &CVL[x], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[x], &param[x], &Gshift_[8] // TAIL!*
+*think more on feedbacks - of SR bits onto all aspects eg.choice of ext/int*
+
+*use in outer modes esp. TAIL:  &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[x], &CVL[x], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[x], &param[x], &Gshift_[8] // TAIL!*
 
 create areas of modes and detachments: what the possibilities are...
 
 - *TODO: re-think Cv attachment:*
 -                attach and detach - add, subtract but how? add/sub from an array
-
                  *return to pointers but need double up - pointer and value - we have example of this: SR_geomantic_outer1attach but is more complex - figure out*
 
 - options attach say DAC and stays there, when we enter new mode &CV // or last value stays there when we enter new mode
