@@ -53,7 +53,7 @@ static uint32_t CVM[4]={0,0,0,0};
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
 uint32_t matrixNN[13]={0,0,0, 2<<7,0,0, 31<<7, 1<<7,0, 0,0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 uint32_t matrixLL[13]={0,0,0, 2<<7,0,0, 31<<7, 0,0, 0,0,0,0};
-uint32_t matrixCC[13]={0,0,0, 1<<7,0,0, 31<<7, 0,0, 2<<7,0,1<<7}; // C has sprobbits, altfunc is 1 but then that needs cv too
+uint32_t matrixCC[13]={0,0,0, 1<<7,0,0, 31<<7, 0,0, 2<<7,0,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
 uint32_t matrixRR[13]={0,0,0, 2<<7,0,0, 31<<7, 0,0, 0,0,0,0}; 
 //                     speed  bit       len    adc  prob
 
@@ -68,20 +68,10 @@ static uint32_t count=0; // for route
 static uint32_t daccount=0; // for dacfrom
 static uint32_t spdcount=0; // for spdfrom
 static uint32_t tailcount=0; // for tail choice
-static uint32_t adcfunccount=0; // for adctype
-static uint32_t dactypecount=0; // for dactype
-static uint32_t binroutetypecount=0; // for type of binroute - UNUSED?
+static uint32_t binroutetypecount=0; // for type of binroute - used in a few functions in geogen 
 
 // TODO: clean these - do we use???
-static uint32_t dactypecnt=0;
-static uint32_t spdfunccnt=0;
-static uint32_t lengthfunccnt=0;
-static uint32_t adcfunccnt=0;
-static uint32_t bitfunccnt=0;
-static uint32_t extfunccnt=0;
-static uint32_t outfunccnt=0;
-static uint32_t gscnt=0;
-static uint32_t outcnt=0;
+//static uint32_t dactypecnt=0;
 
 // 1 means its used so do normed clocks - all one for testing
 // replace this with just strobed set by mode/function itself and then passed to final part for normed clocks
@@ -220,14 +210,10 @@ static inline void new_data(uint32_t data, uint32_t ww)
     delay_buffer[ww][1] = data;
 }
 
-uint32_t orderings[16][16]={ // orderings - first is length
-  {4,0,1,2,3},
-  {7,0,0,1,2,1,2,3}
-};
-
-uint32_t ordercount=0;
+static uint32_t ordercount=0;
 
 static uint32_t resetz=1;
+static uint32_t glob=0; // glob is now global index for global funcs 
 
 #include "gen.h" // new generators
 #include "adcetc.h" // now all of the other functions so can work on modes
@@ -266,13 +252,14 @@ uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep
 {
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geomantic_outer_rung1, SR_geomantic_outer_bitchangeS, SR_geomantic_outer_testT1, SR_geomantic_outer_testT1, SR_geomantic_outer_testT3, SR_geomantic_outer_testT3, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2, SR_geomantic_outer_testT2}, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
- {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geomantic_outer_testtS, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
+   {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
 };
 
-//  {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+// 
 
-void (*dotail[64])(void)= {fliptail, basictail};
+//  {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
  
 void mode_init(void){
   uint32_t x,y;
@@ -304,7 +291,8 @@ void mode_init(void){
     gate[x].reset[1]=0;
     gate[x].reset[2]=0;
     gate[x].reset[3]=0;
-            
+    gate[x].route=0;
+    
     gate[0].gsrcnt[x]=31;
     gate[1].gsrcnt[x]=31;
     gate[2].gsrcnt[x]=31;	
@@ -325,7 +313,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  static uint32_t flipper[4]={1}, www=0, kk=0, ww=0, glob=0; // global count for sync=glob
+  static uint32_t www=0, ww=0;
   uint32_t tmp;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
@@ -360,7 +348,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // testings for meta mode handlers
   //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
-  uint32_t outindex=0;//mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...
+  uint32_t outindex=mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...mode is 64.32.16>>8
   (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
   (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
 

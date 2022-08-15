@@ -1,3 +1,59 @@
+typedef struct modes_ { // what we need: function, strobey, interpoll, inner_function?, detach?, 
+  uint32_t strobey;
+  uint32_t interpoll;
+  //  uint32_t detachlen;
+  uint32_t detachspeed;
+  void (*func)(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspeed, uint32_t interpoll, uint32_t (*innerfunc)(uint8_t w));
+  uint32_t (*innerfunc)(uint8_t w);
+} modez; 
+
+
+typedef struct stack_ {
+  uint32_t (*speedfrom)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t* speedcv1;
+  uint32_t* speedcv2;
+  uint32_t (*bit)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t* bitcv1;
+  uint32_t* bitcv2;
+  uint32_t* lencv;
+  uint32_t bitindexy; // bit index for reference
+  uint32_t speedindexy; // speed index
+} stack;
+
+// what can be removed from here?
+
+
+//  uint32_t (*bit[64])(uint32_t depth, uint32_t in, uint32_t wh);
+  //  uint32_t (*speedfrom[64])(uint32_t depth, uint32_t in, uint32_t wh);
+  //  stack stacky[64]; // full stack
+
+
+// global count for sync=glob   tmp=depth>>8; ///4 bits
+
+
+// just a test here - uses CVL to select bitfunc
+// but can't be in generic
+
+static inline uint32_t Rtest(uint32_t depth, uint32_t in, uint32_t wh){ 
+  uint32_t bt=0, bitrr, tmp;
+  // fixed binroute
+  tmp=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  // do changes using depth which can be CVL or...
+  bitfunccnt=depth>>8; // 16 is 4 bits
+  
+  return bt;
+}
+
+
+
 /*
 
 

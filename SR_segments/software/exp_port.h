@@ -1,16 +1,6 @@
 // additional ports from experiment.h, bit.h, prob.h
 
-// TODO: extractL, R, N, C ??? did we do that? in L and R - we need check dac, adc and ghost modes, strobe modes
-
-// speedmodes from experiment/gen.h:
-//uint32_t (*spdmodes[32])(uint32_t depth, uint8_t wh)={speedfracint, speedfrac, strobebits, binroutebits, binroutebits_noshift, binroutebits_noshift_transit, strobeint, probbits, TMsimplebits, osceqbits, osc1bits, onebits, ENbits, ENsbits, compbits, compdacbits}; // just to test // second speedfrac is no interpol
-
-// diff/to add/translate to geo world:
-
-//zbinroutebits, zbinroutebits_noshift, zbinroutebits_noshift_transit, zprobbits, zTMsimplebits, osceq, zosc1bits, zonebits, zENbits, zENsbits, zcompbits, //compdacbits
-
-// compared to from geogen.h:
-//uint32_t (*speedfromsdd[32])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, holdlspdfrac, strobe, ztogglebits, ones, clksrG, clksr,
+// TODO: in all - we need check dac, adc and ghost modes, strobe modes
 
 // template
 static inline uint32_t p(uint32_t depth, uint32_t in, uint32_t w){

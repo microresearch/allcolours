@@ -12,7 +12,7 @@ static uint32_t gscnt=0;
 static uint32_t outcnt=0;
 */
 
-#define RESETR count=0; daccount=0; spdcount=0; tailcount=0; dactypecount=0; binroutetypecount=0; dactypecnt=0; spdfunccnt=0; lengthfunccnt=0; adcfunccnt=0;bitfunccnt=0; extfunccnt=0; outfunccnt=0; gscnt=0; outcnt=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
+#define RESETR count=0; daccount=0; spdcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
 
 #define STR0 (gate[w].trigger)
 
@@ -311,6 +311,32 @@ static uint32_t outcnt=0;
   }							\
   }
 // was no strobey
+
+// for local routes
+#define BINROUTEMY_ {				\
+  tmp=myroute[w][gate[w].route]|binary[w];	\
+  for (x=0;x<4;x++){				\
+    if (tmp&0x01){					\
+      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;	\
+      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
+      bitn^=bitrr;					\
+    }							\
+    tmp=tmp>>1;						\
+  }							\
+}
+
+// for local routes - but stripped they are all the same...
+#define BINROUTEMYstrip_ {				\
+  for (x=0;x<4;x++){				\
+    if (tmp&0x01){					\
+      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;	\
+      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
+      bitn^=bitrr;					\
+    }							\
+    tmp=tmp>>1;						\
+  }							\
+}
+
 
 // same more or less as BINROUTENOG_ but not with gshift
 #define BINROUTESR_ {				\

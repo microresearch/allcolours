@@ -41,6 +41,8 @@ RESOLVE ARCH:
 *also potential global speeds from moder - how this can over-ride // sets of global modes*
 *reset global speeds and binary[all] in moder - RESETR macro to use*
 
+/////
+
 - co-ordinate and check lists of routes, dacfrom, speedfrom routes // resets and manipulations, all lengths of lists
 - clean up generators/adc/dac - gens for adc
 
@@ -51,6 +53,43 @@ RESOLVE ARCH:
   of SRs at full speeds... as tail is new param, and a potential route in
 
 ** xxTOP
+
+** 15/8/2022
+
+1st mode-reset/basic bits
+2nd - no reset.basic
+->16 modes
+
+*arch: sets of outers calling inners, can we fix different models (eg. matrixp copies?), 16 strobe modes with lots of ops, mobile gaps, add different binroutes, lengthchanging modes, bituse below, more adc modes*
+
+filling in structural gaps: we added new local binroute but could also be different types of binroute // local binroute is ONLY routing so NOT a different type except in one case
+
+*would be nice to have say a bit which can be used eg. bit from SR bumps on routes, but where do we get this bit from and that bit needs params*
+*or we just use incoming bit://binroute in//depthroutein//local route in where and when we need it*
+
+// functions can also determine length (as DACs=bits->values), prob of adc entry or not, internal adc prob modes -> timing, more of strobe on bits and timings, local/global routes, binary, types of binroute 
+
+
+Geogens - run through each set: speed, adc, bits, prob, tail
+
+DONE: and add globals (bits)...IN PROGRESS // *can have more sets of routes etc...* TESTING and globsel globset seem to work - 
+
+/////
+
+*what we still need to extract and to test... adc (so many), dacsettings*
+
+how this intermediate work effects structure/architecture: eg. strobes, global modes eg///
+
+sets of now:
+
+in/externalN: adc ins
+in/externalL: regular
+in/externalR: globals - still as functions, dotail here?
+in/externalC: dac outs
+
+** 13/8/2022
+
+// can't do >>7 in adcetc for CVs (as we might use dacs also...)
 
 ** 12/8/2022
 

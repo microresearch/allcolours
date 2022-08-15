@@ -1,8 +1,29 @@
-
 uint32_t binroutetypes[64][4]={
-{0,0,0,0},
+  {0,0,0,0}, // now there is 7->8
 };
 
+
+uint32_t orderings[16][16]={ // orderings - first is length
+  {4,0,1,2,3},
+  {4,3,2,1,0},
+  {7,0,0,1,2,1,2,3},
+  {8,0,0,1,1,2,2,3,3},
+
+  {5,0,0,1,2,3},
+  {6,0,0,0,1,2,3},
+  {5,0,1,2,2,3},
+  {5,0,1,1,2,3},
+
+  {5,0,1,2,3,3},
+  {6,0,0,1,1,2,3},
+  {6,0,0,1,2,2,3},
+  {6,0,1,0,2,0,3},
+
+  {6,3,2,2,1,1,0},
+  {4,1,0,3,2},
+  {7,0,0,0,0,1,2,3},
+  {7,3,2,1,0,0,0,0}
+};
 
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
@@ -16,7 +37,6 @@ uint32_t binroute[17][4]={ // add more routes, also what seq change of routes ma
 	{8,1,2,11}, // expanding
 	{8,1,2,12}, // expanding
 	{8,1,2,4}, // route in one big circle
-
 	{0,1,2,4},
 	{9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
 	{1,2,4,8}, // only loop - this is what is added to get loop too for prob
@@ -71,14 +91,17 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  
   {1,3,1,1}, // new one for rungling 24/1/2022
   {3,0,1,2}, // from latest notebook prev ones: 3,0,1,2
   {0,1,2,3}, // itself
+
   {3,2,1,0}, // reverse
   {3,3,3,3},
   {2,2,2,2},
   {1,1,1,1},
+
   {3,3,1,1},
   {1,1,3,3},
   {2,3,0,1}, // opposites
   {1,0,3,2},
+
   {1,2,3,0}, // nexts
   {3,2,1,0}, /// rev
   {1,3,1,1},
@@ -90,18 +113,22 @@ uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: c
   {0,0,0,0}, // synced...
   {1,1,1,1}, // synced...
   {2,2,2,2}, // synced...
+
   {3,3,3,3}, // synced...
   {0,1,2,3}, // itself...???
   {2,2,0,0}, // was 1,3,1,1 -new one for rungling 24/1/2022
   {3,0,1,2}, // from latest notebook prev ones: 3,0,1,2
+
   {0,1,2,3}, // itself
   {3,2,1,0}, // reverse
   {3,3,3,3},
   {2,2,2,2},
+
   {1,1,1,1},
   {3,3,1,1},
   {1,1,3,3},
   {2,3,0,1}, // opposites
+
   {1,0,3,2},
   {1,2,3,0}, // nexts
   {3,2,1,0}, /// rev
