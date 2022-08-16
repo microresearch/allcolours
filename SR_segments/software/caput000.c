@@ -252,9 +252,11 @@ uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep
 {
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geomantic_outer_testtS, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
-   {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geomantic_outer_binr, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
+   {SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
+   // SR_geomantic_outerRglobselandset
+   //SR_geomantic_outer_binr
 };
 
 // 
@@ -301,11 +303,11 @@ void mode_init(void){
   
   gate[0].adctype=0;
 
-  gate[0].dactype=67;
-  gate[1].dactype=67; // default simpler version - now 4 bit version 
+  gate[0].dactype=25; // now set to 25 // was 67
+  gate[1].dactype=25; // default simpler version - now 4 bit version 
   gate[2].dactype=0; // set for out
-  gate[3].dactype=67;
-  gate[8].dactype=67;  
+  gate[3].dactype=25;
+  gate[8].dactype=25;  
 }
 
 
@@ -348,7 +350,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // testings for meta mode handlers
   //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
-  uint32_t outindex=mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...mode is 64.32.16>>8
+  uint32_t outindex=0;//mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...mode is 64.32.16>>8
   (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
   (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
 

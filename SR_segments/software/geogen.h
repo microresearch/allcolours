@@ -188,7 +188,26 @@ static inline uint32_t binroutfixed(uint32_t depth, uint32_t in, uint32_t wh){  
   return bt;
 }
 
-//binroutfixedmy, binroutmybumpS, binroutmycv
+// TODO: check binroutes: the route itself // type of binroute... binroutetypes[binroutetypecount][w];
+/* 
+routes: 
+tmp=binroute[count][wh]|binary[wh];
+tmp=myroute[w][gate[w].route]|binary[w];
+depth=depth>>8; // 12 bits to 4 bits // but we do tail for that one too
+
+each has one of  8: BINROUTE_, BINROUTESR_; BINROUTEalt_; BINROUTEZERO_; BINROUTESHARE_; BINROUTENOG_; BINROUTEtrig_; BINROUTEnoalt_;  // new one which just cycles and doesn't reset
+
+so we have 24... do we want to fill all of those out!?
+*/
+
+//binroutfixedmy, binroutfixedmy, binroutmybumpS, binroutmycv
+//eg. TODO: fill out
+static inline uint32_t binroutfixedmyalt1(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY
+  uint32_t bitn=0, bitrr, tmp, x;
+  tmp=myroute[w][gate[w].route]|binary[w];
+  BINROUTESRstrip_; // alts here
+  return bitn;
+}
 
 static inline uint32_t binroutfixedmy(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY
   uint32_t bitn=0, bitrr, tmp, x;
@@ -212,6 +231,23 @@ static inline uint32_t binroutmybumpS(uint32_t depth, uint32_t in, uint32_t w){ 
   BINROUTEMY_;
   return bitn;
 }
+
+static inline uint32_t binroutmybumpbit(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute bits
+  uint32_t bitn=0, bitrr, tmp, x;
+  if (gate[dacfrom[daccount][w]].shift_) gate[w].route++;
+  if (gate[w].route>15) gate[w].route=0;
+  BINROUTEMY_;
+  return bitn;
+}
+
+static inline uint32_t binroutmybumpbitt(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute bits
+  uint32_t bitn=0, bitrr, tmp, x;
+  if (gate[dacfrom[daccount][w]].Gshift_[w]) gate[w].route++;
+  if (gate[w].route>15) gate[w].route=0;
+  BINROUTEMY_;
+  return bitn;
+}
+
 
 static inline uint32_t binroutmycv(uint32_t depth, uint32_t in, uint32_t w){   // CV->myroute so we can use DAC
   uint32_t bitn=0, bitrr, tmp, x;
@@ -2041,9 +2077,9 @@ uint32_t SRdelay_lineOUT(uint32_t depth, uint32_t in, uint32_t w){  // could als
 
 static inline void binaryN(uint32_t depth){
   uint32_t tmp;
-  
-  count=16; // sets to zero - but could also be ORed with route we already have as another version // count16 is  0,0,0,0, null routes...
-  tmp=(depth>>5)&3;
+  // all counts need that extra or
+  //  count=16; // sets to zero - but could also be ORed with route we already have as another version // count16 is  0,0,0,0, null routes... // but we set all counts the same so have a problem
+  tmp=depth>>10;// 2 bits
   binary[0]=gate[tmp].shift_&15; // which SR? itself/runs out - binary will also need to be reset 
   binary[1]=(gate[tmp].shift_>>4)&15;
   binary[2]=(gate[tmp].shift_>>8)&15;
@@ -2053,7 +2089,7 @@ static inline void binaryN(uint32_t depth){
 static inline void binaryX(uint32_t depth){
   uint32_t tmp;
   count=0; // reset... or should be oldroutecnt
-  tmp=(depth>>5)&3;
+  tmp=depth>>10; // 2 bits
   binary[0]=gate[tmp].shift_&15; // which SR? itself/runs out - binary will also need to be reset 
   binary[1]=(gate[tmp].shift_>>4)&15;
   binary[2]=(gate[tmp].shift_>>8)&15;
@@ -2084,11 +2120,11 @@ static inline uint32_t (uint32_t depth, uint32_t in, uint32_t wh){
 static inline uint32_t selectglob(uint32_t depth, uint32_t in, uint32_t wh){ // resett
   uint32_t bt;
   bt=binroutfixed(0,0,wh);
-  glob=depth>>8; // 4 bits
+  glob=depth>>8; // 4 bits=16
   return bt;
 }
 
-static inline void SRRglobalbump0(uint32_t depth){ // strobe only
+static inline void SRRglobalbumpS(uint32_t depth){ // strobe only
   if (gate[3].trigger) // outside speed?
     {
       count++;
@@ -2099,6 +2135,44 @@ static inline void SRRglobalbump0(uint32_t depth){ // strobe only
       if (spdcount>15) spdcount=0;
     }
 }
+
+// TODO: more singular variations of these
+static inline void SRRglobalbumpbit0(uint32_t depth){ // nada but depth could be route
+  if (gate[dacfrom[daccount][3]].shift_) // outside speed?
+    {
+      count++;
+      if (count>15) count=0; // we have 16 so far, but can add more
+      daccount++;
+      if (daccount>15) daccount=0;
+      spdcount++;
+      if (spdcount>15) spdcount=0;
+    }
+}
+
+static inline void SRRglobalbumpbit1(uint32_t depth){ // nada but depth could be route
+  if (gate[dacfrom[daccount][3]].Gshift_[3]) // outside speed?
+    {
+      count++;
+      if (count>15) count=0; // we have 16 so far, but can add more
+      daccount++;
+      if (daccount>15) daccount=0;
+      spdcount++;
+      if (spdcount>15) spdcount=0;
+    }
+}
+
+static inline void SRRglobalbumpbit2(uint32_t depth){ // nada but depth AS route
+  if (gate[depth>>10].Gshift_[3]) // outside speed?
+    {
+      count++;
+      if (count>15) count=0; // we have 16 so far, but can add more
+      daccount++;
+      if (daccount>15) daccount=0;
+      spdcount++;
+      if (spdcount>15) spdcount=0;
+    }
+}
+
 
 static inline void SRRglobalbumproute(uint32_t depth){ // strobe only
   if (gate[3].trigger) // outside speed?
@@ -2119,8 +2193,8 @@ static inline void SRRglobalbumpdac(uint32_t depth){ // strobe only
 static inline void SRRglobalbumpspd(uint32_t depth){ // strobe only
   if (gate[3].trigger) // outside speed?
     {
-      daccount++;
-      if (daccount>15) daccount=0; // we have 16 so far, but can add more
+      spdcount++;
+      if (spdcount>15) spdcount=0; // we have 16 so far, but can add more
     }
 }
 
@@ -2132,6 +2206,7 @@ static inline void SRRglobalbumpcv(uint32_t depth){ // strobe only
       count=tmp;
       daccount=tmp;
       spdcount=tmp;
+      binroutetypecount=tmp;
     }
 }
 
@@ -2141,6 +2216,7 @@ static inline void SRRglobalbumpcvn(uint32_t depth){ // depth
   count=tmp;
   daccount=tmp;
   spdcount=tmp;
+  binroutetypecount=tmp;
 }
 
 static inline void SRRglobalbumpcvnroute(uint32_t depth){ // depth
@@ -2161,15 +2237,42 @@ static inline void SRRglobalbumpcvnspd(uint32_t depth){ // depth
   spdcount=tmp;
 }
 
+static inline void SRRglobalbumpcvntype(uint32_t depth){ // depth
+  uint32_t tmp;
+  tmp=depth>>8; ///4 bits
+  binroutetypecount=tmp;
+}
+
 static inline void SRRglobalsync(uint32_t depth){ // nada
   uint32_t tmp;
   spdcount=count;
   daccount=count;
+  binroutetypecount=count;
 }
+
+// bump
 
 static inline void SRRglobalorder(uint32_t depth){ // depth
   uint32_t tmp;
   ordercount=depth>>8; // 4 bits
+}
+
+static inline void SRRglobalorderbumpS(uint32_t depth){ // strobe
+  uint32_t tmp;
+  if (gate[3].trigger)
+    {
+      ordercount++;
+      if (ordercount>15) ordercount=0; // we have 16 so far, but can add more
+    }
+}
+
+static inline void SRRglobalorderbumpbit(uint32_t depth){ // nada. depth can be route
+  uint32_t tmp;
+  if (gate[dacfrom[daccount][3]].shift_)
+    {
+      ordercount++;
+      if (ordercount>15) ordercount=0; // we have 16 so far, but can add more
+    }
 }
 
 // adding new functions 8/8 which can be for speed or bits or ported ones... // tails can also be these globals but maybe nice not to run these so fast

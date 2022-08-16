@@ -2223,32 +2223,15 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=0;
     break;
     
-  case 66: // default for all other DACs - modded for new draft
-    x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
-    //    x=shift_[reg]&4095;
-    break;
-
-  case 67: // 4 bit DAC aside from length - try now with delay
-      x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
-    break;
-
-  case 68: // straight 4 bit dac
-    x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
-    break;    
-
-  case 69: // all bits
-    x=shift&4095;
-    break;
-    
   case 0: // length doesn't change much except at slow speeds - ADC x bits out - modded for new draft
     if (length==3){
       if ((shift&4)==4) x=4095; // changed 28/12
       else x=0;
     }
-        else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
+        else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck - fixed problem in shifts in resources 16/8
     //    else  x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
     //    else x=(shift&4095);
-
+    //    x=x&4095;
     break;
     
   case 1:// equivalent bit DAC for x bits - 3/11 - 32 bits max now
@@ -2286,7 +2269,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     }
     break;
 
-  case 4: // only output standard DAC on param->strobe/clock! so just maintain lastout
+  case 4: // only output standard DAC on param->strobe/clock! so just maintain lastout S
     if (strobe) {
       x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
       lastout[wh]=x;
@@ -2294,7 +2277,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     else x=lastout[wh];
     break;
 
-  case 5: // toggle to hold/release DAC
+  case 5: // toggle to hold/release DAC S
     if (strobe) toggle[wh]^=1;
     if (toggle[wh]) {
       x=lastout[wh];
@@ -2369,7 +2352,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       break;
 
   case 14:/// we record mask and use this to mask the regular DAC... - could also be other-than-standard DACs
-    if (strobe) // we record the mask 
+    if (strobe) // we record the mask  S
 	{
 	  mask[wh]=(otherpar&4095); // or reg can be otherpar/SR
 	  }
@@ -2520,6 +2503,25 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     pp=((float)(x) *  (1.0f-mult)) + ((float)(gate[dacfrom[daccount][wh]].dac)*mult); // mix with param
     x=(int)pp;
     break;
+    
+  case 25: // default for all other DACs - modded for new draft
+    //    x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
+        x=shift&4095;
+    break;
+
+  case 26: // 4 bit DAC aside from length - try now with delay
+      x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
+    break;
+
+  case 27: // straight 4 bit dac
+    x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
+    break;    
+
+  case 28: // all bits
+    x=shift&4095;
+    break;
+    //// bring up to 32x
+
     ///////
   } // switch    
   return x;

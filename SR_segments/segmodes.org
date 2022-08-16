@@ -54,18 +54,51 @@ RESOLVE ARCH:
 
 ** xxTOP
 
+** 16/8/2022
+
+FIXEDcrashing: DONE: SR_geomantic_outerRglobselandset: test dac as global router param - latest globals! - then we can select and don't need cv// new globalR outer on moving CVs*
+
+can dac ever go over 4095? fixed
+
+*types of binroute, types of slur, globals, gaps*
+
+- draft ext/int modes - some will be same for N, L, C, R - mark S for strobe and NLCR if needed/or ANY maybe
+- for strobe speeds we need bits/modes without strobe (so we need sure lists of these)...
+- slur, gaps tests  // from earlier: //other forms of slur eg. only set these on strobe or pull speed into this one... but would need to match inner // catalogue and implement slurs 
+- fill out ADC
+
+//by the by:
+
+//TODO-->better way of marking strobe functions... S//
+
+DONEstrobe as deciding (what/example) - strobe can be or or xor with some speedfroms, adc or not adc- now as new inner for strobe
+
+DONEwe put prob in adc but question of prob for bitn/adc is if we use strobe in bitn!FIXED with bit and speed from no strobe
+
+TODO:add different binroutes?proto is there 
+
+would be nice to have say a bit which can be used eg. bit from SR bumps on routes, but where do we get this bit from and that bit needs params*
+DONE:or we just use incoming bit://binroute in//depthroutein//local route in where and when we need it*
+
+bit is: gate[dacfrom[daccount][w]].shift_ // or .Gshift_[w]
+
+*TODO more adc modes, rests from extra.h, re-check all LRCN*
+
+where we set dactype and dacpar - most important for modeC but we can also change globally, otherpar ->>>> if it is used and gets stuck is a bit problematic...
+
+//
+
+lengthchanging modes->lengthfrom dac simply
+
 ** 15/8/2022
 
 1st mode-reset/basic bits
 2nd - no reset.basic
 ->16 modes
 
-*arch: sets of outers calling inners, can we fix different models (eg. matrixp copies?), 16 strobe modes with lots of ops, mobile gaps, add different binroutes, lengthchanging modes, bituse below, more adc modes*
+*arch: sets of outers calling inners, can we mix different models (eg. matrixp copies?), 16 strobe modes with lots of ops, mobile gaps*
 
-filling in structural gaps: we added new local binroute but could also be different types of binroute // local binroute is ONLY routing so NOT a different type except in one case
-
-*would be nice to have say a bit which can be used eg. bit from SR bumps on routes, but where do we get this bit from and that bit needs params*
-*or we just use incoming bit://binroute in//depthroutein//local route in where and when we need it*
+DONEfilling in structural gaps: we added new local binroute but could also be different types of binroute // local binroute is ONLY routing so NOT a different type except in one case
 
 // functions can also determine length (as DACs=bits->values), prob of adc entry or not, internal adc prob modes -> timing, more of strobe on bits and timings, local/global routes, binary, types of binroute 
 
