@@ -6,7 +6,7 @@ this again in a consciousness of solitude.
 
 module for one bit landscape gardening...
 
-*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???*
+*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???????*
 
 *what this means: that we associate each SR with a GSR function*
 
@@ -19,7 +19,7 @@ A dragon with 5 heads!
 
 RESOLVE ARCH:
 
-*baisc model, test basic geogens inc. ported//classic SRs, ADC and DAC, arrange, layout of inner and outer - new pointer arch, tails, interpol/strobe etc, recursions/gaps/attach/detachments, final tests/tweaks*
+*basic model, test basic geogens inc. ported//classic SRs, ADC and DAC, arrange, layout of inner and outer - new pointer arch, tails, interpol/strobe etc, recursions/gaps/attach/detachments, final tests/tweaks*
 
 //
 -  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
@@ -54,13 +54,52 @@ RESOLVE ARCH:
 
 ** xxTOP
 
+
+** 30/8/2022
+
+*TODO: plan finishings:*
+
+- draft all inner/outer sections for N,L,R,C
+- ADC, DAC, speeds, probs, bits 
+
+- TODO from geomantic.h
+
+*/// test setting of dactype and dacpar for modeC*
+
+- *resolved speedfrom questions/new speedfroms (as CV speeds/all always use CV, except strobes/toggles and ones don't use it) - section where we select only strobes - inc or/xor*
+- *all types of binroute, types of slur, globals, gaps, tails*
+
+- *TODO more adc modes, rests from extra.h, re-check all LRCN*
+
+DONE:strobe section also needs to avoid bitfroms strobe..
+
+TODO--> xor/or of CV-led speedfuncs with non-cv led (eg. fixed routes, strobes/toggles (ones makes no sense))... in new functions:
+redone as fixed route: zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift
+
+fill out all speeds/functions but shouldnt access beyond what we have but still eg. speedfromstrobe is fixed by outer
+
+/// 
+
+layers: fixed/gaps, strobe only (some unfixed// parallel), unfixed, matrix/stack/esoterica
+
+** 29/8/2022
+
+notes from notebook:
+
+- does strobe function area make sense as these also carry over (unless we define speedfrom in every case) - but it does free up CV which is important...
+// so question is of a fixed speedfrom// not so open
+
+or 4 layers across CVM dial: fixed, dislocated, matrix copies, stack [but how also these can revert, recurse and dislocate across themselves, that the fixed can still open gaps or...?]
+
+- outer processes a matrix of values which inner (chosen by outer or just hangs on) processes....
+
+gaps and slurs...
+
 ** 16/8/2022
 
 FIXEDcrashing: DONE: SR_geomantic_outerRglobselandset: test dac as global router param - latest globals! - then we can select and don't need cv// new globalR outer on moving CVs*
 
 can dac ever go over 4095? fixed
-
-*types of binroute, types of slur, globals, gaps*
 
 - draft ext/int modes - some will be same for N, L, C, R - mark S for strobe and NLCR if needed/or ANY maybe
 - for strobe speeds we need bits/modes without strobe (so we need sure lists of these)...
@@ -82,13 +121,11 @@ DONE:or we just use incoming bit://binroute in//depthroutein//local route in whe
 
 bit is: gate[dacfrom[daccount][w]].shift_ // or .Gshift_[w]
 
-*TODO more adc modes, rests from extra.h, re-check all LRCN*
-
 where we set dactype and dacpar - most important for modeC but we can also change globally, otherpar ->>>> if it is used and gets stuck is a bit problematic...
 
 //
 
-lengthchanging modes->lengthfrom dac simply
+lengthchanging modes->lengthfrom dac simply ???
 
 ** 15/8/2022
 

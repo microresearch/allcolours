@@ -253,7 +253,7 @@ uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    {SR_geomantic_outer_binr, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
-   {SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geomantic_outerS0, SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
    // SR_geomantic_outerRglobselandset
    //SR_geomantic_outer_binr

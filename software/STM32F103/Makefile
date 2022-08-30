@@ -104,3 +104,6 @@ clean:
 
 stlink_flash: flash
 	$(FLASH) write $(TARGET)_firmware.bin 0x08000000
+
+openocd: $(TARGET)_firmware.bin
+	openocd -s tcl -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program /root/projects/ERD_MODULES/all_colours/software/STM32F103/allcolours_firmware.bin verify reset exit 0x08000000"

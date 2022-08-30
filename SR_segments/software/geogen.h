@@ -503,6 +503,78 @@ static inline uint32_t zbinroutebits_noshift(uint32_t depth, uint32_t in, uint32
   return bt;
 }
 
+static inline uint32_t zbinroutfixed_noshift_transit(uint32_t depth, uint32_t in, uint32_t wh){ //  no depth
+  uint32_t btt=0,bt=0, bitrr, tmp;
+  static uint8_t lastone;
+  tmp=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+
+  if (lastone!=bt) btt=1; // it was a transition 0-1 1-0
+  lastone=bt;
+  return btt;
+}
+
+static inline uint32_t zbinroutfixed_noshift(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - no shift //  no depth
+  uint32_t bt=0, bitrr, tmp;
+  tmp=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    //    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t zbinroutfixedcycle_noshift(uint32_t depth, uint32_t in, uint32_t wh){   // no depth
+  uint32_t bt=0, bitrr, tmp;
+  tmp=binroute[count][wh]|binary[wh];
+  tmp=tmp|wh; // adds itself
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t zbinroutfixedI_noshift(uint32_t depth, uint32_t in, uint32_t wh){   // no depth
+  uint32_t bt=0, bitrr, tmp;
+  tmp=binroute[count][wh]|binary[wh];
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+    }
+  return bt;
+}
+
+static inline uint32_t zbinroutfixedcycleI_noshift(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel...
+  uint32_t bt=0, bitrr, tmp;
+  tmp=binroute[count][wh]|binary[wh];
+  tmp=tmp|wh; // add itself in
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  return bt;
+}
+
 static inline uint32_t zbinroutebitscycle(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
@@ -705,6 +777,7 @@ static inline uint32_t zcopyGSR_s(uint32_t depth, uint32_t in, uint32_t wh){ // 
 // speeds - which can also be generic bit functions! and vice versa...
 // speeds need to set helds[wh]
 
+/* // unused as we can always hold speed
 static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // lastspeed processor - no use of depth, no interpol
   uint32_t bt=0;
   static uint32_t counters[4]={0,0,0,0};
@@ -715,7 +788,8 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t wh){ // las
   }
   return bt;
 }
-  
+*/  
+
 static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t wh){ // for speed now with dac/interpol pulled out
   uint32_t bt=0;
   float speed;
@@ -1164,7 +1238,7 @@ static inline uint32_t zwiardinvbits(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zTMsimplebits(uint32_t depth, uint32_t in, uint32_t wh){
+static inline uint32_t zTMsimplebits(uint32_t depth, uint32_t in, uint32_t wh){ 
   uint32_t bt;
   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;				
   if (depth>(LFSR_[wh]&4095)) bt=!bt;
