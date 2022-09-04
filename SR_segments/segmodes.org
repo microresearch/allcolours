@@ -55,18 +55,60 @@ RESOLVE ARCH:
 ** xxTOP
 
 
+** 4/9/2022
+
+- added new gaps code to test mobile gaps...
+
+** 1/9/2022
+
+- how to test gaps with setgap, setfixed
+
+** 31/8/2022
+
+- *now back to idea of more mobile strobe with fill in CV as prob - see SR_geomantic_outer_test*
+- probs as speed - more granular or do we do this already
+- if we go from very fixed to unfixed then it stays fixed - so maybe less fixed, only first ones. also RESETR
+- SR as mesh for matrix, mobile gap/holes - what is a gap. how unfixing/fixing works... see above and is it most elegant, question of 3d array as necessary or not...
+
+- generic outer wrapper with inline inners/macros - trial this
+
+void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different functions eg. now try different speedfuncs
+  if (gate[w].changed==0) { // 1=change 0= no change
+
+    if (unused[gate[w].matrix[0]]) {
+    gate[w].matrix[9]=3<<7; // probbits as we can now use CV
+    gate[w].matrix[10]=CV[w];
+    gate[w].matrix[12]=8<<7; // altfuncindex // we need this!
+  }
+
+  // set matrix
+
+    gate[w].inner=SR_geomantic_innernoadcp; // prob one
+    }
+}  
+
+
+
 ** 30/8/2022
 
 *TODO: plan finishings:*
 
+- fill out all ADC, DAC settings, speeds, probs, bits functions and lists 
+- if changed! 
+- check all below and geomantic.h//caput000
+- all types of binroute, types of slur, globals, gaps, tails, can gaps move
 - draft all inner/outer sections for N,L,R,C
-- ADC, DAC, speeds, probs, bits 
+- strobey etc.
+- checks
 
 - TODO from geomantic.h
 
 */// test setting of dactype and dacpar for modeC*
 
 - *resolved speedfrom questions/new speedfroms (as CV speeds/all always use CV, except strobes/toggles and ones don't use it) - section where we select only strobes - inc or/xor*
+
+strobe also leaves gaps for other settings...
+
 - *all types of binroute, types of slur, globals, gaps, tails*
 
 - *TODO more adc modes, rests from extra.h, re-check all LRCN*

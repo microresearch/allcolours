@@ -425,8 +425,9 @@ void SR_geomantic_outer1attach(uint32_t w){
   // can also be like: gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095
   // or gate[w].matrix[10]=(*bitfromsd[xxx])(blah)
 }
+
 // so this would pair with: 
-void SR_geomantic_outer1detach(uint32_t w){ 
+void SR_geomantic_outer1detach(uint32_t w){  // is not really a detach???
   gate[w].matrix[0]=*gate[w].matrixp[0]; // if we want live value or don't set it/just ignore it for last value // and if is not set?
   // or we can say set gate[w].matrix[0]=CVL[w] temporarily; or a fixed value...
 }
@@ -474,19 +475,52 @@ uint32_t fixedvalues[4][13]={ //  values - but x value means no change... say 40
   {0},
 };
 
-uint32_t *fixedmatrix[4][13]={ // for tests below but is just one matrix and we need multiples... 3d array
-  {&CVL[0], &gate[0].matrix[1], &fixedvalues[0][2]}, // &gate[0].matrix[1] - which would keep it the same
+// do we need this?
+uint32_t *fixedmatrix[4][13]={ // for tests below but is just one matrix and we need multiples... 3d array - do we need as 3d?
+  {&CVL[0], &gate[0].matrix[1], &fixedvalues[0][2]}, // &gate[0].matrix[1] - which would keep it the same - examples here...
+}; 
+
+uint32_t *fixedvars[4][16]={ // 
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8]},
 };
 
 static inline void setgap(uint32_t wh, uint32_t which){
   fixedmatrix[wh][which]=&gate[wh].matrix[which]; // stays how it was... so that is a gap 
 }
 
-static inline void setfixed(uint32_t wh, uint32_t which, uint32_t val){
-  // fixed value say 0
-  fixedvalues[wh][which]=val; // first 0 is SR, second is matrix position...
-  fixedmatrix[wh][which]=&fixedvalues[wh][which]; // can we wrap that up somehow? inline setfixed
+static inline void setgapz(uint32_t wh, uint32_t which){ // new version which keeps ghost also why we need extra step of above, also doesn't set gap twice
+  static uint32_t oldgap=0;
+  if (which!=oldgap){
+  gate[wh].matrixpG[which]=gate[wh].matrixp[which]; 
+  gate[wh].matrixp[which]=&gate[wh].matrix[which];
+  }
+  oldgap=which;
 }
+
+static inline void setfixed(uint32_t wh, uint32_t which, uint32_t val){
+  fixedvalues[wh][which]=val; 
+  fixedmatrix[wh][which]=&fixedvalues[wh][which]; 
+}
+
+static inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){
+  fixedvalues[wh][which]=val; 
+  gate[wh].matrixp[which]=&fixedvalues[wh][which]; 
+}
+
+static inline void setvar(uint32_t wh, uint32_t which, uint32_t val){ // set to variable such as CV, CVL etc...
+  fixedmatrix[wh][which]=fixedvars[wh][which];
+}
+
+static inline void setvarz(uint32_t wh, uint32_t which, uint32_t val){ // set to variable such as CV, CVL etc...
+  gate[wh].matrixp[which]=fixedvars[wh][which];
+}
+
+
+// question is if we need fixedmatrix or just set matrixp to fixedvalues if needed - for the gap???
+// moving gaps - or SR as gaps over... what is the gap??? the leftover
+// gate[wh].matrixp[which]=&gate[wh].matrix[which]; // old value
+
+// but for gap do we not need to retain what was their so like gate[wh].matrixpG - ghost?
 
 void SR_geomantic_matrixcopy(uint32_t w){
   uint32_t x, y;
@@ -499,31 +533,48 @@ void SR_geomantic_matrixcopy(uint32_t w){
     gate[w].matrixp[x]=fixedmatrix[w][x]; 
     gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
   }
+  // set gate[w].inner
 }
+
+void SR_geomantic_matrixcopyz(uint32_t w){
+  uint32_t x, y;
+  //  gate[w].matrix[x]= // can be a fixed value, CVL[w], &CVL[w]/matrixp, or unchanged gap
+  // so we can make gaps in matrices by setting eg.
+  setgap(1,0); // but do not set old gap - in gap
+  setfixed(0,0,0);
+  
+  for (x=0;x<13;x++){
+    gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
+  }
+  // set gate[w].inner
+}
+
 
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
 // 8/8/2022 testing strobe and fake pulses/normed pulses in caput000.c
 void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different functions eg. now try different speedfuncs
   if (gate[w].changed==0) { // 1=change 0= no change
-  gate[w].matrix[0]=3<<7;// 0 was strobe // CVL[w]>>7;// 5 bits is 32 //2 bits //speedFUNC
-  if (unused[gate[w].matrix[0]]) {
+
+    if (unused[gate[w].matrix[0]]) {
     gate[w].matrix[9]=3<<7; // probbits as we can now use CV
     gate[w].matrix[10]=CV[w];
     gate[w].matrix[12]=8<<7; // altfuncindex
   }
-  gate[w].matrix[1]=CV[w];//
-  gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
-  gate[w].matrix[3]=2<<7; // fixed route
-  //  gate[w].matrix[4]=CVL[w]; // unused in case2: bintroutfixed // but used by altfunc
-  gate[w].matrix[6]=CVL[w]; //length
-  gate[w].matrix[8]=CVL[w]; // length for adc same as
-  //  gate[w].matrix[10]=CVL[w];
-  // rest is unchanged but we need to set/reset a default - so we will have a reset function
-  //  if (w==0) { // set adc in adcfromsd
-  //  gate[w].matrix[8]=CVL[w]; // was 4095- but we shift that to the ADC
 
-  gate[w].inner=SR_geomantic_innernoadcp; // prob one
+    gate[w].matrix[0]=3<<7;// 0 was strobe // CVL[w]>>7;// 5 bits is 32 //2 bits //speedFUNC
+    gate[w].matrix[1]=CV[w];//
+    gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
+    gate[w].matrix[3]=2<<7; // fixed route
+    //  gate[w].matrix[4]=CVL[w]; // unused in case2: bintroutfixed // but used by altfunc
+    gate[w].matrix[6]=CVL[w]; //length
+    gate[w].matrix[8]=CVL[w]; // length for adc same as
+    //  gate[w].matrix[10]=CVL[w];
+    // rest is unchanged but we need to set/reset a default - so we will have a reset function
+    //  if (w==0) { // set adc in adcfromsd
+    //  gate[w].matrix[8]=CVL[w]; // was 4095- but we shift that to the ADC
+
+    gate[w].inner=SR_geomantic_innernoadcp; // prob one
     }
 }  
 

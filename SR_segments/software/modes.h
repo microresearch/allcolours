@@ -27,6 +27,7 @@ typedef struct heavens_ {
   //  uint32_t stackindex;
   uint32_t matrix[13];
   uint32_t *matrixp[13];
+  uint32_t *matrixpG[13];
   void (*inner)(uint32_t w);
 } heavens;
 
