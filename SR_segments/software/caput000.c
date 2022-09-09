@@ -53,7 +53,7 @@ static uint32_t CVM[4]={0,0,0,0};
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
 uint32_t matrixNN[13]={0,0,0, 2<<7,0,0, 31<<7, 1<<7,0, 0,0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 uint32_t matrixLL[13]={0,0,0, 2<<7,0,0, 31<<7, 0,0, 0,0,0,0};
-uint32_t matrixCC[13]={0,0,0, 1<<7,0,0, 31<<7, 0,0, 2<<7,0,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
+uint32_t matrixCC[13]={0,0,0, 2<<7,0,0, 31<<7, 0,0, 2<<7,0,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
 uint32_t matrixRR[13]={0,0,0, 2<<7,0,0, 31<<7, 0,0, 0,0,0,0}; 
 //                     speed  bit       len    adc  prob
 
@@ -252,8 +252,8 @@ uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep
 {
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geomantic_outer_binr, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
-   {SR_geomantic_outerS0, SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geomantic_outerxor, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
+   {SR_geomantic_outer_binr, SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
    // SR_geomantic_outerRglobselandset
    //SR_geomantic_outer_binr

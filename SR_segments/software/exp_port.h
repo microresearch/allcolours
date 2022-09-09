@@ -1117,13 +1117,6 @@ static inline uint32_t pSRN5(uint32_t depth, uint32_t in, uint32_t w){
   return bitn;
 }
 
-static inline uint32_t pSRN3(uint32_t depth, uint32_t in, uint32_t w){
-  uint32_t x, tmp, bitrr, temp, bitn=0;
-  uint8_t prob; 
-    BINROUTE_;
-    prob=gate[w].shift_&31; // this seems to work somehow 8/12/2021  
-  return bitn;
-}
 
 static inline uint32_t pSRNwas15(uint32_t depth, uint32_t in, uint32_t w){
     uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;

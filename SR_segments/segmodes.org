@@ -55,6 +55,52 @@ RESOLVE ARCH:
 ** xxTOP
 
 
+** 9/9/2022
+
+- start to define new file - new_geomantic.c , starting with speeds, adding and fixing some geogens...
+
+test/port some backwards into geomantic
+
+from before- fill out all ADC, DAC settings, speedsX, 
+
+probs: // new prob ones: probcvladcselcvm, probdacadcsel, probtrigadcsel -> more work on these...
+
+// do we have probability of entry of adc or not, also prob of moving adc along? to add these here, and also more generic adcs: internal adcprobs are in geogen.h
+ 
+
+bits functions and lists 
+
+// *TODO: check lengths of all arrays we access...*
+// *how we handle dac...? do this at end, first generic funcs filled in*
+// DONEspeedfromforxor is not implemented - how did we want to do this / dual speedfroms... see here:
+
+TODO--> xor/or of CV-led speedfuncs with non-cv led (eg. fixed routes, strobes/toggles (ones makes no sense))... in new functions:
+redone as fixed route: zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift
+
+*do we have say use other routes // eg. use route from R, from opposing? or use another binroute count/local count, depth as count SR as count etc TODO*
+
+*what is myroute[]?*
+
+// *types of binroute/which count for binroute...*
+
+** 7/9/2022
+
+- address DAC etc - so question here of new functions and where DAC is addressed
+
+- different ways of addressing matrices eg. stack, copies of matrices of existing values (TODO) - bump through these - list thses
+- different ways of interpreting matrcies [inner can be a gap and stay - as in we don't need to always define inner functions - maybe note last inners]
+
+** 6/9/2022
+
+//fill out all speeds/functions but shouldnt access beyond what we have but still eg. speedfromstrobe is fixed by outer -> what that means?
+
+
+- filling in old gaps // how to test gaps again - as gaps only make sense across different fillings and modes
+
+// or mobile CV attachment - trial - variation of setvarz
+
+- where are we up to? // last in caput000 was testing strobes... S0 but we don't use that....
+
 ** 4/9/2022
 
 - added new gaps code to test mobile gaps...
@@ -65,12 +111,13 @@ RESOLVE ARCH:
 
 ** 31/8/2022
 
-- *now back to idea of more mobile strobe with fill in CV as prob - see SR_geomantic_outer_test*
-- probs as speed - more granular or do we do this already
+- *now back to idea of more mobile strobe with filled in CV as prob - see SR_geomantic_outer_test*
+
+- DONE i thinkprobs as speed - more granular or do we do this already?* - TODO: add more prob modes in general - but there are many
 - if we go from very fixed to unfixed then it stays fixed - so maybe less fixed, only first ones. also RESETR
 - SR as mesh for matrix, mobile gap/holes - what is a gap. how unfixing/fixing works... see above and is it most elegant, question of 3d array as necessary or not...
 
-- generic outer wrapper with inline inners/macros - trial this
+- generic outer wrapper [TODO: with inline inners/macros] - trial this
 
 void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different functions eg. now try different speedfuncs
   if (gate[w].changed==0) { // 1=change 0= no change
@@ -87,14 +134,13 @@ void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different fu
     }
 }  
 
-
-
 ** 30/8/2022
 
 *TODO: plan finishings:*
 
 - fill out all ADC, DAC settings, speeds, probs, bits functions and lists 
-- if changed! 
+
+- if (changed) to implement! 
 - check all below and geomantic.h//caput000
 - all types of binroute, types of slur, globals, gaps, tails, can gaps move
 - draft all inner/outer sections for N,L,R,C
@@ -105,7 +151,7 @@ void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different fu
 
 */// test setting of dactype and dacpar for modeC*
 
-- *resolved speedfrom questions/new speedfroms (as CV speeds/all always use CV, except strobes/toggles and ones don't use it) - section where we select only strobes - inc or/xor*
+- *??? resolved speedfrom questions/new speedfroms (as CV speeds/all always use CV, except strobes/toggles and ones don't use it) - section where we select only strobes - inc or/xor*
 
 strobe also leaves gaps for other settings...
 
@@ -114,11 +160,6 @@ strobe also leaves gaps for other settings...
 - *TODO more adc modes, rests from extra.h, re-check all LRCN*
 
 DONE:strobe section also needs to avoid bitfroms strobe..
-
-TODO--> xor/or of CV-led speedfuncs with non-cv led (eg. fixed routes, strobes/toggles (ones makes no sense))... in new functions:
-redone as fixed route: zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift
-
-fill out all speeds/functions but shouldnt access beyond what we have but still eg. speedfromstrobe is fixed by outer
 
 /// 
 
