@@ -231,6 +231,50 @@ static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // d
   return bt;
 }
 
+// DONE but lots of blanks... re-write so first one is bit and then after we have AND - so is not 2x AND
+static inline uint32_t binroutAND0(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now // TODO: indie version - this one with AND
+  // can also be other kinds of binroute
+  uint32_t bt=0, bitrr, once=0;
+  depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bt=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+    if (depth&0x01 && x!=wh){  // never itself
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    if (once==0) bt=bitrr; // but that is always lowest one of the route... but only a difference with more than 2 routes or?
+    else bt&=bitrr; 
+    once++;
+  }
+  depth=depth>>1;
+  }
+    }
+  return bt;
+}
+
+// testing dual fixed routes - TODO: to also bump/move these locally
+static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now // TODO: indie version - this one with AND
+  // can also be other kinds of binroute
+  uint32_t bt=0, bitrr, once=0;
+  depth=androutes[count][wh];
+  for (uint8_t x=0;x<4;x++){
+    if (depth&0x01){  
+    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
+    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    if (once==0) bt=bitrr; 
+    else bt&=bitrr; 
+    once++;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
 static inline uint32_t zjustcycle(uint32_t depth, uint32_t in, uint32_t wh){ // just cycle// no depth
   uint32_t bt;
   bt = (gate[wh].Gshift_[wh]>>SRlength[wh]) & 0x01;	   // cycle bit
@@ -270,12 +314,14 @@ each has one of  8: BINROUTE_, BINROUTESR_; BINROUTEalt_; BINROUTEZERO_; BINROUT
 so we have 24... do we want to fill all of those out!?
 */
 
+// adding in ANDs and OR routes
+
 //binroutfixedmy, binroutfixedmy, binroutmybumpS, binroutmycv
 //eg. TODO: fill out
 static inline uint32_t binroutfixedmyalt1(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY
   uint32_t bitn=0, bitrr, tmp, x;
   tmp=myroute[w][gate[w].route]|binary[w];
-  BINROUTESRstrip_; // alts here
+  BINROUTESRstrip_; // alts here TODO!
   return bitn;
 }
 
@@ -287,8 +333,8 @@ static inline uint32_t binroutfixedmy(uint32_t depth, uint32_t in, uint32_t w){ 
 
 static inline uint32_t binroutfixedmyreset(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY
   uint32_t bitn=0, bitrr, tmp, x;
-  BINROUTEMY_;
   gate[w].route=0;
+  BINROUTEMY_;
   return bitn;
 }
 
@@ -317,7 +363,6 @@ static inline uint32_t binroutmybumpbitt(uint32_t depth, uint32_t in, uint32_t w
   BINROUTEMY_;
   return bitn;
 }
-
 
 static inline uint32_t binroutmycv(uint32_t depth, uint32_t in, uint32_t w){   // CV->myroute so we can use DAC
   uint32_t bitn=0, bitrr, tmp, x;

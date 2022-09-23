@@ -54,6 +54,47 @@ RESOLVE ARCH:
 
 ** xxTOP
 
+** 23/9/2022
+
+- added macros for binrouteAND and one new function in geogen - so can more gating of one SR by another...
+
+DONE as binroutAND0@ but then would need one route in as entry and 2nd as AND as two AND routes in don't make sense... so we have first as IN, and later
+
+*added androutes->we could also have fixed dual routes for this: local and globally defined...* first and second single routes/where do we have single routes
+
+
+
+** 22/9/2022
+
+- 16 geomantic groups of major ext/int modes on each side - how they could reflect geomantic properties?
+
+- in lisbon code is for grouped modes all set by modeR
+
+- how to have pulsing code on DAC which is like on for x runs and then
+  off with x determined by DAC, CV/DAC, CV? - or is same as OR/XOR
+  with very slow running other SR - how to test this? -> is 2 routes in (one as OR) - is just usual multiple routes in but needs to be AND (can be OR for inversion) - where to implement?
+
+
+
+** 20/9/2022
+
+- lisbon code base for OCT 5 performance:
+
+there we had groups of:
+
+void (*funcgroups[4][128])(uint8_t w)=
+{
+    {adc2, adc0, adc0, SRminor_vienna, SRrunggenericbitsadc, SRrunghead0N, adcLrung0, adcLrung1, adcLrung2,   adcrung0, adcLbinprob, noSRadc2s, noSRadc2s, adcLabstractLD, stream4_unshare, stream}, //128
+  //    {adc2, adc0, adc2, adc0,  adc2,   adc0, adc2, adc0,adc2,  adc0,adc2, adc0, adc2, adc0, adc2, adc0},
+  
+  {SRX0, SRX0, SR_layer1, SRminor_vienna, SRrunggenericbitsgenopp, SRrunghead0L, SRrung0,   SRrung1,   SRrung2, SRrung3,  adcLbinprob, SRshroute, noSRcopy, adcLabstractLD, stream4_unshare, stream},  // 128
+
+  {newdac2, dac0, dac0, SRminor_vienna, SRrunggenericbits, SRrungout, dacLrung0, dacLrung0, dacNLRin, dacNLRinlogic, adcLbinprob, dac2, noSRdac2s, dacNLRprobin,   stream4_unshare, stream}, 
+  
+  {SRX0, SRX0, SR5_feedback, SRminor_vienna, SRrunggenericbitsgen, SRrungbody0, SRRrung0, SRRrung1, SRRrung2, SRRrung3,     adcLbinprob, SRX0,     SRX0, adcLabstractLD, stream4_unshare, stream} //64 
+}; // 13 so far -- to add more for lisbon - select at random from 50 - how to do from cards...
+
+*which seemed to work well and could be used as model for internal/external modes*
 
 ** 9/9/2022
 
@@ -77,17 +118,13 @@ bits functions and lists
 TODO--> xor/or of CV-led speedfuncs with non-cv led (eg. fixed routes, strobes/toggles (ones makes no sense))... in new functions:
 redone as fixed route: zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift
 
-*do we have say use other routes // eg. use route from R, from opposing? or use another binroute count/local count, depth as count SR as count etc TODO*
-
-*what is myroute[]?*
-
-// *types of binroute/which count for binroute...*
+// *changing types of binroute/which count for binroute...*
 
 ** 7/9/2022
 
 - address DAC etc - so question here of new functions and where DAC is addressed
 
-- different ways of addressing matrices eg. stack, copies of matrices of existing values (TODO) - bump through these - list thses
+- different ways of addressing matrices eg. stack, copies of matrices of existing values (TODO) - bump through these - list these
 - different ways of interpreting matrcies [inner can be a gap and stay - as in we don't need to always define inner functions - maybe note last inners]
 
 ** 6/9/2022

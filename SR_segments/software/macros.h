@@ -240,7 +240,6 @@ static uint32_t outcnt=0;
   }								\
   }
 
-
 #define BINROUTEZERO_ {			\
     tmp=binroute[count][w]|binary[w];		\
   for (x=0;x<4;x++){				\
@@ -297,20 +296,18 @@ static uint32_t outcnt=0;
   }
 // pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
 
-
-// same as binroute??????
-#define BINROUTENOS_ {				\
-    tmp=binroute[count][w]|binary[w];			\
+// binroutes with AND - TODO: we also need to fill out other/alt types of BINROUTE and do these also for the OR! - but we need treat routes differently
+// different logic for each route...
+#define BINROUTEANDstrip_ {				\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  bitn^=bitrr;					\
+  bitn&=bitrr;					\
   }							\
   tmp=tmp>>1;						\
   }							\
   }
-// was no strobey
 
 // for local routes
 #define BINROUTEMY_ {				\
@@ -444,7 +441,6 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 #define BINROUTEORstrip_ {				\
@@ -456,7 +452,6 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 #define BINROUTEANDCYCLE_ {				\
@@ -469,7 +464,6 @@ static uint32_t outcnt=0;
   }							\
     tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 
@@ -483,7 +477,6 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[1][mode[1]]) bitn=bitn|gate[1].trigger;	\
 }
 
 #define BINROUTEANDCYCLENOG_ {				\
@@ -495,7 +488,6 @@ static uint32_t outcnt=0;
   }							\
     tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 #define BINROUTEORNOG_ {				\
@@ -507,7 +499,6 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 #define PULSOUT {							\
