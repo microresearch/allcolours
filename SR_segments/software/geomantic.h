@@ -30,7 +30,7 @@ uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadc
 // do we have probability of entry of adc or not, also prob of moving adc along? to add these here, and also more generic adcs: internal adcprobs are in geogen.h
 
 // bits // can divide into further: abstract, includesprob, routings - which ones rely on other SRs!
-uint32_t (*bitfromsd[76])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND1, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR, zcopyGSR_s, ztogglebitssh, ztogglebits, zsuccbitsprob};//  - how many can we have - different sets...
+uint32_t (*bitfromsd[76])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND00, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR, zcopyGSR_s, ztogglebitssh, ztogglebits, zsuccbitsprob};//  - how many can we have - different sets...
 // SRdelay_lineOUT??? needs it input pair?
 
 // we are missing: binroutesel0, 1,2,3 and we add new binroutes for locals: binroutfixedmy, binroutfixedmy, binroutmybumpS, binroutmycv, binroutmybumpbit, binroutmybumpbitt //can be more...
@@ -670,12 +670,28 @@ void SR_geomantic_outer_binr(uint32_t w){ // test just simplest binroute in/spdf
   gate[w].inner=SR_geomantic_inner;
 }
 
-void SR_geomantic_outer_and(uint32_t w){  // calls innerxor TESTING! now test with binroutAND0! =
+void SR_geomantic_outer_and(uint32_t w){  // TESTING! now test with binroutAND0! =
   // what is appropriate speed function????
-  gate[w].matrix[0]=4<<7;// eg. 1<<7 // CVL[w];// 5 bits is 32 //2 bits //speedFUNC - this is fixed here...
+  gate[w].matrix[0]=3<<7;// eg. 1<<7 // CVL[w];// 5 bits is 32 //2 bits //speedFUNC - this is fixed here...
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // 1 and 2 we don't use and CV is free
   //  gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
-  gate[w].matrix[3]=4<<7; // fixed route was 2 - now trial new AND with CVL
+  gate[w].matrix[3]=4<<7; // fixed route was 2 - now trial new AND with CVL // AND1 doesn't use depth so we can have length
+  gate[w].matrix[4]=CVL[w]; //  just keep for tests
+   gate[w].matrix[6]=CVL[w]; //length
+  //  gate[w].matrix[10]=CVL[w];
+  // rest is unchanged but we need to set/reset a default - so we will have a reset function
+  //  if (w==0) { // set adc in adcfromsd
+  //  gate[w].matrix[8]=CVL[w]; // was 4095minus but we shift that to the ADC
+
+  gate[w].inner=SR_geomantic_inner;
+}  
+
+void SR_geomantic_outer_OSC(uint32_t w){  // TESTING! for trials with 
+  // what is appropriate speed function????
+  gate[w].matrix[0]=3<<7;// eg. 1<<7 // CVL[w];// 5 bits is 32 //2 bits //speedFUNC - this is fixed here...
+  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // 1 and 2 we don't use and CV is free
+  //  gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
+  gate[w].matrix[3]=23<<7; // OSCillator is 23 // TRY!
    gate[w].matrix[4]=CVL[w]; // 
   //    gate[w].matrix[6]=CVL[w]; //length
   //  gate[w].matrix[10]=CVL[w];
@@ -685,7 +701,6 @@ void SR_geomantic_outer_and(uint32_t w){  // calls innerxor TESTING! now test wi
 
   gate[w].inner=SR_geomantic_inner;
 }  
-
 
 void SR_geomantic_outer_binrRESETR(uint32_t w){ // test just simplest binroute in/spdfrac // with RESETR
   //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length

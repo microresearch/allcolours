@@ -1,5 +1,11 @@
 * see also software/modes.org
 
+** 4/10/2022
+
+- how we start to think about finishing this soon
+
+- also do we have functionality to change speed of recording - so jumps/blends=interpolates like a slur of values...
+
 ** 20/7/2022: REVISIT
 
 - test what is working: basic functions, freezers, rec/play but is 1/8 speed correct - re-test as 1.0

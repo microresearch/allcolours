@@ -296,18 +296,6 @@ static uint32_t outcnt=0;
   }
 // pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
 
-// binroutes with AND - TODO: we also need to fill out other/alt types of BINROUTE and do these also for the OR! - but we need treat routes differently
-// different logic for each route...
-#define BINROUTEANDstrip_ {				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  bitn&=bitrr;					\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  }
 
 // for local routes
 #define BINROUTEMY_ {				\

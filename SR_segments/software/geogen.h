@@ -232,21 +232,20 @@ static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // d
 }
 
 // DONE but lots of blanks... re-write so first one is bit and then after we have AND - so is not 2x AND
+// flexible route...
 static inline uint32_t binroutAND0(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now // TODO: indie version - this one with AND
-  // can also be other kinds of binroute
   uint32_t bt=0, bitrr, once=0;
   depth=depth>>8; // 12 bits to 4 bits
-    // deal with no route
   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
-    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    //    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bt=bitrr;
   } else
     {
   for (uint8_t x=0;x<4;x++){
     if (depth&0x01 && x!=wh){  // never itself
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
-    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
     if (once==0) bt=bitrr; // but that is always lowest one of the route... but only a difference with more than 2 routes or?
     else bt&=bitrr; 
     once++;
@@ -257,15 +256,37 @@ static inline uint32_t binroutAND0(uint32_t depth, uint32_t in, uint32_t wh){   
   return bt;
 }
 
-// testing dual fixed routes - TODO: to also bump/move these locally
-static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now // TODO: indie version - this one with AND
-  // can also be other kinds of binroute
+static inline uint32_t binroutAND00(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... GShift_
+  uint32_t bt=0, bitrr, once=0;
+  depth=depth>>8; // 12 bits to 4 bits
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshift_[wh]>>SRlength[8]) & 0x01; 
+    //    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bt=bitrr;
+  } else
+    {
+  for (uint8_t x=0;x<4;x++){
+    if (depth&0x01 && x!=wh){  // never itself
+      bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+    //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    if (once==0) bt=bitrr; // but that is always lowest one of the route... but only a difference with more than 2 routes or?
+    else bt&=bitrr; 
+    once++;
+  }
+  depth=depth>>1;
+  }
+    }
+  return bt;
+}
+
+// testing dual fixed routes - TODO: to also bump/move these locally and globally
+// some routes don't work...
+static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t wh){ // androutes dual routes...
   uint32_t bt=0, bitrr, once=0;
   depth=androutes[count][wh];
   for (uint8_t x=0;x<4;x++){
     if (depth&0x01){  
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
-    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
     if (once==0) bt=bitrr; 
     else bt&=bitrr; 
     once++;
@@ -274,6 +295,24 @@ static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t wh){   
   }
   return bt;
 }
+
+static inline uint32_t binroutAND11(uint32_t depth, uint32_t in, uint32_t wh){ // androutes dual routes... Gshift
+  // can also be other kinds of binroute TODO
+  uint32_t bt=0, bitrr, once=0;
+  depth=androutes[count][wh];
+  for (uint8_t x=0;x<4;x++){
+    if (depth&0x01){  
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+    //gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr; //we don't shift it as we dont want to run at speed
+    if (once==0) bt=bitrr; 
+    else bt&=bitrr; 
+    once++;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
 
 static inline uint32_t zjustcycle(uint32_t depth, uint32_t in, uint32_t wh){ // just cycle// no depth
   uint32_t bt;

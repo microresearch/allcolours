@@ -19,11 +19,11 @@ A dragon with 5 heads!
 
 RESOLVE ARCH:
 
-*basic model, test basic geogens inc. ported//classic SRs, ADC and DAC, arrange, layout of inner and outer - new pointer arch, tails, interpol/strobe etc, recursions/gaps/attach/detachments, final tests/tweaks*
+*basic model, test basic geogens inc. ported//classic SRs, ADC and DAC, arrange, layout of inner and outer - new pointer arch, tails, interpol/strobe etc, recursions/gaps/attach/detachments*
+*final tests/tweaks*
 
 //
 -  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
-
 
 - strip down and test // new ops and add operations on ghosts 
 - test that we have basic classic SR operations and flexibility for prob, toggle and strobe within basic functions...
@@ -54,15 +54,42 @@ RESOLVE ARCH:
 
 ** xxTOP
 
+** 4/10/2022
+
+- HOW to plan last works... what needs to be done clearly stated...
+
+- fixed dual routes filled out and functions to manipulate these
+
+
+binroutetypes???
+
+- assign ADC and DAC functions?
+- check all functions for each N<L<C<R - see above and below for extras
+
+- define all outer and inner modes
+- details
+- CHANGED business - do we always need that, slurs/blurs of modes... // where is the speed of slur (in mode changes: modecnt>128 !!!
+
+
+-- previous notes////////DONE
+
+DONEother forms of new AND routes...
+
+DONE:to test AND - re-check macros...//no AND in macros as we need a variable there
+
+AND with standard routing doesn;t make sense - trial with 3 as OSC/DONE
+
+** 26/9/2022
+
+- don't shift the AND version so it can slowly pulse - TO TEST! in geogen//DONE
+
 ** 23/9/2022
 
 - added macros for binrouteAND and one new function in geogen - so can more gating of one SR by another...
 
-DONE as binroutAND0@ but then would need one route in as entry and 2nd as AND as two AND routes in don't make sense... so we have first as IN, and later
+DONE as binroutAND0 but then would need one route in as entry and 2nd as AND as two AND routes in don't make sense... so we have first as IN, and later
 
 *added androutes->we could also have fixed dual routes for this: local and globally defined...* first and second single routes/where do we have single routes
-
-
 
 ** 22/9/2022
 
@@ -72,9 +99,7 @@ DONE as binroutAND0@ but then would need one route in as entry and 2nd as AND as
 
 - how to have pulsing code on DAC which is like on for x runs and then
   off with x determined by DAC, CV/DAC, CV? - or is same as OR/XOR
-  with very slow running other SR - how to test this? -> is 2 routes in (one as OR) - is just usual multiple routes in but needs to be AND (can be OR for inversion) - where to implement?
-
-
+  with very slow running other SR - how to test this? -> is 2 routes in (one as OR) - is just usual multiple routes in but needs to be AND (can be OR for inversion) - where to implement?DONE
 
 ** 20/9/2022
 
@@ -150,7 +175,7 @@ redone as fixed route: zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbi
 
 - *now back to idea of more mobile strobe with filled in CV as prob - see SR_geomantic_outer_test*
 
-- DONE i thinkprobs as speed - more granular or do we do this already?* - TODO: add more prob modes in general - but there are many
+- DONE i think///probs as speed - more granular or do we do this already?* - TODO: add more prob modes in general - but there are many
 - if we go from very fixed to unfixed then it stays fixed - so maybe less fixed, only first ones. also RESETR
 - SR as mesh for matrix, mobile gap/holes - what is a gap. how unfixing/fixing works... see above and is it most elegant, question of 3d array as necessary or not...
 
@@ -253,7 +278,7 @@ lengthchanging modes->lengthfrom dac simply ???
 2nd - no reset.basic
 ->16 modes
 
-*arch: sets of outers calling inners, can we mix different models (eg. matrixp copies?), 16 strobe modes with lots of ops, mobile gaps*
+*arch: sets of outers calling inners, can we mix different models (eg. matrixp copies?), 16 strobe modes with lots of ops???, mobile gaps*
 
 DONEfilling in structural gaps: we added new local binroute but could also be different types of binroute // local binroute is ONLY routing so NOT a different type except in one case
 
