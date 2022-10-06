@@ -54,19 +54,37 @@ RESOLVE ARCH:
 
 ** xxTOP
 
+** 6/10/2022
+
+dactype/dacpar and methods for setting this - should be global/local - how key settings should be arranged...
+
+most important for dactype is output of course but others also matter - just where we place these...
+
+// how to make global for NLR dacs... - that we have tables of dactypes or... but that would be very long 5 bits for each - or global inc of dactype - TEST! as they can be out of sync
+
+adc we have functions for - juts need to pull out     if (w==0){ // real ADC - TESTY - how we will handle adc across all
+
+////
+
+question of updates in new_geomantic??? define types of inner and outer?
+
 ** 4/10/2022
 
-- HOW to plan last works... what needs to be done clearly stated...
+*TODO:*
 
 - fixed dual routes filled out and functions to manipulate these
 
+binroutetypes??? where do we change and set this? global or local?
 
-binroutetypes???
+we have binroutetypecount which is global (and has a global function to change that), we have local for itself
+
+but only few functions use different binroutetypes ???? how to resolve this???
+
 
 - assign ADC and DAC functions?
-- check all functions for each N<L<C<R - see above and below for extras
 
-- define all outer and inner modes
+
+- define all outer and inner modes//for each N<L<C<R - see above and below for extras
 - details
 - CHANGED business - do we always need that, slurs/blurs of modes... // where is the speed of slur (in mode changes: modecnt>128 !!!
 

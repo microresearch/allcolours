@@ -297,7 +297,6 @@ static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t wh){ //
 }
 
 static inline uint32_t binroutAND11(uint32_t depth, uint32_t in, uint32_t wh){ // androutes dual routes... Gshift
-  // can also be other kinds of binroute TODO
   uint32_t bt=0, bitrr, once=0;
   depth=androutes[count][wh];
   for (uint8_t x=0;x<4;x++){

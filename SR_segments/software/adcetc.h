@@ -2517,10 +2517,11 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
     break;    
 
-  case 28: // all bits
+  case 28 ... 31: // all bits
     x=shift&4095;
     break;
-    //// bring up to 32x
+
+    //// bring up to 32 - maybe with more mixes, 29,30,31 - fill for moment TODO!
 
     ///////
   } // switch    

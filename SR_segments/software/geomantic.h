@@ -30,8 +30,10 @@ uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadc
 // do we have probability of entry of adc or not, also prob of moving adc along? to add these here, and also more generic adcs: internal adcprobs are in geogen.h
 
 // bits // can divide into further: abstract, includesprob, routings - which ones rely on other SRs!
-uint32_t (*bitfromsd[76])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND00, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR, zcopyGSR_s, ztogglebitssh, ztogglebits, zsuccbitsprob};//  - how many can we have - different sets...
+uint32_t (*bitfromsd[76])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR, zcopyGSR_s, ztogglebitssh, ztogglebits, zsuccbitsprob};//  - how many can we have - different sets...
 // SRdelay_lineOUT??? needs it input pair?
+
+// add in binroutAND00, binroutAND1, binroutAND11
 
 // we are missing: binroutesel0, 1,2,3 and we add new binroutes for locals: binroutfixedmy, binroutfixedmy, binroutmybumpS, binroutmycv, binroutmybumpbit, binroutmybumpbitt //can be more...
 // also more variations of binroutes and probs // what variations of probs???
@@ -39,7 +41,7 @@ uint32_t (*bitfromsd[76])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binr
 //check
 uint32_t (*bitfromnostrobe[64])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscycle_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR};
 
-// test for global set businessDONE GLOBALONE only this:
+// test for global set businessDONE GLOBALONEs use only this:
 uint32_t (*bitfromsdR[33])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, selectglob};
 
 uint32_t (*abstractbits[31])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zosc1bits, sigmadelta, cipher, osceq, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, flipflop, flipflopI, ztogglebitssh, ztogglebits}; //29 so far // also includes some strobes
@@ -468,7 +470,53 @@ void SR_geomantic_outerRglobselandset(uint32_t w){ // select is CVL, depth for g
 }  
 
 /// TODO: test setting of dactype and dacpar for modeC
+/// how these could also be global (but for N,L,R only)
 
+void SR_geomantic_outer_dactype(uint32_t w){ // test just simplest binroute in/spdfrac // with NO RESETR - test now with setting of DACtype
+  //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+  ///  RESETR; // but could this not be on changed! only? - put in resetr one
+  
+  gate[w].matrix[0]=3<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
+  gate[w].matrix[3]=2<<7; // fixed route // or we just leave as a gap
+  //  gate[w].matrix[6]=0;//CVL[w]; // length
+  gate[w].matrix[9]=0<<7; // no probs
+  gate[w].dactype=CVL[w]>>7; // 5 bits
+  //  gate[w].dacpar=CVL[w];
+  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
+  gate[w].inner=SR_geomantic_inner;
+}
+
+void SR_geomantic_outer_dacparcv(uint32_t w){ // test just simplest binroute in/spdfrac // with NO RESETR - test now with setting of DACtype
+  //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+  ///  RESETR; // but could this not be on changed! only? - put in resetr one
+  
+  gate[w].matrix[0]=3<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
+  gate[w].matrix[3]=2<<7; // fixed route // or we just leave as a gap
+  //  gate[w].matrix[6]=CVL[w]; // length
+  gate[w].matrix[9]=0<<7; // no probs
+  gate[w].dacpar=CVL[w]; // into DAC_ otherpar which is 10 bits
+  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
+  gate[w].inner=SR_geomantic_inner;
+}
+
+void SR_geomantic_outer_dacpardac(uint32_t w){ // test just simplest binroute in/spdfrac // with NO RESETR - test now with setting of DACtype
+  //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+  ///  RESETR; // but could this not be on changed! only? - put in resetr one
+  
+  gate[w].matrix[0]=3<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
+  gate[w].matrix[3]=2<<7; // fixed route
+  //  gate[w].matrix[6]=CVL[w]; // length
+  gate[w].matrix[9]=0<<7; // no probs
+  gate[w].dacpar=gate[dacfrom[daccount][w]].dac; // into DAC_ otherpar which is 10 bits
+  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
+  gate[w].inner=SR_geomantic_inner;
+}
+
+
+//////////////
 
 //// TRIAL2 - moving gaps if we have some kind of binary matrix - or ternary // how? - trial this possible copy in!?
 //// but can this be more elegant? we change single set of matrices (could also be inside gate[w] then is back to older matrix idea...

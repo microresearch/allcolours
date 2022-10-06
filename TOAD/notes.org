@@ -1,5 +1,17 @@
 ** newer 22/7/2022+
 
+*** 6/10/2022
+
+- TOAD_FINAL/TOAD2 is the one... 
+
+- check ERC/DONE
+- check schematic against circuit FRI/7
+
+- check footprints - again which ones we use for production??? -> but in kicad 6 we need check all SOIC, 1206=3126 (metric), check NPN PNP!!!
+
+- start on PCB layout - height is? width we determine but for x knobs and x outs we could say X U
+
+
 *** 25/7
 
 - we calculate sprott res r68 as 2.5M - what do we have? 2.2M
