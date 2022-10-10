@@ -54,6 +54,18 @@ RESOLVE ARCH:
 
 ** xxTOP
 
+** 10/10/2022
+
+- new geoC.h to start to sketch modes// differences between new_geo and others...
+
+** 7/10/2022
+
+- lowest modes set adc/dactype/dacpar  - plan how we deal with holes and matrices: Modes should decide whether to make use of matric or not!
+
+(eg. also fixing dacpar to another dac)!
+
+
+
 ** 6/10/2022
 
 dactype/dacpar and methods for setting this - should be global/local - how key settings should be arranged...

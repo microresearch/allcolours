@@ -1,16 +1,38 @@
 ** newer 22/7/2022+
 
-*** 6/10/2022
+*** 6/10/2022 ++
 
 - TOAD_FINAL/TOAD2 is the one... 
 
-- check ERC/DONE
-- check schematic against circuit FRI/7
+- check schematic against breadboard 
+  - we have scaling of multiplier vca on inverted op amp (see below) followed by +
 
-- check footprints - again which ones we use for production??? -> but in kicad 6 we need check all SOIC, 1206=3126 (metric), check NPN PNP!!!
+shoud be x10 or x100 ???
+
+  - is B2->B2RET pos or neg? - this effects direction of pot
+  - we have VCA between 1st inv and 1st int which works well - do we need vca then on audio in (total 7 VCA?)
+  - check the 3 outs!
+
+
+//// circuit itself to fix on: multiplier, VCA from inv to first integrator, + or -  B2->B2RET
+
+- check ERC/DONE
+
+- check footprints - again which ones we use for production??? -> but in kicad 6 we need check all SOIC, 1206=3126 (metric), 
+
+Xcheck NPNX MMBT3904
+
+Xcheck PNP!!! MMBT3906
 
 - start on PCB layout - height is? width we determine but for x knobs and x outs we could say X U
 
+height of seg base pcb was 108mm
+
+width was 101.3 = 20HP
+
+// we have 11 jacks: 6 VCA, 3 outs, clock in, input
+
+6 pots: 6 VCA sections - but see below for 7
 
 *** 25/7
 
