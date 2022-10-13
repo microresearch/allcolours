@@ -8,8 +8,7 @@
   )
 
 
-  (text "Updated for final TOAD layout - towards Mindlin and with extra incoming VCA.\nChecking again 21/7/2022 - to check before prelim layout"
-    (at 27.94 21.209 0)
+  (text "Updated for final TOAD layout" (at 27.94 21.209 0)
     (effects (font (size 2.9972 2.9972)) (justify left bottom))
     (uuid 13cbeee5-f54a-428b-acb0-7355615d92ca)
   )
@@ -1073,7 +1072,7 @@
       (reference "R71") (unit 1) (value "4K7") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-000060663e79/e462178b-0773-4fc9-9176-76ba8efa4236"
-      (reference "R72") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R72") (unit 1) (value "10K adj") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-000060946e17"
       (reference "R73") (unit 1) (value "180R") (footprint "Resistor_SMD:R_0805_2012Metric")
@@ -1082,7 +1081,7 @@
       (reference "R74") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-000062d57f45"
-      (reference "R75") (unit 1) (value "100K") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R75") (unit 1) (value "10K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-000062cb5d24"
       (reference "R76") (unit 1) (value "2K2") (footprint "Resistor_SMD:R_0805_2012Metric")
@@ -1129,11 +1128,17 @@
     (path "/00000000-0000-0000-0000-000060663e79/cfef8ebf-5e3c-4d16-9220-d0df05c11f08"
       (reference "R90") (unit 1) (value "100K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
+    (path "/00000000-0000-0000-0000-000060663957/48cf8b38-1052-4148-a7bb-e59e454c0228"
+      (reference "R91") (unit 1) (value "100K") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-0000607d0dc2"
       (reference "R92") (unit 1) (value "100K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-0000607bc9cd"
       (reference "R93") (unit 1) (value "100K") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
+    (path "/00000000-0000-0000-0000-000060663957/770a8ff3-9b7a-4a67-a0af-cee295c20e17"
+      (reference "R94") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-0000607a825b"
       (reference "R95") (unit 1) (value "100K") (footprint "Resistor_SMD:R_0805_2012Metric")
@@ -1152,6 +1157,9 @@
     )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-0000609bf209"
       (reference "R100") (unit 1) (value "2K2") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
+    (path "/00000000-0000-0000-0000-000060663579/87796ac7-bb62-4155-8c01-5236a7a805b2"
+      (reference "R?") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-000060663957/00000000-0000-0000-0000-00005eb1d732"
       (reference "RV1") (unit 1) (value "R_POT") (footprint "new_kicad:Potentiometer_Alps-RK09")

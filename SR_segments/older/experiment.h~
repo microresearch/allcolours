@@ -1,0 +1,22 @@
+void SRLbitprob(uint8_t w){ // new detached mode with prob wheel
+  HEADSIN;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  ///////HERE
+  tmp=CVL[w];
+  val=ADC_(w,SRlength[w],113,gate[w].trigger,dacfrom[daccount][w],tmp, &gate[w].shift_);
+  if (val){
+    BINROUTE_;
+  }
+  else
+    {
+      JUSTCYCLE_;
+    }  
+  PULSIN_XOR;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+  }

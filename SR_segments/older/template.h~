@@ -1,0 +1,53 @@
+// template/s
+void SRxxx(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+    CVOPEN; // CVOPENNOINTERPOL
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn^=
+  BINROUTE_; // or not
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}
+
+void SRxxxx(uint8_t w){
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=0; //set.choose - here is frac
+  gate[w].dactype=0; gate[w].dacpar=param[w]; 
+
+  if (interpoll[spdfrom])   { // place in spdmodes TODO
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+  
+  if (spdmodes[spdfrom](CV[w],w)){
+    GSHIFT_;
+    // bitn=
+    BINROUTE_; // or not
+
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+void SR_xx_xx(uint8_t w){ // 
+  HEAD;
+  if (speedf_[w]!=2.0f){
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+  GSHIFT_;
+  //  bitn=probbitsxortoggle(CVL[w],w);
+  BINROUTE_;
+  BITN_AND_OUTV_;
+  ENDER;
+  }
+  }
+}

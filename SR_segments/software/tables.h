@@ -126,6 +126,29 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  
   {1,3,1,1}
 };
 
+uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first route in which must be different
+  {2,3,3,1}, // default
+  {3,3,1,1}, // new one for rungling 24/1/2022
+  {2,0,1,2}, // from latest notebook prev ones: 3,0,1,2
+  {3,1,2,3}, // itself
+
+  {2,2,1,0}, // reverse
+  {2,3,3,3},
+  {3,2,2,2},
+  {2,1,1,1},
+
+  {2,3,1,1},
+  {2,1,3,3},
+  {1,3,0,1}, // opposites
+  {2,0,3,2},
+
+  {3,2,3,0}, // nexts
+  {1,2,1,0}, /// rev
+  {2,3,1,1},
+  {2,3,1,1}
+};
+
+
 uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
   {3,0,0,0}, // default
   {0,0,0,0}, // synced...

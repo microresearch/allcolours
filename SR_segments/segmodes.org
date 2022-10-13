@@ -37,7 +37,7 @@ RESOLVE ARCH:
 *figure out calc for filter speeds - for 15 octaves*
 
 *5th tail always running and how we switch in to it different streams from SRs*
-*setting of dactypes*
+DONEsetting of dactypes
 *also potential global speeds from moder - how this can over-ride // sets of global modes*
 *reset global speeds and binary[all] in moder - RESETR macro to use*
 
@@ -54,17 +54,97 @@ RESOLVE ARCH:
 
 ** xxTOP
 
-** 10/10/2022
+** 12/10/2022
 
-- new geoC.h to start to sketch modes// differences between new_geo and others...
+- *thinking of meta-level of prob to use x or y param -> further matrix ops*
+
+from 10/8: *geomantic: gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095; // detach this too // or rather one new form of re-attachment - we can also use value functions here!! // another layer of attach*
+
+
+
+TODO: 
+
+- more probf for 16 or 32 probfs?
+- how we deal with strobe free up!? as prob (but what do we need for that?)
+- break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types
+- fix matrixp ops.
+- more tails to do... what they could be as runs at full speed. consecutive bits, 
+- flesh out modes
+- details like strobe above
+- speed of slur, see TODOs below
+
+DONE: ADC//upto 32 ops and implement reset/other, 
+
+NOTE:// add and other ops - only issue is if depth and in are both the same dac = how to avoid this? different dacs for adc -> eg. = incoming gate[dacIN[daccount][w]].dac
+
+** 11/10/2022
+
+- new geoC.h and geoN.h started to sketch modes
+
+TODO: extra matrix for dacparDONE, start to make sense of all functions and depth
+
+speed cv1, cv2
+bitfrom cv1, cv2
+length
+prob
+
+??****
+
+how we deal with no adc entry...
+
+question of delay line to resolve
+
+*major question of functions without depth - how we handle that - check all speeds have depth, but what of other funcs?*
+
+eg. some globals don't need depth - then what do we use depth for? or we always keep as length or???/
+
+strobe/no depth/depth - as options - strobe we handle... to keep seperate? or we signal in global eg. gate[x].depth as 1/0
+
+
+- *strobe speed drops depth??? how to handle strobes is now main question? if we handle them in special area?>>>? yes*
+
+- how we handle different types of binroute - also as an area?
+
+*binroute area? - divide areas into binroute, abstract functions... ???*
+
+what types of inner/outer we have from geo:
+
+inners: strobe, nostrobe, xorwithstrobe, orwithstrobe, probf function, 2x rungler-XORfunctions, splitspeeds, otherprob, probforadc, globalsels, speed xor
+
+outers (except just match above): matrixp ops - attach/detach, set gaps/fixedmatrix
+
+matrixp still needs to be properly implemented with gaps etc...
+
+how to divide up speeds?
+
+/// which ones are route based? speedfromnew
+
+zbinroutebits_noshift, zbinroutebits_noshift_transit,
+zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift,
+zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, 
+
+zENsroutedbits, -inroute
+zbinrouteSRbits, -depth as route
+
+binroutfixed_prob1_nosh, binroutfixed_prob2_nosh,
+binroutfixed_prob3_nosh, binroutfixed_prob4_nosh
+
+DONES:
+
+// DONE; to test... how to make global for NLR dacs... - that we have
+tables of dactypes or... but that would be very long 5 bits for each -
+or global inc of dactype - TEST! as they can be out of sync/means we
+need to set in all modes - we didn't do this did we? maybe not so necessary
+
+// DONEcleaned up all older, and new_geo ported into geomantic.h  
+
+// DONEadded dactype and dacpar to matrices, cleaning up modes...
 
 ** 7/10/2022
 
-- lowest modes set adc/dactype/dacpar  - plan how we deal with holes and matrices: Modes should decide whether to make use of matric or not!
+- lowest modes set adc/dactype/dacpar  - plan how we deal with holes and matrices: Modes should decide whether to make use of matrix or not!
 
 (eg. also fixing dacpar to another dac)!
-
-
 
 ** 6/10/2022
 
@@ -72,13 +152,11 @@ dactype/dacpar and methods for setting this - should be global/local - how key s
 
 most important for dactype is output of course but others also matter - just where we place these...
 
-// how to make global for NLR dacs... - that we have tables of dactypes or... but that would be very long 5 bits for each - or global inc of dactype - TEST! as they can be out of sync
-
-adc we have functions for - juts need to pull out     if (w==0){ // real ADC - TESTY - how we will handle adc across all
+adc we have functions for - just need to pull out     if (w==0){ // real ADC - TESTY - how we will handle adc across all - as geoN.h specific modes...
 
 ////
 
-question of updates in new_geomantic??? define types of inner and outer?
+define types of inner and outer?
 
 ** 4/10/2022
 
@@ -119,7 +197,7 @@ AND with standard routing doesn;t make sense - trial with 3 as OSC/DONE
 
 DONE as binroutAND0 but then would need one route in as entry and 2nd as AND as two AND routes in don't make sense... so we have first as IN, and later
 
-*added androutes->we could also have fixed dual routes for this: local and globally defined...* first and second single routes/where do we have single routes
+added androutes->we could also have fixed dual routes for this: local and globally defined...* first and second single routes/where do we have single routes
 
 ** 22/9/2022
 
@@ -241,7 +319,7 @@ void SR_geomantic_outer_test(uint32_t w){  // set up so we can test different fu
 
 - TODO from geomantic.h
 
-*/// test setting of dactype and dacpar for modeC*
+/// test setting of dactype and dacpar for modeC
 
 - *??? resolved speedfrom questions/new speedfroms (as CV speeds/all always use CV, except strobes/toggles and ones don't use it) - section where we select only strobes - inc or/xor*
 
@@ -249,7 +327,7 @@ strobe also leaves gaps for other settings...
 
 - *all types of binroute, types of slur, globals, gaps, tails*
 
-- *TODO more adc modes, rests from extra.h, re-check all LRCN*
+- TODO more adc modes, rests from extra.h, re-check all LRCN
 
 DONE:strobe section also needs to avoid bitfroms strobe..
 
@@ -321,7 +399,7 @@ DONE: and add globals (bits)...IN PROGRESS // *can have more sets of routes etc.
 
 /////
 
-*what we still need to extract and to test... adc (so many), dacsettings*
+what we still need to extract and to test... adc (so many), dacsettings
 
 how this intermediate work effects structure/architecture: eg. strobes, global modes eg///
 
@@ -346,7 +424,7 @@ outer modes can have different ways of dealing with modes but needs to have some
 
 ///
 
-*16 basic modes with gaps. can the gaps move? still one step away from final arch*
+16 basic modes with gaps. can the gaps move? still one step away from final arch
 
 basic modes:
 
@@ -354,7 +432,7 @@ basic modes:
 - TMs/prob
 - runglers
 
-*outer defines a mode but are they different for L, R, C, N - means 4x64 outer modes with some repeats*
+outer defines a mode but are they different for L, R, C, N - means 4x64 outer modes with some repeats
 
 what basic modes did we outline in the past? // what were groups of modes?
 
@@ -410,7 +488,7 @@ logspeed[] is 15 octaves: slowest speed measured with speedtest now is 1Hz -> 16
 *geomantic: gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095; // detach this too // or rather one new form of re-attachment - we can also use value functions here!! // another layer of attach*
 ///but is temporary attachment
 
-- *we can also break down CVs to smaller chunks and have smaller selections eg. of just routing modes*
+attachment can be a list, or fixed array of 2 and bumps one off...
 
 foreseeable issues: if we are left with a probmode but no CV - then is fixed or always have one in reserve just in case eg. dac... // *how we can use hanging probs to our advantage?*
 
@@ -470,7 +548,7 @@ then expand out, also some modes which just maintain CVs, don't change modes // 
 
 *-- how it starts to slip away?*
 
-DONE: added set of internal function in outer but then *we need 2 sets of outers for adc/noadc - do we also make distinction for dac* 
+DONE: added set of internal function in outer but then we need 2 sets of outers for adc/noadc - do we also make distinction for dac
 
 ** 6/8/2022
 
@@ -513,7 +591,7 @@ index into selection [or interior recursion: int in int/ext in ext/ext in int/in
 
 *can we call inner geo from inner geo?*
 
-*TODO:* from/for ADC from N: parallels, drafts (slidings), multiple ins, TM in TM, adcflip, other TMs
+TODO: from/for ADC from N: parallels, drafts (slidings), multiple ins, TM in TM, adcflip, other TMs
 
 ////////////////////////////
 
@@ -1708,7 +1786,7 @@ OR in on 16th zero/count: done as SR_globalbin
 eg.
 
 tmp=binroute[count][w]|binary[w]; // and binary is 16 bits in 4 pieces...			
-*TODO: but would have to change all binroutes...*
+TODO: but would have to change all binroutes...
 
 
 - place PULSIN_XOR in out macros - so clean that up

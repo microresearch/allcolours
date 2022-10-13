@@ -2294,7 +2294,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 7: // 4 spaced bits out! equiv bits
     x= ( ((shift& (1<<lastspac[length][0]))>>lastspacbac[length][0]) + ((shift& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((shift& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((shift& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
-    //    x=countbits[x]*1023;
+    x=countbits(x)*1023;
     if (x>4095) x=4095;
     break;
 

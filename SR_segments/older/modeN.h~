@@ -1,0 +1,25 @@
+uint32_t testNint(void){ // no interpolation
+  uint8_t w=N;				       
+  HEAD;  
+  if (gate[w].trigger)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); 
+    BINROUTE_;
+    BITN_AND_OUTNINT_; // for no pulse out
+  } 
+}
+
+uint32_t testN(void){
+  uint8_t w=N;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    bitn=ADC_(0,SRlength[w],gate[w].adctype,gate[w].trigger,3,gate[w].adcpar, &gate[w].shift_); 
+    BINROUTE_;
+    BITN_AND_OUTVN_; // for no pulse out
+    ENDER;
+  }
+  }
+}

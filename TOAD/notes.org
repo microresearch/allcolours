@@ -1,5 +1,11 @@
 ** newer 22/7/2022+
 
+*** 11/10/2022
+
+- output is still too high (20 Vpp from B3???), sometimes for all
+
+is issue with last integrator???? U6 or U1
+
 *** 6/10/2022 ++
 
 - TOAD_FINAL/TOAD2 is the one... 

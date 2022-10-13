@@ -1,0 +1,19 @@
+gshift0, gshiftnull,
+
+binroutfixed_prob1, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,
+
+rlen, nlen, holdlen,
+
+binrout, binroutfixed, binroutesel0, binroutesel1, binroutesel2, binroutor, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI,
+
+lastspd, holdlspdfrac, spdfrac, spdfrac2, spdfrac3,
+
+strobe, ztogglebits, zeros, ones, clksr, clksrG, cipher, osceq, zSRclksr, zSRclksrG, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zpulsebits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnbits, zreturnbits, zreturnbits, zreturnbits, zreturnbits, zreturnnotbits, zosc1bits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zENbits, zENsbits, zENsroutedbits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zTMsimplebitsI, zwiardbitsI, zwiardinvbitsI, zonebitsI, zENbitsI, zENsbitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zcompbits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, sigmadelta, gensel, zpadcx, 
+
+probcvladcselcvm, probdacadcselcvm, probtrigadcselcvm, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, adcselcvl, adcselcvm,
+
+ddac0, ddac1, ddac2, ddac3, ddac4, ddac5, ddac6, ddac7, ddac8, ddac9, ddac10, ddac11, ddac12, ddac13, ddac14, ddac15, ddac16, ddac17, ddac18, ddac19, ddac20, ddac21, ddac22, ddac23, ddac24, dacselcvl, dacselcvm,
+
+bitsmod, routevalue, spdvienna, viennabits, delay_line_in, delay_line_out, OUT_splitx, IN_splitx, speedselcvl, speedselcvm, speedseloldcvm, speedseloldcvl, Rtest,
+
+// final out functions are in geomantic.

@@ -1,0 +1,37 @@
+// left hand functions
+
+/*
+Characters:
+
+ */
+
+void L0(void){ // basic route in
+  uint8_t w=1;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+
+void L1(void){ // route and cycle
+  uint8_t w=1;
+  HEAD;
+  if (speedf_[w]!=2.0f){ 
+  CVOPEN;
+  if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    BINROUTEANDCYCLE_;
+    PULSIN_XOR;
+    BITN_AND_OUTV_; 
+    ENDER;
+  }
+  }
+}
+

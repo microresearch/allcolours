@@ -1,0 +1,451 @@
+// for thinking about abstraction, not included yet...
+
+// 17/5/2022
+/*
+* groups of 4...
+
+- fixed for mode: type of gshift, type of binroute, type of interpoll
+
+permutations of: 1spdfrom
+                 2lengthfrom
+		 3bitfrom/routefrom
+		 4probfrom 
+
+from: CV, CVL, DAC1-4, ADC, CLKSR/strobe, generators, 
+
+also as spdfrom can be with modifiers eg. DAC%CV is a bit more complex (do that in functions)
+
+layers:
+
+-fixed type of interpol
+-spdfrom->spdfrom functions
+-lengthfrom
+-fixed type of gshift: what are they? but what are types of gshift: no gshift, gshift and no <<sr, gshiftcopy only on strobe...
+-bitfrom - types of binroute are in functions
+-probfrom/logic // or is that a function
+-dacs? 
+
+we take care of interpol or not and use of cvs in function definition...
+///
+
+4 slots-> pointers/or/generators_processors (generator can also just return value from pointer)
+
+but spdfrom is a bit/function, length is value, route/bin is bit
+
+*model for the above*
+*/
+
+// where do we specify those funcs... if we want to integrate with present dofunc scheme
+// keep as abstract so far - we could also wrap it up
+
+// put interpoll into speedfuncs as is just one or two use it eg.
+
+static inline uint32_t sadcfracint(uint8_t w){ 
+  uint32_t bt=0;
+  float speed;
+
+  gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+  gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+  if (gate[w].dac>4095) gate[w].dac=4095;
+
+  speed=logspeedd[CV[wh]>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+//and without
+static inline uint32_t sadcfracnoint(uint8_t w){ 
+  uint32_t bt=0;
+  float speed;
+  gate[w].dac = delay_buffer[w][1];
+  speed=logspeedd[CV[wh]>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+// functions can be simple interpreters of values
+static inline uint32_t cvlength(uint8_t w){ 
+  uint32_t bt=0;
+  bt=lookuplenall[CVL[w]>>7];
+  return bt;
+}
+
+// bitfroms can include different types of binroute
+
+// so each mode is defined by: speedfunc, lengthfunc, bitfunc
+void SR_geomantic(uint8_t w){ // but we miss last logic part as that is in bitfroms: but 4 layers of: speed/length/gshift/bitfrom // extrabits
+  HEADNADA;
+  if (speedfroms[mode[w].speedfunc](w)){ // speedfunc
+    SRlength_[w]=lengthfroms[mode[w].lengthfunc]; // lengthfunc
+    GSHIFT_;  // replace with types of gshift - gshiftfuncs...
+    // CORE 
+    bitn=bitfroms[mode[w].bitfunc];// includes logic - would be nice deal with whole SR but pulsins etc. comes later // bitfunc
+    // ENDCORE
+    if (strobey) bitn|=gate[w].trigger;	 // extra bits in if necessary or is another function
+    BITN_AND_OUTV_; // pulsin is in there
+    new_data(val,w);
+  }    
+  }
+}
+  
+
+
+// from 4/5/2022
+
+/*
+split of speeds-see below | speedfrom -> generator
+
+speed
+
+[core functions]
+
+out/dac/any interpol - but how this can vary - for all cases
+
+*/
+
+// towards new minimal template which handles most conditions eg. interpol/none, detachment
+/*
+1.new gshift/old gshift // we always need to reset
+2.all dacs interpol/no interpol
+3.frozen or not - is that an option? or just keep with lowest frozen and slow speeds - or no freeze on NSR/out
+4.use of clk/pulsin-xor
+5.clean up so less macros and is a bit more general - also between interpol/direct dac access
+6.detachment of CVs - take out of adcetc///
+7.anything else to add in, eg., recording modes, last values etc...
+8.clkbit, other params
+
+so for our modes we can also define strobey - pull out of binroute and place where?
+
+mode grid needs:
+function, strobey, interpoll, inner_function?, detach?, 
+
+*/
+
+// breaking down again into subfunctions, how these can be more spread out...
+// 16 spdmodes with associated interpool yes/no
+/*
+static modez newmodes[128]={ // then call mode by number
+  {0,0,0,0, SRx_x, innertest}
+};
+(*newmodes[choice].func)(www, newmodes[choice].strobey, newmodes[choice].detachlen, newmodes[choice].detachspeed, newmodes[choice].interpoll, newmodes[choice].innerfunc);   
+*/
+
+/*
+ think of access to eg. pointer or value... eg. for spdmode
+
+if (spdpnt) val=*spdpntr;
+else val=spdval;
+
+*/
+
+// we can also sub in speedfroms and other generators -> more generic
+void SRx_x(uint8_t w, uint32_t strobey, uint32_t detachlen, uint32_t  detachspeed, uint32_t interpoll, uint32_t (*innerfunc)(uint8_t w)){
+  HEADNADA;
+  if (detachlen) SRlength_[w]=lookuplenall[CVL[w]>>7]; // can be detached...
+  if (detachspeed) speedf_[w]=slowerlog[CV[w]>>2]; // or we could look at list of for each mode/// different speedlogs (fractional...)
+  if (w==2 || speedf_[w]!=2.0f){ // ignored if we don't have the stop... and if we are modec - insert in function
+    // interpol or not
+    if (interpoll)   { // but interpoll only makes sense for 2 modes... which are in speedfrom
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else {
+    gate[w].dac = delay_buffer[w][1];
+    }
+
+    gate[w].time_now += speedf_[w]; // this is in necessary speedfrom for frac speeds
+    gate[w].last_time = gate[w].int_time;
+    gate[w].int_time = gate[w].time_now;
+
+    if(gate[w].last_time<gate[w].int_time)      {
+    GSHIFT_;
+    // CORE - types of binroute// new macro is BINROUTEalt_;
+    bitn=(*innerfunc)(w);//   (*dofunc[www][mode[www]])(www); --> innerfunc passed params if needed? and if we have CV...
+    if (strobey) bitn|=gate[w].trigger;	 // or
+    PULSIN_XOR;  // or
+    BITN_AND_OUTV_; 
+    ENDER;
+  }    
+  }
+}
+
+uint32_t innertest(uint8_t w){
+  uint32_t bitn=0, tmp, x, bitrr;
+  BINROUTE_;
+  return bitn;
+}
+
+// from 28/4
+
+uint32_t (*speedfroms[8])(uint8_t wh)={sadcfrac, sdacfrac, sstrobe, sstrobeint, sbinroute, sprob, sprobdac, sclksr}; // sycycle also...
+uint8_t interpolll[8]={1,1,0,1, 0,0,0,0}; // new one to match above
+uint8_t freecv[8]={0,1,1,1, 1,0,0,1}; 
+
+// new template following this:
+void SR_speedx(uint8_t w){ // using speedfroms and CV[w] in fracs and probs.. otherwise not... so we can free it check freecv above
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=1; // fixed 
+  gate[w].dactype=0; gate[w].dacpar=param[w]; 
+
+  if (interpolll[spdfrom])   { // interpol - so calculate alpha and do dac always
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else
+    {
+    gate[w].dac = delay_buffer[w][1];
+    }
+  
+  if (speedfroms[spdfrom](w)){ // for interpoll calls always necessary updates
+    /// [ STARTCORE - call as function
+    GSHIFT_;
+    if (freecv[spdfrom]) // do what with it? eg. route/ or use as probability
+      {
+	bitn=binroutebits(CV[w],w);
+		 }
+    else {
+    BINROUTE_; // or not
+    }
+    /// ENDCORE ]
+
+    /*
+    // for below -- options...
+    gate[w].shift_^=bitn; // OR OTHER OP or not
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); 
+    then pulsout
+     */
+    
+    PULSIN_XOR; // place that into next macro
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+/// undated/general
+
+// 0. genericise for macro - and added in PULSINXOR
+// binroute will be part of bitn? but problem is CVL and detachment? unless that is also in array ... - lengthmodeTODO
+// eg... IN PROGRESS.. problem is chains of bitn=, and how to express more complex stuff
+void SR_genspeed2(uint8_t w){
+  HEAD;
+  uint32_t par;
+  uint8_t spdfrom=0; //set.choose - here is frac
+  gate[w].dactype=0; gate[w].dacpar=param[w]; 
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](CV[w],w)){
+    if (lengthmode[spdfrom]) {
+      SRlength[w]=lookuplenall[CVL[w]>>7];
+      par=param[w];
+    }
+    else par=CVL[w]; // we don't use par yet
+    
+    GSHIFT_;
+    // ACTION!
+    bitn=abstractbitstreamslong[spdfrom](CV[w],w); // without even getting into prob
+    //    BINROUTE_; // how to chain in binroutebits (and param for that)
+
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    PULSIN_XOR;
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+
+// 1. reworking also for length
+
+// and think of length
+// also how prob is extracted into bitsfrom - how to chain bitsfrom: eg. bitsprob decides spdfrom of bitsotherprob entry of bitsmode etc...
+// bit chain IS the 4 SRs in some configuration?
+
+// also split between PARAM as CV and DAC (values) and not streams.
+// streams bump through PARAMspace
+// max params is DAC1,2,3,4,ADC,CV,CVL -> 7 + param[x] from clock or we have CV1/CVL1, 2, 3 4 also - other CVs on streamX
+
+void SR_generic_speed(uint8_t w){ // 3 params for spdfrom, length, spdmode // + 2 for bitn +2 for prob
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=PARAM?; 
+  SRlength[w]=PARAM?;
+  
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](PARAM?,w)){ 
+    GSHIFT_;
+    // any operations/prob of
+    bitn=abstractbitstreamslong[PARAM?](PARAM?,w); // without even getting into prob
+    BINROUTE_; // or not
+
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+
+// 2. moods/mode - 2 many parameters but moving towards something/grid of:
+//  {0,0,0,0,0,0, CV,CV,CV,CV,CV, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
+
+// attempting more generic - so we can define a mode within grid of functions, plug in parameters, and logic
+// or SRitselftry2 is a function too eg:
+// func(uint8_t w, moods *mode) - but can we pass in structure itself - as doesn;t know itself
+// but we could pull that out into function array like so:
+
+//void (*moodsfuncs[64])(uint8_t w, moods *mode)={SRitselftry2}; // list of functions and then we can call for example    (*dofunc[www][mode[www]])(www);
+//   (*moodsfuncs[mode[www]])(www, &moodsw[mode[www]]); // for mode[www] 
+
+// so each mode is defined by 5x5bits (decision functions 1,0), 5 CV sources (DAC or CV), and one logic function (say: AND, XOR, leak, OR)
+// where does this get us?
+
+// how can we combine decison functions logically? a chain of... but this would be another function??
+// more of a model which is about bitstreams and combinations of bitstreams
+
+
+typedef struct moods_ { //
+  //  void (*func)(uint8_t w, moods *mode);
+  uint8_t gsfr;
+  uint8_t spdfr;
+  uint8_t probfr;
+  uint8_t incfr;
+  uint8_t incor;
+  uint8_t last;
+  uint32_t *par0, *par1, *par2, *par3, *par4, *parl; 
+  uint8_t (*logic)(uint8_t bit1, uint8_t bit2);
+} moods;
+
+// // too many (6) pars as usual: speed, shift, prob, bitn, logic, length
+// CV, CVL, ADC, dac0-dac3 = 4,  + clksr = 8 params though
+
+// also like array how we can null or set various options to use CV or not (also as some bit modes don;t need cv)?
+
+uint8_t XOR_(uint8_t bit1, uint8_t bit2){
+  uint8_t res;
+  res=bit1^bit2;
+  return res;
+}
+
+uint8_t NON_(uint8_t bit1, uint8_t bit2){
+  return bit1;
+}
+
+uint8_t NOT_(uint8_t bit1, uint8_t bit2){
+  return !bit1;
+}
+
+///////
+
+static moods moodsw[64]={ // unused...
+  {0,0,0,0,0,0, CV,CV,CV,CV,CV,clksr_, XOR_}, // test - frs are refs to array, but problem is pars - as refs to CV[w] or gate[w].dac --
+}; // how to do refs to dacs - pull out dacs (where?)
+// WE would need to change that ref... so is owndac[w] across all files... TODO? if we decide
+
+void SRmoods(uint8_t w, moods *mode){ // pass in structure - 
+  HEADNADA; 
+  SRlength[w]=lookuplenall[mode->parl[w]>>7]; // 5 bits 
+  
+  if (interpol[mode->spdfr])   { // bring out into functions 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  
+  if (abstractbitstreamslong[mode->spdfr](mode->par1[w], w)){  // spd - for intmodes we can lose this // moved speed UP
+  GSHIFT_;
+  /// CORE
+  gate[w].shift_=gate[w].shift_<<(abstractbitstreamslong[mode->gsfr](mode->par0[w], w)); // is this within outer spd? we could have different versions
+    if (abstractbitstreamslong[mode->probfr](mode->par2[w], w)){ // prob
+      bitn=abstractbitstreamslong[mode->incfr](mode->par3[w], w); // what?
+    }
+    else
+      { 
+	bitn=abstractbitstreamslong[mode->incor](mode->par3[w], w); // or?
+      }
+  
+  bitn=mode->logic(bitn, abstractbitstreamslong[mode->last](mode->par4[w], w));
+  // and BINROUTE_;?
+  //  bitn^=abstract....
+  ///  
+    if (!interpol){
+      gate[w].dac = delay_buffer[w][1]; // how into functions?
+    }
+    BITN_AND_OUTV_; // part of interpol - val=DAC but fits for all - now without +bitn
+    new_data(val,w);
+  }
+}
+
+// How we could describe/manipulate a recursive chain such as: eg. bitsprob decides spdfrom of bitsotherprob entry of bitsmode etc...
+// chain as each of SR (oldSR?)
+// [speedof] [probof] entry of - [probof2] [bitstreamX]
+// 3->1 reduction // treating each SR as a function/stream itself... or stream in stream
+
+// bitstream decides DACx or CVx (param[x] is also another)
+
+// splitspeeds:
+
+void SR_split(uint8_t w){ // 3 params for spdfrom, length, spdmode // + 2 for bitn// =5params//// +2 for prob
+  HEAD;
+  uint32_t tmpp;
+  uint8_t spdfrom=PARAM1?; 
+  SRlength[w]=PARAM2?;
+  
+  gate[w].dactype=0; gate[w].dacpar=param[w]; // test
+
+  if (X) {
+    GSHIFTNOS_; // 2.copy gshift on trigger // gate[XX].Gshift[w]&0x01...
+  }
+  
+  if (Y){ //3.advance incoming ghost
+    BINROUTEADV_;
+  }
+
+  if (Z){
+    gate[w].shift_=gate[w].shift_<<1; // 1. shifter
+  }
+
+  if (interpoll[spdfrom])   {
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  if (spdmodes[spdfrom](PARAM3?,w)){ 
+    bitn=abstractbitstreamslong[PARAM4?](PARAM5?,w); // without even getting into prob
+    BINROUTE_; // or not
+
+    if (!interpoll[spdfrom]){
+    gate[w].dac = delay_buffer[w][1];
+    }
+    BITN_AND_OUTVXOR_; // part of interpol - val=DAC but fits for all
+    new_data(val,w);
+  }
+}
+

@@ -50,14 +50,18 @@ static uint32_t CV[4]={0,0,0,0};
 static uint32_t CVL[4]={0,0,0,0};
 static uint32_t CVM[4]={0,0,0,0};
 
-// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
-uint32_t matrixNN[13]={0,0,0, 2<<7,0,0, 0<<7, 1<<7,0, 0,0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[13]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0,0};
-uint32_t matrixCC[13]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 2<<7,0,0,1}; // C has sprobbits, altfunc is 1 but then that needs cv too
-uint32_t matrixRR[13]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0,0}; 
+// add in dactype, dacpar
+
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar}
+uint32_t matrixNN[15]={0,0,0, 2<<7,0,0, 31<<7, 1<<7,31<<7, 0,0,0,0, 25,2048}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0,0, 25,2048};
+uint32_t matrixCC[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 2<<7,0,0,1, 0,2048}; // C has sprobbits, altfunc is 1 but then that needs cv too
+uint32_t matrixRR[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048}; 
+uint32_t matrixTT[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048}; 
+
 //                     speed  bit       len    adc  prob
 
-uint32_t *matrixNNN[13]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
+uint32_t *matrixNNN[15]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 static uint32_t ADCin;
@@ -135,7 +139,7 @@ static uint32_t clk_route_new[4]={0, // no clk route 0
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
-static uint32_t Gshift_[8]={0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
+static uint32_t Gshift_[9]={0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
 
 static uint32_t GGshift_[4][4]={ // for freezers
  {0xff,0xff,0xff,0xff},
@@ -157,7 +161,7 @@ static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG 
 static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt[4]={0,0,0,0};
 
 uint32_t inputbit[4]={0,2,2,2}; //0-LFSR,1-ADC,2-none
-uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
+//uint32_t adctype[4]={0,0,0,0}; // 0-basic, 1-one bit
 //uint32_t dactype[4]={66,66,66,66}; // 0-basic, 1-equiv bits, 2-one bit - 66 is new default one for all except out
 uint32_t doit[4]={1,0,0,0}; // covers what we do with cycling bit - 0 nada, 1=invert if srdacvalue[x]<param// param is 12 bits - can be other options
 uint32_t whichdoit[4]={8,8,8,8}; // dac from???
@@ -221,6 +225,12 @@ static uint32_t glob=0; // glob is now global index for global funcs
 #include "exp_port.h" // ports from exp...++etc includes L now
 #include "geomantic.h" // new geomantic codebase in progress
 
+// new ones now - check memory
+#include "geoC.h"
+#include "geoN.h"
+#include "geoLR.h"
+
+
 // check slowest speed
 void SRspeedtest(uint8_t w){ // null
   static uint32_t tgg[4]={0,0,0,0};
@@ -250,10 +260,10 @@ uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep
 
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
+   {SR_geo_outer_N11, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geomantic_outer_dactype, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
-   {SR_geomantic_outer_OSC, SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geo_outer_C11, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
+   {SR_geomantic_outer_binr, SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
    //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
    // SR_geomantic_outerRglobselandset
    //SR_geomantic_outer_binr
@@ -271,11 +281,13 @@ void mode_init(void){
       gate[1].matrix[y]=matrixLL[y];
       gate[2].matrix[y]=matrixCC[y];
       gate[3].matrix[y]=matrixRR[y];
-
+      gate[8].matrix[y]=matrixTT[y];
+      
       gate[0].matrixp[y]=matrixNNN[y]; // these are just defaults
       gate[1].matrixp[y]=matrixNNN[y];
       gate[2].matrixp[y]=matrixNNN[y];
       gate[3].matrixp[y]=matrixNNN[y];
+      gate[8].matrixp[y]=matrixNNN[y];
 
   }
 
@@ -294,20 +306,19 @@ void mode_init(void){
     gate[x].reset[2]=0;
     gate[x].reset[3]=0;
     gate[x].route=0;
-    gate[x].dacpar=2048;
     gate[0].gsrcnt[x]=31;
     gate[1].gsrcnt[x]=31;
     gate[2].gsrcnt[x]=31;	
     gate[3].gsrcnt[x]=31;
   }
   
-  gate[0].adctype=0;
+  //  gate[0].adctype=0;
 
-  gate[0].dactype=25; // now set to 25 // was 67
-  gate[1].dactype=25; // default simpler version - now 4 bit version 
-  gate[2].dactype=0; // set for out
-  gate[3].dactype=25;
-  gate[8].dactype=25;  
+  //  gate[0].dactype=25; // now set to 25 // was 67
+  //  gate[1].dactype=25; // default simpler version - now 4 bit version 
+  //  gate[2].dactype=0; // set for out
+  //  gate[3].dactype=25;
+  //  gate[8].dactype=25;  
 }
 
 

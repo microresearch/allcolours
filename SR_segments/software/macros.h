@@ -163,6 +163,17 @@ static uint32_t outcnt=0;
     gate[w].countspeed++;				\
 }
 
+#define GSHIFTRED_ {				\
+    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
+    gate[w].Gshift_[0]=gate[w].shift_;					\
+    gate[w].Gshift_[1]=gate[w].shift_;			\
+    gate[w].Gshift_[2]=gate[w].shift_;			\
+    gate[w].Gshift_[3]=gate[w].shift_;			\
+    gate[w].Gshare_=gate[w].shift_;			\
+    gate[w].shift_=gate[w].shift_<<1;			\
+}
+
+
 #define GSHIFTNOS_ {				\
     gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
     gate[w].Gshift_[0]=gate[w].shift_;			\
@@ -511,62 +522,11 @@ static uint32_t outcnt=0;
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
     gate[w].shift_+=bitn;						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].trigger); \
     PULSOUT;								\
 }
 // added pulsin_xor
 
-#define BITN_AND_OUTVgen_ {						\
-    PULSIN_XOR;								\
-    gate[w].shift_+=bitn;						\
-    val=(*dacfunc[gate[w].func[dactypecnt][fdac]])(*CVlist[w][gate[w].cv[gate[w].cvcnt][cvdac]], w); \
-    PULSOUT;								\
-}
-
-
-#define BITN_AND_OUTVXOR_ {						\
-    gate[w].shift_^=bitn;						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-    PULSOUT;								\
-}
-
-// for local changes to dactype 
-#define BITN_AND_OUTVDACT_ {						\
-    gate[w].shift_+=bitn;						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], tmp, gate[w].dacpar, gate[w].trigger); \
-    PULSOUT;								\
-  }
-
-
-#define BITN_AND_OUTVNOSHIFT_ {						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-    PULSOUT;								\
-  }
-
-#define BITN_AND_OUTVINT_ {						\
-    PULSIN_XOR;								\
-    gate[w].shift_+=bitn;						\
-    gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-    PULSOUT;								\
-}
-
-#define BITN_AND_OUTNODAC_ {						\
-    PULSOUT;								\
-}
-
-#define BITN_AND_OUTNODAC2_ {						\
-    PULSIN_XOR;								\
-    gate[w].shift_+=bitn;							\
-    PULSOUT;								\
-  }
-
-
-#define BITN_AND_OUTVINTNO_ {						\
-    gate[w].dac=DAC_(w, gate[w].shift_, SRlength[w], gate[w].dactype, gate[w].dacpar, gate[w].trigger); \
-    PULSOUT;								\
-  }
-
-// these all had     if (w==3) count=0; 10/1/2021				\
 
 #define PULSIN_XOR {				\
   if (pulse[w]){				\

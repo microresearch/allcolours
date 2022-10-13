@@ -1204,7 +1204,7 @@
     (in_bom yes) (on_board yes)
     (uuid e462178b-0773-4fc9-9176-76ba8efa4236)
     (property "Reference" "R72" (id 0) (at 177.8 66.3956 90))
-    (property "Value" "1K" (id 1) (at 177.8 68.707 90))
+    (property "Value" "10K adj" (id 1) (at 177.8 68.707 90))
     (property "Footprint" "Resistor_SMD:R_0805_2012Metric" (id 2) (at 177.8 71.374 0)
       (effects (font (size 1.27 1.27)) hide)
     )

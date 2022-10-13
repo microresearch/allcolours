@@ -1,65 +1,73 @@
-// TODO: start to test and sort all grouped functions here, new groups, see exp_port.h, and 
-// eg. different types of speed, routes as speed, types of bit functions: routes, abstracts etc.  - all need length of 32 let's say
+// 1. speeds - divide into strobe and non strobe - reserve xor ones...
 
-// 1. speeds
+// we need 32 only
+uint32_t (*speedfromnostrobe[34])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, binroutfixed_prob4_nosh}; // 2x spdfrac and end for interpoll
 
-uint32_t (*speedfromnostrobe[27])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitscycle_noshift, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, cipher, spdvienna};// add to these from below
+// can't include itself in nosh at end so this one is for modeC - geoC
+uint32_t (*speedfromnostrobenoend[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob4_nosh, zSRNbits}; // 2x spdfrac and end for interpoll
 
-uint32_t (*speedfromforxor[5])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift}; // unsued so far
+uint32_t (*speedfromforxor[5])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift}; 
 
-uint32_t (*speedfromcvforxor[25])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zcompbits, zosc1bits, sigmadelta, cipher, spdvienna, zwiardbits, zwiardinvbits, zjusttail, zsuccbitsI_noshift, zsuccbits_noshift};// no strobes, no routes and only CV ones...
+uint32_t (*speedfromcvforxor[24])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zcompbits, zosc1bits, sigmadelta, cipher, spdvienna, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift};// no strobes, no routes and only CV ones...
 
+// do any of these use depth? strobespdfrac, burst, clksrG, clksr, zprobbits...
+uint32_t (*speedfromstrobe[16])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, strobespdfrac, ztogglebits, ztogglebitssh, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift, strzbinroutfixed_noshift_transit, strzbinroutfixed_noshift_transitI, strzbinroutfixed_noshift, strzbinroutfixedI_noshift}; 
+// we could have more if we use depth - we have xor with speed in inners here below, but we could use depth more??? or just double????
 
-uint32_t (*speedfromstrobe[5])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, ztogglebits, ztogglebitssh, clksrG, clksr}; // there can be more which use trigger to say advance local route for speed etc...
-// maybe split into 2x speeds, basics with indies, more route based, more prob based, more abstract
-
-uint32_t (*speedfromnew[37])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, spdfrac, spdfrac4, spdfracdac3, spdfracend, ztogglebits, ztogglebitssh, clksrG, clksr, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zonebits, zonebitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, cipher, spdvienna}; // 38 // 2x spdfrac for interpoll
-
-// TODO: altspeeds: , // to add: other bitfromsd, more probbits
+// not to use...//
+uint32_t (*speedfromnew[46])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, spdfrac, spdfrac4, spdfracdac3, spdfracend, ztogglebits, ztogglebitssh, clksrG, clksr, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zprobbits, zinvprobbits, zsprobbits, zTMsimplebits, osceq, zosc1bits, zonebits, zonebitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, cipher, spdvienna, zbinrouteSRbits, zwiardbits, zwiardinvbits, zjusttail, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, binroutfixed_prob4_nosh};  
 
 uint32_t unused[32]={1,0,0,0, 1,1,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,1,1,0, 0,0,0,0};// matches speedfromnew to free up CV[w] - needs TODO be adjusted as we change above one - in which modes we use this?
 
-uint8_t interp[32]={0,1,1,0,0,0,0,0,0,0,0,0,0,0}; // TODO match with interp//////// but depends on which speedfrom we use! - not used so far
+//uint32_t interpfromnew[32]={0,1,1,0,0,0,0,0,0,0,0,0,0,0}; // TODO match with speedfromnew and make more
+
+uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}; // TODO match with speedfromnostrobe
+
+uint32_t interpfromnostrobenoend[32]={1,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}; // TODO match with speedfromnostrobe
 
 // adc
 
-uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits};/// 
+uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, cipher, zadcLBURST0, zadccomp, zadcxdouble, zadcxcut, zadc4bitsadd,  zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd};
 
-// new prob ones: probcvladcselcvm, probdacadcsel, probtrigadcsel -> more work on these...
-
-// do we have probability of entry of adc or not, also prob of moving adc along? to add these here, and also more generic adcs: internal adcprobs are in geogen.h
+uint32_t (*padcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset, uint32_t adv)={pzeros, zpadcx, zpadconebitsx, zpadcpadbits, zpadc12bits, zpadc8bits, zpadc4bits, zpadceqbits, zpadcenergybits, zpadc12compbits, zpadc8compbits, zpadc4compbits, zpadccompbits, zpadc12onecompbits, zpadc8onecompbits, zpadc4onecompbits, zpadconecompbits, pcipher, zpadcLBURST0, zpadccomp, zpadcxdouble, zpadcxcut, zpadc4bitsadd,  zpadc4bitsaddmod, zpadc4bitsxor, zpadc4bitsor, zpadc4bitsand, zpadc4bitsmodm, zpadc4compbitsadd, zpadc4compbitsxor, zpadc4compbitsmodm, zpadc4onecompbitsadd};
 
 // bits // can divide into further: abstract, includesprob, routings - which ones rely on other SRs!
-uint32_t (*bitfromsd[76])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR, zcopyGSR_s, ztogglebitssh, ztogglebits, zsuccbitsprob};//  - how many can we have - different sets...
+uint32_t (*bitfromsd[77])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR, zcopyGSR_s, ztogglebitssh, ztogglebits, zsuccbitsprob, zbinroutfixed_noshift_transitI};//  - how many can we have - different sets...
 // SRdelay_lineOUT??? needs it input pair?
 
 // add in binroutAND00, binroutAND1, binroutAND11
 
-// we are missing: binroutesel0, 1,2,3 and we add new binroutes for locals: binroutfixedmy, binroutfixedmy, binroutmybumpS, binroutmycv, binroutmybumpbit, binroutmybumpbitt //can be more...
+// we are missing: binroutesel0, 1,2,3 and we add new binroutes for locals: binroutfixedmyalt1, binroutfixedmy, binroutmybumpS, binroutmycv, binroutmybumpbit, binroutmybumpbitt //can be more...
 // also more variations of binroutes and probs // what variations of probs???
 
+uint32_t (*bitfromnostrobenodepth[18])(uint32_t depth, uint32_t in, uint32_t wh)={binroutfixed, zjustcycle, zsuccbits, zsuccbitsI, zllfsrbits, zflipbitsI, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, binroutfixedmyalt1, binroutfixedmy, binroutmybumpS, binroutmycv, binroutmybumpbit, binroutmybumpbitt, binroutesel0}; 
+
 //check
-uint32_t (*bitfromnostrobe[64])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscycle_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR};
+uint32_t (*bitfromnostrobe[64])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscycle_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zosc1bits, sigmadelta, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR};
 
 // test for global set businessDONE GLOBALONEs use only this:
-uint32_t (*bitfromsdR[33])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, selectglob};
+uint32_t (*bitfromsdR[31])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, selectglob};
 
-uint32_t (*abstractbits[31])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zosc1bits, sigmadelta, cipher, osceq, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zllfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, flipflop, flipflopI, ztogglebitssh, ztogglebits}; //29 so far // also includes some strobes
+uint32_t (*abstractbits[30])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zosc1bits, sigmadelta, cipher, osceq, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, flipflop, flipflopI, ztogglebitssh, ztogglebits}; //29 so far // also includes some strobes
 
-uint32_t (*routebits[45])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4, viennabits, tailbits, flipflopandroute, zjusttail, zcopyGSR, zcopyGSR_s}; // 45 so far so need to divide down ...
+uint32_t (*routebits[46])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4, viennabits, tailbits, flipflopandroute, zjusttail, zcopyGSR, zcopyGSR_s, zbinroutfixed_noshift_transitI}; // 45 so far so need to divide down ...
 
 uint32_t (*expetcbits[79])(uint32_t depth, uint32_t in, uint32_t wh)={pSR_binr, pSR_routeSRbits00, pSR_routeSRbits01, pSR_routeSRbits02, pSR_layer1, pSR_layer12, pSR_reflect, pSR_altbin1, pSR_insert_zero, pSR_probbin, pSR_recbin, pSRhold, pSRholdfromdac, pSRxorSR, pSRxorroutes, pSRaddroutes, pSRprobxortogx, pSRprobxortog, pSRmatch, pSRshare, pSRGswop, pSRshroute, pSRsigma, pbitSRroutelog, pbitSRroutelogxx, pbitLcvsrroute, pbitSRroutelogxxx, pbitSRroutedoit, pbitLSRroutexxxlog, pprobintprob1, pprobintprob2, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pstream, pSRBITMIX, pSRLcvSRmaskroute, pSRLcvroute, pSR32, pSRDACroutestrobe, pSRLLbumproute, pSRbumproute, pSRmod, pSRNwas13, pSRN65, pSRN62, pSRLLswop, pSRN40, pSRN38, pSRN36, pSRNsr35, pSRN33cipher, pSRN33, pSRN30, pSRN22, pSRN21, pSRN15, pSRN14, pSRN13, pSRN12, pSRN11, pSRN10, pSRN8, pSRN7, pSRN6, pSRN5, pSRNwas15, pSRRLLswop, pSRRaccelghosts0, pSRRbumproute0, pSRR32}; // 80 there are... // form exp_port including exp, bit, prob, L, and R
 
 // prob // regular probs vs. LFSR, depth<in, abstract bit functions, SR bits, routes... what do we need to add?
-
-uint32_t (*probf[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, binrout, binroutfixed, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add assorted strobes/toggles, other bit ops
+// we need more?
+uint32_t (*probf[13])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, binrout, binroutfixed, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add assorted strobes/toggles, other bit ops
 
 // tails
 void (*dotail[64])(void)= {fliptail, basictail};
 // what more of these can be? as they run at full speed...
 
 // global opps
-void (*globalls[32])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpcvntype, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpS}; // only 20 so far // 32 filled
+void (*globalls[24])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpcvntype, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd}; // only 24 so far // 32 filled
+
+//SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpS
+
+  //
 
 ////////////////////////////////////////////////////////////////////////////////
 //INNERS --- (before OUTER as we point to them)
@@ -127,7 +135,7 @@ void SR_geomantic_innerxorS(uint32_t w){  // no prob // xor strobe
     }
 }
 
-void SR_geomantic_innerorS(uint32_t w){  // no prob // or strobe
+void SR_geomantic_innerorS(uint32_t w){  // no prob // OR strobe
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
   //
@@ -166,7 +174,6 @@ void SR_geomantic_innertestt(uint32_t w){  // test expetcbits
     new_data(val,w);
     }
 }
-
 
 void SR_geomantic_innernoadcp(uint32_t w){  
   HEADNADA;
@@ -391,7 +398,7 @@ void SR_geomantic_innerRglobselandset(uint32_t w){ // both select and set as we 
 
 //what we can use in outer modes:  &nulll, &gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[x], &CVL[x], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[x], &param[x], &Gshift_[8] // TAIL!
 
-// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex}
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar
 void SR_geomantic_outer(uint32_t w){  // do as array of functions // keep this as works oddly with default 3 bitfunc=2 which is binroutfixed
   gate[w].matrix[0]=CVL[w];// 5 bits is 32 //2 bits //speedFUNC
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //???
@@ -469,52 +476,6 @@ void SR_geomantic_outerRglobselandset(uint32_t w){ // select is CVL, depth for g
       //    }
 }  
 
-/// TODO: test setting of dactype and dacpar for modeC
-/// how these could also be global (but for N,L,R only)
-
-void SR_geomantic_outer_dactype(uint32_t w){ // test just simplest binroute in/spdfrac // with NO RESETR - test now with setting of DACtype
-  //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-  ///  RESETR; // but could this not be on changed! only? - put in resetr one
-  
-  gate[w].matrix[0]=3<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route // or we just leave as a gap
-  //  gate[w].matrix[6]=0;//CVL[w]; // length
-  gate[w].matrix[9]=0<<7; // no probs
-  gate[w].dactype=CVL[w]>>7; // 5 bits
-  //  gate[w].dacpar=CVL[w];
-  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
-  gate[w].inner=SR_geomantic_inner;
-}
-
-void SR_geomantic_outer_dacparcv(uint32_t w){ // test just simplest binroute in/spdfrac // with NO RESETR - test now with setting of DACtype
-  //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-  ///  RESETR; // but could this not be on changed! only? - put in resetr one
-  
-  gate[w].matrix[0]=3<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route // or we just leave as a gap
-  //  gate[w].matrix[6]=CVL[w]; // length
-  gate[w].matrix[9]=0<<7; // no probs
-  gate[w].dacpar=CVL[w]; // into DAC_ otherpar which is 10 bits
-  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
-  gate[w].inner=SR_geomantic_inner;
-}
-
-void SR_geomantic_outer_dacpardac(uint32_t w){ // test just simplest binroute in/spdfrac // with NO RESETR - test now with setting of DACtype
-  //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-  ///  RESETR; // but could this not be on changed! only? - put in resetr one
-  
-  gate[w].matrix[0]=3<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route
-  //  gate[w].matrix[6]=CVL[w]; // length
-  gate[w].matrix[9]=0<<7; // no probs
-  gate[w].dacpar=gate[dacfrom[daccount][w]].dac; // into DAC_ otherpar which is 10 bits
-  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
-  gate[w].inner=SR_geomantic_inner;
-}
-
 
 //////////////
 
@@ -522,12 +483,12 @@ void SR_geomantic_outer_dacpardac(uint32_t w){ // test just simplest binroute in
 //// but can this be more elegant? we change single set of matrices (could also be inside gate[w] then is back to older matrix idea...
 //// but could be 2 dimensions
 
-uint32_t fixedvalues[4][13]={ //  values - but x value means no change... say 4096
+uint32_t fixedvalues[4][15]={ //  values - but x value means no change... say 4096
   {0},
 };
 
-// do we need this?
-uint32_t *fixedmatrix[4][13]={ // for tests below but is just one matrix and we need multiples... 3d array - do we need as 3d?
+// do we need this? - add extras for dactype, dacpar 
+uint32_t *fixedmatrix[4][15]={ // for tests below but is just one matrix and we need multiples... 3d array - do we need as 3d?
   {&CVL[0], &gate[0].matrix[1], &fixedvalues[0][2]}, // &gate[0].matrix[1] - which would keep it the same - examples here...
 }; 
 
@@ -591,7 +552,7 @@ void SR_geomantic_matrixcopy(uint32_t w){
   setgap(1,0);
   setfixed(0,0,0);
   
-  for (x=0;x<13;x++){
+  for (x=0;x<15;x++){
     gate[w].matrixp[x]=fixedmatrix[w][x]; 
     gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
   }
@@ -605,7 +566,7 @@ void SR_geomantic_matrixcopyz(uint32_t w){
   setgap(1,0); // but do not set old gap - in gap
   setfixed(0,0,0);
   
-  for (x=0;x<13;x++){
+  for (x=0;x<15;x++){
     gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
   }
   // set gate[w].inner
@@ -873,7 +834,7 @@ void SR_geomantic_outer_bitchangeS(uint32_t w){ // test just simplest binroute i
   //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
   gate[w].matrix[0]=0<<7; // strobe
   //  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=CVL[w]; // 5 bits fo first 32 
+  gate[w].matrix[3]=CVL[w]; // 5 bits for first 32 
   gate[w].matrix[4]=CV[w]; 
   gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;
   //  gate[w].matrix[6]=CVL[w]; // length
@@ -1070,3 +1031,93 @@ out: strobe: gshift, adc, gshift and adc full: gshift, adc, gshift and adc
 inner: nogs, noadc, noadc/gs full: nogs, noadc, noadc/gs
 
  */
+
+// from new_geomantic.c
+
+void nSR_geomantic_innernoadcp(uint32_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+  //
+  if ((*speedfromnew[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    
+    if ((*probf[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    bitn^=(*bitfromsd[gate[w].matrix[12]>>7])(gate[w].matrix[4], gate[w].matrix[5], w);
+  }
+  else {
+    bitn^=(*bitfromsd[gate[w].matrix[3]>>7])(gate[w].matrix[4], gate[w].matrix[5], w);
+  }
+    
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+// this is our generic one... - make changes for adc/dac
+void nSR_geomantic_outer_test(uint32_t w){  // set up so we can test different functions eg. now try different speedfuncs
+  if (gate[w].changed==0) { // 1=change 0= no change
+
+    if (unused[gate[w].matrix[0]]) {
+    gate[w].matrix[9]=3<<7; // probbits as we can now use CV
+    gate[w].matrix[10]=CV[w];
+    gate[w].matrix[12]=8<<7; // altfuncindex
+  }
+
+    gate[w].matrix[0]=3<<7;// 0 was strobe // CVL[w]>>7;// 5 bits is 32 //2 bits //speedFUNC
+    gate[w].matrix[1]=CV[w];//
+    gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
+    gate[w].matrix[3]=2<<7; // fixed route
+    //  gate[w].matrix[4]=CVL[w]; // unused in case2: bintroutfixed // but used by altfunc
+    gate[w].matrix[6]=CVL[w]; //length
+    gate[w].matrix[8]=CVL[w]; // length for adc same as
+    //  gate[w].matrix[10]=CVL[w];
+    // rest is unchanged but we need to set/reset a default - so we will have a reset function
+    //  if (w==0) { // set adc in adcfromsd
+    //  gate[w].matrix[8]=CVL[w]; // was 4095- but we shift that to the ADC
+
+    gate[w].inner=nSR_geomantic_innernoadcp; // prob one
+    }
+}
+
+// trial for xor of speeds:
+// we can xor: strobes with any non-strobe which uses cv, fixedroutes with any non-route which uses cv - so 2 sets - how we fix each/// or stay fixed...
+// first case is already in: SR_geomantic_innerxorS
+// second case... speedfromfixedforxor uint32_t (*speedfromforxor[5])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift}; // unsued so far
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ADC
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// reserve basic one for top ADC, modeN 
+void nSR_geomantic_inner_adc(uint32_t w){  // no prob - but this should be done in outers
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+  //
+  if ((*speedfromnew[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
+    LASTSPEED; // new macro to deal with lastspeed 16/6
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    
+    ADCgeneric2; // input into shared one... not if we use ADC_ - this should really be a function so we can have prob...
+    bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too // adc could also be DAC in? how?
+    
+    bitn^=(*bitfromsd[gate[w].matrix[3]>>7])(gate[w].matrix[4], gate[w].matrix[5], w);
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void nSR_geomantic_outer_adc(uint32_t w){ // spdfrac and adc in - adc is set in 000 as default...
+  //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+  ///  RESETR; // but could this not be on changed! only? - put in resetr one
+  
+  gate[w].matrix[0]=3<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
+  gate[w].matrix[3]=2<<7; // fixed route
+  gate[w].matrix[6]=CVL[w]; // length
+  gate[w].matrix[9]=0<<7; // no probs
+
+  gate[w].matrix[8]=CVL[w]; // length for adc same as length
+  
+  gate[w].inner=nSR_geomantic_inner_adc;
+}
