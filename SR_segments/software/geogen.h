@@ -182,11 +182,21 @@ static inline uint32_t binroutfixed_prob4_nosh(uint32_t depth, uint32_t in, uint
 //////////////////////////////////////////////////////////////////////////
 // tails
 
+// tail which is flipflop at speed of modeR - could be faster to always do in modeR rather than re-calc spd. or just a flag//same thing but if w==3 slows
+void fliptail(void){ //
+  // we can also use other gate[w].flips or even move through these
+  //  HEADNADA;
+  uint32_t w=8;
+  GSHIFTRED_;
+  gate[8].shift_+=gate[3].flip;
+  //  gate[8].shift_=LFSR_[0];
+}
+
 void basictail(void){ // tail here is basic 4th binroute at full speed
   HEADNADA;
   uint32_t w=8;
   GSHIFT_;
-  tmp=binroute[count][2]; // routes from ? 8124=2 // not 3?
+  tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
     if (tmp&0x01){
       bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -198,15 +208,308 @@ void basictail(void){ // tail here is basic 4th binroute at full speed
   gate[w].shift_+=bitn;
 }
 
-// tail which is flipflop at speed of modeR - could be faster to always do in modeR rather than re-calc spd. or just a flag//same thing but if w==3 slows
-void fliptail(void){ //
-  // we can also use other gate[w].flips or even move through these
+void succtail(void){
+  uint32_t bt=0;
+  static uint32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx>3) xx=0;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  gate[xx].Gshift_[w]=(gate[xx].Gshift_[w]<<1)+bt;
+  xx++;
+  gate[w].shift_+=bt;
+}
+
+void succtailback(void){
+  uint32_t bt=0;
+  static int32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx<0) xx=3;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  gate[xx].Gshift_[w]=(gate[xx].Gshift_[w]<<1)+bt;
+  xx--;
+  gate[w].shift_+=bt;
+}
+
+void tailN(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[0].Gshift_[w]>>SRlength[0]) & 0x01;
+  gate[0].Gshift_[w]=(gate[0].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=bt;
+}
+
+void tailL(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[1].Gshift_[w]>>SRlength[1]) & 0x01;
+  gate[1].Gshift_[w]=(gate[1].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=bt;
+}
+
+void tailR(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[3].Gshift_[w]>>SRlength[3]) & 0x01;
+  gate[3].Gshift_[w]=(gate[3].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=bt;
+}
+
+void tailC(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[2].Gshift_[w]>>SRlength[2]) & 0x01;
+  gate[2].Gshift_[w]=(gate[2].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=bt;
+}
+
+void basictailnos(void){ // tail here is basic 4th binroute at full speed
   HEADNADA;
   uint32_t w=8;
-  GSHIFTRED_;
-  gate[8].shift_+=gate[3].flip;
-  //  gate[8].shift_=LFSR_[0];
+  GSHIFT_;
+  tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
+  for (x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+      bitn^=bitrr;    
+    }
+    tmp=tmp>>1;
+  }
+  gate[w].shift_+=bitn;
 }
+
+void tailLnos(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[1].Gshift_[w]>>SRlength[1]) & 0x01;
+  gate[w].shift_+=bt;
+}
+
+void tailRnos(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[3].Gshift_[w]>>SRlength[3]) & 0x01;
+  gate[w].shift_+=bt;
+}
+
+void tailCnos(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[2].Gshift_[w]>>SRlength[2]) & 0x01;
+  gate[w].shift_+=bt;
+}
+
+void tailNnos(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[0].Gshift_[w]>>SRlength[0]) & 0x01;
+  //  gate[2].Gshift_[w]=(gate[2].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=bt;
+}
+
+void succtailnos(void){
+  uint32_t bt=0;
+  static uint32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx>3) xx=0;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  xx++;
+  gate[w].shift_+=bt;
+}
+
+void succtailbacknos(void){
+  uint32_t bt=0;
+  static int32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx<0) xx=3;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  xx--;
+  gate[w].shift_+=bt;
+}
+
+void basictailinv(void){ // tail here is basic 4th binroute at full speed
+  HEADNADA;
+  uint32_t w=8;
+  GSHIFT_;
+  tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
+  for (x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+      bitn^=bitrr;    
+    }
+    tmp=tmp>>1;
+  }
+  gate[w].shift_+=!bitn;
+}
+
+void succtailinv(void){
+  uint32_t bt=0;
+  static uint32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx>3) xx=0;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  gate[xx].Gshift_[w]=(gate[xx].Gshift_[w]<<1)+bt;
+  xx++;
+  gate[w].shift_+=!bt;
+}
+
+void succtailbackinv(void){
+  uint32_t bt=0;
+  static int32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx<0) xx=3;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  gate[xx].Gshift_[w]=(gate[xx].Gshift_[w]<<1)+bt;
+  xx--;
+  gate[w].shift_+=!bt;
+}
+
+void tailNinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[0].Gshift_[w]>>SRlength[0]) & 0x01;
+  gate[0].Gshift_[w]=(gate[0].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=!bt;
+}
+
+void tailLinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[1].Gshift_[w]>>SRlength[1]) & 0x01;
+  gate[1].Gshift_[w]=(gate[1].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=!bt;
+}
+
+void tailRinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[3].Gshift_[w]>>SRlength[3]) & 0x01;
+  gate[3].Gshift_[w]=(gate[3].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=!bt;
+}
+
+void tailCinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[2].Gshift_[w]>>SRlength[2]) & 0x01;
+  gate[2].Gshift_[w]=(gate[2].Gshift_[w]<<1)+bt;
+  gate[w].shift_+=!bt;
+}
+
+void basictailnosinv(void){ // tail here is basic 4th binroute at full speed
+  HEADNADA;
+  uint32_t w=8;
+  GSHIFT_;
+  tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
+  for (x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+      bitn^=bitrr;    
+    }
+    tmp=tmp>>1;
+  }
+  gate[w].shift_+=!bitn;
+}
+
+void tailLnosinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[1].Gshift_[w]>>SRlength[1]) & 0x01;
+  gate[w].shift_+=!bt;
+}
+
+void tailRnosinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[3].Gshift_[w]>>SRlength[3]) & 0x01;
+  gate[w].shift_+=!bt;
+}
+
+void tailCnosinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[2].Gshift_[w]>>SRlength[2]) & 0x01;
+  gate[w].shift_+=!bt;
+}
+
+void tailNnosinv(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[0].Gshift_[w]>>SRlength[0]) & 0x01;
+  gate[w].shift_+=!bt;
+}
+
+void succtailnosinv(void){
+  uint32_t bt=0;
+  static uint32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx>3) xx=0;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  xx++;
+  gate[w].shift_+=!bt;
+}
+
+void succtailbacknosinv(void){
+  uint32_t bt=0;
+  static int32_t xx=0;
+  uint32_t w=8;
+  GSHIFT_;
+  if (xx<0) xx=3;
+  bt = (gate[xx].Gshift_[w]>>SRlength[xx]) & 0x01;
+  xx--;
+  gate[w].shift_+=!bt;
+}
+
+void tailXOR0(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[3].Gshift_[w]>>SRlength[3]) & 0x01; 
+  bt ^= (gate[0].Gshift_[w]>>SRlength[0]) & 0x01; 
+  gate[w].shift_+=bt;
+}
+
+void tailXOR1(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[2].Gshift_[w]>>SRlength[2]) & 0x01; 
+  bt ^= (gate[0].Gshift_[w]>>SRlength[0]) & 0x01; 
+  gate[w].shift_+=bt;
+}
+
+void tailOR(void){
+  uint32_t bt=0;
+  uint32_t w=8;
+  GSHIFT_;
+  bt = (gate[3].Gshift_[w]>>SRlength[3]) & 0x01; 
+  bt |= (gate[0].Gshift_[w]>>SRlength[0]) & 0x01; 
+  gate[w].shift_+=bt;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 //1
@@ -324,7 +627,8 @@ static inline uint32_t zjustcycle(uint32_t depth, uint32_t in, uint32_t wh){ // 
 
 static inline uint32_t zjusttail(uint32_t depth, uint32_t in, uint32_t wh){ // just tail// no depth
   uint32_t bt;
-  bt = (gate[8].Gshift_[8]>>SRlength[8]) & 0x01;// tail
+  bt = (gate[8].Gshift_[wh]>>SRlength[8]) & 0x01;// tail
+  
   return bt;
 }
 
@@ -1169,7 +1473,7 @@ static inline uint32_t strobezsuccbits_noshift(uint32_t depth, uint32_t in, uint
   static uint8_t x=0;
   if (x==wh) x++;
   if (x>3) x=0;
-  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
   //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
   if (gate[wh].trigger) x++;
   return bt;
@@ -1181,7 +1485,7 @@ static inline uint32_t strobezsuccbitsI_noshift(uint32_t depth, uint32_t in, uin
   static uint8_t x[4]={0};
   if (x[wh]==wh) x[wh]++;
   if (x[wh]>3) x[wh]=0;
-  bt = (gate[x[wh]].Gshift_[0]>>SRlength[x[wh]]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  bt = (gate[x[wh]].Gshift_[0]>>SRlength[x[wh]]) & 0x01;
   //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
   if (gate[wh].trigger) x[wh]++;
   return bt;
@@ -1480,10 +1784,10 @@ static inline uint32_t zprobbitsxortoggle(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t zsuccbits(uint32_t depth, uint32_t in, uint32_t wh){   // no use of depth - we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x=0;
+  static uint8_t x=0; // shared
   if (x==wh) x++;
   if (x>3) x=0;
-  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
   gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
   x++;
   return bt;
@@ -1509,7 +1813,7 @@ static inline uint32_t zsuccbits_noshift(uint32_t depth, uint32_t in, uint32_t w
   static uint8_t x=0;
   if (x==wh) x++;
   if (x>3) x=0;
-  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
   //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
   if (depth>(LFSR_[wh]&4095)) x++;
   return bt;
@@ -1521,7 +1825,7 @@ static inline uint32_t zsuccbitsI(uint32_t depth, uint32_t in, uint32_t wh){   /
   static uint8_t x[4]={0};
   if (x[wh]==wh) x[wh]++;
   if (x[wh]>3) x[wh]=0;
-  bt = (gate[x[wh]].Gshift_[0]>>SRlength[x[wh]]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  bt = (gate[x[wh]].Gshift_[0]>>SRlength[x[wh]]) & 0x01;
   //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
   x[wh]++;
   return bt;
@@ -1533,7 +1837,7 @@ static inline uint32_t zsuccbitsI_noshift(uint32_t depth, uint32_t in, uint32_t 
   static uint8_t x[4]={0};
   if (x[wh]==wh) x[wh]++;
   if (x[wh]>3) x[wh]=0;
-  bt = (gate[x[wh]].Gshift_[0]>>SRlength[x[wh]]) & 0x01; // if we have multiple same routes they always shift on same one - keep as option - see indie version
+  bt = (gate[x[wh]].Gshift_[0]>>SRlength[x[wh]]) & 0x01;
   //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
   if (depth>(LFSR_[wh]&4095)) x[wh]++;
   return bt;
@@ -3305,6 +3609,8 @@ static inline void SRRglobalorderbumpbit(uint32_t depth){ // nada. depth can be 
 }
 
 // adding new functions 8/8 which can be for speed or bits or ported ones... // tails can also be these globals but maybe nice not to run these so fast
+
+// tailbitsI, tailbitswithd, tailbitsIwithd
 
 static inline uint32_t tailbits(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
   uint32_t bt=0, bitrr;

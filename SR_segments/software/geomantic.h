@@ -1,10 +1,10 @@
 // 1. speeds - divide into strobe and non strobe - reserve xor ones...
 
 // we need 32 only
-uint32_t (*speedfromnostrobe[34])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, binroutfixed_prob4_nosh}; // 2x spdfrac and end for interpoll
+uint32_t (*speedfromnostrobe[34])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, binroutfixed_prob4_nosh}; // 2x spdfrac and spdfracend for interpoll
 
 // can't include itself in nosh at end so this one is for modeC - geoC
-uint32_t (*speedfromnostrobenoend[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob4_nosh, zSRNbits}; // 2x spdfrac and end for interpoll
+uint32_t (*speedfromnostrobenoend[34])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zinvprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob4_nosh, zSRNbits, zprobbits, zsprobbits}; // 2x spdfrac for interpoll
 
 uint32_t (*speedfromforxor[5])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift}; 
 
@@ -29,6 +29,7 @@ uint32_t interpfromnostrobenoend[32]={1,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,
 
 uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, zadcx, zadconebitsx, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, cipher, zadcLBURST0, zadccomp, zadcxdouble, zadcxcut, zadc4bitsadd,  zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd};
 
+// with extra vars for reset and advance for probability
 uint32_t (*padcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset, uint32_t adv)={pzeros, zpadcx, zpadconebitsx, zpadcpadbits, zpadc12bits, zpadc8bits, zpadc4bits, zpadceqbits, zpadcenergybits, zpadc12compbits, zpadc8compbits, zpadc4compbits, zpadccompbits, zpadc12onecompbits, zpadc8onecompbits, zpadc4onecompbits, zpadconecompbits, pcipher, zpadcLBURST0, zpadccomp, zpadcxdouble, zpadcxcut, zpadc4bitsadd,  zpadc4bitsaddmod, zpadc4bitsxor, zpadc4bitsor, zpadc4bitsand, zpadc4bitsmodm, zpadc4compbitsadd, zpadc4compbitsxor, zpadc4compbitsmodm, zpadc4onecompbitsadd};
 
 // bits // can divide into further: abstract, includesprob, routings - which ones rely on other SRs!
@@ -42,6 +43,8 @@ uint32_t (*bitfromsd[77])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binr
 
 uint32_t (*bitfromnostrobenodepth[18])(uint32_t depth, uint32_t in, uint32_t wh)={binroutfixed, zjustcycle, zsuccbits, zsuccbitsI, zllfsrbits, zflipbitsI, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, binroutfixedmyalt1, binroutfixedmy, binroutmybumpS, binroutmycv, binroutmybumpbit, binroutmybumpbitt, binroutesel0}; 
 
+// tailbitsI, tailbitswithd, tailbitsIwithd
+
 //check
 uint32_t (*bitfromnostrobe[64])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscycle_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zosc1bits, sigmadelta, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR};
 
@@ -54,13 +57,20 @@ uint32_t (*routebits[46])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, bi
 
 uint32_t (*expetcbits[79])(uint32_t depth, uint32_t in, uint32_t wh)={pSR_binr, pSR_routeSRbits00, pSR_routeSRbits01, pSR_routeSRbits02, pSR_layer1, pSR_layer12, pSR_reflect, pSR_altbin1, pSR_insert_zero, pSR_probbin, pSR_recbin, pSRhold, pSRholdfromdac, pSRxorSR, pSRxorroutes, pSRaddroutes, pSRprobxortogx, pSRprobxortog, pSRmatch, pSRshare, pSRGswop, pSRshroute, pSRsigma, pbitSRroutelog, pbitSRroutelogxx, pbitLcvsrroute, pbitSRroutelogxxx, pbitSRroutedoit, pbitLSRroutexxxlog, pprobintprob1, pprobintprob2, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pstream, pSRBITMIX, pSRLcvSRmaskroute, pSRLcvroute, pSR32, pSRDACroutestrobe, pSRLLbumproute, pSRbumproute, pSRmod, pSRNwas13, pSRN65, pSRN62, pSRLLswop, pSRN40, pSRN38, pSRN36, pSRNsr35, pSRN33cipher, pSRN33, pSRN30, pSRN22, pSRN21, pSRN15, pSRN14, pSRN13, pSRN12, pSRN11, pSRN10, pSRN8, pSRN7, pSRN6, pSRN5, pSRNwas15, pSRRLLswop, pSRRaccelghosts0, pSRRbumproute0, pSRR32}; // 80 there are... // form exp_port including exp, bit, prob, L, and R
 
-// prob // regular probs vs. LFSR, depth<in, abstract bit functions, SR bits, routes... what do we need to add?
-// we need more?
-uint32_t (*probf[13])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, binrout, binroutfixed, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add assorted strobes/toggles, other bit ops
+// probs - phase out use of this one
+uint32_t (*probf[14])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add other bit ops, changed binrouts to non-shift // testings!
+
+// maybe have parallel probf sans. strobe, zeroes, ones and only depth/cv based!!!
+uint32_t (*probfsins[32])(uint32_t depth, uint32_t in, uint32_t wh)={zinvprobbits, zprobbits, zsprobbits, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zownprobbits, zownGprobbits, spdfrac, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, zSRNbits}; // all use depth // updated with speed
+
+// based on strobe speeds - no depths
+uint32_t (*probfstrobes[10])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, ztogglebits, ztogglebitssh, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift, strzbinroutfixed_noshift_transit, strzbinroutfixed_noshift_transitI, strzbinroutfixed_noshift, strzbinroutfixedI_noshift};
+
+// with depths
+uint32_t (*probfstrobesdepth[6])(uint32_t depth, uint32_t in, uint32_t wh)={strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle}; 
 
 // tails
-void (*dotail[64])(void)= {fliptail, basictail};
-// what more of these can be? as they run at full speed...
+void (*dotail[32])(void)= {fliptail, basictail, succtail, succtailback, tailC, tailL, tailR, tailN, basictailnos, succtailnos, succtailbacknos, tailCnos, tailLnos, tailRnos, tailNnos, basictailinv, succtailinv, succtailbackinv, tailCinv, tailLinv, tailRinv, tailNinv, basictailnosinv, succtailnosinv, succtailbacknosinv, tailCnosinv, tailLnosinv, tailRnosinv, tailNnosinv, tailXOR0, tailXOR1, tailOR};
 
 // global opps
 void (*globalls[24])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpcvntype, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd}; // only 24 so far // 32 filled
@@ -700,7 +710,7 @@ void SR_geomantic_outer_OSC(uint32_t w){  // TESTING! for trials with
   gate[w].matrix[0]=3<<7;// eg. 1<<7 // CVL[w];// 5 bits is 32 //2 bits //speedFUNC - this is fixed here...
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // 1 and 2 we don't use and CV is free
   //  gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
-  gate[w].matrix[3]=23<<7; // OSCillator is 23 // TRY!
+  gate[w].matrix[3]=22<<7; // OSCillator is 22 // TRY!
    gate[w].matrix[4]=CVL[w]; // 
   //    gate[w].matrix[6]=CVL[w]; //length
   //  gate[w].matrix[10]=CVL[w];

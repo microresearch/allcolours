@@ -54,21 +54,52 @@ DONEsetting of dactypes
 
 ** xxTOP
 
-** 12/10/2022
+** 14/10/2022
 
-- *thinking of meta-level of prob to use x or y param -> further matrix ops*
+- DONE:more tail ops - inversion and OR.XORs what else?
 
-from 10/8: *geomantic: gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095; // detach this too // or rather one new form of re-attachment - we can also use value functions here!! // another layer of attach*
+- DONE:tested probfs
+
+- more probf for 16 or 32 probfs?
+
+*question of strobes/toggles in probf if we use those for strobe based speed modes what happens? have probfsins for no strobe - also all of these need to use depth!*
+
+DONE:trial some of speeds as probs! +probs can also be speeds - they are already+ >> pull speeds out to probf
+
+so now we have 3 sets of probf (and won't use probf):
+
+// maybe have parallel probf sans. strobe, zeroes, ones and only depth/cv based!!!
+uint32_t (*probfsins[32])(uint32_t depth, uint32_t in, uint32_t wh)={zinvprobbits, zprobbits, zsprobbits, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zownprobbits, zownGprobbits, spdfrac, spdfrac2, spdfrac3, spdfrac4, spdfracdac3, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, spdvienna, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, zSRNbits}; // all use depth // updated with speed
+
+// based on strobe speeds - no depths
+uint32_t (*probfstrobes[10])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, ztogglebits, ztogglebitssh, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift, strzbinroutfixed_noshift_transit, strzbinroutfixed_noshift_transitI, strzbinroutfixed_noshift, strzbinroutfixedI_noshift};
+
+// with depths
+uint32_t (*probfstrobesdepth[6])(uint32_t depth, uint32_t in, uint32_t wh)={strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle}; 
 
 
+** 12-13/10/2022
+
+- *thinking of meta-level of prob to use x or y param (eg. use DAC or CV or) -> further matrix ops*
+
+- from 10/8: *geomantic*:
+  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095; //
+  detach this too // or rather one new form of re-attachment - we can
+  also use value functions here!! // another layer of attach*
 
 TODO: 
 
-- more probf for 16 or 32 probfs?
-- how we deal with strobe free up!? as prob (but what do we need for that?)
+- how we deal with strobe free up!? as prob (but what do we need for that? eg.)
+
+    gate[w].matrix[9]=3<<7; // probbits as we can now use CV
+    gate[w].matrix[10]=CV[w];
+    gate[w].matrix[12]=8<<7; // altfuncindex // these can also be gaps!
+
+////
+
 - break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types
 - fix matrixp ops.
-- more tails to do... what they could be as runs at full speed. consecutive bits, 
+ 
 - flesh out modes
 - details like strobe above
 - speed of slur, see TODOs below
