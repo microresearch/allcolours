@@ -2650,7 +2650,7 @@ void TIM4_IRQHandler(void)
 
   // modes are NOT inverted!
   // maybe we can slow down modes
-  modecnt++;
+  modecnt++; 
   if (modecnt>128){ // what is the speed of this? 10 Hz (so 20x second ok)
     /*
     flipperr^=1;

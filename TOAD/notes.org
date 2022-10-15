@@ -1,10 +1,16 @@
 ** newer 22/7/2022+
 
+*** 13/10/2022
+
+- fixed hardware problem below. but still too aggressive and hitting bounds...
+
+- trial with 2k into each INTegrator... TODO
+
 *** 11/10/2022
 
 - output is still too high (20 Vpp from B3???), sometimes for all
 
-is issue with last integrator???? U6 or U1
+is issue with last integrator???? U6 or U1 // fixed as ws power on q1 transistor - replaced
 
 *** 6/10/2022 ++
 
@@ -15,7 +21,7 @@ is issue with last integrator???? U6 or U1
 
 shoud be x10 or x100 ???
 
-  - is B2->B2RET pos or neg? - this effects direction of pot
+  - is B2->B2RET pos or neg? - this effects direction of pot POSITIVE
   - we have VCA between 1st inv and 1st int which works well - do we need vca then on audio in (total 7 VCA?)
   - check the 3 outs!
 
@@ -46,7 +52,7 @@ width was 101.3 = 20HP
 
 - testing fully extended with vca also 1st inv->1st int so 7x vca if we include input.. works well
 
-// multiplier always seems a bit lacking... but *now realising that was we lost other 2x mults which divide by 10 is all out of scale*
+// multiplier always seems a bit lacking... but *now realising that was from mindlin we got rid of other 2x mults which divide by 10 is all out of scale*
 
 - but if we return those we lose VCAs or is over complex - then fixed paths back...
 

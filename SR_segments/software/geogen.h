@@ -3506,7 +3506,6 @@ static inline void SRRglobalbumpbit2(uint32_t depth){ // nada but depth AS route
     }
 }
 
-
 static inline void SRRglobalbumproute(uint32_t depth){ // strobe only
   if (gate[3].trigger) // outside speed?
     {
@@ -3583,6 +3582,12 @@ static inline void SRRglobalsync(uint32_t depth){ // nada no depth
   binroutetypecount=count;
 }
 
+static inline void SRRglobaltailset(uint32_t depth){ // nada no depth
+  uint32_t tmp;
+  tmp=depth>>7; ///5 bits
+  tailcount=tmp;  
+}
+
 // bump
 
 static inline void SRRglobalorder(uint32_t depth){ // depth
@@ -3609,13 +3614,20 @@ static inline void SRRglobalorderbumpbit(uint32_t depth){ // nada. depth can be 
 }
 
 // adding new functions 8/8 which can be for speed or bits or ported ones... // tails can also be these globals but maybe nice not to run these so fast
-
-// tailbitsI, tailbitswithd, tailbitsIwithd
+// can also be strobed to bump on...
 
 static inline uint32_t tailbits(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
   uint32_t bt=0, bitrr;
   bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
   gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+  bt^=bitrr;
+  return bt;
+}  
+
+static inline uint32_t tailbitsnos(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
+  uint32_t bt=0, bitrr;
+  bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+  //  gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
   bt^=bitrr;
   return bt;
 }  
@@ -3628,10 +3640,26 @@ static inline uint32_t tailbitsI(uint32_t depth, uint32_t in, uint32_t wh){  // 
   return bt;
 }  
 
+static inline uint32_t tailbitsInos(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
+  uint32_t bt=0, bitrr;
+  bitrr = (gate[8].Gshift_[wh]>>SRlength[8]) & 0x01; 
+  //  gate[8].Gshift_[wh]=(gate[8].Gshift_[wh]<<1)+bitrr;
+  bt^=bitrr;
+  return bt;
+}
+
 static inline uint32_t tailbitswithd(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
   uint32_t bt=0, bitrr;
   bitrr = (gate[8].Gshare_>>(depth>>7)) & 0x01; 
-  gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+  //  gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+  bt^=bitrr;
+  return bt;
+}  
+
+static inline uint32_t tailbitswithdnos(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
+  uint32_t bt=0, bitrr;
+  bitrr = (gate[8].Gshare_>>(depth>>7)) & 0x01; 
+  //  gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
   bt^=bitrr;
   return bt;
 }  
@@ -3639,7 +3667,15 @@ static inline uint32_t tailbitswithd(uint32_t depth, uint32_t in, uint32_t wh){ 
 static inline uint32_t tailbitsIwithd(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
   uint32_t bt=0, bitrr;
   bitrr = (gate[8].Gshift_[wh]>>(depth>>7)) & 0x01; 
-  gate[8].Gshift_[wh]=(gate[8].Gshift_[wh]<<1)+bitrr;
+  //  gate[8].Gshift_[wh]=(gate[8].Gshift_[wh]<<1)+bitrr;
+  bt^=bitrr;
+  return bt;
+}  
+
+static inline uint32_t tailbitsIwithdnos(uint32_t depth, uint32_t in, uint32_t wh){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
+  uint32_t bt=0, bitrr;
+  bitrr = (gate[8].Gshift_[wh]>>(depth>>7)) & 0x01; 
+  //  gate[8].Gshift_[wh]=(gate[8].Gshift_[wh]<<1)+bitrr;
   bt^=bitrr;
   return bt;
 }  

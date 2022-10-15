@@ -6,8 +6,7 @@ this again in a consciousness of solitude.
 
 module for one bit landscape gardening...
 
-*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???????*
-
+*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???????what_means*
 *what this means: that we associate each SR with a GSR function*
 
 serpent's head, caput draconis (rather than heavens\) - lunar node and
@@ -32,7 +31,7 @@ RESOLVE ARCH:
 - final details and questions
 //
 
-*static/frozen speeds in general or not - yes but just not on lowest - but how to implement - implemented now as spdfracend -> speedfunc 6 // new default*
+*static/frozen speeds in general or not - yes but just not on lowest - but how to implement - implemented now as spdfracend -> speedfunc X // new default*
 *check use of clk, pulsin, pulsout, strobey and implement strobey finally*
 *figure out calc for filter speeds - for 15 octaves*
 
@@ -54,15 +53,49 @@ DONEsetting of dactypes
 
 ** xxTOP
 
+*QUESTIONS: binroute types and idea of bit areas of modes...*
+
+TODO: 
+
+- break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types
+
+- fix matrixp ops.
+ 
+- flesh out modes
+
+- see TODOs below
+
+- uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
+
+** 15/10/2022
+
+plan out possible modes:
+
+eg. in geoC we have:
+
+simple speed // no ends
+speed from strobe
+4 probability modes inc one with speed from mode - added now prob of dac out
+
+in geoN we have different probs for adc entry/freeze etc.
+
+*what we have from geomantic.h?* from below and what we have ported into geoX.h?
+
+what types of inner/outer we have from geo:
+
+inners: strobe, nostrobe, xorwithstrobe, orwithstrobe, probf function, 2x rungler-XORfunctions, splitspeeds, otherprob, probforadc, globalsels, speed xor
+
+outers (except just match above): matrixp ops - attach/detach, set gaps/fixedmatrix
+
 ** 14/10/2022
 
 - DONE:more tail ops - inversion and OR.XORs what else?
 
 - DONE:tested probfs
 
-- more probf for 16 or 32 probfs?
+- DONE more probf for 16 or 32 probfs?
 
-*question of strobes/toggles in probf if we use those for strobe based speed modes what happens? have probfsins for no strobe - also all of these need to use depth!*
+DONE: question of strobes/toggles in probf if we use those for strobe based speed modes what happens? have probfsins for no strobe - also all of these need to use depth
 
 DONE:trial some of speeds as probs! +probs can also be speeds - they are already+ >> pull speeds out to probf
 
@@ -80,39 +113,26 @@ uint32_t (*probfstrobesdepth[6])(uint32_t depth, uint32_t in, uint32_t wh)={stro
 
 ** 12-13/10/2022
 
-- *thinking of meta-level of prob to use x or y param (eg. use DAC or CV or) -> further matrix ops*
+- DONE in geoC.h - thinking of meta-level of prob to use x or y param (eg. use DAC or CV or) *-> further matrix ops??*
+
+- DONE in geoC.h: example of how we deal with strobe free up!? as prob - but still could be odd, live with it...
 
 - from 10/8: *geomantic*:
   gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095; //
   detach this too // or rather one new form of re-attachment - we can
   also use value functions here!! // another layer of attach*
 
-TODO: 
+DONE: ADC//upto 32 ops and implement reset/other
 
-- how we deal with strobe free up!? as prob (but what do we need for that? eg.)
-
-    gate[w].matrix[9]=3<<7; // probbits as we can now use CV
-    gate[w].matrix[10]=CV[w];
-    gate[w].matrix[12]=8<<7; // altfuncindex // these can also be gaps!
-
-////
-
-- break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types
-- fix matrixp ops.
- 
-- flesh out modes
-- details like strobe above
-- speed of slur, see TODOs below
-
-DONE: ADC//upto 32 ops and implement reset/other, 
-
-NOTE:// add and other ops - only issue is if depth and in are both the same dac = how to avoid this? different dacs for adc -> eg. = incoming gate[dacIN[daccount][w]].dac
+// add and other ops - only issue is if depth and in are both the same dac = how to avoid this? different dacs for adc -> eg. = incoming gate[dacIN[daccount][w]].dac
 
 ** 11/10/2022
 
 - new geoC.h and geoN.h started to sketch modes
 
-TODO: extra matrix for dacparDONE, start to make sense of all functions and depth
+DONEextra matrix for dacparDONE, 
+
+//start to make sense of all functions and depth
 
 speed cv1, cv2
 bitfrom cv1, cv2
@@ -121,7 +141,7 @@ prob
 
 ??****
 
-how we deal with no adc entry...
+how we deal with no adc entry...??
 
 question of delay line to resolve
 
@@ -276,7 +296,7 @@ probs: // new prob ones: probcvladcselcvm, probdacadcsel, probtrigadcsel -> more
 bits functions and lists 
 
 // *TODO: check lengths of all arrays we access...*
-// *how we handle dac...? do this at end, first generic funcs filled in*
+// how we handle dac...? do this at end, first generic funcs filled in
 // DONEspeedfromforxor is not implemented - how did we want to do this / dual speedfroms... see here:
 
 TODO--> xor/or of CV-led speedfuncs with non-cv led (eg. fixed routes, strobes/toggles (ones makes no sense))... in new functions:
@@ -312,7 +332,7 @@ redone as fixed route: zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbi
 
 ** 31/8/2022
 
-- *now back to idea of more mobile strobe with filled in CV as prob - see SR_geomantic_outer_test*
+- now back to idea of more mobile strobe with filled in CV as prob - see SR_geomantic_outer_test
 
 - DONE i think///probs as speed - more granular or do we do this already?* - TODO: add more prob modes in general - but there are many
 - if we go from very fixed to unfixed then it stays fixed - so maybe less fixed, only first ones. also RESETR

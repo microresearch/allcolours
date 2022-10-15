@@ -12,7 +12,7 @@ static uint32_t gscnt=0;
 static uint32_t outcnt=0;
 */
 
-#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
+#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
 
 #define STR0 (gate[w].trigger)
 
