@@ -1,5 +1,5 @@
-uint32_t binroutetypes[64][4]={
-  {0,0,0,0}, // now there is 7->8
+uint32_t binroutetypes[16][4]={
+  {0,0,0,0}, // now there is 0-7 = 8types
   {0,0,0,0},
   {0,0,0,0},
   {0,0,0,0},

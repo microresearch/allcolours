@@ -22,6 +22,7 @@ typedef struct heavens_ {
   uint32_t reset[9];
   int32_t gsrcnt[9];
   uint32_t route;
+  uint32_t routetype;
   uint32_t lastspeed;
   uint32_t countspeed;
   //  uint32_t stackindex;

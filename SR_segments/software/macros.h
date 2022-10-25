@@ -224,6 +224,17 @@ static uint32_t outcnt=0;
   }								\
   }
 
+#define BINROUTEaltstrips_ {				\
+  if (gate[x].reset[w]){			\
+  gate[x].reset[w]=0;				\
+  gate[w].gsrcnt[x]=SRlength[x];		\
+  }								\
+    bitn = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
+    gate[w].gsrcnt[x]--;					\
+    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+  }
+
+
 // was newgsr_nores
 #define BINROUTEnoalt_ {				\
     tmp=binroute[count][w]|binary[w];			\
@@ -249,6 +260,12 @@ static uint32_t outcnt=0;
   }								\
   tmp=tmp>>1;							\
   }								\
+  }
+
+#define BINROUTEnoaltstrips_ {				\
+    bitn = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
+    gate[w].gsrcnt[x]--;					\
+    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
   }
 
 #define BINROUTEZERO_ {			\
@@ -280,6 +297,14 @@ static uint32_t outcnt=0;
   }							\
 }
 
+#define BINROUTEZEROstrips_ {			\
+  if (gate[x].reset[w]){				\
+  bitn = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  gate[x].reset[w]=0;					\
+  }							\
+  else bitn=0;						\
+}
+
 #define BINROUTE_ {				\
     tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){					\
@@ -307,6 +332,10 @@ static uint32_t outcnt=0;
   }
 // pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
 
+#define BINROUTEstrips_ {				\
+  bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  }
 
 // for local routes
 #define BINROUTEMY_ {				\
@@ -356,6 +385,9 @@ static uint32_t outcnt=0;
   }							\
   }
 
+#define BINROUTESRstrips_ {				\
+  bitn = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  }
 
 // shared binroute/gshift - only makes sense if we share routes or if there are functions to shift on...
 #define BINROUTESHARE_ {				\
@@ -379,9 +411,12 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
+#define BINROUTESHAREstrips_ {				\
+  bitn = (gate[x].Gshare_>>SRlength[x]) & 0x01;		\
+  gate[x].Gshare_=(gate[x].Gshare_<<1)+bitn;		\
+  }
 
 // we don't cycle incoming ghost just get bits
 #define BINROUTENOG_ {				\
@@ -393,7 +428,6 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
   }
 
 #define BINROUTENOGstrip_ {				\
@@ -404,7 +438,10 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
-  if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
+  }
+
+#define BINROUTENOGstrips_ {				\
+  bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
   }
 
 #define BINROUTEtrig_ {				\
@@ -428,6 +465,11 @@ static uint32_t outcnt=0;
   }							\
   tmp=tmp>>1;						\
   }							\
+  }
+
+#define BINROUTEtrigstrips_ {				\
+  bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitn;	\
   }
 
 #define BINROUTEOR_ {				\

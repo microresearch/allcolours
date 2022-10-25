@@ -46,7 +46,7 @@ DONEsetting of dactypes
 
 ** xxTOP
 
-*QUESTIONS: binroute types and idea of bit areas of modes...*
+*QUESTIONS: binroute types and idea of bit areas of modes... -> in progress*
 
 TODO: 
 
@@ -60,7 +60,52 @@ TODO:
 
 - uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
 
+** 26/27/28 - binroute section and start to fill out geoC
+
 ** 25/10/2022
+
+- simpler binroutes now with types... tested simples, fill out and see which ones use depthDONE
+so we can manipulate type in binroute segments of modes!
+
+- *probability in regular bitmodes is now vs. in and we pass LFSR to matrix[5] <(LFSR_[wh]&4095)// remember - but then we need to handle these - different sets...*
+
+/////
+TODO:
+
+- bring down bitops to 64 where needed and try that
+
+- re-test etc modes
+
+- re-check rungler functionality: remind of that!
+
+/////
+
+- Q of local/global routetypes...??? to pass in IN
+
+routetypes: local/global 0-7  // 4 bits with local/global flag? does flag make sense? no...
+
+uint32_t tmpp=gate[w].routetype;
+or:
+uint32_t tmpp=binroutetypes[binroutetypecount][w];
+or can be depth also... but then we would fix route
+
+does local route go into matrix?
+
+routes // 3 options: 
+tmp=binroute[count][wh]|binary[wh];
+tmp=myroute[w][gate[w].route]|binary[w];
+depth=depth>>8; // 12 bits to 4 bits 
+
+each has one of  8: BINROUTE_, BINROUTESR_; BINROUTEalt_; BINROUTEZERO_; BINROUTESHARE_; BINROUTENOG_; BINROUTEtrig_; BINROUTEnoalt_; 
+
+binroute function!
+
+also note Gshare which is binrouteshare...
+
+simplified routes (19): binroutor, binroutAND0, binroutfixed_prob1, zbinroutebitscycle, zsuccbits, zsuccbitsI, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4, viennabits, flipflopandroute, binrout_probXY, binrout_probXY1
+
+// binroutemy are all local routes...
+
 
 ** 24/10/2022
 
@@ -78,7 +123,7 @@ prob:
 
 - *BINROUTE area* with selected binroutetypes and simpler range of binroute ops...
 
-TODO: compare different binroute types (binroutesel3 = bitfromsd/79, test new bitprobs
+DONE-TODO: compare different binroute types (binroutesel3 = bitfromsd/79, test new bitprobsDONE
 
 
 - DONE: probability of route X or route Y, but is also odd to have prob twice - in bitn and in prob modes... but they can use differing CVs
@@ -92,6 +137,7 @@ TODO: compare different binroute types (binroutesel3 = bitfromsd/79, test new bi
 - that we should have made generic fixed/depth as route so we could just pass to route a depth which can be local, global:
 
 eg. depth=binroute[count][wh]|binary[wh]<<8; // but this doesn't work for some modes which have fixed route and use depth also! and we would have to assign this to a pointer... if we want to attach it.,,
+// we have list of these...
 
 - matrix of gaps can also be from SR!?
 
