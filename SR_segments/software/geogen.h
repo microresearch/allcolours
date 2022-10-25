@@ -6,10 +6,80 @@ static inline uint32_t comp(uint32_t depth, uint32_t in, uint32_t wh){
   else return 0;
 }
 
+////////////////////////////////////////////////////////////////////////// 24/10/2022
+// binrout_probXY, binrout_probXY1, binrout_probXY2, binrout_probXY3 // use depth for probabilty, fixed routes
+
+// probability of route X or route Y, probability of type x against type y, of advancing GSR
+static inline uint32_t binrout_probXY(uint32_t depth, uint32_t in, uint32_t wh){  
+  uint32_t bt=0, bitrr, tmp;
+  tmp=binroute[count][wh]|binary[wh];    
+  if (depth<(LFSR_[wh]&4095)) tmp=tmp^15;
+
+  for (uint8_t x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+      gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+      bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binrout_probXY1(uint32_t depth, uint32_t in, uint32_t wh){   
+  uint32_t bt=0, bitrr, tmp;
+  if (depth<(LFSR_[wh]&4095)) {
+    tmp=binroute[count][wh]|binary[wh];    
+  }
+  else {
+    tmp=dacfrom[daccount][wh]|binary[wh];    
+  }
+
+  for (uint8_t x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+      gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+      bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binrout_probXY2(uint32_t depth, uint32_t in, uint32_t wh){   // 
+  uint32_t bt=0, bitrr, tmp;
+  tmp=binroute[count][wh]|binary[wh];    
+
+  for (uint8_t x=0;x<4;x++){
+    if (tmp&0x01){
+      bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+      if (depth<(LFSR_[wh]&4095)) gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
+      bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t binrout_probXY3(uint32_t depth, uint32_t in, uint32_t w){   // can be more of these!!
+  uint32_t x, bt=0, bitrr, tmp, bitn=0;
+  tmp=binroute[count][w]|binary[w];    
+
+  if (depth<(LFSR_[w]&4095)) {
+      BINROUTEalt_;
+  }
+  else
+    {
+      BINROUTEZERO_;
+    }
+
+  return bitn;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // binroute_probabilities - fixed routes
 
-static inline uint32_t binroutfixed_prob1R(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling // route from R
+static inline uint32_t binroutfixed_prob1R(uint32_t depth, uint32_t in, uint32_t wh){   // prob of routed or cycling // route from R
   uint32_t bt=0, bitrr;
   if (depth<(LFSR_[wh]&4095)) {
     bt = (gate[3].Gshift_[wh]>>SRlength[3]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
@@ -22,7 +92,7 @@ static inline uint32_t binroutfixed_prob1R(uint32_t depth, uint32_t in, uint32_t
   return bt;
 }
 
-static inline uint32_t binroutfixed_prob1L(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling // route from L
+static inline uint32_t binroutfixed_prob1L(uint32_t depth, uint32_t in, uint32_t wh){   // prob of routed or cycling // route from L
   uint32_t bt=0, bitrr;
     if (depth<(LFSR_[wh]&4095)) {
     bt = (gate[1].Gshift_[wh]>>SRlength[1]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
@@ -35,7 +105,7 @@ static inline uint32_t binroutfixed_prob1L(uint32_t depth, uint32_t in, uint32_t
   return bt;
 }
 
-static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t wh){   // fixed binroute from count - prob of routed or cycling
+static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t wh){   // prob of routed or cycling
   uint32_t bt=0, bitrr;
   if (depth<(LFSR_[wh]&4095)) {
   depth=binroute[count][wh]|binary[wh];
@@ -515,6 +585,7 @@ void tailOR(void){
 //1
 //routes
 
+
 static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now // TODO: indie version
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
@@ -664,6 +735,26 @@ static inline uint32_t binroutfixed(uint32_t depth, uint32_t in, uint32_t wh){  
   return bt;
 }
 
+static inline uint32_t binroutaltreset(uint32_t depth, uint32_t in, uint32_t wh){   // STROBE resets alt binroute
+  uint32_t bt=0, bitrr, tmp, x;
+  tmp=depth>>8; // route
+  if (tmp==0) tmp=wh; // itself
+  for (x=0;x<4;x++){
+  if (tmp&0x01){
+  if (gate[wh].trigger){
+  gate[wh].gsrcnt[x]=SRlength[x];
+  }
+    bitrr = (gate[x].Gshift_[wh]>>gate[wh].gsrcnt[x]) & 0x01;
+    gate[wh].gsrcnt[x]--;
+    if (gate[wh].gsrcnt[x]<0) gate[wh].gsrcnt[x]=SRlength[x];
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  return bt;
+}
+  
+
 // TODO: check binroutes: the route itself // type of binroute... binroutetypes[binroutetypecount][w];
 /* 
 routes: 
@@ -679,13 +770,6 @@ so we have 24... do we want to fill all of those out!?
 // adding in ANDs and OR routes
 
 //binroutfixedmy, binroutfixedmy, binroutmybumpS, binroutmycv
-//eg. TODO: fill out
-static inline uint32_t binroutfixedmyalt1(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY // no depth
-  uint32_t bitn=0, bitrr, tmp, x;
-  tmp=myroute[w][gate[w].route]|binary[w];
-  BINROUTESRstrip_; // alts here TODO!
-  return bitn;
-}
 
 static inline uint32_t binroutfixedmy(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY // no depth
   uint32_t bitn=0, bitrr, tmp, x;
@@ -699,7 +783,6 @@ static inline uint32_t binroutfixedmyreset(uint32_t depth, uint32_t in, uint32_t
   BINROUTEMY_;
   return bitn;
 }
-
 
 static inline uint32_t binroutmybumpS(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute STROBE // no depth
   uint32_t bitn=0, bitrr, tmp, x;
@@ -1924,7 +2007,7 @@ static inline uint32_t zTMsimplebits(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zonebits(uint32_t depth, uint32_t in, uint32_t wh){ // depth=0 resets --> ??? use strobe
+static inline uint32_t zonebits(uint32_t depth, uint32_t in, uint32_t wh){ // depth=0 resets --> ??? use strobe STROBE and depth
   uint32_t bt;
   static int32_t bc=31;
   //  static uint32_t k;
@@ -2074,7 +2157,7 @@ static inline uint32_t zwiardinvbitsI(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zonebitsI(uint32_t depth, uint32_t in, uint32_t wh){ // depth=0 resets
+static inline uint32_t zonebitsI(uint32_t depth, uint32_t in, uint32_t wh){ // depth=0 resets STROBE
   uint32_t bt;
   static int32_t bc[4]={31};
   //  static uint32_t k;

@@ -1,5 +1,9 @@
 ** newer 22/7/2022+
 
+// how to fix hard hitting: retrial Mindlin with just multipliers then trial extensions...
+
+or go back to dual filter notion: shared/normed clock
+
 *** 13/10/2022
 
 - fixed hardware problem below. but still too aggressive and hitting bounds...

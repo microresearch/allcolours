@@ -43,13 +43,6 @@ DONEsetting of dactypes
 /////
 
 - co-ordinate and check lists of routes, dacfrom, speedfrom routes // resets and manipulations, all lengths of lists
-- clean up generators/adc/dac - gens for adc
-
-- basic functionality as matrices implemented  - list these
-
-- different tails and how we select these... can also be fake
-  strobe/flipflop say at moder speed ... mix of generators, and copies
-  of SRs at full speeds... as tail is new param, and a potential route in
 
 ** xxTOP
 
@@ -57,7 +50,7 @@ DONEsetting of dactypes
 
 TODO: 
 
-- break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types
+- break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types to organise
 
 - fix matrixp ops.
  
@@ -67,13 +60,52 @@ TODO:
 
 - uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
 
+** 25/10/2022
+
+** 24/10/2022
+
+matrix: 0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar
+
+speed: func/strobefuncs
+
+bitn: abstract or routes: generic types, fixed routings//other routings, + more esoteric (like twin routes)
+
+prob:
+
+(adc, dac, length)
+
+//////
+
+- *BINROUTE area* with selected binroutetypes and simpler range of binroute ops...
+
+TODO: compare different binroute types (binroutesel3 = bitfromsd/79, test new bitprobs
+
+
+- DONE: probability of route X or route Y, but is also odd to have prob twice - in bitn and in prob modes... but they can use differing CVs
+
+- *that bitn can be max 64 -> 6 bits = in inner we have eg. bitn^=(*bitfromsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);*
+
+- how we handle binroute types - binroute area... which types make a big difference and how we can deal with selected type - not just in sel functions???
+
+- how we handle depth in bitns - break down arrays of functions into depth/no depth/ no strobe etc. // also handling of strobe
+
+- that we should have made generic fixed/depth as route so we could just pass to route a depth which can be local, global:
+
+eg. depth=binroute[count][wh]|binary[wh]<<8; // but this doesn't work for some modes which have fixed route and use depth also! and we would have to assign this to a pointer... if we want to attach it.,,
+
+- matrix of gaps can also be from SR!?
+
+- 4x4x4 modes =64
+
+geoC:
+
 ** 15/10/2022
 
 plan out possible modes:
 
 eg. in geoC we have:
 
-simple speed // no ends
+simple speed // no ends (as dac out should not end)
 speed from strobe
 4 probability modes inc one with speed from mode - added now prob of dac out
 

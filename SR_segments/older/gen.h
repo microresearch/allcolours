@@ -63,19 +63,6 @@ static inline uint32_t SRproc_lp(uint32_t depth, uint32_t bit, uint8_t w){
 }
 
 
-//- holder function - hold bits for /depth/ time - which bits? - this is more of a processor though...
-// delay line or hold until new value we can take
-static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){ 
-  static uint32_t bt=0;
-  static uint32_t cnt=0, top=0;
-  cnt++;
-  if (cnt>top){
-    top=depth;
-    bt=bit;
-    cnt=0;
-  }
-  return bt;
-}
 
 // real delay line, bit enters and we furnish bit at depth x - shared version - we have in experiment.h but there uses binroute
 static inline uint32_t SRproc_delay(uint32_t depth, uint32_t bit){  
@@ -658,13 +645,6 @@ static inline uint32_t probbitsxorstrobe(uint32_t depth, uint8_t wh){   // PROBa
   return bt;
 }
 
-static inline uint32_t probbitsxortoggle(uint32_t depth, uint8_t wh){   // PROBability mode xor strobe - can be more ops
-  static uint32_t bt=0;
-  if (gate[wh].trigger) bt=bt^1;
-  if (depth<(LFSR_[wh]&4095)) bt^=1; // variations
-  return bt;
-}
-
 
 // but depth could also be param to advance x or shift on
 static inline uint32_t succbits(uint32_t depth, uint8_t wh){   // no use of depth - we route from each sr in turn
@@ -693,27 +673,6 @@ static inline uint32_t succbitsI(uint32_t depth, uint8_t wh){   // no use of dep
   return bt;
 }
 
-static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
-  uint32_t bt=0, bitrr;
-  depth=depth>>8; // 12 bits to 4 bits
-    // deal with no route
-  if (depth==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
-    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
-    bt^=bitrr;
-  } else
-    {
-  for (uint8_t x=0;x<4;x++){
-  if (depth&0x01){
-    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
-    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
-    bt^=bitrr;
-  }
-  depth=depth>>1;
-  }
-    }
-  return bt;
-}
 
 static inline uint32_t singleroutebits(uint32_t depth, uint8_t wh){  // just route from 0-3 single route
   uint32_t bt=0, bitrr;
