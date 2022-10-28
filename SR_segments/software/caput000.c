@@ -52,16 +52,16 @@ static uint32_t CVM[4]={0,0,0,0};
 
 // add in dactype, dacpar
 
-// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar}
-uint32_t matrixNN[15]={0,0,0, 2<<7,0,0, 31<<7, 1<<7,31<<7, 0,0,0,0, 25,2048}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0,0, 25,2048};
-uint32_t matrixCC[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 2<<7,0,0,1, 0,2048}; // C has sprobbits, altfunc is 1 but then that needs cv too
-uint32_t matrixRR[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048}; 
-uint32_t matrixTT[15]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048}; 
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd}
+uint32_t matrixNN[16]={0,0,0, 2<<7,0,0, 31<<7, 1<<7,31<<7, 0,0,0,0, 25,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0,0, 25,2048, 0};
+uint32_t matrixCC[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 2<<7,0,0,1, 0,2048, 0}; // C has sprobbits, altfunc is 1 but then that needs cv too
+uint32_t matrixRR[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048, 0}; 
+uint32_t matrixTT[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048, 0}; 
 
 //                     speed  bit       len    adc  prob
 
-uint32_t *matrixNNN[15]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
+uint32_t *matrixNNN[16]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 static uint32_t ADCin;
@@ -137,6 +137,7 @@ static uint32_t clk_route_new[4]={0, // no clk route 0
 
 
 static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
+static uint32_t LFSR__[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t Gshift_[9]={0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
@@ -260,23 +261,23 @@ uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep
 
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
-   {SR_geo_outer_N11, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
-   {SR_geo_outer_testtypes, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, SR_geomantic_outer_rung1, }, // test for various functions eg speed/strobe now... // now trial selection across these - T1 is flexi so first lot
-   {SR_geomantic_outer_binr, SR_geomantic_outerRglobselandset, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+   {SR_geo_outer_N11, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+   {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+   {SR_geo_outer_rung0},
+   {SR_geo_outer_route, SR_geomantic_outerRglobselandset, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
    //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
    // SR_geomantic_outerRglobselandset
-   //SR_geomantic_outer_binr
+   //SR_geo_outer_route
 };
 
 // 
 
-//  {SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr, SR_geomantic_outer_binr},
+//  {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
  
 void mode_init(void){
   uint32_t x,y;
 
-  for (y=0;y<13;y++){
+  for (y=0;y<16;y++){
       gate[0].matrix[y]=matrixNN[y];
       gate[1].matrix[y]=matrixLL[y];
       gate[2].matrix[y]=matrixCC[y];
@@ -358,7 +359,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 
   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   LFSR_[www] = (LFSR_[www]<<1) + tmp;
-
+  LFSR__[www]=LFSR_[www]&4095;
+  
   // testings for meta mode handlers
   //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 

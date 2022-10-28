@@ -50,7 +50,7 @@ DONEsetting of dactypes
 
 TODO: 
 
-- break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types to organise
+- DONE??break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types to organise
 
 - fix matrixp ops.
  
@@ -60,23 +60,76 @@ TODO:
 
 - uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
 
-** 26/27/28 - binroute section and start to fill out geoC
+// *Plan:*
+/31+:
+
+- finish ports from geomantic to geoC, binroute area, start to fill geoC , all modes at 64 or 32 and adjust accordingly and fix binsd array accesses
+- matrixp area, geoC and tests, globals, rest of geos filled, strobe and other functions, testing and playing
+
+
+** 28/10/2022
+
+*all modes at 64 or 32 and adjust accordingly and fix binsd array accesses* - geomantic and bitsn
+
+definition of array and size is only important when we start to set things and leave gaps...
+
+- *toport.h in reserve to check: splitspeeds!*
+
+globsels in geoLR - finish and test
+
+
+
+** 27/10/2022
+
+- DONE: added reduced 12 bit LFSR__ so can point to this in fixedvars...
+- endspeed we don't mix and match in modes
+- *DONE-if strobe and other speeds are on same CV/matrix or we expand on this so we can flip back... - now we have [15] for strobe function*
+
+fixedroute/fixedtype
+depthroute/fixedtype
+fixedroute/flextype
+depthroute/flextype -> 2x CV? so is just last IN ...
+
+->other types of binroute
+
+- +redo sels for no strobe option...+
+
+- +rework etc exp_port+
+
+
+** 26/10/2022
+
+- probability in regular bitmodes is now vs. in and we pass LFSR to matrix[5] <(LFSR_[wh]&4095)// remember - but then we need to handle these - different sets... make exampleDONE in geoC
+
+// redo geoC for new arrays of routesDONE, and clean these up! *TODO: also adjust size of arrays where necessary*
+
+TODO:
+
+- bring down bitops to 64 where needed and try that // routes now, abstract ones for N, L and R only...
+
+-  DONEsorting etc bit modes also and could use prob for some/all of the strobes there,
+
+- DONEre-test etc modes 
+
+
+// sel0 etc. do have strobe option so maybe replace there for no_strobesDONE
+
+/////
+
+-speed
+-bits:
+  abstract ones: check all use depth, strobe abstracts?
+  routes: no depth.fixed -> prob
+          strobes/no strobes
+          prob - use [5]/in and/or always have in reserve as LFSR 
+-prob: 
+
+*question still of unused depth - we can have length anyways, of 2x used strobes, of 2x probs to prevent*
 
 ** 25/10/2022
 
 - simpler binroutes now with types... tested simples, fill out and see which ones use depthDONE
 so we can manipulate type in binroute segments of modes!
-
-- *probability in regular bitmodes is now vs. in and we pass LFSR to matrix[5] <(LFSR_[wh]&4095)// remember - but then we need to handle these - different sets...*
-
-/////
-TODO:
-
-- bring down bitops to 64 where needed and try that
-
-- re-test etc modes
-
-- re-check rungler functionality: remind of that!
 
 /////
 
@@ -112,9 +165,7 @@ simplified routes (19): binroutor, binroutAND0, binroutfixed_prob1, zbinroutebit
 matrix: 0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar
 
 speed: func/strobefuncs
-
 bitn: abstract or routes: generic types, fixed routings//other routings, + more esoteric (like twin routes)
-
 prob:
 
 (adc, dac, length)
@@ -142,8 +193,6 @@ eg. depth=binroute[count][wh]|binary[wh]<<8; // but this doesn't work for some m
 - matrix of gaps can also be from SR!?
 
 - 4x4x4 modes =64
-
-geoC:
 
 ** 15/10/2022
 
