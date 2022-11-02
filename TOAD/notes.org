@@ -1,20 +1,78 @@
 ** newer 22/7/2022+
 
-// how to fix hard hitting: retrial Mindlin with just multipliers then trial extensions...
+// how to fix hard hitting: retrial Mindlin with just multipliers then trial extensions...DONE - still hits hard but can follow with smaller amp...
 
-or go back to dual filter notion: shared/normed clock
+or go back to dual filter notion: shared/normed clock - shared ins/as/outs?
+
+** 2/10
+
+- pcb/proto for Mindlin... and also utilities as one we have (print)
+
+should it hit bounds (we follow circuit exactly)
+
+** 1/10
+
+mindlin seems always hit peaks....
+
+- fixed resistor works ok, but some variable?
+
+no extension
+
+all bit high frequency as is... how to lower + we need fixed resistors
+
+** 28-30/10/2022
+
+first attempts with Mindlin: first attempts still peak...
+
+- DONEtoo many VCAs, to trial with fixed resistors, trial with 2 mults replaced by VCA, and extension from sprottXX
+
+- design/test double filter proto - where to cross over.... proto 2x independent filters with all crossovers exposed on pins...
+
+(or part build old big proto board to handle sprott as we have all there - just a bit messy on breadboard for mindlin...)
+
+// sprott has 3x intergrators
+
+// 
+
+sprott/filter:
+
+- 1st inv feedback goes straght into inv / no 10k/100k
+
+in chamberlain example we have 100k/200r divider for 3080
+
+** 27/10/2022
+
+- +check all elements for reason hard clip then:+ just bintic, extended bintic : both go to rails quite often, vca2 from 1st to 2nd inv is key somehow
+
+fixed feedback from 2nd integrator into inv/adder
+
+vca input should not go to zero in!
+
+1st 2 vcas could be chained/same control
+
+(in case now we double up first vca,,, fixed)
+
+
+ just mindlin with mults
+
+breadboard vca was 2x at max.../// fixed now
+
+** 26/10/2022
+
+- trial with 2k into each INTegrator... DONE - helps a bit with sound but still clips/hard
+
+- question if peaking is hardware fault - trial each integrator... (3rd is not at fault, could be 1st) - tested first two as fixed to no avail...
+
 
 *** 13/10/2022
 
 - fixed hardware problem below. but still too aggressive and hitting bounds...
 
-- trial with 2k into each INTegrator... TODO
-
 *** 11/10/2022
 
 - output is still too high (20 Vpp from B3???), sometimes for all
 
-is issue with last integrator???? U6 or U1 // fixed as ws power on q1 transistor - replaced
+is issue with last integrator???? U6 or U1 // fixed as was power on q1 transistor - replaced
 
 *** 6/10/2022 ++
 
