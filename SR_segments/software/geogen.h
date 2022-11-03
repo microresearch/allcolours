@@ -107,6 +107,23 @@ static inline uint32_t Zflipflopandroute(uint32_t depth, uint32_t in, uint32_t w
   return bitn;
 }
 
+static inline uint32_t Zbinrout(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now // TODO: indie version
+  uint32_t bitrr, tmp, tmpp, x, bitn=0;
+  depth=depth>>8; // 12 bits to 4 bits
+    // deal with no route
+    if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bitn^=bitrr;
+  } else
+    {
+      tmpp=in>>9;
+      ROUTETYPE_;
+    }
+  return bitn;
+}
+
+
 // these ones are different in terms of use of depth
 static inline uint32_t Zbinroutor(uint32_t depth, uint32_t in, uint32_t w){ // 4 bits binroute ORed with selected 4 bits SR.. // try to mod for generic routes
   uint32_t bitrr, tmp, tmpp, x, bitn=0;

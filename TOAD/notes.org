@@ -6,9 +6,9 @@ or go back to dual filter notion: shared/normed clock - shared ins/as/outs?
 
 ** 2/10
 
-- pcb/proto for Mindlin... and also utilities as one we have (print)
+- pcb/proto for Mindlin... and also utilities as one we have
 
-should it hit bounds (we follow circuit exactly)
+should it hit bounds (we follow circuit exactly)????
 
 ** 1/10
 

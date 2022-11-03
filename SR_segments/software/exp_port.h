@@ -1,3 +1,6 @@
+// others still have some route: pSRshare, pSRGswop, pstream
+
+
 // additional ports from experiment.h, bit.h, prob.h
 
 // these from gen.h
@@ -15,7 +18,7 @@ static inline uint32_t probbitsxortoggleI(uint32_t depth, uint8_t wh){   // PROB
   return bt[wh];
 }
 
-static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now
+static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now // USED only in SRrecbin here....
   uint32_t bt=0, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
     // deal with no route
@@ -52,7 +55,6 @@ static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){
 }
 
 //////////////////////////// start of real functions
-
 static inline uint32_t pSR_routeSRbits01(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
   tmp=depth>>8; // 4 bits
@@ -131,7 +133,7 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
   return bitn;
 }
 
-static inline uint32_t pSR_layer12(uint32_t depth, uint32_t in, uint32_t w){ // depth
+static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
     tmp=(depth>>8); //
   //  tmp=gate[dacfrom[count][w]].shift_&15;
@@ -331,7 +333,7 @@ static uint32_t bufferd[1024];
 static uint32_t head;
 
 // tested in test3.c 22/4/2022
-static inline uint32_t shared(uint8_t wh){ // nada ADC
+static inline uint32_t shared(uint8_t wh){ // ADC for pSRshare below 
   uint32_t bt=0;
   static int32_t bc=31;
   static uint32_t k;
@@ -461,7 +463,7 @@ static inline uint32_t pbitLcvsrroute(uint32_t depth, uint32_t in, uint32_t w){ 
   return bitn;
 }
 
-static inline uint32_t pbitSRroutelogxxx(uint32_t depth, uint32_t in, uint32_t w){
+static inline uint32_t pbitSRroutelogxxx(uint32_t depth, uint32_t in, uint32_t w){ // nada
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   static uint32_t lastdacfrom=0;
     tmpp=(gate[lastdacfrom].Gshift_[w])&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
@@ -539,11 +541,11 @@ static inline uint32_t pstream(uint32_t depth, uint32_t in, uint32_t w){ // all 
 
 /// extracted from R but we skipped some ghost manipulations
 
-static inline uint32_t pSRBITMIX(uint32_t depth, uint32_t in, uint32_t w){//depth!
+static inline uint32_t pSRBITMIX(uint32_t depth, uint32_t in, uint32_t w){//depth and in and we use dac so is a tough one
   uint32_t x, tmp, bitrr, temp, bitn=0;
   float mixer;
   tmp=255-(depth>>4); // 8 bits
-    mixer=1.0f/((float)(depth>>4)+1.0f);
+    mixer=1.0f/((float)(in>>4)+1.0f);
     mixer*=(float)(gate[dacfrom[daccount][w]].dac>>4);
     // how to mix with DAC using CVL - gate[dacfrom[daccount][w]].dac
     tmp+=(int)mixer;
@@ -630,7 +632,7 @@ static inline uint32_t pSRDACroutestrobe(uint32_t depth, uint32_t in, uint32_t w
   return bitn;
 }
 
-static inline uint32_t pSRLLbumproute(uint32_t depth, uint32_t in, uint32_t w){//STROBE//no depth
+static inline uint32_t pSRLLbumproute(uint32_t depth, uint32_t in, uint32_t w){//STROBE//depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   tmp=(depth>>8);
   tmpp=(in>>8);

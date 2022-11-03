@@ -61,11 +61,29 @@ TODO:
 - uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
 
 // *Plan:*
-/31+:
 
-- finish ports from geomantic to geoC, binroute area, start to fill geoC , all modes at 64 or 32 and adjust accordingly and fix binsd array accesses
-- matrixp area, geoC and tests, globals, rest of geos filled, strobe and other functions, testing and playing
+/1stNOV+:
 
+- finish ports from geomantic to geoC=matrixp, binroute area, start to fill geoC , all modes at 64 or 32 and adjust accordingly and fix binsd array accesses
+
+- geoC and tests, globals, rest of geos filled, strobe and other functions, testing and playing
+
+** 3/11/2022
+
+TODO: test first set of 16 geoC functions when we have right size for arrays and *checked these*
+
+- get arrays to right size in bitsn -> if necessary add from exp modes...DONE but we still need more abstract modes, not worried for geoC
+
+
+- speedmodes etc...
+
+** 2/11/2022
+
+- in geoC check which func arrays have which size and make sure all are correct size 64/32/16 only and >>6 >>7 >>8 -> *TODO: adjust size of arrays where necessary - see bitsn.h*
+
+** 1/11/2022
+
+- started expanding geoC -> doubled up some arrays for safety but also change access
 
 ** 28/10/2022
 
