@@ -1036,6 +1036,6 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
           printf("count %d\n",yum);
     }
 
-    printf("xx %d\n",cvspeed);
+    printf("<<8 %d\n",(15<<8)>>6);
     
 }

@@ -64,18 +64,74 @@ TODO:
 
 /1stNOV+:
 
+- strobes, probs and matrixp for geoc
+
 - finish ports from geomantic to geoC=matrixp, binroute area, start to fill geoC , all modes at 64 or 32 and adjust accordingly and fix binsd array accesses
 
-- geoC and tests, globals, rest of geos filled, strobe and other functions, testing and playing
+- geoC and tests, globals, rest of geos filled, generic strobe and other misc functions, testing and playing
+
+// finish geoC, generics and what we can re-use, adc, abstracts and globals, refine probabilities
+
+** 4/11/2022
+
+*worried about FLASH use as we need to generic/double up modes - most of geoC are quite generic except: for ADC we need all functions again, for speedends also...*
+
+- or how we can genericise those? means extra ifs, or we wrap adc ones somehow... // insert macro but is still an if!
+
+for L we have pretty much same as C maybe with more prob of entries, for R we need abstracts and globals
+
+*JUST realised that 4,5,14 of DAC_ modes use strobe which causes problems for strobe speeds and other strobes... to remove????*
+
+TODO: DONEspeedmodes and fill in rest of modes, 
+
+what speedfroms we have in geomantic.h:
+
+speedfromnostrobe[34]
+speedfromnostrobenoend[34]X geoC
+
+speedfromforxor[5] - 
+speedfromcvforxor[24]
+
+speedfromstrobe[16] - for strobes
+speedfromstrobenodepth[10]
+
+DONEre-test slur say with speed
+
+- more length from dac also - as a very basic mode too (but where to insert?)
+
+void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // RESETR - no need for changed
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];//??? speed
+  gate[w].matrix[6]=CVL[w];//
+  gate[w].inner=SR_geo_inner_fixed;
+}
+}
+
+*// also think about probability across choice of inners/outers but would lose cv?*
+
+- do we leave gaps in last geoC routes for speedmodes... eg. 30, 31, 32, 33 with gaps for speedmode but use CV[w] of course? GAPS _DONE*
+- speedfrom dac, different speedfrom modes, prob - what we have for next sets of modes???
+- question of gap when we have fixed values?? I guess we don't need to see if fits as all 12 bits fit
+
+- what routes do we have - in bitsn, in geoC=X so far:
+
+bitsn:
+
+routebitsd[64] X
+routebitsnod[32] - no depth X
+routebitsnostrobe[64] - for strobe speeds XTODO
+routebitsfortypes[32] - IN as type X
+routebitsfixeddepth[32] - we can pass fixed depth X
+routebitsnostrobedepth[64] - for strobe, with depth UNUSED - checkIN 0 maybe use instead of routebitsnostrobe
+routebitsnostrobedepthprob[32] - prob vs IN! Xinprobs TODO
+
 
 ** 3/11/2022
 
-TODO: test first set of 16 geoC functions when we have right size for arrays and *checked these*
+DONE//TODO: test first set of 16 geoC functions when we have right size for arrays and checked these - *other geos will need to have arrays all checked*
 
-- get arrays to right size in bitsn -> if necessary add from exp modes...DONE but we still need more abstract modes, not worried for geoC
-
-
-- speedmodes etc...
+DONEget arrays to right size in bitsn -> if necessary add from exp modes...DONE but we still need more abstract modes, not worried for geoC
 
 ** 2/11/2022
 

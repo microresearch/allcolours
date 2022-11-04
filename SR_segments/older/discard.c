@@ -534,7 +534,6 @@ void SR_geomantic_outerxor(uint32_t w){
   // what is appropriate speed function????
   gate[w].matrix[0]=2<<7;// eg. 1<<7 // CVL[w];// 5 bits is 32 //2 bits //speedFUNC - this is fixed here...
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // 1 and 2 we don't use and CV is free
-  //  gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but we need 2nd cv
   gate[w].matrix[3]=4<<7; // fixed route was 2 - now trial new AND with CVL
   // gate[w].matrix[4]=CVL[w]; // 
     gate[w].matrix[6]=CVL[w]; //length

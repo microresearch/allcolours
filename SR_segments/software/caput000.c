@@ -53,13 +53,12 @@ static uint32_t CVM[4]={0,0,0,0};
 // add in dactype, dacpar
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd}
-uint32_t matrixNN[16]={0,0,0, 2<<7,0,0, 31<<7, 1<<7,31<<7, 0,0,0,0, 25,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0,0, 25,2048, 0};
-uint32_t matrixCC[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 2<<7,0,0,1, 0,2048, 0}; // C has sprobbits, altfunc is 1 but then that needs cv too
-uint32_t matrixRR[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048, 0}; 
-uint32_t matrixTT[16]={0,0,0, 2<<7,0,0, 0<<7, 0,0, 0,0,0, 25,2048, 0}; 
-
-//                     speed  bit       len    adc  prob
+uint32_t matrixNN[16]={0,0,0,  2<<7,0,0, 31<<7, 1<<7,31<<7, 2<<7,0,0,4,    25,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         2<<7,0,0,4,    25,2048, 0};
+uint32_t matrixCC[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         2<<7,0,0,4,   1, 2048, 0}; 
+uint32_t matrixRR[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         2<<7,0,0,4,    25,2048, 0}; 
+uint32_t matrixTT[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         2<<7,0,0,4,    25,2048, 0}; 
+//                     speed  bit        len   adc          prob  alt   dac      strobespdindex
 
 uint32_t *matrixNNN[16]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
 
@@ -233,6 +232,7 @@ static uint32_t glob=0; // glob is now global index for global funcs
 
 
 // check slowest speed
+/*
 void SRspeedtest(uint8_t w){ // null
   static uint32_t tgg[4]={0,0,0,0};
   //  HEADSIN;
@@ -255,19 +255,23 @@ void SRspeedtest(uint8_t w){ // null
 uint32_t itself(uint8_t w, uint32_t mood){ //
     return mood;
   }
+*/
 
 // list of metaout functions... examples?
-uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep for moment 
+//uint32_t (*metaout[64])(uint8_t w, uint32_t mood)={itself};   // unused but keep for moment 
 
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
-   {SR_geo_outer_N11, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
-   {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
-   {SR_geo_outer_C00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,}, // 16 first trials
-   {SR_geo_outer_route, SR_geomantic_outerRglobselandset, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
-   //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
+     {SR_geo_outer_N11, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+     {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+     {SR_geo_outer_C00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33, SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73}, // 32 so far...TO TEST 
+   
+       {SR_geo_outer_route, SR_geomantic_outerRglobselandset, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+  //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
    // SR_geomantic_outerRglobselandset
    //SR_geo_outer_route
+   //   {SR_geo_outer_testslur0, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur, SR_geo_outer_testslur1}, 
+
 };
 
 // 
