@@ -1888,7 +1888,7 @@ static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t wh){ // 
   uint32_t bt=0;
   float speed;
   speed=logspeed[depth>>2]; // 12 bits to 10 bits
-  if (speed!=LOWEST){
+  if (speed!=LOWEST || wh==2){ // or wh==2 means no END for geoC ended... 
   gate[wh].time_now += speed;
   gate[wh].last_time = gate[wh].int_time;
   gate[wh].int_time = gate[wh].time_now;
@@ -1903,7 +1903,7 @@ static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t wh){ // 
 
 
 //INx
-static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in //INx
+static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t wh){ // depth%in
   uint32_t bt=0;
   float speed;
   int32_t tmp;
@@ -1943,7 +1943,26 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t wh){ // we
 }
 
 //INx
-static inline uint32_t spdfrac4(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in //INx
+static inline uint32_t spdfrac5(uint32_t depth, uint32_t in, uint32_t wh){ // we add depth and in //INx modulus
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  tmp=in+depth;
+  tmp=tmp&4095;
+  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
+  gate[wh].time_now += speed;
+  gate[wh].last_time = gate[wh].int_time;
+  gate[wh].int_time = gate[wh].time_now;
+  if(gate[wh].last_time<gate[wh].int_time) {
+    bt=1; // move on
+    gate[wh].time_now-=1.0f;
+    gate[wh].int_time=0;
+  }
+  return bt;
+}
+
+//INx
+static inline uint32_t spdfrac4(uint32_t depth, uint32_t in, uint32_t wh){ // add both halfway
   uint32_t bt=0;
   float speed;
   int32_t tmp;
@@ -1965,11 +1984,11 @@ static inline uint32_t spdfrac4(uint32_t depth, uint32_t in, uint32_t wh){ // we
 }
 
 //INx
-static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t wh){ // depth is offset, in is constraint -- and speed from dac = gate[speedfrom[spdcount][w]].dac
+static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t wh){ // depth is offset, in is constraint -- and speed from dacfrom
   uint32_t bt=0;
   float speed;
   int32_t tmp;
-  tmp=gate[speedfrom[spdcount][wh]].dac%in;
+  tmp=gate[dacfrom[count][wh]].dac%in; //changed
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
 
@@ -2230,7 +2249,6 @@ static inline uint32_t pcipher(uint32_t depth, uint32_t in, uint32_t wh, uint32_
   
   return bt;
 }
-
 
 static inline uint32_t osceq(uint32_t depth, uint32_t in, uint32_t wh){  // so all share
   uint32_t bt;
@@ -2645,6 +2663,25 @@ static inline uint32_t zosc1bitsI(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
+static inline uint32_t zosc2bitsI(uint32_t depth, uint32_t in, uint32_t wh){  
+  uint32_t bt;
+  static uint32_t n[4]={0}, nn[4]={0};
+  
+     if (n[wh]>depth) {
+       bt=0;
+       if (nn[wh]>=in) { // so equal bits from 0 / length 0 = 101010
+	 n[wh]=0;
+       }
+       nn[wh]++;
+     } // n[wh]
+     
+     else {
+       bt=1;
+       n[wh]++;
+       nn[wh]=0;
+     }         
+     return bt;
+}
 
 static inline uint32_t zwiardbitsI(uint32_t depth, uint32_t in, uint32_t wh){
   uint32_t bt=0, bitrr, tmp;

@@ -28,11 +28,6 @@ static uint32_t outcnt=0;
 
 ////////
 
-#define LASTSPEED {				\
-  gate[w].lastspeed=gate[w].countspeed;		\
-  gate[w].countspeed=0;				\
-  }
-
 #define CLKSR {					\
   if (intflag[w]) {				\
   gate[w].trigger=1;				\

@@ -72,6 +72,59 @@ TODO:
 
 // finish geoC, generics and what we can re-use, adc, abstracts and globals, refine probabilities
 
+** 8/12/2022
+
+TODO:
+
+- re-check modes in geoC.h. test changes to runglers.... implement SR_geo_inner_probcycle(uint32_t w){  // TESTY - using probfsins - ported in from speeds -> basic gapped cv binroute against justcycle!
+  // what cv we need: probfs: 9type,10comp... 3,4,5 is gapped... - *WHERE?*
+
+// basic setup for modes
+
+1-set param eg. N-ADCtype, C-DACtype, LR-binroutetype 
+2-basic routes
+3
+4
+
+1st of sets opf 4 sets major parameter for next 4!
+
+- draft strobes: strobetype->CV[w] usage ->
+
+speedfromstrobe (some use depth - usedstrobe if they do ==1), speedfromstrobenodepth [16]both
+
+expand generic prob of bitx vs cycle...
+
+probability:
+- 1cv bitmodetype3-gapped
+- 2cv altmodetype
+- 3probcv against IN/4
+- 4probtype ->
+
+
+** 7/11/2022 - for speedmodes
+
+speedfroms: check which use CV and IN -> done, should fix rungler modes for these...
+
+- fixed some in geoC
+
+- added more generic prob function for cycle - to match with outer and
+  test this? // isolated test also for rungler/new probcycle for
+  speedCV/IN divide (if we don't use IN)
+
+** 6/11/2022
+
+- fixed some bugs in innerNOS
+
+DONE//-TODO: genericise speedends into func - so just one array... w==2 has no end... and we can double up lots of geoC into other modes
+
+simpler begin arrays: 1st 16 to re-check...
+
+0-DACtype selected // adctype // routetype // binroutefunc
+1-fixed route/change length
+2-fixed route/prob of route or cycle
+3-fixed route/prob of route XOR cycle
+
+
 ** 4/11/2022
 
 *worried about FLASH use as we need to generic/double up modes - most of geoC are quite generic except: for ADC we need all functions again, for speedends also...*
