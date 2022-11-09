@@ -2631,7 +2631,7 @@ static inline uint32_t zflipbits(uint32_t depth, uint32_t in, uint32_t wh){
   return bt;
 }
 
-static inline uint32_t zosceqbitsI(uint32_t depth, uint32_t in, uint32_t wh){   
+static inline uint32_t zosceqzbitsI(uint32_t depth, uint32_t in, uint32_t wh){   
   uint32_t bt;
   static int32_t n[4]={0};
   static int32_t nn[4]={0};

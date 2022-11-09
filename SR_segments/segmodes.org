@@ -72,12 +72,29 @@ TODO:
 
 // finish geoC, generics and what we can re-use, adc, abstracts and globals, refine probabilities
 
+** 9/12/2022
+
+- new notes for NLCR assigns:
+
+N - less binroute, adc probs, adc types, prob of cycle/adc/binroute, adc xor//adc or//binr, more blocks/bursts or coming in of adc, binr, cycle? how?
+L - as C, routes and probs, no abstract
+C - as we have, check prob of DAC outsES-61/62
+R - as C, but more abstract functions for runglers, more globals (where?)
+
+C: check unused innersL: SR_geo_inner_probcycleC, inner_split1C, inner_split2C, SR_geo_inner_prob_strobeC (TODO), SR_geo_inner_prob3C (nostrobe, prob is strobe), SR_geomantic_inner_split3C (TODO)
+
+- DONE->check how much ADC replication will cost memory? in geoNN we replicate geoC functions but with adc inserted.... 48% +5% so fine...
+
+TODO: fix probs which use strobe in strobe speeds, also ones which use IN - *to fix all probs for gaps in geoC*
+
+
+
 ** 8/12/2022
 
 TODO:
 
 - re-check modes in geoC.h. test changes to runglers.... implement SR_geo_inner_probcycle(uint32_t w){  // TESTY - using probfsins - ported in from speeds -> basic gapped cv binroute against justcycle!
-  // what cv we need: probfs: 9type,10comp... 3,4,5 is gapped... - *WHERE?*
+  // what cv we need: probfs: 9type,10comp... 3,4,5 is gapped... - *WHERE to place?*
 
 // basic setup for modes
 
@@ -99,7 +116,6 @@ probability:
 - 2cv altmodetype
 - 3probcv against IN/4
 - 4probtype ->
-
 
 ** 7/11/2022 - for speedmodes
 
