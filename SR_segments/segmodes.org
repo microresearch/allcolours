@@ -72,7 +72,54 @@ TODO:
 
 // finish geoC, generics and what we can re-use, adc, abstracts and globals, refine probabilities
 
-** 9/12/2022
+*17/11+ TODO_______________sort last weeks work as not so well documented and we need to add new functions and orderings*
+
+** 17/11/2022
+
+- in some geogens we have: *tmpp=gate[w].routetype*; [binroutesel4, binroutesel4S]
+
+but we need to set this for gapping: gate[w].routetype=tmpp;
+
+options: always set when we set from CV, so is local/gapped or global ... fill in some extras here - will have to check through these...
+
+-> ZZbinrout_prob4local, ZZzwiardbitslocal and can go further. We also need to list all these new ones...
+
+*always this conflict between local and global...*
+
+eg. for:
+
+- type of route/shift -> now local is set by CV
+- binroute = locally set, global, CV led... *(check if cv sets local too?)*
+
+local is?:  tmp=myroute[w][gate[w].route]|binary[w]; /// but check this and we also need to set this!! gate[w].route in binroutmy ****
+
+global is: count
+
+** 14/11/2022
+
+*basic first modes // to check against geoC:*
+
+1. binroute fixed (change length/dac/adc)
+2. depth as route only
+3. fixed vs. cycle prob
+4. fixed vs. [fixed XOR cycle prob
+
+1/5. depth gapped for 3.4. depth as route vs...
+2/6.
+
+- *some fixings for geoC/geogen... zz stuff/probs: ZZbinrout_prob1,2,3,4 ZZxwiard etc *to add see also: zwiardbits2I, zwiardbitsI, zwiardinvbitsI (depth and in)*
+
+** 10/11/2022
+
+*re-check dac modes as some silent even with strobe why? - was it feedback but re-check anyways*
+
+*check/TODO: fix probs which use strobe in strobe speeds, also ones which use IN - *to fix all probs for gaps in geoC*
+
+*problem is always if we don't use CV eg. nodepth for say binroute, how to fix that always if we do/don't use CV. unless we always divide up*
+
+*gap can be previous, not always ahead*
+
+** 9/11/2022
 
 - new notes for NLCR assigns:
 
@@ -85,11 +132,7 @@ C: check unused innersL: SR_geo_inner_probcycleC, inner_split1C, inner_split2C, 
 
 - DONE->check how much ADC replication will cost memory? in geoNN we replicate geoC functions but with adc inserted.... 48% +5% so fine...
 
-TODO: fix probs which use strobe in strobe speeds, also ones which use IN - *to fix all probs for gaps in geoC*
-
-
-
-** 8/12/2022
+** 8/11/2022
 
 TODO:
 
