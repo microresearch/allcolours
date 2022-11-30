@@ -74,6 +74,9 @@ TODO:
 
 *17/11+ TODO_______________sort last weeks work as not so well documented and we need to add new functions and orderings*
 
+
+** 30/11/2022
+
 ** 17/11/2022
 
 - in some geogens we have: *tmpp=gate[w].routetype*; [binroutesel4, binroutesel4S]
