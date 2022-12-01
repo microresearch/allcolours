@@ -75,19 +75,31 @@ TODO:
 *17/11+ TODO_______________sort last weeks work as not so well documented and we need to add new functions and orderings*
 
 
-** 30/11/2022
+** 1/12/2022 // review
+
+** 30/11/2022 
+
+- 16 or 8 simplest modes: type of binroute, route itself, prob of route or/xor etc (see below)
+
+- how to recur on or deconstruct/segment these simplest modes -> holes in modes
+
+*global, local, cv 0> as a selection itself which is global, local or cv-led*
+
+- try: global XOR/OR local OR/XOR CV ???
+
+- how to simplify? so that arrays more or less match up!
 
 ** 17/11/2022
 
 - in some geogens we have: *tmpp=gate[w].routetype*; [binroutesel4, binroutesel4S]
 
-but we need to set this for gapping: gate[w].routetype=tmpp;
+but we need to set this for gapping: gate[w].routetype=tmpp; *check this*
 
 options: always set when we set from CV, so is local/gapped or global ... fill in some extras here - will have to check through these...
 
 -> ZZbinrout_prob4local, ZZzwiardbitslocal and can go further. We also need to list all these new ones...
 
-*always this conflict between local and global...*
+*always this conflict between cv, local and global...*
 
 eg. for:
 
