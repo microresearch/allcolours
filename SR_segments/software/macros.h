@@ -134,7 +134,7 @@ static uint32_t outcnt=0;
 // and for NADA both the same
 #define HEADSSINNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
-#define HEADNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
+#define HEADNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; gate[w].strobed=0; \
 
 //
 
@@ -558,6 +558,7 @@ static uint32_t outcnt=0;
 #define BITN_AND_OUTV_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
+    if (!gate[w].strobed) bitn|=gate[w].trigger;			\
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].trigger); \
     PULSOUT;								\

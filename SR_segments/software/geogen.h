@@ -1,3 +1,6 @@
+// TODO:   gate[wh].strobed=1; in all strobe functions including speeds...
+
+
 /// new functions for prob - comparator
 static inline uint32_t comp(uint32_t depth, uint32_t in, uint32_t wh){
   if (depth>in) return 1;
@@ -717,8 +720,8 @@ void fliptail(void){ //
 }
 
 void basictail(void){ // tail here is basic 4th binroute at full speed
-  HEADNADA;
   uint32_t w=8;
+   HEADNADA;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -793,8 +796,8 @@ void tailC(void){
 }
 
 void basictailnos(void){ // tail here is basic 4th binroute at full speed
-  HEADNADA;
   uint32_t w=8;
+  HEADNADA;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -863,8 +866,8 @@ void succtailbacknos(void){
 }
 
 void basictailinv(void){ // tail here is basic 4th binroute at full speed
-  HEADNADA;
   uint32_t w=8;
+  HEADNADA;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -939,8 +942,8 @@ void tailCinv(void){
 }
 
 void basictailnosinv(void){ // tail here is basic 4th binroute at full speed
-  HEADNADA;
   uint32_t w=8;
+  HEADNADA;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){

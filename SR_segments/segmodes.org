@@ -75,13 +75,39 @@ TODO:
 *17/11+ TODO_______________sort last weeks work as not so well documented and we need to add new functions and orderings*
 
 
+** review DEC:
+
+TODO: 
+
+- draft fake strobes: set gate[www].strobed (unset in headnada) - and then use strobe as pulse:BITN_AND_OUTV_; *TODO: add gate[wh].strobed=1; for all strobe functions in geogen.h*
+
+- fix local routes (maybe get rid of) and pullout as we do for types... see all binroutmys! and simplify
+
+- simplify early modes
+
+- how to imagine matrix modes - how do we set the matrix with 2x CV only?
+
 ** 5/12/2022
 
-- is binroute type ever global? > yes, there is binroutetypes which is all 0, no need - TOFIX
+- how to handle global/local/cv route -> to merge local and cv route? // was that myroute?
+
+from below: local is?:  tmp=myroute[w][gate[w].route] | binary[w]; /// but check this and we also need to set this!! gate[w].route in binroutmy
+
+- *we don't use it much! - remove local routes///*
+
+*or we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither*
+
+*prob of CV vs. global route* - do we have that? set routes
+
+new one: gate[w].theroute
+
+///////
+
+- is binroutetype ever global? > yes, there is binroutetypes which is all 0, no need - DONE // removed global binroutetypes
 
 set geogens with binroutetype to:   tmpp=gate[w].routetype; DONE - *so we have no global types, just cv/gapped*
 
-tmpp=gate[w].routetype; is local one - where is that set - in lots of functions eg.
+tmpp=gate[w].routetype; is local one
 
 ** 1/12/2022++ // review/resolve
 
@@ -91,8 +117,6 @@ cv
 
 - route is global so we can match them up (but cv vs local ruins that)
 
-- route is count into array, type is just a type...
-
 *route: local/cv does that make sense or should just be gapped... pull out? how? as in type we set local route*
 
 ** 30/11/2022 
@@ -100,8 +124,6 @@ cv
 - 16 or 8 simplest modes: type of binroute, route itself, prob of route or/xor etc (see below)
 
 - how to recur on or deconstruct/segment these simplest modes -> holes in modes
-
-*global, local, cv 0> as a selection itself which is global, local or cv-led* // or switch between local/global -> probability
 
 - try: global XOR/OR local OR/XOR CV ???
 
