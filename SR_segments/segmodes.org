@@ -75,7 +75,25 @@ TODO:
 *17/11+ TODO_______________sort last weeks work as not so well documented and we need to add new functions and orderings*
 
 
-** 1/12/2022 // review
+** 5/12/2022
+
+- is binroute type ever global? > yes, there is binroutetypes which is all 0, no need - TOFIX
+
+set geogens with binroutetype to:   tmpp=gate[w].routetype; DONE - *so we have no global types, just cv/gapped*
+
+tmpp=gate[w].routetype; is local one - where is that set - in lots of functions eg.
+
+** 1/12/2022++ // review/resolve
+
+global
+local
+cv
+
+- route is global so we can match them up (but cv vs local ruins that)
+
+- route is count into array, type is just a type...
+
+*route: local/cv does that make sense or should just be gapped... pull out? how? as in type we set local route*
 
 ** 30/11/2022 
 
@@ -83,7 +101,7 @@ TODO:
 
 - how to recur on or deconstruct/segment these simplest modes -> holes in modes
 
-*global, local, cv 0> as a selection itself which is global, local or cv-led*
+*global, local, cv 0> as a selection itself which is global, local or cv-led* // or switch between local/global -> probability
 
 - try: global XOR/OR local OR/XOR CV ???
 
@@ -93,7 +111,7 @@ TODO:
 
 - in some geogens we have: *tmpp=gate[w].routetype*; [binroutesel4, binroutesel4S]
 
-but we need to set this for gapping: gate[w].routetype=tmpp; *check this*
+but we need to set this for gapping: gate[w].routetype=tmpp; -> check this=DONE
 
 options: always set when we set from CV, so is local/gapped or global ... fill in some extras here - will have to check through these...
 
@@ -123,7 +141,7 @@ global is: count
 2/6.
 
 - *some fixings for geoC/geogen... zz stuff/probs: ZZbinrout_prob1,2,3,4 ZZxwiard etc *to add see also: zwiardbits2I, zwiardbitsI, zwiardinvbitsI (depth and in)*
-
+  
 ** 10/11/2022
 
 *re-check dac modes as some silent even with strobe why? - was it feedback but re-check anyways*
