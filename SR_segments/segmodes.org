@@ -87,6 +87,8 @@ TODO:
 
 - how to imagine matrix modes - how do we set the matrix with 2x CV only?
 
+** 6/12/2022
+
 ** 5/12/2022
 
 - how to handle global/local/cv route -> to merge local and cv route? // was that myroute?

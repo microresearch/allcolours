@@ -365,7 +365,7 @@ void SR_geo_inner_prob2C(uint32_t w){  // TESTY - ported in using strobes/no dep
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
 
-    if ((*probfstrobes[gate[w].matrix[9]>>7])(0, 0, w)){ // no depth needed
+    if ((*probfstrobes[gate[w].matrix[9]>>8])(0, 0, w)){ // no depth needed
     bitn=(*routebitsd[gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
   }
   else {
@@ -955,7 +955,7 @@ void SR_geo_outer_C70(uint32_t w){  // can also have CV vs dacfrom
 
 // TODO: check prob gaps
 
-// where do we set [11]???
+// where do we set [11]??? TOFIX
 // classic prob we need selprobfunc, cvs for prob, cvs for bits, cvs for selfunc, selalt -> too many even with strobe
 void SR_geo_outer_C71(uint32_t w){  
   if (gate[w].changed==0) { 
@@ -997,6 +997,7 @@ void SR_geo_outer_C73(uint32_t w){
   //  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
   //10 is prob vs lfsr/cv -> can be dacfrom
   gate[w].matrix[10]=CVL[w];
+  gate[w].matrix[11]=LFSR__[w];
   //12 is alt - how we define this one? another gap - set as default!
   //3 is func - we have as gap
   // 4 and 5 cvs for bits - can be gaps
