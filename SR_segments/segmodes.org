@@ -50,6 +50,8 @@ DONEsetting of dactypes
 
 TODO: 
 
+- which functional arrays do we use? check extent of all arays and double up just to be safe...
+
 - DONE??break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types to organise
 
 - fix matrixp ops.
@@ -62,8 +64,6 @@ TODO:
 
 // *Plan:*
 
-/1stNOV+:
-
 - strobes, probs and matrixp for geoc
 
 - finish ports from geomantic to geoC=matrixp, binroute area, start to fill geoC , all modes at 64 or 32 and adjust accordingly and fix binsd array accesses
@@ -72,6 +72,10 @@ TODO:
 
 // finish geoC, generics and what we can re-use, adc, abstracts and globals, refine probabilities
 
+- geoC is more about routes and probs, speed is very important here and dac characters
+
+- recheck rungler characteristics
+
 *17/11+ TODO_______________sort last weeks work as not so well documented and we need to add new functions and orderings*
 
 
@@ -79,15 +83,38 @@ TODO:
 
 TODO: 
 
-- draft fake strobes: set gate[www].strobed (unset in headnada) - and then use strobe as pulse:BITN_AND_OUTV_; *TODO: add gate[wh].strobed=1; for all strobe functions in geogen.h*
+- DONEdraft fake strobes: set gate[www].strobed (unset in headnada) - and then use strobe as pulse:BITN_AND_OUTV_; TODO: add gate[wh].strobed=1; for all strobe functions in geogen.h
 
-- fix local routes (maybe get rid of) and pullout as we do for types... see all binroutmys! and simplify
+- DONEfix local routes (maybe get rid of) and pullout as we do for types... see all binroutmys! and simplify
 
 - simplify early modes
 
 - how to imagine matrix modes - how do we set the matrix with 2x CV only?
 
-** 6/12/2022
+- what we added newly in geogen which needs to be added to arrays... // most is about routes and types - to expand here and make clearer!
+
+** 8/12/2022
+
+- segmenting is in the gaps, and in slippage of inner and outer modes...
+
+- new route modes to add - note that we do divide into ones which use depth/no depth! eg. routebitsnod
+
+TODO:
+- in geoC test last 70etc prob modes (prob is against LFSR etc so we don't use [11])// review probs
+
+- DONEstrobe=1 added in necessary geogens and *test these*
+
+- test new routes
+
+- TEST: we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither, also new gapped theroute, also expand thse but how to add
+
+- TEST - prob of CV vs. global route - do we have that? set routes 0 now as prob5 and prob5_nosh
+
+- from 5/12 TODO:
+
+DONEand there is also localroute which is just like depth - but maybe re-work this also as gate[w].theroute
+
+*Q: if we OR with binary in depth/theroute or just in binroute*
 
 ** 5/12/2022
 
@@ -95,13 +122,7 @@ TODO:
 
 from below: local is?:  tmp=myroute[w][gate[w].route] | binary[w]; /// but check this and we also need to set this!! gate[w].route in binroutmy
 
-- *we don't use it much! - remove local routes///*
-
-*or we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither*
-
-*prob of CV vs. global route* - do we have that? set routes
-
-new one: gate[w].theroute
+- DONEwe don't use it much! - remove local routes -> new one: gate[w].theroute
 
 ///////
 
@@ -119,7 +140,7 @@ cv
 
 - route is global so we can match them up (but cv vs local ruins that)
 
-*route: local/cv does that make sense or should just be gapped... pull out? how? as in type we set local route*
+route: local/cv does that make sense or should just be gapped... pull out? how? as in type we set local route
 
 ** 30/11/2022 
 
@@ -141,7 +162,7 @@ options: always set when we set from CV, so is local/gapped or global ... fill i
 
 -> ZZbinrout_prob4local, ZZzwiardbitslocal and can go further. We also need to list all these new ones...
 
-*always this conflict between cv, local and global...*
+always this conflict between cv, local and global...
 
 eg. for:
 

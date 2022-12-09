@@ -334,7 +334,7 @@ static uint32_t outcnt=0;
 
 // for local routes
 #define BINROUTEMY_ {				\
-  tmp=myroute[w][gate[w].route]|binary[w];	\
+    tmp=gate[w].theroute;			\
   for (x=0;x<4;x++){				\
     if (tmp&0x01){					\
       bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;	\

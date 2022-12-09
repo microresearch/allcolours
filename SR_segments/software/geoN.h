@@ -31,7 +31,7 @@ void SR_geomantic_inner_split2(uint8_t w){  //strobe
     }
 
   }
-  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
+  if ((*speedfromnostrobe[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
         
     bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
@@ -53,7 +53,7 @@ void SR_geomantic_inner_split3(uint8_t w){  // can also have OUTSIDE Func in... 
     }
 
   }
-  if ((*speedfromnew[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
+  if ((*speedfromnostrobe[gate[w].matrix[0]])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
     bitn^=(*bitfromsd[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w);
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -106,7 +106,7 @@ void SR_geo_inner_probadc(uint32_t w){  // probability, WITH adc, with interpoll
     ADCgeneric2; 
     bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); // how do we select adc and its CV! // not in stack but index: for cvs too // adc could also be DAC in? how?
 
-    if ((*probf[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
     bitn^=(*bitfromnostrobe[gate[w].matrix[12]>>7])(gate[w].matrix[4], gate[w].matrix[5], w);
   }
   else {
@@ -165,7 +165,7 @@ void SR_geo_inner_probadcentry(uint32_t w){  // ADC only - prob for adc itself -
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
 
-    if ((*probf[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
 	  ADCgeneric2;
 	  bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w);
     }
@@ -195,7 +195,7 @@ void SR_geo_inner_probadcentryor(uint32_t w){  // ADC only - prob for adc itself
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
 
-    if ((*probf[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
 	  ADCgeneric2; 
 	  bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
 	}
@@ -222,7 +222,7 @@ void SR_geo_inner_probadcentryxor(uint32_t w){  // ADC only - prob for adc itsel
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
 
-    if ((*probf[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
 	  ADCgeneric2; 
 	  bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
 	}
@@ -250,7 +250,7 @@ void SR_geo_inner_probadcreset(uint32_t w){  // ADC only - prob for adc itself -
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
 
-    if ((*probf[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
 	  ADCgeneric2; 
 	  bitn=(*padcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w, 1, 1); 
 	}
@@ -282,7 +282,7 @@ void SR_geo_inner_probadcadvance(uint32_t w){  // ADC only - prob for adc itself
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
 
-    if ((*probf[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
 	  ADCgeneric2; 
 	  bitn=(*padcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w, 0, 1);
 	}
@@ -342,7 +342,9 @@ add in probs of entry, reset etc... // these can also be triggers or toggles -> 
 
 // SR_geo_inner_probadcentry, SR_geo_inner_probadcentryor, SR_geo_inner_probadcreset, SR_geo_inner_probadcadvance
 
-uint32_t (*probf[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, binrout, binroutfixed, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add assorted strobes/toggles, other bit ops
+uint32_t (*probfsins[32])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, binrout, binroutfixed, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add assorted strobes/toggles, other bit ops
+
+TODO - lose probf
 
  */
 

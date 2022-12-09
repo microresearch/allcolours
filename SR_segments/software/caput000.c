@@ -320,7 +320,12 @@ void mode_init(void){
     gate[2].gsrcnt[x]=31;	
     gate[3].gsrcnt[x]=31;
   }
-  
+
+  gate[0].theroute=8; // defaults
+  gate[1].theroute=1;
+  gate[2].theroute=2;
+  gate[3].theroute=4;
+    
   //  gate[0].adctype=0;
 
   //  gate[0].dactype=25; // now set to 25 // was 67

@@ -626,6 +626,32 @@ next set:
 1/5. depth gapped for 3.4. depth as route vs...
 2/6.
 
+ */
+
+/* 12/2022+
+// review//
+
+first 16 as we have now - routes: types and route, probs of xroute vs. yroute
+
+00 fixed route - set dactype
+01 depth as route
+02 flexible type
+03 fixedtype/asglobal/gap - depth as route!
+
+10 fixed route/global type/ set dacparam
+11 dacparam as dac
+12 length Cv gap route as depth
+13 select function/length as dacfrom - NOTE:could leave length gapped... 
+
+20 CVL type/in ->routebitsfortypes
+21 CVL depth
+22 function
+23 length
+
+30 gaps for speed function - but where is that set (ahead)? routebitsd // routefunc // gap depth
+31 depth is dac
+32 CVL depth
+33 CVL length
 
  */
 
@@ -647,7 +673,7 @@ void SR_geo_outer_C01(uint32_t w){  // spdfrac, depth as route
   }
 }
 
-void SR_geo_outer_C02(uint32_t w){  // spdfrac, fixed route, flextype
+void SR_geo_outer_C02(uint32_t w){  // spdfrac, fixed route/global, flextype
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
@@ -734,7 +760,7 @@ void SR_geo_outer_C21(uint32_t w){  // as above with depth
 }
 }
   
-void SR_geo_outer_C22(uint32_t w){  // as above with sel
+void SR_geo_outer_C22(uint32_t w){  // as above with selfunction
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
@@ -997,7 +1023,6 @@ void SR_geo_outer_C73(uint32_t w){
   //  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
   //10 is prob vs lfsr/cv -> can be dacfrom
   gate[w].matrix[10]=CVL[w];
-  gate[w].matrix[11]=LFSR__[w];
   //12 is alt - how we define this one? another gap - set as default!
   //3 is func - we have as gap
   // 4 and 5 cvs for bits - can be gaps

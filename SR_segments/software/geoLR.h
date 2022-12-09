@@ -43,7 +43,7 @@ void SR_geomantic_innerRglob(uint32_t w){  // no adc, // for global Rmodes // TO
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
   //
-  if ((*speedfromnew[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
     
@@ -60,7 +60,7 @@ void SR_geomantic_innerRglobsel(uint32_t w){  // no adc, // for global Rmodes  -
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
   //
-  if ((*speedfromnew[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
     
@@ -75,7 +75,7 @@ void SR_geomantic_innerRglobselandset(uint32_t w){ // both select and set as we 
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
   //
-  if ((*speedfromnew[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
     

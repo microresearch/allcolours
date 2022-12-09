@@ -1,3 +1,17 @@
+//- phase out use of this one
+//uint32_t (*probf[14])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add other bit ops, changed binrouts to non-shift // testings!
+
+
+// not to use
+uint32_t unused[32]={1,0,0,0, 1,1,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,1,1,0, 0,0,0,0}; // for strobes
+
+// not to use...//
+uint32_t (*speedfromnew[46])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, spdfrac2, spdfrac3, spdfrac, spdfrac, spdfrac4, spdfracdac3, spdfracend, ztogglebits, ztogglebitssh, clksrG, clksr, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zprobbits, zinvprobbits, zsprobbits, zTMsimplebits, osceq, zosc1bits, zonebits, zonebitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, zosc1bits, sigmadelta, cipher, spdvienna, zbinrouteSRbits, zwiardbits, zwiardinvbits, zjusttail, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, binroutfixed_prob4_nosh};  
+
+
+
+// DEPRECATE bitfromsd
+//uint32_t (*bitfromsd[98])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutfixed, binroutor, binroutAND0, zjustcycle, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zosc1bits, sigmadelta, cipher, osceq, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zsuccbits, zsuccbitspp, zsuccbitsI, zsuccbitsIpp, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4,  viennabits, tailbits, flipflop, flipflopandroute, flipflopI, zjusttail, zcopyGSR, zcopyGSR_s, ztogglebitssh, ztogglebits, zsuccbitsprob, zbinroutfixed_noshift_transitI, tailbitsnos, tailbitsI, tailbitswithd, tailbitsIwithd, tailbitsInos, tailbitswithdnos, tailbitsIwithdnos, binroutesel0, binroutesel1, binroutesel2, binroutesel3, binroutesel4, binroutfixedmy, binroutfixedmyreset, binroutmybumpS, binroutmycv, binroutmybumpbit, binroutmybumpbitt, binroutAND0, binroutAND00, binroutAND1, binroutAND11, binroutaltreset, binrout_probXY, binrout_probXY1, binrout_probXY2, binrout_probXY3};
 
 //uint32_t interpfromnew[32]={0,1,1,0,0,0,0,0,0,0,0,0,0,0}; // TODO match with speedfromnew and make more
 
