@@ -93,6 +93,13 @@ TODO:
 
 - what we added newly in geogen which needs to be added to arrays... // most is about routes and types - to expand here and make clearer!
 
+
+** 9/12/2022
+
+- check what we have as fixed route 2<<7 or 1<<7 in bit/route func arrays references... also ADC/geoN should have route in/no route in opts/probs as major
+
+prob of adc in we have...
+
 ** 8/12/2022
 
 - segmenting is in the gaps, and in slippage of inner and outer modes...
@@ -102,7 +109,7 @@ TODO:
 TODO:
 - in geoC test last 70etc prob modes (prob is against LFSR etc so we don't use [11])// review probs
 
-- DONEstrobe=1 added in necessary geogens and *test these*
+- DONEstrobe=1 added in necessary geogens and *test these* - tested just with strobe speed but should work!
 
 - test new routes
 

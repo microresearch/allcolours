@@ -313,7 +313,7 @@ void SR_geo_outer_N11(uint32_t w){ // spdfrac and adc in - adc is set in caput00
   
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route
+  gate[w].matrix[3]=1<<7; // fixed route
   gate[w].matrix[6]=CVL[w]; // length
   gate[w].matrix[8]=CVL[w];//gate[dacfrom[daccount][w]].dac; // depth/length for adc same as length
   gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
@@ -354,7 +354,7 @@ void SR_geo_outer_Ntestprobentry(uint32_t w){
   if (gate[w].changed==0) { // 1=change 0= no change
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route=2
+  gate[w].matrix[3]=1<<7; // fixed route=2
   //  gate[w].matrix[6]=CVL[w]; // length
   //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
   gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
@@ -368,7 +368,7 @@ void SR_geo_outer_Ntestprobentryor(uint32_t w){
   if (gate[w].changed==0) { // 1=change 0= no change
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route
+  gate[w].matrix[3]=1<<7; // fixed route
   //  gate[w].matrix[6]=CVL[w]; // length
   //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
   gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
@@ -382,7 +382,7 @@ void SR_geo_outer_Ntestprobentryreset(uint32_t w){
   if (gate[w].changed==0) { // 1=change 0= no change
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route
+  gate[w].matrix[3]=1<<7; // fixed route
   //  gate[w].matrix[6]=CVL[w]; // length
   //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
   gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
@@ -397,7 +397,7 @@ void SR_geo_outer_Ntestprobentryadvance(uint32_t w){
   if (gate[w].changed==0) { // 1=change 0= no change
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=2<<7; // fixed route
+  gate[w].matrix[3]=1<<7; // fixed route
   //  gate[w].matrix[6]=CVL[w]; // length
   //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
   gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa

@@ -53,11 +53,11 @@ static uint32_t CVM[4]={0,0,0,0};
 // add in dactype, dacpar
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd}
-uint32_t matrixNN[16]={0,0,0,  2<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0};
-uint32_t matrixCC[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1, 2048, 0}; 
-uint32_t matrixRR[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0}; 
-uint32_t matrixTT[16]={0,0,0,  2<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0}; 
+uint32_t matrixNN[16]={0,0,0,  1<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0};
+uint32_t matrixCC[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1, 2048, 0}; 
+uint32_t matrixRR[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0}; 
+uint32_t matrixTT[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0}; 
 //                     speed  bit        len   adc          prob  alt   dac      strobespdindex
 
 uint32_t *matrixNNN[16]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
