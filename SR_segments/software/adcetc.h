@@ -1109,6 +1109,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
   case 4: // only output standard DAC on param->strobe/clock! so just maintain lastout S
+    gate[wh].strobed=1;
     if (strobe) {
       x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
       lastout[wh]=x;
@@ -1116,7 +1117,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     else x=lastout[wh];
     break;
 
-  case 5: // toggle to hold/release DAC S
+  case 5: // toggle to hold/release DAC
+    gate[wh].strobed=1;
     if (strobe) toggle[wh]^=1;
     if (toggle[wh]) {
       x=lastout[wh];
@@ -1191,6 +1193,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       break;
 
   case 14:/// we record mask and use this to mask the regular DAC... - could also be other-than-standard DACs
+        gate[wh].strobed=1;
     if (strobe) // we record the mask  S
 	{
 	  mask[wh]=(otherpar&4095); // or reg can be otherpar/SR

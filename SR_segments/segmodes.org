@@ -6,11 +6,7 @@ this again in a consciousness of solitude.
 
 module for one bit landscape gardening...
 
-*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???????what_means*
-*what this means: that we associate each SR with a GSR function*
-
-serpent's head, caput draconis (rather than heavens\) - lunar node and
-link of geomantic figures with dots/dot matrix/bits... (see CCRU also)
+serpent's head, caput draconis (rather than heavens\) - lunar node and link of geomantic figures with dots/dot matrix/bits... (see CCRU also)
 
 A dragon with 5 heads!
 
@@ -50,7 +46,7 @@ DONEsetting of dactypes
 
 TODO: 
 
-- which functional arrays do we use? check extent of all arays and double up just to be safe...
+- which functional arrays do we use? check extent of all arrays and double up just to be safe...
 
 - DONE??break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types to organise
 
@@ -76,10 +72,7 @@ TODO:
 
 - recheck rungler characteristics
 
-*17/11+ TODO_______________sort last weeks work as not so well documented and we need to add new functions and orderings*
-
-
-** review DEC:
+- *Q: if we OR with binary in depth/theroute or just in binroute* - global Q!!!
 
 TODO: 
 
@@ -93,35 +86,124 @@ TODO:
 
 - what we added newly in geogen which needs to be added to arrays... // most is about routes and types - to expand here and make clearer!
 
+///////////////////
+- C: matrixp expand, sketch out
+- N: adc/abstract choices, prob of route entry as important, cutting and mixing...
+- L: continuity, multiple routes...
+- R: can be abstract, globals, some basic routings
+
+N - less binroute, adc probs, adc types, prob of cycle/adc/binroute, adc xor//adc or//binr, more blocks/bursts or coming in of adc, binr, cycle? how?
+L - as C, routes and probs, no abstract
+C - as we have, check prob of DAC outsES-61/62
+R - as C, but more abstract functions for runglers, more globals (where?)
+
+///////////////////
+
+** 13/12/2022
+
+*check/TODO: fix probs which use strobe in strobe speeds, also ones which use IN - *to fix all probs for gaps in geoC* // which of probfsins use IN: spdfrac2,3,4,spdfracdac3, zosc2bitsI, compbits, spdvienna - always set an IN// CHECK TODO
+check/fix probs in geoC
+
+*question of types, route-global/depth and route/bit functions: sel0 and sel2 have fixed routes, otherwise routebitsfortypes use depth all...*
+
+*fix depth and route gaps: depth=gate[wh].theroute; for gapped routes eg. CV[4]=gate[wh].theroute<<8; but only when we know it is about a route*
+
+TODO:
+- geoC: draft new basics, strobe and matrixp modes
+
+Draft all of these basic with TYPE set!
+
+fixed route means global route
+
+1. binroute fixed [dac/adc type]//reset
+2. length and dacparam 
+3. Q. as not all types use dacparam but needs to make sense together... - so do as length too?
+4. depth as type/type is now set as IN:   gate[w].theroute=depth; fixed route
+5. depth as route only. type IN gapped
+  
+now using TYPE as IN:
+
+6. fixed vs. cycle fixed prob
+7. fixed vs. [fixed XOR cycle] fixed prob
+8. gapped depthroute vs cycle
+9.                   vs. [depth XOR cycle prob]
+
+10. select routebitsfortypes, gapped depth and type // depth can be route or param
+11. depth cv
+12. prob routed vs cycle - gapped as above
+13. prob vs        XOR - gapped as above
+
+14.
+15.
+16.
+
+// routebitsfortypes array and the binrouteselX are only ones which use types... so there is a split there
+
+/////
+
+- catalogue missing and extra geogens - below...
+- TODO and check from below
+- fillin L,N, R towards full tests
+- recheck routes and route types
+
+OTHERS: 
+
+*re-check dac modes as some silent even with strobe why? - was it feedback but re-check anyways*
+
+- re-check modes in geoC.h. test changes to runglers.... implement SR_geo_inner_probcycle(uint32_t w){  // TESTY - using probfsins - ported in from speeds -> basic gapped cv binroute against justcycle!
+  // what cv we need: probfs: 9type,10comp... 3,4,5 is gapped... - *WHERE to place?*
+
+C: check unused innersL: SR_geo_inner_probcycleC, inner_split1C, inner_split2C, SR_geo_inner_prob_strobeC (TODO), SR_geo_inner_prob3C (nostrobe, prob is strobe), SR_geomantic_inner_split3C (TODO)
+
+what others are unused?
+
+// what we need to add from below:
+
+- new route modes to add: binroutorg, binroutgap(nod), bitrouteorgap(nod) - and add versions of these but maybe test first ... note that we do divide into ones which use depth/no depth! eg. routebitsnod
+
+- binroutfixed_prob5 and binroutfixed_prob5_nosh (to binroutprobs)...
+
+- new NZ ones we added today...
+
+/// DONES
+
+DONE:  gate[w].fake is now using trigger for dacs geoc and in strobe we just set to 1! in geo.c and we just need there as we don't set dac elsewhere or do we?
+gate[w].fake=gate[w].trigger;
+gate[w].fake=1;
+
+DONE:fix reset for each side
+
+DONE: added SR_geo_inner_proballC with mix of 64 strobe and non-strobe/mixed probs!
+
+DONE: added routebitsfortypesfixeddepth for types with depth passed in! depth/route=gate[w].theroute
+
+DONE: fixed reset for CV values and matrixp
 
 ** 9/12/2022
 
-- check what we have as fixed route 2<<7 or 1<<7 in bit/route func arrays references... also ADC/geoN should have route in/no route in opts/probs as major
+- check what we have as fixed route 1<<7 in bit/route func arrays references... DONE
 
-prob of adc in we have...
+DONEalso ADC/geoN should have route in/no route in opts/probs as major
+TODO/as basic modes: check what we have in geoN for this option - switch route in/no route in... as one mode/no/yesDONE as N01, WE_HAVEas strobe/toggle, as prob (both are probs), different kinds of prob
 
 ** 8/12/2022
 
 - segmenting is in the gaps, and in slippage of inner and outer modes...
-
-- new route modes to add - note that we do divide into ones which use depth/no depth! eg. routebitsnod
 
 TODO:
 - in geoC test last 70etc prob modes (prob is against LFSR etc so we don't use [11])// review probs
 
 - DONEstrobe=1 added in necessary geogens and *test these* - tested just with strobe speed but should work!
 
-- test new routes
+- *test new routes*
 
-- TEST: we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither, also new gapped theroute, also expand thse but how to add
+- TEST: we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither, also new gapped theroute, also expand those but how to add
 
 - TEST - prob of CV vs. global route - do we have that? set routes 0 now as prob5 and prob5_nosh
 
 - from 5/12 TODO:
 
 DONEand there is also localroute which is just like depth - but maybe re-work this also as gate[w].theroute
-
-*Q: if we OR with binary in depth/theroute or just in binroute*
 
 ** 5/12/2022
 
@@ -139,7 +221,7 @@ set geogens with binroutetype to:   tmpp=gate[w].routetype; DONE - *so we have n
 
 tmpp=gate[w].routetype; is local one
 
-** 1/12/2022++ // review/resolve
+** 1/12/2022
 
 global
 local
@@ -155,74 +237,56 @@ route: local/cv does that make sense or should just be gapped... pull out? how? 
 
 - how to recur on or deconstruct/segment these simplest modes -> holes in modes
 
-- try: global XOR/OR local OR/XOR CV ???
+- try: global XOR/OR local OR/XOR CV DONE
 
 - how to simplify? so that arrays more or less match up!
 
 ** 17/11/2022
 
-- in some geogens we have: *tmpp=gate[w].routetype*; [binroutesel4, binroutesel4S]
+- in some geogens we have: tmpp=gate[w].routetype; [binroutesel4, binroutesel4S]
 
 but we need to set this for gapping: gate[w].routetype=tmpp; -> check this=DONE
 
 options: always set when we set from CV, so is local/gapped or global ... fill in some extras here - will have to check through these...
-
--> ZZbinrout_prob4local, ZZzwiardbitslocal and can go further. We also need to list all these new ones...
 
 always this conflict between cv, local and global...
 
 eg. for:
 
 - type of route/shift -> now local is set by CV
-- binroute = locally set, global, CV led... *(check if cv sets local too?)*
+- binroute = locally set, global, CV led... (check if cv sets local too?)
 
-local is?:  tmp=myroute[w][gate[w].route]|binary[w]; /// but check this and we also need to set this!! gate[w].route in binroutmy ****
+local is?:  tmp=myroute[w][gate[w].route]|binary[w]; /// but check this and we also need to set this!! gate[w].route in binroutmy DONE?
 
 global is: count
 
 ** 14/11/2022
 
-*basic first modes // to check against geoC:*
+basic first modes // to check against geoC:
 
 1. binroute fixed (change length/dac/adc)
 2. depth as route only
 3. fixed vs. cycle prob
-4. fixed vs. [fixed XOR cycle prob
+4. fixed vs. [fixed XOR cycle prob]
 
 1/5. depth gapped for 3.4. depth as route vs...
 2/6.
-
-- *some fixings for geoC/geogen... zz stuff/probs: ZZbinrout_prob1,2,3,4 ZZxwiard etc *to add see also: zwiardbits2I, zwiardbitsI, zwiardinvbitsI (depth and in)*
   
 ** 10/11/2022
 
-*re-check dac modes as some silent even with strobe why? - was it feedback but re-check anyways*
+problem is always if we don't use CV eg. nodepth for say binroute, how to fix that always if we do/don't use CV. unless we always divide up
 
-*check/TODO: fix probs which use strobe in strobe speeds, also ones which use IN - *to fix all probs for gaps in geoC*
-
-*problem is always if we don't use CV eg. nodepth for say binroute, how to fix that always if we do/don't use CV. unless we always divide up*
-
-*gap can be previous, not always ahead*
+gap can be previous, not always ahead
 
 ** 9/11/2022
 
 - new notes for NLCR assigns:
-
-N - less binroute, adc probs, adc types, prob of cycle/adc/binroute, adc xor//adc or//binr, more blocks/bursts or coming in of adc, binr, cycle? how?
-L - as C, routes and probs, no abstract
-C - as we have, check prob of DAC outsES-61/62
-R - as C, but more abstract functions for runglers, more globals (where?)
-
-C: check unused innersL: SR_geo_inner_probcycleC, inner_split1C, inner_split2C, SR_geo_inner_prob_strobeC (TODO), SR_geo_inner_prob3C (nostrobe, prob is strobe), SR_geomantic_inner_split3C (TODO)
 
 - DONE->check how much ADC replication will cost memory? in geoNN we replicate geoC functions but with adc inserted.... 48% +5% so fine...
 
 ** 8/11/2022
 
 TODO:
-
-- re-check modes in geoC.h. test changes to runglers.... implement SR_geo_inner_probcycle(uint32_t w){  // TESTY - using probfsins - ported in from speeds -> basic gapped cv binroute against justcycle!
-  // what cv we need: probfs: 9type,10comp... 3,4,5 is gapped... - *WHERE to place?*
 
 // basic setup for modes
 
@@ -271,13 +335,13 @@ simpler begin arrays: 1st 16 to re-check...
 
 ** 4/11/2022
 
-*worried about FLASH use as we need to generic/double up modes - most of geoC are quite generic except: for ADC we need all functions again, for speedends also...*
+worried about FLASH use as we need to generic/double up modes - most of geoC are quite generic except: for ADC we need all functions again, for speedends also...
 
 - or how we can genericise those? means extra ifs, or we wrap adc ones somehow... // insert macro but is still an if!
 
 for L we have pretty much same as C maybe with more prob of entries, for R we need abstracts and globals
 
-*JUST realised that 4,5,14 of DAC_ modes use strobe which causes problems for strobe speeds and other strobes... to remove????*
+JUST realised that 4,5,14 of DAC_ modes use strobe which causes problems for strobe speeds and other strobes... to remove- kept as gate[w].fake which could be used as trigger/.. also from prob!
 
 TODO: DONEspeedmodes and fill in rest of modes, 
 
@@ -326,13 +390,13 @@ routebitsnostrobedepthprob[32] - prob vs IN! Xinprobs TODO
 
 ** 3/11/2022
 
-DONE//TODO: test first set of 16 geoC functions when we have right size for arrays and checked these - *other geos will need to have arrays all checked*
+DONE//TODO: test first set of 16 geoC functions when we have right size for arrays and checked these - *other geos will need to have arrays all checked
 
 DONEget arrays to right size in bitsn -> if necessary add from exp modes...DONE but we still need more abstract modes, not worried for geoC
 
 ** 2/11/2022
 
-- in geoC check which func arrays have which size and make sure all are correct size 64/32/16 only and >>6 >>7 >>8 -> *TODO: adjust size of arrays where necessary - see bitsn.h*
+- in geoC check which func arrays have which size and make sure all are correct size 64/32/16 only and >>6 >>7 >>8 -> *TODO: adjust size of arrays where necessary - see bitsn.h
 
 ** 1/11/2022
 
@@ -340,11 +404,11 @@ DONEget arrays to right size in bitsn -> if necessary add from exp modes...DONE 
 
 ** 28/10/2022
 
-*all modes at 64 or 32 and adjust accordingly and fix binsd array accesses* - geomantic and bitsn
+*all modes at 64 or 32 and adjust accordingly and fix binsd array accesses - geomantic and bitsn
 
 definition of array and size is only important when we start to set things and leave gaps...
 
-- *toport.h in reserve to check: splitspeeds!*
+- *toport.h in reserve to check: splitspeeds!
 
 globsels in geoLR - finish and test
 
@@ -354,7 +418,7 @@ globsels in geoLR - finish and test
 
 - DONE: added reduced 12 bit LFSR__ so can point to this in fixedvars...
 - endspeed we don't mix and match in modes
-- *DONE-if strobe and other speeds are on same CV/matrix or we expand on this so we can flip back... - now we have [15] for strobe function*
+- *DONE-if strobe and other speeds are on same CV/matrix or we expand on this so we can flip back... - now we have [15] for strobe function
 
 fixedroute/fixedtype
 depthroute/fixedtype
@@ -372,7 +436,7 @@ depthroute/flextype -> 2x CV? so is just last IN ...
 
 - probability in regular bitmodes is now vs. in and we pass LFSR to matrix[5] <(LFSR_[wh]&4095)// remember - but then we need to handle these - different sets... make exampleDONE in geoC
 
-// redo geoC for new arrays of routesDONE, and clean these up! *TODO: also adjust size of arrays where necessary*
+// redo geoC for new arrays of routesDONE, and clean these up! TODO: also adjust size of arrays where necessary
 
 TODO:
 
@@ -395,7 +459,7 @@ TODO:
           prob - use [5]/in and/or always have in reserve as LFSR 
 -prob: 
 
-*question still of unused depth - we can have length anyways, of 2x used strobes, of 2x probs to prevent*
+question still of unused depth - we can have length anyways, of 2x used strobes, of 2x probs to prevent
 
 ** 25/10/2022
 
@@ -450,7 +514,7 @@ DONE-TODO: compare different binroute types (binroutesel3 = bitfromsd/79, test n
 
 - DONE: probability of route X or route Y, but is also odd to have prob twice - in bitn and in prob modes... but they can use differing CVs
 
-- *that bitn can be max 64 -> 6 bits = in inner we have eg. bitn^=(*bitfromsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);*
+- that bitn can be max 64 -> 6 bits = in inner we have eg. bitn^=(*bitfromsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
 
 - how we handle binroute types - binroute area... which types make a big difference and how we can deal with selected type - not just in sel functions???
 
@@ -477,7 +541,7 @@ speed from strobe
 
 in geoN we have different probs for adc entry/freeze etc.
 
-*what we have from geomantic.h?* from below and what we have ported into geoX.h?
+what we have from geomantic.h?* from below and what we have ported into geoX.h?
 
 what types of inner/outer we have from geo:
 

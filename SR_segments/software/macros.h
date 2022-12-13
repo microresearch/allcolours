@@ -12,7 +12,43 @@ static uint32_t gscnt=0;
 static uint32_t outcnt=0;
 */
 
-#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0;
+// do we need to reset all matrices?
+
+#define RESETTN {				\
+  for (uint32_t y=0;y<16;y++){			\
+  gate[0].matrix[y]=matrixNN[y];					\
+  gate[0].matrixp[y]=matrixNNN[y];					\
+  }									\
+  }
+
+#define RESETTL {				\
+  for (uint32_t y=0;y<16;y++){			\
+  gate[1].matrix[y]=matrixNN[y];					\
+  gate[1].matrixp[y]=matrixNNN[y];					\
+  }									\
+  }
+
+#define RESETTC {				\
+  for (uint32_t y=0;y<16;y++){			\
+  gate[2].matrix[y]=matrixNN[y];					\
+  gate[2].matrixp[y]=matrixNNN[y];					\
+  }									\
+  }
+
+#define RESETTR {				\
+  for (uint32_t y=0;y<16;y++){			\
+  gate[3].matrix[y]=matrixNN[y];					\
+  gate[3].matrixp[y]=matrixNNN[y];					\
+  }									\
+  }
+
+#define RESETC count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[2].theroute=2; RESETTC;
+
+#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[3].theroute=4; RESETTR;
+
+#define RESETL count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[1].theroute=1; RESETTL;
+
+#define RESETN count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[0].theroute=8; RESETTN;
 
 #define STR0 (gate[w].trigger)
 
@@ -560,7 +596,7 @@ static uint32_t outcnt=0;
     gate[w].flip^=1;							\
     if (!gate[w].strobed) bitn|=gate[w].trigger;			\
     gate[w].shift_+=bitn;						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].trigger); \
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); \
     PULSOUT;								\
 }
 // added pulsin_xor

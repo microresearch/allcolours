@@ -1,0 +1,43 @@
+** 13/12/2022
+
+- maybe rework DAC_ so all uses otherpar and length - trial this for new first 16 modes TODO
+
+
+- gapped depth as route has issues as other things can upset the depth.... CHECK this out - is it really an issue?
+
+*question is still of route as CV, as theroute(local and set by cv) and global count/route*
+
+do we have a flag to set gapped... if (gate[w].gappedroute) depth=gate[w].theroute
+
+eg. functions for routes which have depth as route vs. other uses of depth... or is that just another dislocation...
+
+
+- question of no depth used in functions when we use CVL as depth
+
+- question of split between route functions which use type (all in routebitsfortypes) and those which use default/as in basic gshift type. how we manage this split
+
+or we have first 16 modes which stick with these... and then we get more complex TODO/in progress
+
+default_route/depth_route/type/dactype/dacparam/length
+
+prob of x vs. y
+
+- split local route/global route
+
+- organise probabilities better with gaps
+
+- questions of which bits/routes and which probs use IN and how we provide this!?
+
+- rethink runglers and check these - 
+
+basic rungler: speed from X, bits from Y[mix/logop/]generate bits
+
+rungler signal->osc->own clock
+
+rungler_to: 
+
+rungler_from: 
+
+////
+
+adding and testing new functions in geogen...

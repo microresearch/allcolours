@@ -321,7 +321,7 @@ void SR_geo_inner_probcycleNN(uint32_t w){  // TESTY - using probfsins - ported 
     ADCgeneric2; 
     bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w);
 
-    bitn^=(*routebitsnod[1])(0,0, w); // justcycle
+    bitn^=(*routebitsnod[0])(0,0, w); // justcycle is now 0 there
   }
     
     BITN_AND_OUTV_; 

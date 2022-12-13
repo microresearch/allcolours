@@ -60,7 +60,7 @@ uint32_t (*routebits[74])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, bi
 uint32_t (*routebitsd[64])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, binroutor, binroutAND0, binroutfixed_prob1, zsingleroutebits, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift, zbinroutebitscyclestr_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, zSRNbits, zSRLbits, zSRCbits, zSRRbits, zsuccbitspp, zsuccbitsIpp, zreturnbits, zreturnnotbits, zwiardbits, zwiardinvbits, zTMsimplebits, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4, viennabits, flipflopandroute, zcopyGSR, zcopyGSR_s, zsuccbitsprob, zbinroutfixed_noshift_transitI, tailbitswithd, tailbitsIwithd, tailbitswithdnos, tailbitsIwithdnos, binroutesel1, binroutesel2, binroutesel3, binroutesel4, binroutmybumpS, binroutmycv, binroutAND0, binroutAND00, binroutAND1, binroutAND11, binroutaltreset, binrout_probXY, binrout_probXY1, binrout_probXY2, binrout_probXY3, pSRLcvroute, pSR_routeSRbits01,  pSR_routeSRbits02, pSR_layer1}; 
 
 // no depth - but can we have strobe? why not
-uint32_t (*routebitsnod[32])(uint32_t depth, uint32_t in, uint32_t wh)={binroutfixed, zjustcycle, zsuccbits, zsuccbitsI, tailbits, zjusttail, tailbitsnos, tailbitsI, tailbitsInos, binroutesel0, binroutfixedmy, binroutfixedmyreset, binroutmybumpbit, binroutmybumpbitt, binroutmybumpS, pbitSRroutelog, pbitSRroutelogxx, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSR32, pSRmod, pSRN62, pSRN22, pSRN21, pSRNwas15, pSRRaccelghosts0, pSRR32, pSRaddroutes, pSRxorroutes, pSRshroute, pSRsigma, pSRDACroutestrobe};
+uint32_t (*routebitsnod[32])(uint32_t depth, uint32_t in, uint32_t wh)={zjustcycle, binroutfixed, zsuccbits, zsuccbitsI, tailbits, zjusttail, tailbitsnos, tailbitsI, tailbitsInos, binroutesel0, binroutfixedmy, binroutfixedmyreset, binroutmybumpbit, binroutmybumpbitt, binroutmybumpS, pbitSRroutelog, pbitSRroutelogxx, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSR32, pSRmod, pSRN62, pSRN22, pSRN21, pSRNwas15, pSRRaccelghosts0, pSRR32, pSRaddroutes, pSRxorroutes, pSRshroute, pSRsigma, pSRDACroutestrobe};
 
 // what are route bits which do use strobe? zbinroutebitscyclestr, zbinroutebitscyclestr_noshift, zbinroutebitscyclestrI, binroutmybumpS, zcopyGSR_s, binroutaltreset, pSRDACroutestrobe
 
@@ -75,7 +75,21 @@ uint32_t (*routebitsfortypes[32])(uint32_t depth, uint32_t in, uint32_t wh)={Zbi
 // note that only first 4 use depth as route, rest either have single routes or do prob - these probs DO NOT use IN [5] as we use that for type!
 // Zsuccbits and ZsuccbitsI don't use depth! so we removed...
 
-// depth/routes which could be passed fixed depth:
+/* -> but what of ones which don't used depth?
+
+check these?
+
+binroutfixed=sel0, zsuccbits, zsuccbitsI, [binroutfixedmy, binroutfixedmyreset, binroutmybumpbit, binroutmybumpbitt], pbitSRroutelog, pbitSRroutelogxx, pbitSRroutelogxxx, pbitLSRroutexxxlog,  pSR32, pSRmod, pSRN62, pSRN22, pSRN21, pSRNwas15, pSRRaccelghosts0, pSRR32, pSRaddroutes, pSRxorroutes, pSRshroute, pSRsigma
+
+*/
+
+// could also make new ones which use gate[w].theroute which some already do... but what about depth - ones which use fixed theroute no depth, ones which use depth and theroute
+
+
+// compile list of routebitsfrotypes which can be passed depth as route
+uint32_t (*routebitsfortypesfixeddepth[32])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout, ZzbinrouteINVbits, Zzbinroutebitscycle, Zflipflopandroute, Zzsuccbitspp,  Zbinrout, ZzbinrouteINVbits, Zzbinroutebitscycle, Zflipflopandroute, Zzsuccbitspp,Zbinrout, ZzbinrouteINVbits, Zzbinroutebitscycle, Zflipflopandroute, Zzsuccbitspp,Zbinrout, ZzbinrouteINVbits, Zzbinroutebitscycle, Zflipflopandroute, Zzsuccbitspp,Zbinrout, ZzbinrouteINVbits, Zzbinroutebitscycle, Zflipflopandroute, Zzsuccbitspp, Zbinrout, ZzbinrouteINVbits}; // all multiplied
+
+// depth/routes which could be passed fixed depth for route:
 uint32_t (*routebitsfixeddepth[32])(uint32_t depth, uint32_t in, uint32_t wh)={binrout, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle, zbinroutebitscycle_noshift, zbinrouteORbits, zbinrouteANDbits, zbinrouteSRbits, zbinroutebitsI, zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinroutebitscyclestrI, binroutesel1, binroutAND0, binroutAND00, binroutAND1, binroutAND11, binroutaltreset, pSR_routeSRbits01,  pSR_routeSRbits02, pSR_layer1, pSR_layer2, pSR_reflect, pSR_altbin1, pSRLLbumproute, pSR_recbin, binrout, zbinrouteINVbits, zbinroutebits_noshift_transit, zbinroutebits_noshift, zbinroutebitscycle}; // some have strobe - some doubled
 
 // vs IN!

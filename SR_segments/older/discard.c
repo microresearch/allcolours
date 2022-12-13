@@ -1,3 +1,9 @@
+/*
+*that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???????what_means*
+*what this means: that we associate each SR with a GSR function*
+*/
+
+
 //- phase out use of this one
 //uint32_t (*probf[14])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add other bit ops, changed binrouts to non-shift // testings!
 
