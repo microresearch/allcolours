@@ -412,6 +412,30 @@ static inline uint32_t pSRsigma(uint32_t depth, uint32_t in, uint32_t w){//nada
   return bitn;
 }
 
+static inline uint32_t ZpSRsigma(uint32_t depth, uint32_t in, uint32_t w){//nada
+  uint32_t x, tmp, tmpp, val, bitrr, temp, bitn=0;
+  int32_t cycle;
+  static int32_t integrator;
+
+  //  BINROUTE_;
+  tmpp=in>>9; // or in can be route // 3 bits
+  gate[w].routetype=tmpp;
+  tmp=depth>>8;
+  ROUTETYPE_;
+
+  if (bitn) val=1;
+  else val=-1;
+  if (CYCl) cycle=1;
+  else cycle=-1;
+  
+  integrator+=(val-cycle);
+  if (integrator>0) bitn=1;
+  else bitn=0;
+  
+  return bitn;
+}
+
+
 // from bit.c
 
 static inline uint32_t pbitSRroutelog(uint32_t depth, uint32_t in, uint32_t w){ // nada

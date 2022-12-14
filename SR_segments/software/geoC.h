@@ -200,16 +200,16 @@ catalogue probs:
 
 SR_geo_inner_probofdacoutC: probfsins
 
-strobespeeds:
+strobespeeds: // checked
 SR_geo_inner_prob_ifstrobeC: probfsinnostrobe
 SR_geo_inner_prob_strobeC: probfsinnostrobe
 SR_geo_inner_prob_strobedepthC: probfsinnostrobe
 SR_geo_inner_prob3_strobeC: probfsinnostrobe
 
 others:
-SR_geo_inner_prob1C: probfsins ???
+SR_geo_inner_prob1C: probfsins
 SR_geo_inner_proballC: probfsinsstrobeall - new one
-SR_geo_inner_prob2C: probfstrobes
+SR_geo_inner_prob2C: probfstrobes - probfromstrobes
 SR_geo_inner_prob3C: probfstrobes
 
  */
@@ -432,10 +432,10 @@ void SR_geo_inner_prob2C(uint32_t w){  // TESTY - ported in using strobes/no dep
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
 
     if ((*probfstrobes[gate[w].matrix[9]>>8])(0, 0, w)){ // no depth needed
-    bitn=(*routebitsd[gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
+    bitn=(*routebitsnostrobe[gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
   }
   else {
-    bitn=(*routebitsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
+    bitn=(*routebitsnostrobe[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
   }
     
     BITN_AND_OUTV_; 
@@ -664,7 +664,6 @@ simpler begin arrays: 1st 16 to re-check...
 4. fixed vs. [fixed XOR cycle prob]
 
 // note that these probs are in bit functions: Zbinroutfixed_prob1 (fixedor), Zbinroutfixed_prob4 (fixedxor) -> these have types on IN though
-
 
 aka:
 
@@ -1027,11 +1026,12 @@ void SR_geo_outer_C70(uint32_t w){  // can also have CV vs dacfrom
 }
 }
 
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobeindex
 // problem for prob is we have:
 /*
 [9] type
 [10] CV1
-[11] CV2
+[11] CV2 which should not be fixed/CV
 [12] altfunc 
  */
 
@@ -1043,18 +1043,15 @@ void SR_geo_outer_C70(uint32_t w){  // can also have CV vs dacfrom
 
 // where do we set [11]??? TOFIX
 // classic prob we need selprobfunc, cvs for prob, cvs for bits, cvs for selfunc, selalt -> too many even with strobe
-void SR_geo_outer_C71(uint32_t w){  // probtype
+void SR_geo_outer_C71(uint32_t w){  // TYPE of PROB
   if (gate[w].changed==0) { 
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac;//
   gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // bitcv2
 
   gate[w].matrix[9]=CVL[w]; // select probfs - but we need 10 and 11 and 12?!
-  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
-  //10 is prob vs lfsr/cv -> can be dacfrom
-  //12 is alt - how we define this one? another gap - set as default!
-  //3 is func - we have as gap
-  // 4 and 5 cvs for bits - can be gaps
+  gate[w].matrix[10]=gate[dacfrom[daccount][w]].dac; //
+  gate[w].matrix[11]=gate[dacfromopp[daccount][w]].dac; //
   gate[w].inner=SR_geo_inner_prob1C; // recheck 
 }
 }
@@ -1064,13 +1061,11 @@ void SR_geo_outer_C72(uint32_t w){  // altfunc
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac;//
   //  gate[w].matrix[9]=CVL[w]; // select probfs - but we need 10 and 11 and 12?!
-  gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;
-  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
+  gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; //bit-cv2
+  gate[w].matrix[10]=gate[dacfrom[daccount][w]].dac; // prob-cv1
+  gate[w].matrix[11]=gate[dacfromopp[daccount][w]].dac; //
   //10 is prob vs lfsr/cv -> can be dacfrom
   gate[w].matrix[12]=CVL[w];
-  //12 is alt - how we define this one? another gap - set as default!
-  //3 is func - we have as gap
-  // 4 and 5 cvs for bits - can be gaps
   gate[w].inner=SR_geo_inner_prob1C; // recheck
 }
 }
@@ -1081,12 +1076,8 @@ void SR_geo_outer_C73(uint32_t w){  // CV1
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac;//
   //  gate[w].matrix[9]=CVL[w]; // select probfs - but we need 10 and 11 and 12?!
   //  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
-  //10 is prob vs lfsr/cv -> can be dacfrom
-  gate[w].matrix[10]=CVL[w];
-  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);; //     
-  //12 is alt - how we define this one? another gap - set as default!
-  //3 is func - we have as gap
-  // 4 and 5 cvs for bits - can be gaps
+  gate[w].matrix[10]=CVL[w]; // probCV1
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);; // CV2 for those which use IN     
   gate[w].inner=SR_geo_inner_prob1C; // recheck
 }
 }

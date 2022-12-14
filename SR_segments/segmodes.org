@@ -42,8 +42,6 @@ DONEsetting of dactypes
 
 ** xxTOP
 
-*QUESTIONS: binroute types and idea of bit areas of modes... -> in progress*
-
 TODO: 
 
 - which functional arrays do we use? check extent of all arrays and double up just to be safe...
@@ -72,7 +70,7 @@ TODO:
 
 - recheck rungler characteristics
 
-- *Q: if we OR with binary in depth/theroute or just in binroute* - global Q!!!
+//[- if we OR with binary in depth/theroute or just in binroute: in binroute onlyDONE]
 
 TODO: 
 
@@ -99,28 +97,67 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 14/12/2022
+
+- that we can make lists/arrays of routebits functions arrays (though they would either need same length or to be in structure with length indicated)
+- also we can make arrays of inner and outer functions (we have outers in 000 as:  void (*SRgeo_outer[4][64])(uint32_t w)= ...)
+
+These lead towards dislocations.
+
+First we need to draft dislocations of: matrixp and matrix -> how to start with this?
+
+for matrixp we can copy in different arrays and shift these - shift matrixp along, make gaps, asign things (how?), overlay with SRs to set/unset
+
+also for globflag below we can cycle through SRs to set/unset, use strobe to bump on etc...
+
+
+
+////////////////////////////////////////////////////////
+
+*Q of flag in each SR - use global, local???*
+
+if (gate[wh].globflag) tmp=binroute[count][wh]|binary[wh]; 
+else tmp=gate[wh].theroute
+
+set this where... is nice to keep flexibility of function to say pass dac to depth/route... but if we have flag we don't know if we use depth/cv!
+
+somehow inner mode needs to handle this...
+
+*but this is just for when we have globals! otherwise leave gaps... - how to handle flag locally and globally...// with resetx to global=1*
+
+////////////////////////////////////////////
+
+DONE check/TODO: which use IN - to fix all probs for gaps in geoC // which of probfsins use IN: spdfrac2 %in,3 in+depth,4 add too ,spdfracdac3 dac%in+depth, zosc2bitsI=on/off, compbits in>depth, spdvienna - recurse/depth/in
+
+added in geoC.c and tables.h:   gate[w].matrix[11]=gate[dacfromopp[daccount][w]].dac; //
+
+*added in functions and tidying - but no crash check so far - length of arrays???*
+
 ** 13/12/2022
 
-*check/TODO: fix probs which use strobe in strobe speeds, also ones which use IN - *to fix all probs for gaps in geoC* // which of probfsins use IN: spdfrac2,3,4,spdfracdac3, zosc2bitsI, compbits, spdvienna - always set an IN// CHECK TODO
-check/fix probs in geoC
+question of types, route-global/depth and route/bit functions: sel0 and sel2 have fixed routes, otherwise routebitsfortypes use depth all...
 
-*question of types, route-global/depth and route/bit functions: sel0 and sel2 have fixed routes, otherwise routebitsfortypes use depth all...*
-
-*fix depth and route gaps: depth=gate[wh].theroute; for gapped routes eg. CV[4]=gate[wh].theroute<<8; but only when we know it is about a route*
+whether to fix depth and route gaps: depth=gate[wh].theroute; for gapped routes eg. CV[4]=gate[wh].theroute<<8; but only when we know it is about a route - *larger question*
 
 TODO:
 - geoC: draft new basics, strobe and matrixp modes
 
 Draft all of these basic with TYPE set!
 
-fixed route means global route
+[older: 1. binroute fixed (change length/dac/adc)
+2. depth as route only
+3. fixed vs. cycle prob
+4. fixed vs. [fixed XOR cycle prob]
+]
+
+fixed route means global route// all as types from 4+
 
 1. binroute fixed [dac/adc type]//reset
 2. length and dacparam 
-3. Q. as not all types use dacparam but needs to make sense together... - so do as length too?
-4. depth as type/type is now set as IN:   gate[w].theroute=depth; fixed route
-5. depth as route only. type IN gapped
-  
+3. Q. as not all types use dacparam but needs to make sense together... - *so do as length too or seperate these in DAC_* TO_TEST
+4. depth as route only. type IN gapped    
+4. depth as type/type is now set as IN:   gate[w].theroute=depth; fixed route global or local?
+ 
 now using TYPE as IN:
 
 6. fixed vs. cycle fixed prob
@@ -128,12 +165,12 @@ now using TYPE as IN:
 8. gapped depthroute vs cycle
 9.                   vs. [depth XOR cycle prob]
 
-10. select routebitsfortypes, gapped depth and type // depth can be route or param
+10. select routebitsfortypes, gapped depth and type // depth can be route or param??? see new NZ functions to collect
 11. depth cv
 12. prob routed vs cycle - gapped as above
 13. prob vs        XOR - gapped as above
 
-14.
+14. combines of above... gapped prob setting and change route/type/function - but which prob??? cycle or XOR // can we gap this choice///lastfunction... or do as real probfs
 15.
 16.
 
@@ -141,7 +178,6 @@ now using TYPE as IN:
 
 /////
 
-- catalogue missing and extra geogens - below...
 - TODO and check from below
 - fillin L,N, R towards full tests
 - recheck routes and route types
@@ -157,14 +193,6 @@ C: check unused innersL: SR_geo_inner_probcycleC, inner_split1C, inner_split2C, 
 
 what others are unused?
 
-// what we need to add from below:
-
-- new route modes to add: binroutorg, binroutgap(nod), bitrouteorgap(nod) - and add versions of these but maybe test first ... note that we do divide into ones which use depth/no depth! eg. routebitsnod
-
-- binroutfixed_prob5 and binroutfixed_prob5_nosh (to binroutprobs)...
-
-- new NZ ones we added today...
-
 /// DONES
 
 DONE:  gate[w].fake is now using trigger for dacs geoc and in strobe we just set to 1! in geo.c and we just need there as we don't set dac elsewhere or do we?
@@ -178,6 +206,8 @@ DONE: added SR_geo_inner_proballC with mix of 64 strobe and non-strobe/mixed pro
 DONE: added routebitsfortypesfixeddepth for types with depth passed in! depth/route=gate[w].theroute
 
 DONE: fixed reset for CV values and matrixp
+
+////////////////////////////////////////////
 
 ** 9/12/2022
 
@@ -194,8 +224,6 @@ TODO:
 - in geoC test last 70etc prob modes (prob is against LFSR etc so we don't use [11])// review probs
 
 - DONEstrobe=1 added in necessary geogens and *test these* - tested just with strobe speed but should work!
-
-- *test new routes*
 
 - TEST: we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither, also new gapped theroute, also expand those but how to add
 
@@ -217,7 +245,7 @@ from below: local is?:  tmp=myroute[w][gate[w].route] | binary[w]; /// but check
 
 - is binroutetype ever global? > yes, there is binroutetypes which is all 0, no need - DONE // removed global binroutetypes
 
-set geogens with binroutetype to:   tmpp=gate[w].routetype; DONE - *so we have no global types, just cv/gapped*
+set geogens with binroutetype to:   tmpp=gate[w].routetype; DONE - so we have no global types, just cv/gapped
 
 tmpp=gate[w].routetype; is local one
 
@@ -607,14 +635,14 @@ how we deal with no adc entry...??
 
 question of delay line to resolve
 
-*major question of functions without depth - how we handle that - check all speeds have depth, but what of other funcs?*
+major question of functions without depth - how we handle that - check all speeds have depth, but what of other funcs?*
 
 eg. some globals don't need depth - then what do we use depth for? or we always keep as length or???/
 
 strobe/no depth/depth - as options - strobe we handle... to keep seperate? or we signal in global eg. gate[x].depth as 1/0
 
 
-- *strobe speed drops depth??? how to handle strobes is now main question? if we handle them in special area?>>>? yes*
+- strobe speed drops depth??? how to handle strobes is now main question? if we handle them in special area?>>>? yes*
 
 - how we handle different types of binroute - also as an area?
 

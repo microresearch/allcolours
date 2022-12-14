@@ -1,15 +1,71 @@
-** 13/12/2022
+** 12/2022  try to resolve+++
 
-- maybe rework DAC_ so all uses otherpar and length - trial this for new first 16 modes TODO
+- speedfromnostrobe[38] could go up to 64????
+
+- shared gshifts and doublings to check/add as below:
+
+- DAC_ reworks to test
+
+- TODO: how to mix globals and locals also in route functions eg. which specifially use the global form (those which don;t take depth) - these can be doubled with theroute as we start to do with types
+
+or this indeed can be a flag and then we can play with this...
+
+// if (gate[wh].globflag) tmp=binroute[count][wh]|binary[wh]; else tmp=gate[wh].theroute
+
+but in type/routes we have these kind of doubled anyways
+
+
+
+////////////////
+
+shared gshifts or not???
+
+BINROUTE_ macro is not shared
+
+but binrout() is shared... as are lots of routes - we need to decide on this or double up (which we have already in some cases)... could also better catalogue routes/bits
+
+which of types is shared? BINROUTESHARE - so that is a type
+
+shared // share is fine for noshifts...
+
+static inline uint32_t binroutor(uint32_t depth, uint32_t in, uint32_t wh){ // 4 bits binroute ORed with selected 4 bits SR..
+static inline uint32_t zsingleroutebits(uint32_t depth, uint32_t in, uint32_t wh){  // just route from 0-3 single route
+static inline uint32_t zbinrouteINVbits(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now
+static inline uint32_t zbinroutebitscyclestr(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now
+static inline uint32_t zbinrouteORbits(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now
+static inline uint32_t zbinrouteANDbits(uint32_t depth, uint32_t in, uint32_t wh){   // depth as routesel... shared bits now
+static inline uint32_t binroutorg(uint32_t depth, uint32_t in, uint32_t wh){
+static inline uint32_t binroutgap(uint32_t depth, uint32_t in, uint32_t wh){  // no depth
+static inline uint32_t binroutorgap(uint32_t depth, uint32_t in, uint32_t wh){  // no depth
+
+
+/////
+
+Question is: theroute/set by CV or global/count but still have types of gshift and types of route
+
+/////
+
+- *maybe rework DAC_ so all uses otherpar and length - trial this for new first 16 modes TODO*
 
 
 - gapped depth as route has issues as other things can upset the depth.... CHECK this out - is it really an issue?
 
-*question is still of route as CV, as theroute(local and set by cv) and global count/route*
-
+*question is still of route as CV, as theroute(local and set by cv) and global count/route* - how to work this...
 do we have a flag to set gapped... if (gate[w].gappedroute) depth=gate[w].theroute
 
-eg. functions for routes which have depth as route vs. other uses of depth... or is that just another dislocation...
+*or flag in each SR - use global, local???*
+
+eg. functions for routes which have depth as route vs. other uses of depth... or is that just another dislocation... /// also if depth is not route what to do...
+
+
+Questions of: uselessness of CVL in some cases, of no IN available in others (check probs)
+
+probs which use IN: spdfrac2,3,4,spdfracdac3, zosc2bitsI, compbits, spdvienna -> how they use IN?
+
+
+
+bits/routes which don't use depth: routebitsnod[32]
+
 
 
 - question of no depth used in functions when we use CVL as depth
