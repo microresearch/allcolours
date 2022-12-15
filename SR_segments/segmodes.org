@@ -97,6 +97,15 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 15/12/2022
+
+TODO:
+- fix shared gshifts to non-shared
+
+- DAC_ rework and test code setups
+- global/local flag to code/test
+
+
 ** 14/12/2022
 
 - that we can make lists/arrays of routebits functions arrays (though they would either need same length or to be in structure with length indicated)

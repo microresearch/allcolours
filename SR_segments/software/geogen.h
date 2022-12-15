@@ -1789,8 +1789,8 @@ static inline uint32_t binroutor(uint32_t depth, uint32_t in, uint32_t wh){ // 4
     {
   for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
-    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
-    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
+    bitrr = (gate[x].Gshift_[wh]>>SRlength[x]) & 0x01; 
+    gate[x].Gshift_[wh]=(gate[x].Gshift_[wh]<<1)+bitrr;
     bt^=bitrr;
   }
   depth=depth>>1;
