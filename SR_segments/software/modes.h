@@ -23,6 +23,7 @@ typedef struct heavens_ {
   int32_t gsrcnt[9];
   uint32_t route;
   uint32_t fake; // fake trigger
+  uint32_t globflag; // global or local route!
   uint32_t theroute;
   uint32_t routetype;
   uint32_t lastspeed;

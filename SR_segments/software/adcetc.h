@@ -1040,7 +1040,8 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
   return bita ^ bitaa; // default
 }
 
-//0-15 so 16 modes
+// 15/12/2022 - length changed to otherpar except where we change both - to be TESTED!!
+//     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); 
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
   uint32_t x=0;
   float f=0.0f;
@@ -1055,7 +1056,10 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   float betaf=0.4f, mult,pp;
   int32_t rem;
   uint32_t y,tmp;
-  
+
+// if we use otherpar as length we need to add:
+// otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+
   switch(type){
 
   case 666: // null case for testings
@@ -1063,19 +1067,21 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
     
   case 0: // length doesn't change much except at slow speeds - ADC x bits out - modded for new draft
-    if (length==3){
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    if (otherpar==3){
       if ((shift&4)==4) x=4095; // changed 28/12
       else x=0;
     }
-        else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck - fixed problem in shifts in resources 16/8
+        else     x=( (shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // doublecheck - fixed problem in shifts in resources 16/8
     //    else  x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
     //    else x=(shift&4095);
     //    x=x&4095;
     break;
     
   case 1:// equivalent bit DAC for x bits - 3/11 - 32 bits max now
-    x=countbits(shift& masky[length]); // lower length bits only
-    y=divy[length]; // added table for this 7/10 - updated for 32 bits
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    x=countbits(shift& masky[otherpar]); // lower length bits only
+    y=divy[otherpar]; // added table for this 7/10 - updated for 32 bits
     x*=y;
     if (x>4095) x=4095;
     break;
@@ -1100,60 +1106,67 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=(int)SmoothData[wh];
     break;
 
-  case 3: //spacers 
+  case 3: //spacers
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     x = (shift&0xFF)<<4; // just the lower 8 bits - no spacings
-    if (length>7){ // real length >8
-      x = ((shift & 0x01) + ((shift>>pos[length][1])&0x02) + ((shift>>pos[length][2])&0x04) + ((shift>>pos[length][3])&0x08) + ((shift>>pos[length][4])&0x10) + ((shift>>pos[length][5])&0x20) + ((shift>>pos[length][6])&0x40) + ((shift>>pos[length][7])&0x80))<<4;
+    if (otherpar>7){ // real length >8
+      x = ((shift & 0x01) + ((shift>>pos[otherpar][1])&0x02) + ((shift>>pos[otherpar][2])&0x04) + ((shift>>pos[otherpar][3])&0x08) + ((shift>>pos[otherpar][4])&0x10) + ((shift>>pos[otherpar][5])&0x20) + ((shift>>pos[otherpar][6])&0x40) + ((shift>>pos[otherpar][7])&0x80))<<4;
       //       {0, 0, 1, 3, 6, 10, 15, 21} // for 32 bits = length=31 - check sense of this
     }
     break;
 
   case 4: // only output standard DAC on param->strobe/clock! so just maintain lastout S
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     gate[wh].strobed=1;
     if (strobe) {
-      x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
+      x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
       lastout[wh]=x;
     }
     else x=lastout[wh];
     break;
 
   case 5: // toggle to hold/release DAC
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     gate[wh].strobed=1;
     if (strobe) toggle[wh]^=1;
     if (toggle[wh]) {
       x=lastout[wh];
     }
     else {
-      x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
+      x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
       lastout[wh]=x;
     }      
     break;
 
   case 6: // 4 spaced bits out! equiv bits or not - in this case not
-    x= ( ( (shift& (1<<lastspac[length][0]))>>lastspacbac[length][0]) + ((shift& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((shift& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((shift& (1<<lastspac[length][3]))>>lastspacbac[length][3]) )<<8; // 4 bits to 12 bits
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    x= ( ( (shift& (1<<lastspac[otherpar][0]))>>lastspacbac[otherpar][0]) + ((shift& (1<<lastspac[otherpar][1]))>>lastspacbac[otherpar][1]) + ((shift& (1<<lastspac[otherpar][2]))>>lastspacbac[otherpar][2]) + ((shift& (1<<lastspac[otherpar][3]))>>lastspacbac[otherpar][3]) )<<8; // 4 bits to 12 bits
     break;
 
   case 7: // 4 spaced bits out! equiv bits
-    x= ( ((shift& (1<<lastspac[length][0]))>>lastspacbac[length][0]) + ((shift& (1<<lastspac[length][1]))>>lastspacbac[length][1]) + ((shift& (1<<lastspac[length][2]))>>lastspacbac[length][2]) + ((shift& (1<<lastspac[length][3]))>>lastspacbac[length][3]) ); 
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    x= ( ((shift& (1<<lastspac[otherpar][0]))>>lastspacbac[otherpar][0]) + ((shift& (1<<lastspac[otherpar][1]))>>lastspacbac[otherpar][1]) + ((shift& (1<<lastspac[otherpar][2]))>>lastspacbac[otherpar][2]) + ((shift& (1<<lastspac[otherpar][3]))>>lastspacbac[otherpar][3]) ); 
     x=countbits(x)*1023;
     if (x>4095) x=4095;
     break;
 
   case 8: // one SR is sieved out over another? as DAC option. XOR as sieve? AND as mask! TODO
-    x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
-    x=x^(((gate[sieve[wh]].shift_ & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]); // seived through previous SR
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
+    x=x^(((gate[sieve[wh]].shift_ & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]); // seived through previous SR
     break;
 
   case 9: //  one SR is sieved out over clksr for that sr. XOR as sieve?  - SKIPPED/retry instead of 11
-    x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
-    x=x^((clksr_[wh] & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; 
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
+    x=x^((clksr_[wh] & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
     break;
 
   case 10:// standard bit DAC for x bits     ///bitx length as other param rather than length:
     // but then we don't really use len? unless is cycle back
     // try now 21/12/2021 using length
     // bit length can also be CV - how to put this in as DAC is quite fixed in macro?
-    otherpar=otherpar&31; //5 bits
+    otherpar=otherpar>>7; //5 bits
     rem=length-otherpar;
     if (rem<0) rem=0;
     x=((shift & masky[rem])>>(rightshift[rem]))<<leftshift[rem]; 
@@ -1161,9 +1174,10 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
       // sequential DACs
   case 11: // we wait for length bits then output that many bits from the top of the SR (len bit) - not really working
-    if (n[wh]>length) {
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    if (n[wh]>otherpar) {
       n[wh]=0;      
-      x=((shift & masky[length])>>(rightshift[length]))<<leftshift[length];
+      x=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar];
       lastout[wh]=x;
     }
     x=lastout[wh];
@@ -1173,7 +1187,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 12: // we wait for otherparam bits then output that many bits from the top of the SR (len bit)
     //    length=3; // is good to vary length AND otherpar AND speed - Cint12 does this
     // can also be x number of equiv bits TRY!
-    otherpar=otherpar&31; //5 bits
+    otherpar=otherpar>>7; //5 bits
     if (n[wh]>otherpar) {
       n[wh]=0;
       x=((shift & masky[length])>>(rightshift[length]))<<leftshift[length];
@@ -1206,14 +1220,14 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     //   param for filter - and now always has param
 
   case 15:// standard bit DAC for x bits - new mode here
-
-    if (n[wh]>length) {
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    if (n[wh]>otherpar) {
       n[wh]=0;
-    if (length==3){
+    if (otherpar==3){
       if ((shift &4)==4) x=4095;
       else nom[wh]=0;
     }
-    else nom[wh]=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // we want 12 bits but is not really audible difference //Q of least bits
+    else nom[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
     }
     n[wh]++;
     x=nom[wh];
@@ -1223,7 +1237,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     // use detached length for length, and otherpar&31 for where it is, try no wrap
     // note: SRlength_[wh] or treat as full length/yes
     if (length>11) length=11;
-    otherpar=otherpar&31; //5 bits
+    otherpar=otherpar>>7; //5 bits
     // topbits
     x=shift&(masky[length]<<otherpar); 
     // bottom bit   
@@ -1237,7 +1251,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     else x=x>>otherpar;
     break;
 
-  case 17: // fixed 12 bits in 2s complement back to our encoding - but we have no use for length - except perhaps
+  case 17: // fixed 12 bits in 2s complement back to our encoding - but we have no use for length - except perhaps // no length no otherpar
     // try delay
     // here is fixed length
     if (n[wh]>11) {
@@ -1255,7 +1269,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 18: // fixed 12 bits in 2s complement back to our encoding - but we have no use for length - except perhaps
     // try delay
-    if (n[wh]>length) { // this could also be otherpar
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    if (n[wh]>otherpar) { // this could also be otherpar
       n[wh]=0;      
       x=shift&masky[11]; // 12 bits
       if (x&(1<<11)) {
@@ -1270,15 +1285,16 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 19: //  2s complement back to our encoding 
     // variable bits out
     // try delay or no delay
-    if (n[wh]>length) { // this could also be otherpar // either or...
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    if (n[wh]>otherpar) { // this could also be otherpar // either or...
       n[wh]=0;      
-      x=shift&masky[length]; // x bits
-      if (x&(1<<length)) {
-	x = x | ~((1 << (length+1))-1);
+      x=shift&masky[otherpar]; // x bits
+      if (x&(1<<otherpar)) {
+	x = x | ~((1 << (otherpar+1))-1);
     }
-      x=x+(1<<length);
+      x=x+(1<<otherpar);
       // shift back to 12 bits...
-      lastout[wh]=((x&masky[length])>>rightshift[length])<<leftshift[length]; 
+      lastout[wh]=((x&masky[otherpar])>>rightshift[otherpar])<<leftshift[otherpar]; 
     }
     x=lastout[wh];
     n[wh]++;              
@@ -1286,7 +1302,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 20: // fixed 12 bits in ONES complement back to our encoding - but we have no use for length - except perhaps
     // try delay
-    if (n[wh]>length) { // this could also be otherpar
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    if (n[wh]>otherpar) { // this could also be otherpar
       n[wh]=0;      
       x=shift&masky[11]; // 12 bits
 
@@ -1304,17 +1321,18 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 21: //  ONEs complement back to our encoding 
     // variable bits out
     // try delay or no delay
-    if (n[wh]>length) { // this could also be otherpar // either or... - but how do we get length AND otherpar // except detach speed...
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    if (n[wh]>otherpar) { // this could also be otherpar // either or... - but how do we get length AND otherpar // except detach speed...
       n[wh]=0;      
-      x=shift&masky[length]; // x bits
-      if (x&(1<<length)) {
+      x=shift&masky[otherpar]; // x bits
+      if (x&(1<<otherpar)) {
 	x=~x;
-	x&=masky[length];
-	x=(1<<length)-x;
+	x&=masky[otherpar];
+	x=(1<<otherpar)-x;
     }
-      else  x=x+(1<<length);
+      else  x=x+(1<<otherpar);
       // shift back to 12 bits...
-      lastout[wh]=((x&masky[length])>>rightshift[length])<<leftshift[length]; 
+      lastout[wh]=((x&masky[otherpar])>>rightshift[otherpar])<<leftshift[otherpar]; 
     }
     x=lastout[wh];
     n[wh]++;              
@@ -1322,7 +1340,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 22: //2s comp back in one go
     //      x=shift&masky[11]; // 12 bits but we want the top 12 bits of length
-    x=((shift>>rightshift[length])<<leftshift[length])&masky[11];
+    otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+    x=((shift>>rightshift[otherpar])<<leftshift[otherpar])&masky[11];
       if (x&(1<<11)) {
       x = x | ~((1 << 12)-1);
     }
@@ -1330,7 +1349,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
     case 23: // regular 12 bits in one go
-      x=((shift>>rightshift[length])<<leftshift[length])&masky[11];
+      otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
+      x=((shift>>rightshift[otherpar])<<leftshift[otherpar])&masky[11];
     break;
 
   case 24: // mix own basic dac and dacfrom
@@ -1346,20 +1366,20 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=(int)pp;
     break;
     
-  case 25: // default for all other DACs - modded for new draft
+  case 25: // default for all other DACs - modded for new draft // no otherpar
     //    x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
         x=shift&4095;
     break;
 
-  case 26: // 4 bit DAC aside from length - try now with delay
+  case 26: // 4 bit DAC aside from length - try now with delay // no otherpar
       x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
     break;
 
-  case 27: // straight 4 bit dac
+  case 27: // straight 4 bit dac // no otherpar
     x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
     break;    
 
-  case 28 ... 31: // all bits
+  case 28 ... 31: // all bits // no otherpar
     x=shift&4095;
     break;
 

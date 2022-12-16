@@ -97,19 +97,100 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 16/12/2022
+
+- *see end of geoC for possible slippages!* but we need to test things first
+
+TODO: new 16 first modes in geoC... how we ensure there is always IN matrix[5] as LFSR or other
+
+that in matrix we can not gap changing values (as in attach), so is only really good for fixed values (matrixp could solve this???) 
+
+or what we really need as changing is: INs, sometimes depth
+
+- draft matrixp works and changes? to inner and outer/arrays of... -> at end of geoC.h:  SR_geo_outer_C01matrixp
+
+DONE:draft list of inners: eg. void (*SRinnersC[64])(uint32_t w)={SR_geo_inner_fixedC}; and *test!*
+
+list of outers we already have in 000
+
+*lists of routefunctions etc...* - trial this out! below in tests
+
+eg. uint32_t (**routetest[64])(uint32_t depth, uint32_t in, uint32_t wh)={routebitsd}; // all need to be same length
+// to test calling:
+uint32_t bitn=(*routetest[0][gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // tested only with compiler
+
+TO TEST/studio:
+
+- DAC rework. code in 000 // *SR_geo_outer_testDAC*
+
+- global/local flag - how to test - by setting in a simple case (do test code) // SR_geo_outer_testglobal *TODO* // test set from outer inner geoC route *SR_geomantic_outerRglobroutetest*
+
+- in geoC test last 71+ prob modes *SR_geo_outer_C71*
+
+- TEST: we have logical ops: binroutorg, bitrouteorgap: *SR_geo_outer_testOR*
+
+- TEST - prob of CV vs. global route - do we have that? set routes 0 now as prob5 and prob5_nosh: *SR_geo_outer_testprob5*
+
+- test changes to runglers in geoC: *SR_geo_outer_C52 and SR_geo_outer_C53* // what were changes?
+
+-  SR_geo_inner_probcycle(uint32_t w){  // TESTY *SR_geo_outer_testprobcycle*
+
+- tests for abstracted route list *SR_geo_inner_noprobTEST*
+
+- trial matrixp draft: *SR_geo_outer_C01matrixp* 
+
 ** 15/12/2022
 
 TODO:
-- fix shared gshifts to non-shared
 
-- DAC_ rework and test code setups
-- global/local flag to code/test
+- *that maybe we should NOT set gate[w].theroute=depth everywhere as it can also be used for gaps - or should just be set in OUTER/INNERS?*
 
+- list routes/any functions which use depth and IN! eg. probXYs
+
+- DONE: DAC_ rework and *TEST:test code setups - could also try to use otherpar in some instances *eg. to mix/offset*
+
+- NOTE: or DAC:gate[w].matrix[6]=31<<7; //length as 31 now - // also we could have CVL for both length and otherpar (or invert one against the other)
+
+- DONE: global/local flag to code/test TO TEST!
+
+- *see what patterns are in inner and outer modes!* -> towards dislocations
+
+OUTER: outer // if changed [
+1. sets matrix[x] to values (fixed or ...) - could be replaced by matrixp ]
+
+2. sets inner function... also could be in matrixp //  but matrixp is just pointers to providers/values
+
+eg. gate[w].inner=innerfuncs[index] -> how we get to that index as extra step - see above
+
+// if changed
+// copy matrixp
+
+// gate[w].inner=innerfuncs[matrix>>7]; // 5 bits
+
+INNER is more complex:
+
+// interp/set dac
+// if speedfrom
+// deal with trigger or not
+// GSHIFT_
+// length
+// probf/bitn - depends here....
+// BITN_AND_OUTV_; 
+// new_data(val,w);
+
+- *and this is also wrapped up dislocations of: ordercount of SRs in globals // *is there any potential for dislocation across SRs and what this could be??*
+
+SR leaks over portion of another - did we have this (as a global?)
+
+DONE:
+
+- fix shared gshifts to non-shared DONE
+- DAC we need to write test codes- test CVL as otherpar for each of DACtypes and fixed length(short and longest to see how compares) - write test code... DONE TO TEST
 
 ** 14/12/2022
 
-- that we can make lists/arrays of routebits functions arrays (though they would either need same length or to be in structure with length indicated)
-- also we can make arrays of inner and outer functions (we have outers in 000 as:  void (*SRgeo_outer[4][64])(uint32_t w)= ...)
+*- that we can make lists/arrays of routebits functions arrays (though they would either need same length or to be in structure with length indicated)*
+*- also we can make arrays of inner and outer functions (we have outers in 000 as:  void (*SRgeo_outer[4][64])(uint32_t w)= ...)*
 
 These lead towards dislocations.
 
@@ -119,11 +200,9 @@ for matrixp we can copy in different arrays and shift these - shift matrixp alon
 
 also for globflag below we can cycle through SRs to set/unset, use strobe to bump on etc...
 
-
-
 ////////////////////////////////////////////////////////
 
-*Q of flag in each SR - use global, local???*
+Q of flag in each SR - use global, local???*
 
 if (gate[wh].globflag) tmp=binroute[count][wh]|binary[wh]; 
 else tmp=gate[wh].theroute
@@ -132,7 +211,7 @@ set this where... is nice to keep flexibility of function to say pass dac to dep
 
 somehow inner mode needs to handle this...
 
-*but this is just for when we have globals! otherwise leave gaps... - how to handle flag locally and globally...// with resetx to global=1*
+but this is just for when we have globals! otherwise leave gaps... - how to handle flag locally and globally...// with resetx to global=1*
 
 ////////////////////////////////////////////
 
@@ -230,11 +309,11 @@ TODO/as basic modes: check what we have in geoN for this option - switch route i
 - segmenting is in the gaps, and in slippage of inner and outer modes...
 
 TODO:
-- in geoC test last 70etc prob modes (prob is against LFSR etc so we don't use [11])// review probs
+- in geoC test last 70etc prob modes
 
 - DONEstrobe=1 added in necessary geogens and *test these* - tested just with strobe speed but should work!
 
-- TEST: we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither, also new gapped theroute, also expand those but how to add
+- TEST: we have logical ops: how does that work eg. route 8OR1=8+1 (and if both 8 then just 8 so adds route, AND = neither, also new gapped theroute, also expand those
 
 - TEST - prob of CV vs. global route - do we have that? set routes 0 now as prob5 and prob5_nosh
 

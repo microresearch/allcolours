@@ -62,6 +62,30 @@ void SR_geo_inner_noprobC(uint32_t w){  // no probability, no adc - this can be 
     }
 }
 
+// test list of route arrays
+uint32_t (**routetest[64])(uint32_t depth, uint32_t in, uint32_t wh)={routebitsd}; // all need to be same length
+
+void SR_geo_inner_noprobTEST(uint32_t w){  // test for array of 
+  HEADNADA;
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+      gate[w].fake=gate[w].trigger;
+      GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    //    bitn=(*routebitsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64
+    bitn=(*routetest[0][gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
 void SR_geo_inner_noprobfixeddepthC(uint32_t w){  // no probability, no adc - this can be generic
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
@@ -389,7 +413,7 @@ void SR_geo_inner_proballC(uint32_t w){  // TESTY - using all inc strobe UNUSED 
 
 
 void SR_geo_inner_probcycleC(uint32_t w){  // TESTY - using probfsins - ported in from speeds -> basic gapped cv binroute against justcycle! // unused so far
-  // what cv we need: probfs: 9type,10comp... 3,4,5 is gapped...
+  // what cv we need: probfs: 9type,10comp... 11IN 3,4,5 is gapped...
   HEADNADA;
 
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
@@ -593,6 +617,9 @@ void SR_geo_inner_rung1C(uint32_t w){  // no prob // no adc -- run binrout fixed
     }
 }
 
+// 16/12 draft list of inners;;;   void (*inner)(uint32_t w);
+void (*SRinnersC[64])(uint32_t w)={SR_geo_inner_fixedC}; // testy
+
 ////////////////////////////////////////////////////////////////////////////////////
 /// OUTERS
 
@@ -643,8 +670,70 @@ speedL
 void SR_geo_outer_route(uint32_t w){  // fixed route // the most basic but no reset
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // speed
-  gate[w].inner=SR_geo_inner_fixedC; // totally fixed
+  //  gate[w].inner=SR_geo_inner_fixedC; // totally fixed 
+  gate[w].inner=SRinnersC[0]; // totally fixed - test this ref also // testy - as above
 }
+
+////// generic test codes
+
+//- DAC we need to write test codes- test CVL as otherpar for each of DACtypes and fixed length(short and longest to see how compares) - write test code...
+void SR_geo_outer_testDAC(uint32_t w){  // test new DAC code
+  RESETC; 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[13]=0; //dactype
+  gate[w].matrix[14]=CVL[w]; // into DAC_ otherpar which is 12 bits???
+  gate[w].matrix[6]=31<<7; //length as 31 now - // also we could have CVL for both length and otherpar (or invert one against the other)
+  gate[w].inner=SR_geo_inner_fixedC;
+}
+
+void SR_geo_outer_testOR(uint32_t w){  // tests for binroutorg 3: bitrouteorgap - swop in routebitsd
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=3<<6; // binroutorg
+  gate[w].matrix[4]=CVL[w]; // 
+  gate[w].inner=SR_geo_inner_noprobC;
+  }
+}
+
+// prob5 is 36   if (depth<in) { // in as LFSR
+void SR_geo_outer_testprob5(uint32_t w){  
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=36<<6; // prob5
+  gate[w].matrix[4]=CVL[w]; // depth
+  gate[w].matrix[5]=LFSR__[w];
+  gate[w].inner=SR_geo_inner_noprobC;
+  }
+}
+
+//void SR_geo_inner_probcycleC(uint32_t w){  // TESTY - using probfsins - ported in from speeds -> basic gapped cv binroute against justcycle! // unused so far
+// what cv we need: probfs: 9type,10comp... 11IN 3,4,5 is gapped...
+void SR_geo_outer_testprobcycle(uint32_t w){
+  if (gate[w].changed==0) { 
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6;
+  gate[w].matrix[4]=2<<8; // default route from 2L
+
+  gate[w].matrix[9]=0<<7; // select probfs - but we need 10 and 11 and 12?!
+  //  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
+  gate[w].matrix[10]=CVL[w]; // probCV1
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);; // CV2 for those which use IN     
+  gate[w].inner=SR_geo_inner_probcycleC; 
+}
+}
+
+void SR_geo_outer_testroutearray(uint32_t w){  // CV1
+  if (gate[w].changed==0) { 
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6;
+  gate[w].matrix[4]=2<<8; // default route from 2L
+  gate[w].inner=SR_geo_inner_noprobTEST;
+  }
+}
+
 
 /*
 
@@ -711,6 +800,7 @@ first 16 as we have now - routes: types and route, probs of xroute vs. yroute
 
 
  */
+//////////////////////////////////////////
 
 void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // RESETR - no need for changed
   RESETC; 
@@ -724,9 +814,9 @@ void SR_geo_outer_C01(uint32_t w){  // spdfrac, depth as route
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=0<<6; // depth 
+  gate[w].matrix[3]=0<<6; // depth as route
   gate[w].matrix[4]=CVL[w]; // 
-  gate[w].inner=SR_geo_inner_noprobC;
+  gate[w].inner=SR_geo_inner_noprobC; //routebitsd
   }
 }
 
@@ -756,7 +846,7 @@ void SR_geo_outer_C10(uint32_t w){  // set dacparam, spdfrac, fixed route with d
     gate[w].matrix[0]=0<<7; // spdfrac
     gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[3]=9<<7; // sel0 
-    gate[w].matrix[14]=CVL[w]; // into DAC_ otherpar which is 10 bits
+    gate[w].matrix[14]=CVL[w]; // into DAC_ otherpar which is 12 bits
     gate[w].inner=SR_geo_inner_noprobnodC;
   }
 }
@@ -768,7 +858,7 @@ void SR_geo_outer_C11(uint32_t w){  // set dacparam, spdfrac, fixed route with d
     gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[3]=9<<7; // sel0 
     gate[w].matrix[6]=CVL[w]; //length
-    gate[w].matrix[14]=gate[dacfrom[daccount][w]].dac; // into DAC_ otherpar which is 10 bits
+    gate[w].matrix[14]=gate[dacfrom[daccount][w]].dac; // into DAC_ otherpar which is 12 bits
     gate[w].inner=SR_geo_inner_noprobnodC;
   }
 }
@@ -1052,7 +1142,7 @@ void SR_geo_outer_C71(uint32_t w){  // TYPE of PROB
   gate[w].matrix[9]=CVL[w]; // select probfs - but we need 10 and 11 and 12?!
   gate[w].matrix[10]=gate[dacfrom[daccount][w]].dac; //
   gate[w].matrix[11]=gate[dacfromopp[daccount][w]].dac; //
-  gate[w].inner=SR_geo_inner_prob1C; // recheck 
+  gate[w].inner=SR_geo_inner_prob1C; 
 }
 }
 
@@ -1066,7 +1156,7 @@ void SR_geo_outer_C72(uint32_t w){  // altfunc
   gate[w].matrix[11]=gate[dacfromopp[daccount][w]].dac; //
   //10 is prob vs lfsr/cv -> can be dacfrom
   gate[w].matrix[12]=CVL[w];
-  gate[w].inner=SR_geo_inner_prob1C; // recheck
+  gate[w].inner=SR_geo_inner_prob1C; 
 }
 }
 
@@ -1078,10 +1168,10 @@ void SR_geo_outer_C73(uint32_t w){  // CV1
   //  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
   gate[w].matrix[10]=CVL[w]; // probCV1
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);; // CV2 for those which use IN     
-  gate[w].inner=SR_geo_inner_prob1C; // recheck
+  gate[w].inner=SR_geo_inner_prob1C; 
 }
 }
-// classical prob: SR_geo_inner_prob1 - how we get enough CV? 72setfunc, 73gapthere
+// classic prob: SR_geo_inner_prob1 - how we get enough CV? 72setfunc, 73gapthere
 
 
 /*
@@ -1331,8 +1421,6 @@ void SR_geo_outer_Ctestprobstrobe(uint32_t w){  // set dacparam, spdfrac, fixed 
 
 */
 
-/*
-
 ///////////////// MATRIXP
 
 /// matrixp ops to port
@@ -1352,28 +1440,19 @@ void SR_geomantic_outer1detach(uint32_t w){  // is not really a detach
   // or we can say set gate[w].matrix[0]=CVL[w] temporarily; or a fixed value...
 }
 
-//// TRIAL2 - moving gaps if we have some kind of binary matrix - or ternary // how? - trial this possible copy in!?
-//// but can this be more elegant? we change single set of matrices (could also be inside gate[w] then is back to older matrix idea...
-//// but could be 2 dimensions
-
-uint32_t fixedvalues[4][15]={ //  values - but x value means no change... say 4096 
+uint32_t fixedvalues[4][16]={ //  values - but x value means no change... say 4096 
   {0},
 };
-
-// do we need this? - add extras for dactype, dacpar 
-uint32_t *fixedmatrix[4][15]={ // for tests below but is just one matrix and we need multiples... 3d array - do we need as 3d?
-  {&CVL[0], &gate[0].matrix[1], &fixedvalues[0][2]}, // &gate[0].matrix[1] - which would keep it the same - examples here...
-}; 
 
 // add in LFSR but that is many bits - or reduce bitsDONE
 uint32_t *fixedvars[4][20]={ // 
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[2], &param[2], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[3], &param[3], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3]},
 };
 
-static inline void setgap(uint32_t wh, uint32_t which){
-  fixedmatrix[wh][which]=&gate[wh].matrix[which]; // stays how it was... so that is a gap 
-}
-
+// sets gap with last matrix value
 static inline void setgapz(uint32_t wh, uint32_t which){ // new version which keeps ghost also why we need extra step of above, also doesn't set gap twice
   static uint32_t oldgap[4]={0,0,0,0};
   if (which!=oldgap[wh]){
@@ -1384,93 +1463,76 @@ static inline void setgapz(uint32_t wh, uint32_t which){ // new version which ke
   oldgap[wh]=which;
 }
 
-static inline void setfixed(uint32_t wh, uint32_t which, uint32_t val){
-  fixedvalues[wh][which]=val; 
-  fixedmatrix[wh][which]=&fixedvalues[wh][which]; 
-}
-
 static inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){
   fixedvalues[wh][which]=val; 
   gate[wh].matrixp[which]=&fixedvalues[wh][which]; 
 }
 
-static inline void setvar(uint32_t wh, uint32_t which, uint32_t val){ // set to variable such as CV, CVL etc...
-  fixedmatrix[wh][which]=fixedvars[wh][which];
+static inline void setvarz(uint32_t wh, uint32_t which, uint32_t var){ // set to variable such as CV, CVL etc...
+  gate[wh].matrixp[which]=fixedvars[wh][var];
 }
 
-static inline void setvarz(uint32_t wh, uint32_t which, uint32_t val){ // set to variable such as CV, CVL etc...
-  gate[wh].matrixp[which]=fixedvars[wh][which];
-}
-
-static inline void setvargapz(uint32_t wh, uint32_t which){ // new version which keeps ghost also why we need extra step of above, also doesn't set gap twice
+static inline void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
   static uint32_t oldgap[4]={0,0,0,0};
   if (which!=oldgap[wh]){
     gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
     gate[wh].matrixpG[which]=gate[wh].matrixp[which]; 
-    gate[wh].matrixp[which]=fixedvars[wh][which];
+    gate[wh].matrixp[which]=fixedvars[wh][var];
   }
   oldgap[wh]=which;
 }
 
-// question is if we need fixedmatrix or just set matrixp to fixedvalues if needed - for the gap
-// moving gaps - or SR as gaps over... what is the gap the leftover
-// gate[wh].matrixp[which]=&gate[wh].matrix[which]; // old value
-
-// but for gap do we not need to retain what was there so like gate[wh].matrixpG - ghost?
-
-void SR_geomantic_matrixcopy(uint32_t w){
+void SR_geomantic_matrixcopyz(uint32_t w){ 
   uint32_t x, y;
-  //  gate[w].matrix[x]= // can be a fixed value, CVL[w], &CVL[w]/matrixp, or unchanged gap
-  // so we can make gaps in matrices by setting eg.
-  setgap(1,0);
-  setfixed(0,0,0);
   
-  for (x=0;x<15;x++){
-    gate[w].matrixp[x]=fixedmatrix[w][x]; 
-    gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
+  for (x=0;x<16;x++){
+    gate[w].matrix[x]=(*gate[w].matrixp[x]); 
   }
   // set gate[w].inner
 }
 
-void SR_geomantic_matrixcopyz(uint32_t w){
-  uint32_t x, y;
-  //  gate[w].matrix[x]= // can be a fixed value, CVL[w], &CVL[w]/matrixp, or unchanged gap
-  // so we can make gaps in matrices by setting eg.
-  setgapz(1,0); // but do not set old gap - in gap
-  setfixedz(0,0,0);
-  
-  for (x=0;x<15;x++){
-    gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
+// trial to replicate say 
+
+void SR_geo_outer_C01matrixp(uint32_t w){  // spdfrac, depth as route
+  if (gate[w].changed==0) {
+    setfixedz(w,0,0);     //  gate[w].matrix[0]=0<<7; // spdfrac
+    setvarz(w,1,4); //    gate[w].matrix[1]=CV[w];// speed
+    setfixedz(w,3,0); //  gate[w].matrix[3]=0<<6; // depth as route
+    setvarz(w,4,5); //    gate[w].matrix[4]=CVL[w]; 
+    
+    SR_geomantic_matrixcopyz(w);
+    gate[w].inner=SR_geo_inner_noprobC; //routebitsd
+
+    //and if we have inner as also part of matrixp (inc to 17)
+    //gate[w].inner=SRinnersC[gate[w].matrix[16]>>7]; // 5 bits    
   }
-  // set gate[w].inner
 }
 
+/* expansions/slippages
 
-// ... retest slur - how? set as 0 - if changed change speed - DONE // works
-/*
-void SR_geo_outer_testslur0(uint32_t w){  
-  if (gate[w].changed==0) {
-  gate[w].matrix[0]=0<<7; // spdfrac
-  gate[w].matrix[1]=0;// speed
-  gate[w].matrix[13]=CVL[w]; //
-  gate[w].inner=SR_geo_inner_fixed;
-}
-}
+- catalogue inners:
+
+basic inners: interp/non, strobe/no strobe, probfs
+
+more complex: where we decide based on flags such as use of CV
+
+eg. cut down for no interp - index in matrixp/matrix for speedfuncarray and bitnarray
+
+void SR_geo_inner_slips(uint32_t w){  // test for array of 
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedtest[gate[w].matrix[17]][gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+      gate[w].fake=gate[w].trigger;
+      GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+
+    bitn=(*routetest[gate[w].matrix[18]][gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64
   
-void SR_geo_outer_testslur(uint32_t w){  
-  if (gate[w].changed==0) {
-  gate[w].matrix[0]=0<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[13]=CVL[w]; //
-  gate[w].inner=SR_geo_inner_fixed;
-}
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
 }
 
-void SR_geo_outer_testslur1(uint32_t w){ // gappy  
-  if (gate[w].changed==0) {
-  gate[w].matrix[0]=0<<7; // spdfrac 
-  gate[w].matrix[13]=CVL[w]; //
-  gate[w].inner=SR_geo_inner_fixed;
-}
-}
-*/
+
+ */

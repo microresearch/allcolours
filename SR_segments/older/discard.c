@@ -3,6 +3,159 @@
 *what this means: that we associate each SR with a GSR function*
 */
 
+// TODO:   gate[wh].strobed=1; in all strobe functions including speeds...
+
+
+
+/// new functions for prob - comparator
+/*
+static inline uint32_t comp(uint32_t depth, uint32_t in, uint32_t wh){
+  if (depth>in) return 1;
+  else return 0;
+}
+*/
+
+// ... retest slur - how? set as 0 - if changed change speed - DONE // works
+/*
+void SR_geo_outer_testslur0(uint32_t w){  
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=0;// speed
+  gate[w].matrix[13]=CVL[w]; //
+  gate[w].inner=SR_geo_inner_fixed;
+}
+}
+  
+void SR_geo_outer_testslur(uint32_t w){  
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[13]=CVL[w]; //
+  gate[w].inner=SR_geo_inner_fixed;
+}
+}
+
+void SR_geo_outer_testslur1(uint32_t w){ // gappy  
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac 
+  gate[w].matrix[13]=CVL[w]; //
+  gate[w].inner=SR_geo_inner_fixed;
+}
+}
+*/
+
+///////////////// MATRIXP
+
+/// matrixp ops to port
+// 11/8 - trial but we need extra pointers for the CVs so can attach and detach - extra work and matrix... dual matrices for pointers and values
+void SR_geomantic_outer1attach(uint32_t w){ 
+  // eg.
+  gate[w].matrixp[0]=&CVL[w];
+  gate[w].matrix[0]=CVL[w];// 5 bits is 32 //2 bits //speedFUNC // or can be // gate[w].matrix[0]=*gate[w].matrixp[0];
+  // but other values are not>>7 so should that not be shifted to interpreter
+  // can also be like: gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac+CVL[w])&4095
+  // or gate[w].matrix[10]=(*bitfromsd[xxx])(blah)
+}
+
+// so this would pair with: 
+void SR_geomantic_outer1detach(uint32_t w){  // is not really a detach
+  gate[w].matrix[0]=*gate[w].matrixp[0]; // if we want live value or don't set it/just ignore it for last value // and if is not set?
+  // or we can say set gate[w].matrix[0]=CVL[w] temporarily; or a fixed value...
+}
+
+//// TRIAL2 - moving gaps if we have some kind of binary matrix - or ternary // how? - trial this possible copy in!?
+//// but can this be more elegant? we change single set of matrices (could also be inside gate[w] then is back to older matrix idea...
+//// but could be 2 dimensions
+
+uint32_t fixedvalues[4][15]={ //  values - but x value means no change... say 4096 
+  {0},
+};
+
+// do we need this? - add extras for dactype, dacpar 
+uint32_t *fixedmatrix[4][15]={ // for tests below but is just one matrix and we need multiples... 3d array - do we need as 3d?
+  {&CVL[0], &gate[0].matrix[1], &fixedvalues[0][2]}, // &gate[0].matrix[1] - which would keep it the same - examples here...
+}; 
+
+// add in LFSR but that is many bits - or reduce bitsDONE
+uint32_t *fixedvars[4][20]={ // 
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3]},
+};
+
+static inline void setgap(uint32_t wh, uint32_t which){
+  fixedmatrix[wh][which]=&gate[wh].matrix[which]; // stays how it was... so that is a gap 
+}
+
+static inline void setgapz(uint32_t wh, uint32_t which){ // new version which keeps ghost also why we need extra step of above, also doesn't set gap twice
+  static uint32_t oldgap[4]={0,0,0,0};
+  if (which!=oldgap[wh]){
+    gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; 
+    gate[wh].matrixp[which]=&gate[wh].matrix[which];
+  }
+  oldgap[wh]=which;
+}
+
+static inline void setfixed(uint32_t wh, uint32_t which, uint32_t val){
+  fixedvalues[wh][which]=val; 
+  fixedmatrix[wh][which]=&fixedvalues[wh][which]; 
+}
+
+static inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){
+  fixedvalues[wh][which]=val; 
+  gate[wh].matrixp[which]=&fixedvalues[wh][which]; 
+}
+
+static inline void setvar(uint32_t wh, uint32_t which, uint32_t val){ // set to variable such as CV, CVL etc...
+  fixedmatrix[wh][which]=fixedvars[wh][which];
+}
+
+static inline void setvarz(uint32_t wh, uint32_t which, uint32_t val){ // set to variable such as CV, CVL etc...
+  gate[wh].matrixp[which]=fixedvars[wh][which];
+}
+
+static inline void setvargapz(uint32_t wh, uint32_t which){ // new version which keeps ghost also why we need extra step of above, also doesn't set gap twice
+  static uint32_t oldgap[4]={0,0,0,0};
+  if (which!=oldgap[wh]){
+    gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; 
+    gate[wh].matrixp[which]=fixedvars[wh][which];
+  }
+  oldgap[wh]=which;
+}
+
+// question is if we need fixedmatrix or just set matrixp to fixedvalues if needed - for the gap
+// moving gaps - or SR as gaps over... what is the gap the leftover
+// gate[wh].matrixp[which]=&gate[wh].matrix[which]; // old value
+
+// but for gap do we not need to retain what was there so like gate[wh].matrixpG - ghost?
+
+void SR_geomantic_matrixcopy(uint32_t w){
+  uint32_t x, y;
+  //  gate[w].matrix[x]= // can be a fixed value, CVL[w], &CVL[w]/matrixp, or unchanged gap
+  // so we can make gaps in matrices by setting eg.
+  setgap(1,0);
+  setfixed(0,0,0);
+  
+  for (x=0;x<15;x++){
+    gate[w].matrixp[x]=fixedmatrix[w][x]; 
+    gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
+  }
+  // set gate[w].inner
+}
+
+void SR_geomantic_matrixcopyz(uint32_t w){
+  uint32_t x, y;
+  //  gate[w].matrix[x]= // can be a fixed value, CVL[w], &CVL[w]/matrixp, or unchanged gap
+  // so we can make gaps in matrices by setting eg.
+  setgapz(1,0); // but do not set old gap - in gap
+  setfixedz(0,0,0);
+  
+  for (x=0;x<15;x++){
+    gate[w].matrix[x]=(*gate[w].matrixp[x]); // how we deal with fixed values?
+  }
+  // set gate[w].inner
+}
+
 
 //- phase out use of this one
 //uint32_t (*probf[14])(uint32_t depth, uint32_t in, uint32_t wh)={zeros, ones, zinvprobbits, zprobbits, zsprobbits, strobe, zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, comp, ztogglebits, ztogglebitssh, zownprobbits, zownGprobbits}; // prob functions and what these can be: eg. ones always selects alt - add other bit ops, changed binrouts to non-shift // testings!

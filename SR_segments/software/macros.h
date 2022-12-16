@@ -42,13 +42,13 @@ static uint32_t outcnt=0;
   }									\
   }
 
-#define RESETC count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[2].theroute=2; RESETTC;
+#define RESETN count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[0].theroute=8; gate[0].globflag=1; RESETTN;
 
-#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[3].theroute=4; RESETTR;
+#define RESETL count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[1].theroute=1; gate[1].globflag=1; RESETTL;
 
-#define RESETL count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[1].theroute=1; RESETTL;
+#define RESETC count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[2].theroute=2; gate[2].globflag=1; RESETTC;
 
-#define RESETN count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[0].theroute=8; RESETTN;
+#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[3].theroute=4; gate[3].globflag=1; RESETTR;
 
 #define STR0 (gate[w].trigger)
 

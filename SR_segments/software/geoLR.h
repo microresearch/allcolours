@@ -99,6 +99,18 @@ void SR_geomantic_outerRglobset(uint32_t w){
       //    }
 }  
 
+void SR_geomantic_outerRglobroutetest(uint32_t w){
+  //    if (gate[w].changed==0) { // 1=change 0= no change
+      gate[w].matrix[0]=3<<7; // spedfrom
+      gate[w].matrix[1]=CV[w];
+      gate[w].matrix[3]=1<<7; // fixed route
+      gate[w].matrix[4]=CVL[w];
+      // set glob
+      gate[2].globflag=1; // 1 is global, 0 is local... but these would need to be different for test!
+      gate[w].inner=SR_geomantic_innerRglob;
+      //    }
+}  
+
 void SR_geomantic_outerRglobsel(uint32_t w){
   //    if (gate[w].changed==0) { // 1=change 0= no change
       gate[w].matrix[0]=3<<7; // spedfrom
