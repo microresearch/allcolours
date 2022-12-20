@@ -60,7 +60,12 @@ uint32_t matrixRR[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,20
 uint32_t matrixTT[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0}; 
 //                     speed  bit        len   adc          prob  alt   dac      strobespdindex
 
-uint32_t *matrixNNN[16]={&CVL[0], &CV[0], &CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]}; 
+uint32_t *matrixNNN[16]={&CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]};
+uint32_t *matrixLLL[16]={&CVL[1], &CV[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1]};
+uint32_t *matrixCCC[16]={&CVL[2], &CV[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2]};
+uint32_t *matrixRRR[16]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]};
+uint32_t *matrixTTT[16]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]}; 
+
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 static uint32_t ADCin;
@@ -290,16 +295,16 @@ void mode_init(void){
       gate[0].matrixp[y]=matrixNNN[y]; // these are just defaults
 
       gate[1].matrix[y]=matrixLL[y];
-      gate[1].matrixp[y]=matrixNNN[y];
+      gate[1].matrixp[y]=matrixLLL[y];
       
       gate[2].matrix[y]=matrixCC[y];
-      gate[2].matrixp[y]=matrixNNN[y];
+      gate[2].matrixp[y]=matrixCCC[y];
 
       gate[3].matrix[y]=matrixRR[y];
-      gate[3].matrixp[y]=matrixNNN[y];
+      gate[3].matrixp[y]=matrixRRR[y];
 
       gate[8].matrix[y]=matrixTT[y];
-      gate[8].matrixp[y]=matrixNNN[y];
+      gate[8].matrixp[y]=matrixTTT[y];
   }
 
   RESETR;
@@ -328,7 +333,7 @@ void mode_init(void){
 
   gate[0].theroute=8; // defaults
   gate[1].theroute=1;
-  gate[2].theroute=8; // was 2 but TESTY!
+  gate[2].theroute=2; // was 2 but TESTY!
   gate[3].theroute=4;
     
   //  gate[0].adctype=0;

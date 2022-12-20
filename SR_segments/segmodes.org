@@ -82,8 +82,6 @@ TODO:
 
 - how to imagine matrix modes - how do we set the matrix with 2x CV only?
 
-- what we added newly in geogen which needs to be added to arrays... // most is about routes and types - to expand here and make clearer!
-
 ///////////////////
 - C: matrixp expand, sketch out
 - N: adc/abstract choices, prob of route entry as important, cutting and mixing...
@@ -96,6 +94,28 @@ C - as we have, check prob of DAC outsES-61/62
 R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
+
+** 20/12/2022
+
+- *TODO: dac/dacfrom -> dacparam as basic mode in geoC// also for depth/adc in geoN*
+
+*test SR_geo_outer_route*
+
+*re-test mode 4 dac_ and test fixed 16* 
+
+*C53 to fix, TEST!*
+
+*outerC01matrixp - TEST cleaned up...*
+
+- add in setandcopy for matrix stuff: *to test*
+
+- Q of extents, of prob and interpol if we slide modes...
+
+** 19/12/2022
+
+- see tests below and new geoC test code!
+
+- question of sliding is when we have fixed 1<<6 etc... as that causes problems...
 
 ** 16/12/2022
 
@@ -121,23 +141,25 @@ uint32_t bitn=(*routetest[0][gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].m
 
 TO TEST/studio:
 
-- DAC rework. code in 000 // *SR_geo_outer_testDAC*
+- DAC rework. code in 000 // SR_geo_outer_testDAC RESULTS: mode 16 has issues/TO FIX, case 4 as with all strobes we register strobe=1 too late for macro of outv!- FIXED/TEST!
 
-- global/local flag - how to test - by setting in a simple case (do test code) // SR_geo_outer_testglobal *TODO* // test set from outer inner geoC route *SR_geomantic_outerRglobroutetest*
+TODO: also increased left shift - TO TEST! 19/12, test 2 also as now inverted...
 
-- in geoC test last 71+ prob modes *SR_geo_outer_C71*
+- global/local flag - how to test - by setting in a simple case (do test code) // SR_geo_outer_testglobal TODO // test set from outer inner geoC route SR_geomantic_outerRglobroutetestDONE
 
-- TEST: we have logical ops: binroutorg, bitrouteorgap: *SR_geo_outer_testOR*
+- in geoC test last 71+ prob modes SR_geo_outer_C71 DONE_OK
 
-- TEST - prob of CV vs. global route - do we have that? set routes 0 now as prob5 and prob5_nosh: *SR_geo_outer_testprob5*
+- TEST: we have logical ops: binroutorg, bitrouteorgap: SR_geo_outer_testORDONE_OK
 
-- test changes to runglers in geoC: *SR_geo_outer_C52 and SR_geo_outer_C53* // what were changes?
+- TEST - prob of CV vs. global route - do we have that? set routes 0 now as prob5 and prob5_nosh: SR_geo_outer_testprob5DONE_OK
 
--  SR_geo_inner_probcycle(uint32_t w){  // TESTY *SR_geo_outer_testprobcycle*
+- test changes to runglers in geoC: SR_geo_outer_C52 and SR_geo_outer_C53 // what were changes? - C53 doesn't work - S3 inner problem*
 
-- tests for abstracted route list *SR_geo_inner_noprobTEST*
+-  SR_geo_inner_probcycle(uint32_t w){  // TESTY SR_geo_outer_testprobcycleDONE
 
-- trial matrixp draft: *SR_geo_outer_C01matrixp* 
+- tests for abstracted route list SR_geo_inner_noprobTEST>rouetanytest OK
+
+- trial matrixp draft: SR_geo_outer_C01matrixp // not working as maybe need to fill all slots!?*
 
 ** 15/12/2022
 

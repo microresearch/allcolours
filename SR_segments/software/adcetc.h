@@ -1040,6 +1040,8 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
   return bita ^ bitaa; // default
 }
 
+uint32_t dacstrobe[32]={1,1,1,1, 0,0,1,1, 1,1,1,1, 1,1,0,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; //if dac doesn't use strobe=1!?
+
 // 15/12/2022 - length changed to otherpar except where we change both - to be TESTED!!
 //     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); 
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
@@ -1089,8 +1091,9 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 2: // one bit audio but with beta as param  - sigma-delta
     // beta is now (6/12/2021) always param - just if is generated from cv or speed or ... betaf=0.4f is usual value
     // 0.4=par/4096.0
-    if (otherpar==0) otherpar=1;
     if (otherpar>4096) otherpar=4096;
+    otherpar=4096-otherpar;
+    if (otherpar==0) otherpar=1;
     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
     //    betaf=0.025;
     y=(shift >>length)&1;
@@ -1239,16 +1242,23 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (length>11) length=11;
     otherpar=otherpar>>7; //5 bits
     // topbits
-    x=shift&(masky[length]<<otherpar); 
-    // bottom bit   
+    x=(shift&(masky[length]<<otherpar)); 
+    // bottom bits
     tmp=(otherpar+length);
     if (tmp>31){
       tmp=tmp-31;
-      y=shift&masky[tmp]; //       tmp=(otherpar+length)-31;
+      y=shift&masky[tmp]; 
+      x=x&4095;
       x=x>>(otherpar-tmp);
+      tmp=11-(tmp);
+      y=y<<tmp;
       x=x+y;
     }
-    else x=x>>otherpar;
+    else { // working 
+      tmp=11-(length);
+      x=x>>otherpar;
+      x=x<<tmp;
+          }
     break;
 
   case 17: // fixed 12 bits in 2s complement back to our encoding - but we have no use for length - except perhaps // no length no otherpar
@@ -1377,8 +1387,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 27: // straight 4 bit dac // no otherpar
     x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
-    break;    
-
+    break;   
+ 
   case 28 ... 31: // all bits // no otherpar
     x=shift&4095;
     break;

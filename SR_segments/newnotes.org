@@ -1,12 +1,9 @@
 ** 12/2022  more of a scratchpad for notes in progress
 
-- speedfromnostrobe[38] could go up to 64????
+- should all be matrixp? - maybe trial new first 16 modes draft
 
-- thinking of revert ot idea of... differing slur speeds (but then we need to make independent counters - maybe too complex)
 
-- make more of orderings eg 1,1,1, - number of times it repeats. how? later on?
-
-- if we slide across inner modes (list of inner modes) - slippage or dislocation of these then we need to make sure constraints fit!
+- if we slide across inner modes (list of inner modes) - slippage or dislocation of these then we need to make sure constraints fit!?
 
 - check all IN and CVLs
 
@@ -17,6 +14,15 @@
 - even about how to simplify all... why it is so complicated!
 
 - that maybe we should NOT set gate[w].theroute=depth everywhere as it can also be used for gaps - or should just be set in OUTER/INNERS
+
+for later:
+
+- speedfromnostrobe[38] could go up to 64????
+
+- thinking of revert to idea of... differing slur speeds (but then we need to make independent counters - maybe too complex)
+
+- make more of orderings eg 1,1,1, - number of times it repeats. how? later on?
+
 
 //// ramblings>
 

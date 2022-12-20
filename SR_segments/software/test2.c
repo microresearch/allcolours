@@ -1037,5 +1037,29 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
     }
 
     printf("<<8 %d\n",(15<<8)>>6);
-    
+
+    length=11; otherpar=1<<7;
+    uint32_t shift=0b11111111111111111111111111111111;
+    uint32_t tmpp;
+    if (length>11) length=11;
+    otherpar=otherpar>>7; //5 bits
+    // topbits
+    x=(shift&(masky[length]<<otherpar)); 
+    // bottom bits
+    tmp=(otherpar+length);
+    if (tmp>31){
+      tmp=tmp-31;
+      y=shift&masky[tmp]; 
+      tmpp=11-(tmp);
+      y=y<<tmpp;
+      printf("y shifty: %d\n", y);
+      x=x&4095;
+      x=x>>(otherpar-tmp);
+      x=x+y;
+    }
+    else { // working 
+      tmp=11-(length);
+      x=x>>otherpar;
+      x=x<<tmp;
+          }
 }

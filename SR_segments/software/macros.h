@@ -577,10 +577,11 @@ static uint32_t outcnt=0;
 //DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
 // this one is for fractional speeds/interpol
 // added pulsout macro to simplify 30/5/2022
+// 19/12/2022 - question is how to work it if DAC sets strobed... (dacstrobe[gate[w].matrix[13]>>7])
 #define BITN_AND_OUTV_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
-    if (!gate[w].strobed) bitn|=gate[w].trigger;			\
+    if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrix[13]>>7])) bitn|=gate[w].trigger; \
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); \
     PULSOUT;								\
