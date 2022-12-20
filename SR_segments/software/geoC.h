@@ -681,8 +681,8 @@ void SR_geo_outer_testDAC(uint32_t w){  // test new DAC code
   RESETC; 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[13]=0; //dactype
-  gate[w].matrix[14]=CVL[w]; // into DAC_ otherpar which is 12 bits???
+  gate[w].matrix[13]=16<<7; //dactype
+  gate[w].matrix[14]=(gate[dacfrom[daccount][w]].dac);//CVL[w]; // into DAC_ otherpar which is 12 bits???
   gate[w].matrix[6]=31<<7; //length as 31 now - // also we could have CVL for both length and otherpar (or invert one against the other)
   gate[w].inner=SR_geo_inner_fixedC;
 }
@@ -720,7 +720,7 @@ void SR_geo_outer_testprobcycle(uint32_t w){
   gate[w].matrix[9]=0<<7; // select probfs - but we need 10 and 11 and 12?!
   //  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);; //
   gate[w].matrix[10]=CVL[w]; // probCV1
-  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);; // CV2 for those which use IN     
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); // CV2 for those which use IN     
   gate[w].inner=SR_geo_inner_probcycleC; 
 }
 }
@@ -1446,7 +1446,7 @@ uint32_t fixedvalues[4][16]={ //  values - but x value means no change... say 40
 
 uint32_t fixed=0, gap=0;
 
-uint32_t *fixedvars[4][22]={ // 
+uint32_t *fixedvars[4][20]={ // 
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[0], &param[0], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3], &fixed, &gap},
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[1], &param[1], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3], &fixed, &gap},
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &ADCin, &Gshift_[0], &Gshift_[1], &Gshift_[2], &Gshift_[3], &clksr_[2], &param[2], &Gshift_[8], &LFSR__[0], &LFSR__[1], &LFSR__[2], &LFSR__[3], &fixed, &gap},
@@ -1455,8 +1455,8 @@ uint32_t *fixedvars[4][22]={ //
 
 // 2 sets arrays/// eg. // but we need mult dimensions as these match mode descriptions
 //eg. for above C01
-uint32_t matrixpp[16]={20, 5, 21, 20, 4}; // fixed, CVL, gap, fixed, CV
-uint32_t matrixvv[16]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}; // fixed values			 
+uint32_t matrixpp[16]={18, 4, 18, 18,  5, 18, 18, 18,  18,18,18,18, 18,18,18,18}; // fixed, CVL, gap, fixed, CV
+uint32_t matrixvv[16]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,25<<7,0}; // fixed values			 
 
 void SR_geomantic_matrixmode(uint32_t w){ 
   uint32_t x, y;
@@ -1470,7 +1470,7 @@ void SR_geomantic_matrixmode(uint32_t w){
     else if (gate[w].matrixp[x]==&gap){
       gate[w].matrixp[x]=&gate[w].matrix[x]; 
     }
-    gate[w].matrix[x]=(*gate[w].matrixp[x]); 
+    gate[w].matrix[x]=*(gate[w].matrixp[x]); 
   }
   // set gate[w].inner
 }
@@ -1509,7 +1509,6 @@ static inline void setvarandcopyz(uint32_t wh, uint32_t which, uint32_t var){ //
   gate[wh].matrix[which]=*(fixedvars[wh][var]); 
 }
 
-
 static inline void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
   static uint32_t oldgap[4]={0,0,0,0};
   if (which!=oldgap[wh]){
@@ -1525,18 +1524,24 @@ void SR_geomantic_matrixcopyz(uint32_t w){
   uint32_t x, y;
   
   for (x=0;x<16;x++){
-    gate[w].matrix[x]=(*gate[w].matrixp[x]); 
+    gate[w].matrix[x]=*(gate[w].matrixp[x]); 
   }
   // set gate[w].inner
 }
 
-// trial to replicate say
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd}
 void SR_geo_outer_C01matrixp(uint32_t w){  // spdfrac, depth as route // not working as is it necessary to fill all gaps...?
-  if (gate[w].changed==0) { 
+  if (gate[w].changed==0) {
     setfixedz(w,0,0);     //  gate[w].matrix[0]=0<<7; // spdfrac
     setvarz(w,1,4); //    gate[w].matrix[1]=CV[w];// speed
     setfixedz(w,3,0); //  gate[w].matrix[3]=0<<6; // depth as route
     setvarz(w,4,5); //    gate[w].matrix[4]=CVL[w]; 
+
+    setfixedz(w,13,0); // dactype
+    setfixedz(w,6,0); // length=31
+
+    //    setfixedz(w,14,0); 
+    //setvarz(w,14,5); // CVL
     
     SR_geomantic_matrixcopyz(w);
     gate[w].inner=SR_geo_inner_noprobC; //routebitsd
@@ -1546,7 +1551,7 @@ void SR_geo_outer_C01matrixp(uint32_t w){  // spdfrac, depth as route // not wor
   }
 }
 
-// trial woith set an copy
+// trial with set and copy
 void SR_geo_outer_C01matrixxp(uint32_t w){  // spdfrac, depth as route // not working as is it necessary to fill all gaps...?
   if (gate[w].changed==0) { 
     setfixedandcopyz(w,0,0);     //  gate[w].matrix[0]=0<<7; // spdfrac

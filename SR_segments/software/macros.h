@@ -23,32 +23,32 @@ static uint32_t outcnt=0;
 
 #define RESETTL {				\
   for (uint32_t y=0;y<16;y++){			\
-  gate[1].matrix[y]=matrixNN[y];					\
-  gate[1].matrixp[y]=matrixNNN[y];					\
+  gate[1].matrix[y]=matrixLL[y];					\
+  gate[1].matrixp[y]=matrixLLL[y];					\
   }									\
   }
 
 #define RESETTC {				\
   for (uint32_t y=0;y<16;y++){			\
-  gate[2].matrix[y]=matrixNN[y];					\
-  gate[2].matrixp[y]=matrixNNN[y];					\
+  gate[2].matrix[y]=matrixCC[y];					\
+  gate[2].matrixp[y]=matrixCCC[y];					\
   }									\
   }
 
 #define RESETTR {				\
   for (uint32_t y=0;y<16;y++){			\
-  gate[3].matrix[y]=matrixNN[y];					\
-  gate[3].matrixp[y]=matrixNNN[y];					\
+  gate[3].matrix[y]=matrixRR[y];					\
+  gate[3].matrixp[y]=matrixRRR[y];					\
   }									\
   }
 
-#define RESETN count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[0].theroute=8; gate[0].globflag=1; RESETTN;
+#define RESETN count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; gate[0].theroute=8; gate[0].globflag=1; RESETTN;
 
-#define RESETL count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[1].theroute=1; gate[1].globflag=1; RESETTL;
+#define RESETL count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[1]=0; gate[1].theroute=1; gate[1].globflag=1; RESETTL;
 
-#define RESETC count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[2].theroute=2; gate[2].globflag=1; RESETTC;
+#define RESETC count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[2]=0; gate[2].theroute=2; gate[2].globflag=1; RESETTC;
 
-#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; gate[3].theroute=4; gate[3].globflag=1; RESETTR;
+#define RESETR count=0; daccount=0; spdcount=0; binroutetypecount=0; tailcount=0; binary[3]=0; gate[3].theroute=4; gate[3].globflag=1; RESETTR;
 
 #define STR0 (gate[w].trigger)
 

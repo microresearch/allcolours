@@ -302,20 +302,20 @@ void SR_geo_inner_probadcadvance(uint32_t w){  // ADC only - prob for adc itself
 //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 
 void SR_geo_outer_N00(uint32_t w){ // spdfrac and adc in - adc is set in caput000 as default...
-  RESETR; // but could this not be on changed! only? - put in resetr one
+  RESETN; // but could this not be on changed! only? - put in resetr one
   
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
   gate[w].matrix[3]=1<<7; // fixed route
   gate[w].matrix[6]=CVL[w]; // length
-  gate[w].matrix[8]=CVL[w];//gate[dacfrom[daccount][w]].dac; // depth/length for adc same as length
+  gate[w].matrix[8]=CVL[w];//gate[dacfrom[daccount][w]].dac; // depth/length for adc same as length - could be different????TODO
   gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
   
   gate[w].inner=SR_geo_inner_noprobadc;
 }
 
 void SR_geo_outer_N01(uint32_t w){ // spdfrac and adc in - adc is set in caput000 as default... no route in at all
-  RESETR; // but could this not be on changed! only? - put in resetr one
+  RESETN; // but could this not be on changed! only? - put in resetr one
   
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
@@ -334,7 +334,7 @@ void SR_geo_outer_N01(uint32_t w){ // spdfrac and adc in - adc is set in caput00
 /*
 void SR_geo_outer_Ndac(uint32_t w){ // spdfrac and - test DACin
   //  uint32_t matrixNN[12]={0,0,0, 2,0,0, 31<<7, 1,0, 0,0,0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-  ///  RESETR; // but could this not be on changed! only? - put in resetr one
+  ///  RESETN; // but could this not be on changed! only? - put in resetr one
   
   gate[w].matrix[0]=1<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed

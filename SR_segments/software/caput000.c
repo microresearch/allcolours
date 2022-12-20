@@ -53,12 +53,12 @@ static uint32_t CVM[4]={0,0,0,0};
 // add in dactype, dacpar
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd}
-uint32_t matrixNN[16]={0,0,0,  1<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0};
-uint32_t matrixCC[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1, 2048, 0}; 
-uint32_t matrixRR[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0}; 
-uint32_t matrixTT[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25,2048, 0}; 
-//                     speed  bit        len   adc          prob  alt   dac      strobespdindex
+uint32_t matrixNN[16]={0,0,0,  1<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25<<7,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0};
+uint32_t matrixCC[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1<<7, 2048, 0}; 
+uint32_t matrixRR[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0}; 
+uint32_t matrixTT[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0}; 
+//                     speed  bit        len   adc          prob  alt      dac      strobespdindex
 
 uint32_t *matrixNNN[16]={&CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]};
 uint32_t *matrixLLL[16]={&CVL[1], &CV[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1]};
@@ -160,7 +160,7 @@ static uint32_t storedlength[4][4]={
   {31,31,31,31}
 };
 
-static uint32_t nulll=0;
+//static uint32_t nulll=0;
 
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
 static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt[4]={0,0,0,0};
@@ -273,7 +273,7 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
        // test memory above  
      {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
 
-       {SR_geo_outer_testDAC, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33, SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73}, // 32 so far...TO TEST 
+       {SR_geo_outer_C01matrixpp, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33, SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73}, // 32 so far...TO TEST 
    
        {SR_geo_outer_route, SR_geomantic_outerRglobselandset, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
   //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
@@ -290,24 +290,24 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
 void mode_init(void){
   uint32_t x;
 
-  for (uint32_t y=0;y<16;y++){
-      gate[0].matrix[y]=matrixNN[y];
-      gate[0].matrixp[y]=matrixNNN[y]; // these are just defaults
+  for (x=0;x<16;x++){
+      gate[0].matrix[x]=matrixNN[x];
+      gate[0].matrixp[x]=matrixNNN[x]; // these are just defaults
 
-      gate[1].matrix[y]=matrixLL[y];
-      gate[1].matrixp[y]=matrixLLL[y];
+      gate[1].matrix[x]=matrixLL[x];
+      gate[1].matrixp[x]=matrixLLL[x];
       
-      gate[2].matrix[y]=matrixCC[y];
-      gate[2].matrixp[y]=matrixCCC[y];
+      gate[2].matrix[x]=matrixCC[x];
+      gate[2].matrixp[x]=matrixCCC[x];
 
-      gate[3].matrix[y]=matrixRR[y];
-      gate[3].matrixp[y]=matrixRRR[y];
+      gate[3].matrix[x]=matrixRR[x];
+      gate[3].matrixp[x]=matrixRRR[x];
 
-      gate[8].matrix[y]=matrixTT[y];
-      gate[8].matrixp[y]=matrixTTT[y];
+      gate[8].matrix[x]=matrixTT[x];
+      gate[8].matrixp[x]=matrixTTT[x];
   }
 
-  RESETR;
+  //  RESETC;
   
   for (x=0;x<4;x++){
     gate[x].flip=0;
@@ -350,12 +350,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  static uint32_t www=0, ww=0;
+  static uint32_t www=0, ww=0, first=0;
   uint32_t tmp;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
   //////////////////////////////////////////////////////
-
+  
   if (intflag[www]) { // process INT
     gate[www].trigger=1;
     intflag[www]=0;
@@ -367,7 +367,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     gate[www].trigger=0;
   }
 
-  
   // trial of new: *order can also change eg. 0012, to determine from a table... - but table must be longer than 3 so we always have, table is like an SR?*
   // or table can be XORed - with SR or somehow altered from there - as a skip could be an option so maybe we don't need tables...
   ww++;

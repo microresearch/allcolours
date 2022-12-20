@@ -97,19 +97,34 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 20/12/2022
 
+*only RESET on change in first mode*
+
+*any reset in any mode will reset GLOBAL counts... so returns all to simple*
+*again question of global or only reset is on right side - global is global...*
+
+*need somehow right mode which keeps own function and just resets - so is all gapped - or can globals on right be all gapped*
+
+- re-tests:
+
+tested SR_geo_outer_C01matrixpp with full matrix and seems function... 
+
+matrixp - why CVL setting doesn't hold over from main init?
+
+DONEre-test mode 4 dac_ and test fixed 16
+
+DONEC53 to fix, TEST!
+
+DONEouterC01matrixp - TEST cleaned up... - was problem of not copyong matrixp in init - fixed by moving init earlier...
+
+test SR_geo_outer_route* -> DONE:draft list of inners: eg. void (*SRinnersC[64])(uint32_t w)={SR_geo_inner_fixedC}; and *test! - where?DONE
+
+- DONEadded in setandcopy for matrix stuff: to test: fine
+
+///
+
 - *TODO: dac/dacfrom -> dacparam as basic mode in geoC// also for depth/adc in geoN*
 
-*test SR_geo_outer_route*
-
-*re-test mode 4 dac_ and test fixed 16* 
-
-*C53 to fix, TEST!*
-
-*outerC01matrixp - TEST cleaned up...*
-
-- add in setandcopy for matrix stuff: *to test*
-
-- Q of extents, of prob and interpol if we slide modes...
+- *Q of extents, of prob and interpol if we slide modes... - trial, also for interpol and prob so is generic/even no inner or?*
 
 ** 19/12/2022
 
@@ -129,7 +144,7 @@ or what we really need as changing is: INs, sometimes depth
 
 - draft matrixp works and changes? to inner and outer/arrays of... -> at end of geoC.h:  SR_geo_outer_C01matrixp
 
-DONE:draft list of inners: eg. void (*SRinnersC[64])(uint32_t w)={SR_geo_inner_fixedC}; and *test!*
+DONE:draft list of inners: eg. void (*SRinnersC[64])(uint32_t w)={SR_geo_inner_fixedC}; and *test!
 
 list of outers we already have in 000
 

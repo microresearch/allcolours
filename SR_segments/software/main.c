@@ -196,7 +196,11 @@ int main(void)
     // 13 channels now
 	ADC1_Init();
 	//	ADC1_Init((uint16_t *)adc_buffer);
-    
+
+
+  mode_init();
+
+	
     GPIO_InitTypeDef GPIO_InitStructure;
 
     // TODO: organise ins and outs
@@ -463,13 +467,10 @@ int main(void)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-
-  mode_init();
-
+  
   // testings
   //  DAC_SetChannel1Data(DAC_Align_12b_R, 0); // 1000/4096 * 3V3 == 0V8
   //  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); 
-
   
     while(1) {
 
