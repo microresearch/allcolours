@@ -803,7 +803,7 @@ first 16 as we have now - routes: types and route, probs of xroute vs. yroute
 //////////////////////////////////////////
 
 void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // RESETR - no need for changed
-  RESETC; 
+  if (gate[w].changed==1) RESETC; // added 21/12 only reset on change 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[13]=CVL[w]; //

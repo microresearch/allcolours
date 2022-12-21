@@ -34,7 +34,9 @@ RESOLVE ARCH:
 *5th tail always running and how we switch in to it different streams from SRs*
 DONEsetting of dactypes
 *also potential global speeds from moder - how this can over-ride // sets of global modes*
-*reset global speeds and binary[all] in moder - RESETR macro to use*
+*reset global speeds and binary[all] in moder - full RESET macro to use*
+
+*dislocations of: ordercount of SRs in globals*
 
 /////
 
@@ -95,14 +97,22 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 21/12/2022
+
+- fix resets in each - so locally we reset the matrix/p, local stuff and local binary.. in geoR we will draft full reset on last mode - or is maybe already...
+
+globalls[0] is that resett! - called by SR_geomantic_innerRglob and SR_geomantic_innerRglobselandset -> *geoR: do as last mode. all held but this... or do as matrixp with RESETG macro*
+
+count=0; daccount=0; spdcount=0; binroutetypecount=0; 
+
 ** 20/12/2022
 
-*only RESET on change in first mode*
+DONEonly RESET on change in first mode
 
-*any reset in any mode will reset GLOBAL counts... so returns all to simple*
-*again question of global or only reset is on right side - global is global...*
+any reset in any mode will reset GLOBAL counts... so returns all to simple*
+again question of global or only reset is on right side - global is global...*
 
-*need somehow right mode which keeps own function and just resets - so is all gapped - or can globals on right be all gapped*
+need somehow right mode which keeps own function and just resets - so is all gapped - or can globals on right be all gapped-see 21/12 above
 
 - re-tests:
 
@@ -215,7 +225,7 @@ INNER is more complex:
 // BITN_AND_OUTV_; 
 // new_data(val,w);
 
-- *and this is also wrapped up dislocations of: ordercount of SRs in globals // *is there any potential for dislocation across SRs and what this could be??*
+- *is there any potential for dislocation across SRs and what this could be??*
 
 SR leaks over portion of another - did we have this (as a global?)
 
@@ -513,7 +523,7 @@ DONEre-test slur say with speed
 
 - more length from dac also - as a very basic mode too (but where to insert?)
 
-void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // RESETR - no need for changed
+void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // RESET - no need for changed
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];//??? speed

@@ -4518,7 +4518,7 @@ static inline void binaryX(uint32_t depth){
 }
 
 static inline void resett(uint32_t depth){ // resett // no depth
-  RESETR;
+  RESETG;
 }
 
 /// add in master set of glob index into these with a fixed route
