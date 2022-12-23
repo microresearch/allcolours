@@ -892,7 +892,8 @@ void SR_geo_outer_C20(uint32_t w){  //
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=0<<7; // select func
   //  gate[w].matrix[4]=CVL[w]; // depth
-  gate[w].matrix[5]=CVL[w]; // IN selects type
+  //  gate[w].matrix[5]=CVL[w]; // IN selects type
+  gate[w].routetype=CVL[w]>>9; // new type SELECT!!!
   gate[w].inner=SR_geo_inner_binrC; // 16 of these >>8 <<8
 }
 }
@@ -1573,6 +1574,58 @@ void SR_geo_outer_C01matrixpp(uint32_t w){  // spdfrac, depth as route
   }
 }
 
+// testing no inners, just abstraction
+
+// fill in
+//uint32_t (**routetest[64])(uint32_t depth, uint32_t in, uint32_t wh)={routebitsd}; // all need to be same length // we have above
+
+uint32_t (**speedtest[64])(uint32_t depth, uint32_t in, uint32_t wh)={}; // all need to be same length
+
+uint32_t (**probtest[64])(uint32_t depth, uint32_t in, uint32_t wh)={}; // all need to be same length
+
+/* questions of how it could handle:
+
+- prob of dacout // as prob is only dealing with bits - unless we can set a flag
+- use of probs if we don;t use CVL
+
+- what else?
+
+
+ */
+
+void SR_geo_outer_C01matrixpp_abstracted(uint32_t w){  // spdfrac, depth as route
+  HEADNADA;
+  
+  if (gate[w].changed==0) { 
+    SR_geomantic_matrixmode(w);
+
+    // interpolation set by previous speedfunc TODO
+    if (gate[w].interp){
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    // speed
+    if ((*speedtest[gate[w].matrix[17]][gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+      if (gate[w].matrix[17]>5) gate[w].fake=gate[w].trigger; // how we decide this? if is a strobespeed mode or not /- strobe speeds are all >x
+      else gate[w].fake=1;      
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probtest[gate[w].matrix[18]][gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){ // we need probf which just gives 0!
+      bitn=(*routetest[gate[w].matrix[19]][gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); 
+  }
+  else {
+    bitn=(*routetest[gate[w].matrix[20]][gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
+  }
+    
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+  }
+  }
+}
 
 /* expansions/slippages
 
