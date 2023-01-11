@@ -53,18 +53,18 @@ static uint32_t CVM[4]={0,0,0,0};
 // add in dactype, dacpar
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd}
-uint32_t matrixNN[16]={0,0,0,  1<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25<<7,2048, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0};
-uint32_t matrixCC[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1<<7, 2048, 0}; 
-uint32_t matrixRR[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0}; 
-uint32_t matrixTT[16]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0}; 
+uint32_t matrixNN[18]={0,0,0,  1<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25<<7,2048, 0, 0, 8<<8}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8};
+uint32_t matrixCC[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1<<7, 2048, 0, 0, 2<<8}; 
+uint32_t matrixRR[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8}; 
+uint32_t matrixTT[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8}; 
 //                     speed  bit        len   adc          prob  alt      dac      strobespdindex
 
-uint32_t *matrixNNN[16]={&CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]};
-uint32_t *matrixLLL[16]={&CVL[1], &CV[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1]};
-uint32_t *matrixCCC[16]={&CVL[2], &CV[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2]};
-uint32_t *matrixRRR[16]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]};
-uint32_t *matrixTTT[16]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]}; 
+uint32_t *matrixNNN[18]={&CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]};
+uint32_t *matrixLLL[18]={&CVL[1], &CV[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1]};
+uint32_t *matrixCCC[18]={&CVL[2], &CV[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2]};
+uint32_t *matrixRRR[18]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]};
+uint32_t *matrixTTT[18]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]}; 
 
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
@@ -290,7 +290,7 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
 void mode_init(void){
   uint32_t x;
 
-  for (x=0;x<16;x++){
+  for (x=0;x<18;x++){
       gate[0].matrix[x]=matrixNN[x];
       gate[0].matrixp[x]=matrixNNN[x]; // these are just defaults
 

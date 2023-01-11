@@ -23,28 +23,28 @@ static uint32_t outcnt=0;
 // do we need to reset all matrices?
 
 #define RESETTN {				\
-  for (uint32_t y=0;y<16;y++){			\
+  for (uint32_t y=0;y<18;y++){			\
   gate[0].matrix[y]=matrixNN[y];					\
   gate[0].matrixp[y]=matrixNNN[y];					\
   }									\
   }
 
 #define RESETTL {				\
-  for (uint32_t y=0;y<16;y++){			\
+  for (uint32_t y=0;y<18;y++){			\
   gate[1].matrix[y]=matrixLL[y];					\
   gate[1].matrixp[y]=matrixLLL[y];					\
   }									\
   }
 
 #define RESETTC {				\
-  for (uint32_t y=0;y<16;y++){			\
+  for (uint32_t y=0;y<18;y++){			\
   gate[2].matrix[y]=matrixCC[y];					\
   gate[2].matrixp[y]=matrixCCC[y];					\
   }									\
   }
 
 #define RESETTR {				\
-  for (uint32_t y=0;y<16;y++){			\
+  for (uint32_t y=0;y<18;y++){			\
   gate[3].matrix[y]=matrixRR[y];					\
   gate[3].matrixp[y]=matrixRRR[y];					\
   }									\

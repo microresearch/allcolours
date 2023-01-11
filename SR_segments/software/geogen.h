@@ -1473,10 +1473,12 @@ static inline uint32_t binroutesel1(uint32_t depth, uint32_t in, uint32_t w){ //
     return bitn;
 }
 
-static inline uint32_t binroutesel2(uint32_t depth, uint32_t in, uint32_t w){ // depth is sel of type
+static inline uint32_t binroutesel2(uint32_t depth, uint32_t in, uint32_t w){ // no depth
   uint32_t x, tmp, bitrr, bitn=0;
-  uint32_t tmpp=depth>>9; // 3 bits
+
+  uint32_t tmpp=ROUTETYPE; // 3 bits
   gate[w].routetype=tmpp;
+
     switch(tmpp){
     case 0:
       BINROUTE_;
@@ -1510,8 +1512,11 @@ static inline uint32_t binroutesel2(uint32_t depth, uint32_t in, uint32_t w){ //
 
 static inline uint32_t binroutesel3(uint32_t depth, uint32_t in, uint32_t w){ // local route
   uint32_t x, tmp, bitrr, bitn=0;
-    uint32_t tmpp=depth>>9; // 3 bits
-    gate[w].routetype=tmpp;
+  //uint32_t tmpp=depth>>9; // 3 bits
+  //    gate[w].routetype=tmpp;
+  uint32_t tmpp=ROUTETYPE; // 3 bits
+  gate[w].routetype=tmpp;
+
     tmp=gate[w].theroute;//|binary[w];
     switch(tmpp){
     case 1:
@@ -1608,7 +1613,7 @@ static inline uint32_t binroutesel1S(uint32_t depth, uint32_t in, uint32_t w){ /
   //  uint32_t tmpp=binroutetypes[binroutetypecount][w];
     uint32_t tmpp=gate[w].routetype;
   depth=depth>>8; // 12 bits to 4 bits
-    gate[w].theroute=depth;
+  gate[w].theroute=depth;
     //  depth=depth|binary[w];
   // deal with no route
   if (depth==0) { // SR5 is 8th which is outside these bits 

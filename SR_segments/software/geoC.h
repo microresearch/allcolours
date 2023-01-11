@@ -895,7 +895,7 @@ void SR_geo_outer_C20(uint32_t w){  //
   //  gate[w].matrix[5]=CVL[w]; // IN selects type
   //  gate[w].routetype=CVL[w]>>9; // new type SELECT!!!
   // replacing with
-  SETROUTETYPE=CVL[w];
+  SETROUTETYPE=CVL[w]; // newer
   gate[w].inner=SR_geo_inner_binrC; // 16 of these >>8 <<8
 }
 }
@@ -1458,13 +1458,13 @@ uint32_t *fixedvars[4][20]={ //
 
 // 2 sets arrays/// eg. // but we need mult dimensions as these match mode descriptions
 //eg. for above C01
-uint32_t matrixpp[16]={18, 4, 18, 18,  5, 18, 18, 18,  18,18,18,18, 18,18,18,18}; // fixed, CVL, gap, fixed, CV
-uint32_t matrixvv[16]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,25<<7,0}; // fixed values			 
+uint32_t matrixpp[18]={18, 4, 18, 18,  5, 18, 18, 18,  18,18,18,18, 18,18,18,18, 5,5}; // eg.. not matched to: fixed, CVL, gap, fixed, CV
+uint32_t matrixvv[18]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,25<<7,0, 0,0}; // fixed values			 
 
 void SR_geomantic_matrixmode(uint32_t w){ 
   uint32_t x, y;
   
-  for (x=0;x<16;x++){
+  for (x=0;x<18;x++){
     gate[w].matrixp[x]=fixedvars[w][matrixpp[x]]; // sets mode
     if (gate[w].matrixp[x]==&fixed){
       fixedvalues[w][x]=matrixvv[x]; 
@@ -1526,7 +1526,7 @@ static inline void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // set
 void SR_geomantic_matrixcopyz(uint32_t w){ 
   uint32_t x, y;
   
-  for (x=0;x<16;x++){
+  for (x=0;x<18;x++){
     gate[w].matrix[x]=*(gate[w].matrixp[x]); 
   }
   // set gate[w].inner
@@ -1595,6 +1595,8 @@ uint32_t (**probtest[64])(uint32_t depth, uint32_t in, uint32_t wh)={}; // all n
 
  */
 
+// if we extend matrixp for functions to length of 22
+
 void SR_geo_outer_C01matrixpp_abstracted(uint32_t w){  // spdfrac, depth as route
   HEADNADA;
   
@@ -1610,17 +1612,17 @@ void SR_geo_outer_C01matrixpp_abstracted(uint32_t w){  // spdfrac, depth as rout
   else gate[w].dac = delay_buffer[w][1];
 
     // speed
-    if ((*speedtest[gate[w].matrix[17]][gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-      if (gate[w].matrix[17]>5) gate[w].fake=gate[w].trigger; // how we decide this? if is a strobespeed mode or not /- strobe speeds are all >x
+    if ((*speedtest[gate[w].matrix[18]][gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+      if (gate[w].matrix[18]>5) gate[w].fake=gate[w].trigger; // how we decide this? if is a strobespeed mode or not /- strobe speeds are all >x
       else gate[w].fake=1;      
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
-    if ((*probtest[gate[w].matrix[18]][gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){ // we need probf which just gives 0!
-      bitn=(*routetest[gate[w].matrix[19]][gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); 
+    if ((*probtest[gate[w].matrix[19]][gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){ // we need probf which just gives 0!
+      bitn=(*routetest[gate[w].matrix[20]][gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); 
   }
   else {
-    bitn=(*routetest[gate[w].matrix[20]][gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
+    bitn=(*routetest[gate[w].matrix[21]][gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
   }
     
     BITN_AND_OUTV_; 
