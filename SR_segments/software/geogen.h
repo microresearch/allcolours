@@ -60,12 +60,14 @@
 ////////////////////////////////////////////////////////////////////////// 25/10/2022 - // adding 13/12/2022
 // basic binroutes with depth and in for route in and routetypes...
 
-static inline uint32_t ZzbinrouteINVbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now
+static inline uint32_t ZzbinrouteINVbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now NO LONGER USES DEPTH
   uint32_t x,bitn=0, bitrr, tmpp,tmp;
   //  depth=binroute[count][wh]|binary[wh]; // or we can just pass in depth
   //  depth=myroute[w][gate[w].route]|binary[w];
-  depth=depth>>8; // 12 bits to 4 bits 
-  gate[w].theroute=depth;
+  //  depth=depth>>8; // 12 bits to 4 bits 
+  //  gate[w].theroute=depth;
+    gate[w].theroute=ROUTE; // replacing above
+    depth=ROUTE;
   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
@@ -1431,8 +1433,8 @@ static inline uint32_t binroutesel1(uint32_t depth, uint32_t in, uint32_t w){ //
   uint32_t x, tmp, bitrr, bitn=0;
   //  uint32_t tmpp=binroutetypes[binroutetypecount][w];
     uint32_t tmpp=gate[w].routetype;
-    depth=depth>>8; // 12 bits to 4 bits
-    gate[w].theroute=depth;
+    //    depth=depth>>8; // 12 bits to 4 bits
+    gate[w].theroute=depth>>8;
     //  depth=depth|binary[w];
   // deal with no route
   if (depth==0) { // SR5 is 8th which is outside these bits 

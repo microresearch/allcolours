@@ -12,6 +12,14 @@ static uint32_t gscnt=0;
 static uint32_t outcnt=0;
 */
 
+#define ROUTETYPE (gate[w].matrix[16]>>9)
+#define ROUTE (gate[w].matrix[17]>>8)
+#define SPEEDFUNC (gate[w].matrix[0]>>7)
+
+#define SETROUTETYPE (gate[w].matrix[16])
+#define SETROUTE (gate[w].matrix[17])
+
+
 // do we need to reset all matrices?
 
 #define RESETTN {				\

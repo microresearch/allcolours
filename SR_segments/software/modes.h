@@ -30,9 +30,9 @@ typedef struct heavens_ {
   uint32_t lastspeed;
   uint32_t countspeed;
   //  uint32_t stackindex;
-  uint32_t matrix[16];
-  uint32_t *matrixp[16];
-  uint32_t *matrixpG[16];
+  uint32_t matrix[18];
+  uint32_t *matrixp[18];
+  uint32_t *matrixpG[18];
   void (*inner)(uint32_t w);
 } heavens;
 

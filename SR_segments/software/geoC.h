@@ -891,9 +891,11 @@ void SR_geo_outer_C20(uint32_t w){  //
     gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=0<<7; // select func
-  //  gate[w].matrix[4]=CVL[w]; // depth
+  gate[w].matrix[4]=2<<8;//CVL[w]; // depth
   //  gate[w].matrix[5]=CVL[w]; // IN selects type
-  gate[w].routetype=CVL[w]>>9; // new type SELECT!!!
+  //  gate[w].routetype=CVL[w]>>9; // new type SELECT!!!
+  // replacing with
+  SETROUTETYPE=CVL[w];
   gate[w].inner=SR_geo_inner_binrC; // 16 of these >>8 <<8
 }
 }

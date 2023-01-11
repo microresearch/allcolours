@@ -97,6 +97,59 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+
+** 6/1/2023
+
+//schiphol
+
+working through below - question is where we set SETROUTETYPE and SETROUTE to CV or DAC (in geoC outers) and what this means for dropping depth from some functions...
+
+eg. in binroutesels
+
+TODO/now in progress/test:
+
+- pull type and route out from depth settinginto matrix/matrixp -> trialed in one instance in geogen.h and geoC.h
+
+  uint32_t matrix[18]; -> 16 as routetype CV, 17 as theroute...
+
+replace -     gate[w].theroute=depth //>>8; with     gate[w].theroute=gate[w].matrix[17]>>8; in geogen... gate[w].theroute=ROUTE;
+
+which was in geoC but could now be in geogen: gate[w].routetype=gate[w].matrix[16]>>9; gate[w].routetype=ROUTETYPE;
+
+we need in geoC eg. gate[w].matrix[17]=CVL[w];
+
+or macro
+
+#define ROUTETYPE (gate[w].matrix[16]>>9)
+#define ROUTE (gate[w].matrix[17]>>8)
+
+uint32_t tmpp=depth>>9; // 3 bits
+gate[w].routetype=tmpp;
+
+also needs to be replaced in geogen...
+
+  uint32_t tmpp=ROUTETYPE; // 3 bits
+  gate[w].routetype=tmpp;
+
+
+gate[w].routetype and gate[w].theroute - but what about local and global routes...
+
+so we replace these - can also be small macros (as can be for other matrix ops if we like)
+
+we can also have other defines eg in geoC:
+
+// speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+
+#define SPEEDFUNC (gate[w].matrix[0]>>7)
+
+but we have these already// maybe makes it easier - placed in macros
+
+//
+16 simple modes
+16 gapped modes
+16 strobed
+16 matrixp
+
 ** 23/12/2022
 
 TODO: draft first 16 modes for geoC and see how these work across all 4x SRs...
