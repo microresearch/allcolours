@@ -102,7 +102,7 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 - implement below: SETROUTETYPE and SETROUTE
 
-// but question now if we need for ROUTE as we have theroute which is only ever set by depth (so as long as we don;t always set it is ok)
+IGNORE[[// but question now if we need for ROUTE as we have theroute which is only ever set by depth (so as long as we don;t always set it is ok)
 [eg. as we wrote: *that maybe we should NOT set gate[w].theroute=depth everywhere as it can also be used for gaps - or should just be set in OUTER/INNERS?*]
 
 so question is really where we set theroute - as if is gapped then sets to any depth?
@@ -111,8 +111,9 @@ options:
 -route as theroute (set by depth in which functions)?
 -route as depth (not setting/setting theroute)...
 
-does new matrix help?
+does new matrix help?]]
 
+Yes, redo as we want to simply pull both into matrix
 
 ..........................///////////////////////////..........................
 
@@ -153,7 +154,7 @@ To notes: macros we have are now:
 #define SETROUTETYPE (gate[w].matrix[16])
 #define SETROUTE (gate[w].matrix[17])
 
-- look again at final abstractions - in geoC but not sure of these???
+- look again at final matrixp abstractions - in geoC but not sure of these???
 
 ** 6/1/2023
 
