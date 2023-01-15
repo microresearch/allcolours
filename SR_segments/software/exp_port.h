@@ -420,8 +420,13 @@ static inline uint32_t ZpSRsigma(uint32_t depth, uint32_t in, uint32_t w){//nada
   //  BINROUTE_;
   tmpp=in>>9; // or in can be route // 3 bits
   gate[w].routetype=tmpp;
-  tmp=depth>>8;
-  ROUTETYPE_;
+  //  tmp=depth>>8;
+    gate[w].theroute=ROUTE;
+    depth=ROUTE;
+
+  
+    ROUTETYPE_;
+  
 
   if (bitn) val=1;
   else val=-1;

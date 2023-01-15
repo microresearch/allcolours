@@ -98,6 +98,15 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 ///////////////////
 
 
+** 13/1/2023
+
+- some functions can use depth as route
+- DONEso far those which set theroute we change as in: ZzbinrouteINVbits (first test conversion)// 
+
+DONE: make array of these changed ones: routebitsnodepthmatrix, 
+
+TESTED: changed type/change func/change route -> C01/route and C02/type
+
 ** 11/1/2023
 
 - implement below: SETROUTETYPE and SETROUTE
@@ -137,9 +146,7 @@ zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift,
 zbinroutebitscyclestr_noshift, zbinrouteANDbits, zbinrouteSRbits,
 zbinroutebitsI_noshift, zbinroutebitscycleI_noshift,
 zbinroutebitscyclestrI, ZzbinroutebitscyclestrI, flipflopandroute,
-routevalue,
-
-binroutor, (these not setting theroute) 
+routevalue
 
 /////////////////////////////////////
 

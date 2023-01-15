@@ -802,20 +802,25 @@ first 16 as we have now - routes: types and route, probs of xroute vs. yroute
  */
 //////////////////////////////////////////
 
+// question of new first 16 and if we stick in first 16 to global routes?
+
 void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // RESETR - no need for changed
   if (gate[w].changed==1) RESETC; // added 21/12 only reset on change 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[13]=CVL[w]; //
-  gate[w].inner=SR_geo_inner_fixedC;
+  gate[w].inner=SR_geo_inner_fixedC; // fixedtype/globalroute
 }
+
+// redoing for new ROUTE and TYPE matrix 
 
 void SR_geo_outer_C01(uint32_t w){  // spdfrac, depth as route
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=0<<6; // depth as route
-  gate[w].matrix[4]=CVL[w]; // 
+  //  gate[w].matrix[4]=CVL[w]; //
+  SETROUTE=CVL[w];
   gate[w].inner=SR_geo_inner_noprobC; //routebitsd
   }
 }
@@ -825,7 +830,8 @@ void SR_geo_outer_C02(uint32_t w){  // spdfrac, fixed route/global, flextype
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=46<<6; // fixed/flextype = binroutesel2=46
-  gate[w].matrix[4]=CVL[w]; //
+  //  gate[w].matrix[4]=CVL[w]; //
+  SETROUTETYPE=CVL[w];
   gate[w].inner=SR_geo_inner_noprobC;
   }
   }
@@ -835,7 +841,7 @@ void SR_geo_outer_C03(uint32_t w){  // spdfrac, depthroute, fixedtype->global
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=45<<6; // fixed/flextype = binroutesel1=45
-  gate[w].matrix[4]=CVL[w]; //
+  SETROUTE=CVL[w]; //
   gate[w].inner=SR_geo_inner_noprobC;
 }
 }
@@ -863,7 +869,7 @@ void SR_geo_outer_C11(uint32_t w){  // set dacparam, spdfrac, fixed route with d
   }
 }
 
-// keep length CV and gap depth as route
+// keep length CV and gap depth as route //  no changes
 void SR_geo_outer_C12(uint32_t w){  // spdfrac, depth as route
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
@@ -885,7 +891,7 @@ void SR_geo_outer_C13(uint32_t w){
   }
 }
 
-//- start vary routes/new sel with IN as sel->SR_geo_inner_binr and 0<<8 there
+//- start vary routes/new sel with IN as sel->SR_geo_inner_binr and 0<<8 there ???means?
 void SR_geo_outer_C20(uint32_t w){  // 
   if (gate[w].changed==0) { 
     gate[w].matrix[0]=0<<7; // spdfrac
