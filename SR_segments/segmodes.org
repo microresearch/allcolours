@@ -12,8 +12,6 @@ A dragon with 5 heads!
 
 * 2022++ TODO:
 
-RESOLVE ARCH:
-
 *basic model, test basic geogens inc. ported//classic SRs, ADC and DAC, arrange, layout of inner and outer - new pointer arch, tails, interpol/strobe etc, recursions/gaps/attach/detachments*
 *final tests/tweaks*
 
@@ -27,9 +25,8 @@ RESOLVE ARCH:
 - final details and questions
 //
 
-*static/frozen speeds in general or not - yes but just not on lowest - but how to implement - implemented now as spdfracend -> speedfunc X // new default*
-*check use of clk, pulsin, pulsout, strobey and implement strobey finally*
-*figure out calc for filter speeds - for 15 octaves*
+//DONE:static/frozen speeds in general or not - yes but just not on lowest - but how to implement - implemented now as spdfracend -> speedfunc X // new default*
+*re-check use of clk, pulsin, pulsout, strobey and check strobey finally*
 
 *5th tail always running and how we switch in to it different streams from SRs*
 DONEsetting of dactypes
@@ -37,6 +34,10 @@ DONEsetting of dactypes
 *reset global speeds and binary[all] in moder - full RESET macro to use*
 
 *dislocations of: ordercount of SRs in globals*
+
+*globflag*
+
+*make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
 
 /////
 
@@ -98,12 +99,125 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 ///////////////////
 
 
+** 16/1/2023
+
+added: zbinroutfixed, zbinroutorg, zbinroutorgap with types!
+
+TODO:
+
+- DONE: IN flag??? as LFSR or as DAC?
+
+- question of missing depths // fill ins as we go along
+
+////
+
+DONEwhen we do or don't set ROUTE as is not relevant for all...DONE in outer_C23
+
+add in last functions left out of arrays:
+
+
+DONEadding in no-depth matrix ones: zbinrouteORbits, binroutaltreset etc...
+
+////
+
+*question if we want to set gate[[w].theroute to ((binroute[count][w]|binary[w])<<8) ????*
+
+////
+
+- to resolve: depth question (IN we set as default with flag)
+
+test depth in each inner...
+
+make final lists of functions in groups or leave as are...
+
+all_bits
+abstract only
+routebits all
+
+routes with type only
+
+////
+- areas such as route, speeds, probs, types and how these can overlap...
+
+1 - basic settings, global routes and prob
+2 - 
+3 - route/types/routefunctions
+4
+
+1 - gaps in routes/speeds/probs
+2
+3
+4
+
+1 - strobes???
+2
+3
+4
+
+1 - matrixp
+2
+3
+4
+
+- struct example:
+
+typedef struct bitfunc_ {
+uint32_t shifter;
+uint32_t (*routebits[64])(uint32_t depth, uint32_t in, uint32_t wh);
+uint32_t useofdepth[64];
+} bitfunc;
+
+- how this can fit with inner functions and we init it... 
+
+eg. from worm: static const wormer sp0256er={0, 0.3125f, sp0256_get_sample, sp0256_newsay, 0, 0};
+
+static const bitfunc router={6, routebitsd, useddepthsd};
+
+// what we do with depth if we don't use it... as length, as prob...
+
+DONE- do probs with theroute (or do we have this - we have if we set gate[w].globflag -> 0 is theroute) + prob of theroute vs. global ( Zbinroutfixed_prob5)!
+
+also we have as: NZbinroutfixed_prob4, 
+
+//// also some use IN - how do we set this... what uses IN and how?
+
+use of IN:
+
+could be LFSR: zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsIpp, zsuccbitsI_noshift, zwiardbits, zwiardinvbits, zTMsimplebits, zwiardbitsI, zwiardinvbitsI,
+
+binrout_probXY, binrout_probXY1, binrout_probXY2, binrout_probXY3, binroutfixed_prob1R, binroutfixed_prob1L, binroutfixed_prob1, binroutfixed_prob2, binroutfixed_prob3, binroutfixed_prob4, binroutfixed_prob5, binroutfixed_prob5_nosh, binroutfixed_prob1_nosh, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, binroutfixed_prob4_nosh, cipher, pcipher, zwiardbits2I, 
+
+// solve by setting as LFSR or as dac? // but which one... another flag? could be////
+
+as param: zosc2bitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, - these are more abstract ones...
+
+////
+
+[- do we need to remove new depthroutes from arrays with depth as now they have no depth, or we just always fill that just in case]
+
+/////
+
+arrange possible first 16 modes: new idea of simple global routes only...// or for first 8 at least
+
+classics// all global route: 
+
+00 as we have
+01 change length// or other prob eg. of inversion=prob2
+02 fixed vs. cycle prob - as function: Zbinroutfixed_prob1 - uses type
+03 fixed vs. [fixed XOR cycle prob] - as function: Zbinroutfixed_prob4 - uses type - without Z is no types
+
+length/dactype/dacparam/route/routetype/function/arrays of functions
+
+again question of slippage of arrays - so many bit arrays and DEPTH uses/ also IN? *ideally we don't want to worry about which array/depth/in*
+
+- *q of bitfromsdr - as we only ever use func 31 to set glob*
+
 ** 13/1/2023
 
 - some functions can use depth as route
 - DONEso far those which set theroute we change as in: ZzbinrouteINVbits (first test conversion)// 
 
-DONE: make array of these changed ones: routebitsnodepthmatrix, 
+DONE: make array of these changed ones: routebitsnodepthmatrix
 
 TESTED: changed type/change func/change route -> C01/route and C02/type
 
@@ -137,9 +251,7 @@ DONE// fill in matrix and matrixp arrays everywhere for new lengths
 
 check that? routebitsfixeddepth? but has some not here -> difference is if they set theroute or not from depth?
 
-ZzbinrouteINVbits (first test conversion)
-
-Zzbinroutebitscycle, Zbinrout, binrout, binroutI, binroutAND0,
+ZzbinrouteINVbits, Zzbinroutebitscycle, Zbinrout, binrout, binroutI, binroutAND0,
 binroutAND00, binroutesel1, binroutesel1S, zbinrouteINVbits,
 zbinroutebits_noshift_transit, zbinroutebits_noshift,
 zbinroutebitscycle, zbinroutebitscyclestr, zbinroutebitscycle_noshift,
@@ -171,7 +283,7 @@ working through below - question is where we set SETROUTETYPE and SETROUTE to CV
 
 eg. in binroutesels
 
-TODO/now in progress/test:
+DONE//TODO/now in progress/test:
 
 - pull type and route out from depth settinginto matrix/matrixp -> trialed in one instance in geogen.h and geoC.h
 
@@ -239,7 +351,7 @@ fixed route means global route// all as types from 4+
 
 10. select routebitsfortypes, gapped depth and type // depth can be route or param??? see new NZ functions! where do we set theroute?
 
-see below: - *that maybe we should NOT set gate[w].theroute=depth everywhere as it can also be used for gaps - or should just be set in OUTER/INNERS?*
+see below: - that maybe we should NOT set gate[w].theroute=depth everywhere as it can also be used for gaps - or should just be set in OUTER/INNERS?
 
 NZ eg.
 static inline uint32_t NZbinrout_probXY(uint32_t depth, uint32_t in, uint32_t w){  
@@ -428,7 +540,7 @@ These lead towards dislocations.
 
 *for matrixp we can copy in different arrays and shift these - shift matrixp along, make gaps, asign things (how?), overlay with SRs to set/unset*
 
-also for globflag below we can cycle through SRs to set/unset, use strobe to bump on etc...
+*also for globflag below we can cycle through SRs to set/unset, use strobe to bump on etc...*
 
 ////////////////////////////////////////////////////////
 

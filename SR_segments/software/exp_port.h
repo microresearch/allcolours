@@ -18,9 +18,12 @@ static inline uint32_t probbitsxortoggleI(uint32_t depth, uint8_t wh){   // PROB
   return bt[wh];
 }
 
-static inline uint32_t binroutebits(uint32_t depth, uint8_t wh){   // depth as routesel... shared bits now // USED only in SRrecbin here....
+static inline uint32_t binroutebits(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now // USED only in SRrecbin here....
   uint32_t bt=0, bitrr;
-  depth=depth>>8; // 12 bits to 4 bits
+  //  depth=depth>>8; // 12 bits to 4 bits
+  gate[w].theroute=ROUTE;
+  depth=ROUTE;
+
     // deal with no route
   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
@@ -57,10 +60,13 @@ static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){
 //////////////////////////// start of real functions
 static inline uint32_t pSR_routeSRbits01(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  tmp=depth>>8; // 4 bits
+  //  tmp=depth>>8; // 4 bits
+  gate[w].theroute=ROUTE;
+  tmp=ROUTE;
+
   bitrr=0;
 
-    if (depth==0) { // SR5 is 8th which is outside these bits 
+    if (tmp==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bitn=bitrr;
@@ -80,9 +86,12 @@ static inline uint32_t pSR_routeSRbits01(uint32_t depth, uint32_t in, uint32_t w
 
 static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  tmp=depth>>8; // 4 bits
+  //  tmp=depth>>8; // 4 bits
+  gate[w].theroute=ROUTE;
+  tmp=ROUTE;
+
   bitrr=0;
-    if (depth==0) { // SR5 is 8th which is outside these bits 
+    if (tmp==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bitn=bitrr;
@@ -112,8 +121,12 @@ static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w
 
 static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  tmp=(depth>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
-  if (tmp==0 || ((depth>>7)&1)) { // SR5 is 8th which is outside these bits 
+  //  tmp=(depth>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
+  gate[w].theroute=ROUTE;
+  depth=ROUTE;
+  tmp=depth;
+  
+  if (depth==0 || ((depth>>7)&1)) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
     gate[w].shift_ ^=gate[8].Gshare_;
     bitn^=bitrr;
@@ -135,7 +148,10 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
 
 static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-    tmp=(depth>>8); //
+  //    tmp=(depth>>8); //
+  gate[w].theroute=ROUTE;
+  tmp=ROUTE;
+
   //  tmp=gate[dacfrom[count][w]].shift_&15;
     if (tmp==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
@@ -162,7 +178,10 @@ static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // d
 static inline uint32_t pSR_reflect(uint32_t depth, uint32_t in, uint32_t w){ // // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //  tmp=binroute[count][w];
-    tmp=(depth>>8); //
+  //    tmp=(depth>>8); //
+    gate[w].theroute=ROUTE;
+  tmp=ROUTE;
+
     for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -179,7 +198,10 @@ static inline uint32_t pSR_reflect(uint32_t depth, uint32_t in, uint32_t w){ // 
 static inline uint32_t pSR_altbin1(uint32_t depth, uint32_t in, uint32_t w){ // use depth for route
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //  tmp=binroute[count][w];
-  tmp=(depth>>8); //
+  //  tmp=(depth>>8); //
+    gate[w].theroute=ROUTE;
+  tmp=ROUTE;
+
 
     for (x=0;x<4;x++){
       if (tmp&0x01){  
@@ -418,11 +440,11 @@ static inline uint32_t ZpSRsigma(uint32_t depth, uint32_t in, uint32_t w){//nada
   static int32_t integrator;
 
   //  BINROUTE_;
-  tmpp=in>>9; // or in can be route // 3 bits
-  gate[w].routetype=tmpp;
+  //  tmpp=in>>9; // or in can be route // 3 bits
+  tmpp=gate[w].routetype;
   //  tmp=depth>>8;
     gate[w].theroute=ROUTE;
-    depth=ROUTE;
+    tmp=ROUTE;
 
   
     ROUTETYPE_;
@@ -663,7 +685,10 @@ static inline uint32_t pSRDACroutestrobe(uint32_t depth, uint32_t in, uint32_t w
 
 static inline uint32_t pSRLLbumproute(uint32_t depth, uint32_t in, uint32_t w){//STROBE//depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
-  tmp=(depth>>8);
+  //  tmp=(depth>>8);
+    gate[w].theroute=ROUTE;
+  tmp=ROUTE;
+
   tmpp=(in>>8);
   if (tmp<=tmpp){
   if (gate[w].trigger) gate[w].route++;

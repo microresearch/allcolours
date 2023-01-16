@@ -272,8 +272,8 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
   //   {SR_geo_outer_NN00, SR_geo_outer_NN01, SR_geo_outer_NN02, SR_geo_outer_NN03,  SR_geo_outer_NN10, SR_geo_outer_NN11, SR_geo_outer_NN12, SR_geo_outer_NN13, SR_geo_outer_NN20, SR_geo_outer_NN21, SR_geo_outer_NN22, SR_geo_outer_NN23, SR_geo_outer_NN30, SR_geo_outer_NN31, SR_geo_outer_NN32, SR_geo_outer_NN33, SR_geo_outer_NN40, SR_geo_outer_NN41, SR_geo_outer_NN42, SR_geo_outer_NN43, SR_geo_outer_NN50, SR_geo_outer_NN51, SR_geo_outer_NN52, SR_geo_outer_NN53, SR_geo_outer_NN60, SR_geo_outer_NN61, SR_geo_outer_NN62, SR_geo_outer_NN63, SR_geo_outer_NN70, SR_geo_outer_NN71, SR_geo_outer_NN72, SR_geo_outer_NN73},
        // test memory above  
      {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
-
-       {SR_geo_outer_C02, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33, SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73}, // 32 so far...TO TEST 
+     //     {SR_geo_outer_C00, SR_geo_outer_C00},
+     {SR_geo_outer_C00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73}, // 32 so far...TO TEST 
    
        {SR_geo_outer_route, SR_geomantic_outerRglobselandset, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
   //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
@@ -324,6 +324,7 @@ void mode_init(void){
     gate[x].reset[3]=0;
     gate[x].route=0;
     gate[x].fake=1;
+    gate[x].in=0;
     gate[x].globflag=1;
     gate[0].gsrcnt[x]=31;
     gate[1].gsrcnt[x]=31;
