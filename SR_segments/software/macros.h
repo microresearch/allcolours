@@ -523,7 +523,7 @@ static uint32_t outcnt=0;
   }
 
 #define BINROUTEANDCYCLE_ {				\
-    tmp=binroute[count][w]|binary[w];			\
+    tmp=(binroute[count][w]|binary[w])|(1<<w);		\
   for (x=0;x<4;x++){					\
     if (tmp&0x01 || (x==w)){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
@@ -548,7 +548,7 @@ static uint32_t outcnt=0;
 }
 
 #define BINROUTEANDCYCLENOG_ {				\
-  tmp=binroute[count][w];				\
+    tmp=(binroute[count][w])|(1<<w);			\
   for (x=0;x<4;x++){					\
     if (tmp&0x01 || (x==w)){					\
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\

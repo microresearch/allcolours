@@ -61,6 +61,26 @@ void SR_geo_inner_noprobC(uint32_t w){  // no probability, no adc - this can be 
     }
 }
 
+void SR_geo_inner_testexp(uint32_t w){  // no probability, no adc - this can be generic
+  HEADNADA;
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+      gate[w].fake=gate[w].trigger;
+      GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    bitn=(*zexpetcbits[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
 // test list of route arrays
 uint32_t (**routetest[64])(uint32_t depth, uint32_t in, uint32_t wh)={routebitsd}; // all need to be same length
 
@@ -732,6 +752,18 @@ void SR_geo_outer_testroutearray(uint32_t w){  // CV1
   gate[w].inner=SR_geo_inner_noprobTEST;
   }
 }
+
+void SR_geo_outer_testexp(uint32_t w){ 
+  if (gate[w].changed==0) { 
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=32; // zexpetcbits 41 index ? TESTY - to finish tests
+  gate[w].matrix[4]=CVL[w]; 
+  gate[w].matrix[17]=CVL[w]; 
+
+  gate[w].inner=SR_geo_inner_testexp;
+  }
+}
+
 
 
 /*
@@ -1494,7 +1526,7 @@ void SR_geomantic_outer1detach(uint32_t w){  // is not really a detach
   // or we can say set gate[w].matrix[0]=CVL[w] temporarily; or a fixed value...
 }
 
-uint32_t fixedvalues[4][16]={ //  values - but x value means no change... say 4096 
+uint32_t fixedvalues[4][16]={ //  values - but x value means no change... say 4096 - we didn't do....
   {0},
 };
 

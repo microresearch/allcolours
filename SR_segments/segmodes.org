@@ -35,7 +35,7 @@ DONEsetting of dactypes
 
 *dislocations of: ordercount of SRs in globals*
 
-*globflag*
+*where do we set globflag and inflag? see below*
 
 *make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
 
@@ -98,6 +98,51 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+
+** 17/1/2023
+
+*- still not so resolved on local/global/set by depth - need clesr policy as in some modes is so/not - or we set ROUTE to this...*
+
+- fixed bug as should be: depth=depth|(1<<w); // adds itself not |w (0,1,2,3) 
+
+- added   gate[w].strobed=1; to exp_port.h in trigger modes
+
+TODO: test new exp_ modes
+
+- fix up all bitsn.h so is now usable
+
+only using types and those with no types, mixed
+
+nostrobe
+strobe
+nodepth
+
+setroutes - do we need that bit????
+
+/////
+
+- [do we need copy matrix from first modes -> matrixp or do we use gaps CHECK? // only if we use full matrixcopy]
+
+- maybe remove non-type route functions if these are doubled by types -> sort out bitsn.h
+
+Questions as not so relevant: bitroutI
+
+new zz types added/to add in: added: zzwiardbits2I, zzwiardbitsI, zzwiardinvbitsI, zzsuccbitsprob, zbinroutfixedfixed, zzsingleroutebits, zbinroutfixed_prob1R, zbinroutfixed_prob1L 
+
+added no depth: zbinroutfixedmy, zbinroutfixedmyreset, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt, zbinroutmycv(depth)
+
+fixing/adding from exp_port: pSR_recbin, pSRxorroutes, pSRaddroutes,
+pSRprobxortogx, pSRprobxortogxI, pSRmatch, pSRshare, pSRGswop,
+pSRsigma, pbitLcvsrroute, pstream, pSRDACroutestrobe, pSRLLbumproute,
+pSRbumproute, pSRN40, pSRN36, pSRN33cipher, pSRN33, pSRN13,
+pSRRLLswop, pSRRbumproute0, pprobintprob3, pprobintprob5_0,
+pprobintprob6_0, pprobtoggle1, pprobtoggle2, pprobtoggle3,
+pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3,
+pSRN15, pSRN8, pSRN7, pSRN6, pSRN5, pSRxorSR, pbitSRroutedoit, pSR_routeSRbits02, pSR_routeSRbits01
+
+guess need to test these all again
+
+deprecate: binroutesel0, binroutesel1, binroutesel2, binroutesel3, binroutesel4,
 
 ** 16/1/2023
 
