@@ -232,6 +232,7 @@ void SR_geo_inner_binrC(uint32_t w){  // no probability, no adc - this can be ge
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
     bitn=(*routebitsfortypes[gate[w].matrix[3]>>7])(gate[w].matrix[4], gate[w].matrix[5], w); // >>7 as 32
+    //    bitn=funclist[gate[w].matrix[3]>>7]->func(gate[w].matrix[4], gate[w].matrix[5], w); // testy
     BITN_AND_OUTV_; 
     new_data(val,w);
     }

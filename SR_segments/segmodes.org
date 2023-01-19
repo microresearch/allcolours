@@ -98,10 +98,54 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 18/1/2023
+
+// *start by cleaning up bitsn functions and then work through geoC new modes and solve questions as we go along...*
+
+*we need to sort following: global flag (gate[w].globflag)/routes, use of IN flag (gate[w].in), depth/no depth, global dacfrom?// also speedfrom dac, setting of route/type (16 and 17). which arrays to use for functions//how these match*
+
+if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // example
+else gate[w].matrix[5]=LFSR__[w]; // we do need this
+
+
+#define ROUTETYPE (gate[w].matrix[16]>>9)
+#define ROUTE (gate[w].matrix[17]>>8)
+
+- global-> R mode manipulations (what else we have here?) - advantage of global is to match routes across all...
+- local/same as depth gapped... 
+
+- Q to ditch global flag (or ditch all global routes) and just set SETROUTE=(binroute[count][w]|binary[w])<<8; // but that just sets the route once, and if count changes...
+
+//if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];     
+
+- functions:
+
+1.abstract bits (R mode, N?)
+2.route bits-all 
+3.route bits with types
+
+- notes
+
+1. CVL as route/type
+2. CVL as parameter eg. osc
+3. CVL as prob of X or Y (against DAC or LFSR__) // for prob we don;t worry about CV functions or these are set to dac
+4. CVL outside functions as length, dactype, adctype
+
+// or different struct for each function -> see geogen.h but then we need to fill this for all...
+typedef struct bitfunc_ {
+uint32_t setroute;
+uint32_t depth;
+uint32_t in;
+uint32_t(*func)(uint32_t depth, uint32_t in, uint32_t w);
+} bitfunc;
+
+//uint32_t binrout_probXY1(uint32_t depth, uint32_t in, uint32_t w){   //global
+
+static const bitfunc probXY1={0, 0, 0, binrout_probXY1};
 
 ** 17/1/2023
 
-*- still not so resolved on local/global/set by depth - need clesr policy as in some modes is so/not - or we set ROUTE to this...*
+*- still not so resolved on local/global/set by depth - need clear policy as in some modes is so/not - or we set ROUTE to this...*
 
 - fixed bug as should be: depth=depth|(1<<w); // adds itself not |w (0,1,2,3) 
 
@@ -121,15 +165,17 @@ setroutes - do we need that bit????
 
 /////
 
-- [do we need copy matrix from first modes -> matrixp or do we use gaps CHECK? // only if we use full matrixcopy]
+- [do we need copy matrix from first modes -> matrixp or do we use gaps CHECK? // only if we use full matrixcopy, otherwise we just set what we like]
 
-- maybe remove non-type route functions if these are doubled by types -> sort out bitsn.h
+- *maybe remove non-type route functions if these are doubled by types -> sort out bitsn.h*
 
 Questions as not so relevant: bitroutI
 
 new zz types added/to add in: added: zzwiardbits2I, zzwiardbitsI, zzwiardinvbitsI, zzsuccbitsprob, zbinroutfixedfixed, zzsingleroutebits, zbinroutfixed_prob1R, zbinroutfixed_prob1L 
 
 added no depth: zbinroutfixedmy, zbinroutfixedmyreset, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt, zbinroutmycv(depth)
+
+*to add below*
 
 fixing/adding from exp_port: pSR_recbin, pSRxorroutes, pSRaddroutes,
 pSRprobxortogx, pSRprobxortogxI, pSRmatch, pSRshare, pSRGswop,

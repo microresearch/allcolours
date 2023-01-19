@@ -644,6 +644,47 @@ static inline uint32_t binrout_probXY(uint32_t depth, uint32_t in, uint32_t w){ 
   return bt;
 }
 
+// // or different struct for each function
+typedef struct bitfunc_ {
+uint32_t setroute;
+uint32_t depth;
+uint32_t in;
+uint32_t(*func)(uint32_t depth, uint32_t in, uint32_t w);
+} bitfunc;
+
+//uint32_t binrout_probXY(uint32_t depth, uint32_t in, uint32_t w){   //global
+
+static const bitfunc probXY={0, 1, 0, binrout_probXY};
+
+// and array of these like:
+
+static const bitfunc *funclist[64]={&probXY};
+
+
+/*
+and then we can have... eg.
+
+void SR_geo_outer_C23(uint32_t w){  // as above with length or we can also have dacfrom for depth
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+
+  if (bitfunc[gate[w].matrix[3]>>7]->setroute) gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; //depth
+  else SETROUTE=gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; //depth
+
+  gate[w].matrix[6]=CVL[w]; // length
+  gate[w].inner=SR_geo_inner_binrC; // 16 of these >>8 <<8
+}
+}
+
+and call it with:
+
+//bitfunct[compostmode]->func();
+
+bitn=funclist[gate[w].matrix[3]>>7]->func(gate[w].matrix[4], gate[w].matrix[5], w); // >>7 as 32
+
+ */
+
 static inline uint32_t binrout_probXY1(uint32_t depth, uint32_t in, uint32_t w){   //global
   uint32_t bt=0, bitrr, tmp;
   if (depth<in) {
