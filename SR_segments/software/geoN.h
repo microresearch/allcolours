@@ -4,6 +4,10 @@ For upper mode N: 16x4 modes
 
 adc, abstracts and routes only
 
+prob of ADC entry or route entry, route XOR ADC
+
+switches between these entries, abstracts as entry (no ADC)?
+
 3/11/2022: TODO: check all array access and <<7 <<6 etc
 
 11/10/2022

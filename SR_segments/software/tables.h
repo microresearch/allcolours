@@ -43,9 +43,11 @@ uint32_t binroute[17][4]={ // add more routes, also what seq change of routes ma
     {0,0,0,0} // drop all routes
 }; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
 
+//TODO: remove
 uint32_t androutes[16][4]={ // 2 routes per SR, but still as 2 each encodings
   {10,5,10,5}
 };
+
 
 uint32_t inroute[16][4]={ // who we have main incoming route from 0-3 - from above
         {3,0,1,2}, // default 8121 // now 8124

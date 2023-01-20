@@ -74,7 +74,7 @@ void SR_geo_inner_testexp(uint32_t w){  // no probability, no adc - this can be 
       gate[w].fake=gate[w].trigger;
       GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
-    bitn=(*zexpetcbits[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    bitn=(*zzexpetcbits[gate[w].matrix[3]])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -105,6 +105,7 @@ void SR_geo_inner_noprobTEST(uint32_t w){  // test for array of
 }
 
 // obsolete?
+/*
 void SR_geo_inner_noprobfixeddepthC(uint32_t w){  // no probability, no adc - this can be generic
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
@@ -123,6 +124,7 @@ void SR_geo_inner_noprobfixeddepthC(uint32_t w){  // no probability, no adc - th
     new_data(val,w);
     }
 }
+*/
 
 void SR_geo_inner_noprobnodC(uint32_t w){  // no probability, no adc - this can be generic
   HEADNADA;
@@ -757,10 +759,10 @@ void SR_geo_outer_testroutearray(uint32_t w){  // CV1
 void SR_geo_outer_testexp(uint32_t w){ 
   if (gate[w].changed==0) { 
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=32; // zexpetcbits 41 index ? TESTY - to finish tests
+  gate[w].matrix[3]=24; // zzz<25 ///zexpetcbits 41 index ? TESTY - to finish tests
   gate[w].matrix[4]=CVL[w]; 
-  gate[w].matrix[17]=CVL[w]; 
-
+  //  gate[w].matrix[17]=CVL[w]; 
+  SETROUTECV;// new one
   gate[w].inner=SR_geo_inner_testexp;
   }
 }
@@ -892,7 +894,8 @@ void SR_geo_outer_C01(uint32_t w){  // spdfrac, depth as route
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=0<<6; // depth as route - binrout
   //  gate[w].matrix[4]=CVL[w]; //
-  SETROUTE=CVL[w];
+  //  SETROUTE=CVL[w];
+  SETROUTECV;// new one
   gate[w].inner=SR_geo_inner_noprobC; //routebitsd
   }
 }
@@ -903,7 +906,8 @@ void SR_geo_outer_C02(uint32_t w){  // spdfrac, fixed route/global, flextype
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=46<<6; // fixed/flextype = binroutesel2=46
   //  gate[w].matrix[4]=CVL[w]; //
-  SETROUTETYPE=CVL[w];
+  //  SETROUTETYPE=CVL[w];
+  SETROUTETYPECV;
   gate[w].inner=SR_geo_inner_noprobC;
   }
   }
@@ -913,7 +917,8 @@ void SR_geo_outer_C03(uint32_t w){  // spdfrac, depthroute, fixedtype->global
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=45<<6; // fixed/flextype = binroutesel1=45
-  SETROUTE=CVL[w]; //
+  //  SETROUTE=CVL[w]; //
+  SETROUTECV;// new one
   gate[w].inner=SR_geo_inner_noprobC;
 }
 }
@@ -953,7 +958,7 @@ void SR_geo_outer_C12(uint32_t w){  // spdfrac, depth as route
 }
   
 // we pass fixed depth/as/route and select function -> length as dacfrom // now is theroute // obsolete now
-void SR_geo_outer_C13(uint32_t w){  
+/*void SR_geo_outer_C13(uint32_t w){  
   if (gate[w].changed==0) {
     gate[w].matrix[0]=0<<7; // spdfrac
     gate[w].matrix[1]=CV[w];// speed
@@ -961,7 +966,7 @@ void SR_geo_outer_C13(uint32_t w){
     gate[w].matrix[6]=gate[dacfrom[daccount][w]].dac; 
     gate[w].inner=SR_geo_inner_noprobfixeddepthC;
   }
-}
+  }*/
 
 //- start vary routes/new sel with IN as sel->SR_geo_inner_binr 
 void SR_geo_outer_C20(uint32_t w){  // 
@@ -1006,7 +1011,7 @@ void SR_geo_outer_C23(uint32_t w){  // as above with length or we can also have 
   gate[w].matrix[1]=CV[w];// speed
 
   if (setroute[gate[w].matrix[3]>>7]) gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; //depth
-  else SETROUTE=gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; //depth
+  else SETROUTEDAC;// new one
 
   gate[w].matrix[6]=CVL[w]; // length
   gate[w].inner=SR_geo_inner_binrC; // 16 of these >>8 <<8

@@ -33,7 +33,7 @@ DONEsetting of dactypes
 *also potential global speeds from moder - how this can over-ride // sets of global modes*
 *reset global speeds and binary[all] in moder - full RESET macro to use*
 
-*dislocations of: ordercount of SRs in globals*
+*ORDER!!! dislocations of: ordercount of SRs in globals*
 
 *where do we set globflag and inflag? see below*
 
@@ -97,6 +97,92 @@ C - as we have, check prob of DAC outsES-61/62
 R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
+
+
+** 19/1/2023
+
+TODO:
+
+- finish testing testexp lot
+
+- DONEadd resets for route and type to generic macro resets (if not already there)DONE
+
+- DONEpull typeDONE and routesDONE -> test with setting in geoC
+
+// we still need to resolve DEPTH and CV questions
+
+so what functions now have no depth/AND/no route?
+
+- abstract bits:
+
+zosc1bitsD, sigmadeltaD, cipherDS, osceqD, zprobbitsD,
+zprobbitsxorstrobeDS, zprobbitsxortoggleDS, zonebitsDS, zlfsrbitsD,
+zllfsrbitsXXX, zflipbitsD, zosceqbitsID, zosc1bitsID, zonebitsIDS, zlfsrbitsID,
+zflipbitsID, zpattern4bitsD, zpattern8bitsD, zpattern4bitsID,
+zpattern8bitsID, flipflopD, flipflopID, ztogglebitsshS, ztogglebitsS // 24
+
+NO depth: zllfsrbits, ztogglebitsshS, ztogglebitsS 
+
+- routebits:
+
+// with types
+
+mark route, depth, and strobe: R, D, S, nada XXX(removed)
+
+ZbinroutR, ZbinroutorD, ZzbinrouteINVbitsR, ZzbinroutebitscycleR,
+zbinroutebitscyclestrIRS, ZflipflopandrouteR, ZpSRsigmaR, ZviennabitsD,
+ZzsuccbitsppD, ZzsuccbitsIppD, ZzwiardbitsD, ZzwiardinvbitsD,
+Zbinroutfixed_prob1D, Zbinroutfixed_prob2D, Zbinroutfixed_prob3D,
+Zbinroutfixed_prob4D, Zbinroutfixed_prob5D, Zbinrout_probXYD,
+Zbinrout_probXY1D, NZbinrout_probXYD, NZbinrout_probXY1D,
+NZbinroutfixed_prob1D, NZbinroutfixed_prob2D, NZbinroutfixed_prob3D,
+NZbinroutfixed_prob4D, NZzwiardbitsD, NZzwiardinvbitsD, binroutesel3R, NZzbinrouteINVbitsR,
+NZzbinroutebitscycleR, NZflipflopandrouteR, zbinroutmycvD,
+zbinroutorgapR, zzwiardbits2ID,
+zzwiardbitsID, zzwiardinvbitsID, 
+zzsingleroutebitsD, zbinroutfixed_prob1RD, zbinroutfixed_prob1LD // 39
+
+// without types
+
+zsuccbitsprobD, zbinrouteORbitsR, zbinrouteANDbitsR, zbinrouteSRbitsR,
+zbinroutebitsI_noshiftR, zbinroutebitscycleI_noshiftR, zSRNbitsD, zSRLbitsD, zSRCbitsD, zSRRbitsD,
+zreturnbitsD,zreturnnotbitsD, zTMsimplebitsD, 
+zpattern4bitsD, zpattern8bitsD, zpattern4bitsID, zpattern8bitsID,
+zcopyGSRD, zcopyGSR_sDS, 
+zbinroutfixed_noshift_transitIR, tailbitswithdD, tailbitsIwithdD,
+tailbitswithdnosD, tailbitsIwithdnosD, binroutAND0R, binroutAND00R,
+binroutaltresetSR, binrout_probXY2D,
+binrout_probXY3D // 28
+
+and marked already as nodepth:
+
+zjustcycle, tailbitsInos, tailbitsnos, tailbitsI, zjusttail, zbinroutfixedmy, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt,
+
+- exp_port: all route, which nada, which strobe
+
+// now with types
+
+pSR_recbinR, pSRxorroutesSXXX, pSRaddroutesSXXX, pSRprobxortogxDS,
+pSRprobxortogxIDS, pSRmatchD, pSRshareR, pSRGswopSR, pSRsigmaRaboveanyways,
+pbitLcvsrrouteD, pstreamD, pSRDACroutestrobeSXXX, pSRLLbumprouteDS,
+pSRbumprouteSCCC, pSRN40RS, pSRN36RS, pSRN33cipherRS, pSRN33RS, pSRN13D,
+pSRRLLswopDS, pSRRbumproute0SXXX, pprobintprob3D, pprobintprob5_0D,
+pprobintprob6_0D, pprobtoggle1RS, pprobtoggleRS, pprobtoggle3RS,
+pprobtoggle4RS, pprobtoggleRS, pprobstrobe1RS, pprobstrobe2RS, pprobstrobe3RS,
+pSRN15D, pSRN8RS, pSRN7RS, pSRN6RS, pSRN5RS, pSRxorSRD, pbitSRroutedoitD,
+pSR_routeSRbits02R, pSR_routeSRbits01R, pSRRaccelghosts0R // 42
+
+// without types
+
+pSR_layer1R, pSR_layer2R, pSR_reflectR, pSR_altbin1R, pSRholdR,
+pSRholdfromdacR, pSRshrouteR, pbitSRroutelogXXX, pbitSRroutelogxxXXX,
+pbitSRroutelogxxxXXX, pbitLSRroutexxxlogD, pSRLcvSRmaskrouteD, pSRLcvrouteD,
+pSR32XXX, pSRmodR, pSRNwas13RS, pSRN65RS, pSRN62R, pSRN30D, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRN12R, pSRN11R,
+pSRN10SXXX, pSRNwas15XXX // 25 // all tested fine
+
+*redo all bitsn for new types: and fill in exp_port as route/abstract/strobe etc...*
+
+// note that when we have exp_port functions to test we hit 80% memory...
 
 ** 18/1/2023
 
@@ -171,7 +257,7 @@ setroutes - do we need that bit????
 
 Questions as not so relevant: bitroutI
 
-new zz types added/to add in: added: zzwiardbits2I, zzwiardbitsI, zzwiardinvbitsI, zzsuccbitsprob, zbinroutfixedfixed, zzsingleroutebits, zbinroutfixed_prob1R, zbinroutfixed_prob1L 
+new zz types added/to add in: added: zzwiardbits2I, zzwiardbitsI, zzwiardinvbitsI, zbinroutfixedfixed, zzsingleroutebits, zbinroutfixed_prob1R, zbinroutfixed_prob1L 
 
 added no depth: zbinroutfixedmy, zbinroutfixedmyreset, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt, zbinroutmycv(depth)
 
