@@ -119,7 +119,7 @@ uint32_t (*expetcbits[64])(uint32_t depth, uint32_t in, uint32_t wh)={pSR_routeS
 uint32_t (*zexpetcbits[42])(uint32_t depth, uint32_t in, uint32_t wh)={pSR_recbin, pSRxorroutes, pSRaddroutes, pSRprobxortogx, pSRprobxortogxI, pSRmatch, pSRshare, pSRGswop, pSRsigma, pbitLcvsrroute, pstream, pSRDACroutestrobe, pSRLLbumproute, pSRbumproute, pSRN40, pSRN36, pSRN33cipher, pSRN33, pSRN13, pSRRLLswop, pSRRbumproute0, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pSRN15, pSRN8, pSRN7, pSRN6, pSRN5, pSRxorSR, pbitSRroutedoit, pSR_routeSRbits02, pSR_routeSRbits01, pSRRaccelghosts0}; // recommmend: pSRRbumproute0(20), 
 
 // sin types just to test
-uint32_t (*zzexpetcbits[25])(uint32_t depth, uint32_t in, uint32_t wh)={pSR_layer1, pSR_layer2, pSR_reflect, pSR_altbin1, pSRhold, pSRholdfromdac, pSRshroute, pbitSRroutelog, pbitSRroutelogxx, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSR32, pSRmod, pSRNwas13, pSRN65, pSRN62, pSRN30, pSRN22, pSRN21, pSRN15, pSRN12, pSRN11, pSRN10, pSRNwas15};
+uint32_t (*zzexpetcbits[26])(uint32_t depth, uint32_t in, uint32_t wh)={pSR_layer1, pSR_layer2, pSR_reflect, pSR_altbin1, pSRhold, pSRholdfromdac, pSRshroute, pbitSRroutelog, pbitSRroutelogxx, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSR32, pSRmod, pSRNwas13, pSRN65, pSRN62, pSRN30, pSRN22, pSRN21, pSRN15, pSRN12, pSRN11, pSRN10, pSRNwas15};
 
 
 

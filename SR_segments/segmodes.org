@@ -98,12 +98,26 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 20/1/2023
+
+- find functions which have route AND depth together
+
+- do NOT set route every time - leave as gap or only set when needed: 
+
+*so we need array or struct for functions: bits: -S, -R, -D:*
+
+1 D, 2 R, 4 S (if needed) 8 IN?
+
+- start new bits functions//divide up on strobes: allbits, abstract, route, with types, without types
+
+- start CC, LL etc from scratch... copy in...
+
 
 ** 19/1/2023
 
 TODO:
 
-- finish testing testexp lot
+- DONEfinish testing testexp lot
 
 - DONEadd resets for route and type to generic macro resets (if not already there)DONE
 
@@ -174,11 +188,8 @@ pSR_routeSRbits02R, pSR_routeSRbits01R, pSRRaccelghosts0R // 42
 
 // without types
 
-pSR_layer1R, pSR_layer2R, pSR_reflectR, pSR_altbin1R, pSRholdR,
-pSRholdfromdacR, pSRshrouteR, pbitSRroutelogXXX, pbitSRroutelogxxXXX,
-pbitSRroutelogxxxXXX, pbitLSRroutexxxlogD, pSRLcvSRmaskrouteD, pSRLcvrouteD,
-pSR32XXX, pSRmodR, pSRNwas13RS, pSRN65RS, pSRN62R, pSRN30D, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRN12R, pSRN11R,
-pSRN10SXXX, pSRNwas15XXX // 25 // all tested fine
+pSR_layer1R, pSR_layer2R, pSR_reflectR, pSR_altbin1R, pSRholdR, pSRholdfromdacR, pSRshrouteR, pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pbitLSRroutexxxlogD, pSRLcvSRmaskrouteD, pSRLcvrouteD,
+pSR32XXX, pSRmodR, pSRNwas13RS, pSRN65RS, pSRN62R, pSRN30D, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRN12R, pSRN11R, pSRN10SXXX, pSRNwas15XXX // 26 // all tested fine
 
 *redo all bitsn for new types: and fill in exp_port as route/abstract/strobe etc...*
 
