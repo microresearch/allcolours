@@ -39,6 +39,8 @@ DONEsetting of dactypes
 
 *make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
 
+*double check all functions*
+
 /////
 
 - co-ordinate and check lists of routes, dacfrom, speedfrom routes // resets and manipulations, all lengths of lists
@@ -98,16 +100,32 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 24/1/2023
+
+//question of SMD changes///CV range (-8 to +8 16 octaves on hold) of SPEED/CV[w] as that CV is also used by prob. in strobe modes...
+//other alternative would be to -5 +5 and leave v/oct aside -> 100k/100k and 33k divider in that case... do for all???
+
+
+TODO: see below/fix depths
+
+- new function arrays in new bits, draft first 16 modes for each side and test these...
+
+DONE:maybe pull uses of depth into all non-depth so we don't need: if (nodepth==1)/// *note: we still need fix no depths in case of probs...*
+
+FOR GLOBAL rmodes:::
+- *16 last global modes*
+- *global modes all hold last function (eg. it could be abstract function)*
+
+
+- DONE:reverted to 16 octaves/TO_TEST
 
 ** 20/1/2023
 
-*maybe pull uses of depth into all non-depth so we don't need: if (nodepth==1)*
+// TODO: DONEuse globflag where needed in geogen/exp_port - also *where do we set globflag*
 
-// TODO: *use globflag where needed in geogen/exp_port - also where we set this*
+// DONE/TODO: but would be nice to locally shift on theroute - add these./change to: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD
 
-// DONE/TODO: *but would be nice to locally shift on theroute - add these./change to: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD*
-
-// *what do we do with the few no_depth ones we have? convert to internal prob??? just use as length*
+// DONEsee above: what do we do with the few no_depth ones we have? convert to internal prob??? just use as length
 
 *TODO - draft function list and inner/outers - say for routes with types*
 
@@ -119,11 +137,12 @@ lots of probs did have, and we can also set using globflagTODO - if we have dept
 
 how to write that:
 
-just set a flag if we need to set route at all... (if depth is not used)? 1 means depth is used... // but what of no depth ones...
+just set a flag if we need to set route at all... (if depth is not used)? 1 means depth is used... // but what of no depth ones...//FIX these...
 
 if (funcr[gate[w].matrix[3]>>7]&0x01) just do depth   // Depth
 else do route // route only
 
+*thus only flag needed is depth???*
 
 - start new bits functions//divide up on strobes: allbits, abstract, route, with types, without types
 
@@ -149,9 +168,9 @@ zosc1bitsD, sigmadeltaD, cipherDS, osceqD, zprobbitsD,
 zprobbitsxorstrobeDS, zprobbitsxortoggleDS, zonebitsDS, zlfsrbitsD,
 zllfsrbitsXXX, zflipbitsD, zosceqbitsID, zosc1bitsID, zonebitsIDS, zlfsrbitsID,
 zflipbitsID, zpattern4bitsD, zpattern8bitsD, zpattern4bitsID,
-zpattern8bitsID, flipflopD, flipflopID, ztogglebitsshS, ztogglebitsS // 24
+zpattern8bitsID, flipflopD, flipflopID, ztogglebitsshDS, ztogglebitsDS // 24
 
-NO depth in above: zllfsrbits, ztogglebitsshS, ztogglebitsS // can be probbed
+FIXED:NO depth in above: zllfsrbits, ztogglebitsshS, ztogglebitsS // can be probbed// well not the lfsr
 
 - routebits:
 
@@ -186,9 +205,9 @@ binrout_probXY3D // 28
 
 and marked already as nodepth 
 
-no types: zjustcycle, tailbitsInos, tailbitsnos, tailbitsI, zjusttail // justcycle we have as prob already, maybe get rid others...
+no types: zjustcycle, tailbitsInos, tailbitsnos, tailbitsI, zjusttail // justcycle we have as prob already, maybe get rid others...TODO
 
-no depth/types: zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt // now these are for theroute and we keep them...
+FIXED:no depth/types: zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt // now these are for theroute and we keep them...
 
 - exp_port: all route, which nada, which strobe
 
@@ -209,11 +228,11 @@ pSR_routeSRbits02R, pSR_routeSRbits01R, pSRRaccelghosts0R // 42
 pSR_layer1R, pSR_layer2R, pSR_reflectR, pSR_altbin1R, pSRholdR, pSRholdfromdacR, pSRshrouteR, pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pbitLSRroutexxxlogD, pSRLcvSRmaskrouteD, pSRLcvrouteD,
 pSR32XXX, pSRmodR, pSRNwas13RS, pSRN65RS, pSRN62R, pSRN30D, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRN12R, pSRN11R, pSRN10SR, pSRNwas15XXX // 26 // all tested fine
 
-// thus no depth/types: pSRRbumproute0SXXX - similar as binroute bumps ahead... can get rid of
-// no depth/no types: pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pSR32XXX, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRNwas15XXX ???
+// thus no depth/types: pSRRbumproute0SXXX - similar as binroute bumps ahead... *can get rid of*
+// FIXED:no depth/no types: pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pSR32XXX, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRNwas15XXX ???
 
 
-*redo all bitsn for new types: and fill in exp_port as route/abstract/strobe etc...*
+*newbits.h redo all bitsn for new types: and fill in exp_port as route/abstract/strobe etc...*
 
 // note that when we have exp_port functions to test we hit 80% memory...
 

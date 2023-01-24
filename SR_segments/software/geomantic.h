@@ -51,6 +51,8 @@ uint32_t (*padcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t re
 
 #include "bitsn.h" // for bits and routes
 
+//#include "newbits.h" // for bits and routes
+
 // 4. probs
 /*
 probfsins
