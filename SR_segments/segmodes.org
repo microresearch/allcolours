@@ -98,20 +98,36 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+
 ** 20/1/2023
 
-- find functions which have route AND depth together
+*maybe pull uses of depth into all non-depth so we don't need: if (nodepth==1)*
 
-- do NOT set route every time - leave as gap or only set when needed: 
+// TODO: *use globflag where needed in geogen/exp_port - also where we set this*
 
-*so we need array or struct for functions: bits: -S, -R, -D:*
+// DONE/TODO: *but would be nice to locally shift on theroute - add these./change to: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD*
 
-1 D, 2 R, 4 S (if needed) 8 IN?
+// *what do we do with the few no_depth ones we have? convert to internal prob??? just use as length*
+
+*TODO - draft function list and inner/outers - say for routes with types*
+
+- do NOT set route every time - leave as gap or only set when needed->
+
+- find functions which have route AND depth together: 
+
+lots of probs did have, and we can also set using globflagTODO - if we have depth and route then just gap route...
+
+how to write that:
+
+just set a flag if we need to set route at all... (if depth is not used)? 1 means depth is used... // but what of no depth ones...
+
+if (funcr[gate[w].matrix[3]>>7]&0x01) just do depth   // Depth
+else do route // route only
+
 
 - start new bits functions//divide up on strobes: allbits, abstract, route, with types, without types
 
 - start CC, LL etc from scratch... copy in...
-
 
 ** 19/1/2023
 
@@ -135,7 +151,7 @@ zllfsrbitsXXX, zflipbitsD, zosceqbitsID, zosc1bitsID, zonebitsIDS, zlfsrbitsID,
 zflipbitsID, zpattern4bitsD, zpattern8bitsD, zpattern4bitsID,
 zpattern8bitsID, flipflopD, flipflopID, ztogglebitsshS, ztogglebitsS // 24
 
-NO depth: zllfsrbits, ztogglebitsshS, ztogglebitsS 
+NO depth in above: zllfsrbits, ztogglebitsshS, ztogglebitsS // can be probbed
 
 - routebits:
 
@@ -154,7 +170,7 @@ NZbinroutfixed_prob4D, NZzwiardbitsD, NZzwiardinvbitsD, binroutesel3R, NZzbinrou
 NZzbinroutebitscycleR, NZflipflopandrouteR, zbinroutmycvD,
 zbinroutorgapR, zzwiardbits2ID,
 zzwiardbitsID, zzwiardinvbitsID, 
-zzsingleroutebitsD, zbinroutfixed_prob1RD, zbinroutfixed_prob1LD // 39
+zzsingleroutebitsD, zbinroutfixed_prob1R/D, zbinroutfixed_prob1LD // 39
 
 // without types
 
@@ -168,17 +184,19 @@ tailbitswithdnosD, tailbitsIwithdnosD, binroutAND0R, binroutAND00R,
 binroutaltresetSR, binrout_probXY2D,
 binrout_probXY3D // 28
 
-and marked already as nodepth:
+and marked already as nodepth 
 
-zjustcycle, tailbitsInos, tailbitsnos, tailbitsI, zjusttail, zbinroutfixedmy, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt,
+no types: zjustcycle, tailbitsInos, tailbitsnos, tailbitsI, zjusttail // justcycle we have as prob already, maybe get rid others...
+
+no depth/types: zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt // now these are for theroute and we keep them...
 
 - exp_port: all route, which nada, which strobe
 
 // now with types
 
-pSR_recbinR, pSRxorroutesSXXX, pSRaddroutesSXXX, pSRprobxortogxDS,
+pSR_recbinR, pSRxorroutesSR, pSRaddroutesSR, pSRprobxortogxDS,
 pSRprobxortogxIDS, pSRmatchD, pSRshareR, pSRGswopSR, pSRsigmaRaboveanyways,
-pbitLcvsrrouteD, pstreamD, pSRDACroutestrobeSXXX, pSRLLbumprouteDS,
+pbitLcvsrrouteD, pstreamD, pSRDACroutestrobeSR, pSRLLbumprouteDS,
 pSRbumprouteSCCC, pSRN40RS, pSRN36RS, pSRN33cipherRS, pSRN33RS, pSRN13D,
 pSRRLLswopDS, pSRRbumproute0SXXX, pprobintprob3D, pprobintprob5_0D,
 pprobintprob6_0D, pprobtoggle1RS, pprobtoggleRS, pprobtoggle3RS,
@@ -189,7 +207,11 @@ pSR_routeSRbits02R, pSR_routeSRbits01R, pSRRaccelghosts0R // 42
 // without types
 
 pSR_layer1R, pSR_layer2R, pSR_reflectR, pSR_altbin1R, pSRholdR, pSRholdfromdacR, pSRshrouteR, pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pbitLSRroutexxxlogD, pSRLcvSRmaskrouteD, pSRLcvrouteD,
-pSR32XXX, pSRmodR, pSRNwas13RS, pSRN65RS, pSRN62R, pSRN30D, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRN12R, pSRN11R, pSRN10SXXX, pSRNwas15XXX // 26 // all tested fine
+pSR32XXX, pSRmodR, pSRNwas13RS, pSRN65RS, pSRN62R, pSRN30D, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRN12R, pSRN11R, pSRN10SR, pSRNwas15XXX // 26 // all tested fine
+
+// thus no depth/types: pSRRbumproute0SXXX - similar as binroute bumps ahead... can get rid of
+// no depth/no types: pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pSR32XXX, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRNwas15XXX ???
+
 
 *redo all bitsn for new types: and fill in exp_port as route/abstract/strobe etc...*
 

@@ -896,8 +896,8 @@ static inline uint32_t pSRN22(uint32_t depth, uint32_t in, uint32_t w){//no dept
   uint32_t x, tmp, bitrr, temp, bitn=0;
   uint8_t prob; uint32_t bitnn, bitnnn; 
   bitn = (gate[others[w][0]].shift_>>SRlength[others[w][0]]) & 0x01;
-    bitnn = (gate[others[w][1]].shift_>>SRlength[others[w][1]]) & 0x01;
-    bitnnn = (gate[others[w][2]].shift_>>SRlength[others[w][2]]) & 0x01;
+  bitnn = (gate[others[w][1]].shift_>>SRlength[others[w][1]]) & 0x01;
+  bitnnn = (gate[others[w][2]].shift_>>SRlength[others[w][2]]) & 0x01;
 
     //    bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn;
     bitn^=bitnn^bitnnn;   
@@ -980,7 +980,8 @@ static inline uint32_t pSRN11(uint32_t depth, uint32_t in, uint32_t w){//STROBE
 static inline uint32_t pSRN10(uint32_t depth, uint32_t in, uint32_t w){//STROBE//no depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
     gate[w].strobed=1;
-    tmp=binroute[count][w];
+    //    tmp=binroute[count][w];
+      tmp=gate[w].theroute;
     for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -1058,8 +1059,8 @@ static inline uint32_t pSRRbumproute0(uint32_t depth, uint32_t in, uint32_t w){/
     gate[w].strobed=1;
   if (gate[w].trigger) gate[w].route++;
   if (gate[w].route>15) gate[w].route=0;
-  //  tmp=myroute[w][gate[w].route];
-    tmp=gate[w].theroute;
+  tmp=myroute[w][gate[w].route];
+  //    tmp=gate[w].theroute;
     tmpp=gate[w].routetype;
   ROUTETYPE_;  
 

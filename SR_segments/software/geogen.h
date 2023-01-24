@@ -321,10 +321,10 @@ static inline uint32_t Zbinrout_probXY(uint32_t depth, uint32_t in, uint32_t w){
   return bitn;
 }
 
-static inline uint32_t NZbinrout_probXY(uint32_t depth, uint32_t in, uint32_t w){  
+static inline uint32_t NZbinrout_probXY(uint32_t depth, uint32_t in, uint32_t w){  // was RD
   uint32_t bitn=0, bitrr, tmp, x, tmpp;
-  //  tmp=binroute[count][w]|binary[w];
-  tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w];
+  //  tmp=gate[w].theroute;
   if (depth<LFSR__[w]) tmp=tmp^15;
   tmpp=gate[w].routetype;
 
@@ -346,11 +346,11 @@ static inline uint32_t Zbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w)
   return bitn;
 }
 
-static inline uint32_t NZbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w){   
+static inline uint32_t NZbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w){   // was RD
   uint32_t bitn=0, bitrr, tmp, x, tmpp;
   if (depth<LFSR__[w]) {
-    //    tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+        tmp=binroute[count][w]|binary[w];
+    //    tmp=gate[w].theroute;
   }
   else {
     tmp=dacfrom[daccount][w];//|binary[w];    
@@ -403,10 +403,10 @@ static inline uint32_t Zbinroutfixed_prob2(uint32_t depth, uint32_t in, uint32_t
   return bitn;
 }
 
-static inline uint32_t NZbinroutfixed_prob2(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - // prob of inverting routed bit // fixed
+static inline uint32_t NZbinroutfixed_prob2(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - // prob of inverting routed bit // fixed // was RD
   uint32_t bitn=0, bitrr, tmp, x, tmpp;
-  //  tmp=binroute[count][w]|binary[w];
-  tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w];
+  //  tmp=gate[w].theroute;
   tmpp=gate[w].routetype;
 
   ROUTETYPE_;
@@ -433,8 +433,8 @@ static inline uint32_t Zbinroutfixed_prob3(uint32_t depth, uint32_t in, uint32_t
 static inline uint32_t NZbinroutfixed_prob3(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - prob of routed or cycling INV
   uint32_t bitn=0, bitrr, x, tmp, tmpp;
   if (depth<LFSR__[w]) {
-    //    tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w];
+    //    tmp=gate[w].theroute;
     tmpp=gate[w].routetype;
 
     ROUTETYPE_;
@@ -459,7 +459,7 @@ static inline uint32_t Zbinroutfixed_prob4(uint32_t depth, uint32_t in, uint32_t
   return bitn;
 }
 
-static inline uint32_t Zbinroutfixed_prob5(uint32_t depth, uint32_t in, uint32_t w){   // new prob 8/12 of theroute vs binroute
+static inline uint32_t Zbinroutfixed_prob5(uint32_t depth, uint32_t in, uint32_t w){   // new prob 8/12 of theroute vs binroute RD ->
   uint32_t bitn=0, bitrr, tmp, x, tmpp;
   tmpp=gate[w].routetype;
 
@@ -473,7 +473,8 @@ static inline uint32_t Zbinroutfixed_prob5(uint32_t depth, uint32_t in, uint32_t
 
 static inline uint32_t NZbinroutfixed_prob4(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - *routed vs [routed^cycling]* -- fixed
   uint32_t bitn=0, bitrr, tmp, x, tmpp;
-  tmp=gate[w].theroute;
+  //  tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w];
   tmpp=gate[w].routetype;
 
   ROUTETYPE_;
@@ -518,6 +519,7 @@ static inline uint32_t NZzwiardbits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bitn=0, bitrr, x, tmpp, tmp;
   if (depth>LFSR__[w]){
     tmp=gate[w].theroute;
+    
     tmpp=gate[w].routetype;
 
     ROUTETYPE_;
@@ -1444,60 +1446,63 @@ so we have 24... do we want to fill all of those out!?
 
 // zbinroutfixedmy., zbinroutfixedmyreset, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt, zbinroutmycv
 
-static inline uint32_t zbinroutfixedmy(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY // no depth
+// remove
+static inline uint32_t zbinroutfixedmy(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
   gate[w].theroute=myroute[w][gate[w].route];//|binary[w];
   tmp=gate[w].theroute;
-tmpp=gate[w].routetype;
+  tmpp=gate[w].routetype;
   ROUTETYPE_;
   return bitn;
 }
 
+// remove
 static inline uint32_t zbinroutfixedmyreset(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute MY // no depth
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
   gate[w].route=0;
   gate[w].theroute=myroute[w][gate[w].route];
   tmp=gate[w].theroute;
-tmpp=gate[w].routetype;
+  tmpp=gate[w].routetype;
   ROUTETYPE_;
   return bitn;
 }
 
+// these fixed: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD 
 static inline uint32_t zbinroutmybumpS(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute STROBE // no depth
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
   gate[w].strobed=1;
-  if (gate[w].trigger) gate[w].route++;
-  if (gate[w].route>15) gate[w].route=0;
-  gate[w].theroute=myroute[w][gate[w].route];
+  if (gate[w].trigger) gate[w].theroute++;
+  if (gate[w].theroute>15) gate[w].theroute=1;
   tmp=gate[w].theroute;
-tmpp=gate[w].routetype;
+  tmpp=gate[w].routetype;
   ROUTETYPE_;
   return bitn;
 }
 
 static inline uint32_t zbinroutmybumpbit(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute bits // no depth
-  uint32_t bitn=0, bitrr, tmp, x;
-  if (gate[dacfrom[daccount][w]].shift_&0x01) gate[w].route++;
-  if (gate[w].route>15) gate[w].route=0;
-  gate[w].theroute=myroute[w][gate[w].route];
+  uint32_t bitn=0, bitrr, tmp, tmpp, x;
+  if (gate[dacfrom[daccount][w]].shift_&0x01) gate[w].theroute++;
+  if (gate[w].theroute>15) gate[w].theroute=1;
+  tmp=gate[w].theroute;
+  tmpp=gate[w].routetype;
+  ROUTETYPE_;
   return bitn;
 }
 
 static inline uint32_t zbinroutmybumpbitt(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute bits // no depth
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
-  if (gate[dacfrom[daccount][w]].Gshift_[w]) gate[w].route++;
-  if (gate[w].route>15) gate[w].route=0;
-  gate[w].theroute=myroute[w][gate[w].route];
+  if (gate[dacfrom[daccount][w]].Gshift_[w]) gate[w].theroute++;
+  if (gate[w].theroute>15) gate[w].theroute=1;
   tmp=gate[w].theroute;
-tmpp=gate[w].routetype;
+  tmpp=gate[w].routetype;
   ROUTETYPE_;
   return bitn;
 }
 
 static inline uint32_t zbinroutmycv(uint32_t depth, uint32_t in, uint32_t w){   // CV->myroute so we can use DAC // depth
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
-  gate[w].route=depth>>8; // 4 bits 0-16 routes TODO could be more
-  gate[w].theroute=myroute[w][gate[w].route];
+  if (depth>LFSR__[w])  gate[w].theroute++;
+  if (gate[w].theroute>15) gate[w].theroute=1;
   tmp=gate[w].theroute;
   tmpp=gate[w].routetype;
   ROUTETYPE_;
