@@ -100,15 +100,33 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 25/1/2023
+
+TODO:
+- sort bit functions and narrow down
+- check probs and depth questions there
+- draft 16 modes all sides and test
+- 16v pp tests with basic probs
+
+Notebook notes:
+
+for geoNN:
+- do we have abstract modes instead of adc in also? could also have prob of adc or abstract. what is default abstract? what is default adc type, adc parameter?
+- no route in, just ADC or abstract types
+- prob of adc vs. route // adc vs. adc^route - negotiate all probs
+
 ** 24/1/2023
 
 //question of SMD changes///CV range (-8 to +8 16 octaves on hold) of SPEED/CV[w] as that CV is also used by prob. in strobe modes...
 //other alternative would be to -5 +5 and leave v/oct aside -> 100k/100k and 33k divider in that case... do for all???
 
+*We can also imagine slippage/attachment of settings in global modes eg. we have array of count daccount speeedcnt etc and we attach as in matrixp to these*
 
-TODO: see below/fix depths
+TODO: 
 
-- new function arrays in new bits, draft first 16 modes for each side and test these...
+- working on new function arrays - how to cut down number of functions
+
+- new function arrays in newbits, draft first 16 modes for each side and test these...
 
 DONE:maybe pull uses of depth into all non-depth so we don't need: if (nodepth==1)/// *note: we still need fix no depths in case of probs...*
 
@@ -121,7 +139,7 @@ FOR GLOBAL rmodes:::
 
 ** 20/1/2023
 
-// TODO: DONEuse globflag where needed in geogen/exp_port - also *where do we set globflag*
+// TODO: DONEuse globflag where needed in geogen/exp_port - also *where do we set globflag - in globals, set off/xon event*
 
 // DONE/TODO: but would be nice to locally shift on theroute - add these./change to: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD
 

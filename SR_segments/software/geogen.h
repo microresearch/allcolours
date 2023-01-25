@@ -1658,7 +1658,7 @@ static inline uint32_t binroutesel3(uint32_t depth, uint32_t in, uint32_t w){ //
   uint32_t x, tmp, bitrr, bitn=0;
   //uint32_t tmpp=depth>>9; // 3 bits
   //    gate[w].routetype=tmpp;
-uint32_t tmpp=gate[w].routetype;
+  uint32_t tmpp=gate[w].routetype;
 
     tmp=gate[w].theroute;//|binary[w];
     switch(tmpp){
@@ -3169,7 +3169,8 @@ static inline uint32_t zllfsrbits(uint32_t depth, uint32_t in, uint32_t w){
   static uint32_t k;
   // out from lfsr at full speed
   bt=(LFSR_[w]>>31)&0x01;
-  gate[w].matrix[6]=depth; // depth is length?
+  //  gate[w].matrix[6]=depth; // depth is length?
+  if (depth<LFSR__[w]) bt=((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
   return bt;
 }
 

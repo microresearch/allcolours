@@ -725,7 +725,7 @@ static inline uint32_t pSRLLbumproute(uint32_t depth, uint32_t in, uint32_t w){/
   return bitn;
 }
 
-static inline uint32_t pSRbumproute(uint32_t depth, uint32_t in, uint32_t w){//STROBE//no depth
+static inline uint32_t pSRbumproute(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
     gate[w].strobed=1;
   if (gate[w].trigger) gate[w].route++;
@@ -733,7 +733,7 @@ static inline uint32_t pSRbumproute(uint32_t depth, uint32_t in, uint32_t w){//S
   tmp=myroute[w][gate[w].route];
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
-
+  if (LFSR__[w] < depth) bitn^=1;
   return bitn;
 }
 
@@ -1052,6 +1052,7 @@ static inline uint32_t pSRRaccelghosts0(uint32_t depth, uint32_t in, uint32_t w)
     return bitn;
 }
 
+// deprecate
 static inline uint32_t pSRRbumproute0(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   uint32_t x, tmpp, tmp, bitrr, temp, bitn=0;
   //  BINROUTE_; // new routing in here.
@@ -1062,8 +1063,6 @@ static inline uint32_t pSRRbumproute0(uint32_t depth, uint32_t in, uint32_t w){/
   //    tmp=gate[w].theroute;
     tmpp=gate[w].routetype;
   ROUTETYPE_;  
-
-
   return bitn;
 }
 
