@@ -810,12 +810,13 @@ static inline uint32_t pSRN62(uint32_t depth, uint32_t in, uint32_t w){
   return bitn;
 }
 
-static inline uint32_t pSRLLswop(uint32_t depth, uint32_t in, uint32_t w){//STROBE//no depth
+static inline uint32_t pSRLLswop(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   uint32_t x, tmp, bitrr, temp, bitn=0;
     gate[w].strobed=1;
     bitn = (gate[inroute[count][w]].Gshift_[w]>>SRlength[inroute[count][w]]) & 0x01; 
     gate[inroute[count][w]].Gshift_[w]=(gate[inroute[count][w]].Gshift_[w]<<1)+bitn;  
-    if (gate[w].trigger) gate[w].shift_&=gate[inroute[count][w]].Gshift_[w];    
+    if (gate[w].trigger) gate[w].shift_&=gate[inroute[count][w]].Gshift_[w];
+    if (LFSR__[w] < depth) bitn^=1;
   return bitn;
 }
 

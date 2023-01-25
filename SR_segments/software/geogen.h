@@ -91,7 +91,7 @@ can we throw all together, but what of ones which don't use depth ????
 
 */
 
-static inline uint32_t NZzbinrouteINVbits(uint32_t depth, uint32_t in, uint32_t w){   // no depth
+static inline uint32_t NZzbinrouteINVbits(uint32_t depth, uint32_t in, uint32_t w){   //route
   uint32_t x,bitn=0, bitrr, tmpp,tmp;
   depth=gate[w].theroute;
   if (depth==0) { // SR5 is 8th which is outside these bits 
@@ -1244,7 +1244,7 @@ void tailOR(void){
 
 static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now 
   uint32_t bt=0, bitrr;
-    depth=gate[w].theroute;    // deal with no route
+  depth=gate[w].theroute;    // deal with no route
     if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
@@ -1487,6 +1487,7 @@ static inline uint32_t zbinroutmybumpS(uint32_t depth, uint32_t in, uint32_t w){
   tmp=gate[w].theroute;
   tmpp=gate[w].routetype;
   ROUTETYPE_;
+  if (depth<LFSR__[w]) bitn=!bitn;
   return bitn;
 }
 
@@ -1497,6 +1498,7 @@ static inline uint32_t zbinroutmybumpbit(uint32_t depth, uint32_t in, uint32_t w
   tmp=gate[w].theroute;
   tmpp=gate[w].routetype;
   ROUTETYPE_;
+  if (depth<LFSR__[w]) bitn=!bitn;
   return bitn;
 }
 
@@ -1506,6 +1508,7 @@ static inline uint32_t zbinroutmybumpbitt(uint32_t depth, uint32_t in, uint32_t 
   if (gate[w].theroute>15) gate[w].theroute=1;
   tmp=gate[w].theroute;
   tmpp=gate[w].routetype;
+  if (depth<LFSR__[w]) bitn=!bitn;
   ROUTETYPE_;
   return bitn;
 }
@@ -2817,15 +2820,16 @@ static inline uint32_t osceq(uint32_t depth, uint32_t in, uint32_t w){  // so al
      return bt;
 }
 
-static inline uint32_t flipflop(uint32_t depth, uint32_t in, uint32_t w){  // so all share // NO DEPTH
+static inline uint32_t flipflop(uint32_t depth, uint32_t in, uint32_t w){  // so all share // 
   uint32_t bt;
   static uint32_t fl=0;
-  if (depth>in) fl^=1;
+  //if (depth>in) fl^=1;
+  fl^=1;
   bt=fl;
   return bt;
 }
 
-static inline uint32_t flipflopI(uint32_t depth, uint32_t in, uint32_t w){  // so all share// NO DEPTH
+static inline uint32_t flipflopI(uint32_t depth, uint32_t in, uint32_t w){  // so all share// 
   uint32_t bt;
   static uint32_t fl[4]={0,0,0,0};
   if (depth>in) fl[w]^=1;
@@ -2887,7 +2891,7 @@ static inline uint32_t zSRRbits(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t zprobbits(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode
   uint32_t bt=0;
-  if (depth>LFSR__[w]) bt=1; // changed direction
+  if (depth>LFSR__[w]) bt=1; 
   return bt;
 }
 

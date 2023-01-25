@@ -102,11 +102,32 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 25/1/2023
 
+- added print debug code in geoCC to make it easier to debug with openocd... and gdb // see tech_diary too...
+
+- testing routebits_typesz from newbits but hard to cut down, maybe just farm out strobe ones to split: // routebits/juststrobe/types
+
 TODO:
-- sort bit functions and narrow down
-- check probs and depth questions there
+
+PROB WORK:
+*clean up probs. also some non-depth probs now have depth*
+*checking probs and now we have issue as some are against LFSR__ which we filled in some route functions which had no depth (also some already use LFSR)...*
+*if we have probs using depth is nice to have nodepth/route only functions // or if depth say for LFSR is fixed does that work? test//*
+*also if we use CV for depth for prob, then we have free CVL depth for functions*
+
+/// *so we need new bits sections for probs...*
+
+///- sort bit functions and narrow down
+- check probs and depth questions there: see above! - when we reach prob sections
 - draft 16 modes all sides and test
-- 16v pp tests with basic probs
+///- DONE: 16v pp tests with basic probs -> check what we have on board here? we have those changes (22/66.5) for 16v/16 octaves...
+
+DONE:how can we check 1voct approx...CHECKED for new 16 opts=/flipflip 
+
+DONE//TODO:and also check prob-kind of OK! - need to make comparison...
+
+- check speeds with no in??? // speednoin?
+
+- other bit collections like: routebitsnostrobedepthprob
 
 Notebook notes:
 

@@ -167,7 +167,7 @@ void SR_geo_inner_fixedC(uint32_t w){  // fixed route only - no probability, no 
     }
 }
 
-void SR_geo_inner_fixedprobC(uint32_t w){  // fixed route only - prob if we have CV free from speed CV[w] speednoin==0
+void SR_geo_inner_fixedprobC(uint32_t w){  // fixed route only - prob if we have CV[2] free from speed CV[w] speednoin==1 TODO: check!
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;

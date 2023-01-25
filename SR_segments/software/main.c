@@ -45,10 +45,19 @@ PROG HEADER: yellow, green, blue, purple//down
       __asm__ __volatile__ ("nop\n\t":::"memory");		\
   } while (0)
 
-extern void (*testN)(), (*testL)(), (*testR)(), (*testC)(), (*Nnoroute0)(), (*N0)(), (*N1)();
+//extern void (*testN)(), (*testL)(), (*testR)(), (*testC)(), (*Nnoroute0)(), (*N0)(), (*N1)();
 
 extern void mode_init();  
 
+void send_command(int command, void *message)
+{
+   asm("mov r0, %[cmd];"
+       "mov r1, %[msg];"
+       "bkpt #0xAB"
+         :
+         : [cmd] "r" (command), [msg] "r" (message)
+         : "r0", "r1", "memory");
+}
 
 void io_config2 (void) {
 
