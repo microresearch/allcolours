@@ -100,11 +100,23 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 26/1/2023
+
+- do prob functiosn move on/have types... maybe make exceptions...
+- divide up strobe+only/nostrobe functions
+- prob re-workings/rework new functions for prob without depth/lfsr
+
+- compile characters/hints for each side:
+NN: not so much about speeds. abstract/adc prob of entry/switch
+RR: routes, global, abstracts
+LL: routes as primary, speeds
+CC: dac, prob, routes, speeds as primary
+
 ** 25/1/2023
 
 - added print debug code in geoCC to make it easier to debug with openocd... and gdb // see tech_diary too...
 
-- testing routebits_typesz from newbits but hard to cut down, maybe just farm out strobe ones to split: // routebits/juststrobe/types
+- *testing routebits_typesz from newbits but hard to cut down, maybe just farm out strobe ones to split: // routebits/juststrobe/types*
 
 TODO:
 
