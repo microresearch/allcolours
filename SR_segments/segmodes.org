@@ -102,7 +102,13 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 26/1/2023
 
-- do prob functiosn move on/have types... maybe make exceptions...
+- *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO*
+
+- *other bit collections like: routebitsnostrobedepthprob ???check out - what used for and update -> we use these against LFSR anyways...//ignore or work through*
+
+DONE:fix NZ and Z - as both the same NZ can now be with LFSR
+
+- do prob functions move on/have types... maybe make exceptions...
 - divide up strobe+only/nostrobe functions
 - prob re-workings/rework new functions for prob without depth/lfsr
 
@@ -138,8 +144,6 @@ DONE:how can we check 1voct approx...CHECKED for new 16 opts=/flipflip
 DONE//TODO:and also check prob-kind of OK! - need to make comparison...
 
 - check speeds with no in??? // speednoin?
-
-- other bit collections like: routebitsnostrobedepthprob
 
 Notebook notes:
 

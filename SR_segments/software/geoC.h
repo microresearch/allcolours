@@ -867,7 +867,7 @@ void SR_geo_outer_C02alt(uint32_t w){
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=33<<6; // prob1
+  gate[w].matrix[3]=33<<6; // prob
   gate[w].matrix[4]=CVL[w]; // depth
   gate[w].matrix[5]=LFSR__[w]; // we do need this
   gate[w].inner=SR_geo_inner_noprobC;
@@ -878,7 +878,7 @@ void SR_geo_outer_C03alt(uint32_t w){
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=35<<6; // prob1
+  gate[w].matrix[3]=35<<6; // prob
   gate[w].matrix[4]=CVL[w]; // depth
   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // example
   else gate[w].matrix[5]=LFSR__[w]; // we do need this
