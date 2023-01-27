@@ -56,9 +56,9 @@ static uint32_t CVM[4]={0,0,0,0};
 uint32_t matrixNN[18]={0,0,0,  1<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25<<7,2048, 0, 0, 8<<8}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 uint32_t matrixLL[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8};
 uint32_t matrixCC[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1<<7, 2048, 0, 0, 2<<8}; 
-uint32_t matrixRR[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8}; 
+uint32_t matrixRR[18]={2<<7,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 4<<8};  // spdfracend TEST
 uint32_t matrixTT[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8}; 
-//                     speed  bit        len   adc          prob  alt      dac      strobespdindex, type, route
+//                     speed   bit       len   adc,adc-cv   prob  alt      dac      strobespdindex, type, route
 
 uint32_t *matrixNNN[18]={&CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]};
 uint32_t *matrixLLL[18]={&CVL[1], &CV[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1]};
@@ -70,7 +70,7 @@ uint32_t *matrixTTT[18]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &C
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 static uint32_t ADCin;
 
-#define LOWEST 0.000031f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022 // this is now our STOP
+#define LOWEST 0.000016f // was but we now have 16 octs and can be lower also for RR 0.000031f // TODO/TEST - this might change if we change logspeed - changed 7/2/2022 // this is now our STOP
 
 static uint32_t count=0; // for route
 static uint32_t daccount=0; // for dacfrom
@@ -232,12 +232,14 @@ static uint32_t glob=0; // glob is now global index for global funcs
 
 // new ones now - check memory
 //#include "geoC.h"
-#include "geoN.h"
-//#include "geoNN.h"
-#include "geoLR.h"
+//#include "geoN.h"
+//#include "geoLR.h"
 
 #include "geoCC.h"
-
+#include "geoNN.h"
+#include "geoLL.h"
+#include "geoRR.h"
+#include "test.h"
 // check slowest speed
 /*
 void SRspeedtest(uint8_t w){ // null
@@ -269,14 +271,13 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
 
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
-       {SR_geo_outer_N00, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+       {SR_geo_outer_N00, SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03,  SR_geo_outer_N10, SR_geo_outer_N11, SR_geo_outer_N12, SR_geo_outer_N12, SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, SR_geo_outer_N30, SR_geo_outer_N31, SR_geo_outer_N32, SR_geo_outer_N33,  /*SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, SR_geo_outer_N60, SR_geo_outer_N61, SR_geo_outer_N62, SR_geo_outer_N63, SR_geo_outer_N70, SR_geo_outer_N71, SR_geo_outer_N72, SR_geo_outer_N73*/},
   //   {SR_geo_outer_NN00, SR_geo_outer_NN01, SR_geo_outer_NN02, SR_geo_outer_NN03,  SR_geo_outer_NN10, SR_geo_outer_NN11, SR_geo_outer_NN12, SR_geo_outer_NN13, SR_geo_outer_NN20, SR_geo_outer_NN21, SR_geo_outer_NN22, SR_geo_outer_NN23, SR_geo_outer_NN30, SR_geo_outer_NN31, SR_geo_outer_NN32, SR_geo_outer_NN33, SR_geo_outer_NN40, SR_geo_outer_NN41, SR_geo_outer_NN42, SR_geo_outer_NN43, SR_geo_outer_NN50, SR_geo_outer_NN51, SR_geo_outer_NN52, SR_geo_outer_NN53, SR_geo_outer_NN60, SR_geo_outer_NN61, SR_geo_outer_NN62, SR_geo_outer_NN63, SR_geo_outer_NN70, SR_geo_outer_NN71, SR_geo_outer_NN72, SR_geo_outer_NN73},
        // test memory above  
-     {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
-     {SR_geo_outer_C30, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03},
-     //          {SR_geo_outer_testexp, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73}, // 32 so far...TO TEST 
-   
-       {SR_geo_outer_route, SR_geomantic_outerRglobselandset, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+       {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
+     //     {SR_geo_outer_C00, SR_geo_outer_probofdacout, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03},
+     {SR_geo_outer_C00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  /*SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73*/}, // 32 so far...TO TEST 
+       {SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route, SR_geo_outer_route},
   //     {SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobsel, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset, SR_geomantic_outerRglobset}
    // SR_geomantic_outerRglobselandset
    //SR_geo_outer_route
@@ -388,8 +389,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
   uint32_t outindex=0;//mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...mode is 64.32.16>>8
-  //  if (www==2) outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
-  //  if (outindex>3) outindex=3;
+  outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
+  if (outindex>15) outindex=15;
   //  if (www==2) outindex=0; // testing TYPE on CVL
   (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
   (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list

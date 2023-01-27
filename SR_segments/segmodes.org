@@ -102,7 +102,11 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 27/1/2023
 
+- *do we still use in flag:   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;   else gate[w].matrix[5]=LFSR__[w];*
+
 - *question if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
+
+- *Q: to invert entry into arrays eg. dac,adctype, all functions as 0 is far right so confusing//in outer or inners TODO*
 
 - drafting 16 geoC modes/ drafted and testing?
 
@@ -114,17 +118,15 @@ new prob below...26/1
 
 ** 26/1/2023
 
-- *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO*
-
-how that works? do as special inner and depth
+- *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO* how that works? do as special inner and depth
 
 - *other bit collections like: routebitsnostrobedepthprob ???check out - what used for and update -> we use these against LFSR anyways...//ignore or work through*
 
-DONE:fix NZ and Z - as both the same NZ can now be with LFSR
-
 - do prob functions move on/have types... maybe make exceptions...
-- DONEdivide up strobe+only/nostrobe functions
 - prob re-workings/rework new functions for prob without depth/lfsr
+
+- DONEdivide up strobe+only/nostrobe functions
+DONE:fix NZ and Z - as both the same NZ can now be with LFSR
 
 - compile characters/hints for each side:
 NN: not so much about speeds. abstract/adc prob of entry/switch
@@ -157,7 +159,7 @@ DONE:how can we check 1voct approx...CHECKED for new 16 opts=/flipflip
 
 DONE//TODO:and also check prob-kind of OK! - need to make comparison...
 
-- check speeds with no in??? // speednoin?
+- *check speeds with no in??? // speednoin?*
 
 Notebook notes:
 
@@ -192,11 +194,11 @@ FOR GLOBAL rmodes:::
 
 // TODO: DONEuse globflag where needed in geogen/exp_port - also *where do we set globflag - in globals, set off/xon event*
 
-// DONE/TODO: but would be nice to locally shift on theroute - add these./change to: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD
+// DONE/: but would be nice to locally shift on theroute - add these./change to: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD
 
 // DONEsee above: what do we do with the few no_depth ones we have? convert to internal prob??? just use as length
 
-*TODO - draft function list and inner/outers - say for routes with types*
+TODO - draft function list and inner/outers - say for routes with types
 
 - do NOT set route every time - leave as gap or only set when needed->
 

@@ -139,7 +139,7 @@ static inline uint32_t NZflipflopandroute(uint32_t depth, uint32_t in, uint32_t 
   return bitn;
 }
 
-static inline uint32_t Zbinrout(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel and sets theroute and routetype
+static inline uint32_t Zbinrout(uint32_t depth, uint32_t in, uint32_t w){   // theroute
   uint32_t bitrr, tmp, tmpp, x, bitn=0;
     depth=gate[w].theroute;    // deal with no route
     if (depth==0) { // SR5 is 8th which is outside these bits 
@@ -154,6 +154,23 @@ static inline uint32_t Zbinrout(uint32_t depth, uint32_t in, uint32_t w){   // d
     }
   return bitn;
 }
+
+static inline uint32_t Zbinrout_strip(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel
+  uint32_t bitrr, tmp, tmpp, x, bitn=0;
+  depth=depth>>8;
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bitn^=bitrr;
+  } else
+    {
+      tmpp=gate[w].routetype;
+      tmp=depth;
+      ROUTETYPE_;
+    }
+  return bitn;
+}
+
 
 //**dep
 static inline uint32_t NZbinrout(uint32_t depth, uint32_t in, uint32_t w){   // no depth
@@ -2376,7 +2393,7 @@ static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t w){ // f
   uint32_t bt=0;
   float speed;
   speed=logspeed[depth>>2]; // 12 bits to 10 bits
-  if (speed!=LOWEST || w==2){ // or w==2 means no END for geoC ended... 
+  if (speed>LOWEST || w==2){ // or w==2 means no END for geoC ended... 
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2713,10 +2730,8 @@ static inline uint32_t cipher(uint32_t depth, uint32_t in, uint32_t w){// uses d
   //  uint32_t kw[4]={0,0,0,0};
   static uint32_t gs[4]={0,0,0,0};
     gate[w].strobed=1;
-  //  kw[w]=depth;
-  //  depth=(depth-2048)<<1;
-  if (depth<in) bt=1; 
-  else bt=0;
+    if (depth<in) bt=1; 
+    else bt=0;
   
   // onto SR
   GGGshift_[w]=GGGshift_[w]<<1;
@@ -3611,7 +3626,8 @@ static inline uint32_t zadcenergybits(uint32_t depth, uint32_t in, uint32_t w){ 
   int32_t tmp;
   static uint32_t k;
     depth=depth>>7; // 5 bits
-  if (bc>depth) {
+    depth=31-depth;
+    if (bc>depth) {
 
       k=in;
       tmp=k-2048;

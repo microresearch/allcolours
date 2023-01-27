@@ -122,19 +122,39 @@ void SR_geo_inner_probcyclexorC(uint32_t w){  // TESTY - using probfsins - porte
 // OUTER
 
 void SR_geo_outer_route(uint32_t w){  // fixed route // the most basic but no reset
-  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[0]=2<<7; // spdfracend with interpoll
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // speed
   gate[w].inner=SR_geo_inner_globalC; // global route
 }
 
-// list modes.
-//eg. 00: myroutereset, 01: global route 02: prob of... etc...-> probs to later
+/* summarise: // = translate-> LR
+00: dactype // length
+01: routetype and globalroute
+02: prob1 route vs cycle
+03: prob4 xor
+
+10: change route
+11: change routetype again for new route->UNSURE
+12: dacparam // ??
+13: length // ??
+
+20: change route function
+21: set depth/route
+22: prob1 of new set
+23: probxor
+
+30: dac-length. depth-cv
+31: dac-dacpar. depth-cv // ??
+32: dac-depth. dacpar-cv // ??
+33: dac-depth. length-cv
+
+ */
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobeindex, 16type, 17route
 
 //0.0////////
 
-void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route 
+void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // for NN: set ADCtype, LL/RR: length
   if (gate[w].changed==1) RESETC; // added 21/12 only reset on change 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
@@ -248,8 +268,7 @@ void SR_geo_outer_C21(uint32_t w){ // gapped function. set depth/route
   }
 }
 
-// 2 probs - prob/depth of gapped function vs. cycle// gapped function vs. [gapped XOR cycle]
-void SR_geo_outer_C22(uint32_t w){
+void SR_geo_outer_C22(uint32_t w){ // prob/depth of gapped function vs. cycle
   if (gate[w].changed==0) { 
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2 - or we gap this?
@@ -262,7 +281,7 @@ void SR_geo_outer_C22(uint32_t w){
 }
 }
 
-void SR_geo_outer_C23(uint32_t w){
+void SR_geo_outer_C23(uint32_t w){ // gapped function vs. [gapped XOR cycle]
   if (gate[w].changed==0) { 
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2 - or we gap this?
@@ -333,16 +352,27 @@ void SR_geo_outer_C33(uint32_t w){ // dac-depth. length-cv
   }
 }
 
+// attend to: geoC - SR_geo_inner_probofdacoutC- retest this, SR_geo_inner_prob3C, - test prob of dac out
+
 /////////////////next 16
-// and what of In as dacfrom - must be other dac or lfsr?
 // further: next 16: different prob functions, speeds...
 
 /*
 
+all with gaps...
+
+4.0 runglers
+5.0 speed functions
+6.0 prob functions
+7.0 splits/conplex
+
+
 TODO: 
 
-what we have from geoC?
+// for strobe: - *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO* how that works? do as special inner and depth // Zbinrout_strip is now for depth
 
+
+what we have from geoC? 
 
 - heavy reworking and classification of prob functions...
 

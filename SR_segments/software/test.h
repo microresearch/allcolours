@@ -21,7 +21,7 @@ void SR_geo_inner_testfunctionC(uint32_t w){  // test our full 64 functions
     }
 }
 
-void SR_geo_inner_function(uint32_t w){  // new abstraction
+void SR_geo_inner_test(uint32_t w){  // new abstraction
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
@@ -87,8 +87,8 @@ void SR_geo_inner_prob_strobez(uint32_t w){  // straight strobe and prob - inclu
     gate[w].dac = delay_buffer[w][1];  
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
       if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
-	//	bitn=(*routebitsnostrobe[gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); // TODO: update those routebits
-	bitn=0;
+	bitn=(*routebitsnostrobe[gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); // TODO: update those routebits
+	//	bitn=0;
       }
       else {
        	bitn=(*routebitsnostrobe[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w);
@@ -99,9 +99,32 @@ void SR_geo_inner_prob_strobez(uint32_t w){  // straight strobe and prob - inclu
     }
 }
 
-
+void SR_geo_inner_probofdacoutC(uint32_t w){  // no probability, no adc - this can be generic // no interpoll
+  HEADNADA;
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    gate[w].fake=gate[w].trigger;
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    bitn=(*routebitsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); //>>6 as 64
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)) gate[w].dac = delay_buffer[w][1];
+    }
+}
 
 char buffx[10];
+
+void SR_geo_outer_probofdacout(uint32_t w){  // gaps
+  if (gate[w].changed==0) { 
+    gate[w].matrix[1]=CV[w];// speed
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac;//
+    gate[w].matrix[9]=0<<7;//CVL[w];  // ????
+    gate[w].matrix[10]=CVL[w];//(gate[dacfrom[daccount][w]].dac);
+    //    gate[w].matrix[11]=LFSR__[w];// used... but is also bits???
+     
+    gate[w].inner=SR_geo_inner_probofdacoutC; // can use IN -> 11...
+  }
+}
 
 void SR_geo_outer_testfunctions(uint32_t w){
   uint32_t mod;
