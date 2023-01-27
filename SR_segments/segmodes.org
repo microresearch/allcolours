@@ -104,6 +104,8 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 - *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO*
 
+how that works? do as special inner and depth
+
 - *other bit collections like: routebitsnostrobedepthprob ???check out - what used for and update -> we use these against LFSR anyways...//ignore or work through*
 
 DONE:fix NZ and Z - as both the same NZ can now be with LFSR
