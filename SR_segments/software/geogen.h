@@ -393,9 +393,7 @@ static inline uint32_t NZbinroutfixed_prob2(uint32_t depth, uint32_t in, uint32_
   //  tmp=binroute[count][w]|binary[w];
   if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; 
   tmpp=gate[w].routetype;
-
   ROUTETYPE_;
-
   if (depth<LFSR__[w]) bitn=!bitn;
   return bitn;
 }
@@ -453,9 +451,7 @@ static inline uint32_t NZbinroutfixed_prob4(uint32_t depth, uint32_t in, uint32_
   //  tmp=binroute[count][w]|binary[w];
   if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; 
   tmpp=gate[w].routetype;
-
   ROUTETYPE_;
-
   if (depth<LFSR__[w]) {
     bitn^=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
   }
@@ -2864,7 +2860,7 @@ static inline uint32_t zownGprobbits(uint32_t depth, uint32_t in, uint32_t w){  
 
 static inline uint32_t zinvprobbits(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode - other way round
   uint32_t bt=0;
-  if (depth<(LFSR_[w]&4095)) bt=1;
+  if (depth<(LFSR__[w])) bt=1;
   return bt;
 }
 

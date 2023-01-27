@@ -35,7 +35,7 @@ DONEsetting of dactypes
 
 *ORDER!!! dislocations of: ordercount of SRs in globals*
 
-*where do we set globflag and inflag? see below*
+*where do we set globflag and inflag? see below - globflag is also in all resets...*
 
 *make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
 
@@ -100,6 +100,18 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 27/1/2023
+
+- *question if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
+
+- drafting 16 geoC modes/ drafted and testing?
+
+notes:
+
+attend to: geoC - SR_geo_inner_probofdacoutC- retest this, SR_geo_inner_prob3C, 
+
+new prob below...26/1
+
 ** 26/1/2023
 
 - *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO*
@@ -111,7 +123,7 @@ how that works? do as special inner and depth
 DONE:fix NZ and Z - as both the same NZ can now be with LFSR
 
 - do prob functions move on/have types... maybe make exceptions...
-- divide up strobe+only/nostrobe functions
+- DONEdivide up strobe+only/nostrobe functions
 - prob re-workings/rework new functions for prob without depth/lfsr
 
 - compile characters/hints for each side:
@@ -124,7 +136,7 @@ CC: dac, prob, routes, speeds as primary
 
 - added print debug code in geoCC to make it easier to debug with openocd... and gdb // see tech_diary too...
 
-- *testing routebits_typesz from newbits but hard to cut down, maybe just farm out strobe ones to split: // routebits/juststrobe/types*
+- testing routebits_typesz from newbits but hard to cut down, maybe just farm out strobe ones to split: // routebits/juststrobe/types
 
 TODO:
 
@@ -136,7 +148,7 @@ PROB WORK:
 
 /// *so we need new bits sections for probs...*
 
-///- sort bit functions and narrow down
+///- DONEsort bit functions and narrow down
 - check probs and depth questions there: see above! - when we reach prob sections
 - draft 16 modes all sides and test
 ///- DONE: 16v pp tests with basic probs -> check what we have on board here? we have those changes (22/66.5) for 16v/16 octaves...
@@ -199,7 +211,7 @@ just set a flag if we need to set route at all... (if depth is not used)? 1 mean
 if (funcr[gate[w].matrix[3]>>7]&0x01) just do depth   // Depth
 else do route // route only
 
-*thus only flag needed is depth???*
+thus only flag needed is depth
 
 - start new bits functions//divide up on strobes: allbits, abstract, route, with types, without types
 
@@ -285,17 +297,17 @@ pSR_routeSRbits02R, pSR_routeSRbits01R, pSRRaccelghosts0R // 42
 pSR_layer1R, pSR_layer2R, pSR_reflectR, pSR_altbin1R, pSRholdR, pSRholdfromdacR, pSRshrouteR, pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pbitLSRroutexxxlogD, pSRLcvSRmaskrouteD, pSRLcvrouteD,
 pSR32XXX, pSRmodR, pSRNwas13RS, pSRN65RS, pSRN62R, pSRN30D, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRN12R, pSRN11R, pSRN10SR, pSRNwas15XXX // 26 // all tested fine
 
-// thus no depth/types: pSRRbumproute0SXXX - similar as binroute bumps ahead... *can get rid of*
+// thus no depth/types: pSRRbumproute0SXXX - similar as binroute bumps ahead... *can get rid of
 // FIXED:no depth/no types: pbitSRroutelogXXX, pbitSRroutelogxxXXX, pbitSRroutelogxxxXXX, pSR32XXX, pSRN22XXX, pSRN21XXX, pSRN15XXX, pSRNwas15XXX ???
 
 
-*newbits.h redo all bitsn for new types: and fill in exp_port as route/abstract/strobe etc...*
+newbits.h redo all bitsn for new types: and fill in exp_port as route/abstract/strobe etc...
 
 // note that when we have exp_port functions to test we hit 80% memory...
 
 ** 18/1/2023
 
-// *start by cleaning up bitsn functions and then work through geoC new modes and solve questions as we go along...*
+// start by cleaning up bitsn functions and then work through geoC new modes and solve questions as we go along...
 
 *we need to sort following: global flag (gate[w].globflag)/routes, use of IN flag (gate[w].in), depth/no depth, global dacfrom?// also speedfrom dac, setting of route/type (16 and 17). which arrays to use for functions//how these match*
 
@@ -362,7 +374,7 @@ setroutes - do we need that bit????
 
 - [do we need copy matrix from first modes -> matrixp or do we use gaps CHECK? // only if we use full matrixcopy, otherwise we just set what we like]
 
-- *maybe remove non-type route functions if these are doubled by types -> sort out bitsn.h*
+- maybe remove non-type route functions if these are doubled by types -> sort out bitsn.h
 
 Questions as not so relevant: bitroutI
 

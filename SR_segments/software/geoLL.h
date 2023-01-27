@@ -1,0 +1,12 @@
+// geoLL
+
+/*
+
+LL: routes as primary, speeds
+
+older from geoLR.h:
+
+L-routes only and etc, R etc, abstracts, routes, and globals...
+
+
+ */

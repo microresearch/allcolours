@@ -34,9 +34,6 @@ static uint32_t outcnt=0;
   gate[w].routetype=CVL[w]>>9;			\
   }
 
-
-
-
 // do we need to reset all matrices?
 
 #define RESETTN {				\
