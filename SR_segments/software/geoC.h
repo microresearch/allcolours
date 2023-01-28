@@ -1210,6 +1210,7 @@ void SR_geo_outer_C70(uint32_t w){  // can also have CV vs dacfrom
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobeindex
 // problem for prob is we have:
+
 /*
 [9] type
 [10] CV1

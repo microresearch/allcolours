@@ -2377,7 +2377,7 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t w){ // last
 static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out
   uint32_t bt=0;
   float speed;
-  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2392,8 +2392,8 @@ static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t w){ // for 
 static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out // version with STOP on lowest
   uint32_t bt=0;
   float speed;
-  speed=logspeed[depth>>2]; // 12 bits to 10 bits
-  if (speed>LOWEST || w==2){ // or w==2 means no END for geoC ended... 
+  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
+  if (speed>gate[w].lowest || w==2){ // or w==2 means no END for geoC ended... 
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2416,7 +2416,7 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t w){ // dep
   else tmp=depth%in;
   //  tmp=in+depth;
   //  if (tmp>4095) tmp=4095;
-  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2435,7 +2435,7 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t w){ // we 
   int32_t tmp;
   tmp=in+depth;
   if (tmp>4095) tmp=4095;
-  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2454,7 +2454,7 @@ static inline uint32_t spdfrac5(uint32_t depth, uint32_t in, uint32_t w){ // we 
   int32_t tmp;
   tmp=in+depth;
   tmp=tmp&4095;
-  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2476,7 +2476,7 @@ static inline uint32_t spdfrac4(uint32_t depth, uint32_t in, uint32_t w){ // add
   if (tmp<0) tmp=0;
   else if (tmp>1023) tmp=1023;
 
-  speed=logspeed[tmp]; 
+  speed=gate[w].logspeed[tmp]; 
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2497,7 +2497,7 @@ static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t w){ // 
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
 
-  speed=logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2522,7 +2522,7 @@ static inline uint32_t strobespdfrac(uint32_t depth, uint32_t in, uint32_t w){ /
   uint32_t bt=0;
   float speed;
   gate[w].strobed=1;
-  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2730,7 +2730,8 @@ static inline uint32_t cipher(uint32_t depth, uint32_t in, uint32_t w){// uses d
   //  uint32_t kw[4]={0,0,0,0};
   static uint32_t gs[4]={0,0,0,0};
     gate[w].strobed=1;
-    if (depth<in) bt=1; 
+    if (depth==(4095-(31<<7))) depth=15<<7;
+    if (depth>in) bt=1; 
     else bt=0;
   
   // onto SR
@@ -3818,6 +3819,7 @@ static inline uint32_t zadcLBURST0(uint32_t depth, uint32_t in, uint32_t w){ //
 
 static inline uint32_t zadccomp(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0;
+  if (depth==(4095-(31<<7))) depth=15<<7;
   if (in>depth) bt=1;
   return bt;
 }
@@ -3929,6 +3931,8 @@ static inline uint32_t zadc4bitsand(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
+
+  if (depth==(4095-(31<<7))) depth=15<<7;
     if (bc<0) {
       k=depth&in;
       k=k>>8;
@@ -3943,7 +3947,9 @@ static inline uint32_t zadc4bitsmodm(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
-    if (bc<0) {
+    if (depth==(4095-(31<<7))) depth=31<<7;
+
+  if (bc<0) {
       k=in%depth;
       k=k>>8;
       bc=3; 
@@ -4014,6 +4020,8 @@ static inline uint32_t zadc4compbitsmodm(uint32_t depth, uint32_t in, uint32_t w
   uint32_t bt, bitwise;
   static int32_t bc=31;
   static uint32_t k;
+      if (depth==(4095-(31<<7))) depth=31<<7;
+
     if (bc<0) {
       k=in%depth;
       k=k>>8;

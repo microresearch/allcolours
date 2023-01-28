@@ -118,6 +118,21 @@ void SR_geo_inner_probcyclexorC(uint32_t w){  // TESTY - using probfsins - porte
     }
 }
 
+void SR_geo_inner_probofdacoutC(uint32_t w){  // no probability, no adc - this can be generic // no interpoll
+  HEADNADA;
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    gate[w].fake=gate[w].trigger;
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    //    bitn=(*routebitsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); //>>6 as 64
+    bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)) gate[w].dac = delay_buffer[w][1];
+    }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OUTER
 
@@ -352,10 +367,46 @@ void SR_geo_outer_C33(uint32_t w){ // dac-depth. length-cv
   }
 }
 
-// attend to: geoC - SR_geo_inner_probofdacoutC- retest this, SR_geo_inner_prob3C, - test prob of dac out
+//4.0/////// 
+
+void SR_geo_outer_C40(uint32_t w){ // speed function select
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=CVL[w]; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
+  gate[w].funcbit=routebits_typesz;
+  gate[w].extent=6; // 6 bits above
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+/// do we redo select route function and route after this?
+
+void SR_geo_outer_testprobdacout(uint32_t w){ // test prob of dac out
+  if (gate[w].changed==0) { 
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2 - or we gap this?
+  gate[w].matrix[9]=0<<7; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w]; // probCV1
+  //  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); // CV2 for those which use IN     
+  gate[w].funcbit=routebits_typesz;
+  gate[w].extent=6; // 6 bits above
+  gate[w].inner=SR_geo_inner_probofdacoutC;
+}
+}
+
+// attend to: geoC - SR_geo_inner_prob3C: what is? prob of cv vs dac...
 
 /////////////////next 16
 // further: next 16: different prob functions, speeds...
+
+// change speed function see geoC
+/*
+
+- speedfunc, then maybe re-enter type, route and function
+
+ */
+
 
 /*
 

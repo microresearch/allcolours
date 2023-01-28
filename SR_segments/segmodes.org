@@ -100,15 +100,25 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+
+
+** 28/1/2023
+
+*TODO: retest all speed functions*
+
+-DONE to 18 octaves on RR side: question if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
+
+//testing but we need different LOWEST!
+
+DONE:still to fix all default adc so we have output
+
 ** 27/1/2023
 
 - *do we still use in flag:   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;   else gate[w].matrix[5]=LFSR__[w];*
 
-- *question if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
+- *Q: to invert entry into arrays eg. dac,adctype, all functions as 0 is far right so confusing//in outer or inners TODO // some are inverted*
 
-- *Q: to invert entry into arrays eg. dac,adctype, all functions as 0 is far right so confusing//in outer or inners TODO*
-
-- drafting 16 geoC modes/ drafted and testing?
+- DONE:drafting 16 geoC modes/ drafted and testing?
 
 notes:
 
