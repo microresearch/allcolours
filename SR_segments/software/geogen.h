@@ -2433,7 +2433,7 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t w){ // we 
   uint32_t bt=0;
   float speed;
   int32_t tmp;
-  tmp=in+depth;
+  tmp=(in>>1)+(depth>>1);
   if (tmp>4095) tmp=4095;
   speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
@@ -2857,7 +2857,7 @@ static inline uint32_t zSRRbits(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t zprobbits(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode
   uint32_t bt=0;
-  if (depth>LFSR__[w]) bt=1; 
+  if (depth<LFSR__[w]) bt=1; 
   return bt;
 }
 
@@ -2953,7 +2953,7 @@ static inline uint32_t zsuccbits_noshift(uint32_t depth, uint32_t in, uint32_t w
   if (x>3) x=0;
   bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
   //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
-  if (depth>in) x++;
+  if (depth<in) x++;
   return bt;
 }
 
@@ -3025,6 +3025,26 @@ static inline uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
+// new one - count up to depth
+static inline uint32_t zcountbits(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t flop=0, n=0, nn=0;
+  if (n>depth)  {
+    n=0;
+  }
+  // we want n number of flops output
+  if (nn>n){
+    nn=0;
+    flop^=1;
+    n++;
+  }
+  bt=flop;
+  nn++; 
+  
+  return bt;
+}
+
+
 // we already have EN version
 //WIARD versions - macro versions - inside themselves
 //WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
@@ -3051,7 +3071,7 @@ static inline uint32_t zwiardbits(uint32_t depth, uint32_t in, uint32_t w){ //gl
 
 static inline uint32_t zwiardinvbits(uint32_t depth, uint32_t in, uint32_t w){//global
   uint32_t bt=0, bitrr, tmp;
-  if (depth>in){
+  if (depth<in){
     if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
   for (uint8_t x=0;x<4;x++){
   if (tmp&0x01){
@@ -3101,13 +3121,31 @@ static inline uint32_t zENbits(uint32_t prob, uint32_t in, uint32_t w){
   // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
   // if all as switches are 1... 
   //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
-    prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+  //    prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+  prob=prob>>4; //8 bits
+  prob=255-prob;
       if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | prob)==255) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
     else   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
   //  bt=(LFSR_[w]>>24)&0x01;
   //  bt=1;
   return bt;
 }
+
+//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+static inline uint32_t zENbitsI(uint32_t prob, uint32_t in, uint32_t w){ 
+  uint32_t bt, tmp;
+  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
+  // if all as switches are 1... 
+
+  //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
+  //  prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+  prob=prob>>4;
+  prob=255-prob;
+    if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | prob)==255) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = !(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+  return bt;
+}
+
 
 // trying for a simpler version
 static inline uint32_t zENsbits(uint32_t prob, uint32_t in, uint32_t w){ 
@@ -3357,19 +3395,6 @@ static inline uint32_t zonebitsI(uint32_t depth, uint32_t in, uint32_t w){ // de
   return bt;
 }
 
-//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
-static inline uint32_t zENbitsI(uint32_t prob, uint32_t in, uint32_t w){ 
-  uint32_t bt, tmp;
-  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
-  // if all as switches are 1... 
-
-  //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
-  prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
-    if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | prob)==255) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
-  else   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
-  return bt;
-}
-
 // trying for a simpler version
 static inline uint32_t zENsbitsI(uint32_t prob, uint32_t in, uint32_t w){ 
   uint32_t bt, tmp;
@@ -3404,7 +3429,7 @@ static inline uint32_t zflipbitsI(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t zcompbits(uint32_t depth, uint32_t in, uint32_t w){  //INx we need 
   uint32_t bt;
-  if (in>depth) bt=0; // which way round?
+  if (in<depth) bt=0; // which way round?
   else bt=1;
   return bt;
 }

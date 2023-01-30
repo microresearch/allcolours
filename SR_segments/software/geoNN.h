@@ -486,8 +486,10 @@ void SR_geo_outer_N33x(uint32_t w){ // dac-depth. length-cv
 // next 16
 
 // switches against dacs, against strobes and toggles 
-// abstracts...
-// dac in and what we find in geoN:
+// abstracts... ADC or abstract - slide across gate[x].funcbit and extent - in prob etc.
+// do we use dac in?
+
+// what we find in geoN:
 
 /*
 geoN.h:

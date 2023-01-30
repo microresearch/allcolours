@@ -231,4 +231,6 @@ void SR_geo_outer_R33(uint32_t w){ // dac-depth. length-cv
   }
 }
 
+// next 16: abstract functions combined with route. xor (as in runglers). prob of route in (xor) vs abstract
+
 /// see geoNN for how to proceed

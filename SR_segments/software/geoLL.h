@@ -217,5 +217,6 @@ void SR_geo_outer_L33(uint32_t w){ // dac-depth. length-cv
   }
 }
 
+// next 16 follows geoCC
 
 

@@ -100,11 +100,42 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 30/1/2023
+
+notebook: DONEnew abstract countup function
+
+- *strobe function from below: prob (depth vs. in/LFSR) of route X(global/theroute) vs route Y(another depth) - so we need that function*
+
+older:
+
+
+/* summarise: // = translate-> LR
+00: dactype // length
+01: routetype and globalroute
+02: prob1 route vs cycle
+03: prob4 xor
+
+10: change route
+11: change routetype again for new route->UNSURE
+12: dacparam // ??
+13: length // ??
+
+20: change route function
+21: set depth/route
+22: prob1 of new set
+23: probxor
+
+30: dac-length. depth-cv
+31: dac-dacpar. depth-cv // ??
+32: dac-depth. dacpar-cv // ??
+33: dac-depth. length-cv
+
+ */
 
 
 ** 28/1/2023
 
-*TODO: retest all speed functions*
+DONE/fixed-TODO: retest all speed functions*
 
 -DONE to 18 octaves on RR side: question if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
 
@@ -114,7 +145,7 @@ DONE:still to fix all default adc so we have output
 
 ** 27/1/2023
 
-- *do we still use in flag:   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;   else gate[w].matrix[5]=LFSR__[w];*
+- *check: do we still use in flag:   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;   else gate[w].matrix[5]=LFSR__[w];*
 
 - *Q: to invert entry into arrays eg. dac,adctype, all functions as 0 is far right so confusing//in outer or inners TODO // some are inverted*
 
@@ -169,7 +200,7 @@ DONE:how can we check 1voct approx...CHECKED for new 16 opts=/flipflip
 
 DONE//TODO:and also check prob-kind of OK! - need to make comparison...
 
-- *check speeds with no in??? // speednoin?*
+- check speeds with no in??? // speednoin?
 
 Notebook notes:
 

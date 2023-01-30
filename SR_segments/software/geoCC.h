@@ -132,6 +132,41 @@ void SR_geo_inner_probofdacoutC(uint32_t w){  // no probability, no adc - this c
     }
 }
 
+void SR_geo_inner_rung0C(uint32_t w){  // no probability, no adc - this can be generic // no interp
+  HEADNADA;
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>9])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    gate[w].fake=gate[w].trigger;
+    gate[w].dac = delay_buffer[w][1];
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
+    //    bitn^=(*routebitsfortypes[gate[w].matrix[3]>>7])(gate[w].matrix[4], gate[w].matrix[5], w);
+    bitn=(*bitfromalldepth[gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); //64 >>6
+    //    bitn^=(*routebitsnostrobe[gate[w].matrix[3]>>6])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[5], gate[w].matrix[4], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+/*
+
+geoC:
+C52 - we have 3 fixed as route, 12 fixed as osc -> this can vary on abstractbits
+
+void SR_geo_outer_C52(uint32_t w){  // 
+  if (gate[w].changed==0) { 
+    //    gate[w].matrix[0]=0; // spcdfrac -> or set as DACspeed one of which we have 6//
+    gate[w].matrix[1]=CV[w];// speed
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
+    gate[w].matrix[3]=0<<7; //1 fixed
+    gate[w].matrix[4]=CVL[w];
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;
+    gate[w].matrix[12]=20<<7; // OSC for rung
+    //    gate[w].dacpar=CVL[w]; // into DAC_ otherpar which is 10 bits
+    gate[w].inner=SR_geo_inner_rung0C;
+  }
+}
+*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OUTER
@@ -141,29 +176,6 @@ void SR_geo_outer_route(uint32_t w){  // fixed route // the most basic but no re
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // speed
   gate[w].inner=SR_geo_inner_globalC; // global route
 }
-
-/* summarise: // = translate-> LR
-00: dactype // length
-01: routetype and globalroute
-02: prob1 route vs cycle
-03: prob4 xor
-
-10: change route
-11: change routetype again for new route->UNSURE
-12: dacparam // ??
-13: length // ??
-
-20: change route function
-21: set depth/route
-22: prob1 of new set
-23: probxor
-
-30: dac-length. depth-cv
-31: dac-dacpar. depth-cv // ??
-32: dac-depth. dacpar-cv // ??
-33: dac-depth. length-cv
-
- */
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobeindex, 16type, 17route
 
@@ -371,7 +383,7 @@ void SR_geo_outer_C33(uint32_t w){ // dac-depth. length-cv
 
 void SR_geo_outer_C40(uint32_t w){ // speed function select
   if (gate[w].changed==0) {
-  gate[w].matrix[0]=CVL[w]; // spdfrac
+    gate[w].matrix[0]=CVL[w]; // tested
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
   gate[w].funcbit=routebits_typesz;
@@ -380,7 +392,55 @@ void SR_geo_outer_C40(uint32_t w){ // speed function select
   }
 }
 
-/// do we redo select route function and route after this?
+void SR_geo_outer_C41(uint32_t w){ // 41: bitfunc with gapped speedfunc
+  if (gate[w].changed==0) {
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
+  gate[w].matrix[3]=CVL[w]; // bitfunc
+  gate[w].funcbit=routebits_typesz;
+  gate[w].extent=6; // 6 bits above
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+void SR_geo_outer_C42(uint32_t w){ // 42: depth/route ^^^ with gapped speedfunc
+  if (gate[w].changed==0) {
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
+  if (depth_routebits_typesz[gate[w].matrix[3]>>6])  gate[w].matrix[4]=CVL[w]; // depth
+  else SETROUTECV;  
+  gate[w].funcbit=routebits_typesz;
+  gate[w].extent=6; // 6 bits above
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+void SR_geo_outer_C43(uint32_t w){ // length or we can throw in dacdepth
+  if (gate[w].changed==0) {
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
+  gate[w].matrix[6]=CVL[w];// length
+  gate[w].funcbit=routebits_typesz;
+  gate[w].extent=6; // 6 bits above
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+//5.0 runglers - we have 2 ++ + reset speedfunc, dac is speedfrom
+
+// 2 types rungler: one bitn and xor another bit (one can be fixed, another not), one just bitn and speedfrom dac (which one)-> but this is like above gapped
+
+
+
+
+/* rungler...inners: with gapped speed and all settings
+
+   bitn=(*bitfromalldepth[gate[w].matrix[12]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); //64 >>6
+   bitn^=(*routebitsnostrobe[gate[w].matrix[3]>>6])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+
+also they use: speedfromnosdac - which is dac only speedfroms, but is maybe better with generic spdfrom
+
+ */
 
 void SR_geo_outer_testprobdacout(uint32_t w){ // test prob of dac out
   if (gate[w].changed==0) { 
@@ -395,32 +455,38 @@ void SR_geo_outer_testprobdacout(uint32_t w){ // test prob of dac out
 }
 }
 
-// attend to: geoC - SR_geo_inner_prob3C: what is? prob of cv vs dac...
-
-/////////////////next 16
-// further: next 16: different prob functions, speeds...
-
-// change speed function see geoC
-/*
-
-- speedfunc, then maybe re-enter type, route and function
-
- */
-
 
 /*
 
 all with gaps...
 
-4.0 runglers
-5.0 speed functions
+4.0 speed function and gaps: speedfunc, bitfunc, route - what else?
+5.0 runglers - we have 2 ++ + reset speedfunc, dac is speedfrom
 6.0 prob functions
-7.0 splits/conplex
+7.0 more prob//splits/complex
 
+again what is rungler: 
+
+
+x y
+\ / 
+ z
+ |
+zz tail R
+
+x: genX, spdfrom z + offset // optional route in from zz
+y: genX, spdfrom z + own offset // optional route in from zz
+z: route in from x, spd from y + own offset // optional route in from zz- OUT?, it cycles
+zz: tail. process of z and feedback to x, y or z.
+
+(zz is just plain route)
 
 TODO: 
 
 // for strobe: - *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO* how that works? do as special inner and depth // Zbinrout_strip is now for depth
+
+
+// attend to: geoC - SR_geo_inner_prob3C: what is? prob of cv vs dac...
 
 
 what we have from geoC? 

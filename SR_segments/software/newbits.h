@@ -49,7 +49,7 @@ uint32_t depth_routebits_nostrobe_notypesz[49]={1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
   
 // abstractbits/strobe=all - these now all use depth - some use in
 
-uint32_t (*abstractbitsz[24])(uint32_t depth, uint32_t in, uint32_t wh)={zosc1bits, sigmadelta, cipher, osceq, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, flipflop, flipflopI, ztogglebitssh, ztogglebits};
+uint32_t (*abstractbitsz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zosc1bits, sigmadelta, cipher, osceq,  zcountbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, flipflop, flipflopI, ztogglebitssh, ztogglebits, /*dd */ zosc1bits, sigmadelta, cipher, osceq,  zcountbits, zprobbits, zprobbitsxorstrobe }; // double to 32 on...
 
 // abstractbits/nostrobe
 
