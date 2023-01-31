@@ -2,12 +2,14 @@
 
 /*
 
-NN: not so much about speeds. abstract/adc prob of entry/switch
+NN: not so much about speeds?
+
+* abstract/adc prob of entry/switch
 
 - do we have abstract modes instead of adc in also? could also have prob of adc or abstract. what is default abstract? what is default adc type, adc parameter?
 - no route in, just ADC or abstract types
 - prob of adc vs. route // adc vs. adc^route - negotiate all probs
-
+- runglers with adc and abstract, what of route in?
 
 ////
 

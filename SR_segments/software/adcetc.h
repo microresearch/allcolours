@@ -1587,7 +1587,7 @@ void TIM4_IRQHandler(void)
   lastmoder=temp;
   CVM[3]=temp;
   mode[3]=(temp>>6); // 64 modes = 6 bits  
-  if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/2023
+  if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
   else gate[3].changed=0;
   lastmode[3]=mode[3];
   }

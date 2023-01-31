@@ -100,6 +100,22 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 31/1/2023
+
+*did it crash? how to crash test - with rand on modes but doesn't crash...*
+
+*we need simpler modes and changes across sides*
+
+Note: so far LL, CC and RR are all same apart from first reset... upto 16
+
+NN is always different...
+
+- working on rungler modes - what side these make most sense for (LL as route in, CC also rungler with ADC in - q of route in there or not)...
+
+- FIXEDstarting on prob modes and question is now they both have same route... we can maybe set and reset this in prob - trial
+
+- DONEtest each of probfs we use individually to see if works...DONE for ones we use so far
+
 ** 30/1/2023
 
 notebook: DONEnew abstract countup function

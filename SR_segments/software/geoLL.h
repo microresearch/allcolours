@@ -8,6 +8,9 @@ older from geoLR.h:
 
 L-routes only and etc, R etc, abstracts, routes, and globals...
 
+prime rungler territory
+
+but much following CC so far - unless we can extend runglers...
 
  */
 

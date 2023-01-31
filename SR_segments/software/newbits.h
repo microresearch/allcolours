@@ -10,6 +10,14 @@ uint32_t depth_routebits_typesz[64]={0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1
 // for depth array above
 //  ZbinroutR, ZbinroutorD, ZzbinrouteINVbitsR, ZzbinroutebitscycleR, zbinroutebitscyclestrIRS, ZflipflopandrouteR, ZpSRsigmaR, ZviennabitsD, ZzsuccbitsppD, ZzsuccbitsIppD, NZbinrout_probXYD, NZbinrout_probXY1D, NZbinroutfixed_prob1D, NZbinroutfixed_prob2D, NZbinroutfixed_prob3D, NZbinroutfixed_prob4D, NZzwiardbitsD, NZzwiardinvbitsD, zbinroutmycvD, zbinroutorgapR, zzwiardbits2ID, zzsingleroutebitsD, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt, pSR_recbinR, pSRxorroutesSR, pSRaddroutesSR, pSRprobxortogxDS, pSRprobxortogxIDS, pSRmatchD, pSRshareR, pSRGswopSR, pbitLcvsrrouteD, pstreamD, pSRDACroutestrobeSR, pSRLLbumprouteDS, pSRbumprouteDS, pSRN40RS, pSRN36RS, pSRN33cipherRS, pSRN33RS, pSRN13D, pSRRLLswopDS, pprobintprob3D, pprobintprob5_0D, pprobintprob6_0D, pprobtoggle1RS, pprobtoggleRS, pprobtoggle3RS, pprobtoggle4RS, pprobtoggleRS, pprobstrobe1RS, pprobstrobe2RS, pprobstrobe3RS, pSRN15D, pSRN8RS, pSRN7RS, pSRN6RS, pSRN5RS, pSRxorSRD, pSR_routeSRbits02R, pSR_routeSRbits01R, pSRRaccelghosts0R // 64
 
+// pull out ones which could be used for prob - even though have shift// or we can remove shift:
+
+//  ZbinroutR, ZzbinrouteINVbitsR, ZzbinroutebitscycleR, zbinroutebitscyclestrIRS, ZflipflopandrouteR, ZpSRsigmaR, zbinroutorgapR, zbinroutmybumpS, zbinroutmybumpbitR, zbinroutmybumpbittR, pSR_recbinR, pSRxorroutesSR, pSRaddroutesSR, pSRshareR, pSRGswopSR, pSRDACroutestrobeSR, pSRN40RS, pSRN36RS, pSRN33cipherRS, pSRN33RS, pprobtoggle1RS, pprobtoggleRS, pprobtoggle3RS, pprobtoggle4RS, pprobtoggleRS, pprobstrobe1RS, pprobstrobe2RS, pprobstrobe3RS, pSRN8RS, pSRN7RS, pSRN6RS, pSRN5RS, pSR_routeSRbits02R, pSR_routeSRbits01R, // [34] 
+
+// deal later with strobe ones, and ones which we added depth to // do we have a list of those: no types: zjustcycle, tailbitsInos, tailbitsnos, tailbitsI, zjusttail // justcycle we have as prob already
+
+// strobes: 
+
 // routebits/juststrobe/types TODO:
 
 uint32_t (*routebits_onlystrobe_typesz[27])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebitscyclestrI, zbinroutmybumpS, pSRxorroutes, pSRaddroutes, pSRprobxortogx, pSRprobxortogxI, pSRGswop, pSRDACroutestrobe, pSRLLbumproute, pSRbumproute, pSRN40, pSRN36, pSRN33cipher, pSRN33, pSRRLLswop, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pSRN8, pSRN7, pSRN6, pSRN5}; // 27 (27+51=78)
@@ -49,7 +57,7 @@ uint32_t depth_routebits_nostrobe_notypesz[49]={1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
   
 // abstractbits/strobe=all - these now all use depth - some use in
 
-uint32_t (*abstractbitsz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zosc1bits, sigmadelta, cipher, osceq,  zcountbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, flipflop, flipflopI, ztogglebitssh, ztogglebits, /*dd */ zosc1bits, sigmadelta, cipher, osceq,  zcountbits, zprobbits, zprobbitsxorstrobe }; // double to 32 on...
+uint32_t (*abstractbitsz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zosc1bits, sigmadelta, cipher, osceq,  zcountbits, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zonebits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bitsI, zonebitsI, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, flipflop, flipflopI, ztogglebitssh, ztogglebits, /*dd */ zosc1bits, sigmadelta, cipher, osceq,  zcountbits, zprobbits, zprobbitsxorstrobe }; // double to 32 on dd
 
 // abstractbits/nostrobe
 

@@ -4,7 +4,9 @@
 
 RR: routes, global, abstracts functions - prob of abstract vs route (as in ADC)
 
-- *question if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
+- *DONEquestion if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
+
+- prob of dac out also (maybe on all sides)
 
 on globals:
 
@@ -18,6 +20,8 @@ FOR GLOBAL rmodes:::
 *we need to sort following: global flag (gate[w].globflag)/routes, use of IN flag (gate[w].in), depth/no depth, global dacfrom?// also speedfrom dac, setting of route/type (16 and 17). which arrays to use for functions//how these match*
 
 // if we are still using IN flag^^^
+
+////////////////////////////////
 
 older from geoLR.h:
 

@@ -12,6 +12,7 @@ static uint32_t gscnt=0;
 static uint32_t outcnt=0;
 */
 
+// unused but what we do with cv... is for matrixp ops
 #define ROUTETYPE (gate[w].matrix[16]>>9)
 #define ROUTE (gate[w].matrix[17]>>8)
 #define SPEEDFUNC (gate[w].matrix[0]>>7)
@@ -64,13 +65,13 @@ static uint32_t outcnt=0;
   }									\
   }
 
-#define RESETN binary[0]=0; gate[0].theroute=8; gate[0].routetype=0; gate[0].globflag=1; RESETTN;
+#define RESETN binary[0]=0; gate[0].theroute=8; gate[0].altroute=0; gate[0].routetype=0; gate[0].globflag=1; RESETTN;
 
-#define RESETL binary[1]=0; gate[1].theroute=1; gate[1].routetype=0; gate[1].globflag=1; RESETTL;
+#define RESETL binary[1]=0; gate[1].theroute=1; gate[1].altroute=0; gate[1].routetype=0; gate[1].globflag=1; RESETTL;
 
-#define RESETC binary[2]=0; gate[2].theroute=2; gate[2].routetype=0; gate[2].globflag=1; RESETTC;
+#define RESETC binary[2]=0; gate[2].theroute=2; gate[2].altroute=0; gate[2].routetype=0; gate[2].globflag=1; RESETTC;
 
-#define RESETR binary[3]=0; gate[3].theroute=4; gate[3].routetype=0; gate[3].globflag=1; RESETTR;
+#define RESETR binary[3]=0; gate[3].theroute=4; gate[3].altroute=0; gate[3].routetype=0; gate[3].globflag=1; RESETTR;
 
 #define RESETG count=0; daccount=0; spdcount=0; binroutetypecount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; 
 

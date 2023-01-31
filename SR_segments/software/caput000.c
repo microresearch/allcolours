@@ -75,7 +75,7 @@ static uint32_t ADCin;
 static uint32_t count=0; // for route
 static uint32_t daccount=0; // for dacfrom
 static uint32_t spdcount=0; // for spdfrom
-static uint32_t tailcount=31; // for tail choice
+static uint32_t tailcount=1; // for tail choice
 static uint32_t binroutetypecount=0; // for type of binroute - used in a few functions in geogen 
 
 // TODO: clean these - do we use???
@@ -271,10 +271,10 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
 
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
-       {SR_geo_outer_N00, SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03,  SR_geo_outer_N10, SR_geo_outer_N11, SR_geo_outer_N12, SR_geo_outer_N12, SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, SR_geo_outer_N30, SR_geo_outer_N31, SR_geo_outer_N32, SR_geo_outer_N33,  /*SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, SR_geo_outer_N60, SR_geo_outer_N61, SR_geo_outer_N62, SR_geo_outer_N63, SR_geo_outer_N70, SR_geo_outer_N71, SR_geo_outer_N72, SR_geo_outer_N73*/},
-       {SR_geo_outer_L00, SR_geo_outer_L01, SR_geo_outer_L02, SR_geo_outer_L03,  SR_geo_outer_L10, SR_geo_outer_L11, SR_geo_outer_L12, SR_geo_outer_L12, SR_geo_outer_L20, SR_geo_outer_L21, SR_geo_outer_L22, SR_geo_outer_L23, SR_geo_outer_L30, SR_geo_outer_L31, SR_geo_outer_L32, SR_geo_outer_L33,  /*SR_geo_outer_L40, SR_geo_outer_L41, SR_geo_outer_L42, SR_geo_outer_L43, SR_geo_outer_L50, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_L60, SR_geo_outer_L61, SR_geo_outer_L62, SR_geo_outer_L63, SR_geo_outer_L70, SR_geo_outer_L71, SR_geo_outer_L72, SR_geo_outer_N73*/},
-     {SR_geo_outer_C40, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  /*SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73*/}, 
-       {SR_geo_outer_R00, SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_R10, SR_geo_outer_R11, SR_geo_outer_R12, SR_geo_outer_R12, SR_geo_outer_R20, SR_geo_outer_R21, SR_geo_outer_R22, SR_geo_outer_R23, SR_geo_outer_R30, SR_geo_outer_R31, SR_geo_outer_R32, SR_geo_outer_R33, /*  SR_geo_outer_R40, SR_geo_outer_R41, SR_geo_outer_R42, SR_geo_outer_R43, SR_geo_outer_R50, SR_geo_outer_R51, SR_geo_outer_R52, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_R61, SR_geo_outer_R62, SR_geo_outer_R63, SR_geo_outer_R70, SR_geo_outer_R71, SR_geo_outer_R72, SR_geo_outer_R73*/},
+       {SR_geo_outer_N02, SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03,  SR_geo_outer_N10, SR_geo_outer_N11, SR_geo_outer_N12, SR_geo_outer_N12, SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, SR_geo_outer_N30, SR_geo_outer_N31, SR_geo_outer_N32, SR_geo_outer_N33,  /*SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, SR_geo_outer_N60, SR_geo_outer_N61, SR_geo_outer_N62, SR_geo_outer_N63, SR_geo_outer_N70, SR_geo_outer_N71, SR_geo_outer_N72, SR_geo_outer_N73*/},
+       {SR_geo_outer_L00, SR_geo_outer_L01, SR_geo_outer_L02, SR_geo_outer_L03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73},
+     {SR_geo_outer_C00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73}, 
+     {SR_geo_outer_R00, SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_R10, SR_geo_outer_R11, SR_geo_outer_R12, SR_geo_outer_R12, SR_geo_outer_R20, SR_geo_outer_R21, SR_geo_outer_R22, SR_geo_outer_R23, SR_geo_outer_R30, SR_geo_outer_R31, SR_geo_outer_R32, SR_geo_outer_R33/*, SR_geo_outer_R40, SR_geo_outer_R41, SR_geo_outer_R42, SR_geo_outer_R43, SR_geo_outer_R50, SR_geo_outer_R51, SR_geo_outer_R52, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_R61, SR_geo_outer_R62, SR_geo_outer_R63, SR_geo_outer_R70, SR_geo_outer_R71, SR_geo_outer_R72, SR_geo_outer_R73*/},
 
 };
 
@@ -318,6 +318,7 @@ void mode_init(void){
   for (x=0;x<4;x++){
     gate[x].flip=0;
     gate[x].route=0;
+    gate[x].altroute=0;
     gate[x].routetype=0;
     gate[x].shift_=0x15;
     gate[x].Gshift_[0]=0;
@@ -392,10 +393,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   // testings for meta mode handlers
   //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
-  uint32_t outindex=0;//mode[www]>>3; // now only 3 bits - from 6 bits (64) to 3 bits...mode is 64.32.16>>8
+  uint32_t outindex=0;
   //  uint32_t outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
-  if (outindex>15) outindex=15;
-  //  if (www==2) outindex=0; // testing TYPE on CVL
+  if (www==1 || www==2) outindex=mode[www]; // testing TYPE on CVL
+  if (outindex>31) outindex=31;
+
   (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
   (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
 
