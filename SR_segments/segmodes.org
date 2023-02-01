@@ -100,11 +100,23 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 1/2/2023
+
+- Notes and new tests from notebook on tests with first 32 modes: simplify all...
+
+- first 16 modes are less modular and more fixed. less/no gaps.
+
+- replace theroute with global route? and then we have depth question // few depth as route functions... but not a gapped theroute for all...// no globflag
+
+- some NZbinroutfixed_prob1x are the same as wiard bits - prob of route/route inv vs cycle/cycle inv...
+
+- prob is too complex and shouldn't have shared CVs - refine to X vs Y - what functions make sense eg. eg. prob of global route vs. depth route
+
 ** 31/1/2023
 
-*did it crash? how to crash test - with rand on modes but doesn't crash...*
+*did it crash? how to crash test - with rand on modes but doesn't crash and is slow...*
 
-*we need simpler modes and changes across sides*
+*we need simpler modes and changes of functions/style across sides*
 
 Note: so far LL, CC and RR are all same apart from first reset... upto 16
 
