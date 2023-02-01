@@ -44,6 +44,7 @@
 #include "resources.h"
 #include "modes.h"
 
+
 static heavens gate[9]; // for parallell SR doubled + tail
 
 static uint32_t CV[4]={0,0,0,0};
@@ -55,7 +56,7 @@ static uint32_t CVM[4]={0,0,0,0};
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16type, 17 route}
 uint32_t matrixNN[18]={0,0,0,  1<<7,0,0, 31<<7, 1<<7,31<<7, 1<<7,0,0,4,    25<<7,2048, 0, 0, 8<<8}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 uint32_t matrixLL[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8};
-uint32_t matrixCC[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,   1<<7, 2048, 0, 0, 2<<8}; 
+uint32_t matrixCC[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    0<<7, 2048, 0, 0, 2<<8}; 
 uint32_t matrixRR[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 4<<8};  // spdfracend TEST
 uint32_t matrixTT[18]={0,0,0,  1<<7,0,0, 0<<7, 0,0,         1<<7,0,0,4,    25<<7,2048, 0, 0, 1<<8}; 
 //                     speed   bit       len   adc,adc-cv   prob  alt      dac      strobespdindex, type, route
@@ -84,7 +85,7 @@ static uint32_t binroutetypecount=0; // for type of binroute - used in a few fun
 // 1 means its used so do normed clocks - all one for testing
 // replace this with just strobed set by mode/function itself and then passed to final part for normed clocks
 // TODO: fix
-uint8_t strobey[4][64]={
+uint32_t strobey[4][64]={
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
   {1,1,1,1, 1,1,1,1,  1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1},
@@ -103,11 +104,12 @@ uint32_t rr=0, totr=0, smoothr[SMOOTHINGS];
 uint32_t nn=0, totn=0, smoothn[SMOOTHINGS];
 uint32_t mde;
 
-uint16_t mode[4]={0,0,0,0};
-uint16_t lastmode[4]={1,1,1,1};
-uint8_t clkr=7;
-uint16_t lastmodec, lastmoden, lastmodel, lastmoder;
-uint16_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
+uint32_t mode[4]={0,0,0,0};
+uint32_t smode[4]={0,0,0,0};
+uint32_t lastmode[4]={1,1,1,1};
+uint32_t clkr=7;
+uint32_t lastmodec, lastmoden, lastmodel, lastmoder;
+uint32_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 //uint16_t whichDAC=2;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
@@ -195,10 +197,10 @@ uint32_t counter_[4]={0,0,0,0};
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
 static uint32_t pulse[4]={0,1,0,1};
 static uint32_t LR[4]={0,1,0,1};
-static uint8_t flipd[4]={0,0,0,0};
-static uint16_t pulsouts[8]={0, 0,  1<<2, 1<<15, 1<<4, 1<<12, 1<<3, 1<<11};
+static uint32_t flipd[4]={0,0,0,0};
+static uint32_t pulsouts[8]={0, 0,  1<<2, 1<<15, 1<<4, 1<<12, 1<<3, 1<<11};
 
-static uint8_t defdac=3;
+static uint32_t defdac=3;
 
 volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOC->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL), &(GPIOB->BSRRL), &(GPIOA->BSRRL) };
 //                                  0              0              PB2                PC15           PB4               PA12           PB3                PA11 
@@ -239,7 +241,7 @@ static uint32_t glob=0; // glob is now global index for global funcs
 #include "geoNN.h"
 #include "geoLL.h"
 #include "geoRR.h"
-#include "test.h"
+//#include "test.h"
 // check slowest speed
 /*
 void SRspeedtest(uint8_t w){ // null
@@ -358,7 +360,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
 {
-  static uint32_t www=0, ww=0, first=0;
+  static uint32_t www=0, ww=0, first=0, flipperrr=0;
   uint32_t tmp;
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
@@ -394,12 +396,20 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //uint32_t outindex=(*metaout[mode[www]])(www, mode[www]); // - functions which return geomantic indices nased on mode[www]
 
   uint32_t outindex=0;
-  //  uint32_t outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
-  if (www==1 || www==2) outindex=mode[www]; // testing TYPE on CVL
-  if (outindex>31) outindex=31;
+  //outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
+  if (www==2) outindex=mode[www]; // testing TYPE on CVL
+  if (outindex>15) outindex=15;
+
+  /*
+  if (www==2 && gate[2].changed==1) {
+  flipperrr^=1; // full speed 60 KHz
+  if (flipperrr) GPIOB->BSRRH=clk_route_new[2]; // we get from tail // which one
+  else GPIOB->BSRRL=clk_route_new[2];
+  }
+  */
 
   (*SRgeo_outer[www][outindex])(www); // or we just use mode[www] as index and all we need is done in inner and outer geomantics - except we can't manipulate these or stalk/stack through them
-  (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
+   (*gate[www].inner)(www); // this one is now set by outer which we need to call from a list
 
   //    SRspeedtest(www); // test slowest speed
  
@@ -409,6 +419,7 @@ if (www==2)  {
 
  // implement fake strobe using gate[w].strobed (we will miss the first one but...)
 
+ 
  if (www!=0){ 
  if (gate[www].strobed){ // still q of strobey
    if (gate[8].shift_ &0x01) GPIOB->BSRRH=clk_route_new[www]; // we get from tail

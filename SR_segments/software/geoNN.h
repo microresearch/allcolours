@@ -230,11 +230,12 @@ void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
   if (gate[w].changed==1) RESETN; // added 21/12 only reset on change 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[7]=CVL[w]; // adcparam
+  gate[w].matrix[7]=CVL[w]; // adctype
+  //  gate[w].matrix[8]=CVL[w]; // adccv //TEST
   gate[w].inner=SR_geo_inner_norouteadcN; // routetype/theroute so always at reset route/base global
 }
 
-void SR_geo_outer_N01(uint32_t w){ // adctype, or route but now no route in
+void SR_geo_outer_N01(uint32_t w){ // adcparam, or route but now no route in
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];

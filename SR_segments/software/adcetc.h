@@ -1503,7 +1503,7 @@ void TIM4_IRQHandler(void)
   uint32_t temp;
   static uint32_t modecnt=0;
   //  volatile static uint16_t tmp;
-  //  static uint32_t flipperr=0;
+  static uint32_t flipperr=0;
   
   TIM_ClearITPendingBit(TIM4, TIM_IT_Update); 
 
@@ -1522,26 +1522,28 @@ void TIM4_IRQHandler(void)
 
   // modes are NOT inverted!
   // maybe we can slow down modes
-  modecnt++; 
-  if (modecnt>128){ // what is the speed of this? 10 Hz (so 20x second ok)
-    /*
+    modecnt++; 
+    if (modecnt>64){ // 128: what is the speed of this? 2/1 measured as 10 Hz (so 20x second ok)
+    /* // flipper is on fake clock for CC
     flipperr^=1;
     if (flipperr) GPIOB->BSRRH=clk_route_new[2]; // we get from tail
      else GPIOB->BSRRL=clk_route_new[2];
     */
-    modecnt=0;
-  
+      modecnt=0;
+      //    }
+      
   //moden
   ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   //  temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; 
+  temp=temp>>6;
   temp=(temp+lastlastmoden+lastmoden)/3; 
   lastlastmoden=lastmoden;
   lastmoden=temp;
-  CVM[0]=temp;    
-  mode[0]=(temp>>6); // 64 modes = 6 bits  
+  //  CVM[0]=temp;    
+  mode[0]=temp>>6; // 64 modes = 6 bits  
   if (lastmode[0]!=mode[0]) gate[0].changed=1;
   else gate[0].changed=0;
   lastmode[0]=mode[0];
@@ -1552,12 +1554,14 @@ void TIM4_IRQHandler(void)
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   //  temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3;
+  temp=temp>>6;
   temp=(temp+lastlastmodec+lastmodec)/3; 
   lastlastmodec=lastmodec;
   lastmodec=temp;
-  CVM[2]=temp;
-  mode[2]=(temp>>6); // 64 modes = 6 bits  
-  if (lastmode[2]!=mode[2]) gate[2].changed=1;
+  //  CVM[2]=temp;
+  mode[2]=temp;
+  //    mode[2]=(temp>>6); // 64 modes = 6 bits  
+  if (lastmode[2]!=mode[2]) gate[2].changed=1; 
   else gate[2].changed=0;
   lastmode[2]=mode[2];
 
@@ -1568,10 +1572,11 @@ void TIM4_IRQHandler(void)
   temp=ADC_GetConversionValue(ADC1);
   temp=(temp+lastlastmodel+lastmodel)/3; 
   //  temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; 
+  temp=temp>>6;
   lastlastmodel=lastmodel;
   lastmodel=temp;
-  CVM[1]=temp;
-  mode[1]=(temp>>6); // 64 modes = 6 bits
+  //  CVM[1]=temp;
+  mode[1]=temp; // 64 modes = 6 bits
   if (lastmode[1]!=mode[1]) gate[1].changed=1;
   else gate[1].changed=0;
   lastmode[1]=mode[1];
@@ -1582,15 +1587,16 @@ void TIM4_IRQHandler(void)
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   //  temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3;
+  temp=temp>>6;
   temp=(temp+lastlastmoder+lastmoder)/3; 
   lastlastmoder=lastmoder;
   lastmoder=temp;
-  CVM[3]=temp;
-  mode[3]=(temp>>6); // 64 modes = 6 bits  
+  //  CVM[3]=temp;
+  mode[3]=temp>>6; // 64 modes = 6 bits  
   if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
   else gate[3].changed=0;
   lastmode[3]=mode[3];
-  }
+    }
   
   // speedn
   totn=totn-smoothn[nn];

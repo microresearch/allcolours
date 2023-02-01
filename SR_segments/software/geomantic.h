@@ -18,7 +18,7 @@ speedfromstrobenodepth
 
 //remove 11, 12, 13, 23, 31, 34, 35.. =7 to lose 31 +1 new one to make
 
-uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zosc1bits, sigmadelta, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, zSRNbits, zsprobbits, zcountbits}; // 2x spdfrac and spdfracend for interpoll // // no end is now in this one above
+uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zosc1bits, sigmadelta, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, zSRNbits, zsprobbits, zcountbits}; // 2x spdfrac and spdfracend for interpoll // // no end is now in this one above // check for no depths?
 
 uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}; // TODO match with speedfromnostrobe
 
@@ -26,7 +26,7 @@ uint32_t speednoin[36]={0,0,0,0, 1,1,1,1, 1,1,1,0, 0,0,0,0,  0,0,0,0,  0,0,0,0, 
 
 // in the above which ones use IN -> dacfrom
 
-uint32_t (*speedfromnosdac[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI}; // now 3 bits >>9 - 
+uint32_t (*speedfromnosdac[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zosc2bitsI}; // now 3 bits >>9 - // what is this one? use of dac for speeds i guess // IN!???
 
 // spdfrac2,3,4,spdfracdac3, zcompbits, spdvienna, 
 
@@ -57,7 +57,7 @@ uint32_t (*padcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t re
 /////////////////////////
 // 3. bits/routes and see list there
 
-#include "bitsn.h" // for bits and routes
+//#include "bitsn.h" // for bits and routes
 
 #include "newbits.h" // for bits and routes
 
@@ -106,7 +106,7 @@ uint32_t (*probfstrobes_nodepth[32])(uint32_t depth, uint32_t in, uint32_t wh)={
 uint32_t (*probfstrobesdepth[7])(uint32_t depth, uint32_t in, uint32_t wh)={zsprobbits, strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle}; 
 
 // 5. tails
-void (*dotail[32])(void)= {fliptail, basictail, succtail, succtailback, tailC, tailL, tailR, tailN, basictailnos, succtailnos, succtailbacknos, tailCnos, tailLnos, tailRnos, tailNnos, basictailinv, succtailinv, succtailbackinv, tailCinv, tailLinv, tailRinv, tailNinv, basictailnosinv, succtailnosinv, succtailbacknosinv, tailCnosinv, tailLnosinv, tailRnosinv, tailNnosinv, tailXOR0, tailXOR1, tailOR};
+void (*dotail[32])(void)= {fliptail, basictail, succtail, succtailback, tailC, tailL, tailR, tailN, basictailnos, succtailnos, succtailbacknos, tailCnos, tailLnos, tailRnos, tailNnos, basictailinv, succtailinv, succtailbackinv, tailCinv, tailLinv, tailRinv, tailNinv, basictailnosinv, succtailnosinv, succtailbacknosinv, tailCnosinv, tailLnosinv, tailRnosinv, tailNnosinv, tailXOR0, tailXOR1, tailOR}; // 1 is basictail. default
 
 // 6. global opps - add those which operate on various global flags, and orderings (we have no?)
 void (*globalls[20])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, SRRglobaltailset}; 

@@ -102,15 +102,90 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 1/2/2023
 
-- Notes and new tests from notebook on tests with first 32 modes: simplify all...
+/* which of these could be in abstractbits as not using route? check:
 
-- first 16 modes are less modular and more fixed. less/no gaps.
+{zsuccbitsprob, zreturnbits, zreturnnotbits, zTMsimplebits, zcopyGSR, zcopyGSR_s, tailbitswithd, tailbitsIwithd, tailbitswithdnos, tailbitsIwithdnos, pSR_layer1, pSR_layer2, pSR_reflect, pSR_altbin1, pSRhold, pSRholdfromdac, pSRshroute, pbitSRroutelog, pbitSRroutelogxx, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSR32, pSRmod, pSRNwas13, pSRN65, pSRN62, pSRN30, pSRN22, pSRN21, pSRN15, pSRN12, pSRN11, pSRN10, pSRNwas15}; // 55
+
+ */
+
+- *check new functions against depth*
+
+- DONETESTING - new smooth mode scheme on [2]CC -> and faster slur of modes... trialDONE
+
+- TODO in progress: mode by mode of old CC, test each new function arrays, and start to make new draft CC with clearer options/less gaps, no routes
+
+- - new runglers, check rungler routing (see notebook) and options - clkfrom other/incoming data 
+
+- when we decide we eliminate theroute and globflag...
+
+- // *also we need to use routebits_anystrobe_notypesz*
+
+*zbinrouteSRbits is rungler depth->route->bits* so can be used on left side as speedfrom
+
+////////////////////////////////
+
+- Notes and new tests from notebook on tests with first 32 modes: 
+
+- re-test each mode individually and do speed tests...DONE 
+- how fast is slur - how to measure that/ we have code there... test in main // we reduced slur speed by half...
+- check all for logic issues?
+
+//simplify all...
+
+- first 16 modes are less modular and more fixed. less/no gaps. simple strobe modes todo
 
 - replace theroute with global route? and then we have depth question // few depth as route functions... but not a gapped theroute for all...// no globflag
 
-- some NZbinroutfixed_prob1x are the same as wiard bits - prob of route/route inv vs cycle/cycle inv...
+for moment keep theroute as fixed and see how goes // ignore bumpbits for now -> new alt versions
 
 - prob is too complex and shouldn't have shared CVs - refine to X vs Y - what functions make sense eg. eg. prob of global route vs. depth route
+
+- new function arrays for route/nodepth and extended abstracts (with no direct route in) - but bumpbits change theroute/fixed as alt ones now
+
+// routebits_nodepth_typesz, routebits_depth_typesz
+
+
+- DONEcheck for repeats: eg. some NZbinroutfixed_prob1x are the same as wiard bits - prob of route/route inv vs cycle/cycle inv...
+
+- what is repeating? removed all wiard as we have as probs!DONE!
+
+NZzwiardbits: type LFSR__ route/cycle
+NZzwiardinvbits: type         route/inv_cycle
+
+zwiardbits: in route/cycle no type
+zwiardinvbits: inv // keep now with no shift
+
+zwiardbitsI: in no type same as above?
+zwiardbits"I: ^ cycle
+
+Zzwiardinvbits: in, type, inv cycle
+zzwiardbits2I: in, type ^ cycle
+
+Nzzwiardbits2I: lfsr, type, ^ cycle
+
+zzwiardinvbitsI: in, type, invcycle
+zzwiardbitsI: in, type, cycle
+
+Zzwiardbits: in type, cycle
+
+zwiardinvbitsI: in, no type, inv
+
+///
+
+Zbinroutfixed_prob1: in, type, cycle
+NZbinroutfixed_prob1: lfsr, type, route
+
+Zbinroutfixed_prob2: in, type, simple INV of bit 
+NZbinroutfixed_prob2: LFSR
+
+Zbinroutfixed_prob3: in, type, inv cycle
+NZbinroutfixed_prob3: lfsr
+
+Zbinroutfixed_prob4: in, type, ^cycle
+NZbinroutfixed_prob4: lfsr
+
+Zbinroutfixed_prob5: in, type, binroute
+NZbinroutfixed_prob5: lfsr
 
 ** 31/1/2023
 

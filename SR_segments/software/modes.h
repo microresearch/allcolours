@@ -19,6 +19,7 @@ typedef struct heavens_ {
   long int_time;
   //uint32_t delay[512]; // 128x32 bits=4096 // 512=16384
   uint32_t changed;
+  uint32_t changeds;
   uint32_t reset[9];
   int32_t gsrcnt[9];
   uint32_t route;

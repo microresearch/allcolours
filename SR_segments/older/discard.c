@@ -1,3 +1,181 @@
+// we already have EN version
+//WIARD versions - macro versions - inside themselves
+//WIARD: noise/comp selects new input or loop back/inverted loop back (jumper)
+
+//WIARD
+static inline uint32_t zwiardbits(uint32_t depth, uint32_t in, uint32_t w){ //global
+  uint32_t bt=0, bitrr, tmp;
+  if (depth>in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+  bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+  }
+  return bt;
+}
+
+static inline uint32_t zwiardinvbits(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  if (depth<in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = !((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
+
+
+static inline uint32_t zwiardbitsI(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  if (depth>in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+  bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+  }
+  return bt;
+}
+
+static inline uint32_t zwiardbits2I(uint32_t depth, uint32_t in, uint32_t w){ //global
+  uint32_t bt=0, bitrr, tmp;
+  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  if (depth<in){
+  bt ^= (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+  }
+  return bt;
+}
+
+static inline uint32_t Zzwiardinvbits(uint32_t depth, uint32_t in, uint32_t w){
+  uint32_t bitn=0, bitrr, x, tmpp, tmp;
+  if (depth>in){
+      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; 
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
+  }
+  else {
+    bitn = !((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bitn;
+}
+
+static inline uint32_t zzwiardbits2I(uint32_t depth, uint32_t in, uint32_t w){ //global
+  uint32_t bitn=0, x, bitrr, tmp, tmpp;
+  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  tmpp=gate[w].routetype;
+  ROUTETYPE_;
+  if (depth<in){
+  bitn ^= (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+  }
+  return bitn;
+}
+
+static inline uint32_t Nzzwiardbits2I(uint32_t depth, uint32_t in, uint32_t w){ //global
+  uint32_t bitn=0, x, bitrr, tmp, tmpp;
+  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  tmpp=gate[w].routetype;
+  ROUTETYPE_;
+  if (depth<LFSR__[w]){
+  bitn ^= (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+  }
+  return bitn;
+}
+
+static inline uint32_t zzwiardinvbitsI(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bitn=0, bitrr, tmp, tmpp, x;
+  if (depth>in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
+  }
+    else {
+    bitn = !((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bitn;
+}
+
+static inline uint32_t zzwiardbitsI(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bitn=0, bitrr, tmp, x, tmpp;
+  if (depth>in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
+  }
+  else {
+  bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+  }
+  return bitn;
+}
+
+static inline uint32_t Zzwiardbits(uint32_t depth, uint32_t in, uint32_t w){
+  uint32_t bitn=0, bitrr, x, tmpp, tmp;
+  if (depth>in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; 
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
+  }
+  else {
+  bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
+  }
+  return bitn;
+}
+
+
+static inline uint32_t zwiardinvbitsI(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  if (depth>in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = !((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
+
+
 /*
 *that ghost or double can also be generator and function - own feedback and loopback - like the GSR and maybe could replace it ???????what_means*
 *what this means: that we associate each SR with a GSR function*
