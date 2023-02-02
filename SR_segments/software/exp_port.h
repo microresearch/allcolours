@@ -206,8 +206,9 @@ static inline uint32_t pSR_reflect(uint32_t depth, uint32_t in, uint32_t w){ // 
 static inline uint32_t pSR_altbin1(uint32_t depth, uint32_t in, uint32_t w){ // use depth for route
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //  tmp=binroute[count][w];
-  //  tmp=(depth>>8); //
-      tmp=gate[w].theroute;
+    tmp=(depth>>8);
+    tmp=15-temp;
+    //    tmp=gate[w].theroute;
 
     for (x=0;x<4;x++){
       if (tmp&0x01){  
@@ -325,7 +326,7 @@ static inline uint32_t pSRaddroutes(uint32_t depth, uint32_t in, uint32_t w){// 
       //      BINROUTE_;
       //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
     tmp=gate[w].theroute;
-tmpp=gate[w].routetype;
+    tmpp=gate[w].routetype;
       ROUTETYPE_;
     }  
   return bitn;
@@ -377,11 +378,11 @@ static inline uint32_t pSRprobxortogID_(uint32_t depth, uint32_t in, uint32_t w)
 
 static inline uint32_t pSRmatch(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0, val;
-  tmp=depth>>6; // 6 bits
+  tmp=63-(depth>>6); // 6 bits
   tmpp=masky[(tmp>>4)]; // top 2 bits
   if ( (gate[tmp&0x03].Gshift_[w]&tmpp)==(gate[((tmp&12)>>2)].Gshift_[w]&tmpp)) val=1;
   else val=0;
-tmpp=gate[w].routetype;
+  tmpp=gate[w].routetype;
   ROUTETYPE_;
 
   //  BINROUTE_; // or not
@@ -587,8 +588,8 @@ static inline uint32_t pbitSRroutelogxxD_(uint32_t depth, uint32_t in, uint32_t 
 
 static inline uint32_t pbitLcvsrroute(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
-  uint32_t mmm=(63-depth>>6); // 6 bits // dacfrom 2 = total 6
-  tmp=(mmm>>2) & (gate[mmm&3].Gshift_[w]) ; 
+  uint32_t mmm=(depth>>6); // 6 bits // dacfrom 2 = total 6
+  tmp=((mmm>>2) ^ (gate[mmm&3].Gshift_[w]))&3 ; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
   return bitn;
@@ -1166,7 +1167,7 @@ static inline uint32_t pSRNwas15(uint32_t depth, uint32_t in, uint32_t w){ //dep
     uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
     // was15 4x4 bits prob of routing in GSR  so we need 4 probs of x bits?
 	tmp=LFSR_[w];
-	tmpp=depth; // try with CV too
+	tmpp=4095-depth; // try with CV too
 	for (x=0;x<4;x++){
 	  if ((tmp&255)<(tmpp&255)){// replace with 12 bits /4 = 3 bits prob = 7 (LFSR_[w] & 4095 ) < (shift_[LFSR[w]] & 4095)
 	    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -1259,7 +1260,7 @@ static inline uint32_t pSRR32(uint32_t depth, uint32_t in, uint32_t w){ // depot
   return bitn;
 }
 
-static inline uint32_t pSRR32D_(uint32_t depth, uint32_t in, uint32_t w){ // depoth
+static inline uint32_t pSRR32D_(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t x, tmp, bitrr, temp, bitn=0;
 
   gate[w].shift_&=spacmask[SRlength[w]]; //cleared

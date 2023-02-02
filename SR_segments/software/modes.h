@@ -36,10 +36,11 @@ typedef struct heavens_ {
   uint32_t matrix[18];
   uint32_t *matrixp[18];
   uint32_t *matrixpG[18];
-  uint32_t extent; // for >><< of the funcbit array...
   float *logspeed; // poin
   float lowest;
   void (*inner)(uint32_t w);
   uint32_t (**funcbit)(uint32_t depth, uint32_t in, uint32_t wh);
+  uint32_t *depths; // which use depths
+  uint32_t extent; // for >><< of the funcbit array...  
 } heavens;
 

@@ -2,6 +2,38 @@
 
 extern void send_command(int command, void *message);
 
+void SR_geo_outer_testabstracts(uint32_t w){ // change function. don't care on depth or nots
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=36<<7; // function  select
+  gate[w].matrix[4]=CVL[w];
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
+  gate[w].funcbit=abstractbitsz; // max 39
+  gate[w].extent=7; // 
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+// - *test new prob <24 funcs with top speed and CV as sel*
+void SR_geo_outer_test24(uint32_t w){ // new inner function. now new function for depth as param <24 and > is prob function of xor cycle
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  //  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[1]=0;
+  gate[w].matrix[3]=CV[w]; // select
+  gate[w].matrix[4]=CVL[w]; // depth
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].funcbit=routebits_typeszz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+  gate[w].extent=6; // 6 bits above
+
+  gate[w].matrix[9]=0<<7; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w]; // probCV1
+
+  gate[w].inner=SR_geo_inner_functionprob1; // 
+  }
+}
+
 void SR_geo_inner_testfunctionC(uint32_t w){  // test our full 64 functions
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 

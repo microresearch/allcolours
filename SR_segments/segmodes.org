@@ -100,27 +100,40 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
-** 1/2/2023
+** 2/2/2023
 
-/* which of these could be in abstractbits as not using route? check:
+*would be nice to gap funcbit but then we don;t know what is done with depth - now we have depth array in gate[w] trial this...*
 
-{zsuccbitsprob, zreturnbits, zreturnnotbits, zTMsimplebits, zcopyGSR, zcopyGSR_s, tailbitswithd, tailbitsIwithd, tailbitswithdnos, tailbitsIwithdnos, pSR_layer1, pSR_layer2, pSR_reflect, pSR_altbin1, pSRhold, pSRholdfromdac, pSRshroute, pbitSRroutelog, pbitSRroutelogxx, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSR32, pSRmod, pSRNwas13, pSRN65, pSRN62, pSRN30, pSRN22, pSRN21, pSRN15, pSRN12, pSRN11, pSRN10, pSRNwas15}; // 55
+*if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
 
- */
 
-- *check new functions against depth*
+// *for some functions we need IN as gate[dacfromopp[daccount][w]].dac*
 
-- DONETESTING - new smooth mode scheme on [2]CC -> and faster slur of modes... trialDONE
+- DONE:check new functions against depth
 
 - TODO in progress: mode by mode of old CC, test each new function arrays, and start to make new draft CC with clearer options/less gaps, no routes
 
-- - new runglers, check rungler routing (see notebook) and options - clkfrom other/incoming data 
+- check rungler logic and test with new abstracts below
+
+-  new runglers, check rungler routing (see notebook) and options - clkfrom other/incoming data: *zbinrouteSRbits is rungler depth->route->bits* so can be used on left side as speedfrom
 
 - when we decide we eliminate theroute and globflag...
 
-- // *also we need to use routebits_anystrobe_notypesz*
+- // *XXXX also we need to use routebits_anystrobe_notypesz - fix NOTYPES!!! and use this somewhere!*
 
-*zbinrouteSRbits is rungler depth->route->bits* so can be used on left side as speedfrom
+// new notebook notes 2/2:
+
+- DONE:check knob slur with crash say on C20!
+
+- DONEcheck new abstract list... one by one - and new abstract list for runglers now...
+
+- *in progress: maybe divide depth and no depth as mix is confusing for use of depth* test new prob <24 funcs with top speed and CV as sel
+
+- what are abstracts with no depth (and can we use them?): justcycle, flipflop what else?
+
+** 1/2/2023
+
+- DONETESTING - new smooth mode scheme on [2]CC -> and faster slur of modes... trialDONE
 
 ////////////////////////////////
 

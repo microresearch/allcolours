@@ -1554,7 +1554,7 @@ static inline uint32_t zbinroutmybumpbittalt(uint32_t depth, uint32_t in, uint32
 
 static inline uint32_t zbinroutmycvalt(uint32_t depth, uint32_t in, uint32_t w){   // CV->myroute so we can use DAC // depth
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
-  if (depth>LFSR__[w])  gate[w].altroute++;
+  if (depth<LFSR__[w])  gate[w].altroute++;
   if (gate[w].altroute>15) gate[w].altroute=1;
   tmp=gate[w].altroute;
   tmpp=gate[w].routetype;
@@ -2245,7 +2245,8 @@ static inline uint32_t zbinrouteORbits(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t zbinrouteANDbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
-    depth=gate[w].theroute;  for (uint8_t x=0;x<4;x++){
+    depth=gate[w].theroute;
+    for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2259,6 +2260,7 @@ static inline uint32_t zbinrouteANDbits(uint32_t depth, uint32_t in, uint32_t w)
 static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... SR itself, no GSR 
   uint32_t bt=0, bitrr;
   depth=depth>>8;//gate[w].theroute;
+  depth=15-depth;
     for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
@@ -2365,23 +2367,25 @@ static inline uint32_t ZzbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint
 // copy GSR to another and keep there (so only on entry or on strobe...// to shared array) - could also be indie versions!
 static inline uint32_t zcopyGSR(uint32_t depth, uint32_t in, uint32_t w){
   static uint32_t sharey;
-  uint32_t bt=0;
-  if (gate[w].changed==0) {
-    sharey=gate[w].Gshare_;
+  uint32_t bt=0, x;
+  x=depth>>10; // 2 bits 
+  if (gate[w].changed==1) { 
+    sharey=gate[x].Gshare_; // which one to copy?
   }
-  bt=(sharey>>(depth>>7)) & 0x01;
+  bt=(sharey>>SRlength[x]) & 0x01;
   sharey=(sharey<<1)+bt;
   return bt;
 }
 
 static inline uint32_t zcopyGSR_s(uint32_t depth, uint32_t in, uint32_t w){ // strobe
   static uint32_t sharey;
-  uint32_t bt=0;
+  uint32_t bt=0, x;
+  x=depth>>10; // 2 bits 
   gate[w].strobed=1;
   if (gate[w].trigger) {
-    sharey=gate[w].Gshare_;
+    sharey=gate[x].Gshare_;
   }
-  bt=(sharey>>(depth>>7)) & 0x01;
+  bt=(sharey>>SRlength[x]) & 0x01;
   sharey=(sharey<<1)+bt;
   return bt;
 }
@@ -2486,7 +2490,8 @@ static inline uint32_t binroutorgap(uint32_t depth, uint32_t in, uint32_t w){// 
 
 static inline uint32_t zbinroutorgap(uint32_t depth, uint32_t in, uint32_t w){  // no depth
   uint32_t bitn=0, x, tmp, tmpp, bitrr;
-    depth=gate[w].theroute|binroute[count][w];
+  depth=depth>>8;
+  depth=depth|binroute[count][w];
     //    gate[w].theroute=depth; // non
     // deal with no route
     if (depth==0) { // SR5 is 8th which is outside these bits 
@@ -2702,7 +2707,7 @@ static inline uint32_t zstrobeBURST(uint32_t depth, uint32_t in, uint32_t w){ //
 static inline uint32_t ztogglebits(uint32_t depth, uint32_t in, uint32_t w){   // toggle
   static uint32_t bt[4]={0,0,0,0};
     gate[w].strobed=1;
-  if (gate[w].trigger && (depth>LFSR__[w])) bt[w]=bt[w]^1;
+  if (gate[w].trigger && (depth<LFSR__[w])) bt[w]=bt[w]^1;
   return bt[w];
 }
 
@@ -2716,14 +2721,14 @@ static inline uint32_t ztogglebitsnod(uint32_t depth, uint32_t in, uint32_t w){ 
 static inline uint32_t ztogglebitssh(uint32_t depth, uint32_t in, uint32_t w){   // toggle // shared toggles
   static uint32_t bt=0;//,0,0,0};
   gate[w].strobed=1;
-  if (gate[w].trigger && (depth>LFSR__[w])) bt=bt^1;
+  if (gate[w].trigger && (depth<LFSR__[w])) bt=bt^1;
   return bt;
 }
 
 static inline uint32_t ztogglebitsshnod(uint32_t depth, uint32_t in, uint32_t w){   // toggle
   static uint32_t bt=0;//,0,0,0};
   gate[w].strobed=1;
-  if (gate[w].trigger && (depth>LFSR__[w])) bt=bt^1;
+  if (gate[w].trigger && (depth<LFSR__[w])) bt=bt^1;
   return bt;
 }
 
@@ -3073,7 +3078,7 @@ static inline uint32_t flipflop(uint32_t depth, uint32_t in, uint32_t w){  // so
 static inline uint32_t flipflopI(uint32_t depth, uint32_t in, uint32_t w){  // so all share// 
   uint32_t bt;
   static uint32_t fl[4]={0,0,0,0};
-  if (depth>in) fl[w]^=1;
+  //  if (depth>in) fl[w]^=1;
   bt=fl[w];
   return bt;
 }
@@ -3365,12 +3370,12 @@ static inline uint32_t zonebits(uint32_t depth, uint32_t in, uint32_t w){ // dep
   //  static uint32_t k;
     gate[w].strobed=1;
   if (gate[w].trigger) {
-    depth=4095-depth;
+    depth=depth>>2;
     bc=depth;
   }
   if (bc<0) {
     bt=0;
-    //    if (depth>0) bc=depth;
+    //    bc=depth;
   }
   else{
   bt = 1; // this means that MSB comes out first
@@ -3430,6 +3435,7 @@ static inline uint32_t zlfsrbits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static uint32_t k;
   depth=depth>>7; // 5 bits
+  depth=31-depth;
     bt = ((ADCshift_[w] >> (lfsr_taps[depth][0])) ^ (ADCshift_[w] >> (lfsr_taps[depth][1])) ^ (ADCshift_[w] >> (lfsr_taps[depth][2])) ^ (ADCshift_[w] >> (lfsr_taps[depth][3]))) & 1u;
     ADCshift_[w]=(ADCshift_[w]<<1)+bt;
     if (ADCshift_[w]==0) ADCshift_[w]=0xff;
@@ -5083,7 +5089,7 @@ static inline uint32_t tailbitsInos(uint32_t depth, uint32_t in, uint32_t w){  /
 static inline uint32_t tailbitswithd(uint32_t depth, uint32_t in, uint32_t w){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
   uint32_t bt=0, bitrr;
   bitrr = (gate[8].Gshare_>>(depth>>7)) & 0x01; 
-  //  gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+  gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
   bt^=bitrr;
   return bt;
 }  
@@ -5096,18 +5102,3 @@ static inline uint32_t tailbitswithdnos(uint32_t depth, uint32_t in, uint32_t w)
   return bt;
 }  
 
-static inline uint32_t tailbitsIwithd(uint32_t depth, uint32_t in, uint32_t w){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
-  uint32_t bt=0, bitrr;
-  bitrr = (gate[8].Gshift_[w]>>(depth>>7)) & 0x01; 
-  //  gate[8].Gshift_[w]=(gate[8].Gshift_[w]<<1)+bitrr;
-  bt^=bitrr;
-  return bt;
-}  
-
-static inline uint32_t tailbitsIwithdnos(uint32_t depth, uint32_t in, uint32_t w){  // just bits from the tail [8] // shared version // no depth, no in // or use depth as (& 1<<(depth>>7))
-  uint32_t bt=0, bitrr;
-  bitrr = (gate[8].Gshift_[w]>>(depth>>7)) & 0x01; 
-  //  gate[8].Gshift_[w]=(gate[8].Gshift_[w]<<1)+bitrr;
-  bt^=bitrr;
-  return bt;
-}  
