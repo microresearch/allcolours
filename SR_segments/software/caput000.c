@@ -339,6 +339,10 @@ void mode_init(void){
     gate[1].gsrcnt[x]=31;
     gate[2].gsrcnt[x]=31;	
     gate[3].gsrcnt[x]=31;
+
+  gate[x].funcbit=routebits_depth_typesz; //routebits_typeszz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+  gate[x].extent=7; // 6 bits above
+  gate[x].depths=depth_routebits_depth_typesz;
   }
 
   gate[0].theroute=8; // defaults

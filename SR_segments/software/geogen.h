@@ -374,13 +374,40 @@ static inline uint32_t NZbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w
   return bitn;
 }
 
+static inline uint32_t Zbinroutfixed_probzero(uint32_t depth, uint32_t in, uint32_t w){   // prob of routed vs zeroes
+  uint32_t bitn=0, bitrr, x, tmpp, tmp;
+  if (depth>in) {
+    tmp=binroute[count][w]|binary[w];
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
+  }
+  else
+    {
+      bitn = 0;
+    }
+  return bitn;
+}
+
+static inline uint32_t NZbinroutfixed_probzero(uint32_t depth, uint32_t in, uint32_t w){   // prob of routed vs zeroes
+  uint32_t bitn=0, bitrr, x, tmpp, tmp;
+  if (depth<LFSR__[w]) {
+    tmp=binroute[count][w]|binary[w];
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
+  }
+  else
+    {
+      bitn = 0;
+    }
+  return bitn;
+}
+
 static inline uint32_t Zbinroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t w){   // prob of routed or cycling
   uint32_t bitn=0, bitrr, x, tmpp, tmp;
   if (depth<in) {
     //    tmp=binroute[count][w]|binary[w];
     if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; 
     tmpp=gate[w].routetype;
-
     ROUTETYPE_;
   }
   else

@@ -100,12 +100,24 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 3/2/2023
+
+- line up runglers - 2x functions or more = 
+
+1. Z: route in one SR/X/ clock from other SR/Y. SR_geo_outer_rung0 in geoCC now
+2. X/Y: osc or abstract function speedfrom Z.
+3. X/Y: route in XOR osc or abstract function speedfrom Z.
+
+so for example if C is Z - routes in default from L, speedfrom R // depends where other 2 are...
+
+-  new runglers, check rungler routing (see notebook) and options - 
+
+DONEclkfrom other/incoming dataTESTED: *zbinrouteSRbits is rungler depth->route->bits* so can be used on left side as speedfrom: SR_geo_outer_rung0 (inCC now)...
+
 ** 2/2/2023
 
-*would be nice to gap funcbit but then we don;t know what is done with depth - now we have depth array in gate[w] trial this...*
-
-*if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
-
+DONE: would be nice to gap funcbit but then we don;t know what is done with depth - now we have depth array in gate[w] trial this... // draft function*//tested
+if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7]): SR_geo_outer_gappedfunc
 
 // *for some functions we need IN as gate[dacfromopp[daccount][w]].dac*
 
@@ -115,11 +127,9 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 - check rungler logic and test with new abstracts below
 
--  new runglers, check rungler routing (see notebook) and options - clkfrom other/incoming data: *zbinrouteSRbits is rungler depth->route->bits* so can be used on left side as speedfrom
-
 - when we decide we eliminate theroute and globflag...
 
-- // *XXXX also we need to use routebits_anystrobe_notypesz - fix NOTYPES!!! and use this somewhere!*
+- // DONE:XXXX also we need to use routebits_anystrobe_notypesz - and use this somewhere
 
 // new notebook notes 2/2:
 
@@ -127,7 +137,7 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 - DONEcheck new abstract list... one by one - and new abstract list for runglers now...
 
-- *in progress: maybe divide depth and no depth as mix is confusing for use of depth* test new prob <24 funcs with top speed and CV as sel
+- *in progress: maybe divide depth and no depth as mix is confusing for use of depth* 
 
 - what are abstracts with no depth (and can we use them?): justcycle, flipflop what else?
 
@@ -202,7 +212,7 @@ NZbinroutfixed_prob5: lfsr
 
 ** 31/1/2023
 
-*did it crash? how to crash test - with rand on modes but doesn't crash and is slow...*
+//NO?did it crash? how to crash test - with rand on modes but doesn't crash and is slow...*
 
 *we need simpler modes and changes of functions/style across sides*
 

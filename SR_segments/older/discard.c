@@ -1,5 +1,29 @@
 // alt geoCC:
 
+void SR_geo_outer_C10dep(uint32_t w){ // change route. gapped type // alt: just local route change but then... other function
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6; // zbinrout - with theroute 
+  SETROUTECV;
+  gate[w].funcbit=routebits_typesz;
+  gate[w].extent=6; // 6 bits above
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+void SR_geo_outer_C11dep(uint32_t w){ // change type. theroute // alt: type from earlier
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6; // zbinrout - with theroute 
+  //  gate[w].matrix[4]=CVL[w]; //
+  SETROUTETYPECV;
+  gate[w].funcbit=routebits_typesz;
+  gate[w].extent=6; // 6 bits above
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
 
 // 2/1/23 - for 2.0 we can have different function arrays and gap array itself... but then what of depth????
 
