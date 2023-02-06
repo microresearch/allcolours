@@ -24,9 +24,9 @@ typedef struct heavens_ {
   int32_t gsrcnt[9];
   uint32_t route;
   uint32_t interp;
-  uint32_t in;
+  //  uint32_t in;
   uint32_t fake; // fake trigger
-  uint32_t globflag; // global or local route!
+  uint32_t globflag; // global or local route! // dep
   uint32_t theroute;
   uint32_t altroute;
   uint32_t routetype;
@@ -36,7 +36,7 @@ typedef struct heavens_ {
   uint32_t matrix[18];
   uint32_t *matrixp[18];
   uint32_t *matrixpG[18];
-  float *logspeed; // poin
+  float *logspeed; 
   float lowest;
   void (*inner)(uint32_t w);
   uint32_t (**funcbit)(uint32_t depth, uint32_t in, uint32_t wh);

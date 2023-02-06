@@ -8,7 +8,11 @@ NN: not so much about speeds?
 
 - do we have abstract modes instead of adc in also? could also have prob of adc or abstract. what is default abstract? what is default adc type, adc parameter?
 - no route in, just ADC or abstract types
-- prob of adc vs. route // adc vs. adc^route - negotiate all probs
+
+- prob of adc/abstract vs. route // adc/abstract vs. adc/abstract^route
+
+[ Q: adc/abstract vs. [adc/abstract ^ cycle] ? ]
+
 - runglers with adc and abstract, what of route in?
 
 ////

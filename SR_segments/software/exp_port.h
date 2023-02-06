@@ -42,6 +42,7 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t w){   // depth as ro
   //    depth=depth>>8; // 12 bits to 4 bits
   //    depth=gate[w].theroute;
     // deal with no route
+  depth=binroute[count][w]|binary[w];
   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
@@ -54,6 +55,26 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t w){   // depth as ro
     }
   return bitn;
 }
+
+static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now // USED only in SRrecbin here....
+  uint32_t bitn=0, bitrr, x, tmp, tmpp;
+  depth=depth>>8; // 12 bits to 4 bits
+  //    depth=gate[w].theroute;
+    // deal with no route
+  //.  depth=binroute[count][w]|binary[w];
+  if (depth==0) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bitn^=bitrr;
+  } else
+    {
+      tmpp=gate[w].routetype;
+      tmp=depth;
+      ROUTETYPE_;      
+    }
+  return bitn;
+}
+
 
 //- holder function - hold bits for /depth/ time - which bits? - this is more of a processor though...
 // delay line or hold until new value we can take
@@ -240,6 +261,21 @@ static inline uint32_t pSR_recbin(uint32_t depth, uint32_t in, uint32_t w){ //de
   }
   if (bitn){
     bitn=binroutebits(depth,w);
+  }
+  return bitn;
+}
+
+static inline uint32_t pSR_recbinD_(uint32_t depth, uint32_t in, uint32_t w){ //depth
+  uint32_t x, tmp, bitrr, temp, bitn=0;
+  bitn=binroutebitsD_(depth,w); // how these layers can differ - 4 layers... 
+  if (bitn){ 
+    bitn=binroutebitsD_(depth,w); 
+  }
+  if (bitn){
+    bitn=binroutebitsD_(depth,w);
+  }
+  if (bitn){
+    bitn=binroutebitsD_(depth,w);
   }
   return bitn;
 }

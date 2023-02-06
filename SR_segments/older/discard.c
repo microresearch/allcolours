@@ -1,4 +1,77 @@
+// DEP for divided versions
+//uint32_t (*routebits_nostrobe_typesz[41])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout, Zbinroutor, ZzbinrouteINVbits, Zzbinroutebitscycle, Zflipflopandroute, ZpSRsigma, Zviennabits, Zzsuccbitspp, ZzsuccbitsIpp, Zbinroutfixed_prob1, Zbinroutfixed_prob2, Zbinroutfixed_prob3, Zbinroutfixed_prob4, Zbinroutfixed_prob5, Zbinrout_probXY, Zbinrout_probXY1, NZbinrout_probXY, NZbinrout_probXY1, NZbinroutfixed_prob1, NZbinroutfixed_prob2, NZbinroutfixed_prob3, NZbinroutfixed_prob4, zbinroutmycvalt, zbinroutorgap, zzsingleroutebits, zbinroutmybumpbitalt, zbinroutmybumpbittalt, pSR_recbin, pSRmatch, pSRshare, pbitLcvsrroute, pstream, pSRN13, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pSRN15, pSRxorSR, pSR_routeSRbits02, pSR_routeSRbits01, pSRRaccelghosts0}; // reorder for depths
+
+
+// unused
+//uint32_t (*routebits_onlystrobe_typesz[25])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebitscyclestrI, zbinroutmybumpS, pSRxorroutes, pSRaddroutes, pSRGswop, pSRDACroutestrobe, pSRLLbumproute, pSRbumprouteD_, pSRN40, pSRN36, pSRN33cipher, pSRN33, pSRRLLswop, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pSRN8, pSRN7, pSRN6, pSRN5};
+
+uint32_t depth_routebits_juststrobe_typesz[25]={0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0};  //redo if needed ever
+
+
+
 // alt geoCC:
+
+
+void SR_geo_outer_C21(uint32_t w){ // change function. nodepth // gapped nodepth with prob of cycle
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+  gate[w].extent=6; // 6 bits above
+  gate[w].depths=depth_routebits_nodepth_typesz;
+  
+  gate[w].matrix[9]=0<<7; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w]; // probCV1
+
+  gate[w].inner=SR_geo_inner_probcycleC; 
+  }
+}
+
+void SR_geo_outer_C22(uint32_t w){ // change function. nodepth // gapped nodepth with prob of cycleXOR
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+  gate[w].extent=6; // 6 bits above
+  gate[w].depths=depth_routebits_nodepth_typesz;
+  
+  gate[w].matrix[9]=0<<7; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w]; // probCV1
+
+  gate[w].inner=SR_geo_inner_probcyclexorC; 
+  }
+}
+
+void SR_geo_outer_C23(uint32_t w){ // change function. nodepth // gapped nodepth with prob of cycleXORinv
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+  gate[w].extent=6; // 6 bits above
+  gate[w].depths=depth_routebits_nodepth_typesz;
+
+  gate[w].matrix[9]=0<<7; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w]; // probCV1
+
+  gate[w].inner=SR_geo_inner_probcyclexorinvC; 
+  }
+}
+
+
+
+// change type/globalroute
+void SR_geo_outer_C01dep(uint32_t w){ // globalroute/set routetype // alt: could be another prob and save setting for later
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  SETROUTETYPECV;
+  gate[w].inner=SR_geo_inner_globalC; // routetype/but globalroute
+  }
+}
+
 
 void SR_geo_outer_C10dep(uint32_t w){ // change route. gapped type // alt: just local route change but then... other function
   if (gate[w].changed==0) {

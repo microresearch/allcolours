@@ -359,7 +359,7 @@ void SR_geo_inner_prob_strobedepthC(uint32_t w){  // straight strobe and prob - 
 void SR_geo_inner_prob3_strobeC(uint32_t w){ // as above but with strobe for speed to free up CV for prob
   HEADNADA;
 
-  if ((*speedfromstrobenodepth[gate[w].matrix[15]>>8])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+  if ((*speedfromstrobe_nodepth[gate[w].matrix[15]>>8])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
           gate[w].fake=1;
     GSHIFT_;
     gate[w].dac = delay_buffer[w][1]; // dac moved inside strobe

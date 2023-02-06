@@ -333,7 +333,7 @@ void mode_init(void){
     gate[x].reset[3]=0;
     gate[x].route=0;
     gate[x].fake=1;
-    gate[x].in=0;
+    //    gate[x].in=0;
     gate[x].globflag=1;
     gate[0].gsrcnt[x]=31;
     gate[1].gsrcnt[x]=31;

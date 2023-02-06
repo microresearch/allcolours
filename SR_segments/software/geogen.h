@@ -2005,7 +2005,8 @@ tmpp=gate[w].routetype;
 
 static inline uint32_t zbinrouteINVbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
-    depth=gate[w].theroute;  if (depth==0) { // SR5 is 8th which is outside these bits 
+    depth=gate[w].theroute;
+    if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bt^=bitrr;
@@ -2315,7 +2316,8 @@ static inline uint32_t zbinrouteSRbitsd(uint32_t depth, uint32_t in, uint32_t w)
 
 static inline uint32_t zbinroutebitsI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel...
   uint32_t bt=0, bitrr;
-    depth=gate[w].theroute;  if (depth==0) { // SR5 is 8th which is outside these bits 
+    depth=gate[w].theroute;
+    if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshift_[w]>>SRlength[8]) & 0x01; 
     bt^=bitrr;
   } else
@@ -2755,7 +2757,7 @@ static inline uint32_t ztogglebitssh(uint32_t depth, uint32_t in, uint32_t w){  
 static inline uint32_t ztogglebitsshnod(uint32_t depth, uint32_t in, uint32_t w){   // toggle
   static uint32_t bt=0;//,0,0,0};
   gate[w].strobed=1;
-  if (gate[w].trigger && (depth<LFSR__[w])) bt=bt^1;
+  if (gate[w].trigger) bt=bt^1;
   return bt;
 }
 
@@ -3214,6 +3216,9 @@ static inline uint32_t zprobbitsxortoggle(uint32_t depth, uint32_t in, uint32_t 
   return bt;
 }
 
+// succ. no depth: zsuccbits, zsuccbitsI, zsuccbits_noshiftnod, zsuccbitsI_noshiftnod
+// succ. depth: zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbitsnoshiftd, zsuccbitsIpp, zsuccbitsI_noshiftd
+
 static inline uint32_t zsuccbits(uint32_t depth, uint32_t in, uint32_t w){   // no use of depth - we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
@@ -3264,6 +3269,44 @@ static inline uint32_t zsuccbits_noshift(uint32_t depth, uint32_t in, uint32_t w
   return bt;
 }
 
+static inline uint32_t zsuccbits_noshiftnod(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint8_t x=0;
+  if (x==w) x++;
+  if (x>3) x=0;
+  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
+  //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr;
+  x++;
+  return bt;
+}
+
+
+static inline uint32_t zsuccbitsI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint8_t x[4]={0};
+  if (x[w]==w) x[w]++;
+  if (x[w]>3) x[w]=0;
+  bt = (gate[x[w]].Gshift_[0]>>SRlength[x[w]]) & 0x01;
+  //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
+  if (depth>in) x[w]++;
+  return bt;
+}
+
+static inline uint32_t zsuccbitsI_noshiftnod(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint8_t x[4]={0};
+  if (x[w]==w) x[w]++;
+  if (x[w]>3) x[w]=0;
+  bt = (gate[x[w]].Gshift_[0]>>SRlength[x[w]]) & 0x01;
+  //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
+  x[w]++;
+  return bt;
+}
+
+
 static inline uint32_t zsuccbits_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
@@ -3298,19 +3341,6 @@ static inline uint32_t zsuccbitsIpp(uint32_t depth, uint32_t in, uint32_t w){   
   bt = (gate[x[w]].Gshift_[0]>>SRlength[x[w]]) & 0x01;
   //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
     if (depth>in) x[w]++;
-  return bt;
-}
-
-
-static inline uint32_t zsuccbitsI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
-  // include itself or not
-  uint32_t bt=0, bitrr;
-  static uint8_t x[4]={0};
-  if (x[w]==w) x[w]++;
-  if (x[w]>3) x[w]=0;
-  bt = (gate[x[w]].Gshift_[0]>>SRlength[x[w]]) & 0x01;
-  //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
-  if (depth>in) x[w]++;
   return bt;
 }
 

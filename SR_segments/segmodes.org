@@ -35,9 +35,9 @@ DONEsetting of dactypes
 
 *ORDER!!! dislocations of: ordercount of SRs in globals*
 
-*where do we set globflag and inflag? see below - globflag is also in all resets...*
+*deprecate: TODOremove all - globflag is also in all resets...*
 
-*make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
+deprecated: make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
 
 *double check all functions*
 
@@ -99,6 +99,27 @@ C - as we have, check prob of DAC outsES-61/62
 R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
+
+
+** 6/2/2023
+
+- home/ cleaning up newbits: 
+
+- *TEST:* changed order and some new ones first 16 of geoCC
+
+- draft RR, LL (as CC), NN first 16...
+
+- re-acquaint prob functions and strobe speed functions: cleaning up here and note succbits all options:
+
+*TODO: list succbits and also place in newbits if relevant:*
+
+// succ. no depth: zsuccbits, zsuccbitsI, zsuccbits_noshiftnod, zsuccbitsI_noshiftnod
+// succ. depth: zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbitsnoshiftd, zsuccbitsIpp, zsuccbitsI_noshiftd
+
+
+*for speeds with strobe - add xor with speed = where was if at all? and how we can do this without replicating or just as inner?*
+
+*// need tests of probfuctions*
 
 ** 3/2/2023
 
