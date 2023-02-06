@@ -14,8 +14,8 @@ speedfromstrobenodepth
 
  */
 
-// 6/2/ - also various succbits against in
-uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zosc1bits, sigmadelta, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshiftd, zsuccbits_noshiftd, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, zSRNbits, zsprobbits, zcountbits}; // 2x spdfrac and spdfracend for interpoll // // no end is now in this one above // checked for dpeths
+// 6/2/ - also various succbits
+uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zprobbits, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zosc1bits, sigmadelta, zbinrouteSRbits, zwiardnotinvbits, zsuccbitsI_noshiftd, zsuccbits_noshiftd, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbits_noshiftd, zSRNbits, zsprobbits, zcountbits}; // 2x spdfrac and spdfracend for interpoll // // no end is now in this one above // checked for depths
 
 
 uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}; // TODO match with speedfromnostrobe

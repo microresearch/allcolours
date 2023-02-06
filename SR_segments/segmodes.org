@@ -103,6 +103,8 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 6/2/2023
 
+- *maybe pass modded IN/depth to speedmodes rather than have spdfracs with dac... make examples - so ones which have no IN or IN is or could be LFSR__[w] // modularize*
+
 - home/ cleaning up newbits: 
 
 - *TEST:* changed order and some new ones first 16 of geoCC
@@ -114,12 +116,12 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 *TODO: list succbits and also place in newbits if relevant:*
 
 // succ. no depth: zsuccbits, zsuccbitsI, zsuccbits_noshiftnod, zsuccbitsI_noshiftnod
-// succ. depth: zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbitsnoshiftd, zsuccbitsIpp, zsuccbitsI_noshiftd
+// succ. depth: zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbits_noshiftd, zsuccbitsIpp, zsuccbitsI_noshiftd
 
 
 *for speeds with strobe - add xor with speed = where was if at all? and how we can do this without replicating or just as inner?*
 
-*// need tests of probfuctions*
+//DONEneed tests of probfuctionsDONE
 
 ** 3/2/2023
 

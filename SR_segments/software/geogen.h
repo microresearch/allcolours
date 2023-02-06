@@ -488,6 +488,25 @@ static inline uint32_t zwiardinvbits(uint32_t depth, uint32_t in, uint32_t w){//
   return bt;
 }
 
+static inline uint32_t zwiardnotinvbits(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  if (depth<LFSR__[w]){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    //    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr; // no shift
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = ((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
 
 static inline uint32_t NZbinroutfixed_prob3(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - prob of routed or cycling INV
   uint32_t bitn=0, bitrr, x, tmp, tmpp;
@@ -4831,6 +4850,7 @@ static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t w){ //
 static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t w){ // //INx
   uint32_t bt=0, speedy;
   // say CVL as depth, CV as in
+  depth=4095-depth;
   uint32_t recurse=(7-(depth>>4))&3; // 2 bits
   if (recurse!=0){
     speedy=in+gate[others[w][recurse-1]].dac; // can also be different versions such as modulus or mid version

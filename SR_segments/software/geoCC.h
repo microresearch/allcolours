@@ -650,6 +650,7 @@ void SR_geo_outer_C33(uint32_t w){ // do prob anyways but different [ func [xor]
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].matrix[9]=0<<7; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w];
   gate[w].inner=SR_geo_inner_probcyclexorC; 
   }
 }
@@ -681,13 +682,15 @@ void SR_geo_outer_rung0(uint32_t w){ // probzeroes
   }
 }
 
+//spdfrac, spdfrac, spdfracend, spdfracend, spdfrac2, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, zprobbits, 12zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zosc1bits, sigmadelta, zbinrouteSRbits, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshiftd, zsuccbits_noshiftd, binroutfixed_prob2_nosh, binroutfixed_prob3_nosh, zSRNbits, zsprobbits, zcountbits // maybe no justtail
+
 void SR_geo_outer_speedfunc(uint32_t w){   // test speedfroms
   if (gate[w].changed==0) {
-    gate[w].matrix[0]=CVL[w]; // set spdfrom mode
+    gate[w].matrix[0]=28<<7;//CVL[w]; // set spdfrom mode
     gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     //    gate[w].matrix[3]=0<<6; // fixedroute
-    gate[w].inner=SR_geo_inner_fixedC;
+    gate[w].inner=SR_geo_inner_function; //gapped in this case
   }
 }
 
