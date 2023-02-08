@@ -1,3 +1,27 @@
+
+static inline uint32_t pSRBITMIX(uint32_t depth, uint32_t in, uint32_t w){//depth and in and we use dac so is a tough one
+  uint32_t x, tmp, bitrr, temp, bitn=0;
+  float mixer;
+  tmp=255-(depth>>4); // 8 bits
+    mixer=1.0f/((float)(in>>4)+1.0f);
+    mixer*=(float)(gate[dacfrom[daccount][w]].dac>>4);
+    // how to mix with DAC using CVL - gate[dacfrom[daccount][w]].dac
+    tmp+=(int)mixer;
+    if (tmp>255) tmp=255;
+    for (x=0;x<4;x++){ 
+      if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
+	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
+	bitn=logopx(bitn,bitrr,(tmp)&0x03);
+	//	bitn=logopx(bitn,bitrr, 2); 
+      }
+      tmp=tmp>>2; // 4 bits
+    }
+  return bitn;
+  }
+
+
+
 // DEP for divided versions
 //uint32_t (*routebits_nostrobe_typesz[41])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout, Zbinroutor, ZzbinrouteINVbits, Zzbinroutebitscycle, Zflipflopandroute, ZpSRsigma, Zviennabits, Zzsuccbitspp, ZzsuccbitsIpp, Zbinroutfixed_prob1, Zbinroutfixed_prob2, Zbinroutfixed_prob3, Zbinroutfixed_prob4, Zbinroutfixed_prob5, Zbinrout_probXY, Zbinrout_probXY1, NZbinrout_probXY, NZbinrout_probXY1, NZbinroutfixed_prob1, NZbinroutfixed_prob2, NZbinroutfixed_prob3, NZbinroutfixed_prob4, zbinroutmycvalt, zbinroutorgap, zzsingleroutebits, zbinroutmybumpbitalt, zbinroutmybumpbittalt, pSR_recbin, pSRmatch, pSRshare, pbitLcvsrroute, pstream, pSRN13, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pSRN15, pSRxorSR, pSR_routeSRbits02, pSR_routeSRbits01, pSRRaccelghosts0}; // reorder for depths
 

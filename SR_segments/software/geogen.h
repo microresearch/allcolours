@@ -488,7 +488,45 @@ static inline uint32_t zwiardinvbits(uint32_t depth, uint32_t in, uint32_t w){//
   return bt;
 }
 
+static inline uint32_t zwiardinvbitsL(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  if (depth<LFSR__[w]){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    //    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr; // no shift
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = !((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
 static inline uint32_t zwiardnotinvbits(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  if (depth<in){
+    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
+  for (uint8_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    //    gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bitrr; // no shift
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = ((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
+static inline uint32_t zwiardnotinvbitsL(uint32_t depth, uint32_t in, uint32_t w){//global
   uint32_t bt=0, bitrr, tmp;
   if (depth<LFSR__[w]){
     if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w]; 
@@ -2709,6 +2747,28 @@ static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t w){ // 
   return bt;
 }
 
+static inline uint32_t spdfracdac4(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from dacfrom
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  tmp=(gate[speedfrom[spdcount][w]].dac%in)-(in>>1); // in/2 int32_t tmp
+  tmp+=depth;
+  if (tmp>4095) tmp=4095;    
+  if (tmp<0) tmp=0;
+
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  gate[w].time_now += speed;
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+  if(gate[w].last_time<gate[w].int_time) {
+    bt=1; // move on
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+  }
+  return bt;
+}
+
+
 // strobe list: uint32_t (*speedfromstrobe[7])(uint32_t depth, uint32_t in, uint32_t w)={strobe, ztogglebits, ztogglebitssh, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle};
 
 static inline uint32_t strobe(uint32_t depth, uint32_t in, uint32_t w){   // strobe - no depth
@@ -3424,7 +3484,23 @@ static inline uint32_t zcountbits(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
-
+static inline uint32_t zcountbitsI(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t flop[4]={0,0,0,0}, n[4]={0,0,0,0}, nn[4]={0,0,0,0};
+  if (n[w]>depth)  {
+    n[w]=0;
+  }
+  // we want n number of flops output
+  if (nn[w]>n[w]){
+    nn[w]=0;
+    flop[w]^=1;
+    n[w]++;
+  }
+  bt=flop[w];
+  nn[w]++; 
+  
+  return bt;
+}
 
 static inline uint32_t zTMsimplebits(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t bt;
@@ -4853,7 +4929,7 @@ static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t w){ // //
   depth=4095-depth;
   uint32_t recurse=(7-(depth>>4))&3; // 2 bits
   if (recurse!=0){
-    speedy=in+gate[others[w][recurse-1]].dac; // can also be different versions such as modulus or mid version
+    speedy=(in>>1)+(gate[others[w][recurse-1]].dac>>1); // can also be different versions such as modulus or mid version
     if (speedy>4095) speedy=4095;
   }
   else speedy=in;
@@ -4861,6 +4937,54 @@ static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t w){ // //
   bt=spdfrac(speedy, in, w);
   return bt;
 }
+
+static inline uint32_t spdvienna2(uint32_t depth, uint32_t in, uint32_t w){ // //INx
+  uint32_t bt=0, speedy;
+  // say CVL as depth, CV as in
+  depth=4095-depth;
+  uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  if (recurse!=0){
+    if (in==0) speedy=depth;  else speedy=gate[others[w][recurse-1]].dac%in;
+  }
+  else speedy=in;
+  
+  bt=spdfrac(speedy, in, w);
+  return bt;
+}
+
+static inline uint32_t spdvienna3(uint32_t depth, uint32_t in, uint32_t w){ // //INx
+  uint32_t bt=0, speedy;
+  // say CVL as depth, CV as in
+  depth=4095-depth;
+  uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  if (recurse!=0){
+    speedy=in+gate[others[w][recurse-1]].dac;
+    speedy=speedy%4095;
+  }
+  else speedy=in;
+  
+  bt=spdfrac(speedy, in, w);
+  return bt;
+}
+
+static inline uint32_t spdvienna4(uint32_t depth, uint32_t in, uint32_t w){ // //INx
+  uint32_t bt=0, speedy;
+  // say CVL as depth, CV as in
+  depth=4095-depth;
+  uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  if (recurse!=0){
+  speedy=(gate[others[w][recurse-1]].dac)-2048; // adapted for full bits
+  speedy+=in;  
+  if (speedy<0) speedy=0;
+  else if (speedy>4095) speedy=4095;
+  }
+  else speedy=in;
+  
+  bt=spdfrac(speedy, in, w);
+  return bt;
+}
+
+
 
 static inline uint32_t viennabits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt=0, tmp, tmpp, recurs, bitrr,x;

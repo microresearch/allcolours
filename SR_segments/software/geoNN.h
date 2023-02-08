@@ -249,6 +249,8 @@ void SR_geo_outer_N01(uint32_t w){ // adcparam, or route but now no route in
 }
 }
 
+// or can be abstract in only // then abstract depth
+
 void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or route entry  
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
@@ -495,6 +497,36 @@ void SR_geo_outer_N33x(uint32_t w){ // dac-depth. length-cv
 // switches against dacs, against strobes and toggles 
 // abstracts... ADC or abstract - slide across gate[x].funcbit and extent - in prob etc.
 // do we use dac in?
+
+/* probs
+
+CC, LL:
+- entry vs. zero
+- entry vs. cycle
+- entry vs [entry^cycle]
+- depthroute vs. fixedroute - strobe one as we need 2x depth
+
+don't gap abstract and adc 
+
+- adc/abstract vs. zero
+- adc/abstract vs. route in
+- adc/abstract vs. [adc/abstract ^ routein]
+- adc vs. abstract
+- adc vs. [abstract ^ adc]
+
+try these:
+
+- adc/abstract vs. cycle
+- adc/abstract vs. [route in ^ cycle]
+
+no prob:
+adc ^ abstract
+adc only
+route in only
+abstract only
+
+ */
+
 
 // what we find in geoN:
 

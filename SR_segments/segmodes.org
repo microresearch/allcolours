@@ -101,27 +101,100 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 ///////////////////
 
 
+** 7/2/2023
+
+TODO: tests from below:
+
+- test gapped strobe function. *SR_geo_inner_str_function* TEST!
+- test spdfracdac3 and new version// *spdfracdac3/4* > *SR_geo_outer_dacspeed*
+- test spdvienna2, 3, 4 in new speeds
+- zcountbitsI added TEST
+- test prob tryout // test diverse prob functions... probf_anystrobe_depth[64]: SR_geo_outer_probfunc
+- test strobe (no depth) xor with speedmodes (just strobe or strobe_modes, spdfrac or speedmodes) - but how we select each... fixed sel *SR_geo_outer_strobexor*
+
+/// other xor/or: 
+strobe_nodepth [xor/or] speed_depth
+strobe_depth [xor/or] speed_nodepth
+
+
+- speedmodes can have dac as depth (or cv plus dac etc) - speedfromnostrobe_noIN // calc is in outer but new func in inner... *SR_geo_outer_dacasdepthspeed*
+
+/////
+
+- seperate gapped functions for strobe/no strobe speeds (we only gap speed as index): so now we have: str_funcbit etc // done in init draft gapped strobe function
+
+- DONE/TEST-pull out: spdfracdac3 as special speed case with CV and CVL - retest and rework for +-
+
+4x4 for next 16:
+
+- basic probs - last 4 we pulled out / gapped speed?
+- prob functions  / gapped speed?
+- runglers/speed eg. spdfracdac3
+- speeds 
+
+strobes: 
+- basics with just trigger // CV and CVL
+- probs and strobe?
+- strobe functions
+- strobe xor/or speeds at end
+
+
 ** 6/2/2023
 
-- *maybe pass modded IN/depth to speedmodes rather than have spdfracs with dac... make examples - so ones which have no IN or IN is or could be LFSR__[w] // modularize*
+- draft strobe (no depth) xor with speedmodes (just strobe or strobe_modes, spdfrac or speedmodes)
+
+- which speedmodes can have dac as depth (or cv plus dac etc) - *speedfromnostrobe_noIN*
+
+in=gate[speedfrom[spdcount][w]].dac
+if (in==0) tmp=CVL[w];  else tmp=CVL[w]%in;
+gate[w].matrix[1]=tmp;
+
+// or other way round...
+
+///
+
+list modifiers for speedfromnostrobe_noIN with in as speedfrom dac: 
+
+1.   if (in==0) tmp=depth;  else tmp=depth%in;
+
+
+2.   tmp=(in>>1)+(depth>>1);
+  if (tmp>4095) tmp=4095;
+
+3.   tmp=(depth)-2048; // adapted for full bits
+  tmp+=in;  
+  if (tmp<0) tmp=0;
+  else if (tmp>4095) tmp=4095;
+
+4,  tmp=in+depth;
+  tmp=tmp&4095;
+
+////
+
+- draft prob tryout // test diverse prob functions...
+
+- *different versions spdvienna todo - done to test spdvienna2, 3, 4 in new speeds*
 
 - home/ cleaning up newbits: 
 
-- *TEST:* changed order and some new ones first 16 of geoCC
+- TESTed: changed order and some new ones first 16 of geoCC
 
 - draft RR, LL (as CC), NN first 16...
 
 - re-acquaint prob functions and strobe speed functions: cleaning up here and note succbits all options:
 
-*TODO: list succbits and also place in newbits if relevant:*
+DONE: list succbits and also place in newbits if relevant: no types - added to abstracts *TEST*
 
 // succ. no depth: zsuccbits, zsuccbitsI, zsuccbits_noshiftnod, zsuccbitsI_noshiftnod
-// succ. depth: zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbits_noshiftd, zsuccbitsIpp, zsuccbitsI_noshiftd
+// succ. depth: zsuccbitspp, zsuccbitsIpp, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbits_noshiftd, zsuccbitsI_noshiftd
 
+prob also
+
+DONE: zcountbitsI added *TEST*
 
 *for speeds with strobe - add xor with speed = where was if at all? and how we can do this without replicating or just as inner?*
 
-//DONEneed tests of probfuctionsDONE
+//DONEneed tests of probfunctionsDONE
 
 ** 3/2/2023
 
