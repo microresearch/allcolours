@@ -2731,7 +2731,7 @@ static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0;
   float speed;
   int32_t tmp;
-  tmp=gate[dacfrom[count][w]].dac%in; //changed
+  tmp=gate[dacfrom[count][w]].dac%(4096-in); //changed
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
 
@@ -2751,6 +2751,7 @@ static inline uint32_t spdfracdac4(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  in=4096-in;
   tmp=(gate[speedfrom[spdcount][w]].dac%in)-(in>>1); // in/2 int32_t tmp
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
@@ -3329,8 +3330,8 @@ static inline uint32_t zsuccbitsprob(uint32_t depth, uint32_t in, uint32_t w){  
   static uint8_t x=0;
   if (x==w) x++;
   if (x>3) x=0;
-  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01; 
-  if (depth>in) gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
+  bt = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+  if (depth>in) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bt;
   x++;
   return bt;
 }
@@ -3456,6 +3457,7 @@ static inline uint32_t zreturnnotbits(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t lastbt=0,n=0;
+  //  depth=4095-depth;
   if (n>depth)  {
     lastbt^=1;
     n=0;
@@ -3698,6 +3700,8 @@ static inline uint32_t zENsbitsI(uint32_t prob, uint32_t in, uint32_t w){
 static inline uint32_t zlfsrbitsI(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static uint32_t k;
+  depth=depth>>7;// how many?lfsr_taps[32][4]
+  depth=31-depth;
     bt = ((ADCshift_[w] >> (lfsr_taps[depth][0])) ^ (ADCshift_[w] >> (lfsr_taps[depth][1])) ^ (ADCshift_[w] >> (lfsr_taps[depth][2])) ^ (ADCshift_[w] >> (lfsr_taps[depth][3]))) & 1u;
     ADCshift_[w]=(ADCshift_[w]<<1)+bt;
     if (ADCshift_[w]==0) ADCshift_[w]=0xff;

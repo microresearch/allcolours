@@ -771,7 +771,7 @@ static inline uint32_t pSRBITMIX(uint32_t depth, uint32_t in, uint32_t w){//dept
 
 static inline uint32_t pSRLcvSRmaskroute(uint32_t depth, uint32_t in, uint32_t w){//depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-    tmp=(255-(depth>>4)) ^ DACFROM; // other logics // 8 bits
+  tmp=(255-(depth>>4)) ^ DACFROM; // other logics // 8 bits
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -1202,7 +1202,7 @@ static inline uint32_t pSRN10(uint32_t depth, uint32_t in, uint32_t w){//STROBE/
 static inline uint32_t pSRNwas15(uint32_t depth, uint32_t in, uint32_t w){ //depth
     uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
     // was15 4x4 bits prob of routing in GSR  so we need 4 probs of x bits?
-	tmp=LFSR_[w];
+	tmp=LFSR__[w];
 	tmpp=4095-depth; // try with CV too
 	for (x=0;x<4;x++){
 	  if ((tmp&255)<(tmpp&255)){// replace with 12 bits /4 = 3 bits prob = 7 (LFSR_[w] & 4095 ) < (shift_[LFSR[w]] & 4095)

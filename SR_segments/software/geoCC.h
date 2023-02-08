@@ -90,7 +90,7 @@ void SR_geo_inner_function_strobexor(uint32_t w){
   gate[w].dac = delay_buffer[w][1];
 
   if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w) ^ (*speedfromstrobe_nodepth[0<<8])(0,0,w))    { // speedfunc
-      gate[w].fake=gate[w].trigger;
+    gate[w].fake=1;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
@@ -99,7 +99,7 @@ void SR_geo_inner_function_strobexor(uint32_t w){
     }
 }
 
-void SR_geo_inner_testdacspeed(uint32_t w){  
+void SR_geo_inner_testdacspeed(uint32_t w){   // dac4 and dac3 can be used
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
 
@@ -559,7 +559,6 @@ void SR_geo_outer_C10(uint32_t w){ // change type. route above depth - type does
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=63<<6; // zbinrout_strip=63
   SETROUTETYPECV; 
   gate[w].inner=SR_geo_inner_routeC; // was depth route
   }
@@ -720,7 +719,7 @@ void SR_geo_outer_zeroprob(uint32_t w){ // probzeroes
 // zbinrouteSRbits is 22 in speed array - but frees up CV too - what can we use that for - for select route and CVL is??? depth or sel..
 void SR_geo_outer_rung0(uint32_t w){ // probzeroes
   if (gate[w].changed==0) {
-  gate[w].matrix[0]=22<<7; // spdfrac
+  gate[w].matrix[0]=22<<7; //??
   gate[w].matrix[1]=CV[w];// spdroute in this case
   gate[w].matrix[4]=CVL[w];// depth
   
@@ -731,8 +730,8 @@ void SR_geo_outer_rung0(uint32_t w){ // probzeroes
 
 void SR_geo_outer_speedfunc(uint32_t w){   // test speedfroms//done
   if (gate[w].changed==0) {
-    gate[w].matrix[0]=CVL[w]; // select spdfrom mode
-    gate[w].matrix[1]=0<<7;//CV[w];// speed
+    gate[w].matrix[0]=13<<7;//CVL[w]; // select spdfrom mode - test spdvienna2, 3, 4 in new speeds - where are they? 11,12,13
+    gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     //    gate[w].matrix[3]=0<<6; // fixedroute
     gate[w].inner=SR_geo_inner_function; //gapped in this case
@@ -741,7 +740,7 @@ void SR_geo_outer_speedfunc(uint32_t w){   // test speedfroms//done
 
 // TO TEST! 7/2+
 
-void SR_geo_outer_dacspeedx(uint32_t w){   // test dacspeeds
+void SR_geo_outer_dacspeed(uint32_t w){   // test dacspeeds
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[2]=CVL[w];//speed2
@@ -766,6 +765,10 @@ void SR_geo_outer_strobexor(uint32_t w){   // test strobexor
     gate[w].matrix[0]=CVL[w]; // select spdfrom mode
     gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
+    gate[w].funcbit=routebits_nostrobe_depth_notypesz;   // we make sure function is NO STROBE!
+    gate[w].extent=8; // checked!
+    gate[w].depths=depth_routebits_nostrobe_depth_notypesz;
+  
     gate[w].inner=SR_geo_inner_function_strobexor;
   }
 }
@@ -773,11 +776,24 @@ void SR_geo_outer_strobexor(uint32_t w){   // test strobexor
 void SR_geo_outer_dacasdepthspeed(uint32_t w){   ////- draft /test speedmodes can have dac as depth (or cv plus dac etc) - *speedfromnostrobe_noIN* [32] // calc is in outer but new func in inner...
   int32_t in, tmp;
   if (gate[w].changed==0) {
-    gate[w].matrix[0]=0<<7; // spdfrac
+    gate[w].matrix[0]=CVL[w]; 
     in=gate[speedfrom[spdcount][w]].dac; // and other operations 
-    if (in==0) tmp=CVL[w];  else tmp=CVL[w]%in; // or other way round
+    if (CV[w]==0) tmp=in;  else tmp=in%CV[w]; // or other way round
     gate[w].matrix[1]=tmp;
     gate[w].inner=SR_geo_inner_testdacasdepth;
+  }
+}
+
+void SR_geo_outer_strobegap(uint32_t w){   // test gapped strobe function // CV and CVL?
+  if (gate[w].changed==0) {
+    gate[w].matrix[3]=CVL[w]; // bit mode
+    gate[w].matrix[4]=CV[w]; // depth
+
+    gate[w].str_funcbit=routebits_nostrobe_depth_typesz;   // we make sure function is NO STROBE!
+    gate[w].str_extent=7; // checked!
+    gate[w].str_depths=depth_routebits_nostrobe_depth_typesz;
+
+    gate[w].inner=SR_geo_inner_str_function;
   }
 }
 
@@ -790,7 +806,7 @@ also no use of dacs: depth as dacfrom, dacpar as dacfrom, length as dacfrom ///w
 
 4sets x4
 
-- basic probs - last 4 we pulled out / gapped speed?
+- basic probs - last 4 we pulled out / gapped speed? see below...
 - prob functions  / gapped speed?
 - runglers/speed eg. spdfracdac3
 - speeds 

@@ -39,7 +39,7 @@ DONEsetting of dactypes
 
 deprecated: make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
 
-*double check all functions*
+*double check all functions, and all extents for called arrays*
 
 /////
 
@@ -100,24 +100,38 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 8/2/2023
+
+- all tests below
+- first modes fill in new NN: DONEtest N02, N03 etc,,,
+
+*LL follows CC apart from first one and later rungler, RR follows more or less NN but without ADC, some of CC (eg. route vs. cycle)*
+
+- DONE/test: *seperate matrix for abstract ops* - replace what was route with 18 and maybe *take care of all theroute and globflags already...*
+// but we also need abstract CV on 19! to addDONE - test all
+
+- added new begin array as some abstracts are poor starters
+- mix of abstract and adc doesn't work at all so leave out
+
+*clean up all succbits: why does succbits have: gate[x].Gshift_[0] and not share or gate[x].Gshift_[w] ???* - replace with share // also better define differences
 
 ** 7/2/2023
 
 TODO: tests from below:
 
-- test gapped strobe function. *SR_geo_inner_str_function* TEST!
-- test spdfracdac3 and new version// *spdfracdac3/4* > *SR_geo_outer_dacspeed*
-- test spdvienna2, 3, 4 in new speeds
-- zcountbitsI added TEST
-- test prob tryout // test diverse prob functions... probf_anystrobe_depth[64]: SR_geo_outer_probfunc
-- test strobe (no depth) xor with speedmodes (just strobe or strobe_modes, spdfrac or speedmodes) - but how we select each... fixed sel *SR_geo_outer_strobexor*
+- DONEtest gapped strobe function. SR_geo_inner_str_function* TEST! -> SR_geo_outer_strobegap
+- DONEtest spdfracdac3 and new version// spdfracdac3/4* > SR_geo_outer_dacspeed
+- DONEtest spdvienna2, 3, 4 in new speeds - where are they?
+- DONEzcountbitsI added TEST
+- DONEtest strobe (no depth) xor with speedmodes (just strobe or strobe_modes, spdfrac or speedmodes) - but how we select each... fixed sel *SR_geo_outer_strobexor*
 
 /// other xor/or: 
 strobe_nodepth [xor/or] speed_depth
 strobe_depth [xor/or] speed_nodepth
 
+- DONETESTspeedmodes can have dac as depth (or cv plus dac etc) - speedfromnostrobe_noIN // calc is in outer but new func in inner... *SR_geo_outer_dacasdepthspeed*
 
-- speedmodes can have dac as depth (or cv plus dac etc) - speedfromnostrobe_noIN // calc is in outer but new func in inner... *SR_geo_outer_dacasdepthspeed*
+- TEST prob tryout // test diverse prob functions... probf_anystrobe_depth[64]: SR_geo_outer_probfunc
 
 /////
 
