@@ -100,17 +100,86 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 9/2/2023
+
+- *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
+
+- *re-test all routefuncs // all speedfuncs // all probfunctions (well still to test these). and check logic by hand*
+
+//checked with depth:
+
+routes:
+
+speeds:
+
+probs: probf_anystrobe_depth
+
+- *LL,, RR, NN pull rungler ops into first 16 basic modes - as in rungler with basic route in. 2x runglers - LL, RR, NN*
+
+rungler1: osc1 or abstract with speed or depth from speedfrom dac
+rungler2: route in, clkfrom speedfrom SR
+
+- TESTED/fixed prob tryout // test diverse prob functions... probf_anystrobe_depth[64]: SR_geo_outer_probfunc TESTED
+
+// catalogue first CC modes - no gaps:
+00 - dactype
+01 - prob invert
+02 - prob route vs cycle
+03 - route vs. [route^cycle]
+
+10 - route type
+11 - dacparam
+12 - length
+13 - depth as route
+
+20 - select routebits_nodepth_typesz 
+21 - select routebits_anystrobe_nodepth_typesz
+22 - select routebits_depth_typesz
+23 - depth for above
+
+30 - select routebits_anystrobe_depth_notypesz
+31 - as above. depth
+32 - gapped funcbit. depth
+33 - gapped prob [ func [xor] func with cycle] 
+
+
+// revisit basics:
+
+WIARD: noise/comp selects new input or loop back/inverted loop back (jumper) //options relating to new input: adc/dac, mix, routein - how to select these options
+EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+TM: invert cycling bit // could also be with route in
+
+TRIADEX: use of different parity switches - do we still have this?
+apparently SN21 and SN22 - can maybe go further again with this - 4
+bits go into parity from say all SR with diff functions = 4x 32 bits = 4 selectors of 128 bits or we use CV CVL (depth and IN) so is just 2!
+
+// route vs cycle
+// route vs inv cycle
+// cycle vs inv cycle / TM for NN maybe as fixed data source
+// route^[cycle vs inv cycle]
+
+we have in basic first modes:
+- prob of inv route in
+- route vs cycle
+- route vs. [route^cycle]
+
+
 ** 8/2/2023
+
+layers of functions:
+speed
+bit
+prob
 
 - all tests below
 - first modes fill in new NN: DONEtest N02, N03 etc,,,
 
 *LL follows CC apart from first one and later rungler, RR follows more or less NN but without ADC, some of CC (eg. route vs. cycle)*
 
-- DONE/test: *seperate matrix for abstract ops* - replace what was route with 18 and maybe DONE:take care of all theroute and globflags already
+- DONE/tested: seperate matrix for abstract ops - replace what was route with 18 and maybe DONE:take care of all theroute and globflags already
 // but we also need abstract CV on 19! to addDONE - test all
 
-// *taking care of globflags but we will need to re-test all - esp binroutorg // all speeds, routes etc.. logic check all functions one by one eg. depth=depth>>8 was missed/other shifts, all extents catalogued*
+- took care of globflags but we will need to re-test all - esp binroutorg // all speeds, routes etc.. logic check all functions one by one eg. depth=depth>>8 was missed/other shifts, all extents catalogued*
 
 - added new begin array as some abstracts are poor starters
 - mix of abstract and adc doesn't work at all so leave out
@@ -127,19 +196,17 @@ TODO: tests from below:
 - DONEzcountbitsI added TEST
 - DONEtest strobe (no depth) xor with speedmodes (just strobe or strobe_modes, spdfrac or speedmodes) - but how we select each... fixed sel *SR_geo_outer_strobexor
 
-/// other xor/or: 
+/// *possible other xor/or*: 
 strobe_nodepth [xor/or] speed_depth
 strobe_depth [xor/or] speed_nodepth
 
 - DONETESTspeedmodes can have dac as depth (or cv plus dac etc) - speedfromnostrobe_noIN // calc is in outer but new func in inner... *SR_geo_outer_dacasdepthspeed
 
-- *TEST prob tryout // test diverse prob functions... probf_anystrobe_depth[64]: SR_geo_outer_probfunc*
-
 /////
 
 - seperate gapped functions for strobe/no strobe speeds (we only gap speed as index): so now we have: str_funcbit etc // done in init draft gapped strobe function
 
-- DONE/TEST-pull out: spdfracdac3 as special speed case with CV and CVL - retest and rework for +-
+- DONE/TESTed-pull out: spdfracdac3 as special speed case with CV and CVL - retest and rework for +-
 
 4x4 for next 16:
 
@@ -159,7 +226,7 @@ strobes:
 
 - draft strobe (no depth) xor with speedmodes (just strobe or strobe_modes, spdfrac or speedmodes)
 
-- which speedmodes can have dac as depth (or cv plus dac etc) - *speedfromnostrobe_noIN*
+- which speedmodes can have dac as depth (or cv plus dac etc) - *speedfromnostrobe_noIN
 
 in=gate[speedfrom[spdcount][w]].dac
 if (in==0) tmp=CVL[w];  else tmp=CVL[w]%in;
@@ -189,7 +256,7 @@ list modifiers for speedfromnostrobe_noIN with in as speedfrom dac:
 
 - draft prob tryout // test diverse prob functions...
 
-- *different versions spdvienna todo - done to test spdvienna2, 3, 4 in new speeds*
+- DONEdifferent versions spdvienna todo - done to test spdvienna2, 3, 4 in new speeds*
 
 - home/ cleaning up newbits: 
 
@@ -199,14 +266,14 @@ list modifiers for speedfromnostrobe_noIN with in as speedfrom dac:
 
 - re-acquaint prob functions and strobe speed functions: cleaning up here and note succbits all options:
 
-DONE: list succbits and also place in newbits if relevant: no types - added to abstracts *TEST*
+DONE: list succbits and also place in newbits if relevant: no types - added to abstracts *TEST
 
 // succ. no depth: zsuccbits, zsuccbitsI, zsuccbits_noshiftnod, zsuccbitsI_noshiftnod
 // succ. depth: zsuccbitspp, zsuccbitsIpp, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbits_noshiftd, zsuccbitsI_noshiftd
 
 prob also
 
-DONE: zcountbitsI added *TEST*
+DONE: zcountbitsI added *TESTed
 
 *for speeds with strobe - add xor with speed = where was if at all? and how we can do this without replicating or just as inner?*
 
@@ -4607,7 +4674,7 @@ generators->prob/etc/mix
 
 *TODO: other basic SR options*  
 
-gWIARD: noise/comp selects new input or loop back/inverted loop back (jumper) //options relating to new input: adc/dac, mix, routein - how to select these options
+WIARD: noise/comp selects new input or loop back/inverted loop back (jumper) //options relating to new input: adc/dac, mix, routein - how to select these options
 
 EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
 DONE: as a generator, we have variations otherwise in moden for adc in 

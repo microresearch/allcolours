@@ -368,6 +368,8 @@ void SR_geo_outer_N13(uint32_t w){ // 2-prob of abstract entry or route entry
 }
 }
 
+// 9/2/2023 UPTO HERE!!!! changed
+
 // 20 route functions? as geoCC with adc - depth as route function - different arrays of route functions or just stick with one and is always adc/abstract
 // route function/route type xor, prob of xor adc/abstract always
 // dacs into abstract depth etc

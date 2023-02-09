@@ -1990,7 +1990,7 @@ static inline uint32_t zbinroutebits_noshift_transit(uint32_t depth, uint32_t in
 static inline uint32_t zbinroutebits_noshift_transitd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now - no shift of GSR<<
   uint32_t btt=0,bt=0, bitrr;
   static uint8_t lastone;
-    depth=binroute[count][w]|binary[w]; 
+  depth=depth>>8;
    if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     bt^=bitrr;
@@ -2011,7 +2011,7 @@ static inline uint32_t zbinroutebits_noshift_transitd(uint32_t depth, uint32_t i
 
 static inline uint32_t zbinroutebits_noshift(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now - no shift of GSR<<
   uint32_t bt=0, bitrr;
-depth=binroute[count][w]|binary[w]; 
+  depth=binroute[count][w]|binary[w]; 
   // deal with no route
   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
@@ -2031,8 +2031,7 @@ depth=binroute[count][w]|binary[w];
 
 static inline uint32_t zbinroutebits_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now - no shift of GSR<<
   uint32_t bt=0, bitrr;
-  depth=binroute[count][w]|binary[w]; 
-  // deal with no route
+  depth=depth>>8;
   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     bt^=bitrr;
@@ -2257,8 +2256,7 @@ static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t zbinrouteSRbitsd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... SR itself, no GSR same as above
   uint32_t bt=0, bitrr;
-  depth=binroute[count][w]|binary[w]; 
-
+  depth=depth>>8;
     for (uint8_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
@@ -2292,8 +2290,7 @@ static inline uint32_t zbinroutebitsI_noshift(uint32_t depth, uint32_t in, uint3
 
 static inline uint32_t zbinroutebitsI_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel...
   uint32_t bt=0, bitrr;
-  depth=binroute[count][w]|binary[w]; 
-
+  depth=depth>>8;
   if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshift_[w]>>SRlength[8]) & 0x01; 
     bt^=bitrr;
@@ -2656,7 +2653,7 @@ static inline uint32_t spdfracdac4(uint32_t depth, uint32_t in, uint32_t w){ // 
   float speed;
   int32_t tmp;
   in=4096-in;
-  tmp=(gate[speedfrom[spdcount][w]].dac%in)-(in>>1); // in/2 int32_t tmp
+  tmp=(gate[dacfrom[count][w]].dac%in)-(in>>1); // in/2 int32_t tmp
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
   if (tmp<0) tmp=0;
@@ -3002,6 +2999,7 @@ static inline uint32_t ones(uint32_t depth, uint32_t in, uint32_t w){
 // top bit of clksr 
 static inline uint32_t clksr(uint32_t depth, uint32_t in, uint32_t w){  // but these still need set strobe bit but..
   uint32_t bt=0;
+      gate[w].strobed=1;
     depth=depth>>7; //  5 bits
   bt=(clksr_[w]>>depth)&0x01;
   return bt;
@@ -3010,6 +3008,7 @@ static inline uint32_t clksr(uint32_t depth, uint32_t in, uint32_t w){  // but t
 // how could we cycle through clksr if it is not moving - we need gsr for them -clksrG_
 static inline uint32_t clksrG(uint32_t depth, uint32_t in, uint32_t w){ // depthi
   uint32_t bt=0;
+      gate[w].strobed=1;
   depth=depth>>7; //  5 bits
   bt=(clksrG_[w]>>depth)&0x01;
   clksrG_[w]=(clksrG_[w]<<1)+bt; // this also changes patterns there
@@ -4836,8 +4835,7 @@ static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t w){ //
 static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t w){ // //INx
   uint32_t bt=0, speedy;
   // say CVL as depth, CV as in
-  depth=4095-depth;
-  uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  uint32_t recurse=depth>>10; // 2 bits
   if (recurse!=0){
     speedy=(in>>1)+(gate[others[w][recurse-1]].dac>>1); // can also be different versions such as modulus or mid version
     if (speedy>4095) speedy=4095;

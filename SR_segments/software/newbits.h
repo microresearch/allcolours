@@ -56,18 +56,18 @@ uint32_t depth_routebits_nostrobe_nodepth_typesz[16]={0,0,0,0,  0,0,0,0, 0,0,0,0
 
 // routebits/strobe/notypes
 
-// these have depth and no types: strobe: pSRprobxortogD_, pSRprobxortogxID_, pSRprobxortogID_,
-/// no strobe: pbitSRroutelogD_, pbitSRroutelogxxD_, pbitSRroutelogxxxD_, pSR32D_, pSRN22D_, pSRN21D_, pSRR32D_
+// add these have depth and no types: strobe: pSRprobxortogD_, pSRprobxortogxID_, pSRprobxortogID_,
+// add no strobe: pbitSRroutelogxxD_, pbitSRroutelogxxxD_, pSR32D_, pSRN22D_, pSRN21D_, pSRR32D_
 
 // or divide to depth/no depth
-uint32_t (*routebits_anystrobe_depth_notypesz[16])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprob, zreturnnotbits, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRN15, pSRNwas15}; // is same as nostrobe
+uint32_t (*routebits_anystrobe_depth_notypesz[16])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprob, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRN15, pSRNwas15, pSRprobxortogD_}; // is same as nostrobe
 
 uint32_t depth_routebits_anystrobe_depth_notypesz[16]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
   
 // routebits/nostrobe/notypes
 
 // for strobe speeds - same as above
-uint32_t (*routebits_nostrobe_depth_notypesz[16])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprob, zreturnnotbits, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRN15, pSRNwas15}; // extent is 8
+uint32_t (*routebits_nostrobe_depth_notypesz[16])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprob, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitSRroutelogxxx, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRN15, pSRNwas15, pbitSRroutelogD_}; // extent is 8
 
 uint32_t depth_routebits_nostrobe_depth_notypesz[16]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
 

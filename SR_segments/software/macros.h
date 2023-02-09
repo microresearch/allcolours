@@ -12,7 +12,7 @@ static uint32_t gscnt=0;
 static uint32_t outcnt=0;
 */
 
-// unused but what we do with cv... is for matrixp ops
+// unused but what we do with cv... is for matrixp ops ROUTE is now dep
 #define ROUTETYPE (gate[w].matrix[16]>>9)
 #define ROUTE (gate[w].matrix[17]>>8)
 #define SPEEDFUNC (gate[w].matrix[0]>>7)
@@ -31,7 +31,7 @@ static uint32_t outcnt=0;
   }
 
 #define SETROUTETYPECV {				\
-  gate[w].matrix[18]=CVL[w];			\
+  gate[w].matrix[16]=CVL[w];			\
   gate[w].routetype=CVL[w]>>9;			\
   }
 
