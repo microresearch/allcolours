@@ -40,7 +40,6 @@ static inline uint32_t probbitsxortoggleID_(uint32_t depth, uint8_t wh){   // PR
 static inline uint32_t binroutebits(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now // USED only in SRrecbin here....
   uint32_t bitn=0, bitrr, x, tmp, tmpp;
   //    depth=depth>>8; // 12 bits to 4 bits
-  //    depth=gate[w].theroute;
     // deal with no route
   depth=binroute[count][w]|binary[w];
   if (depth==0) { // SR5 is 8th which is outside these bits 
@@ -59,7 +58,6 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t w){   // depth as ro
 static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now // USED only in SRrecbin here....
   uint32_t bitn=0, bitrr, x, tmp, tmpp;
   depth=depth>>8; // 12 bits to 4 bits
-  //    depth=gate[w].theroute;
     // deal with no route
   //.  depth=binroute[count][w]|binary[w];
   if (depth==0) { // SR5 is 8th which is outside these bits 
@@ -94,7 +92,9 @@ static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){
 static inline uint32_t pSR_routeSRbits01(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   //  tmp=depth>>8; // 4 bits
-  tmp=gate[w].theroute;
+  //  tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
   bitrr=0;
 
   if (tmp==0) { // SR5 is 8th which is outside these bits 
@@ -120,7 +120,8 @@ static inline uint32_t pSR_routeSRbits01(uint32_t depth, uint32_t in, uint32_t w
 static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmpp, tmp, bitrr, temp, bitn=0;
   //  tmp=depth>>8; // 4 bits
-    tmp=gate[w].theroute;
+  //    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
   bitrr=0;
     if (tmp==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
@@ -156,8 +157,8 @@ static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w
 static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //  tmp=(depth>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
-    depth=gate[w].theroute;
-    tmp=depth;
+  //    depth=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
   
   if (depth==0 || ((depth>>7)&1)) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
@@ -182,7 +183,8 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
 static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //    tmp=(depth>>8); //
-    tmp=gate[w].theroute;
+  //    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
   //  tmp=gate[dacfrom[count][w]].shift_&15;
     if (tmp==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
@@ -210,7 +212,9 @@ static inline uint32_t pSR_reflect(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //  tmp=binroute[count][w];
   //    tmp=(depth>>8); //
-      tmp=gate[w].theroute;
+  //      tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
     for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -284,7 +288,8 @@ static inline uint32_t pSRhold(uint32_t depth, uint32_t in, uint32_t w){ // dept
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   //  BINROUTE_;
   //  tmp=gate[w].theroute;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; 
+  tmp=binroute[count][w]|binary[w]; 
+
   tmpp=gate[w].routetype;
   ROUTETYPE_;
 
@@ -296,7 +301,7 @@ static inline uint32_t pSRholdfromdac(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   //  BINROUTE_;
   //  tmp=gate[w].theroute;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
 
@@ -338,8 +343,8 @@ static inline uint32_t pSRxorroutes(uint32_t depth, uint32_t in, uint32_t w){ //
   else
     {
       //      BINROUTE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
       ROUTETYPE_;
     }
@@ -360,8 +365,8 @@ static inline uint32_t pSRaddroutes(uint32_t depth, uint32_t in, uint32_t w){// 
   else
     {
       //      BINROUTE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
       ROUTETYPE_;
     }  
@@ -372,7 +377,7 @@ static inline uint32_t pSRprobxortogx(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   bitn=probbitsxortoggle(depth,w);
   //  BINROUTE_;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
   return bitn;
@@ -397,7 +402,7 @@ static inline uint32_t pSRprobxortogxID_(uint32_t depth, uint32_t in, uint32_t w
   gate[w].strobed=1;
   bitn=probbitsxortoggleID_(depth,w);
   //  BINROUTE_;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
 
@@ -464,8 +469,8 @@ static inline uint32_t pSRshare(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   bitn^=shared(w); 
   //  BINROUTE_; // or not
-  //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-  tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
   return bitn;
@@ -475,8 +480,8 @@ static inline uint32_t pSRGswop(uint32_t depth, uint32_t in, uint32_t w){ // STR
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   //    BINROUTE_;
   gate[w].strobed=1;
-  //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-  tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
   if (gate[w].trigger) gate[w].shift_=gate[inroute[count][w]].Gshift_[w]; // could also be incoming one
@@ -486,8 +491,8 @@ static inline uint32_t pSRGswop(uint32_t depth, uint32_t in, uint32_t w){ // STR
 static inline uint32_t pSRshroute(uint32_t depth, uint32_t in, uint32_t w){ // nada STROBE
   uint32_t x, tmp, bitrr, temp, bitn=0;
     gate[w].strobed=1;
-    //    tmp=binroute[count][w];
-    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
+
    for (x=0;x<4;x++){
    if (tmp&0x01){
    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01;
@@ -509,8 +514,8 @@ static inline uint32_t pSRsigma(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t integrator;
 
   //  BINROUTE_;
-  //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
   
@@ -534,8 +539,8 @@ static inline uint32_t ZpSRsigma(uint32_t depth, uint32_t in, uint32_t w){
   //  BINROUTE_;
   //  tmpp=in>>9; // or in can be route // 3 bits
   tmpp=gate[w].routetype;
-  //  tmp=depth>>8;
-  tmp=gate[w].theroute;  
+  tmp=binroute[count][w]|binary[w]; 
+
   ROUTETYPE_;
   
 
@@ -732,7 +737,7 @@ static inline uint32_t pstream(uint32_t depth, uint32_t in, uint32_t w){ // all 
   //  bitn^=adcpadbits(11);
   bitn^=adcpadbits(depth>>7); // 5 bits
   //  BINROUTE_;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
   
@@ -853,8 +858,8 @@ static inline uint32_t pSRDACroutestrobe(uint32_t depth, uint32_t in, uint32_t w
   }
   else {
     //    BINROUTE_;
-    //    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
   }
@@ -907,8 +912,8 @@ static inline uint32_t pSRbumprouteD_(uint32_t depth, uint32_t in, uint32_t w){/
 
 static inline uint32_t pSRmod(uint32_t depth, uint32_t in, uint32_t w){//
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
-  //tmp=binroute[count][w];
-    tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
   for (x=0;x<4;x++){
   if (tmp&0x01){
   bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -929,8 +934,8 @@ static inline uint32_t pSRNwas13(uint32_t depth, uint32_t in, uint32_t w){//STRO
     which[w]++;
     if (which[w]>SRlength[w]) which[w]=0;
 	  }
-  //	  tmp=binroute[count][w];
-    tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
 	  for (x=0;x<4;x++){
 	    if (tmp&0x01){
 	      bitrr = (gate[x].Gshift_[w]>>which[w]) & 0x01;
@@ -951,7 +956,8 @@ static inline uint32_t pSRN65(uint32_t depth, uint32_t in, uint32_t w){//STROBE
       if (gate[w].trigger) tmpt=cw;
       
       //      tmp=binroute[count][w];
-    tmp=gate[w].theroute;
+      tmp=binroute[count][w]|binary[w]; 
+
       for (x=0;x<4;x++){ 
 	if (tmp&0x01) {  
 	    bitrr = (gate[x].Gshift_[w]>>tmpt) & 0x01; // or can just keep tmpt for this one and len of previous
@@ -966,7 +972,8 @@ static inline uint32_t pSRN65(uint32_t depth, uint32_t in, uint32_t w){//STROBE
 static inline uint32_t pSRN62(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //      tmp=binroute[count][w];
-    tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
       for (x=0;x<4;x++){ 
       if (tmp&0x01){  
 	bitrr = ((gate[x].Gshift_[w] >> (lfsr_taps[SRlength[x]][0])) ^ (gate[x].Gshift_[w] >> (lfsr_taps[SRlength[x]][1])) ^ (gate[x].Gshift_[w] >> (lfsr_taps[SRlength[x]][2])) ^ (gate[x].Gshift_[w] >> (lfsr_taps[SRlength[x]][3]))) & 1u;
@@ -1002,7 +1009,8 @@ static inline uint32_t pSRN40(uint32_t depth, uint32_t in, uint32_t w){//STROBE
     gate[w].strobed=1;
   //    BINROUTE_;
   tmpp=gate[w].routetype;
-  tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
   ROUTETYPE_;  
   if (gate[w].trigger) gate[w].shift_=gate[oppose[w]].shift_; // sieve is previous one but could be opposite one  
   return bitn;
@@ -1017,8 +1025,8 @@ static inline uint32_t pSRN40(uint32_t depth, uint32_t in, uint32_t w){//STROBE
     }
     GSHIFT_;
     //    BINROUTE_;    
-    //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
     }
@@ -1031,8 +1039,8 @@ static inline uint32_t pSRN33cipher(uint32_t depth, uint32_t in, uint32_t w){//S
     
     GGGshift_[w]=GGGshift_[w]<<1;
     //    BINROUTE_;
-    //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
   ROUTETYPE_;  
 
@@ -1051,8 +1059,8 @@ static inline uint32_t pSRN33(uint32_t depth, uint32_t in, uint32_t w){//STROBE
     gate[w].strobed=1;
     GGGshift_[w]=GGGshift_[w]<<1;
     //    BINROUTE_;
-    //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-        tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
+
 	tmpp=gate[w].routetype;
 	ROUTETYPE_;  
     
@@ -1130,7 +1138,7 @@ static inline uint32_t pSRN21D_(uint32_t depth, uint32_t in, uint32_t w){// dept
 static inline uint32_t pSRN13(uint32_t depth, uint32_t in, uint32_t w){//added depth
   uint32_t x, tmpp, tmp, bitrr, temp, bitn=0;
   //	BINROUTE_;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+  tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
 
@@ -1146,8 +1154,8 @@ static inline uint32_t pSRN13(uint32_t depth, uint32_t in, uint32_t w){//added d
 static inline uint32_t pSRN12(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   uint32_t x, tmp, bitrr, temp, bitn=0;
     gate[w].strobed=1;
-    //  tmp=binroute[count][w];
-    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
+
   for (x=0;x<4;x++){
   if (tmp&0x01){
     if (gate[w].trigger) gate[x].Gshift_[w]^=gate[w].shift_;
@@ -1165,7 +1173,8 @@ static inline uint32_t pSRN11(uint32_t depth, uint32_t in, uint32_t w){//STROBE
     uint32_t x, tmp, bitrr, temp, tmpp, bitn=0;
       gate[w].strobed=1;
       //	tmp=binroute[count][w];
-    tmp=gate[w].theroute;
+      tmp=binroute[count][w]|binary[w]; 
+
       for (x=0;x<4;x++){
 	if (tmp&0x01){
 	  if (gate[w].trigger){
@@ -1187,7 +1196,8 @@ static inline uint32_t pSRN10(uint32_t depth, uint32_t in, uint32_t w){//STROBE/
   uint32_t x, tmp, bitrr, temp, bitn=0;
     gate[w].strobed=1;
     //    tmp=binroute[count][w];
-      tmp=gate[w].theroute;
+  tmp=binroute[count][w]|binary[w]; 
+
     for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -1221,8 +1231,7 @@ static inline uint32_t pSRRLLswop(uint32_t depth, uint32_t in, uint32_t w){//STR
   uint32_t x, tmpp, tmp, bitrr, temp, bitn=0, lin, lout;
   //  BINROUTE_;
     gate[w].strobed=1;
-    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-
+  tmp=binroute[count][w]|binary[w]; 
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
 
@@ -1254,7 +1263,8 @@ static inline uint32_t pSRRaccelghosts0(uint32_t depth, uint32_t in, uint32_t w)
     }
         
     //    BINROUTE_;
-    tmp=gate[w].theroute;
+    tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;
     return bitn;
@@ -1268,7 +1278,7 @@ static inline uint32_t pSRRbumproute0(uint32_t depth, uint32_t in, uint32_t w){/
   if (gate[w].trigger) gate[w].route++;
   if (gate[w].route>15) gate[w].route=0;
   tmp=myroute[w][gate[w].route];
-  //    tmp=gate[w].theroute;
+
     tmpp=gate[w].routetype;
   ROUTETYPE_;  
   return bitn;
@@ -1326,14 +1336,16 @@ static inline uint32_t pprobintprob3(uint32_t depth, uint32_t in, uint32_t w){//
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
     if (LFSR__[w]<depth){
       //    BINROUTE_;
-      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
       tmpp=gate[w].routetype;
       ROUTETYPE_;  
     }
     else
       {
 	//    BINROUTEANDCYCLE_;
-      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
       tmp=tmp|(1<<w);
       tmpp=gate[w].routetype;
       ROUTETYPE_;  
@@ -1346,7 +1358,8 @@ static inline uint32_t pprobintprob5_0(uint32_t depth, uint32_t in, uint32_t w){
   tmp=prub[depth>>9];
     if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | tmp)==255){
       //    BINROUTE_;
-      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
       tmpp=gate[w].routetype;
       ROUTETYPE_;  
 
@@ -1361,7 +1374,8 @@ static inline uint32_t pprobintprob5_0(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t pprobintprob6_0(uint32_t depth, uint32_t in, uint32_t w){//depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   //  BINROUTE_;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
 
@@ -1379,8 +1393,10 @@ static inline uint32_t pprobtoggle1(uint32_t depth, uint32_t in, uint32_t w){ //
   static uint8_t tug[4]={0};
     gate[w].strobed=1;
   //    BINROUTE_;
-    //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+    //tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
     if (gate[w].trigger) tug[w]^=1;
@@ -1395,8 +1411,10 @@ static inline uint32_t pprobtoggle2(uint32_t depth, uint32_t in, uint32_t w){ //
   if (gate[w].trigger) tug[w]^=1;
   if (tug[w]) {
     //    BINROUTE_;
-    //    if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+    //  tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
 
@@ -1412,15 +1430,19 @@ static inline uint32_t pprobtoggle3(uint32_t depth, uint32_t in, uint32_t w){ //
     if (gate[w].trigger) tug[w]^=1;
     if (tug[w]) {
       //      BINROUTE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
       ROUTETYPE_;        
     }
     else {
       //      BINROUTEANDCYCLE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-      tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+  tmp=binroute[count][w]|binary[w]; 
+
       tmp=tmp|(1<<w);
       tmpp=gate[w].routetype;
       ROUTETYPE_;  
@@ -1436,8 +1458,10 @@ static inline uint32_t pprobtoggle4(uint32_t depth, uint32_t in, uint32_t w){ //
     if (gate[w].trigger) tug[w]^=1;
     if (tug[w]) {
       //      BINROUTE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
       ROUTETYPE_;  
     }
@@ -1452,8 +1476,10 @@ static inline uint32_t pprobtoggle5(uint32_t depth, uint32_t in, uint32_t w){ //
     if (gate[w].trigger) tug[w]^=1;
     if (tug[w]) {
       //      BINROUTEANDCYCLE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
       tmp=tmp|(1<<w);
       tmpp=gate[w].routetype;
       ROUTETYPE_;  
@@ -1466,8 +1492,10 @@ static inline uint32_t pprobstrobe1(uint32_t depth, uint32_t in, uint32_t w){ //
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   //  BINROUTE_;
     gate[w].strobed=1;
-    //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+    //tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
   ROUTETYPE_;  
   if (gate[w].trigger) bitn=!bitn; 
@@ -1479,8 +1507,10 @@ static inline uint32_t pprobstrobe2(uint32_t depth, uint32_t in, uint32_t w){ //
     gate[w].strobed=1;
     if (gate[w].trigger) {
       //      BINROUTE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
       ROUTETYPE_;  
     }
@@ -1493,14 +1523,18 @@ static inline uint32_t pprobstrobe3(uint32_t depth, uint32_t in, uint32_t w){ //
     gate[w].strobed=1;
     if (gate[w].trigger) {
       //     BINROUTE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
     }
     else {
-      //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-      tmp=gate[w].theroute;
+      //tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+  tmp=binroute[count][w]|binary[w]; 
+
       tmp=tmp|(1<<w);
       tmpp=gate[w].routetype;
       ROUTETYPE_;  
@@ -1522,7 +1556,8 @@ static inline uint32_t pSRN15(uint32_t depth, uint32_t in, uint32_t w){// added 
   uint32_t x, tmpp, tmp, bitrr, temp, bitn=0;
   if (LFSR__[w] < depth){
     //    BINROUTEANDCYCLE_;
-  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
   tmp=tmp|(1<<w);
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
@@ -1540,8 +1575,10 @@ static inline uint32_t pSRN8(uint32_t depth, uint32_t in, uint32_t w){//STROBE/
     if (gate[w].trigger) tug[w]^=1;
     if (tug[w]){
       //      BINROUTEANDCYCLE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmp=tmp|(1<<w);
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
@@ -1557,8 +1594,10 @@ static inline uint32_t pSRN7(uint32_t depth, uint32_t in, uint32_t w){//STROBE
     gate[w].strobed=1;
     if (gate[w].trigger){
       //      BINROUTE_;
-      //      if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      //    tmp=binroute[count][w]|binary[w]; 
+// was tmp=binroute[count][w]|binary[w];
+tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
       ROUTETYPE_;  
     }
@@ -1573,11 +1612,10 @@ static inline uint32_t pSRN6(uint32_t depth, uint32_t in, uint32_t w){//STROBE
     gate[w].strobed=1;
     if (gate[w].trigger){
       //      BINROUTE_;
-      //       if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;
+      tmp=binroute[count][w]|binary[w]; 
+
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
-
     }
     else {
       bitn=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01; 
@@ -1589,11 +1627,10 @@ static inline uint32_t pSRN5(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   uint32_t x, tmpp, tmp, bitrr, temp, bitn=0;
   //    BINROUTE_;
     gate[w].strobed=1;
-    //  if (gate[w].globflag) tmp=binroute[count][w]|binary[w]; else tmp=gate[w].theroute; // was tmp=binroute[count][w]|binary[w];
-    tmp=gate[w].theroute;      
+   tmp=binroute[count][w]|binary[w]; 
+      
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
-
     if (gate[w].trigger)	  bitrr=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
     else bitrr=!((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
     bitn=bitn|bitrr;  
