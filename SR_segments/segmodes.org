@@ -100,11 +100,34 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+
+** 10/2/2023
+
+*how to test that we do resetc/all*
+
 ** 9/2/2023
+
+// *TODO: fill in gaps broadly*
+
+- memory questions: generalise inners more... we might have to add if for adc in
+
+*start to draft matrixp - 16 functions with generic inner///  how these might look:*
+
+// *question as copy is only operation which makes sense so we need to mark CHANGED for copy.... and gaps... need general concept of matrixp ops!!*
+
+- attach DAC with CVL - single and hold (how? - so we don't just sweep across attaching, lastplace and place)
+- attach with pulse... 
+
+layers of functions:
+speeds
+bits
+probs
 
 - *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
 
 - *re-test all routefuncs // all speedfuncs // all probfunctions (well still to test these). and check logic by hand*
+
+- *GeoCC ... or keep all first 16 sans gaps, fixed which might include rungler etc. - adjust when we have everything*
 
 //checked with depth:
 
@@ -140,8 +163,7 @@ rungler2: route in, clkfrom speedfrom SR
 30 - select routebits_anystrobe_depth_notypesz
 31 - as above. depth
 32 - gapped funcbit. depth
-33 - gapped prob [ func [xor] func with cycle] 
-
+33 - gapped funcbit fixed prob [ func [xor] func with cycle] 
 
 // revisit basics:
 
@@ -275,7 +297,7 @@ prob also
 
 DONE: zcountbitsI added *TESTed
 
-*for speeds with strobe - add xor with speed = where was if at all? and how we can do this without replicating or just as inner?*
+for speeds with strobe - add xor with speed = where was if at all? and how we can do this without replicating or just as inner?*
 
 //DONEneed tests of probfunctionsDONE
 
@@ -1131,7 +1153,6 @@ TODO: also increased left shift - TO TEST! 19/12, test 2 also as now inverted...
 
 TODO:
 
-- *that maybe we should NOT set gate[w].theroute=depth everywhere as it can also be used for gaps - or should just be set in OUTER/INNERS?*
 
 - list routes/any functions which use depth and IN! eg. probXYs
 

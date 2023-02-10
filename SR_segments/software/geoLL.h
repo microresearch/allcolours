@@ -2,7 +2,7 @@
 
 /*
 
-LL: routes as primary, speeds
+LL: routes as primary, speeds 0 follows CC but add extra rungler!
 
 older from geoLR.h:
 

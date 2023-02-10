@@ -1074,38 +1074,6 @@ static inline uint32_t pSRN33(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   return bitn;
 }
 
-static inline uint32_t pSRN22(uint32_t depth, uint32_t in, uint32_t w){//depth
-  uint32_t x, tmp, bitrr, temp, bitn=0;
-  uint8_t prob; uint32_t bitnn, bitnnn; 
-  bitn = (gate[others[w][0]].shift_>>SRlength[others[w][0]]) & 0x01;
-  bitnn = (gate[others[w][1]].shift_>>SRlength[others[w][1]]) & 0x01;
-  bitnnn = (gate[others[w][2]].shift_>>SRlength[others[w][2]]) & 0x01;
-
-    //    bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn;
-    bitn^=bitnn^bitnnn;
-    if (LFSR__[w] < depth) bitn^=1;
-  return bitn;
-}
-
-static inline uint32_t pSRN21(uint32_t depth, uint32_t in, uint32_t w){// depth
-  uint32_t x, tmp, bitrr, temp, bitn=0;
-  uint8_t prob; uint32_t bitnn, bitnnn; 
-    bitn = (gate[others[w][0]].Gshift_[w]>>SRlength[others[w][0]]) & 0x01; 
-    gate[others[w][0]].Gshift_[w]=(gate[others[w][0]].Gshift_[w]<<1)+bitn;
-
-    bitnn = (gate[others[w][1]].Gshift_[w]>>SRlength[others[w][1]]) & 0x01; 
-    gate[others[w][1]].Gshift_[w]=(gate[others[w][1]].Gshift_[w]<<1)+bitnn;
-
-    bitnnn = (gate[others[w][2]].Gshift_[w]>>SRlength[others[w][2]]) & 0x01; 
-    gate[others[w][2]].Gshift_[w]=(gate[others[w][2]].Gshift_[w]<<1)+bitnnn;
-    
-    //    bitn^=((gate[w].Gshift_[w]>>SRlength[w])& 0x01)^bitnn^bitnnn;
-    bitn^=bitnn^bitnnn;
-    if (LFSR__[w] < depth) bitn^=1;
-	  
-  return bitn;
-}
-
 static inline uint32_t pSRN22D_(uint32_t depth, uint32_t in, uint32_t w){//depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
   uint8_t prob; uint32_t bitnn, bitnnn; 
@@ -1281,28 +1249,6 @@ static inline uint32_t pSRRbumproute0(uint32_t depth, uint32_t in, uint32_t w){/
 
     tmpp=gate[w].routetype;
   ROUTETYPE_;  
-  return bitn;
-}
-
-static inline uint32_t pSRR32(uint32_t depth, uint32_t in, uint32_t w){ // depoth
-  uint32_t x, tmp, bitrr, temp, bitn=0;
-
-  gate[w].shift_&=spacmask[SRlength[w]]; //cleared
-    if (SRlength[inroute[count][w]]>=SRlength[w]){
-    gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0])) >>(lastspac[SRlength[inroute[count][w]]][0]))+ \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))          >> ((lastspac[SRlength[inroute[count][w]]][1]) - spacc[SRlength[w]][0]))  + \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))         >>((lastspac[SRlength[inroute[count][w]]][2]) - spacc[SRlength[w]][1]))  + \
-		      ((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))         >>((lastspac[SRlength[inroute[count][w]]][3]) - spacc[SRlength[w]][2]))); 
-  }
-  else // shift up <<
-    {
-      gate[w].shift_ |=(((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][0]))>>(lastspac[SRlength[inroute[count][w]]][0])) + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][1]))<< ((spacc[SRlength[w]][0]) - lastspac[SRlength[inroute[count][w]]][1]))  + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][2]))<< ((spacc[SRlength[w]][1]) - lastspac[SRlength[inroute[count][w]]][2]))  + \
-			((gate[inroute[count][w]].shift_&(1<<lastspac[SRlength[inroute[count][w]]][3]))<< ((spacc[SRlength[w]][2]) - lastspac[SRlength[inroute[count][w]]][3])));
-    }
-    bitn=gate[w].shift_&1; // fixed this 29/12/2021
-    if (LFSR__[w] < depth) bitn^=1;
   return bitn;
 }
 

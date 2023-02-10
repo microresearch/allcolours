@@ -1572,39 +1572,6 @@ so we have 24... do we want to fill all of those out!?
 // zbinroutfixedmy., zbinroutfixedmyreset, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt, zbinroutmycv
 
 // these fixed: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD 
-static inline uint32_t zbinroutmybumpS(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute STROBE // route
-  uint32_t bitn=0, bitrr, tmp, tmpp, x;
-  gate[w].strobed=1;
-  if (gate[w].trigger) gate[w].altroute++;
-  if (gate[w].altroute>15) gate[w].altroute=1;
-  tmp=gate[w].altroute;
-  tmpp=gate[w].routetype;
-  ROUTETYPE_;
-  if (depth<LFSR__[w]) bitn=!bitn;
-  return bitn;
-}
-
-static inline uint32_t zbinroutmybumpbit(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute bits // no depth
-  uint32_t bitn=0, bitrr, tmp, tmpp, x;
-  if (gate[dacfrom[daccount][w]].shift_&0x01) gate[w].altroute++;
-  if (gate[w].altroute>15) gate[w].altroute=1;
-  tmp=gate[w].altroute;
-  tmpp=gate[w].routetype;
-  ROUTETYPE_;
-  if (depth<LFSR__[w]) bitn=!bitn;
-  return bitn;
-}
-
-static inline uint32_t zbinroutmybumpbitt(uint32_t depth, uint32_t in, uint32_t w){   // bumping myroute bits // no depth
-  uint32_t bitn=0, bitrr, tmp, tmpp, x;
-  if (gate[dacfrom[daccount][w]].Gshift_[w]) gate[w].altroute++;
-  if (gate[w].altroute>15) gate[w].altroute=1;
-  tmp=gate[w].altroute;
-  tmpp=gate[w].routetype;
-  if (depth<LFSR__[w]) bitn=!bitn;
-  ROUTETYPE_;
-  return bitn;
-}
 
 static inline uint32_t zbinroutmycv(uint32_t depth, uint32_t in, uint32_t w){   // CV->myroute so we can use DAC // depth
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
