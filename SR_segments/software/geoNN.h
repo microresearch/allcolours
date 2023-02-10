@@ -149,7 +149,7 @@ void SR_geo_inner_probadcentry(uint32_t w){  // ADC only - prob for adc itself -
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
-    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
 	  ADCgeneric2; 
 	  bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
 	}
@@ -175,7 +175,7 @@ void SR_geo_inner_probabstractentry(uint32_t w){
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
-    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
       bitn=(*abstractbitsz[gate[w].matrix[17]>>7])(gate[w].matrix[18], gate[w].matrix[5], w);
     }
     else bitn=binroutesel3(0,0,w); // theroute which is ... and routetype
@@ -202,7 +202,7 @@ void SR_geo_inner_probadcentryxor(uint32_t w){  // ADC only - prob for adc itsel
 
     ADCgeneric2; 
     bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
-    if (!(*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if (!(*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
       bitn^=binroutesel3(0,0,w); // theroute which is ... and routetype
     }
     BITN_AND_OUTV_; 
@@ -224,7 +224,7 @@ void SR_geo_inner_probadcentryX(uint32_t w){  // ADC only - prob for adc itself 
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
-    if ((*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
 	  ADCgeneric2; 
 	  bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
 	}
@@ -252,7 +252,7 @@ void SR_geo_inner_probadcentryxorX(uint32_t w){  // ADC only - prob for adc itse
 
     ADCgeneric2; 
     bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
-    if (!(*probfsins[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+    if (!(*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
       //      bitn^=binroutesel3(0,0,w); // theroute which is ... and routetype
       bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
     }
@@ -288,7 +288,10 @@ void SR_geo_inner_functionN(uint32_t w){
 //0.0////////
 
 void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
-  if (gate[w].changed==1) RESETN; // added 21/12 only reset on change 
+  if (gate[w].changed==1) {
+    RESETN; // added 21/12 only reset on change
+    gate[w].changed=0;
+  }
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[7]=CVL[w]; // adctype

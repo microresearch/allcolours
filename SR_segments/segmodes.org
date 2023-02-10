@@ -103,7 +103,31 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 10/2/2023
 
-*how to test that we do resetc/all*
+- DONE/fixedhow to test that we do resetc/all - print on reset
+
+- *test all functions with depth*- *re-test all routefuncs // all speedfuncs // all probfunctions (well still to test these). and check logic by hand*
+
+//those with depth are checked with depth // all inc no depth to test: 
+
+*TESTED:*
+routes: 
+
+- XXroutebits_depth_typesz[32]
+
+all strobes:
+- XXroutebits_nostrobe_depth_typesz
+- XXroutebits_nostrobe_depth_notypesz
+- XXroutebits_nostrobe_nodepth_typesz
+- XXroutebits_nostrobe_nodepth_notypesz
+
+speeds:
+
+- XXspeedfromstrobe_depth
+
+probs: 
+
+- XXprobf_anystrobe_depth
+
 
 ** 9/2/2023
 
@@ -125,17 +149,7 @@ probs
 
 - *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
 
-- *re-test all routefuncs // all speedfuncs // all probfunctions (well still to test these). and check logic by hand*
-
 - *GeoCC ... or keep all first 16 sans gaps, fixed which might include rungler etc. - adjust when we have everything*
-
-//checked with depth:
-
-routes:
-
-speeds:
-
-probs: probf_anystrobe_depth
 
 - *LL,, RR, NN pull rungler ops into first 16 basic modes - as in rungler with basic route in. 2x runglers - LL, RR, NN*
 

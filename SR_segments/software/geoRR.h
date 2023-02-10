@@ -40,7 +40,10 @@ older from geoLR.h:
 //0.0////////
 
 void SR_geo_outer_R00(uint32_t w){  // set length
-  if (gate[w].changed==1) RESETR; // added 21/12 only reset on change 
+  if (gate[w].changed==1) {
+    RESETR; // added 21/12 only reset on change
+    gate[w].changed=0;
+  }
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[6]=CVL[w]; // length

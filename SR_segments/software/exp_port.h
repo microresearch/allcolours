@@ -156,11 +156,11 @@ static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w
 
 static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  //  tmp=(depth>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
+    tmp=(depth>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
   //    depth=gate[w].theroute;
-    tmp=binroute[count][w]|binary[w]; 
+  //    tmp=binroute[count][w]|binary[w]; 
   
-  if (depth==0 || ((depth>>7)&1)) { // SR5 is 8th which is outside these bits 
+  if (tmp==0 || ((depth>>7)&1)) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
     gate[w].shift_ ^=gate[8].Gshare_;
     bitn^=bitrr;
@@ -182,9 +182,9 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
 
 static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  //    tmp=(depth>>8); //
+      tmp=(depth>>8); //
   //    tmp=gate[w].theroute;
-    tmp=binroute[count][w]|binary[w]; 
+  //    tmp=binroute[count][w]|binary[w]; 
   //  tmp=gate[dacfrom[count][w]].shift_&15;
     if (tmp==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
@@ -211,9 +211,9 @@ static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // d
 static inline uint32_t pSR_reflect(uint32_t depth, uint32_t in, uint32_t w){ // // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //  tmp=binroute[count][w];
-  //    tmp=(depth>>8); //
+  tmp=(depth>>8); //
   //      tmp=gate[w].theroute;
-  tmp=binroute[count][w]|binary[w]; 
+  //  tmp=binroute[count][w]|binary[w]; 
 
     for (x=0;x<4;x++){
       if (tmp&0x01){
@@ -232,7 +232,7 @@ static inline uint32_t pSR_altbin1(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t x, tmp, bitrr, temp, bitn=0;
   //  tmp=binroute[count][w];
     tmp=(depth>>8);
-    tmp=15-temp;
+    tmp=15-tmp;
     //    tmp=gate[w].theroute;
 
     for (x=0;x<4;x++){
@@ -652,7 +652,6 @@ static inline uint32_t pbitSRroutelogxxx(uint32_t depth, uint32_t in, uint32_t w
       }
       tmp=tmp>>2; // 4 bits
     }
-    if (LFSR__[w] < depth) bitn^=1;
   return bitn;
 }
 
