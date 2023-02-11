@@ -100,6 +100,13 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 11/2/2023
+
+- DONEfilling in dacfroms for depth and length - these could also be in strobesDONE
+
+- *might need to genericise all the prob functions to fit in memory now and then re-test*
+
+- *test all strobes in geoCC again as changed [3]->17 for strobe func*
 
 ** 10/2/2023
 
@@ -113,6 +120,9 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 routes: 
 
 - XXroutebits_depth_typesz[32]
+- XXroutebits_nodepth_typesz <<6 //64 = C20
+- XXroutebits_anystrobe_nodepth_notypesz <<7 = C21
+- XXroutebits_anystrobe_depth_notypesz <<8 =C30 // patterns can have problems on start
 
 all strobes:
 - XXroutebits_nostrobe_depth_typesz
@@ -124,10 +134,13 @@ speeds:
 
 - XXspeedfromstrobe_depth
 
+what others?
+
 probs: 
 
 - XXprobf_anystrobe_depth
 
+what others?
 
 ** 9/2/2023
 

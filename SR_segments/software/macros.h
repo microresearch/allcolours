@@ -393,18 +393,7 @@ static uint32_t outcnt=0;
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
   }
 
-// for local routes - my is just theroute
-#define BINROUTEMY_ {				\
-    tmp=gate[w].theroute;			\
-  for (x=0;x<4;x++){				\
-    if (tmp&0x01){					\
-      bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;	\
-      gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
-      bitn^=bitrr;					\
-    }							\
-    tmp=tmp>>1;						\
-  }							\
-}
+
 // same more or less as BINROUTENOG_ but not with gshift
 #define BINROUTESR_ {				\
     tmp=binroute[count][w]|binary[w];			\

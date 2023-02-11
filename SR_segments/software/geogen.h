@@ -104,7 +104,7 @@ static inline uint32_t Zzbinroutebitscycle(uint32_t depth, uint32_t in, uint32_t
 static inline uint32_t Zflipflopandroute(uint32_t depth, uint32_t in, uint32_t w){  // so all share // DEPTH
   uint32_t bitn, bitrr, x, tmp, tmpp;
   static uint32_t fl=0;
-  fl^=1;
+  fl=fl^1;
   bitn=fl;
   tmpp=gate[w].routetype;
   tmp=binroute[count][w]|binary[w]; 
@@ -1659,77 +1659,7 @@ static inline uint32_t binroutesel1(uint32_t depth, uint32_t in, uint32_t w){ //
     return bitn;
 }
 
-static inline uint32_t binroutesel2(uint32_t depth, uint32_t in, uint32_t w){ // no depth
-  uint32_t x, tmp, bitrr, bitn=0;
 
-uint32_t tmpp=gate[w].routetype;
-
-    switch(tmpp){
-    case 0:
-      BINROUTE_;
-    break;
-    case 1:
-      BINROUTESR_;
-    break;
-    case 2:
-      BINROUTEalt_;
-    break;
-    case 3:
-      BINROUTEZERO_;
-    break;
-    case 4:
-      BINROUTESHARE_;
-    break;
-    case 5:
-      BINROUTENOG_;
-    break;
-    case 6:
-      BINROUTEtrig_;
-    break;
-    case 7:
-      BINROUTEnoalt_;  // new one which just cycles and doesn't reset
-    case 8:
-      BINROUTEMY_;  // new one for local route
-    break;
-    }
-    return bitn;
-}
-
-static inline uint32_t binroutesel3(uint32_t depth, uint32_t in, uint32_t w){ // local route
-  uint32_t x, tmp, bitrr, bitn=0;
-  //uint32_t tmpp=depth>>9; // 3 bits
-  //    gate[w].routetype=tmpp;
-  uint32_t tmpp=gate[w].routetype;
-
-  tmp=binroute[count][w]|binary[w]; 
-//|binary[w];
-    switch(tmpp){
-    case 1:
-      BINROUTESRstrip_;
-    break;
-    case 2:
-      BINROUTEaltstrip_;
-    break;
-    case 3:
-      BINROUTEZEROstrip_;
-    break;
-    case 4:
-      BINROUTESHAREstrip_;
-    break;
-    case 5:
-      BINROUTENOGstrip_;
-    break;
-    case 6:
-      BINROUTEtrigstrip_;
-    break;
-    case 7:
-      BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
-    break;
-    default:
-      BINROUTEstrip_;
-    }
-    return bitn;
-}
 
 static inline uint32_t binroutesel4(uint32_t depth, uint32_t in, uint32_t w){ // local route
   uint32_t x, tmp, bitrr, bitn=0;
@@ -3639,6 +3569,7 @@ static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t w){ // max 12
     if (bc<0) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
+      if (depth<3) depth=3;
       k=in>>(11-depth); 
       bc=depth; 
   }

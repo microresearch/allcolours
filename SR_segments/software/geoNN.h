@@ -2,6 +2,22 @@
 
 /*
 
+also for RR:
+
+- just route in, adc in, abstract in only
+
+- simple fixed abstracts in eg: zosc1bits or osceq, sigmadelta, zTMsimplebits with/without route ins
+
+- some cycle probs
+
+- probs below of func vs. route in
+
+- runglers
+
+///
+
+- probs of x vs. y
+
 NN: not so much about speeds?
 
 - prob of adc/abstract vs. route // adc/abstract vs. adc/abstract^route
@@ -106,7 +122,7 @@ void SR_geo_inner_routeadcN(uint32_t w){
 
     ADCgeneric2; 
     bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
-    bitn^=binroutesel3(0,0,w); // theroute which is ... and routetype
+    bitn^=binroutesel0(0,0,w); // theroute which is ... and routetype
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -154,7 +170,7 @@ void SR_geo_inner_probadcentry(uint32_t w){  // ADC only - prob for adc itself -
 	  bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
 	}
       
-    else bitn=binroutesel3(0,0,w); // theroute which is ... and routetype
+    else bitn=binroutesel0(0,0,w); // theroute which is ... and routetype
     
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -178,7 +194,7 @@ void SR_geo_inner_probabstractentry(uint32_t w){
     if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
       bitn=(*abstractbitsz[gate[w].matrix[17]>>7])(gate[w].matrix[18], gate[w].matrix[5], w);
     }
-    else bitn=binroutesel3(0,0,w); // theroute which is ... and routetype
+    else bitn=binroutesel0(0,0,w); // theroute which is ... and routetype
     
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -203,7 +219,7 @@ void SR_geo_inner_probadcentryxor(uint32_t w){  // ADC only - prob for adc itsel
     ADCgeneric2; 
     bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
     if (!(*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-      bitn^=binroutesel3(0,0,w); // theroute which is ... and routetype
+      bitn^=binroutesel0(0,0,w); // theroute which is ... and routetype
     }
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -295,7 +311,7 @@ void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[7]=CVL[w]; // adctype
-  //  gate[w].matrix[8]=CVL[w]; // adccv //TEST
+  //  gate[w].matrix[8]=CV[w]; // adccv //TEST // already inverted
   gate[w].inner=SR_geo_inner_norouteadcN; // routetype/theroute so always at reset route/base global
 }
 

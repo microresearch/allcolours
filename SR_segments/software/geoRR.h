@@ -47,7 +47,7 @@ void SR_geo_outer_R00(uint32_t w){  // set length
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[6]=CVL[w]; // length
-  gate[w].inner=SR_geo_inner_routeC; // routetype/theroute so always at reset route/base global
+  gate[w].inner=SR_geo_inner_globalC; //
 }
 
 // REDO from here! - abstracts etc. from NN once tested
