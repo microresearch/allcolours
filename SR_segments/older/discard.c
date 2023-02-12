@@ -1,3 +1,68 @@
+// test fixed probs just to see if all good // workings
+void SR_geo_outer_probtest(uint32_t w){  // probf_nostrobe_depth: 
+  if (gate[w].changed==0) {
+    // first func is gapped
+    gate[w].matrix[9]=0; // selprob - invprobbits of
+    // 17 is routebits_nostrobe_depth_typesz: 0 is routebits_nostrobe_depth_typesz
+    // 12 is routebits_nostrobe_depth_notypesz: say 1 TM simple bits
+    gate[w].matrix[12]=1<<8;///
+    gate[w].matrix[10]=CV[w]; // depth
+    gate[w].matrix[4]=CVL[w]; // depth
+    gate[w].inner=SR_geo_inner_str_probfunction;
+  }
+} 
+
+/*
+void SR_geo_outer_C111(uint32_t w){ 
+  if (gate[w].changed==0) {
+    gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv1/cv2
+    gate[w].matrix[9]=CV[w]; // selprob
+    gate[w].matrix[12]=CVL[w]; // select func2 which is fixed as with depth  
+    gate[w].inner=SR_geo_inner_str_probfunctionalt; // and SR_geo_inner_str_probfunctionalt as diff 2nd array
+  }
+} 
+*/
+
+// bitfuncsel, func_cv CV CVL
+// altfuncsel, altfuncv CV CVL +1 ???
+
+ /*
+
+what are strobe speeds and bits:
+
+speedfromstrobe_depth >>8
+speedfromstrobe_nodepth >>8 with 0 as simple strobe
+
+routebits_nostrobe_depth_typesz >>7
+routebits_nostrobe_depth_notypesz >>8
+
+routebits_nostrobe_nodepth_notypesz >>7
+routebits_nostrobe_nodepth_typesz >>8
+
+abstractbits_nostrobez >>7
+
+probf_nostrobe_depth >>7
+probf_nostrobe_nodepth >>8
+
+8.0: fixed strobe in free CV and CVL for ...
+
+9.0: strobe select functions and gap them
+
+10.0: ???
+
+11.0: strobe xor/variations
+
+-> strobe functions
+
+see geo.c
+
+first set is basic strobe speed functions then more complex into probs with CV and CVL
+
+we can also use CV-param and CVL-function select across various arrays and then gap array...
+
+ */
+
+
 // change type/globalroute
 void SR_geo_outer_R01(uint32_t w){ // globalroute/set routetype
   if (gate[w].changed==0) {

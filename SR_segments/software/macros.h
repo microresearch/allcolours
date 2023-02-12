@@ -45,21 +45,21 @@ static uint32_t outcnt=0;
   }
 
 #define RESETTL {				\
-  for (uint32_t y=0;y<19;y++){			\
+  for (uint32_t y=0;y<20;y++){			\
   gate[1].matrix[y]=matrixLL[y];					\
   gate[1].matrixp[y]=matrixLLL[y];					\
   }									\
   }
 
 #define RESETTC {				\
-  for (uint32_t y=0;y<19;y++){			\
+  for (uint32_t y=0;y<20;y++){			\
   gate[2].matrix[y]=matrixCC[y];					\
   gate[2].matrixp[y]=matrixCCC[y];					\
   }									\
   }
 
 #define RESETTR {				\
-  for (uint32_t y=0;y<19;y++){			\
+  for (uint32_t y=0;y<20;y++){			\
   gate[3].matrix[y]=matrixRR[y];					\
   gate[3].matrixp[y]=matrixRRR[y];					\
   }									\

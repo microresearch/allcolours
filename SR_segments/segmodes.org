@@ -100,6 +100,48 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** 12/2/2023
+
+DONEif/which globals on RR should be inside speed eg. binary should be - new inner for these else just set in outer [19] is now CV for globallls
+
+checking oddities:
+
+routebits_nodepth_typesz is default with mode 0= Zbinrout(:
+
+we changed all noshifts to use shift_ and not Gshare_!!
+
+done new tests below, 
+
+*test tails (how?)*
+
+routebits_anystrobe_nodepth_notypesz[32]:= 4<<7 C21
+
+
+* and all globals to look at again*
+
+*we now changed to spdfrom for fake clks on strobe modes - see if works all together? so far ok*
+
+- changed now *RETEST* question of probs is that altfunc is still from same array! and we have 4x different arrays...
+
+for no_strobe fix against either/or:
+
+//- XXroutebits_depth_typesz[32]
+// XXroutebits_nodepth_typesz <<6 [64] = C20
+
+now done only with bitn=(routebits_nodepth_typesz[gate[w].matrix[12]>>6])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
+
+list prob options:
+
+SR_geo_inner_probdepth
+SR_geo_inner_probdepthx - probs with NOIN!
+
+and for strobe:
+
+//routebits_nostrobe_depth_typesz >>7
+//routebits_nostrobe_depth_notypesz >>8
+
+- ideally both - we have 2 options there
+
 ** 11/2/2023
 
 - DONEfilling in dacfroms for depth and length - these could also be in strobesDONE
@@ -120,7 +162,8 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 routes: 
 
 - XXroutebits_depth_typesz[32]
-- XXroutebits_nodepth_typesz <<6 //64 = C20
+- XXroutebits_nodepth_typesz <<6 [64] = C20
+
 - XXroutebits_anystrobe_nodepth_notypesz <<7 = C21
 - XXroutebits_anystrobe_depth_notypesz <<8 =C30 // patterns can have problems on start
 
@@ -132,15 +175,16 @@ all strobes:
 
 speeds:
 
-- XXspeedfromstrobe_depth
+- XXspeedfromstrobe_depth and re-check all strobe speeds:
 
-what others?
+XXspeedfromstrobe_nodepth 16 <<8 C90
+XXspeedfromstrobe_depth 16 <<8 C93
 
 probs: 
 
 - XXprobf_anystrobe_depth
-
-what others?
+- XXprobf_anystrobe_nodepth <<8 C60
+- XXprobf_nostrobe_depth  matches above ,,,,
 
 ** 9/2/2023
 
