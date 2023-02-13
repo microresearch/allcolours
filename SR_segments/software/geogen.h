@@ -68,6 +68,24 @@ and in exp_port.h
     }						\
      }
 
+////////////////////////////////////////////////////////////////////////// 13/2/2023
+//TRIADEX: use of different parity switches - do we still have this?
+// bits go into parity from say all SR with diff functions = 4x 32 bits = 4 selectors of 128 bits or we use CV CVL (depth and IN) so is just 2!
+// so we have 2 selectors - each is 128 so select one of SR/shiftr to shift out bit x and ^
+uint32_t triadexbits(uint32_t depth, uint32_t in, uint32_t w){   
+  uint32_t x,bitn=0, bitrr, tmpp,tmp;
+  depth=depth>>5; // 7 bits left
+  tmp=depth>>5;// 2 top bits for which SR
+  tmpp=depth&31;// // 5 lower bits for the bit 
+  bitn=gate[tmp].shift_>>tmpp;
+
+  in=in>>5; // 7 bits left
+  tmp=in>>5;// 2 top bits for which SR
+  tmpp=in&31;// // 5 lower bits for the bit 
+  bitn^=gate[tmp].shift_>>tmpp;
+  
+  return bitn;
+}
 
 ////////////////////////////////////////////////////////////////////////// 25/10/2022 - // adding 13/12/2022
 // basic binroutes with depth and in for route in and routetypes...
@@ -2181,7 +2199,7 @@ static inline uint32_t zcopyGSR(uint32_t depth, uint32_t in, uint32_t w){
   static uint32_t sharey;
   uint32_t bt=0, x;
   x=depth>>10; // 2 bits 
-  if (gate[w].changed==1) { 
+  if (gate[w].changed==1) { // but changed stays a while....
     sharey=gate[x].Gshare_; // which one to copy?
   }
   bt=(sharey>>SRlength[x]) & 0x01;
@@ -4819,7 +4837,7 @@ static inline void binaryX(uint32_t depth){
 }
 
 static inline void resett(uint32_t depth){ // resett // no depth
-  RESETG;
+    RESETG;
 }
 
 /// add in master set of glob index into these with a fixed route

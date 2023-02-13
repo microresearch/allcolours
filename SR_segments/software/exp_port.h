@@ -214,7 +214,7 @@ static inline uint32_t pSR_reflect(uint32_t depth, uint32_t in, uint32_t w){ // 
   tmp=(depth>>8); //
   //      tmp=gate[w].theroute;
   //  tmp=binroute[count][w]|binary[w]; 
-
+  if (tmp==0) tmp=(1<<w);
     for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 

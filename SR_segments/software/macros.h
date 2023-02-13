@@ -14,8 +14,6 @@ static uint32_t outcnt=0;
 
 // unused but what we do with cv... is for matrixp ops ROUTE is now dep
 #define ROUTETYPE (gate[w].matrix[16]>>9)
-#define ROUTE (gate[w].matrix[17]>>8)
-#define SPEEDFUNC (gate[w].matrix[0]>>7)
 
 #define SETROUTETYPE (gate[w].matrix[16])
 #define SETROUTE (gate[w].matrix[17])
@@ -39,6 +37,7 @@ static uint32_t outcnt=0;
 
 #define RESETTN {				\
   for (uint32_t y=0;y<19;y++){			\
+    gate[0].set[y]=0;							\
   gate[0].matrix[y]=matrixNN[y];					\
   gate[0].matrixp[y]=matrixNNN[y];					\
   }									\
@@ -46,6 +45,7 @@ static uint32_t outcnt=0;
 
 #define RESETTL {				\
   for (uint32_t y=0;y<20;y++){			\
+    gate[1].set[y]=0;							\
   gate[1].matrix[y]=matrixLL[y];					\
   gate[1].matrixp[y]=matrixLLL[y];					\
   }									\
@@ -53,6 +53,7 @@ static uint32_t outcnt=0;
 
 #define RESETTC {				\
   for (uint32_t y=0;y<20;y++){			\
+    gate[2].set[y]=0;							\
   gate[2].matrix[y]=matrixCC[y];					\
   gate[2].matrixp[y]=matrixCCC[y];					\
   }									\
@@ -60,6 +61,7 @@ static uint32_t outcnt=0;
 
 #define RESETTR {				\
   for (uint32_t y=0;y<20;y++){			\
+    gate[3].set[y]=0;							\
   gate[3].matrix[y]=matrixRR[y];					\
   gate[3].matrixp[y]=matrixRRR[y];					\
   }									\
@@ -71,9 +73,9 @@ static uint32_t outcnt=0;
 
 #define RESETC binary[2]=0; gate[2].altroute=0; gate[2].routetype=0; gate[2].funcbit=routebits_nodepth_typesz; gate[2].extent=6; gate[2].depths=depth_routebits_nodepth_typesz; gate[2].str_funcbit=routebits_nostrobe_depth_typesz; gate[2].str_extent=7; gate[2].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTC;
 
-#define RESETR binary[3]=0; gate[3].altroute=0; gate[3].routetype=0; gate[3].funcbit=routebits_nodepth_typesz; gate[3].extent=6; gate[3].depths=depth_routebits_nodepth_typesz; gate[3].str_funcbit=routebits_nostrobe_depth_typesz; gate[3].str_extent=7; gate[3].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTR;
+#define RESETR binary[3]=0; gate[3].altroute=0; gate[3].routetype=0; gate[3].funcbit=routebits_nodepth_typesz; gate[3].extent=6; gate[3].depths=depth_routebits_nodepth_typesz; gate[3].str_funcbit=routebits_nostrobe_depth_typesz; gate[3].str_extent=7; gate[3].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTR; RESETG; 
 
-#define RESETG count=0; daccount=0; spdcount=0; binroutetypecount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; 
+#define RESETG count=0; daccount=0; spdcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; 
 
 #define STR0 (gate[w].trigger)
 
@@ -214,7 +216,7 @@ static uint32_t outcnt=0;
     gate[w].Gshift_[3]=gate[w].shift_;			\
     gate[w].Gshift_[8]=gate[w].shift_;			\
     gate[w].Gshare_=gate[w].shift_;			\
-    Gshift_[w]=gate[w].shift_&4095;			\
+    Gshift__[w]=gate[w].shift_&4095;			\
     gate[w].shift_=gate[w].shift_<<1;			\
     gate[w].countspeed++;				\
 }
@@ -598,6 +600,7 @@ static uint32_t outcnt=0;
     if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrix[13]>>7])) bitn|=gate[w].trigger; \
     gate[w].shift_+=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); \
+    if (val>4095) val=4095;						\
     PULSOUT;								\
 }
 // added pulsin_xor

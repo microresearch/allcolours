@@ -27,7 +27,7 @@ static inline uint8_t probableCV(uint32_t reg, uint32_t type){
     if ((gate[reg].shift_ & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
     break;
   case 3:
-    if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
+    //    if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
     break;
   }    
   return 0;
@@ -44,7 +44,7 @@ static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one 
     if ((LFSR_[reg] & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
     break;
   case 2:
-    if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
+    //    if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
     break;
   }    
   return 0;
@@ -1077,7 +1077,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
         else     x=( (shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // doublecheck - fixed problem in shifts in resources 16/8
     //    else  x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
     //    else x=(shift&4095);
-    //    x=x&4095;
     break;
     
   case 1:// equivalent bit DAC for x bits - 3/11 - 32 bits max now
@@ -1085,13 +1084,12 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=countbits(shift& masky[otherpar]); // lower length bits only
     y=divy[otherpar]; // added table for this 7/10 - updated for 32 bits
     x*=y;
-    if (x>4095) x=4095;
     break;
 
   case 2: // one bit audio but with beta as param  - sigma-delta
     // beta is now (6/12/2021) always param - just if is generated from cv or speed or ... betaf=0.4f is usual value
     // 0.4=par/4096.0
-    if (otherpar>4096) otherpar=4096;
+    //    if (otherpar>4096) otherpar=4096;
     otherpar=4096-otherpar;
     if (otherpar==0) otherpar=1;
     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
@@ -1150,7 +1148,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     x= ( ((shift& (1<<lastspac[otherpar][0]))>>lastspacbac[otherpar][0]) + ((shift& (1<<lastspac[otherpar][1]))>>lastspacbac[otherpar][1]) + ((shift& (1<<lastspac[otherpar][2]))>>lastspacbac[otherpar][2]) + ((shift& (1<<lastspac[otherpar][3]))>>lastspacbac[otherpar][3]) ); 
     x=countbits(x)*1023;
-    if (x>4095) x=4095;
     break;
 
   case 8: // one SR is sieved out over another? as DAC option. XOR as sieve? AND as mask! TODO
@@ -1370,7 +1367,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     }
     else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
     
-    if (otherpar>4095) otherpar=4095;
+    //    if (otherpar>4095) otherpar=4095;
     mult=mixer[otherpar>>2]; // 10 bits - 0 is 1.0f so full dac
     pp=((float)(x) *  (1.0f-mult)) + ((float)(gate[dacfrom[daccount][wh]].dac)*mult); // mix with param
     x=(int)pp;
@@ -1464,8 +1461,8 @@ void EXTI4_IRQHandler(void){ // working NSR
   uint32_t tmp, tmpp;
 if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
   intflag[0]=1; //NSR
-  param[0]=counter_[0];
-  counter_[0]=0;
+  //  param[0]=counter_[0];
+  //  counter_[0]=0;
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
  }
@@ -1477,22 +1474,22 @@ void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but 
     
   if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  
     intflag[3]=1; //RSR
-    param[3]=counter_[3];
-      counter_[3]=0;
+    //    param[3]=counter_[3];
+    //      counter_[3]=0;
     EXTI_ClearITPendingBit(EXTI_Line5);
  }
 
   if (EXTI_GetITStatus(EXTI_Line6) != RESET) { //LSR
     intflag[1]=1; //LSR
-    param[1]=counter_[1];
-    counter_[1]=0;
+    //    param[1]=counter_[1];
+    //    counter_[1]=0;
     EXTI_ClearITPendingBit(EXTI_Line6);
  } 
 
   if (EXTI_GetITStatus(EXTI_Line7) != RESET) {// CSR
     intflag[2]=1; //CSR
-    param[2]=counter_[2];
-    counter_[2]=0;
+    //    param[2]=counter_[2];
+    //    counter_[2]=0;
     EXTI_ClearITPendingBit(EXTI_Line7);
  } 
 }

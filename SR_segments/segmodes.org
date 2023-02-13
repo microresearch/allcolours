@@ -100,22 +100,41 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+** ////XXXXX
+
+- full tests
+- check all extents, all arrays and all functions for sanity - geogen and each before we expand across all sides...
 
 ** 13/2/2023
 
-- *globalls without depth (list) will need gapped inner fuction with prob...TODO* fixed inners - to *test*
+- *add abstract index as [17] was taken...*
 
+- *can maybe add more orderings to orderings array!*
 
+- DONE-to test all //globalls without depth (list) will need gapped inner fuction with prob...TODO* fixed inners - to *re/test*
 
 TODO:
-- new Triadex mode - depth//no types
-- globals RR - which ones are fixed if not all... or gropups say of bumpers...
-- matrixp ops
 
-+NN: adc/abstracts, some cycles
-+RR: abstracts from above, 
+- DONEall TO TESTglobals RR - which ones are fixed if not all... or groups say of bumpers...
+
+- starting on matrixp ops:
+
+--> *how do we reset matrix/matrixp to something sensible if say is all attached, by filling gaps - settle down*
+--: *problem is that matrixp is null to begin with, do we need to set every op as matrixp in outers...*
+
+eg for speed gate[wh].matrixp[0]=&gate[wh].matrix[0];
+
+*crash in 122/setvar...: strobe is routebits_nostrobe_depth_typesz//extent 7 =32; speed is speedfromstrobe_nodepth[gate[w].matrix[15]>>8]*
+// crash in routebits, speed as no type, in dac param?
+
+- start to fill all gaps below
+
++NN: adc/abstracts, some cycles, NN needs all possible inners with adc in!
++RR: abstracts from above
 +NN/RR/LL: new runglers - rungle with no route in/route in...
 +fixed route functions/abstract/adc ins for NN and RR - tehse are simpler...
+
+- DONE/TESTEDnew Triadex mode - depth//no types - TESTED - can also be solo function for RR, LL, NN maybe and any others... in strobe with CV and co...
 
 ** 12/2/2023
 

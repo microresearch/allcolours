@@ -27,6 +27,7 @@ typedef struct heavens_ {
   uint32_t lastspeed;
   uint32_t countspeed;
   uint32_t matrix[20];
+  uint32_t set[20];
   uint32_t *matrixp[20];
   uint32_t *matrixpG[20];
   float *logspeed; 

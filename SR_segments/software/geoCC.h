@@ -713,11 +713,10 @@ void SR_geo_outer_C30(uint32_t w){ //  // notypes select
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=15<<8;//CVL[w]; // sel
-  gate[w].matrix[4]=CVL[w];
+  gate[w].matrix[3]=CVL[w]; // sel
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].funcbit=routebits_anystrobe_depth_notypesz;
-  gate[w].extent=8; // 
+  gate[w].extent=7; // 
   gate[w].depths=depth_routebits_anystrobe_depth_notypesz;
   gate[w].inner=SR_geo_inner_function; 
   }
@@ -730,7 +729,7 @@ void SR_geo_outer_C31(uint32_t w){ // notypes. depth
   gate[w].matrix[4]=CVL[w]; // depth
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].funcbit=routebits_anystrobe_depth_notypesz;
-  gate[w].extent=8; // 
+  gate[w].extent=7; // 
   gate[w].depths=depth_routebits_anystrobe_depth_notypesz;
 
   gate[w].inner=SR_geo_inner_function; 
@@ -1213,9 +1212,104 @@ void SR_geo_outer_C113(uint32_t w){  // alt
   }
 } 
 
+// 120, 130, 140, 15 ends 153
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // last 16 are matrixp ops to try to sketch out... 4x4 below
-// start with matrixp strobe modes
+// start with matrixp strobe modes // for tests let's use basic strobe...
+
+uint32_t fixedvalues[4][16]={ //  values - but x value means no change... say 4096 - we didn't do....
+  {0},
+};
+
+uint32_t fixed=0, gap=0;
+
+// cut to 16 here and we don't use fixed/gap // lose param
+// and these all need to be 12 bit versions
+uint32_t *fixedvars[4][16]={ //was 20 
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[0], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[1], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[2], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[3], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+};
+
+void SR_geomantic_matrixcopyz(uint32_t w){ 
+  uint32_t x;
+  for (x=0;x<20;x++){
+    if (gate[w].set[x]) gate[w].matrix[x]=*(gate[w].matrixp[x]); 
+  }
+}
+
+static inline void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap? tested in test2.c yes it just sets one
+  static uint32_t oldgap[4]={0,0,0,0};
+  if (which!=oldgap[wh]){
+    gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];//
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+  }
+  oldgap[wh]=which;
+}
+
+static inline void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
+  static uint32_t oldgap[4]={0,0,0,0};
+  if (which!=oldgap[wh]){
+    gate[wh].matrixp[oldgap[wh]]=&gate[wh].matrix[oldgap[wh]];//
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+  }
+  oldgap[wh]=which;
+}
+
+static inline void setvarz(uint32_t wh, uint32_t which, uint32_t var){ // plain set
+  static uint32_t oldgap[4]={0,0,0,0};
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+}
+
+
+/*
+- use CV to range across matrixp and set values with CVL (sweep across)
+- as above but gap across so it just sets one value with CVL // CVL var is [5] - how we do that as it means wait for a stoppage
+
+*/
+
+// question is: some has no effect but we have no way of knowing...
+void SR_geo_outer_C120(uint32_t w){   // strobe // slide across and set to CVL
+  if (gate[w].changed==0) {
+    // set matrixp from CV and CVL
+    setvargapz(w, 20-((CV[w]>>7)%20), 5); // 5 is CVL
+    // copy if necessary 
+    SR_geomantic_matrixcopyz(w);    
+    gate[w].inner=SR_geo_inner_str_function;
+  }
+}
+
+void SR_geo_outer_C121(uint32_t w){   // strobe // slide across and set to dacfrom // what do we do with CVL though - this can still be attached from the previous?
+  if (gate[w].changed==0) {
+    // set matrixp from CV and CVL
+    setvargapz(w, 20-((CV[w]>>7)%20), dacfrom[daccount][w]); // dacfrom starts from 0
+    // copy if necessary 
+    SR_geomantic_matrixcopyz(w);    
+    gate[w].inner=SR_geo_inner_str_function;
+  }
+}
+
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16type, 17 route->now strobe/abstract function index}, 18 is abstract CV, 19 is now glob
+
+// try to mask for crash
+void SR_geo_outer_C122(uint32_t w){   // set to CVL 
+  if (gate[w].changed==0) {
+    // set matrixp from CV and CVL
+    setvarz(w, 20-((CV[w]>>7)%20), CVL[w]>>8); // 4 bits
+    SR_geomantic_matrixcopyz(w);    
+    gate[w].inner=SR_geo_inner_str_function;
+  }
+}
+
+
+// we have bleeding gaps and plain set now above which sets anything
+// compliment these with leave a blank... like leave it as a fixed value - again this could be non-strobe as leaves CVL free
 
 /* eg.
 
@@ -1235,5 +1329,7 @@ no strobe:
 no strobe: 
 
 // also we can have nets which are placed over settings and influence which ones we set...
+
+// matrices also from SR, and set copied from SR - how to organise?
 
  */

@@ -61,11 +61,13 @@ uint32_t matrixRR[20]={0,0,0,  0<<6,0,0, 0<<7, 0,0,         1<<6,0,0,4<<6,    25
 uint32_t matrixTT[20]={0,0,0,  0<<6,0,0, 0<<7, 0,0,         1<<6,0,0,4<<6,    25<<7,2048, 0, 0, 0<<7, 0, 0}; 
 //                     speed   bit       len   adc,adc-cv   prob  alt         dac      strobespdindex, type, route, abstrct cv
 
-uint32_t *matrixNNN[20]={&CVL[0], &CV[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0], &CVL[0]};
-uint32_t *matrixLLL[20]={&CVL[1], &CV[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1], &CVL[1]};
-uint32_t *matrixCCC[20]={&CVL[2], &CV[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2], &CVL[2]};
-uint32_t *matrixRRR[20]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]};
-uint32_t *matrixTTT[20]={&CVL[3], &CV[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3], &CVL[3]}; 
+static uint32_t nul=0;
+
+uint32_t *matrixNNN[20]={&nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul};
+uint32_t *matrixLLL[20]={&nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul};
+uint32_t *matrixCCC[20]={&nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul};
+uint32_t *matrixRRR[20]={&nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul};
+uint32_t *matrixTTT[20]={&nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul, &nul};
 
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
@@ -77,7 +79,7 @@ static uint32_t count=0; // for route
 static uint32_t daccount=0; // for dacfrom
 static uint32_t spdcount=0; // for spdfrom
 static uint32_t tailcount=1; // for tail choice
-static uint32_t binroutetypecount=0; // for type of binroute - used in a few functions in geogen 
+//static uint32_t binroutetypecount=0; // for type of binroute - used in a few functions in geogen 
 
 // TODO: clean these - do we use???
 //static uint32_t dactypecnt=0;
@@ -113,11 +115,11 @@ uint32_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 //uint16_t whichDAC=2;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
-uint32_t param[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength_[9]={31,31,31,31,31,31,31,31,31};
 static uint32_t SRlength[9]={31,31,31,31,31,31,31,31,31};
 
 uint32_t clksr_[4]={HALB,HALB,HALB,HALB};
+uint32_t clksr__[4]={0,0,0,0};
 uint32_t clksrG_[4]={0,0,0,0};
  
 // for generic CLK fake puls routing
@@ -146,7 +148,7 @@ static uint32_t LFSR_[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t LFSR__[4]={0xf0fff,0xf0ff,0xff00f,0xff};
 static uint32_t ADCshift_[4]={0xffff,0xffff,0xffff,0xffff};
 static uint32_t ADCGshift_[4]={0xffff,0xffff,0xffff,0xffff};
-static uint32_t Gshift_[9]={0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
+static uint32_t Gshift__[9]={0,0,0,0};
 
 static uint32_t GGshift_[4][4]={ // for freezers
  {0xff,0xff,0xff,0xff},
@@ -162,7 +164,6 @@ static uint32_t storedlength[4][4]={
   {31,31,31,31}
 };
 
-//static uint32_t nulll=0;
 
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
 static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt[4]={0,0,0,0};
@@ -192,7 +193,7 @@ static uint32_t prev_stat[4]={0,0,0,0};
 static volatile float speedf_[9]={1.0f,1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f};
 static volatile float speedf[9]={1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
-uint32_t counter_[4]={0,0,0,0};
+//uint32_t counter_[4]={0,0,0,0};
 
 static uint32_t pulsins[4]={0,1<<8,0,1<<7}; //N,L,C,R
 static uint32_t pulse[4]={0,1,0,1};
@@ -276,7 +277,7 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
        {SR_geo_outer_N12, /*SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03,  SR_geo_outer_N10, SR_geo_outer_N11, SR_geo_outer_N12, SR_geo_outer_N13, SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, SR_geo_outer_N30, SR_geo_outer_N31, SR_geo_outer_N32, SR_geo_outer_N33,  SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, SR_geo_outer_N60, SR_geo_outer_N61, SR_geo_outer_N62, SR_geo_outer_N63, SR_geo_outer_N70, SR_geo_outer_N71, SR_geo_outer_N72, SR_geo_outer_N73*/},
        {SR_geo_outer_L00, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C51, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73*/},
        {SR_geo_outer_C00, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113,*/ }, 
-       {SR_geo_outer_Rbinary, /*SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_R10, SR_geo_outer_R11, SR_geo_outer_R12, SR_geo_outer_R13, SR_geo_outer_R20, SR_geo_outer_R21, SR_geo_outer_R22, SR_geo_outer_R23, SR_geo_outer_R30, SR_geo_outer_R31, SR_geo_outer_R32, SR_geo_outer_R33, SR_geo_outer_R40, SR_geo_outer_R41, SR_geo_outer_R42, SR_geo_outer_R43, SR_geo_outer_R50, SR_geo_outer_R51, SR_geo_outer_R52, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_R61, SR_geo_outer_R62, SR_geo_outer_R63, SR_geo_outer_R70, SR_geo_outer_R71, SR_geo_outer_R72, SR_geo_outer_R73*/},
+       {SR_geo_outer_R00, /*SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_R10, SR_geo_outer_R11, SR_geo_outer_R12, SR_geo_outer_R13, SR_geo_outer_R20, SR_geo_outer_R21, SR_geo_outer_R22, SR_geo_outer_R23, SR_geo_outer_R30, SR_geo_outer_R31, SR_geo_outer_R32, SR_geo_outer_R33, SR_geo_outer_R40, SR_geo_outer_R41, SR_geo_outer_R42, SR_geo_outer_R43, SR_geo_outer_R50, SR_geo_outer_R51, SR_geo_outer_R52, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_R61, SR_geo_outer_R62, SR_geo_outer_R63, SR_geo_outer_R70, SR_geo_outer_R71, SR_geo_outer_R72, SR_geo_outer_R73*/},
 
 };
 
@@ -299,7 +300,13 @@ void mode_init(void){
   
   
   for (x=0;x<20;x++){
-      gate[0].matrix[x]=matrixNN[x];
+    gate[0].set[x]=0;
+    gate[1].set[x]=0;
+    gate[2].set[x]=0;
+    gate[3].set[x]=0;
+
+    
+    gate[0].matrix[x]=matrixNN[x];
       gate[0].matrixp[x]=matrixNNN[x]; // these are just defaults
 
       gate[1].matrix[x]=matrixLL[x];
@@ -380,6 +387,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     clksrG_[www]=clksr_[www]; // copy in to ghost
     tmp=(clksr_[www]>>31)& 0x01; // length is 31
     clksr_[www]=(clksr_[www]<<1)+tmp;     // shift round CLKSR - we can also insert in/copy in
+    clksr__[www]=clksr_[www]&4095;
   }
   else  {
     gate[www].trigger=0;
