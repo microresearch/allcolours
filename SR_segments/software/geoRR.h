@@ -30,7 +30,7 @@ older from geoLR.h:
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// INNER
 
-void SR_geo_inner_function_glob(uint32_t w){  // new abstraction needs gate[w].funcbit->function array, and extent as >>howmany
+void SR_geo_inner_function_glob(uint32_t w){  // new abstraction needs gate[w].funcbit->function array, and extent as >>howmany // depth and in speed loop
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
@@ -40,7 +40,28 @@ void SR_geo_inner_function_glob(uint32_t w){  // new abstraction needs gate[w].f
   else gate[w].dac = delay_buffer[w][1];
 
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-      (*globalls[glob>>7])(gate[w].matrix[19]);
+      (*globalls_depth[glob>>8])(gate[w].matrix[19]);
+      gate[w].fake=gate[w].trigger;
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geo_inner_function_globoutside(uint32_t w){  // new abstraction needs gate[w].funcbit->function array, and extent as >>howmany // depth and outside speed loop
+  HEADNADA;
+  (*globalls_depth[glob>>8])(gate[w].matrix[19]);
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
       gate[w].fake=gate[w].trigger;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
@@ -56,7 +77,7 @@ void SR_geo_inner_function_glob(uint32_t w){  // new abstraction needs gate[w].f
 
 //0.0////////
 
-void SR_geo_outer_R00(uint32_t w){  // set length
+void SR_geo_outer_R00(uint32_t w){  // set length // set length or could better be TYPE
   if (gate[w].changed==1) {
     RESETR; // added 21/12 only reset on change
     gate[w].changed=0;
@@ -89,14 +110,15 @@ R03: Nxx - route in only
 void (*globalls[20])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, SRRglobaltailset}; 
  */
 
+// convert these to be mlre generic with function_glob // inner and outer also functiongapped_globs
 void SR_geo_outer_Rtail(uint32_t w){ 
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed 
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-    // set global fixed or select... eg.
-    SRRglobaltailset(CVL[w]);
-    gate[w].inner=SR_geo_inner_function; 
+    glob=8<<8; //     //SRRglobaltailset(CVL[w]);
+    gate[w].matrix[19]=CVL[w];
+    gate[w].inner=SR_geo_inner_function_globoutside;
   }
 }
 
@@ -105,9 +127,9 @@ void SR_geo_outer_Rorder(uint32_t w){
     gate[w].matrix[1]=CV[w];// speed 
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-    // set global fixed or select... eg.
-    SRRglobalorder(CVL[w]);
-    gate[w].inner=SR_geo_inner_function; 
+    glob=7<<8;    //    SRRglobalorder(CVL[w]);
+    gate[w].matrix[19]=CVL[w];
+    gate[w].inner=SR_geo_inner_function_globoutside;  
   }
 }
 
@@ -119,9 +141,9 @@ void SR_geo_outer_Rbinary(uint32_t w){
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
     // set global fixed or select... eg.
     //    binaryN(CVL[w]);
-    glob=1<<7;
+    glob=1<<8;
     gate[w].matrix[19]=CVL[w];
-    gate[w].inner=SR_geo_inner_function_glob; 
+    gate[w].inner=SR_geo_inner_function_glob; // uses depth
   }
 }
 

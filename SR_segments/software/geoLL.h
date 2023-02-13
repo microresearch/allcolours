@@ -24,7 +24,7 @@ but much following CC so far - unless we can extend runglers...
 
 //0.0////////
 
-void SR_geo_outer_L00(uint32_t w){  // set length
+void SR_geo_outer_L00(uint32_t w){  // set length or could better be TYPE
   if (gate[w].changed==1) {
     RESETL; // added 21/12 only reset on change
     gate[w].changed=0;

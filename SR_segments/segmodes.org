@@ -100,11 +100,29 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
+
+** 13/2/2023
+
+- *globalls without depth (list) will need gapped inner fuction with prob...TODO* fixed inners - to *test*
+
+
+
+TODO:
+- new Triadex mode - depth//no types
+- globals RR - which ones are fixed if not all... or gropups say of bumpers...
+- matrixp ops
+
++NN: adc/abstracts, some cycles
++RR: abstracts from above, 
++NN/RR/LL: new runglers - rungle with no route in/route in...
++fixed route functions/abstract/adc ins for NN and RR - tehse are simpler...
+
 ** 12/2/2023
 
-DONEif/which globals on RR should be inside speed eg. binary should be - new inner for these else just set in outer [19] is now CV for globallls
+ignore- what was logic again of GSHIFT before shifting??? and why did we have odd behaviour with full speed of N and zbinroutebits_noshift in prob of entry or cycle when we use Gshift_/share and not with shift_???
+// is more about them being the same BITS!
 
-checking oddities:
+DONEif/which globals on RR should be inside speed eg. binary should be - new inner for these else just set in outer [19] is now CV for globallls
 
 routebits_nodepth_typesz is default with mode 0= Zbinrout(:
 
@@ -116,8 +134,7 @@ done new tests below,
 
 routebits_anystrobe_nodepth_notypesz[32]:= 4<<7 C21
 
-
-* and all globals to look at again*
+*and all globals to look at again*
 
 *we now changed to spdfrom for fake clks on strobe modes - see if works all together? so far ok*
 
