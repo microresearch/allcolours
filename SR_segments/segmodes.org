@@ -73,10 +73,6 @@ TODO:
 
 - geoC is more about routes and probs, speed is very important here and dac characters
 
-- recheck rungler characteristics
-
-//[- if we OR with binary in depth/theroute or just in binroute: in binroute onlyDONE]
-
 TODO: 
 
 - DONEdraft fake strobes: set gate[www].strobed (unset in headnada) - and then use strobe as pulse:BITN_AND_OUTV_; TODO: add gate[wh].strobed=1; for all strobe functions in geogen.h
@@ -105,11 +101,47 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 - full tests
 - check all extents, all arrays and all functions for sanity - geogen and each before we expand across all sides...
 
+** 14/2/2023
+
+*TODO: longer order arrays to downsample*
+
+DONEtake care of routetype now in matrices: gate[w].routetype=gate[w].matrix[16]>>9;
+
+lots of tests below
+
+// MAP: TEST!do we need to hits full matrixp as some are only relevant for say strobes - but how to filter?
+
+eg. we don;t need adc etc in all except adc mode - some kind of mapping
+eg for CC strobe we need: 3,4,5,6,9,10,11,12,13,14,15,16,17 try maparray...uint32_t maparrayCC[16]={3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 3, 4, 5};
+
+
+// *dacspeed3 or 4 as preferable // 3x 4x too with speedfrom, also c41 speed type selection*
+
+*for NN which ones do or dont use ADC- how to divide*
+
+*also sort better strobe and nonstrobe order in functions*
+
+//// what is difference osc1bits and osceq? they are the same... so now we fix osceq to use IN for second bit - can also be reversed ones/zeros
+
+- DONE_TESTadd abstract index as [17] was taken... -> [20] maybe re-test
+
+- DONE_TESTED_can maybe add more orderings to orderings array!
+
+- DONE_TESTEDtry different shifter for DAC_ and maybe add this as modes 
+
+matrixp:
+- TEST gaps with CVL pre-attach in matrixp ops
+- DONEbut...also copy can be if not_changed then copy fixed:     gate[wh].matrixp[oldgap[wh]]=&gate[wh].matrix[oldgap[wh]];// fixed one
+- how we can layer attachments the detach/gap according to overlays?
+- DONE/TESTdon't set to null but fill default with fixed:     gate[wh].matrixp[x]=&gate[wh].matrix[x]
+
+strobe matrixp ops 
+cvspeed matrixp ops
+
+reset at endx
+grids/SR attachings
+
 ** 13/2/2023
-
-- *add abstract index as [17] was taken...*
-
-- *can maybe add more orderings to orderings array!*
 
 - DONE-to test all //globalls without depth (list) will need gapped inner fuction with prob...TODO* fixed inners - to *re/test*
 
@@ -119,12 +151,12 @@ TODO:
 
 - starting on matrixp ops:
 
---> *how do we reset matrix/matrixp to something sensible if say is all attached, by filling gaps - settle down*
---: *problem is that matrixp is null to begin with, do we need to set every op as matrixp in outers...*
+--> *how do we reset matrix/matrixp to something sensible if say is all attached, by filling gaps - settle down//reset at end*
+ignore: problem is that matrixp is null to begin with, do we need to set every op as matrixp in outers...
 
 eg for speed gate[wh].matrixp[0]=&gate[wh].matrix[0];
 
-*crash in 122/setvar...: strobe is routebits_nostrobe_depth_typesz//extent 7 =32; speed is speedfromstrobe_nodepth[gate[w].matrix[15]>>8]*
+fixed/dac/crash in 122/setvar...: strobe is routebits_nostrobe_depth_typesz//extent 7 =32; speed is speedfromstrobe_nodepth[gate[w].matrix[15]>>8]
 // crash in routebits, speed as no type, in dac param?
 
 - start to fill all gaps below
@@ -149,15 +181,13 @@ we changed all noshifts to use shift_ and not Gshare_!!
 
 done new tests below, 
 
-*test tails (how?)*
+DONEtest tails (how?)
 
 routebits_anystrobe_nodepth_notypesz[32]:= 4<<7 C21
 
-*and all globals to look at again*
+we now changed to spdfrom for fake clks on strobe modes - see if works all together? so far ok*
 
-*we now changed to spdfrom for fake clks on strobe modes - see if works all together? so far ok*
-
-- changed now *RETEST* question of probs is that altfunc is still from same array! and we have 4x different arrays...
+- changed now RETEST question of probs is that altfunc is still from same array! and we have 4x different arrays...
 
 for no_strobe fix against either/or:
 
@@ -190,7 +220,7 @@ and for strobe:
 
 - DONE/fixedhow to test that we do resetc/all - print on reset
 
-- *test all functions with depth*- *re-test all routefuncs // all speedfuncs // all probfunctions (well still to test these). and check logic by hand*
+- test all functions with depth*- *re-test all routefuncs // all speedfuncs // all probfunctions (well still to test these). and check logic by hand
 
 //those with depth are checked with depth // all inc no depth to test: 
 
@@ -224,13 +254,13 @@ probs:
 
 ** 9/2/2023
 
-// *TODO: fill in gaps broadly*
+// TODO: fill in gaps broadly*
 
 - memory questions: generalise inners more... we might have to add if for adc in
 
-*start to draft matrixp - 16 functions with generic inner///  how these might look:*
+start to draft matrixp - 16 functions with generic inner///  how these might look:*
 
-// *question as copy is only operation which makes sense so we need to mark CHANGED for copy.... and gaps... need general concept of matrixp ops!!*
+// question as copy is only operation which makes sense so we need to mark CHANGED for copy.... and gaps... need general concept of matrixp ops!!*
 
 - attach DAC with CVL - single and hold (how? - so we don't just sweep across attaching, lastplace and place)
 - attach with pulse... 

@@ -154,6 +154,8 @@ void SR_geo_outer_R00(uint32_t w){  // set length // set length or could better 
   gate[w].inner=SR_geo_inner_globalC; //
 }
 
+// for RR: what fixed abstracts/adcs we can have with/without route in: - simple fixed abstracts in eg: zosc1bits or osceq, sigmadelta, zTMsimplebits with/without route ins
+
 // REDO from here! - abstracts etc. from NN once tested
 
 /* and list how they crossover

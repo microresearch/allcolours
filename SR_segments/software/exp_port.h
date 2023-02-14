@@ -78,12 +78,12 @@ static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as 
 // delay line or hold until new value we can take
 static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){ 
   static uint32_t bt=0;
-  static uint32_t cnt=0, top=0;
-  cnt++;
-  if (cnt>top){
+  static uint32_t cxnt=0, top=0;
+  cxnt++;
+  if (cxnt>top){
     top=(depth>>2);
     bt=bit;
-    cnt=0;
+    cxnt=0;
   }
   return bt;
 }

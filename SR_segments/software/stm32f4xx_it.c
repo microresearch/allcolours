@@ -1022,17 +1022,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //  volatile uint32_t *bitz;
   //  bitz=&(GPIOC->IDR);
   static uint32_t flipper=0, countercc=0, clkr=7;
-  static volatile uint32_t k=0,ll=0, n=0, accum, cnt=0, sl=0;
-  static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
-  uint32_t lengthbitl=15, new_statl, new_statr, new_statc, lengthbitc=15, lengthbitr=15; // for 2nd bit on lsr, rsr and csr
+  //  static volatile uint32_t k=0,ll=0, n=0;
+  //  static volatile int16_t integrator=0, oldValue=0, tmp=0, tmpp=0;
+  //uint32_t lengthbitl=15, new_statl, new_statr, new_statc, lengthbitc=15, lengthbitr=15; // for 2nd bit on lsr, rsr and csr
 
-  uint16_t j, bit, xx, x;
-  uint64_t longer;
-  uint32_t shift_register;
-  static uint32_t dac_; 
-  int16_t tmpt;
+  //  uint16_t j, bit, xx, x;
+  //  uint64_t longer;
+  //  uint32_t shift_register;
+  //  static uint32_t dac_; 
+  //  int16_t tmpt;
     //low pass test
-  static float SmoothData=0.0;
+  //  static float SmoothData=0.0;
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
 
   

@@ -1121,5 +1121,42 @@ static uint8_t leftshift[32]= {11,10,9,8, 7,6,5,4, 3,2,1,0, 			       0,0,0,0, 0
  x=(((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]); // doublecheck - fixed problem in shifts in resources 16/8
     printf("non %d \n", x);
     }
-    
+
+uint32_t osceq(uint32_t depth, uint32_t in, uint32_t w){  // so all share
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+     if (n>depth) {
+       bt=0;
+       if (nn>=in) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
+
+uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt=0,n=0;
+  //  depth=4095-depth;
+  if (n>depth)  {
+    lastbt^=1;
+    n=0;
+  }
+  n++;
+  bt=lastbt;
+  return bt;
+}
+
+ 
+ for (x=0;x<32;x++){
+   uint32_t res=osceq(4,2,0);
+   printf("%d",res);
+ }
+ printf("\n");
 }

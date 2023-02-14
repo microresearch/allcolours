@@ -208,7 +208,7 @@ int main(void)
 
 
   mode_init();
-
+  delay();
 	
     GPIO_InitTypeDef GPIO_InitStructure;
 

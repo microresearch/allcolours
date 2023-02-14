@@ -214,7 +214,7 @@ else
 static inline uint32_t Zzsuccbits(uint32_t depth, uint32_t in, uint32_t w){   // no depth - we route from each sr in turn // with TYPE
   // include itself or not
   uint32_t bitn=0, bitrr, tmpp;
-  static uint8_t x=0; // shared
+  static uint32_t x=0; // shared
   if (x==w) x++;
   if (x>3) x=0;
   //  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
@@ -228,7 +228,7 @@ static inline uint32_t Zzsuccbits(uint32_t depth, uint32_t in, uint32_t w){   //
 static inline uint32_t ZzsuccbitsI(uint32_t depth, uint32_t in, uint32_t w){   // no depth - we route from each sr in turn - independent version // with TYPE
   // include itself or not
   uint32_t x, tmpp, bitn=0, bitrr;
-  static uint8_t xx[4]={0};
+  static uint32_t xx[4]={0};
   if (xx[w]==w) xx[w]++;
   if (xx[w]>3) xx[w]=0;
   x=xx[w];
@@ -242,7 +242,7 @@ static inline uint32_t ZzsuccbitsI(uint32_t depth, uint32_t in, uint32_t w){   /
 static inline uint32_t Zzsuccbitspp(uint32_t depth, uint32_t in, uint32_t w){   // depth // with TYPE
   // include itself or not
   uint32_t bitn=0, bitrr, tmpp;
-  static uint8_t x=0; // shared
+  static uint32_t x=0; // shared
   if (x==w) x++;
   if (x>3) x=0;
   //  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
@@ -256,7 +256,7 @@ static inline uint32_t Zzsuccbitspp(uint32_t depth, uint32_t in, uint32_t w){   
 static inline uint32_t ZzsuccbitsIpp(uint32_t depth, uint32_t in, uint32_t w){   // depth // with TYPE
   // include itself or not
   uint32_t x, tmpp, bitn=0, bitrr;
-  static uint8_t xx[4]={0};
+  static uint32_t xx[4]={0};
   if (xx[w]==w) xx[w]++;
   if (xx[w]>3) xx[w]=0;
   x=xx[w];
@@ -269,7 +269,7 @@ static inline uint32_t ZzsuccbitsIpp(uint32_t depth, uint32_t in, uint32_t w){  
 static inline uint32_t Zzsuccbitsppin(uint32_t depth, uint32_t in, uint32_t w){   // depth // with TYPE with in
   // include itself or not
   uint32_t bitn=0, bitrr, tmpp;
-  static uint8_t x=0; // shared
+  static uint32_t x=0; // shared
   if (x==w) x++;
   if (x>3) x=0;
   //  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
@@ -283,7 +283,7 @@ static inline uint32_t Zzsuccbitsppin(uint32_t depth, uint32_t in, uint32_t w){ 
 static inline uint32_t ZzsuccbitsIppin(uint32_t depth, uint32_t in, uint32_t w){   // depth // with TYPE with in
   // include itself or not
   uint32_t x, tmpp, bitn=0, bitrr;
-  static uint8_t xx[4]={0};
+  static uint32_t xx[4]={0};
   if (xx[w]==w) xx[w]++;
   if (xx[w]>3) xx[w]=0;
   x=xx[w];
@@ -456,7 +456,7 @@ static inline uint32_t zwiardinvbits(uint32_t depth, uint32_t in, uint32_t w){//
   uint32_t bt=0, bitrr, tmp;
   if (depth<in){
     tmp=binroute[count][w]|binary[w]; 
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
 	bt^=bitrr;
@@ -474,7 +474,7 @@ static inline uint32_t zwiardinvbitsL(uint32_t depth, uint32_t in, uint32_t w){/
   uint32_t bt=0, bitrr, tmp;
   if (depth<LFSR__[w]){
     tmp=binroute[count][w]|binary[w]; 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -492,7 +492,7 @@ static inline uint32_t zwiardnotinvbits(uint32_t depth, uint32_t in, uint32_t w)
   uint32_t bt=0, bitrr, tmp;
   if (depth<in){
     tmp=binroute[count][w]|binary[w]; 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -510,7 +510,7 @@ static inline uint32_t zwiardnotinvbitsL(uint32_t depth, uint32_t in, uint32_t w
   uint32_t bt=0, bitrr, tmp;
   if (depth<LFSR__[w]){
     tmp=binroute[count][w]|binary[w]; 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -614,7 +614,7 @@ static inline uint32_t binrout_probXY(uint32_t depth, uint32_t in, uint32_t w){ 
     tmp=binroute[count][w]|binary[w];
   if (depth<in) tmp=tmp^15;
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
     if (tmp&0x01){
       bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
       gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -676,7 +676,7 @@ static inline uint32_t binrout_probXY1(uint32_t depth, uint32_t in, uint32_t w){
     tmp=gate[dacfrom[daccount][w]].dac>>8;//|binary[w];    
   }
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
     if (tmp&0x01){
       bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
       gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -691,7 +691,7 @@ static inline uint32_t binrout_probXY2(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
     if (tmp&0x01){
       bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
       if (depth<in) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -776,7 +776,7 @@ static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t 
   uint32_t bt=0, tmp, bitrr;
   if (depth<in) {
     depth=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -795,7 +795,7 @@ static inline uint32_t binroutfixed_prob1(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t binroutfixed_prob2(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - // prob of inverting routed bit // fixed //global
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -812,7 +812,7 @@ static inline uint32_t binroutfixed_prob3(uint32_t depth, uint32_t in, uint32_t 
   if (depth<in) {
     depth=binroute[count][w]|binary[w]; 
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -831,7 +831,7 @@ static inline uint32_t binroutfixed_prob3(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t binroutfixed_prob4(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - *routed vs [routed^cycling]* -- fixed //global
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -858,7 +858,7 @@ static inline uint32_t binroutfixed_prob5(uint32_t depth, uint32_t in, uint32_t 
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -885,7 +885,7 @@ static inline uint32_t binroutfixed_prob5_nosh(uint32_t depth, uint32_t in, uint
   } else
     {
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     //    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -902,7 +902,7 @@ static inline uint32_t binroutfixed_prob1_nosh(uint32_t depth, uint32_t in, uint
   if (depth<in) {
     depth=binroute[count][w]|binary[w]; 
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     //    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -921,7 +921,7 @@ static inline uint32_t binroutfixed_prob1_nosh(uint32_t depth, uint32_t in, uint
 static inline uint32_t binroutfixed_prob2_nosh(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - // prob of inverting routed bit // fixed //global
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     //    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -937,7 +937,7 @@ static inline uint32_t binroutfixed_prob3_nosh(uint32_t depth, uint32_t in, uint
   uint32_t bt=0, bitrr;
   if (depth<in) {
     depth=binroute[count][w]|binary[w]; 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     //    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -956,7 +956,7 @@ static inline uint32_t binroutfixed_prob3_nosh(uint32_t depth, uint32_t in, uint
 static inline uint32_t binroutfixed_prob4_nosh(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - *routed vs [routed^cycling]* -- fixed //global
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     //    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -1316,7 +1316,7 @@ static inline uint32_t binrout(uint32_t depth, uint32_t in, uint32_t w){   // de
     bt^=bitrr;
   } else
     {
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -1338,7 +1338,7 @@ depth=binroute[count][w]|binary[w];
     bt^=bitrr;
   } else
     {
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshare_<<1)+bitrr;
@@ -1361,7 +1361,7 @@ depth=binroute[count][w]|binary[w];
     bt=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
     if (depth&0x01 && x!=w){  // never itself
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -1384,7 +1384,7 @@ depth=binroute[count][w]|binary[w];
     bt=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
     if (depth&0x01 && x!=w){  // never itself
       bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -1404,7 +1404,7 @@ depth=binroute[count][w]|binary[w];
 static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t w){ // androutes dual routes...
   uint32_t bt=0, bitrr, once=0;
   depth=androutes[count][w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
     if (depth&0x01){  
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     if (once==0) bt=bitrr; 
@@ -1419,7 +1419,7 @@ static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t w){ // 
 static inline uint32_t binroutAND11(uint32_t depth, uint32_t in, uint32_t w){ // androutes dual routes... Gshift
   uint32_t bt=0, bitrr, once=0;
   depth=androutes[count][w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
     if (depth&0x01){  
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     //gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr; //we don't shift it as we dont want to run at speed
@@ -1475,7 +1475,7 @@ static inline uint32_t zbinroutfixed(uint32_t depth, uint32_t in, uint32_t w){  
 static inline uint32_t binroutfixed(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count //global
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -1759,7 +1759,7 @@ static inline uint32_t binroutor(uint32_t depth, uint32_t in, uint32_t w){ // 4 
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -1808,7 +1808,7 @@ static inline uint32_t zbinrouteINVbits(uint32_t depth, uint32_t in, uint32_t w)
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -1825,7 +1825,7 @@ static inline uint32_t zbinroutebits_noshift_transit(uint32_t depth, uint32_t in
   uint32_t btt=0,bt=0, bitrr;
   static uint32_t lastone;
   depth=binroute[count][w]|binary[w]; 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -1846,7 +1846,7 @@ static inline uint32_t zbinroutebits_noshift_transitd(uint32_t depth, uint32_t i
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -1862,7 +1862,7 @@ static inline uint32_t zbinroutebits_noshift_transitd(uint32_t depth, uint32_t i
 static inline uint32_t zbinroutebits_noshift(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now - no shift of GSR<<
   uint32_t bt=0, bitrr;
   depth=binroute[count][w]|binary[w]; 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -1880,7 +1880,7 @@ static inline uint32_t zbinroutebits_noshiftd(uint32_t depth, uint32_t in, uint3
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -1893,9 +1893,9 @@ static inline uint32_t zbinroutebits_noshiftd(uint32_t depth, uint32_t in, uint3
 
 static inline uint32_t zbinroutfixed_noshift_transit(uint32_t depth, uint32_t in, uint32_t w){ //  no depth //global
   uint32_t btt=0,bt=0, bitrr, tmp;
-  static uint8_t lastone=0;
+  static uint32_t lastone=0;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -1910,9 +1910,9 @@ static inline uint32_t zbinroutfixed_noshift_transit(uint32_t depth, uint32_t in
 
 static inline uint32_t zbinroutfixed_noshift_transitI(uint32_t depth, uint32_t in, uint32_t w){ //  no depth //global
   uint32_t btt=0,bt=0, bitrr, tmp;
-  static uint8_t lastone[4]={0,0,0,0};
+  static uint32_t lastone[4]={0,0,0,0};
   tmp=binroute[count][w]|binary[w]; 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -1929,7 +1929,7 @@ static inline uint32_t zbinroutfixed_noshift_transitI(uint32_t depth, uint32_t i
 static inline uint32_t zbinroutfixed_noshift(uint32_t depth, uint32_t in, uint32_t w){   // fixed binroute from count - no shift //  no depth//global
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     //    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -1944,7 +1944,7 @@ static inline uint32_t zbinroutfixedcycle_noshift(uint32_t depth, uint32_t in, u
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
   tmp=tmp|(1<<w); // adds itself
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -1957,7 +1957,7 @@ static inline uint32_t zbinroutfixedcycle_noshift(uint32_t depth, uint32_t in, u
 static inline uint32_t zbinroutfixedI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // no depth//global
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -1971,7 +1971,7 @@ static inline uint32_t zbinroutfixedcycleI_noshift(uint32_t depth, uint32_t in, 
   uint32_t bt=0, bitrr, tmp;
   tmp=binroute[count][w]|binary[w];
   tmp=tmp|(1<<w); // add itself in
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -1986,7 +1986,7 @@ static inline uint32_t zbinroutebitscycle(uint32_t depth, uint32_t in, uint32_t 
 depth=binroute[count][w]|binary[w]; 
     // deal with no route
     depth=depth|(1<<w); // adds itself
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -2003,7 +2003,7 @@ static inline uint32_t zbinroutebitscyclestr(uint32_t depth, uint32_t in, uint32
 depth=binroute[count][w]|binary[w]; 
     // deal with no route
     if (gate[w].trigger) depth=depth|(1<<w); // adds itself on strobe
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2019,7 +2019,7 @@ static inline uint32_t zbinroutebitscycle_noshift(uint32_t depth, uint32_t in, u
 depth=binroute[count][w]|binary[w]; 
     // deal with no route
     depth=depth|(1<<w); // adds itself
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -2035,7 +2035,7 @@ static inline uint32_t zbinroutebitscyclestr_noshift(uint32_t depth, uint32_t in
 depth=binroute[count][w]|binary[w]; 
     // deal with no route
     if (gate[w].trigger) depth=depth|(1<<w); // adds itself on strobe
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -2049,7 +2049,7 @@ static inline uint32_t zbinrouteORbits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt=0, bitrr;
 depth=binroute[count][w]|binary[w]; 
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2064,7 +2064,7 @@ static inline uint32_t zbinrouteANDbits(uint32_t depth, uint32_t in, uint32_t w)
   uint32_t bt=0, bitrr;
 depth=binroute[count][w]|binary[w]; 
 
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2085,7 +2085,7 @@ static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -2100,7 +2100,7 @@ static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zbinrouteSRbitsd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... SR itself, no GSR same as above
   uint32_t bt=0, bitrr;
   depth=depth>>8;
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -2120,7 +2120,7 @@ static inline uint32_t zbinroutebitsI_noshift(uint32_t depth, uint32_t in, uint3
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -2139,7 +2139,7 @@ static inline uint32_t zbinroutebitsI_noshiftd(uint32_t depth, uint32_t in, uint
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -2154,7 +2154,7 @@ static inline uint32_t zbinroutebitscycleI_noshift(uint32_t depth, uint32_t in, 
   uint32_t bt=0, bitrr;
   depth=binroute[count][w]|binary[w]; 
     depth=depth|(1<<w); // add itself in
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -2170,7 +2170,7 @@ static inline uint32_t zbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint3
   depth=binroute[count][w]|binary[w]; 
   //  depth=depth|w; // add itself in
     if (gate[w].trigger) depth=depth|(1<<w); // adds itself
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2240,7 +2240,7 @@ static inline uint32_t binroutorg(uint32_t depth, uint32_t in, uint32_t w){
     bt^=bitrr;
   } else
     {
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2284,7 +2284,7 @@ static inline uint32_t binroutgap(uint32_t depth, uint32_t in, uint32_t w){  // 
     bt^=bitrr;
   } else
     {
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2307,7 +2307,7 @@ static inline uint32_t binroutorgap(uint32_t depth, uint32_t in, uint32_t w){// 
     bt^=bitrr;
   } else
     {
-    for (uint8_t x=0;x<4;x++){
+    for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2491,12 +2491,54 @@ static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t w){ // 
   return bt;
 }
 
+static inline uint32_t spdfracdac3x(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from dacfrom
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  tmp=gate[speedfrom[spdcount][w]].dac%(4096-in); //changed
+  tmp+=depth;
+  if (tmp>4095) tmp=4095;    
+
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  gate[w].time_now += speed;
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+  if(gate[w].last_time<gate[w].int_time) {
+    bt=1; // move on
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+  }
+  return bt;
+}
+
 static inline uint32_t spdfracdac4(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from dacfrom
   uint32_t bt=0;
   float speed;
   int32_t tmp;
   in=4096-in;
   tmp=(gate[dacfrom[count][w]].dac%in)-(in>>1); // in/2 int32_t tmp
+  tmp+=depth;
+  if (tmp>4095) tmp=4095;    
+  if (tmp<0) tmp=0;
+
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  gate[w].time_now += speed;
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+  if(gate[w].last_time<gate[w].int_time) {
+    bt=1; // move on
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+  }
+  return bt;
+}
+
+static inline uint32_t spdfracdac4x(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from dacfrom
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  in=4096-in;
+  tmp=(gate[speedfrom[spdcount][w]].dac%in)-(in>>1); // in/2 int32_t tmp
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
   if (tmp<0) tmp=0;
@@ -2604,7 +2646,7 @@ static inline uint32_t strobezsuccbits_noshift(uint32_t depth, uint32_t in, uint
   // include itself or not
   uint32_t bt=0, bitrr;
   gate[w].strobed=1;
-  static uint8_t x=0;
+  static uint32_t x=0;
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].shift_>>SRlength[x]) & 0x01;
@@ -2617,7 +2659,7 @@ static inline uint32_t strobezsuccbits_shift(uint32_t depth, uint32_t in, uint32
   // include itself or not
   uint32_t bt=0, bitrr;
   gate[w].strobed=1;
-  static uint8_t x=0;
+  static uint32_t x=0;
   if (x==w) x++;
   if (x>3) x=0;
   //  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
@@ -2633,7 +2675,7 @@ static inline uint32_t strobezsuccbitsI_noshift(uint32_t depth, uint32_t in, uin
   // include itself or not
   uint32_t bt=0, bitrr;
   gate[w].strobed=1;
-  static uint8_t x[4]={0};
+  static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
@@ -2646,7 +2688,7 @@ static inline uint32_t strobezsuccbitsI_shift(uint32_t depth, uint32_t in, uint3
   // include itself or not
   uint32_t bt=0, bitrr;
   gate[w].strobed=1;
-  static uint8_t x[4]={0};
+  static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   //  bt = (gate[x[w]].Gshift_[0]>>SRlength[x[w]]) & 0x01;
@@ -2661,14 +2703,14 @@ static inline uint32_t strobezsuccbitsI_shift(uint32_t depth, uint32_t in, uint3
 // added more strobey fixed routes. to test
 static inline uint32_t strzbinroutfixed_noshift_transit(uint32_t depth, uint32_t in, uint32_t w){ //  no depth. strobe
   uint32_t btt=0,bt=0, bitrr, tmp;
-  static uint8_t lastone=0;
+  static uint32_t lastone=0;
   static uint32_t localroute[4]={1,1,1,1};
   gate[w].strobed=1;
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
   
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -2683,14 +2725,14 @@ static inline uint32_t strzbinroutfixed_noshift_transit(uint32_t depth, uint32_t
 
 static inline uint32_t strzbinroutfixed_shift_transit(uint32_t depth, uint32_t in, uint32_t w){ //  no depth. strobe
   uint32_t btt=0,bt=0, bitrr, tmp;
-  static uint8_t lastone=0;
+  static uint32_t lastone=0;
   static uint32_t localroute[4]={1,1,1,1};
   gate[w].strobed=1;
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
   
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
     gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -2707,13 +2749,13 @@ static inline uint32_t strzbinroutfixed_shift_transit(uint32_t depth, uint32_t i
 
 static inline uint32_t strzbinroutfixed_noshift_transitI(uint32_t depth, uint32_t in, uint32_t w){ //  no depth. strobe
   uint32_t btt=0,bt=0, bitrr, tmp;
-  static uint8_t lastone[4]={0,0,0,0};
+  static uint32_t lastone[4]={0,0,0,0};
   gate[w].strobed=1;
   static uint32_t localroute[4]={1,1,1,1};
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
     bt^=bitrr;
@@ -2728,13 +2770,13 @@ static inline uint32_t strzbinroutfixed_noshift_transitI(uint32_t depth, uint32_
 
 static inline uint32_t strzbinroutfixed_shift_transitI(uint32_t depth, uint32_t in, uint32_t w){ //  no depth. strobe
   uint32_t btt=0,bt=0, bitrr, tmp;
-  static uint8_t lastone[4]={0,0,0,0};
+  static uint32_t lastone[4]={0,0,0,0};
   gate[w].strobed=1;
   static uint32_t localroute[4]={1,1,1,1};
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01;
     gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -2755,7 +2797,7 @@ static inline uint32_t strzbinroutfixed_noshift(uint32_t depth, uint32_t in, uin
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     //    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2773,7 +2815,7 @@ static inline uint32_t strzbinroutfixed_shift(uint32_t depth, uint32_t in, uint3
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
@@ -2792,7 +2834,7 @@ static inline uint32_t strzbinroutfixedI_noshift(uint32_t depth, uint32_t in, ui
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
@@ -2809,7 +2851,7 @@ static inline uint32_t strzbinroutfixedI_shift(uint32_t depth, uint32_t in, uint
   if (gate[w].trigger) localroute[w]++;
   if (localroute[w]>15) localroute[w]=1;
   tmp=localroute[w];
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -2908,6 +2950,24 @@ static inline uint32_t osceq(uint32_t depth, uint32_t in, uint32_t w){  // so al
   static int32_t n=0,nn=0;
      if (n>depth) {
        bt=0;
+       if (nn>=in) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
+
+static inline uint32_t osceqx(uint32_t depth, uint32_t in, uint32_t w){  // so all share
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+     if (n>in) {
+       bt=0;
        if (nn>=depth) { // so equal bits from 0 / length 0 = 101010
 	 n=0;
        }
@@ -2946,7 +3006,7 @@ static inline uint32_t flipflopandroute(uint32_t depth, uint32_t in, uint32_t w)
   bt=fl;
   depth=binroute[count][w]|binary[w]; 
 
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
@@ -3049,7 +3109,7 @@ static inline uint32_t zprobbitsxortoggle(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t zsuccbits(uint32_t depth, uint32_t in, uint32_t w){   // no use of depth - we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x=0; // shared
+  static uint32_t x=0; // shared
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -3062,7 +3122,7 @@ static inline uint32_t zsuccbits(uint32_t depth, uint32_t in, uint32_t w){   // 
 static inline uint32_t zsuccbitspp(uint32_t depth, uint32_t in, uint32_t w){   // depth - we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x=0; // shared
+  static uint32_t x=0; // shared
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
@@ -3074,7 +3134,7 @@ static inline uint32_t zsuccbitspp(uint32_t depth, uint32_t in, uint32_t w){   /
 static inline uint32_t zsuccbitsprob(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x=0;
+  static uint32_t x=0;
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -3087,7 +3147,7 @@ static inline uint32_t zsuccbitsprob(uint32_t depth, uint32_t in, uint32_t w){  
 static inline uint32_t zsuccbits_noshift(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x=0;
+  static uint32_t x=0;
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].shift_>>SRlength[x]) & 0x01;
@@ -3099,7 +3159,7 @@ static inline uint32_t zsuccbits_noshift(uint32_t depth, uint32_t in, uint32_t w
 static inline uint32_t zsuccbits_noshiftnod(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x=0;
+  static uint32_t x=0;
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].shift_>>SRlength[x]) & 0x01;
@@ -3112,7 +3172,7 @@ static inline uint32_t zsuccbits_noshiftnod(uint32_t depth, uint32_t in, uint32_
 static inline uint32_t zsuccbitsI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x[4]={0};
+  static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
@@ -3124,7 +3184,7 @@ static inline uint32_t zsuccbitsI_noshift(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t zsuccbitsI_noshiftnod(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x[4]={0};
+  static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
@@ -3137,7 +3197,7 @@ static inline uint32_t zsuccbitsI_noshiftnod(uint32_t depth, uint32_t in, uint32
 static inline uint32_t zsuccbits_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x=0;
+  static uint32_t x=0;
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].shift_>>SRlength[x]) & 0x01;
@@ -3150,7 +3210,7 @@ static inline uint32_t zsuccbits_noshiftd(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t zsuccbitsI(uint32_t depth, uint32_t in, uint32_t w){   // no use of depth - we route from each sr in turn - independent version
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x[4]={0};
+  static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   bt = (gate[x[w]].Gshift_[w]>>SRlength[x[w]]) & 0x01;
@@ -3162,7 +3222,7 @@ static inline uint32_t zsuccbitsI(uint32_t depth, uint32_t in, uint32_t w){   //
 static inline uint32_t zsuccbitsIpp(uint32_t depth, uint32_t in, uint32_t w){   // depth 
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x[4]={0};
+  static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   bt = (gate[x[w]].Gshift_[w]>>SRlength[x[w]]) & 0x01;
@@ -3174,7 +3234,7 @@ static inline uint32_t zsuccbitsIpp(uint32_t depth, uint32_t in, uint32_t w){   
 static inline uint32_t zsuccbitsI_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
   // include itself or not
   uint32_t bt=0, bitrr;
-  static uint8_t x[4]={0};
+  static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
@@ -3372,6 +3432,25 @@ static inline uint32_t zosceqbitsI(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t nn[4]={0};
      if (n[w]>depth) {
        bt=0;
+       if (nn[w]>=in) { // so equal bits from 0 / length 0 = 101010
+	 n[w]=0;
+       }
+       nn[w]++;
+     } // n     
+     else {
+       bt=1;
+       n[w]++;
+       nn[w]=0;
+     }         
+     return bt;
+}
+
+static inline uint32_t zosceqbitsIx(uint32_t depth, uint32_t in, uint32_t w){   // swopped dpeth and in
+  uint32_t bt;
+  static int32_t n[4]={0};
+  static int32_t nn[4]={0};
+     if (n[w]>in) {
+       bt=0;
        if (nn[w]>=depth) { // so equal bits from 0 / length 0 = 101010
 	 n[w]=0;
        }
@@ -3384,6 +3463,7 @@ static inline uint32_t zosceqbitsI(uint32_t depth, uint32_t in, uint32_t w){
      }         
      return bt;
 }
+
 
 static inline uint32_t zosc1bitsI(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
@@ -4661,7 +4741,7 @@ static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t w){ //
     bt^=bitrr;
   } else
     {
-  for (uint8_t x=0;x<4;x++){
+  for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 4095; // 12 bits no shift
     bt^=bitrr;
@@ -4802,11 +4882,11 @@ uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be share
 }
 
 uint32_t SRdelay_lineOUT(uint32_t depth, uint32_t in, uint32_t w){  // could also be shared version of this //XX  -- well cnt was shared so...
-  static uint32_t cnt[4]={0,0,0,0};
+  static uint32_t cxxnt[4]={0,0,0,0};
   uint32_t bitn;
-  bitn=delay_line_out(cnt[w],w); // or detach - length not used - this is our binroute
-  cnt[w]++;
-  if (cnt[w]>16383) cnt[w]=0;
+  bitn=delay_line_out(cxxnt[w],w); // or detach - length not used - this is our binroute
+  cxxnt[w]++;
+  if (cxxnt[w]>16383) cxxnt[w]=0;
   return bitn;
 }
 
@@ -4982,7 +5062,7 @@ static inline void SRRglobaltailset(uint32_t depth){ // nada no depth
 
 static inline void SRRglobalorder(uint32_t depth){ // depth
   uint32_t tmp;
-  ordercount=depth>>8; // 4 bits
+  ordercount=depth>>7; // 5 bits
 }
 
 static inline void SRRglobalorderbumpS(uint32_t depth){ // strobe no depth
@@ -4991,7 +5071,7 @@ static inline void SRRglobalorderbumpS(uint32_t depth){ // strobe no depth
   if (gate[3].trigger)
     {
       ordercount++;
-      if (ordercount>15) ordercount=0; // we have 16 so far, but can add more
+      if (ordercount>31) ordercount=0; // we have 16 so far, but can add more
     }
 }
 
@@ -5000,7 +5080,7 @@ static inline void SRRglobalorderbumpbit(uint32_t depth){ // nada. depth can be 
   if (gate[dacfrom[daccount][3]].shift_)
     {
       ordercount++;
-      if (ordercount>15) ordercount=0; // we have 16 so far, but can add more
+      if (ordercount>31) ordercount=0; // we have 16 so far, but can add more
     }
 }
 
