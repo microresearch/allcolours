@@ -194,7 +194,7 @@ void SR_geo_outer_R121(uint32_t w){ // ordering
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
     glob=7<<8;
-    gate[w].matrix[19]=CVL[w];
+    gate[w].matrix[19]=CVL[w]; // 64 now...
     gate[w].inner=SR_geo_inner_function_globoutside;
   }
 }

@@ -5,7 +5,7 @@
 also for RR:
 
 - just route in, adc in, abstract in only
-- some cycle probs
+- some cycle probs but generally replace prob/switch of route vs cycle with route vs adc/abstract/dac
 - probs below of func vs. route in
 - runglers
 
@@ -145,7 +145,7 @@ void SR_geo_inner_routemixN(uint32_t w){
     }
 }
 
-void SR_geo_inner_dacspeed5norouteadcN(uint32_t w){  
+void SR_geo_inner_dacspeed4xnorouteadcN(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
 
@@ -161,6 +161,21 @@ void SR_geo_inner_dacspeed5norouteadcN(uint32_t w){
     }
 }
 
+void SR_geo_inner_dacspeed3xnorouteadcN(uint32_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+  if (spdfracdac3x(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+      gate[w].fake=gate[w].trigger;
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    //    bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    ADCgeneric2; 
+    bitn=(*adcfromsd[gate[w].matrix[7]>>7])(4095-gate[w].matrix[8], ADCin, w); 
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
 
 void SR_geo_inner_norouteabstractN(uint32_t w){  
   HEADNADA;
@@ -582,6 +597,20 @@ void SR_geo_outer_N23x(uint32_t w){ // now with route in
 /*
 rungler1: osc1 or selected gapped/abstract with speed or depth from speedfrom dac
 // can also be with adc in instead of abstract
+
+// what are options... notes
+
+speedfromdac/offsets // [fixed function eg osc1] // no route in
+dac3/dac4 options    // adc NN only              // route in
+some need 2xCV       // sel abstract            //  sel route in function - depth or no depth
+                     // gapped sel abstract     //  gapped route in function          
+
+what we have here?
+
+what we have in C50+?
+
+spdfrac3 4 vs dacspeed3x dacspeed4x compare: dacspeed3x and 4x use speedfrom and need 2x CV - others just need one CV
+
 */
 
 // what are the options? select speed in, other fixed speedfuncs, what is gapped... no route in...
@@ -615,13 +644,15 @@ void SR_geo_outer_N41(uint32_t w){ // adc in
 }
 
 // adc with no route in... SR_geo_inner_norouteadcN
-void SR_geo_outer_N42(uint32_t w){ // 
+void SR_geo_outer_N42(uint32_t w){ // dacspeed4x
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
-    gate[w].inner=SR_geo_inner_dacspeed5norouteadcN; // dacspeed5 is now one with speedfrom not dacfrom
+    gate[w].inner=SR_geo_inner_dacspeed4xnorouteadcN; // dacspeed5 is now one with speedfrom not dacfrom
   }
 }
+
+// rep with route in
 
 // would be nice to be able to select where we get speedfrom - or have 4 options here... - our own speed? trial
 

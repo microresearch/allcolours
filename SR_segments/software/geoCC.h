@@ -805,9 +805,9 @@ void SR_geo_outer_C33(uint32_t w){ // do prob anyways but different [ func [xor]
 	  
 //4.0/////// rungler + speeds //  gapped funcs
 
-void SR_geo_outer_C40(uint32_t w){ // basic rungler with gapped function
+void SR_geo_outer_C40(uint32_t w){ // basic rungler with gapped route function
   if (gate[w].changed==0) {
-    gate[w].matrix[0]=24<<7; //zbinrouteSRbits I hope // checked
+    gate[w].matrix[0]=24<<7; //zbinrouteSRbits I hope 
     gate[w].matrix[1]=CV[w]; // depth as route in this case
     gate[w].matrix[4]=CVL[w];// depth
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
@@ -820,7 +820,7 @@ void SR_geo_outer_C41(uint32_t w){   // dacspeeds fixed speedfunc .. could be da
     gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[2]=CVL[w];//speed2
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-    gate[w].inner=SR_geo_inner_dacspeed3; // or can be dacspeed4
+    gate[w].inner=SR_geo_inner_dacspeed3; 
   }
 }
 
@@ -1298,13 +1298,16 @@ static inline void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // set
 // we need a different version - if we are in same matrixp but want to change it
 static inline void setvargapzz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap? tested in test2.c yes it just sets one
   static uint32_t oldgap[4]={2,2,2,2};
-  //  if (which!=oldgap[wh]){// only if we want a new one not to reset the same one...
-  if (gate[wh].matrixp[oldgap[wh]]!=fixedvars[wh][var]){
+    if (which!=oldgap[wh]){// only if we want a new one not to reset the same one...
     gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];//
     gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
     gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
     gate[wh].set[which]=1;
   }
+    else if (gate[wh].matrixp[oldgap[wh]]!=fixedvars[wh][var]){
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+    }
   oldgap[wh]=which;
 }
 
@@ -1332,7 +1335,6 @@ static inline void setvarz(uint32_t wh, uint32_t which, uint32_t var){ // plain 
 }
 
 ////////12.0
-
 
 void SR_geo_outer_C120(uint32_t w){   // strobe // slide across and set to CVL
   if (gate[w].changed==0) {
@@ -1479,6 +1481,55 @@ void SR_geo_outer_C143(uint32_t w){   // dacfrom set trigger and mask
   }
 }
 
+// 150 - we can also have CV and CVL in non-strobe - 
+
+void SR_geo_outer_C150(uint32_t w){   // set CV to CVL 
+  if (gate[w].changed==0) {
+    // set matrixp from CV and CVL
+    setvargapzz(w, maparrayCCS[(CV[w]>>8)], CVL[w]>>8); // 4 bits
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_gappedfunction;
+  }
+}
+
+// 151 - SR bits are set to CV or CVL defined...
+void SR_geo_outer_C151(uint32_t w){
+  uint32_t x, tmp,tmpp;
+  if (gate[w].changed==0) {
+    tmpp=gate[dacfrom[daccount][w]].shift_;
+    for (x=0;x<16;x++){
+      tmp=tmpp&0x01;
+      if (tmp) {
+	gate[w].matrixp[x]=&gate[w].matrix[x];
+	gate[w].set[x]=1;
+      }
+      tmpp=tmpp>>1;
+    }
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_gappedfunction;
+  }
+}
+
+// 152 SR bits are gaps in matrixp
+void SR_geo_outer_C152(uint32_t w){
+  uint32_t x, tmp,tmpp;
+  if (gate[w].changed==0) {
+    tmpp=gate[dacfrom[daccount][w]].shift_;
+    for (x=0;x<16;x++){
+      tmp=tmpp&0x01;
+      if (tmp) {
+	gate[w].matrixp[x]=&gate[w].matrix[x];
+	gate[w].set[x]=1;
+      }
+      tmpp=tmpp>>1;
+    }
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_gappedfunction;
+  }
+}
 
 
 

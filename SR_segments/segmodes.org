@@ -10,81 +10,8 @@ serpent's head, caput draconis (rather than heavens\) - lunar node and link of g
 
 A dragon with 5 heads!
 
-* 2022++ TODO:
-
-*basic model, test basic geogens inc. ported//classic SRs, ADC and DAC, arrange, layout of inner and outer - new pointer arch, tails, interpol/strobe etc, recursions/gaps/attach/detachments*
-*final tests/tweaks*
-
-//
--  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
-
-- strip down and test // new ops and add operations on ghosts 
-- test that we have basic classic SR operations and flexibility for prob, toggle and strobe within basic functions...
-- adc and dac to work through (from N and C)
-- final arch/details and pulse/triggers
-- final details and questions
-//
-
-//DONE:static/frozen speeds in general or not - yes but just not on lowest - but how to implement - implemented now as spdfracend -> speedfunc X // new default*
-*re-check use of clk, pulsin, pulsout, strobey and check strobey finally*
-
-*5th tail always running and how we switch in to it different streams from SRs*
-DONEsetting of dactypes
-*also potential global speeds from moder - how this can over-ride // sets of global modes*
-*reset global speeds and binary[all] in moder - full RESET macro to use*
-
-*ORDER!!! dislocations of: ordercount of SRs in globals*
-
-*deprecate: TODOremove all - globflag is also in all resets...*
-
-deprecated: make sure we set IN where it might be needed - see new code in C03alt for that new flag which can also be played with*
-
-*double check all functions, and all extents for called arrays*
-
-/////
-
-- co-ordinate and check lists of routes, dacfrom, speedfrom routes // resets and manipulations, all lengths of lists
-
-** xxTOP
-
-TODO: 
-
-- which functional arrays do we use? check extent of all arrays and double up just to be safe...
-
-- DONE??break up bitns into different sections eg. binroutes, but what of all those exp. modes // also general binroute types to organise
-
-- fix matrixp ops.
- 
-- flesh out modes
-
-- see TODOs below
-
-- uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
-
-// *Plan:*
-
-- strobes, probs and matrixp for geoc
-
-- finish ports from geomantic to geoC=matrixp, binroute area, start to fill geoC , all modes at 64 or 32 and adjust accordingly and fix binsd array accesses
-
-- geoC and tests, globals, rest of geos filled, generic strobe and other misc functions, testing and playing
-
-// finish geoC, generics and what we can re-use, adc, abstracts and globals, refine probabilities
-
-- geoC is more about routes and probs, speed is very important here and dac characters
-
-TODO: 
-
-- DONEdraft fake strobes: set gate[www].strobed (unset in headnada) - and then use strobe as pulse:BITN_AND_OUTV_; TODO: add gate[wh].strobed=1; for all strobe functions in geogen.h
-
-- DONEfix local routes (maybe get rid of) and pullout as we do for types... see all binroutmys! and simplify
-
-- simplify early modes
-
-- how to imagine matrix modes - how do we set the matrix with 2x CV only?
-
 ///////////////////
-- C: matrixp expand, sketch out
+- C: matrixp expand, sketched out
 - N: adc/abstract choices, prob of route entry as important, cutting and mixing...
 - L: continuity, multiple routes...
 - R: can be abstract, globals, some basic routings
@@ -96,14 +23,78 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///////////////////
 
-** ////XXXXX
+** ////XXXXXTODO XXXXXXX
 
-- full tests
+//// misc TODO:
+
+-  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
+
+*re-check use of clk, pulsin, pulsout, strobey*
+
+- for gappedfunction we need always both::
+  gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
+
+  gate[w].matrix[4]=CVL[w];
+  gate[w].matrix[10]=CVL[w];  
+
+
+- ????uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
+
 - check all extents, all arrays and all functions for sanity - geogen and each before we expand across all sides...
+- sanity check all code, line by line: LIST! main, caput00, adcetc, geogen, arrays, all resources, ALL!
+
+- full tests as below
+- full tests CC modes before we go further and replicate, smaller tests on runglers
+- final tests and tweaks eg. orderings of functions in arrays and check these against fixed references for functions
+
+** 15/3/2023
+
+default: routebits_nodepth_typesz;
+
+*TODO: first do sanity check, then test all CC and catalogue below, fill in LL and NN runglers and test these*
+
+- *IN PROCESS: unreverse logspeedsDONE and invert all CV//DONE and CVL but then we need to go through and correct all functions for this - len etc, all*
+
+- *test new runglers as we implement them*
+
+- *test all CC before we fill in gaps // mode by mode again as we catalogue*
+
+/////////////
+catalogue CC in groups of 4:
+
+basic
+0
+1
+2
+3
+
+speed/prob
+4
+5
+6
+7
+
+strobe
+8
+9
+10
+11
+
+matrixp/globals in RR
+12
+13
+14
+15
+
+- DONEfilling in matrixp ops
+
+// dacspeed3 or 4 as preferable -> 3x pref but trial with new logspeed up // 3x 4x too with speedfrom, also c41 speed type selection*
+
+TOO risky: how we could pull matrix onto orderings but not so easy as orderings are fixed or we keep one open
+
+DONE/TODO: test longer order arrays to downsample
 
 ** 14/2/2023
-
-*TODO: longer order arrays to downsample*
 
 DONEtake care of routetype now in matrices: gate[w].routetype=gate[w].matrix[16]>>9;
 
@@ -114,10 +105,7 @@ lots of tests below
 eg. we don;t need adc etc in all except adc mode - some kind of mapping
 eg for CC strobe we need: 3,4,5,6,9,10,11,12,13,14,15,16,17 try maparray...uint32_t maparrayCC[16]={3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 3, 4, 5};
 
-
-// *dacspeed3 or 4 as preferable // 3x 4x too with speedfrom, also c41 speed type selection*
-
-*for NN which ones do or dont use ADC- how to divide*
+*for NN which outers do or dont use ADC- how to divide, organise*
 
 *also sort better strobe and nonstrobe order in functions*
 
@@ -151,7 +139,7 @@ TODO:
 
 - starting on matrixp ops:
 
---> *how do we reset matrix/matrixp to something sensible if say is all attached, by filling gaps - settle down//reset at end*
+--> DONEhow do we reset matrix/matrixp to something sensible if say is all attached, by filling gaps - settle down//reset at end*
 ignore: problem is that matrixp is null to begin with, do we need to set every op as matrixp in outers...
 
 eg for speed gate[wh].matrixp[0]=&gate[wh].matrix[0];
@@ -211,10 +199,6 @@ and for strobe:
 ** 11/2/2023
 
 - DONEfilling in dacfroms for depth and length - these could also be in strobesDONE
-
-- *might need to genericise all the prob functions to fit in memory now and then re-test*
-
-- *test all strobes in geoCC again as changed [3]->17 for strobe func*
 
 ** 10/2/2023
 
@@ -609,7 +593,7 @@ DONE:still to fix all default adc so we have output
 
 ** 27/1/2023
 
-- *check: do we still use in flag:   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;   else gate[w].matrix[5]=LFSR__[w];*
+- NONcheck: do we still use in flag:   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;   else gate[w].matrix[5]=LFSR__[w];*
 
 - *Q: to invert entry into arrays eg. dac,adctype, all functions as 0 is far right so confusing//in outer or inners TODO // some are inverted*
 
@@ -623,9 +607,9 @@ new prob below...26/1
 
 ** 26/1/2023
 
-- *do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO* how that works? do as special inner and depth
+- do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO* how that works? do as special inner and depth
 
-- *other bit collections like: routebitsnostrobedepthprob ???check out - what used for and update -> we use these against LFSR anyways...//ignore or work through*
+- other bit collections like: routebitsnostrobedepthprob ???check out - what used for and update -> we use these against LFSR anyways...//ignore or work through*
 
 - do prob functions move on/have types... maybe make exceptions...
 - prob re-workings/rework new functions for prob without depth/lfsr
@@ -648,12 +632,12 @@ CC: dac, prob, routes, speeds as primary
 TODO:
 
 PROB WORK:
-*clean up probs. also some non-depth probs now have depth*
-*checking probs and now we have issue as some are against LFSR__ which we filled in some route functions which had no depth (also some already use LFSR)...*
-*if we have probs using depth is nice to have nodepth/route only functions // or if depth say for LFSR is fixed does that work? test//*
-*also if we use CV for depth for prob, then we have free CVL depth for functions*
+clean up probs. also some non-depth probs now have depth*
+checking probs and now we have issue as some are against LFSR__ which we filled in some route functions which had no depth (also some already use LFSR)...*
+if we have probs using depth is nice to have nodepth/route only functions // or if depth say for LFSR is fixed does that work? test//*
+also if we use CV for depth for prob, then we have free CVL depth for functions*
 
-/// *so we need new bits sections for probs...*
+/// so we need new bits sections for probs...*
 
 ///- DONEsort bit functions and narrow down
 - check probs and depth questions there: see above! - when we reach prob sections
@@ -689,15 +673,15 @@ TODO:
 DONE:maybe pull uses of depth into all non-depth so we don't need: if (nodepth==1)/// *note: we still need fix no depths in case of probs...*
 
 FOR GLOBAL rmodes:::
-- *16 last global modes*
-- *global modes all hold last function (eg. it could be abstract function)*
+- 16 last global modes*
+- global modes all hold last function (eg. it could be abstract function)*
 
 
 - DONE:reverted to 16 octaves/TO_TEST
 
 ** 20/1/2023
 
-// TODO: DONEuse globflag where needed in geogen/exp_port - also *where do we set globflag - in globals, set off/xon event*
+// TODO: DONEuse globflag where needed in geogen/exp_port - also where do we set globflag - in globals, set off/xon event*
 
 // DONE/: but would be nice to locally shift on theroute - add these./change to: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD
 
@@ -859,7 +843,7 @@ static const bitfunc probXY1={0, 0, 0, binrout_probXY1};
 
 ** 17/1/2023
 
-*- still not so resolved on local/global/set by depth - need clear policy as in some modes is so/not - or we set ROUTE to this...*
+- still not so resolved on local/global/set by depth - need clear policy as in some modes is so/not - or we set ROUTE to this...*
 
 - fixed bug as should be: depth=depth|(1<<w); // adds itself not |w (0,1,2,3) 
 
@@ -925,7 +909,7 @@ DONEadding in no-depth matrix ones: zbinrouteORbits, binroutaltreset etc...
 
 ////
 
-*question if we want to set gate[[w].theroute to ((binroute[count][w]|binary[w])<<8) ????*
+question if we want to set gate[[w].theroute to ((binroute[count][w]|binary[w])<<8) ????*
 
 ////
 
@@ -1015,7 +999,7 @@ length/dactype/dacparam/route/routetype/function/arrays of functions
 
 again question of slippage of arrays - so many bit arrays and DEPTH uses/ also IN? *ideally we don't want to worry about which array/depth/in*
 
-- *q of bitfromsdr - as we only ever use func 31 to set glob*
+- q of bitfromsdr - as we only ever use func 31 to set glob*
 
 ** 13/1/2023
 
@@ -1136,7 +1120,7 @@ but we have these already// maybe makes it easier - placed in macros
 
 TODO: draft first 16 modes for geoC and see how these work across all 4x SRs...
 
-*add in dacfrom->dacparam (also indicates potential matrixp operations as we can have select which parameter gets dacfrom attachment) - how to distinguish CV-style params and selector(eg.speedmode) params*
+add in dacfrom->dacparam (also indicates potential matrixp operations as we can have select which parameter gets dacfrom attachment) - how to distinguish CV-style params and selector(eg.speedmode) params*
 
 // from below//altering with notes...
 
@@ -1181,7 +1165,7 @@ static inline uint32_t NZbinrout_probXY(uint32_t depth, uint32_t in, uint32_t w)
 
 - decide on architecture - if we have slidings of inners, if we have all matrixp or just last 16 modes? 16/16/16/16
 
-*NOTE: If we have sliding inner modes or even speed/bit modes then we need equal size function arrays (so all 64 with repeats)*
+NOTE: If we have sliding inner modes or even speed/bit modes then we need equal size function arrays (so all 64 with repeats)*
 
 DONE: in geogen.c:::
 // uint32_t (*routebitsfortypesALL[34])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout, Zbinroutor, ZzbinrouteINVbits, Zzbinroutebitscycle, zbinroutebitscyclestrI, Zflipflopandroute, ZpSRsigma,  Zviennabits, Zzsuccbitspp, ZzsuccbitsIpp, Zzwiardbits, Zzwiardinvbits, Zbinroutfixed_prob1, Zbinroutfixed_prob2, Zbinroutfixed_prob3, Zbinroutfixed_prob4,  Zbinroutfixed_prob5, Zbinrout_probXY, Zbinrout_probXY1, NZbinrout_probXY, NZbinrout_probXY1, NZbinroutfixed_prob1, NZbinroutfixed_prob2, NZbinroutfixed_prob3, NZbinroutfixed_prob4, NZzwiardbits, NZzwiardinvbits, binroutesel2, binroutesel3, Zzsuccbits, ZzsuccbitsI, NZzbinrouteINVbits, NZzbinroutebitscycle, NZflipflopandroute};
@@ -1201,7 +1185,7 @@ DONE: in geogen.c:::
 
 - fix resets in each - so locally we reset the matrix/p, local stuff and local binary.. in geoR we will draft full reset on last mode - or is maybe already...
 
-globalls[0] is that resett! - called by SR_geomantic_innerRglob and SR_geomantic_innerRglobselandset -> *geoR: do as last mode. all held but this... or do as matrixp with RESETG macro*
+globalls[0] is that resett! - called by SR_geomantic_innerRglob and SR_geomantic_innerRglobselandset -> geoR: do as last mode. all held but this... or do as matrixp with RESETG macro*
 
 count=0; daccount=0; spdcount=0; binroutetypecount=0; 
 
@@ -1232,9 +1216,9 @@ test SR_geo_outer_route* -> DONE:draft list of inners: eg. void (*SRinnersC[64])
 
 ///
 
-- *TODO: dac/dacfrom -> dacparam as basic mode in geoC// also for depth/adc in geoN*
+- TODO: dac/dacfrom -> dacparam as basic mode in geoC// also for depth/adc in geoN*
 
-- *Q of extents, of prob and interpol if we slide modes... - trial, also for interpol and prob so is generic/even no inner or?*
+- Q of extents, of prob and interpol if we slide modes... - trial, also for interpol and prob so is generic/even no inner or?*
 
 ** 19/12/2022
 
@@ -1244,7 +1228,7 @@ test SR_geo_outer_route* -> DONE:draft list of inners: eg. void (*SRinnersC[64])
 
 ** 16/12/2022
 
-- *see end of geoC for possible slippages!* but we need to test things first
+- see end of geoC for possible slippages!* but we need to test things first
 
 TODO: new 16 first modes in geoC... how we ensure there is always IN matrix[5] as LFSR or other
 
@@ -1258,7 +1242,7 @@ DONE:draft list of inners: eg. void (*SRinnersC[64])(uint32_t w)={SR_geo_inner_f
 
 list of outers we already have in 000
 
-*lists of routefunctions etc...* - trial this out! below in tests
+lists of routefunctions etc...* - trial this out! below in tests
 
 eg. uint32_t (**routetest[64])(uint32_t depth, uint32_t in, uint32_t wh)={routebitsd}; // all need to be same length
 // to test calling:

@@ -1066,44 +1066,70 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
       x=x<<tmp;
           }
 
-    uint32_t pointer=22, nul=0;
-    uint32_t *varr[10]={&pointer,&pointer,&pointer,&pointer,&pointer,&pointer,&pointer,&pointer,&pointer,&pointer};
+    uint32_t pointer=1, pointerx=7, pointery=9,nul=0;
+    uint32_t *varr[10]={&pointery,&pointer,&pointer,&pointer,&pointer,&pointer,&pointerx,&pointer,&pointer,&pointer};
     
     uint32_t matrix[20];
-    uint32_t *matrixp[20]={&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul};
+    uint32_t *matrixp[20]={&pointery,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul};
     uint32_t *matrixpG[20]={&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul};
 
     //gate[wh].matrixp[which]=&gate[wh].matrix[which]; // holds the value there
+
+    /*
+    gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];//
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+    */
     
     void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
       uint32_t y;
   static uint32_t oldgap[4]={64,64,64,64};
     if (which!=oldgap[wh]){
-      pointer++; nul++;
-      //matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
-      //      matrixp[oldgap[wh]]=matrixpG[oldgap[wh]];//
+      pointer++;
+      //nul++;
+      //      matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
+      matrixp[oldgap[wh]]=matrixpG[oldgap[wh]];//
       matrixpG[which]=matrixp[which]; // previous  
       matrixp[which]=varr[var]; // new one
-    // what has changed? new one - but how do we reset changed... oldone?
-    //    set[which]=1;
-    //    set[oldgap[wh]]=0;
+      oldgap[wh]=which;
+    }
+    
+    else if (matrixp[oldgap[wh]]!=varr[var]){
+      //      matrixp[which]=varr[var]; // new one
+      //      matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
+      matrixp[oldgap[wh]]=matrixpG[oldgap[wh]];//
+      matrixpG[which]=matrixp[which]; // previous  
+      matrixp[which]=varr[var]; // new one
+      oldgap[wh]=which;
+
+    }
+
     for (y=0;y<20;y++){
       printf("%d",*matrixp[y]);
       matrix[y]=*matrixp[y];
     }
-    printf("\n");
-    oldgap[wh]=which;
+      printf("\n");
     }
-    }
+
     
     for (x=0;x<20;x++){
       setvargapz(0,x,5);
     }
-    printf("non\n");
+    printf("non\n\n");
+
+    setvargapz(0,19,6);
+    setvargapz(0,19,6);
+    setvargapz(0,19,6);
+
+        printf("non\n\n");
+    
+    
     for (x=0;x<20;x++){
       setvargapz(0,x,5);
     }
 
+    /*
     for (otherpar=3;otherpar<31;otherpar++){
 
 static uint8_t rightshift[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, // first 12 bits
@@ -1159,4 +1185,5 @@ uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
    printf("%d",res);
  }
  printf("\n");
+    */
 }

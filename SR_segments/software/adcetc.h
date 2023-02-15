@@ -1639,7 +1639,7 @@ void TIM4_IRQHandler(void)
   nn++;
   if (nn>=SMOOTHINGS) nn=0;
   temp=totn/SMOOTHINGS;  
-  CV[0]=temp;
+  CV[0]=4095-temp;
   //  speedf[0]=logspeed[temp>>2]; // was logspeed
   //  speedf_[0]=0.1f;
   
@@ -1655,7 +1655,7 @@ void TIM4_IRQHandler(void)
   ll++;
   if (ll>=SMOOTHINGS) ll=0;
   temp=totl/SMOOTHINGS;  
-  CV[1]=temp;
+  CV[1]=4095-temp;
   //  speedf[1]=logspeed[temp>>2];
   
   // speedr
@@ -1669,7 +1669,7 @@ void TIM4_IRQHandler(void)
   rr++;
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
-  CV[3]=temp;
+  CV[3]=4095-temp;
   //  speedf[3]=logspeed20[temp>>2]; // 20 octaves - slowest one
   
     // speedc
@@ -1684,7 +1684,7 @@ void TIM4_IRQHandler(void)
   cc++;
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
-  CV[2]=temp;
+  CV[2]=4095-temp;
   //  speedf[2]=logspeed[temp>>2];
   
   // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!

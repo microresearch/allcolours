@@ -2047,7 +2047,7 @@ depth=binroute[count][w]|binary[w];
 
 static inline uint32_t zbinrouteORbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
-depth=binroute[count][w]|binary[w]; 
+  depth=binroute[count][w]|binary[w]; 
 
   for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
@@ -2062,7 +2062,7 @@ depth=binroute[count][w]|binary[w];
 
 static inline uint32_t zbinrouteANDbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
-depth=binroute[count][w]|binary[w]; 
+  depth=binroute[count][w]|binary[w]; 
 
     for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
@@ -2078,7 +2078,7 @@ depth=binroute[count][w]|binary[w];
 static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... SR itself, no GSR 
   uint32_t bt=0, bitrr;
   depth=depth>>8;
-  depth=15-depth;
+  //  depth=15-depth;
 
       if (depth==0) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshift_[w]>>SRlength[8]) & 0x01; 
@@ -2088,41 +2088,6 @@ static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){
   for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
-    //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
-    bt^=bitrr;
-  }
-  depth=depth>>1;
-  }
-    }
-  return bt;
-}
-
-static inline uint32_t zbinrouteSRbitsd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... SR itself, no GSR same as above
-  uint32_t bt=0, bitrr;
-  depth=depth>>8;
-    for (uint32_t x=0;x<4;x++){
-  if (depth&0x01){
-    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
-    //    gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr;
-    bt^=bitrr;
-  }
-  depth=depth>>1;
-  }
-  return bt;
-}
-
-static inline uint32_t zbinroutebitsI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel...
-  uint32_t bt=0, bitrr;
-  depth=binroute[count][w]|binary[w]; 
-
-    if (depth==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].shift_>>SRlength[8]) & 0x01; 
-    bt^=bitrr;
-  } else
-    {
-  for (uint32_t x=0;x<4;x++){
-  if (depth&0x01){
-    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
     bt^=bitrr;
   }
   depth=depth>>1;
@@ -2150,10 +2115,38 @@ static inline uint32_t zbinroutebitsI_noshiftd(uint32_t depth, uint32_t in, uint
   return bt;
 }
 
-static inline uint32_t zbinroutebitscycleI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel...
+static inline uint32_t zbinrouteSRbitsfixed(uint32_t depth, uint32_t in, uint32_t w){   
+  uint32_t bt=0, bitrr;
+  depth=binroute[count][w]|binary[w];
+  
+  for (uint32_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t zbinroutebitsI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel...
   uint32_t bt=0, bitrr;
   depth=binroute[count][w]|binary[w]; 
-    depth=depth|(1<<w); // add itself in
+
+  for (uint32_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt;
+}
+
+static inline uint32_t zbinroutebitscycleI_noshift(uint32_t depth, uint32_t in, uint32_t w){   // can also be depth version
+  uint32_t bt=0, bitrr;
+  depth=binroute[count][w]|binary[w]; 
+  depth=depth|(1<<w); // add itself in
   for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
@@ -2491,7 +2484,7 @@ static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t w){ // 
   return bt;
 }
 
-static inline uint32_t spdfracdac3x(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from dacfrom
+static inline uint32_t spdfracdac3x(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from speedfrom
   uint32_t bt=0;
   float speed;
   int32_t tmp;
@@ -2533,7 +2526,7 @@ static inline uint32_t spdfracdac4(uint32_t depth, uint32_t in, uint32_t w){ // 
   return bt;
 }
 
-static inline uint32_t spdfracdac4x(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from dacfrom
+static inline uint32_t spdfracdac4x(uint32_t depth, uint32_t in, uint32_t w){ // depth is offset, in is constraint -- and speed from speedfrom
   uint32_t bt=0;
   float speed;
   int32_t tmp;
@@ -5062,7 +5055,7 @@ static inline void SRRglobaltailset(uint32_t depth){ // nada no depth
 
 static inline void SRRglobalorder(uint32_t depth){ // depth
   uint32_t tmp;
-  ordercount=depth>>7; // 5 bits
+  ordercount=depth>>6; // now 6 bits - 64
 }
 
 static inline void SRRglobalorderbumpS(uint32_t depth){ // strobe no depth
@@ -5071,7 +5064,7 @@ static inline void SRRglobalorderbumpS(uint32_t depth){ // strobe no depth
   if (gate[3].trigger)
     {
       ordercount++;
-      if (ordercount>31) ordercount=0; // we have 16 so far, but can add more
+      if (ordercount>63) ordercount=0; // we have 16 so far, but can add more
     }
 }
 
@@ -5080,7 +5073,7 @@ static inline void SRRglobalorderbumpbit(uint32_t depth){ // nada. depth can be 
   if (gate[dacfrom[daccount][3]].shift_)
     {
       ordercount++;
-      if (ordercount>31) ordercount=0; // we have 16 so far, but can add more
+      if (ordercount>63) ordercount=0; // we have 16 so far, but can add more
     }
 }
 
