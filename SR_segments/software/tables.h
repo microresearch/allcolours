@@ -156,7 +156,7 @@ uint32_t dacfromopp[16][4]={ // TODO and needs to match lengthy of binroute TEST
   {3,1,3,3}
 };
 
-
+uint32_t strobefrom[4]={0,0,1,2};// 0 we dont bother with - strobe from previous
 
 uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first route in which must be different
   {2,3,3,1}, // default

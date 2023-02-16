@@ -31,9 +31,8 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 *re-check use of clk, pulsin, pulsout, strobey*
 
-- for gappedfunction we need always both::
+- *for gappedfunction we need always:*
   gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
-
   gate[w].matrix[4]=CVL[w];
   gate[w].matrix[10]=CVL[w];  
 
@@ -47,17 +46,30 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 - full tests CC modes before we go further and replicate, smaller tests on runglers
 - final tests and tweaks eg. orderings of functions in arrays and check these against fixed references for functions
 
-** 15/3/2023
+** 16/2/2023
+
+*TODO: for comparisons 8 bits depth is better so no glitches - fill out probfs*
+
+*if we get sole speed from the one we route into we have issues???*
+
+- *catalogue and finish/test runglers for NN: we need simpler fixed runglers*
+
+///
+
+- TESTED-DONE- more with tails as we erased some - eg. NN can be fake strobe 8 with tail TEST strobe modes NN*
+
+- DONELLtest new runglers as we implement them: LL in progress
+
+TESTEDtesting allof: routebits_nodepth_typesz, 
+
+** 15/2/2023
 
 default: routebits_nodepth_typesz;
 
 *TODO: first do sanity check, then test all CC and catalogue below, fill in LL and NN runglers and test these*
 
-- *IN PROCESS: unreverse logspeedsDONE and invert all CV//DONE and CVL but then we need to go through and correct all functions for this - len etc, all*
-
-- *test new runglers as we implement them*
-
-- *test all CC before we fill in gaps // mode by mode again as we catalogue*
+- *IN PROCESS: unreverse logspeedsDONE and invert all CV//DONE and CVL/DONE but then we need to go through and correct all functions for this - lenDONE
+- *DONEthus fix inv functions in geogen... - test all!
 
 /////////////
 catalogue CC in groups of 4:

@@ -1,3 +1,28 @@
+
+// rungler1 are in NN but we just want those with abstract and route...
+
+/* rungler2:
+rungler2: route in, clkfrom speedfrom SR
+
+permutations of:
+regular/default route in              // clock in from speedfrom/fixed
+route in mode sel from depth // clock in from depth 
+route in mode gapped         // clock in from gapped depth
+                             // clock in from [dacfrom]
+
+void SR_geo_outer_C40(uint32_t w){ // basic rungler with gapped route function
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=24<<7; //zbinrouteSRbits I hope 
+    gate[w].matrix[1]=CV[w]; // depth as route in this case
+    gate[w].matrix[4]=CVL[w];// depth
+    gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+    gate[w].inner=SR_geo_inner_function;
+  }
+}
+
+ */
+
+
 // routebits/allstrobe/types
 // ignore this one - but is only one we use so far - use for fixed stuff ok - but would be nice to clean out
 //uint32_t (*routebits_typesz[64])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout, Zbinroutor, ZzbinrouteINVbits, Zzbinroutebitscycle, zbinroutebitscyclestrI, Zflipflopandroute, ZpSRsigma, Zviennabits, Zzsuccbitspp, ZzsuccbitsIpp, NZbinrout_probXY, NZbinrout_probXY1, NZbinroutfixed_prob1, NZbinroutfixed_prob2, NZbinroutfixed_prob3, NZbinroutfixed_prob4, zbinroutmycv, zbinroutorgap, zzsingleroutebits,  zbinroutmybumpSalt, zbinroutmybumpbitalt, zbinroutmybumpbittalt, pSR_recbin, pSRxorroutes, pSRaddroutes, pSRprobxortogx, pSRprobxortogxID_, pSRmatch, pSRshare, pSRGswop, pbitLcvsrroute, pstream, pSRDACroutestrobe, pSRLLbumproute, pSRbumproute, pSRN40, pSRN36, pSRN33cipher, pSRN33, pSRN13, pSRRLLswop, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pSRN15, pSRN8, pSRN7, pSRN6, pSRN5, pSRxorSR, pSR_routeSRbits02, pSR_routeSRbits01, pSRRaccelghosts0, /**/ Zbinrout, Zbinroutor, Zbinrout_strip}; 

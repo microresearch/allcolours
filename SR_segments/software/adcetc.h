@@ -1097,7 +1097,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     // beta is now (6/12/2021) always param - just if is generated from cv or speed or ... betaf=0.4f is usual value
     // 0.4=par/4096.0
     //    if (otherpar>4096) otherpar=4096;
-    otherpar=4096-otherpar;
+    //    otherpar=4096-otherpar;
     if (otherpar==0) otherpar=1;
     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
     //    betaf=0.025;
@@ -1694,7 +1694,7 @@ void TIM4_IRQHandler(void)
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   //  temp=(adc_buffer[1]);
-  CVL[0]=temp;
+  CVL[0]=4095-temp;
   temp=temp>>7; // 12 bits to 5 bits
   SRlength_[0]=lookuplenall[temp];
 
@@ -1703,7 +1703,7 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  CVL[1]=temp;
+  CVL[1]=4095-temp;
   temp=temp>>7; 
   SRlength_[1]=lookuplenall[temp];
 
@@ -1711,7 +1711,7 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  CVL[3]=temp;
+  CVL[3]=4095-temp;
   temp=temp>>7; 
   SRlength_[3]=lookuplenall[temp];
   
@@ -1720,7 +1720,7 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  CVL[2]=temp;
+  CVL[2]=4095-temp;
   temp=temp>>7; 
   SRlength_[2]=lookuplenall[temp]; // TODO: take speed and lens out so we can detach easier
 }

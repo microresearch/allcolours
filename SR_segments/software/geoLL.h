@@ -65,32 +65,9 @@ void SR_geo_outer_L00(uint32_t w){  // set length or could better be TYPE
 
 // next 16 follows geoCC but we need different runglers
 
-// rungler1 are in NN but we just want those with abstract and route...
+// L40-> C40
 
-/* rungler2:
-rungler2: route in, clkfrom speedfrom SR
-
-permutations of:
-regular/default route in              // clock in from speedfrom/fixed
-route in mode sel from depth // clock in from depth 
-route in mode gapped         // clock in from gapped depth
-                             // clock in from [dacfrom]
-
-void SR_geo_outer_C40(uint32_t w){ // basic rungler with gapped route function
-  if (gate[w].changed==0) {
-    gate[w].matrix[0]=24<<7; //zbinrouteSRbits I hope 
-    gate[w].matrix[1]=CV[w]; // depth as route in this case
-    gate[w].matrix[4]=CVL[w];// depth
-    gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-    gate[w].inner=SR_geo_inner_function;
-  }
-}
-
- */
-
-// C40 above
-
-void SR_geo_outer_r0L(uint32_t w){ // select function/gapped array
+void SR_geo_outer_L41(uint32_t w){ // select function/gapped array
   if (gate[w].changed==0) {
     gate[w].matrix[0]=24<<7; //always
     gate[w].matrix[1]=CV[w]; //route
@@ -100,26 +77,25 @@ void SR_geo_outer_r0L(uint32_t w){ // select function/gapped array
   }
 }
 
+//Zbinrout, ZzbinrouteINVbits, Zzbinroutebitscycle, ZzbinroutebitscyclestrI, Zflipflopandroute, ZpSRsigma, Zzsuccbits, ZzsuccbitsI, zbinroutmybumpSalt, pSR_recbin, pSRxorroutes, pSRaddroutes, pSRshare, pSRGswop, pSRDACroutestrobe, pSRN40, pSRN36, pSRN33cipher, pSRN33, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pSRN8, pSRN7, pSRN6, pSRN5, pSR_routeSRbits02, pSR_routeSRbits01, pSRRaccelghosts0, pbitSRroutedoitD_, pSRbumprouteD_, pSRLLswopD_
+
 // route in from dacfrom frees up CV for depth and sel - innergapped // this one can die out!
-void SR_geo_outer_r1L(uint32_t w){ // select function/gapped array
+void SR_geo_outer_L42(uint32_t w){ // select function/gapped array
   if (gate[w].changed==0) {
     gate[w].matrix[0]=24<<7; //always
-    gate[w].matrix[1]=gate[dacfrom[daccount][w]].dac; //route
-    gate[w].matrix[3]=CVL[w];// selfunction
+    gate[w].matrix[1]=gate[dacfrom[daccount][w]].dac; 
+    gate[w].matrix[3]=CVL[w];// selfunction <<6//
     gate[w].matrix[4]=CV[w];
     gate[w].matrix[10]=CV[w];  
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-    gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
+    gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__ 
     gate[w].inner=SR_geo_inner_gappedfunction; // as we have depth here
   }
 }
 
-// same as with fixed route//how/where..
-void SR_geo_outer_r2L(uint32_t w){ // select function/gapped array
+void SR_geo_outer_L43(uint32_t w){ // select function/gapped array - fixed route function in the inner
   if (gate[w].changed==0) {
-    gate[w].matrix[0]=24<<7; //always
-    //    gate[w].matrix[1]=(binroute[count][w]|binary[w])<<8;//gate[dacfromopp[daccount][w]]; //route fixed- <<8 would rather have fixed func
-    gate[w].matrix[3]=60<<6;//CVL[w];// selfunction
+    gate[w].matrix[3]=CVL[w];// selfunction
     gate[w].matrix[4]=CV[w];
     gate[w].matrix[10]=CV[w];  
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2

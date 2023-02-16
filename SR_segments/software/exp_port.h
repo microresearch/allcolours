@@ -658,7 +658,8 @@ static inline uint32_t pbitSRroutelogxxx(uint32_t depth, uint32_t in, uint32_t w
 static inline uint32_t pbitSRroutedoit(uint32_t depth, uint32_t in, uint32_t w){// depth
   uint32_t x, tmp, bitrr, temp, tmpp, bitn=0;
 
-    tmp=(SRFROM)&63; // 4 bits route, 2 bits doit
+  //  tmp=(SRFROM)&63; // 4 bits route, 2 bits doit
+   tmp=(gate[0].Gshift_[w])&63;
     temp=tmp&0x03;
     tmp=tmp>>2;
     if (temp!=0){
@@ -696,8 +697,9 @@ static inline uint32_t pbitSRroutelogxxxD_(uint32_t depth, uint32_t in, uint32_t
 static inline uint32_t pbitSRroutedoitD_(uint32_t depth, uint32_t in, uint32_t w){// depth
   uint32_t x, tmp, bitrr, temp, tmpp, bitn=0;
 
-    tmp=(SRFROM)&63; // 4 bits route, 2 bits doit
-    temp=tmp&0x03;
+  //    tmp=(SRFROM)&63; // 4 bits route, 2 bits doit
+  tmp=(gate[0].Gshift_[w])&63;
+  temp=tmp&0x03; // lowest 2 bits
     tmp=tmp>>2;
     if (temp!=0){
       tmpp=gate[w].routetype;
@@ -706,7 +708,7 @@ static inline uint32_t pbitSRroutedoitD_(uint32_t depth, uint32_t in, uint32_t w
     else if (temp==3){ // dacprob of inversion
       bitn^=1;
     }
-    } // 1/2/3
+    } // 1/2/3 temp==0;
     else RETURN;
   
   return bitn;

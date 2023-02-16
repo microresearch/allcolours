@@ -334,6 +334,33 @@ void SR_geo_inner_rungC(uint32_t w){  // no probability, no adc - this can be ge
     }
 }
 
+void SR_geo_inner_runggappedC(uint32_t w){  // no probability, no adc - this can be generic // no interp
+  HEADNADA;
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    gate[w].fake=gate[w].trigger;
+    gate[w].dac = delay_buffer[w][1];
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    // deal with the gap
+    if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
+      bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    }
+    else { // prob of cycle or in new version xor cycle...
+        if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
+	  bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+      }
+      else {
+	bitn^= (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+      }
+    }
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+  } 
+
+
 void SR_geo_inner_probnodepth(uint32_t w){  // draft for probs with no depth
   HEADNADA;
   uint32_t tmproute;
@@ -435,7 +462,7 @@ void SR_geo_inner_gappedfunction(uint32_t w){  // depth or cycle prob
     }
     else { // prob of cycle or in new version xor cycle...
         if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-	bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+	  bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
       }
       else {
 	bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
@@ -809,9 +836,11 @@ void SR_geo_outer_C40(uint32_t w){ // basic rungler with gapped route function
   if (gate[w].changed==0) {
     gate[w].matrix[0]=24<<7; //zbinrouteSRbits I hope 
     gate[w].matrix[1]=CV[w]; // depth as route in this case
-    gate[w].matrix[4]=CVL[w];// depth
+    gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
+    gate[w].matrix[4]=CVL[w];
+    gate[w].matrix[10]=CVL[w];  
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-    gate[w].inner=SR_geo_inner_function;
+    gate[w].inner=SR_geo_inner_gappedfunction;
   }
 }
 

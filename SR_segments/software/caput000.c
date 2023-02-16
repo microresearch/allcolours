@@ -54,11 +54,11 @@ static uint32_t CVM[4]={0,0,0,0};
 // add in dactype, dacpar
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16type, 17 route->now strobe function index}, 18 is abstract CV, 19 is now glob, 20 is now abstract index, 21 is mix
-uint32_t matrixNN[22]={0,0,0,  0<<6,0,0, 31<<7, 1<<7, 31<<7, 1<<6,0,0,4<<6,   25<<7,2048, 0, 0, 0<<7, 2048, 0, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[22]={0,0,0,  0<<6,0,0, 0<<7, 0,0,         1<<6,0,0,4<<6,    25<<7,2048, 0, 0, 0<<7, 0, 0, 0, 0};
-uint32_t matrixCC[22]={0,0,0,  0<<6,0,0, 0<<7, 0,0,         1<<6,0,0,4<<6,    0<<7, 2048, 0, 0, 0<<7, 0, 0, 0, 0}; 
-uint32_t matrixRR[22]={0,0,0,  0<<6,0,0, 0<<7, 0,0,         1<<6,0,0,4<<6,    25<<7,2048, 0, 0, 0<<7, 0, 0, 0, 0};  // spdfracend TEST
-uint32_t matrixTT[22]={0,0,0,  0<<6,0,0, 0<<7, 0,0,         1<<6,0,0,4<<6,    25<<7,2048, 0, 0, 0<<7, 0, 0, 0, 0}; 
+uint32_t matrixNN[22]={0,0,0,  0<<6,0,0, 31<<7, 1<<7, 3<<7, 1<<6,0,0,4<<6,   25<<7,2048, 0, 0, 0<<7, 2048, 0, 0}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[22]={0,0,0,  0<<6,0,0, 31<<7, 0,0,         1<<6,0,0,4<<6,    25<<7,2048, 0, 0, 0<<7, 0, 0, 0, 0};
+uint32_t matrixCC[22]={0,0,0,  0<<6,0,0, 31<<7, 0,0,         1<<6,0,0,4<<6,    0<<7, 2048, 0, 0, 0<<7, 0, 0, 0, 0}; 
+uint32_t matrixRR[22]={0,0,0,  0<<6,0,0, 31<<7, 0,0,         1<<6,0,0,4<<6,    25<<7,2048, 0, 0, 0<<7, 0, 0, 0, 0};  // spdfracend TEST
+uint32_t matrixTT[22]={0,0,0,  0<<6,0,0, 31<<7, 0,0,         1<<6,0,0,4<<6,    25<<7,2048, 0, 0, 0<<7, 0, 0, 0, 0}; 
 //                     speed   bit       len   adc,adc-cv   prob  alt         dac      strobespdindex, type, route, abstrct cv, glob, abstract index, mixer
 
 static uint32_t nul=0;
@@ -268,7 +268,7 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
        {SR_geo_outer_N00, /*SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03,  SR_geo_outer_N10, SR_geo_outer_N11, SR_geo_outer_N12, SR_geo_outer_N13, SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, SR_geo_outer_N30, SR_geo_outer_N31, SR_geo_outer_N32, SR_geo_outer_N33,  SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, SR_geo_outer_N60, SR_geo_outer_N61, SR_geo_outer_N62, SR_geo_outer_N63, SR_geo_outer_N70, SR_geo_outer_N71, SR_geo_outer_N72, SR_geo_outer_N73*/},
-       {SR_geo_outer_r1L, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C51, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73*/},
+       {SR_geo_outer_L00, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C51, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73*/},
        {SR_geo_outer_C00, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153*/}, 
        {SR_geo_outer_R00, /*SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_R10, SR_geo_outer_R11, SR_geo_outer_R12, SR_geo_outer_R13, SR_geo_outer_R20, SR_geo_outer_R21, SR_geo_outer_R22, SR_geo_outer_R23, SR_geo_outer_R30, SR_geo_outer_R31, SR_geo_outer_R32, SR_geo_outer_R33, SR_geo_outer_R40, SR_geo_outer_R41, SR_geo_outer_R42, SR_geo_outer_R43, SR_geo_outer_R50, SR_geo_outer_R51, SR_geo_outer_R52, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_R61, SR_geo_outer_R62, SR_geo_outer_R63, SR_geo_outer_R70, SR_geo_outer_R71, SR_geo_outer_R72, SR_geo_outer_R73*/}, //R121 is orderings
 
@@ -410,14 +410,15 @@ if (www==2)  {
  if (www!=0){ 
  if (gate[www].strobed){ // still q of strobey
    //   if (gate[8].shift_ &0x01) GPIOB->BSRRH=clk_route_new[www]; // we get from tail
-   if (gate[speedfrom[spdcount][www]].shift_ &0x01) GPIOB->BSRRH=clk_route_new[www]; // try dacfrom
+   if (gate[strobefrom[www]].shift_ &0x01) GPIOB->BSRRH=clk_route_new[www]; // try dacfrom
      else GPIOB->BSRRL=clk_route_new[www];
    }
- } /// www==0
- else
+ } 
+ else ///// www==0
    {
      if (gate[www].strobed){ // still q of strobey
-      tmp= gate[dacfrom[daccount][0]].dac; // now is set by count/array
+       //   tmp= gate[speedfrom[spdcount][0]].dac; // now is set by count/array
+       tmp= gate[8].dac; // now is set by count/array
       tmp+=320; 
       TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
       TIM1->CCR1 = tmp/2; // pulse width
