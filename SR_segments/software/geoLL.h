@@ -33,10 +33,11 @@ void SR_geo_inner_gappedfunctionrung(uint32_t w){  // depth or cycle prob
     }
     else { // prob of cycle or in new version xor cycle...
         if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-	bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+	  bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
       }
       else {
-	bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+	//bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+	bitn=0;
       }	  
     }
     BITN_AND_OUTV_; 
@@ -65,19 +66,18 @@ void SR_geo_outer_L00(uint32_t w){  // set length or could better be TYPE
 
 // next 16 follows geoCC but we need different runglers
 
+// 4 simple bit as speed type 1 runglers
 // L40-> C40
 
 void SR_geo_outer_L41(uint32_t w){ // select function/gapped array
   if (gate[w].changed==0) {
-    gate[w].matrix[0]=24<<7; //always
+    gate[w].matrix[0]=24<<7; //always  zbinrouteSRbits
     gate[w].matrix[1]=CV[w]; //route
     gate[w].matrix[3]=CVL[w];// selfunction
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
     gate[w].inner=SR_geo_inner_function; // gapped
   }
 }
-
-//Zbinrout, ZzbinrouteINVbits, Zzbinroutebitscycle, ZzbinroutebitscyclestrI, Zflipflopandroute, ZpSRsigma, Zzsuccbits, ZzsuccbitsI, zbinroutmybumpSalt, pSR_recbin, pSRxorroutes, pSRaddroutes, pSRshare, pSRGswop, pSRDACroutestrobe, pSRN40, pSRN36, pSRN33cipher, pSRN33, pprobtoggle1, pprobtoggle2, pprobtoggle3, pprobtoggle4, pprobtoggle5, pprobstrobe1, pprobstrobe2, pprobstrobe3, pSRN8, pSRN7, pSRN6, pSRN5, pSR_routeSRbits02, pSR_routeSRbits01, pSRRaccelghosts0, pbitSRroutedoitD_, pSRbumprouteD_, pSRLLswopD_
 
 // route in from dacfrom frees up CV for depth and sel - innergapped // this one can die out!
 void SR_geo_outer_L42(uint32_t w){ // select function/gapped array

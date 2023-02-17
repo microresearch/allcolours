@@ -1654,7 +1654,8 @@ void TIM4_IRQHandler(void)
   totl+=smoothl[ll];
   ll++;
   if (ll>=SMOOTHINGS) ll=0;
-  temp=totl/SMOOTHINGS;  
+  temp=totl/SMOOTHINGS;
+  //  CV[1]=4095-ADC_GetConversionValue(ADC1);
   CV[1]=4095-temp;
   //  speedf[1]=logspeed[temp>>2];
   

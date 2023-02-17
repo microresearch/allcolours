@@ -11,7 +11,7 @@ static inline uint32_t countbits(uint32_t i){
   return (i * 0x01010101) >> 24;          // horizontal sum of bytes
 }
 
-
+#define SMOOTHINGS 512
 #define MAXVALUE 4095
 
 ///#include "resources.h"
@@ -1129,6 +1129,23 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
       setvargapz(0,x,5);
     }
 
+
+    
+    nn=0;
+    int32_t totn, temp;
+    int32_t smoothn[SMOOTHINGS]={0};
+
+    for (x=0;x<12800;x++){
+    // speedn
+      totn=totn-smoothn[nn];
+    //  smoothn[nn]=adc_buffer[0];
+      smoothn[nn]=rand()%3;//ADC_GetConversionValue(ADC1);
+  totn+=smoothn[nn];
+  nn++;
+  if (nn>=SMOOTHINGS) nn=0;
+  temp=totn/SMOOTHINGS;  
+  printf("nn %d totn %d temp: %d\n",nn, totn, temp);
+    }
     /*
     for (otherpar=3;otherpar<31;otherpar++){
 

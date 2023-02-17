@@ -659,9 +659,7 @@ void SR_geo_outer_N23x(uint32_t w){ // now with route in
 }
 
 // own dac out and params???
-
 // vary route in etc.. try to follow CC
-
 // dacin. abstract in etc with varying speeds and strobe too!
 
 //3.0////////
@@ -670,157 +668,62 @@ void SR_geo_outer_N23x(uint32_t w){ // now with route in
 // route function/route type xor, prob of xor adc/abstract always
 // dacs into abstract depth etc
 
-//4.0////////// draft runglers
+//4.0////////// draft runglers for NN - how to place these in CC...
 
 /*
 rungler1: osc1 or selected gapped/abstract with speed or depth from speedfrom dac
-// can also be with adc in instead of abstract
 
-// what are options... notes
-
-speedfromdac/offsets // [fixed function eg osc1] // no route in
-dac3/dac4 options    // adc NN only              // route in
-some need 2xCV       // sel abstract            //  if route in -> sel route in function - depth or no depth
-                     // gapped sel abstract     //  gapped route in function          
-
-
-// we need more fixed runglers: 
-
-speedcv, osc1speeddepth
-adcs as below
-
-and then generic ones 
-
-what we have here?
-
-N40: osc1 // spdfrac3 - gapped route in
-// add no routes
-
-N41: adc in // spdrac3 // depth for bits - gapped route in
-// add no route
-
-dacspeedCV/CVL section OK!:
-N42: adc in - dacspeed CV/CVL, no route
-N43: adc in - dacspeed CV/CVL, route
-N50: adc in - dacspeedself, noroute
-N51:                        route in///
-
-to add from below but keep speedfunc as dac3 now:
-
-with routes:
-dac3//sel abstract// gapped route in 
-dac3//abstract depth// gapped route
-dac3//gapped abs//routefuncdepth
-
-what we have in C50+? these are more generic, maybe re-work...
-
-C50: speedsel, osc1
-C51: gapped speedfunc, bitfuncsel, osc1
-C52: gapped speedfunc, abstractsel
-C53: depthcv - still leaves cv for bitfunc?
-
-
+- adc only// adc param
+- select abstract
+- depth abstract with route/no route
 */
 
-// what are the options? select speed in, other fixed speedfuncs, what is gapped... no route in...
-// speedsel, abstractsel, routesel, abstractcv, routecv
-
-// combine osc1 depth and speed dont make much sense
-void SR_geo_outer_N40(uint32_t w){ // fixed func1 (osc) and gapped func2
+//- adc only// adc param or now prob route in//route cv
+// adc in with route in and speed - inner_functionN
+void SR_geo_outer_N40(uint32_t w){ // adc in
   if (gate[w].changed==0) {
     gate[w].matrix[0]=5<<7; // tested // try fixed speed - spdfrac3    
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
-    gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
-    gate[w].matrix[5]=CVL[w]; // cv for abstract -> osc1 can also be: dacfrom
-    gate[w].matrix[20]=0<<7;// select osc1 from abstractbitz
-    gate[w].funcbit=routebits_nodepth_typesz; // gap it!
-    gate[w].extent=6;
+    gate[w].matrix[9]=0<<7; // invprobbits
+    gate[w].matrix[10]=CVL[w]; // depth for prob
+    
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
+    gate[w].inner=SR_geo_inner_probadcentryxorX;
+  }
+}
+
+// select abstract + route
+void SR_geo_outer_N41(uint32_t w){ 
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=5<<7; // tested // try fixed speed - spdfrac3    
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    //    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped 5 is also for abstractbits
+    gate[w].matrix[20]=CVL[w]; // sel abstract
     gate[w].inner=SR_geo_inner_rungC;
   }
 }
 
-
-// more fixed ones: speedcv, osc1speeddac // ROUTE IN, and then no route in:     gate[w].inner=SR_geo_inner_rungnoroute;
-void SR_geo_outer_N40simple(uint32_t w){ // fixed func1 (osc) and gapped func2
-  if (gate[w].changed==0) {
-    gate[w].matrix[0]=0<<7; // basic speed
-    gate[w].matrix[1]=CV[w];// speed cv1
-    gate[w].matrix[5]=gate[speedfrom[spdcount][w]].dac; // CV for osc1
-    // package for gapped
-    gate[w].matrix[4]=CVL[w];
-    gate[w].matrix[9]=0<<7; // invprobbits
-    gate[w].matrix[10]=CVL[w];
-
-    gate[w].matrix[20]=0<<7;// select osc1 from abstractbitz
-    gate[w].inner=SR_geo_inner_runggappedC;
-  }
-}
-
-void SR_geo_outer_N40xxx(uint32_t w){ // gapped speed with 2x CV -- CVL is free???
-  if (gate[w].changed==0) {
-    gate[w].matrix[1]=CV[w];// speed cv1
-    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
-    gate[w].matrix[5]=gate[speedfrom[spdcount][w]].dac;//gate[dacfrom[daccount][w]].dac; // for absstracts but should be spdfrom
-    // package for gapped
-    gate[w].matrix[4]=CVL[w];
-    gate[w].matrix[9]=0<<7; // invprobbits
-    gate[w].matrix[10]=CVL[w];
-    //    gate[w].matrix[5]=CVL[w]; // cv for abstract -> osc1 can also be: dacfrom
-    gate[w].matrix[20]=0<<7;// select osc1 from abstractbitz
-    //    gate[w].funcbit=routebits_nodepth_typesz; // gap it!
-    //    gate[w].extent=6;
-    gate[w].inner=SR_geo_inner_runggappedC;
-  }
-}
-
-// above with no route
-void SR_geo_outer_N40x(uint32_t w){ // fixed func1 (osc) and gapped func2
+// no route in but we did sel... so swop
+void SR_geo_outer_N42(uint32_t w){  // no route
   if (gate[w].changed==0) {
     gate[w].matrix[0]=5<<7; // tested // try fixed speed - spdfrac3    
     gate[w].matrix[1]=CV[w];// speed cv1
-    gate[w].matrix[2]=gate[3].dac; // 2nd speed cv2
-    gate[w].matrix[5]=CVL[w]; // cv for abstract -> osc1 can also be: dacfrom - we swop these round
-    gate[w].matrix[20]=0<<7;// select osc1 from abstractbitz
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped 5 is also for abstractbits
+    gate[w].matrix[5]=CVL[w];
     gate[w].inner=SR_geo_inner_rungnoroute;
   }
 }
 
-void SR_geo_outer_N40xx(uint32_t w){ // fixed func1 (osc) and gapped func2 - swop CVs
-  if (gate[w].changed==0) {
-    gate[w].matrix[0]=5<<7; // tested // try fixed speed - spdfrac3    
-    gate[w].matrix[1]=CV[w];// speed cv1
-    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
-    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
-    gate[w].matrix[4]=CVL[w]; //
-    gate[w].matrix[10]=CVL[w];
-    gate[w].matrix[20]=0<<7;// select osc1 from abstractbitz
-    gate[w].matrix[9]=0<<7; // invprobbits
-      
-    //    gate[w].funcbit=routebits_nodepth_typesz; // gap it!
-    //    gate[w].extent=6;
-    gate[w].inner=SR_geo_inner_runggappedC;//SR_geo_inner_rungC; // we need to gap this for prob as we have a depth CV
-  }
-}
+///++???
 
-//above no route
-
-// adc in with route in and speed - inner_functionN
-void SR_geo_outer_N41(uint32_t w){ // adc in
-  if (gate[w].changed==0) {
-    gate[w].matrix[0]=5<<7; // tested // try fixed speed - spdfrac3    
-    gate[w].matrix[1]=CV[w];// speed cv1
-    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
-    gate[w].matrix[4]=CVL[w]; // depth for bits
-    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
-    gate[w].funcbit=routebits_depth_typesz; // we need to keep or gapped
-    gate[w].extent=7;
-    gate[w].inner=SR_geo_inner_functionN;
-  }
-}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//// dacspeed runglers to keep!
 
 // adc with no route in... SR_geo_inner_norouteadcN
-void SR_geo_outer_N42(uint32_t w){ // dacspeed3x
+void SR_geo_outer_N50(uint32_t w){ // dacspeed3x
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
@@ -829,7 +732,7 @@ void SR_geo_outer_N42(uint32_t w){ // dacspeed3x
 }
 
 // repeat with route in
-void SR_geo_outer_N43(uint32_t w){ // dacspeed3x
+void SR_geo_outer_N51(uint32_t w){ // dacspeed3x
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
@@ -839,7 +742,7 @@ void SR_geo_outer_N43(uint32_t w){ // dacspeed3x
 }
 
 // would be nice to be able to select where we get speedfrom - or have 4 options here... - our own speed? trial in new one // route // no route
-void SR_geo_outer_N50(uint32_t w){ // spdfracdac3self
+void SR_geo_outer_N52(uint32_t w){ // spdfracdac3self
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
@@ -848,7 +751,7 @@ void SR_geo_outer_N50(uint32_t w){ // spdfracdac3self
   }
 }
 
-void SR_geo_outer_N51(uint32_t w){ // spdfracdac3self route in
+void SR_geo_outer_N53(uint32_t w){ // spdfracdac3self route in
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
@@ -857,90 +760,11 @@ void SR_geo_outer_N51(uint32_t w){ // spdfracdac3self route in
   }
 }
 
-/*
-this is in geoCC.h // unused so far:
+// can have 3 other fixed speedfroms! but then doubled by route/no route?
 
-void SR_geo_inner_rungC(uint32_t w){  // no probability, no adc - this can be generic // no interp
-  HEADNADA;
-  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-    gate[w].fake=gate[w].trigger;
-    gate[w].dac = delay_buffer[w][1];
-    GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
-    bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
-    BITN_AND_OUTV_; 
-    new_data(val,w);
-    }
-}
-
-// these ones below older:
-C50: speedsel, osc1
-C51: gapped speedfunc, bitfuncsel, osc1
-C52: gapped speedfunc, abstractsel
-C53: depthcv - still leaves cv for bitfunc?
-
-void SR_geo_outer_C50(uint32_t w){ // redo speedfunc select with fixed func1 (osc) and gapped func2, gapped depth in both cases
-  if (gate[w].changed==0) {
-    gate[w].matrix[0]=CVL[w]; // tested
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-  gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
-  gate[w].matrix[20]=0<<7;// select osc1 from abstractz
-  gate[w].funcbit=routebits_typesz;
-  gate[w].extent=6; // 6 bits above
-  gate[w].inner=SR_geo_inner_rungC;
-  }
-}
-
-void SR_geo_outer_C51(uint32_t w){ // gapped speed, osc1 still fixed, sel func2
-  if (gate[w].changed==0) {
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-  gate[w].matrix[3]=CVL[w]; // function sel
-  gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; //// also CV1 for func1 CV2 or gapped
-  gate[w].matrix[20]=0<<7;// select osc1 from abstractz
-
-  gate[w].funcbit=routebits_typesz;
-  gate[w].extent=6; // 6 bits above
-  gate[w].inner=SR_geo_inner_rungC;
-  }
-}
-
-void SR_geo_outer_C52(uint32_t w){ // gapped speed, func1 sel, gapped func2
-  if (gate[w].changed==0) {
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-  gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2// also CV1 for func1 or gapped
-  gate[w].matrix[20]=CVL[w];// cv sel from abstractz
-  gate[w].funcbit=routebits_typesz;
-  gate[w].extent=6; // 6 bits above
-  gate[w].inner=SR_geo_inner_rungC;
-  }
-}
-
-void SR_geo_outer_C53(uint32_t w){ // gapped speed, gapped func1, gapped func2. depth CV (4)?
-  if (gate[w].changed==0) {
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-
-  if (!(depth_routebits_typesz[gate[w].matrix[3]>>6])) SETROUTECV;    // if needs be set route
-  gate[w].matrix[4]=CVL[w]; // always set depth -   //  gate[w].matrix[4]=CVL[w];// depth for both as they are switched... we can also swop these around for one more rungler below...  // and gap 4 or gap5?
-  gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2// also CV1 for func1 or gapped
-  
-  gate[w].funcbit=routebits_typesz;
-  gate[w].extent=6; // 6 bits above
-  gate[w].inner=SR_geo_inner_rungC;
-  }
-}
-
-*/
-
-
-
-
-// next 16
+// next
 
 // switches against dacs, against strobes and toggles 
 // abstracts... ADC or abstract - slide across gate[x].funcbit and extent - in prob etc.

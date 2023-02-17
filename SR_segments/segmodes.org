@@ -46,9 +46,17 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 - full tests CC modes before we go further and replicate, smaller tests on runglers
 - final tests and tweaks eg. orderings of functions in arrays and check these against fixed references for functions
 
+** 17/2/2023
+
+-DONE fix CV and CVL - smoothings checked again/reduced
+
+///[how we test - was prob of entry again // where? in L43 zinvprobbits]
+
+- DONE-to test simplify runglers for NN.. can have more in RR(see notes) - speeddac3 is most important, routesel not important to select here, 
+
 ** 16/2/2023
 
-*TODO: for comparisons 8 bits depth is better so no glitches - fill out probfs*
+*DONE-retest all... DONE/TODO: for comparisons 8 bits depth is better so no glitches - fill out probfs*
 
 *if we get sole speed from the one we route into we have issues???*
 
