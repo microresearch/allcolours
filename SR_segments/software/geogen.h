@@ -975,6 +975,14 @@ void fliptail(void){ //
   //  gate[8].shift_=LFSR_[0];
 }
 
+void flip(void){ //
+  uint32_t w=8;
+  GSHIFTRED_;
+  gate[8].shift_^=1;//+=gate[3].flip;
+  //  gate[8].shift_=LFSR_[0];
+}
+
+
 void basictail(void){ // tail here is basic 4th binroute at full speed // now 2ndn//left side
   uint32_t w=8;
    HEADNADA;
@@ -1816,6 +1824,50 @@ static inline uint32_t zbinroutebits_noshift(uint32_t depth, uint32_t in, uint32
   return bt;
 }
 
+static inline uint32_t ztemplateBURSTflip(uint32_t depth, uint32_t in, uint32_t w){ // uses IN
+  uint32_t bt=0, tmp;
+  static uint32_t btt=0;
+  if (LFSR__[w]>in){ // condition?
+    train[w]=0;
+    btt^=1;
+    }
+  if (train[w]< (depth)){
+  train[w]++;
+  }
+  else {
+    train[w]=0;
+    btt^=1;
+  }
+  return btt;
+}
+
+static inline uint32_t zSRBURSTflip(uint32_t depth, uint32_t in, uint32_t w){ // 
+  uint32_t bt=0, bitrr, tmp;
+  static uint32_t btt=0;
+  tmp=binroute[count][w]|binary[w]; 
+  for (uint32_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+
+  if (bt){
+    train[w]=0;
+    btt^=1;
+  }
+  if (train[w]< (depth>>4)){
+  train[w]++;
+  //  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+  }
+  else {
+    train[w]=0;
+    btt^=1;
+  }
+  return btt;
+}
+
 static inline uint32_t zbinroutebits_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now - no shift of GSR<<
   uint32_t bt=0, bitrr;
   depth=depth>>8;
@@ -2023,10 +2075,9 @@ static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt=0, bitrr;
   depth=depth>>8;
   //  depth=15-depth;
-
-      if (depth==0) { // SR5 is 8th which is outside these bits 
+  if (depth==0 || depth==(1<<w)) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshift_[w]>>SRlength[8]) & 0x01; 
-    bt^=bitrr;
+    bt=bitrr;
   } else
     {
   for (uint32_t x=0;x<4;x++){
@@ -2339,6 +2390,26 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t w){ // dep
   return bt;
 }
 
+static inline uint32_t spdfrac1(uint32_t depth, uint32_t in, uint32_t w){ // depth%in
+  uint32_t bt=0;
+  float speed;
+  int32_t tmp;
+  //  if (in==0) tmp=depth;
+  //  else tmp=depth%in;
+  tmp=in+depth;
+  if (tmp>4095) tmp=4095;
+  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  gate[w].time_now += speed;
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+  if(gate[w].last_time<gate[w].int_time) {
+    bt=1; // move on
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+  }
+  return bt;
+}
+
 //INx
 static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t w){ // we add depth and in //INx
   uint32_t bt=0;
@@ -2551,11 +2622,82 @@ static inline uint32_t zstrobeBURST(uint32_t depth, uint32_t in, uint32_t w){ //
   return bt;
 }
 
+static inline uint32_t zstrobeBURSTinv(uint32_t depth, uint32_t in, uint32_t w){ // 
+  uint32_t bt=0;
+  gate[w].strobed=1;
+  if (gate[w].trigger){
+    train[w]=1;
+  }
+  if (train[w]!=0 && train[w]< (depth)){
+  train[w]++;
+  }
+  else {
+    train[w]=0;
+    bt=1;
+  }
+  return bt;
+}
+
+static inline uint32_t zstrobeBURST1(uint32_t depth, uint32_t in, uint32_t w){ // non indie burst
+  uint32_t bt=0;
+  static uint32_t tren;
+  gate[w].strobed=1;
+  if (gate[w].trigger){
+    tren=1;
+  }
+  if (tren!=0 && tren< (depth)){
+  tren++;
+  //  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+  bt=1;
+  }
+  else {
+    tren=0;
+  }
+  return bt;
+}
+
+static inline uint32_t zstrobeBURST2(uint32_t depth, uint32_t in, uint32_t w){ // hold depth
+  uint32_t bt=0;
+  static uint32_t dd[4];
+  gate[w].strobed=1;
+  if (gate[w].trigger){
+    train[w]=1;
+    dd[w]=depth;
+  }
+  if (train[w]!=0 && train[w]< (dd[w])){
+  train[w]++;
+  //  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+  bt=1;
+  }
+  else {
+    train[w]=0;
+  }
+  return bt;
+}
+
+static inline uint32_t zstrobeBURST3flip(uint32_t depth, uint32_t in, uint32_t w){ // var - faster ones
+  static uint32_t bt=0;
+  gate[w].strobed=1;
+  depth=depth>>4;
+  if (gate[w].trigger){
+    train[w]=0;
+  bt^=1;
+  }
+  if (train[w]<(depth)){
+  train[w]++;
+  //  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+  }
+  else {
+    train[w]=0;
+  bt^=1;
+  }
+  return bt;
+}
 
 static inline uint32_t ztogglebits(uint32_t depth, uint32_t in, uint32_t w){   // toggle
   static uint32_t bt[4]={0,0,0,0};
     gate[w].strobed=1;
-  if (gate[w].trigger && ((depth>>4)<(LFSR__[w]>>4))) bt[w]=bt[w]^1;
+  if (gate[w].trigger && ((depth>>4)<(LFSR__[w]>>4)) ) bt[w]=bt[w]^1;
   return bt[w];
 }
 
@@ -2861,7 +3003,7 @@ static inline uint32_t cipher(uint32_t depth, uint32_t in, uint32_t w){// uses d
   static uint32_t gs[4]={0,0,0,0};
     gate[w].strobed=1;
     //    if (depth==((31<<7))) depth=15<<7;
-    if ((depth>>4)>(in>>4)) bt=1; 
+    if ((depth>>4)<(in>>4)) bt=1; 
     else bt=0;
   
   // onto SR
@@ -2874,6 +3016,27 @@ static inline uint32_t cipher(uint32_t depth, uint32_t in, uint32_t w){// uses d
   
   return bt;
 }
+
+static inline uint32_t cipherforspeed(uint32_t depth, uint32_t in, uint32_t w){// uses depth
+  uint32_t bt, k;
+  //  uint32_t kw[4]={0,0,0,0};
+  static uint32_t gs[4]={0,0,0,0};
+    gate[w].strobed=1;
+    //    if (depth==((31<<7))) depth=15<<7;
+    if ((depth>>4)<(LFSR__[w]>>4)) bt=1; 
+    else bt=0;
+  
+  // onto SR
+  GGGshift_[w]=GGGshift_[w]<<1;
+  GGGshift_[w]+=bt;
+  // on strobe copy to gs
+  if (gate[w].trigger) gs[w]=GGGshift_[w];
+  bt=(gs[w]>>8)&0x01; // how long?
+  //  gs[w]=gs[w]<<1; // that one doesn't shift
+  
+  return bt;
+}
+
 
 static inline uint32_t pcipher(uint32_t depth, uint32_t in, uint32_t w, uint32_t reset, uint32_t adv){
   uint32_t bt, k;
@@ -2933,6 +3096,47 @@ static inline uint32_t osceqx(uint32_t depth, uint32_t in, uint32_t w){  // so a
      }         
      return bt;
 }
+
+static inline uint32_t osceqf(uint32_t depth, uint32_t in, uint32_t w){  // so all share
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+  depth=depth>>4;
+  in=in>>4;
+     if (n>depth) {
+       bt=0;
+       if (nn>=in) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
+
+static inline uint32_t osceqxf(uint32_t depth, uint32_t in, uint32_t w){  // so all share
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+  depth=depth>>4;
+  in=in>>4;
+     if (n>in) {
+       bt=0;
+       if (nn>=depth) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
+
 
 static inline uint32_t flipflop(uint32_t depth, uint32_t in, uint32_t w){  // so all share // 
   uint32_t bt;
@@ -3233,6 +3437,36 @@ static inline uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
+
+static inline uint32_t zosc1bitsfast(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt=0,n=0;
+  depth=4095-depth;
+  depth=depth>>4;
+  if (n>depth)  {
+    lastbt^=1;
+    n=0;
+  }
+  n++;
+  bt=lastbt;
+  return bt;
+}
+
+static inline uint32_t zosc1bitsslow(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt=0,n=0;
+  depth=4095-depth;
+  depth=depth<<4;
+  if (n>depth)  {
+    lastbt^=1;
+    n=0;
+  }
+  n++;
+  bt=lastbt;
+  return bt;
+}
+
+
 // new one - count up to depth
 static inline uint32_t zcountbits(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
@@ -3422,12 +3656,12 @@ static inline uint32_t zosceqbitsIx(uint32_t depth, uint32_t in, uint32_t w){   
      }         
      return bt;
 }
-
-
+     
 static inline uint32_t zosc1bitsI(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t lastbt[4]={0};
   static uint32_t n[4]={0};
+  depth=4095-depth;
   if (n[w]>depth)  {
     lastbt[w]^=1;
     n[w]=0;
@@ -3437,24 +3671,80 @@ static inline uint32_t zosc1bitsI(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
-static inline uint32_t zosc2bitsI(uint32_t depth, uint32_t in, uint32_t w){  
+static inline uint32_t zosceqbitsIf(uint32_t depth, uint32_t in, uint32_t w){   
   uint32_t bt;
-  static uint32_t n[4]={0}, nn[4]={0};
-  
+  static int32_t n[4]={0};
+  static int32_t nn[4]={0};
+  depth=depth>>4;
+  in=in>>4;
+
      if (n[w]>depth) {
        bt=0;
        if (nn[w]>=in) { // so equal bits from 0 / length 0 = 101010
 	 n[w]=0;
        }
        nn[w]++;
-     } // n[w]
-     
+     } // n     
      else {
        bt=1;
        n[w]++;
        nn[w]=0;
      }         
      return bt;
+}
+
+static inline uint32_t zosceqbitsIxf(uint32_t depth, uint32_t in, uint32_t w){   // swopped dpeth and in
+  uint32_t bt;
+  static int32_t n[4]={0};
+  static int32_t nn[4]={0};
+  depth=depth>>4;
+  in=in>>4;
+
+     if (n[w]>in) {
+       bt=0;
+       if (nn[w]>=depth) { // so equal bits from 0 / length 0 = 101010
+	 n[w]=0;
+       }
+       nn[w]++;
+     } // n     
+     else {
+       bt=1;
+       n[w]++;
+       nn[w]=0;
+     }         
+     return bt;
+}
+     
+static inline uint32_t zosc1bitsIf(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt[4]={0};
+  static uint32_t n[4]={0};
+  depth=4095-depth;
+  depth=depth>>4;
+
+  if (n[w]>depth)  {
+    lastbt[w]^=1;
+    n[w]=0;
+  }
+  n[w]++;
+  bt=lastbt[w];
+  return bt;
+}
+
+ 
+static inline uint32_t zosc1bitsIslow(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt[4]={0};
+  static uint32_t n[4]={0};
+  depth=4095-depth;
+  depth=depth<<4;
+  if (n[w]>depth)  {
+    lastbt[w]^=1;
+    n[w]=0;
+  }
+  n[w]++;
+  bt=lastbt[w];
+  return bt;
 }
 
 static inline uint32_t zonebitsI(uint32_t depth, uint32_t in, uint32_t w){ // depth=0 resets STROBE

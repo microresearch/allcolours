@@ -41,7 +41,6 @@ void SR_geo_inner_function_glob(uint32_t w){
 
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
       (*globalls_depth[glob>>8])(gate[w].matrix[19]);
-      gate[w].fake=gate[w].trigger;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
@@ -62,7 +61,6 @@ void SR_geo_inner_function_globoutside(uint32_t w){
   else gate[w].dac = delay_buffer[w][1];
 
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-      gate[w].fake=gate[w].trigger;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
@@ -85,7 +83,6 @@ void SR_geo_inner_gappedfunction_glob(uint32_t w){  // depth or cycle prob - glo
 
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
       (*globalls_depth[glob>>8])(gate[w].matrix[19]);
-      gate[w].fake=gate[w].trigger;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
@@ -117,7 +114,6 @@ void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle pro
   else gate[w].dac = delay_buffer[w][1];
 
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-      gate[w].fake=gate[w].trigger;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   

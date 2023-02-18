@@ -1,5 +1,7 @@
 // geoLL
 
+// can have some abstract runglers from NN here...
+
 /*
 
 LL: routes as primary, speeds 0 follows CC but add extra rungler!
@@ -25,7 +27,6 @@ void SR_geo_inner_gappedfunctionrung(uint32_t w){  // depth or cycle prob
   gate[w].dac = delay_buffer[w][1];
 
   if (zbinrouteSRbitsfixed(0,0,w)){
-      gate[w].fake=gate[w].trigger;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
@@ -36,8 +37,8 @@ void SR_geo_inner_gappedfunctionrung(uint32_t w){  // depth or cycle prob
 	  bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
       }
       else {
-	//bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
-	bitn=0;
+	bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+	//	bitn=0;
       }	  
     }
     BITN_AND_OUTV_; 
@@ -66,8 +67,9 @@ void SR_geo_outer_L00(uint32_t w){  // set length or could better be TYPE
 
 // next 16 follows geoCC but we need different runglers
 
-// 4 simple bit as speed type 1 runglers
-// L40-> C40
+// 4 simple bit as clkfrom runglers:
+//rungler2: route in, clkfrom speedfrom SR
+// L40 from C40
 
 void SR_geo_outer_L41(uint32_t w){ // select function/gapped array
   if (gate[w].changed==0) {
@@ -103,3 +105,5 @@ void SR_geo_outer_L43(uint32_t w){ // select function/gapped array - fixed route
     gate[w].inner=SR_geo_inner_gappedfunctionrung; // as we have depth here
   }
 }
+
+// add other type of abstract runglers...

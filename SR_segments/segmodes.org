@@ -46,6 +46,37 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 - full tests CC modes before we go further and replicate, smaller tests on runglers
 - final tests and tweaks eg. orderings of functions in arrays and check these against fixed references for functions
 
+** 18/2/2023
+
+*TODO: below, can add/test new speeds/bursts (also for xorspeeds for NN, LL and RR), can add prob of adc entry array for NN (below), shift all strobe funcs to end of arrays*
+
+///
+
+- DONEremoved fake for dac
+- DONEfixed giant strobed bug
+
+///
+
+- quick lower test - issues with globals and *we need to check depth in all function arrays*
+
+///
+
+CHEckedadc reset funcs we didn't touch???? now in NN*
+
+new funcs: zosc1bitsslow, zosc1bitsIslow //strobe ones for prob, + put counts in probs ORGANISE...// added all
+
+-*DONEdo we have probs which are more of a sudden switch rather than gradual probbits eg. toggle for depth length?
+
+added strobe ones to probf_anystrobe_depth[64] <<6: 29+ countbits also...  test in NN11 - could also be as speeds?
+
+what else can use switches - any kind of prob with a static condition...
+
+to switch train in! --- + possible individual prob array for NN: probf_anystrobe_forNN_depth[16]*
+
+- DONE. can run out but ok re-test loop of inprobadc: N11
+
+TODO: physical tests all CC modes one by one... and catalogue/check sanity of each
+
 ** 17/2/2023
 
 -DONE fix CV and CVL - smoothings checked again/reduced
@@ -56,7 +87,7 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** 16/2/2023
 
-*DONE-retest all... DONE/TODO: for comparisons 8 bits depth is better so no glitches - fill out probfs*
+*DONE-retest all probfs ... DONE/TODO: for comparisons 8 bits depth is better so no glitch*
 
 *if we get sole speed from the one we route into we have issues???*
 
@@ -82,11 +113,27 @@ default: routebits_nodepth_typesz;
 /////////////
 catalogue CC in groups of 4:
 
-basic
-0
-1
-2
-3
+BASIC:
+00 - dactype
+01 - prob invert
+02 - prob route vs cycle
+03 - route vs. [route^cycle]
+
+10 - route type
+11 - dacparam
+12 - length
+13 - depth as route
+
+20 - select routebits_nodepth_typesz 
+21 - select routebits_anystrobe_nodepth_typesz
+22 - select routebits_depth_typesz
+23 - depth for above
+
+30 - select routebits_anystrobe_depth_notypesz
+31 - as above. depth
+32 - gapped funcbit. depth
+33 - gapped funcbit fixed prob [ func [xor] func with cycle] 
+//////////
 
 speed/prob
 4
@@ -100,7 +147,7 @@ strobe
 10
 11
 
-matrixp/globals in RR
+matrixp/globals in RR - to test from there
 12
 13
 14
@@ -128,8 +175,6 @@ eg for CC strobe we need: 3,4,5,6,9,10,11,12,13,14,15,16,17 try maparray...uint3
 *for NN which outers do or dont use ADC- how to divide, organise*
 
 *also sort better strobe and nonstrobe order in functions*
-
-//// what is difference osc1bits and osceq? they are the same... so now we fix osceq to use IN for second bit - can also be reversed ones/zeros
 
 - DONE_TESTadd abstract index as [17] was taken... -> [20] maybe re-test
 

@@ -392,32 +392,4 @@ void SR_geo_outer_Ntestprobentryor(uint32_t w){
   }
 }
 
-void SR_geo_outer_Ntestprobentryreset(uint32_t w){  
-  if (gate[w].changed==0) { // 1=change 0= no change
-  gate[w].matrix[0]=1<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=1<<7; // fixed route
-  //  gate[w].matrix[6]=CVL[w]; // length
-  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
-  gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
-  gate[w].matrix[9]=3<<7;// 3 is classic prob // 5 is strobe!
-  gate[w].matrix[10]=CVL[w]; 
-  gate[w].inner=SR_geo_inner_probadcreset;
-  }
-}
-
-
-void SR_geo_outer_Ntestprobentryadvance(uint32_t w){  
-  if (gate[w].changed==0) { // 1=change 0= no change
-  gate[w].matrix[0]=1<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; //??? speed
-  gate[w].matrix[3]=1<<7; // fixed route
-  //  gate[w].matrix[6]=CVL[w]; // length
-  //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
-  gate[w].matrix[7]=1<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
-  gate[w].matrix[9]=3<<7;// 3 is classic prob // 5 is strobe!
-  gate[w].matrix[10]=CVL[w]; 
-  gate[w].inner=SR_geo_inner_probadcadvance;
-  }
-}
 

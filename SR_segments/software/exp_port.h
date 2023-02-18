@@ -756,7 +756,7 @@ static inline uint32_t pstream(uint32_t depth, uint32_t in, uint32_t w){ // all 
 static inline uint32_t pSRBITMIX(uint32_t depth, uint32_t in, uint32_t w){//depth and in and we use dac so is a tough one
   uint32_t x, tmp, bitrr, temp, bitn=0;
   float mixer;
-  tmp=255-(depth>>4); // 8 bits
+  tmp=(depth>>4); // 8 bits
     mixer=1.0f/((float)(in>>4)+1.0f);
     mixer*=(float)(gate[dacfrom[daccount][w]].dac>>4);
     // how to mix with DAC using CVL - gate[dacfrom[daccount][w]].dac
@@ -773,11 +773,9 @@ static inline uint32_t pSRBITMIX(uint32_t depth, uint32_t in, uint32_t w){//dept
     }
   return bitn;
   }
-
-
 static inline uint32_t pSRLcvSRmaskroute(uint32_t depth, uint32_t in, uint32_t w){//depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  tmp=(255-(depth>>4)) ^ DACFROM; // other logics // 8 bits
+  tmp=((depth>>4)) ^ DACFROM; // other logics // 8 bits
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -793,7 +791,7 @@ static inline uint32_t pSRLcvSRmaskroute(uint32_t depth, uint32_t in, uint32_t w
 
 static inline uint32_t pSRLcvroute(uint32_t depth, uint32_t in, uint32_t w){//depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-    tmp=255-(depth>>4); // 8 bits
+    tmp=(depth>>4); // 8 bits
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 

@@ -592,15 +592,15 @@ void SR_geomantic_inner_split3C(uint32_t w){  //strobe - could be strobe mode? u
 
 ///////////////////
 
-void SR_geo_innerxorC(uint32_t w){  // xor with fixed route - but we don't track cv???
+void SR_geo_innerxorC(uint32_t w){  // xor with fixed route - but we don't track cv??? means what?
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
   //
   if ( (*speedfromcvforxor[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w) ^ speedfromforxor[0](0,0,w) ){ // speedfunc xor with fromforxor->binroutfixed...
     gate[w].fake=gate[w].trigger;
     GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; // why it makes difference if this is before or after...
-    bitn=(*routebitsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    //    bitn=(*routebitsd[gate[w].matrix[3]>>6])(gate[w].matrix[4], gate[w].matrix[5], w); 
     BITN_AND_OUTV_; 
     new_data(val,w);
     }

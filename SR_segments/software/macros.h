@@ -197,7 +197,7 @@ static uint32_t outcnt=0;
 // and for NADA both the same
 #define HEADSSINNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
-#define HEADNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; gate[w].strobed=0; \
+#define HEADNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
 //
 
@@ -209,6 +209,7 @@ static uint32_t outcnt=0;
 
 // redefining for struct - adding in count for lastspeed
 #define GSHIFT_ {				\
+    gate[w].strobed=0;							\
     gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
     gate[w].Gshift_[0]=gate[w].shift_;					\
     gate[w].Gshift_[1]=gate[w].shift_;			\
@@ -599,7 +600,7 @@ static uint32_t outcnt=0;
     gate[w].flip^=1;							\
     if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrix[13]>>7])) bitn|=gate[w].trigger; \
     gate[w].shift_+=bitn;						\
-    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); \
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].strobed); \
     if (val>4095) val=4095;						\
     PULSOUT;								\
 }
