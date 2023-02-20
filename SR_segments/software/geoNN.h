@@ -327,6 +327,32 @@ void SR_geo_inner_probadcentry(uint32_t w){  // ADC only - prob for adc itself -
     }
 }
 
+void SR_geo_inner_probadcburst(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    
+    if ((*probf_anystrobe_forNN_depth[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+	  ADCgeneric2; 
+	  bitn=(*adcfromsd[gate[w].matrix[7]>>7])(gate[w].matrix[8], ADCin, w); 
+	}
+      
+    else bitn=binroutesel0(0,0,w); // theroute which is ... and routetype
+    
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
 void SR_geo_inner_probdacentry(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
   HEADNADA;
 
@@ -377,6 +403,55 @@ void SR_geo_inner_probabstractentry(uint32_t w){
     }
 }
 
+void SR_geo_inner_probabstractburst(uint32_t w){ 
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probf_anystrobe_forNN_depth[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[18], gate[w].matrix[5], w);
+    }
+    else bitn=binroutesel0(0,0,w); // theroute which is ... and routetype
+    
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geo_inner_probdacburst(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probf_anystrobe_forNN_depth[gate[w].matrix[9]>>7])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      ADCin=gate[dacIN[daccount][w]].dac;
+      bitn=(*adcfromsd[gate[w].matrix[7]>>7])(gate[w].matrix[8], ADCin, w); 
+	}
+      
+    else bitn=binroutesel0(0,0,w); // theroute which is ... and routetype
+    
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
 
 void SR_geo_inner_probadcentryxor(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
   HEADNADA;
@@ -604,7 +679,7 @@ void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[7]=CVL[w]; // adctype
-  //  gate[w].matrix[8]=CV[w]; // adccv //TEST // already inverted
+  //gate[w].matrix[8]=CVL[w]; // adccv //TEST // already inverted
   gate[w].inner=SR_geo_inner_norouteadcN; 
 }
 
@@ -677,7 +752,18 @@ void SR_geo_outer_N13(uint32_t w){ // 2-prob of abstract entry or route entry
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[9]=0<<6; // invprobbits
   gate[w].matrix[10]=CVL[w]; // depth for prob
-  gate[w].inner=SR_geo_inner_probabstractentry;//
+  gate[w].inner=SR_geo_inner_probadcentry;
+}
+}
+
+// trial bursts/probf_anystrobe_forNN_depth[16] - prob of x entry vs y entry eg as 13 above
+void SR_geo_outer_Nburst(uint32_t w){ // 2-prob of abstract entry or route entry
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[9]=15<<7; // trial  bursts
+  gate[w].matrix[10]=CVL[w]; // depth for prob
+  gate[w].inner=SR_geo_inner_probdacburst;// adcburst abstractburst
 }
 }
 
@@ -899,11 +985,11 @@ geoN.h:
 
 // outer 80+ strobe
 
-void SR_geo_outer_N80(uint32_t w){   // simple fixed strobe with adc entry only, select strobe func and ADC
+void SR_geo_outer_N80(uint32_t w){   // simple fixed strobe with adc entry only, select strobe func and ADC type/param
   if (gate[w].changed==0) {
     gate[w].matrix[15]=0<<8;//  simple strobe
     gate[w].matrix[7]=CV[w]; // adc type // can also be depth for ADC //
-    gate[w].matrix[8]=CVL[w];
+    gate[w].matrix[8]=CVL[w]; // adc param
     gate[w].inner=SR_geo_inner_str_functionN;
   }
 }
@@ -939,8 +1025,7 @@ void SR_geo_outer_Ntestprobadvance(uint32_t w){
 
 // test speed xor
 void SR_geo_outer_speedxorN(uint32_t w){  // which gaps/functions - but we have CVL used
-  // what is appropriate speed function????
-  gate[w].matrix[0]=CVL[w];
+  gate[w].matrix[0]=CVL[w];   // what is appropriate speed function????
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // 1 and 2 we don't use and CV is free
   gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but do we need 2nd cv???
   gate[w].inner=SR_geo_innerxorNN;

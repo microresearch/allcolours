@@ -25,19 +25,30 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** ////XXXXXTODO XXXXXXX
 
-//// misc TODO:
-
 -  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
 
 *re-check use of clk, pulsin, pulsout, strobey*
+
+*for NN which outers do or dont use ADC- how to divide, organise*
+
+- *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
+
+- *GeoCC ... or keep all first 16 sans gaps, fixed which might include rungler etc. - adjust when we have everything*
+
+- *LL,, RR, NN pull rungler ops into first 16 basic modes - as in rungler with basic route in. 2x runglers - LL, RR, NN*
 
 - *for gappedfunction we need always:*
   gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
   gate[w].matrix[4]=CVL[w];
   gate[w].matrix[10]=CVL[w];  
 
-
 - ????uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
+
+- check binroute, speedroute arrays etc... to see that makes sense
+
+maybe expand these arrays!!
+
+- tweak: shift all strobe funcs to end of arrays and recheck all fixed speeds/funcs
 
 - check all extents, all arrays and all functions for sanity - geogen and each before we expand across all sides...
 - sanity check all code, line by line: LIST! main, caput00, adcetc, geogen, arrays, all resources, ALL!
@@ -46,9 +57,107 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 - full tests CC modes before we go further and replicate, smaller tests on runglers
 - final tests and tweaks eg. orderings of functions in arrays and check these against fixed references for functions
 
-** 18/2/2023
+** catalogue
 
-*TODO: below, can add/test new speeds/bursts (also for xorspeeds for NN, LL and RR), can add prob of adc entry array for NN (below), shift all strobe funcs to end of arrays*
+catalogue CC in groups of 4:
+
+BASIC:
+00 - dactype
+01 - prob invert
+02 - prob route vs cycle
+03 - route vs. [route^cycle]
+
+10 - route type
+11 - dacparam
+12 - length
+13 - depth as route
+
+20 - select routebits_nodepth_typesz 
+21 - select routebits_anystrobe_nodepth_typesz
+22 - select routebits_depth_typesz
+23 - depth for above
+
+30 - select routebits_anystrobe_depth_notypesz
+31 - as above. depth
+32 - gapped funcbit. depth
+33 - gapped funcbit fixed prob [ func [xor] func with cycle] 
+//////////
+
+speed/prob
+4 
+5
+6
+7
+
+strobe
+8
+9
+10
+11
+
+matrixp/globals in RR - to test from there
+12
+13
+14
+15
+
+- for NN, LL, RR what we have to gap in there?
+
+** 20/2/2023
+
+- *can we fit xorspeeds into CC? where? can lose one prob and throw in, bump C43 to C50*
+
+all about transition from fixed funcs to... generic funcs...
+
+
+*how in matrixp we can say set matrixp[x] to CVL and then be able to set others to DAC etc... and go back and forth*
+// tested in test.c if we stick with oldgap then we just change what we have and as we change next last defaults to oldest value
+// *only way to set is outside of oldgaps -- or we can have layers of oldgaps...*
+
+/////
+
+
+TODO:
+
+- physical tests all CC modes one by one... and catalogue/check sanity of each
+- fill in gaps in NN, LL and RR
+
+- *we need to check depth in all function arrays*
+
+//// DONES:
+
+DONEin matrixp we need to change from probcycles everywhere to...*
+
+DONE/testing- do we have route X vs route Y as prob/burst eg. single route 2 in vs double eg. 6 in
+as prob funcn of  binroute vs altroute[count] // sans binary Zbinrouteforalt - *need to finish altroutes...*
+
+pull altroute into arrays
+
+- DONEcan add/test new speeds/bursts (also for xorspeeds for NN, LL and RR) ???
+
+- DONEtest tails with strobes - NN strobe // fixed tail
+
+- DONEcan add prob of adc entry array for NN (below): probf_anystrobe_forNN_depth[16]
+
+- DONEcheck adc vs dac out what is cleanest - do we have 4 bits in every 4...YES!
+
+DAC_ 14 is good! for slower waveforms - make default // contemplate reduce adc/dac modes and sort for best...
+
+- DONE/TO TEST*fix strobed: remove GSHIFT =0 and set 0 or 1 in ALL speeds* //but more complex for those which are used on probs - so we need 2x speed and prob func REDO with speed versions mark as S_: zsprobbits, cipherforspeed - !has strobe!
+how to test?
+
+which mode can we test speeds on? C43 (not strobes)DONE
+90 for strobes
+
+WAS ALREADY DONE:fixing dac strobes - need array not there so can pre-fix... 
+
+//////////////////
+
+how we start to think of modes - in groups eg. 1types/basics // 2route modes // 3speed/rungler // 4prob // 5strobe speed // 6matrixp/globals
+
+as sounding distinct?
+
+** 18/2/2023
 
 ///
 
@@ -57,7 +166,7 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ///
 
-- quick lower test - issues with globals and *we need to check depth in all function arrays*
+- quick lower test - issues with globals 
 
 ///
 
@@ -87,9 +196,9 @@ TODO: physical tests all CC modes one by one... and catalogue/check sanity of ea
 
 ** 16/2/2023
 
-*DONE-retest all probfs ... DONE/TODO: for comparisons 8 bits depth is better so no glitch*
+DONE-retest all probfs ... DONE/TODO: for comparisons 8 bits depth is better so no glitch*
 
-*if we get sole speed from the one we route into we have issues???*
+if we get sole speed from the one we route into we have issues???*
 
 - *catalogue and finish/test runglers for NN: we need simpler fixed runglers*
 
@@ -111,47 +220,6 @@ default: routebits_nodepth_typesz;
 - *DONEthus fix inv functions in geogen... - test all!
 
 /////////////
-catalogue CC in groups of 4:
-
-BASIC:
-00 - dactype
-01 - prob invert
-02 - prob route vs cycle
-03 - route vs. [route^cycle]
-
-10 - route type
-11 - dacparam
-12 - length
-13 - depth as route
-
-20 - select routebits_nodepth_typesz 
-21 - select routebits_anystrobe_nodepth_typesz
-22 - select routebits_depth_typesz
-23 - depth for above
-
-30 - select routebits_anystrobe_depth_notypesz
-31 - as above. depth
-32 - gapped funcbit. depth
-33 - gapped funcbit fixed prob [ func [xor] func with cycle] 
-//////////
-
-speed/prob
-4
-5
-6
-7
-
-strobe
-8
-9
-10
-11
-
-matrixp/globals in RR - to test from there
-12
-13
-14
-15
 
 - DONEfilling in matrixp ops
 
@@ -172,9 +240,7 @@ lots of tests below
 eg. we don;t need adc etc in all except adc mode - some kind of mapping
 eg for CC strobe we need: 3,4,5,6,9,10,11,12,13,14,15,16,17 try maparray...uint32_t maparrayCC[16]={3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 3, 4, 5};
 
-*for NN which outers do or dont use ADC- how to divide, organise*
-
-*also sort better strobe and nonstrobe order in functions*
+also sort better strobe and nonstrobe order in functions*
 
 - DONE_TESTadd abstract index as [17] was taken... -> [20] maybe re-test
 
@@ -319,11 +385,6 @@ speeds
 bits
 probs
 
-- *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
-
-- *GeoCC ... or keep all first 16 sans gaps, fixed which might include rungler etc. - adjust when we have everything*
-
-- *LL,, RR, NN pull rungler ops into first 16 basic modes - as in rungler with basic route in. 2x runglers - LL, RR, NN*
 
 rungler1: osc1 or abstract with speed or depth from speedfrom dac
 rungler2: route in, clkfrom speedfrom SR
@@ -672,7 +733,9 @@ new prob below...26/1
 
 ** 26/1/2023
 
-- do we have prob of route x vs route y* // depth for prob so... leaves what? for strobe modes only with prob on cv and cvl as x vs. theroute *TODO* how that works? do as special inner and depth
+- do we have prob of route x vs route y* // depth for prob
+  so... leaves what? for strobe modes only with prob on cv and cvl as
+  x vs. theroute *TODO* how that works? do as special inner and depth
 
 - other bit collections like: routebitsnostrobedepthprob ???check out - what used for and update -> we use these against LFSR anyways...//ignore or work through*
 

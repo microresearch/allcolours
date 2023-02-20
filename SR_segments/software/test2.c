@@ -1066,11 +1066,11 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
       x=x<<tmp;
           }
 
-    uint32_t pointer=1, pointerx=7, pointery=9,nul=0;
-    uint32_t *varr[10]={&pointery,&pointer,&pointer,&pointer,&pointer,&pointer,&pointerx,&pointer,&pointer,&pointer};
+    uint32_t pointer=1, pointerx=13, pointery=5,nul=0;
+    uint32_t *varr[10]={&pointery,&pointer,&pointer,&pointer,&pointer,&pointer,&pointerx,&pointery,&pointer,&pointer};
     
     uint32_t matrix[20];
-    uint32_t *matrixp[20]={&pointery,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul};
+    uint32_t *matrixp[20]={&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul};
     uint32_t *matrixpG[20]={&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul};
 
     //gate[wh].matrixp[which]=&gate[wh].matrix[which]; // holds the value there
@@ -1081,28 +1081,22 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
     gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
     gate[wh].set[which]=1;
     */
+
+        void setvargap(uint32_t wh, uint32_t which, uint32_t var){
+      matrixp[which]=varr[var]; // new one
+	}
     
     void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
       uint32_t y;
   static uint32_t oldgap[4]={64,64,64,64};
     if (which!=oldgap[wh]){
-      pointer++;
+      //      pointer++;
       //nul++;
       //      matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
       matrixp[oldgap[wh]]=matrixpG[oldgap[wh]];//
       matrixpG[which]=matrixp[which]; // previous  
       matrixp[which]=varr[var]; // new one
       oldgap[wh]=which;
-    }
-    
-    else if (matrixp[oldgap[wh]]!=varr[var]){
-      //      matrixp[which]=varr[var]; // new one
-      //      matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
-      matrixp[oldgap[wh]]=matrixpG[oldgap[wh]];//
-      matrixpG[which]=matrixp[which]; // previous  
-      matrixp[which]=varr[var]; // new one
-      oldgap[wh]=which;
-
     }
 
     for (y=0;y<20;y++){
@@ -1113,28 +1107,43 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
     }
 
     
-    for (x=0;x<20;x++){
-      setvargapz(0,x,5);
-    }
+    //    for (x=0;x<20;x++){
+    //      setvargapz(0,x,5);
+    //    }
     printf("non\n\n");
+    setvargap(0,19,6); // pointerx 13
 
-    setvargapz(0,19,6);
-    setvargapz(0,19,6);
-    setvargapz(0,19,6);
+    
+    setvargapz(0,1,6); // pointerx 13
+    pointerx++;
+    setvargapz(0,0,7); // pointery 5
+    pointery++;
+    setvargapz(0,1,6);
+    pointerx++;    
+    setvargapz(0,0,7);
 
+    setvargapz(0,2,6); // pointerx 3
+    pointerx++;
+    setvargapz(0,1,7); // pointery 5
+    pointery++;
+    setvargapz(0,0,6);
+    pointerx++;    
+    setvargapz(0,1,7);
+    
+    
         printf("non\n\n");
     
     
-    for (x=0;x<20;x++){
-      setvargapz(0,x,5);
-    }
+	//    for (x=0;x<20;x++){
+	//      setvargapz(0,x,5);
+	//    }
 
 
     
     nn=0;
     int32_t totn, temp;
     int32_t smoothn[SMOOTHINGS]={0};
-
+    /*
     for (x=0;x<12800;x++){
     // speedn
       totn=totn-smoothn[nn];
@@ -1146,6 +1155,7 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
   temp=totn/SMOOTHINGS;  
   printf("nn %d totn %d temp: %d\n",nn, totn, temp);
     }
+    */
     /*
     for (otherpar=3;otherpar<31;otherpar++){
 
@@ -1203,4 +1213,6 @@ uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
  }
  printf("\n");
     */
+    printf(" xxxxxxxxxxxxx %d\n", 8<<7);
+    
 }

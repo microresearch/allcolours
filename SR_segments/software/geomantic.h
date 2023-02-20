@@ -1,9 +1,9 @@
 // 1. speeds
 
 // 6/2/ all use depth
-uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac1, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbits, spdvienna, spdvienna2, spdvienna3, spdvienna4, zprobbits, zTMsimplebits, zTMsimplebitsL, osceq, zosc1bits, zENbits, zENbitsI,  zENsbits, zENsbitsI, sigmadelta, zbinrouteSRbits, zwiardnotinvbits, zwiardnotinvbitsL, zsuccbitsI_noshiftd, zSRNbits, zsprobbits, zcountbits, zcountbitsI}; // 31!! 2x spdfrac and spdfracend for interpoll //  checked for depths and tested 6/2 // can try bursts as speed?
+uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac1, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zcompbitsS_, spdviennaS_, spdvienna2, spdvienna3, spdvienna4, zprobbitsS_, zTMsimplebitsS_, zTMsimplebitsLS_, osceqS_, zosc1bitsS_, zENbitsS_, zENbitsIS_,  zENsbitsS_, zENsbitsIS_, sigmadeltaS_, zbinrouteSRbitsS_, zSRBURSTflipS_, zwiardnotinvbitsS_, zwiardnotinvbitsLS_, zsuccbitsI_noshiftdS_, zSRNbitsS_, zcountbitsS_, zcountbitsIS_}; 
 
-uint32_t (*speedfromnostrobe_noIN[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, spdfrac1, spdfrac1, spdfrac3, spdfrac4, spdfrac5, zprobbits, zTMsimplebitsL, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI, zENsbits, zENsbitsI, sigmadelta, zbinrouteSRbits, zwiardnotinvbitsL, zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbits_noshiftd, zsuccbitsIpp, zsuccbitsI_noshiftd, zSRNbits, zsprobbits, zcountbits, zcountbitsI};
+uint32_t (*speedfromnostrobe_noIN[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, zprobbitsS_, zTMsimplebitsLS_, osceqS_, zosc1bitsS_, zosc1bitsIS_, zENbitsS_, zENbitsIS_, zENsbitsS_, zENsbitsIS_, sigmadeltaS_, zbinrouteSRbitsS_, zwiardnotinvbitsLS_, zsuccbitsppS_, zsuccbitsprobS_, zsuccbits_noshiftS_, zsuccbitsI_noshiftS_, zsuccbits_noshiftdS_, zsuccbitsIppS_, zsuccbitsI_noshiftdS_, zSRNbitsS_, zsprobbits, zcountbitsS_, zcountbitsIS_}; // can add bursts as speed! //LACKS!
 
 uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}; // TODO match with speedfromnostrobe
 
@@ -11,13 +11,11 @@ uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,
 
 uint32_t (*speedfromforxor[5])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift}; 
 
-uint32_t (*speedfromcvforxor[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac1, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend, zprobbits, zTMsimplebitsL, osceq, zosc1bits, zosc1bitsI, zENbits, zENbitsI,  zENsbits, zENsbitsI, zcompbits, zosc1bits, sigmadelta, cipherforspeed, spdvienna, zwiardinvbits, zjusttailwithdepth, zsuccbitsI_noshift, zsuccbits_noshift, /**/spdfrac1, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend, zprobbits, zTMsimplebitsL};// no strobes, no routes and only CV ones... doubled up
+uint32_t (*speedfromcvforxor[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac1, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend, zprobbitsS_, zTMsimplebitsLS_, osceqS_, zosc1bitsS_, zosc1bitsIS_, zENbitsS_, zENbitsIS_,  zENsbitsS_, zENsbitsIS_, zcompbitsS_, zosc1bitsS_, sigmadeltaS_, cipherforspeed, spdviennaS_, zwiardinvbitsS_, zjusttailwithdepthS_, zsuccbitsI_noshiftS_, zsuccbits_noshiftS_, /**/zSRBURSTflipS_, ztemplateBURSTflipS_, spdfrac1, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend};// no strobes, no routes and only CV ones... doubled up --- but cipher has strobe?
 //can try add bursts as speed?
 
 // new for strobes
-uint32_t (*speedfromstrobe_depth[16])(uint32_t depth, uint32_t in, uint32_t wh)={strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle, /**/strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle, /**/strobespdfrac, zstrobeBURST, clksrG, clksr}; // 6  add xor with speed = where was? as insides?
-// can try new bursts also
-
+uint32_t (*speedfromstrobe_depth[16])(uint32_t depth, uint32_t in, uint32_t wh)={strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle, /**/strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle, /**/zstrobeBURST, zstrobeBURST1, zstrobeBURST2, zstrobeBURST3flip};
 
 uint32_t (*speedfromstrobe_nodepth[16])(uint32_t depth, uint32_t in, uint32_t wh)={strobe, ztogglebits, ztogglebitssh, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift, strzbinroutfixed_noshift_transit, strzbinroutfixed_noshift_transitI, strzbinroutfixed_noshift, strzbinroutfixedI_noshift, /**/strobe, ztogglebits, ztogglebitssh, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift};
 
@@ -49,7 +47,7 @@ uint32_t (*probf_anystrobe_forNN_depth[16])(uint32_t depth, uint32_t in, uint32_
 
 uint32_t (*probf_anystrobe_depth_noin[32])(uint32_t depth, uint32_t in, uint32_t wh)={zinvprobbits, zprobbits, zsprobbits, zownprobbits, zownGprobbits, spdfrac, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zosc1bitsslow, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, sigmadelta, spdvienna, zsuccbitsI_noshift, zsuccbits_noshift, zSRNbits, strobespdfrac, zstrobeBURST, clksrG, clksr, zprobbitsxorstrobe, zprobbitsxortoggle, ztogglebits, ztogglebitssh, zbinroutebits_noshiftd, zbinrouteSRbits, zsuccbitsI_noshiftd}; // 35 -3
 
-uint32_t (*probf_anystrobe_nodepth[16])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zjusttail, strobe, ztogglebitsnod, ztogglebitsshnod, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift, strzbinroutfixed_noshift_transit, strzbinroutfixed_noshift_transitI, strzbinroutfixed_noshift, strzbinroutfixedI_noshift, zbinroutebits_noshift, zbinroutebits_noshift_transit}; // >>8
+uint32_t (*probf_anystrobe_nodepth[16])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zjusttail, strobe, ztogglebitsnod, ztogglebitsshnod, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift, strzbinroutfixed_noshift_transit, strzbinroutfixed_noshift_transitI, strzbinroutfixed_noshift, strzbinroutfixedI_noshift, zbinroutebits_noshift, zbinroutebits_noshift_transit}; // >>8 
 
 uint32_t (*probf_nostrobe_depth[33])(uint32_t depth, uint32_t in, uint32_t wh)={zinvprobbits, zprobbits, zsprobbits, zownprobbits, zownGprobbits, spdfrac, spdfrac1, spdfrac3, spdfrac4, spdfrac5, spdfracdac3, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zosc1bitsslow, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, sigmadelta, spdvienna, zsuccbitsI_noshift, zsuccbits_noshift, zSRNbits, zbinroutebits_noshiftd, zbinroutebits_noshift_transitd, zbinroutebitsI_noshiftd, zbinrouteSRbits, zsuccbitsI_noshiftd, zsuccbits_noshiftd}; // 33
 
@@ -68,3 +66,4 @@ void (*globalls[32])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, 
 void (*globalls_depth[16])(uint32_t depth)={binaryN, binaryX, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalorder, SRRglobaltailset, /**/binaryN, binaryX, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd}; //>>8
 
 void (*globalls_nodepth[16])(uint32_t depth)={resett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalsync, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, /**/resett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd}; // >>8
+

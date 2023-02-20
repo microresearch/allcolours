@@ -195,7 +195,7 @@ void SR_geo_outer_R121(uint32_t w){ // ordering
   }
 }
 
-void SR_geo_outer_R122(uint32_t w){
+void SR_geo_outer_R122(uint32_t w){ // all counts changed
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed 
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv

@@ -88,9 +88,25 @@ uint32_t binroute[17][4]={ // add more routes, also what seq change of routes ma
     {0,0,0,0} // drop all routes
 }; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
 
-//TODO: remove
-uint32_t androutes[16][4]={ // 2 routes per SR, but still as 2 each encodings
-  {10,5,10,5}
+uint32_t altbinroute[17][4]={ // for probs - can be more like double route but trial first one and fill in rest TODO
+    {12,9,10,5}, // new default: 8 1 2 4 // default was 8121 // now we have full route 8124
+  //  {0,0,1,0}, //  test
+	{8,1,2,2}, // notexpanding
+	{8,1,2,1}, // notexpanding
+	{8,1,2,8}, // expanding
+	{8,1,2,9}, // expanding
+	{8,1,2,11}, // expanding
+	{8,1,2,12}, // expanding
+	{8,1,2,4}, // route in one big circle
+	{0,1,2,4},
+	{9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
+	{1,2,4,8}, // only loop - this is what is added to get loop too for prob
+	{8,1,2,2}, // as defroutee 3/0/1/1
+	{8,1,1,2}, // as altroute 3/0/0/1
+	{8,9,1,2}, // bounce L and R back and forth
+	{8,1,2,5}, // others
+    {2,4,8,1}, // reverse round route
+    {0,0,0,0} // drop all routes
 };
 
 uint32_t inroute[16][4]={ // who we have main incoming route from 0-3 - from above

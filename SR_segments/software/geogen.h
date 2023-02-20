@@ -132,12 +132,33 @@ static inline uint32_t Zbinrout(uint32_t depth, uint32_t in, uint32_t w){   //
   return bitn;
 }
 
+static inline uint32_t Zbinrouteforalt(uint32_t depth, uint32_t in, uint32_t w){   // 
+  uint32_t bitrr, tmp, tmpp, x, bitn=0;
+  depth=binroute[count][w]; 
+    // deal with no route
+      tmpp=gate[w].routetype;
+      tmp=depth;
+      ROUTETYPE_;
+  return bitn;
+}
+
+static inline uint32_t Zbinrouteforaltalt(uint32_t depth, uint32_t in, uint32_t w){   // 
+  uint32_t bitrr, tmp, tmpp, x, bitn=0;
+  depth=altbinroute[count][w]; 
+    // deal with no route
+      tmpp=gate[w].routetype;
+      tmp=depth;
+      ROUTETYPE_;
+  return bitn;
+}
+
 static inline uint32_t Zbinrout_strip(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel
   uint32_t bitrr, tmp, tmpp, x, bitn=0;
   depth=depth>>8; // 4 bits
   tmpp=gate[w].routetype;
   if (depth==0) { // SR5 is 8th which is outside these bits 
-    x=8;//
+    //    x=8;//
+    x=w;
     ROUTETYPES_;
   } else
     {
@@ -227,6 +248,21 @@ static inline uint32_t Zzsuccbitspp(uint32_t depth, uint32_t in, uint32_t w){   
   // include itself or not
   uint32_t bitn=0, bitrr, tmpp;
   static uint32_t x=0; // shared
+  if (x==w) x++;
+  if (x>3) x=0;
+  //  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
+  //  gate[x].Gshift_[0]=(gate[x].Gshift_[0]<<1)+bt;
+  tmpp=gate[w].routetype;
+  ROUTETYPES_;
+  if ((depth>>4)>(LFSR__[w]>>4)) x++;
+  return bitn;
+}
+
+static inline uint32_t ZzsuccbitsppS_(uint32_t depth, uint32_t in, uint32_t w){   // depth // with TYPE
+  // include itself or not
+  uint32_t bitn=0, bitrr, tmpp;
+  static uint32_t x=0; // shared
+  gate[w].strobed=0;
   if (x==w) x++;
   if (x>3) x=0;
   //  bt = (gate[x].Gshift_[0]>>SRlength[x]) & 0x01;
@@ -462,6 +498,25 @@ static inline uint32_t zwiardinvbits(uint32_t depth, uint32_t in, uint32_t w){//
   return bt;
 }
 
+static inline uint32_t zwiardinvbitsS_(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  gate[w].strobed=0;
+  if ((depth>>4)<(in>>4)){
+    tmp=binroute[count][w]|binary[w]; 
+    for (uint32_t x=0;x<4;x++){
+      if (tmp&0x01){
+	bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+	bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = !((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
 static inline uint32_t zwiardinvbitsL(uint32_t depth, uint32_t in, uint32_t w){//global
   uint32_t bt=0, bitrr, tmp;
   if ((depth>>4)<(LFSR__[w]>>4)){
@@ -498,8 +553,48 @@ static inline uint32_t zwiardnotinvbits(uint32_t depth, uint32_t in, uint32_t w)
   return bt;
 }
 
+
 static inline uint32_t zwiardnotinvbitsL(uint32_t depth, uint32_t in, uint32_t w){//global
   uint32_t bt=0, bitrr, tmp;
+  if ((depth>>4)<(LFSR__[w]>>4)){
+    tmp=binroute[count][w]|binary[w]; 
+  for (uint32_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = ((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
+static inline uint32_t zwiardnotinvbitsS_(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  gate[w].strobed=0;
+  if ((depth>>4)<(in>>4)){
+    tmp=binroute[count][w]|binary[w]; 
+  for (uint32_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+  }
+  else {
+    bt = ((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);
+  }
+  return bt;
+}
+
+
+static inline uint32_t zwiardnotinvbitsLS_(uint32_t depth, uint32_t in, uint32_t w){//global
+  uint32_t bt=0, bitrr, tmp;
+  gate[w].strobed=0;
   if ((depth>>4)<(LFSR__[w]>>4)){
     tmp=binroute[count][w]|binary[w]; 
   for (uint32_t x=0;x<4;x++){
@@ -970,22 +1065,24 @@ void fliptail(void){ //
   // we can also use other gate[w].flips or even move through these
   //  HEADNADA;
   uint32_t w=8;
-  GSHIFTRED_;
+  GSHIFT_;//RED_;
   gate[8].shift_+=gate[3].flip;
   //  gate[8].shift_=LFSR_[0];
 }
 
 void flip(void){ //
   uint32_t w=8;
-  GSHIFTRED_;
-  gate[8].shift_^=1;//+=gate[3].flip;
-  //  gate[8].shift_=LFSR_[0];
+  static uint32_t flopp=0;
+  GSHIFT_;//RED_;
+  flopp^=1;//+=gate[3].flip;
+  //  gate[8].shift_+=flopp;
+   gate[8].shift_+=LFSR_[0]&0x01;
 }
 
 
 void basictail(void){ // tail here is basic 4th binroute at full speed // now 2ndn//left side
   uint32_t w=8;
-   HEADNADA;
+  HEADNADA;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -1368,40 +1465,6 @@ depth=binroute[count][w]|binary[w];
   return bt;
 }
 
-// testing dual fixed routes - TODO: to also bump/move these locally and globally
-// some routes don't work...
-// remove these
-static inline uint32_t binroutAND1(uint32_t depth, uint32_t in, uint32_t w){ // androutes dual routes...
-  uint32_t bt=0, bitrr, once=0;
-  depth=androutes[count][w];
-  for (uint32_t x=0;x<4;x++){
-    if (depth&0x01){  
-    bitrr = (gate[x].Gshare_>>SRlength[x]) & 0x01; 
-    if (once==0) bt=bitrr; 
-    else bt&=bitrr; 
-    once++;
-  }
-  depth=depth>>1;
-  }
-  return bt;
-}
-
-static inline uint32_t binroutAND11(uint32_t depth, uint32_t in, uint32_t w){ // androutes dual routes... Gshift
-  uint32_t bt=0, bitrr, once=0;
-  depth=androutes[count][w];
-  for (uint32_t x=0;x<4;x++){
-    if (depth&0x01){  
-    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
-    //gate[x].Gshare_=(gate[x].Gshare_<<1)+bitrr; //we don't shift it as we dont want to run at speed
-    if (once==0) bt=bitrr; 
-    else bt&=bitrr; 
-    once++;
-  }
-  depth=depth>>1;
-  }
-  return bt;
-}
-
 
 static inline uint32_t zjustcycle(uint32_t depth, uint32_t in, uint32_t w){ // just cycle// no depth
   uint32_t bt;
@@ -1419,6 +1482,24 @@ static inline uint32_t zjusttail(uint32_t depth, uint32_t in, uint32_t w){ // ju
 static inline uint32_t zjusttailwithdepth(uint32_t depth, uint32_t in, uint32_t w){ // just tail// with depth - how?
   uint32_t bt;
   float speed;
+  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  gate[w].time_now += speed;
+  gate[w].last_time = gate[w].int_time;
+  gate[w].int_time = gate[w].time_now;
+  bt = (gate[8].Gshift_[8]>>SRlength[8]) & 0x01;// tail
+
+  if(gate[w].last_time<gate[w].int_time) {
+    bt|=1; // move on
+    gate[w].time_now-=1.0f;
+    gate[w].int_time=0;
+  }
+  return bt;
+}
+
+static inline uint32_t zjusttailwithdepthS_(uint32_t depth, uint32_t in, uint32_t w){ // just tail// with depth - how?
+  uint32_t bt;
+  float speed;
+  gate[w].strobed=0;
   speed=logspeed[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
@@ -1827,6 +1908,7 @@ static inline uint32_t zbinroutebits_noshift(uint32_t depth, uint32_t in, uint32
 static inline uint32_t ztemplateBURSTflip(uint32_t depth, uint32_t in, uint32_t w){ // uses IN
   uint32_t bt=0, tmp;
   static uint32_t btt=0;
+  depth=4095-depth;
   if (LFSR__[w]>in){ // condition?
     train[w]=0;
     btt^=1;
@@ -1844,6 +1926,55 @@ static inline uint32_t ztemplateBURSTflip(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t zSRBURSTflip(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0, bitrr, tmp;
   static uint32_t btt=0;
+  depth=4095-depth;
+  tmp=binroute[count][w]|binary[w]; 
+  for (uint32_t x=0;x<4;x++){
+  if (tmp&0x01){
+    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  tmp=tmp>>1;
+  }
+
+  if (bt){
+    train[w]=0;
+    btt^=1;
+  }
+  if (train[w]< (depth>>4)){
+  train[w]++;
+  //  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+  }
+  else {
+    train[w]=0;
+    btt^=1;
+  }
+  return btt;
+}
+
+static inline uint32_t ztemplateBURSTflipS_(uint32_t depth, uint32_t in, uint32_t w){ // uses IN
+  uint32_t bt=0, tmp;
+  static uint32_t btt=0;
+  gate[w].strobed=0;
+  depth=4095-depth;
+  if (LFSR__[w]>in){ // condition?
+    train[w]=0;
+    btt^=1;
+    }
+  if (train[w]< (depth)){
+  train[w]++;
+  }
+  else {
+    train[w]=0;
+    btt^=1;
+  }
+  return btt;
+}
+
+static inline uint32_t zSRBURSTflipS_(uint32_t depth, uint32_t in, uint32_t w){ // 
+  uint32_t bt=0, bitrr, tmp;
+  static uint32_t btt=0;
+  gate[w].strobed=1;
+  depth=4095-depth;
   tmp=binroute[count][w]|binary[w]; 
   for (uint32_t x=0;x<4;x++){
   if (tmp&0x01){
@@ -1996,7 +2127,7 @@ depth=binroute[count][w]|binary[w];
 static inline uint32_t zbinroutebitscyclestr(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now
   uint32_t bt=0, bitrr;
   gate[w].strobed=1;
-depth=binroute[count][w]|binary[w]; 
+  depth=binroute[count][w]|binary[w]; 
     // deal with no route
     if (gate[w].trigger) depth=depth|(1<<w); // adds itself on strobe
   for (uint32_t x=0;x<4;x++){
@@ -2074,6 +2205,27 @@ static inline uint32_t zbinrouteANDbits(uint32_t depth, uint32_t in, uint32_t w)
 static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... SR itself, no GSR 
   uint32_t bt=0, bitrr;
   depth=depth>>8;
+  //  depth=15-depth;
+  if (depth==0 || depth==(1<<w)) { // SR5 is 8th which is outside these bits 
+    bitrr = (gate[8].Gshift_[w]>>SRlength[8]) & 0x01; 
+    bt=bitrr;
+  } else
+    {
+  for (uint32_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].shift_>>SRlength[x]) & 0x01; 
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+    }
+  return bt;
+}
+
+static inline uint32_t zbinrouteSRbitsS_(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... SR itself, no GSR 
+  uint32_t bt=0, bitrr;
+  depth=depth>>8;
+  gate[w].strobed=0;
   //  depth=15-depth;
   if (depth==0 || depth==(1<<w)) { // SR5 is 8th which is outside these bits 
     bitrr = (gate[8].Gshift_[w]>>SRlength[8]) & 0x01; 
@@ -2339,6 +2491,7 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t w){ // last
 static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out
   uint32_t bt=0;
   float speed;
+  gate[w].strobed=0;
   speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
@@ -2354,6 +2507,7 @@ static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t w){ // for 
 static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out // version with STOP on lowest
   uint32_t bt=0;
   float speed;
+  gate[w].strobed=0;
   speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
   if (speed>gate[w].lowest || w==2){ // or w==2 means no END for geoC ended... 
   gate[w].time_now += speed;
@@ -2374,6 +2528,7 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t w){ // dep
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   if (in==0) tmp=depth;
   else tmp=depth%in;
   //  tmp=in+depth;
@@ -2396,6 +2551,7 @@ static inline uint32_t spdfrac1(uint32_t depth, uint32_t in, uint32_t w){ // dep
   int32_t tmp;
   //  if (in==0) tmp=depth;
   //  else tmp=depth%in;
+  gate[w].strobed=0;
   tmp=in+depth;
   if (tmp>4095) tmp=4095;
   speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
@@ -2415,6 +2571,7 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t w){ // we 
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   tmp=(in>>1)+(depth>>1);
   if (tmp>4095) tmp=4095;
   speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
@@ -2434,6 +2591,7 @@ static inline uint32_t spdfrac5(uint32_t depth, uint32_t in, uint32_t w){ // we 
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   tmp=in+depth;
   tmp=tmp&4095;
   speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
@@ -2453,6 +2611,7 @@ static inline uint32_t spdfrac4(uint32_t depth, uint32_t in, uint32_t w){ // add
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   tmp=(depth>>2)-512;
   tmp+=(in>>2);  
   if (tmp<0) tmp=0;
@@ -2475,6 +2634,7 @@ static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   if (in==0) in=1;
   tmp=gate[dacfrom[count][w]].dac%(in); //changed
   tmp+=depth;
@@ -2496,6 +2656,7 @@ static inline uint32_t spdfracdac3x(uint32_t depth, uint32_t in, uint32_t w){ //
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   if (in==0) in=1;
   tmp=gate[speedfrom[spdcount][w]].dac%(in); //changed
   tmp+=depth;
@@ -2517,6 +2678,7 @@ static inline uint32_t spdfracdac3self(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   if (in==0) in=1;
   tmp=gate[w].dac%(in); //changedx
   tmp+=depth;
@@ -2539,6 +2701,7 @@ static inline uint32_t spdfracdac4(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0;
   float speed;
   int32_t tmp;
+  gate[w].strobed=0;
   if (in==0) in=1;
   tmp=(gate[dacfrom[count][w]].dac%in)-(in>>1); // in/2 int32_t tmp
   tmp+=depth;
@@ -2562,6 +2725,7 @@ static inline uint32_t spdfracdac4x(uint32_t depth, uint32_t in, uint32_t w){ //
   float speed;
   int32_t tmp;
   if (in==0) in=1;
+  gate[w].strobed=0;
   tmp=(gate[speedfrom[spdcount][w]].dac%in)-(in>>1); // in/2 int32_t tmp
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
@@ -2608,12 +2772,12 @@ static inline uint32_t strobespdfrac(uint32_t depth, uint32_t in, uint32_t w){ /
 static inline uint32_t zstrobeBURST(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0;
   gate[w].strobed=1;
+    depth=4095-depth;
   if (gate[w].trigger){
     train[w]=1;
   }
   if (train[w]!=0 && train[w]< (depth)){
   train[w]++;
-  //  bitn^=ADC_(w,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
   bt=1;
   }
   else {
@@ -2625,6 +2789,7 @@ static inline uint32_t zstrobeBURST(uint32_t depth, uint32_t in, uint32_t w){ //
 static inline uint32_t zstrobeBURSTinv(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt=0;
   gate[w].strobed=1;
+    depth=4095-depth;
   if (gate[w].trigger){
     train[w]=1;
   }
@@ -2642,6 +2807,7 @@ static inline uint32_t zstrobeBURST1(uint32_t depth, uint32_t in, uint32_t w){ /
   uint32_t bt=0;
   static uint32_t tren;
   gate[w].strobed=1;
+    depth=4095-depth;
   if (gate[w].trigger){
     tren=1;
   }
@@ -2660,6 +2826,7 @@ static inline uint32_t zstrobeBURST2(uint32_t depth, uint32_t in, uint32_t w){ /
   uint32_t bt=0;
   static uint32_t dd[4];
   gate[w].strobed=1;
+    depth=4095-depth;
   if (gate[w].trigger){
     train[w]=1;
     dd[w]=depth;
@@ -2678,6 +2845,7 @@ static inline uint32_t zstrobeBURST2(uint32_t depth, uint32_t in, uint32_t w){ /
 static inline uint32_t zstrobeBURST3flip(uint32_t depth, uint32_t in, uint32_t w){ // var - faster ones
   static uint32_t bt=0;
   gate[w].strobed=1;
+    depth=4095-depth;
   depth=depth>>4;
   if (gate[w].trigger){
     train[w]=0;
@@ -2998,12 +3166,16 @@ static inline uint32_t clksrG(uint32_t depth, uint32_t in, uint32_t w){ // depth
 // try 8 bit cipher mode
 //ADC/depth in comparator -> bits, clked/speed into GGSR which shifts along, on strobe GGSR copied to SR
 static inline uint32_t cipher(uint32_t depth, uint32_t in, uint32_t w){// uses depth
-  uint32_t bt, k;
+  uint32_t bt, k; uint32_t newd;
   //  uint32_t kw[4]={0,0,0,0};
   static uint32_t gs[4]={0,0,0,0};
     gate[w].strobed=1;
+    //    depth=1024;
     //    if (depth==((31<<7))) depth=15<<7;
-    if ((depth>>4)<(in>>4)) bt=1; 
+    // depth needs to centre around 2048
+    newd=1024+(depth>>2);//2048;//+(512-(depth>>2)); // fixed 20/2/2023
+    
+    if (newd<in) bt=1; 
     else bt=0;
   
   // onto SR
@@ -3021,7 +3193,7 @@ static inline uint32_t cipherforspeed(uint32_t depth, uint32_t in, uint32_t w){/
   uint32_t bt, k;
   //  uint32_t kw[4]={0,0,0,0};
   static uint32_t gs[4]={0,0,0,0};
-    gate[w].strobed=1;
+  gate[w].strobed=1;
     //    if (depth==((31<<7))) depth=15<<7;
     if ((depth>>4)<(LFSR__[w]>>4)) bt=1; 
     else bt=0;
@@ -3064,6 +3236,27 @@ static inline uint32_t pcipher(uint32_t depth, uint32_t in, uint32_t w, uint32_t
 static inline uint32_t osceq(uint32_t depth, uint32_t in, uint32_t w){  // so all share
   uint32_t bt;
   static int32_t n=0,nn=0;
+  depth=4095-depth;
+     if (n>depth) {
+       bt=0;
+       if (nn>=in) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
+
+static inline uint32_t osceqS_(uint32_t depth, uint32_t in, uint32_t w){  // so all share
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+  gate[w].strobed=0;
+  depth=4095-depth;
      if (n>depth) {
        bt=0;
        if (nn>=in) { // so equal bits from 0 / length 0 = 101010
@@ -3082,6 +3275,7 @@ static inline uint32_t osceq(uint32_t depth, uint32_t in, uint32_t w){  // so al
 static inline uint32_t osceqx(uint32_t depth, uint32_t in, uint32_t w){  // so all share
   uint32_t bt;
   static int32_t n=0,nn=0;
+  depth=4095-depth;
      if (n>in) {
        bt=0;
        if (nn>=depth) { // so equal bits from 0 / length 0 = 101010
@@ -3100,6 +3294,7 @@ static inline uint32_t osceqx(uint32_t depth, uint32_t in, uint32_t w){  // so a
 static inline uint32_t osceqf(uint32_t depth, uint32_t in, uint32_t w){  // so all share
   uint32_t bt;
   static int32_t n=0,nn=0;
+  depth=4095-depth;
   depth=depth>>4;
   in=in>>4;
      if (n>depth) {
@@ -3120,6 +3315,7 @@ static inline uint32_t osceqf(uint32_t depth, uint32_t in, uint32_t w){  // so a
 static inline uint32_t osceqxf(uint32_t depth, uint32_t in, uint32_t w){  // so all share
   uint32_t bt;
   static int32_t n=0,nn=0;
+  depth=4095-depth;
   depth=depth>>4;
   in=in>>4;
      if (n>in) {
@@ -3187,6 +3383,14 @@ static inline uint32_t zSRNbits(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
+static inline uint32_t zSRNbitsS_(uint32_t depth, uint32_t in, uint32_t w){
+  uint32_t bt=0;
+  gate[w].strobed=0;
+  depth=depth>>7; // 5 bits as max 32
+  bt = (gate[0].Gshift_[w]>>depth) & 0x01;		// or   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  return bt;
+}
+
 static inline uint32_t zSRLbits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt=0;
   depth=depth>>7; // 5 bits
@@ -3211,6 +3415,13 @@ static inline uint32_t zSRRbits(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zprobbits(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode
   uint32_t bt=0;
   if ((depth>>4)<(LFSR__[w]>>4)) bt=1;
+  return bt;
+}
+
+static inline uint32_t zprobbitsS_(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode
+  uint32_t bt=0;
+  gate[w].strobed=0;
+  if ((depth>>4)>(LFSR__[w]>>4)) bt=1;
   return bt;
 }
 
@@ -3294,10 +3505,36 @@ static inline uint32_t zsuccbitspp(uint32_t depth, uint32_t in, uint32_t w){   /
   return bt;
 }
 
+static inline uint32_t zsuccbitsppS_(uint32_t depth, uint32_t in, uint32_t w){   // depth - we route from each sr in turn
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x=0; // shared
+  gate[w].strobed=0;
+  if (x==w) x++;
+  if (x>3) x=0;
+  bt = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bt;
+  if ((depth>>4)>(in>>4)) x++;
+  return bt;
+}
+
 static inline uint32_t zsuccbitsprob(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
   // include itself or not
   uint32_t bt=0, bitrr;
   static uint32_t x=0;
+  if (x==w) x++;
+  if (x>3) x=0;
+  bt = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+  if ((depth>>4)>(in>>4)) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bt;
+  x++;
+  return bt;
+}
+
+static inline uint32_t zsuccbitsprobS_(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x=0;
+  gate[w].strobed=0;
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -3311,6 +3548,19 @@ static inline uint32_t zsuccbits_noshift(uint32_t depth, uint32_t in, uint32_t w
   // include itself or not
   uint32_t bt=0, bitrr;
   static uint32_t x=0;
+  if (x==w) x++;
+  if (x>3) x=0;
+  bt = (gate[x].shift_>>SRlength[x]) & 0x01;
+  //  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  if ((depth>>4)<(in>>4)) x++;
+  return bt;
+}
+
+static inline uint32_t zsuccbits_noshiftS_(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x=0;
+  gate[w].strobed=0;
   if (x==w) x++;
   if (x>3) x=0;
   bt = (gate[x].shift_>>SRlength[x]) & 0x01;
@@ -3344,6 +3594,19 @@ static inline uint32_t zsuccbitsI_noshift(uint32_t depth, uint32_t in, uint32_t 
   return bt;
 }
 
+static inline uint32_t zsuccbitsI_noshiftS_(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x[4]={0};
+  gate[w].strobed=0;
+  if (x[w]==w) x[w]++;
+  if (x[w]>3) x[w]=0;
+  bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
+  //  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bt;
+  if ((depth>>4)>(in>>4)) x[w]++;
+  return bt;
+}
+
 static inline uint32_t zsuccbitsI_noshiftnod(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
   // include itself or not
   uint32_t bt=0, bitrr;
@@ -3369,6 +3632,18 @@ static inline uint32_t zsuccbits_noshiftd(uint32_t depth, uint32_t in, uint32_t 
   return bt;
 }
 
+static inline uint32_t zsuccbits_noshiftdS_(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x=0;
+  gate[w].strobed=0;
+  if (x==w) x++;
+  if (x>3) x=0;
+  bt = (gate[x].shift_>>SRlength[x]) & 0x01;
+  //  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
+  if ((depth>>4)<(LFSR__[w]>>4)) x++;
+  return bt;
+}
 
 static inline uint32_t zsuccbitsI(uint32_t depth, uint32_t in, uint32_t w){   // no use of depth - we route from each sr in turn - independent version
   // include itself or not
@@ -3394,10 +3669,36 @@ static inline uint32_t zsuccbitsIpp(uint32_t depth, uint32_t in, uint32_t w){   
   return bt;
 }
 
+static inline uint32_t zsuccbitsIppS_(uint32_t depth, uint32_t in, uint32_t w){   // depth 
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x[4]={0};
+  gate[w].strobed=0;
+  if (x[w]==w) x[w]++;
+  if (x[w]>3) x[w]=0;
+  bt = (gate[x[w]].Gshift_[w]>>SRlength[x[w]]) & 0x01;
+  //  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bt;
+    if ((depth>>4)>(in>>4)) x[w]++;
+  return bt;
+}
+
 static inline uint32_t zsuccbitsI_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
   // include itself or not
   uint32_t bt=0, bitrr;
   static uint32_t x[4]={0};
+  if (x[w]==w) x[w]++;
+  if (x[w]>3) x[w]=0;
+  bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
+  //  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bt;
+  if ((depth>>4)>(LFSR__[w]>>4)) x[w]++;
+  return bt;
+}
+
+static inline uint32_t zsuccbitsI_noshiftdS_(uint32_t depth, uint32_t in, uint32_t w){   // we route from each sr in turn - independent version
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x[4]={0};
+  gate[w].strobed=0;
   if (x[w]==w) x[w]++;
   if (x[w]>3) x[w]=0;
   bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
@@ -3437,6 +3738,19 @@ static inline uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
+static inline uint32_t zosc1bitsS_(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt=0,n=0;
+  gate[w].strobed=0;
+  depth=4095-depth;
+  if (n>depth)  {
+    lastbt^=1;
+    n=0;
+  }
+  n++;
+  bt=lastbt;
+  return bt;
+}
 
 static inline uint32_t zosc1bitsfast(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
@@ -3471,6 +3785,7 @@ static inline uint32_t zosc1bitsslow(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zcountbits(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t flop=0, n=0, nn=0;
+  depth=4095-depth;
   if (n>depth)  {
     n=0;
   }
@@ -3489,6 +3804,47 @@ static inline uint32_t zcountbits(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zcountbitsI(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t flop[4]={0,0,0,0}, n[4]={0,0,0,0}, nn[4]={0,0,0,0};
+  depth=4095-depth;
+  if (n[w]>depth)  {
+    n[w]=0;
+  }
+  // we want n number of flops output
+  if (nn[w]>n[w]){
+    nn[w]=0;
+    flop[w]^=1;
+    n[w]++;
+  }
+  bt=flop[w];
+  nn[w]++; 
+  
+  return bt;
+}
+
+static inline uint32_t zcountbitsS_(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t flop=0, n=0, nn=0;
+  depth=4095-depth;
+  gate[w].strobed=0;
+  if (n>depth)  {
+    n=0;
+  }
+  // we want n number of flops output
+  if (nn>n){
+    nn=0;
+    flop^=1;
+    n++;
+  }
+  bt=flop;
+  nn++; 
+  
+  return bt;
+}
+
+static inline uint32_t zcountbitsIS_(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t flop[4]={0,0,0,0}, n[4]={0,0,0,0}, nn[4]={0,0,0,0};
+  depth=4095-depth;
+  gate[w].strobed=0;
   if (n[w]>depth)  {
     n[w]=0;
   }
@@ -3513,6 +3869,22 @@ static inline uint32_t zTMsimplebits(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t zTMsimplebitsL(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t bt;
+  bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  if ((depth>>4)>(LFSR__[w]>>4)) bt=!bt;
+  return bt;
+}
+
+static inline uint32_t zTMsimplebitsS_(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  gate[w].strobed=0;
+  bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  if ((depth>>4)>(in>>4)) bt=!bt;
+  return bt;
+}
+
+static inline uint32_t zTMsimplebitsLS_(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  gate[w].strobed=0;
   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
   if ((depth>>4)>(LFSR__[w]>>4)) bt=!bt;
   return bt;
@@ -3569,10 +3941,52 @@ static inline uint32_t zENbitsI(uint32_t prob, uint32_t in, uint32_t w){
   return bt;
 }
 
+//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+static inline uint32_t zENbitsS_(uint32_t prob, uint32_t in, uint32_t w){ 
+  uint32_t bt, tmp;
+  gate[w].strobed=0;
+  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
+  // if all as switches are 1... 
+  //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
+  //    prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+  prob=prob>>4; //8 bits
+  prob=255-prob;
+      if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | prob)==255) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+    else   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+  //  bt=(LFSR_[w]>>24)&0x01;
+  //  bt=1;
+  return bt;
+}
+
+//EN: LFSR SR bit is loaded/not loaded onto recycling SR. loading can be random (based on LFSR and set of probability switches)
+static inline uint32_t zENbitsIS_(uint32_t prob, uint32_t in, uint32_t w){ 
+  uint32_t bt, tmp;
+  gate[w].strobed=0;
+  // 1 3 6 10 15 18 20 22 but we have wider bits - 1,3,6,14,17,19,21,23
+  // if all as switches are 1... 
+
+  //      prob=prob>>9; // was 8 bits - well there are only 8 switches which is 3 bits +0 9 options
+  //  prob=7-prub[prob>>9]; // prob is 5 bits - we want 3. prub is 3 bits
+  prob=prob>>4;
+  prob=255-prob;
+    if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | prob)==255) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = !(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+
 
 // trying for a simpler version
 static inline uint32_t zENsbits(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t bt, tmp;
+  if ((LFSR__[w]>>4)>(depth>>4)) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+static inline uint32_t zENsbitsS_(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt, tmp;
+  gate[w].strobed=0;
   if ((LFSR__[w]>>4)>(depth>>4)) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
   else   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
   return bt;
@@ -3661,6 +4075,21 @@ static inline uint32_t zosc1bitsI(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static uint32_t lastbt[4]={0};
   static uint32_t n[4]={0};
+  depth=4095-depth;
+  if (n[w]>depth)  {
+    lastbt[w]^=1;
+    n[w]=0;
+  }
+  n[w]++;
+  bt=lastbt[w];
+  return bt;
+}
+
+static inline uint32_t zosc1bitsIS_(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt[4]={0};
+  static uint32_t n[4]={0};
+  gate[w].strobed=0;
   depth=4095-depth;
   if (n[w]>depth)  {
     lastbt[w]^=1;
@@ -3773,6 +4202,16 @@ static inline uint32_t zENsbitsI(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
+static inline uint32_t zENsbitsIS_(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt, tmp;
+  gate[w].strobed=0;
+  if ((LFSR__[w]>>4)>(depth>>4)) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+    //    if ( ( ( ((LFSR_[w]&1)>>0) + ((LFSR_[w]&4)>>1) + ((LFSR_[w]&32)>>3) + ((LFSR_[w]&16384)>>11) + ((LFSR_[w]&131072)>>13) + ((LFSR_[w]&524288)>>14) + ((LFSR_[w]&2097152)>>15) + ((LFSR_[w]&8388608)>>16)) | prob)==255) bt=(LFSR_[w]>>24)&0x01; // in schematic is XOR of 17,22,23,24
+  else   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
+  return bt;
+}
+
+
 static inline uint32_t zlfsrbitsI(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static uint32_t k;
@@ -3800,6 +4239,14 @@ static inline uint32_t zflipbitsI(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t zcompbits(uint32_t depth, uint32_t in, uint32_t w){  //INx we need 
   uint32_t bt;
+  if (in<depth) bt=0; // which way round?
+  else bt=1;
+  return bt;
+}
+
+static inline uint32_t zcompbitsS_(uint32_t depth, uint32_t in, uint32_t w){  //INx we need 
+  uint32_t bt;
+  gate[w].strobed=0;
   if (in<depth) bt=0; // which way round?
   else bt=1;
   return bt;
@@ -3873,6 +4320,25 @@ static inline uint32_t sigmadelta(uint32_t depth, uint32_t in, uint32_t w){  // 
   uint32_t bt=0;
   static int32_t integrator=0, oldValue=0;
   //  depth=4095-depth;
+  integrator+=(depth-oldValue);
+   if(integrator>2048)
+  {
+     oldValue=4095;
+     bt=1;
+  }
+   else
+   {
+      oldValue=0;
+      bt=0;
+   }   
+  return bt;
+}
+
+static inline uint32_t sigmadeltaS_(uint32_t depth, uint32_t in, uint32_t w){  // processor for any int/depth
+  uint32_t bt=0;
+  static int32_t integrator=0, oldValue=0;
+  //  depth=4095-depth;
+  gate[w].strobed=0;
   integrator+=(depth-oldValue);
    if(integrator>2048)
   {
@@ -5012,11 +5478,27 @@ static inline uint32_t spdvienna(uint32_t depth, uint32_t in, uint32_t w){ // //
   return bt;
 }
 
+static inline uint32_t spdviennaS_(uint32_t depth, uint32_t in, uint32_t w){ // //INx
+  uint32_t bt=0, speedy;
+  // say CVL as depth, CV as in
+  uint32_t recurse=depth>>10; // 2 bits
+  gate[w].strobed=0;
+  if (recurse!=0){
+    speedy=(in>>1)+(gate[others[w][recurse-1]].dac>>1); // can also be different versions such as modulus or mid version
+    if (speedy>4095) speedy=4095;
+  }
+  else speedy=in;
+  
+  bt=spdfrac(speedy, in, w);
+  return bt;
+}
+
 static inline uint32_t spdvienna2(uint32_t depth, uint32_t in, uint32_t w){ // //INx
   uint32_t bt=0, speedy;
   // say CVL as depth, CV as in
-  //  depth=4095-depth;
+  //  depth=4095-depth;  
   uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  gate[w].strobed=0;
   if (recurse!=0){
     if (in==0) speedy=depth;  else speedy=gate[others[w][recurse-1]].dac%in;
   }
@@ -5031,6 +5513,7 @@ static inline uint32_t spdvienna3(uint32_t depth, uint32_t in, uint32_t w){ // /
   // say CVL as depth, CV as in
   //  depth=4095-depth;
   uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  gate[w].strobed=0;
   if (recurse!=0){
     speedy=in+gate[others[w][recurse-1]].dac;
     speedy=speedy%4095;
@@ -5046,6 +5529,7 @@ static inline uint32_t spdvienna4(uint32_t depth, uint32_t in, uint32_t w){ // /
   // say CVL as depth, CV as in
   //  depth=4095-depth;
   uint32_t recurse=(7-(depth>>4))&3; // 2 bits
+  gate[w].strobed=0;
   if (recurse!=0){
   speedy=(gate[others[w][recurse-1]].dac)-2048; // adapted for full bits
   speedy+=in;  
@@ -5294,7 +5778,7 @@ static inline void SRRglobalsync(uint32_t depth){ // nada no depth
   daccount=count;
 }
 
-static inline void SRRglobaltailset(uint32_t depth){ // nada no depth
+static inline void SRRglobaltailset(uint32_t depth){
   uint32_t tmp;
   tmp=depth>>7; ///5 bits
   tailcount=tmp;  

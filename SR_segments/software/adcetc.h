@@ -1061,6 +1061,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 // if we use otherpar as length we need to add:
 // otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
 
+// strobed=5, 
+  
   switch(type){
 
   case 666: // null case for testings
@@ -1128,6 +1130,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     gate[wh].strobed=1;
     if (strobe) {
       x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
+  //  x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
       lastout[wh]=x;
     }
     else x=lastout[wh];
@@ -1186,7 +1189,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       break;
 
       // sequential DACs
-  case 13: // we wait for length bits then output that many bits from the top of the SR (len bit) - not really working
+  case 13: // we wait for length bits then output that many bits from the top of the SR (len bit) 
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     if (n[wh]>otherpar) {
       n[wh]=0;      
@@ -1197,7 +1200,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     n[wh]++;              
     break;
 
-  case 14: // alt we wait for length bits then output that many bits from the top of the SR (len bit) - not really working
+  case 14: // alt we wait for length bits then output that many bits from the top of the SR (len bit)
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     if (n[wh]>otherpar) {
       n[wh]=0;      
@@ -1207,8 +1210,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=lastout[wh];
     n[wh]++;              
     break;
-    
-    
+        
   case 15: // we wait for otherparam bits then output that many bits from the top of the SR (len bit)
     //    length=3; // is good to vary length AND otherpar AND speed - Cint12 does this
     // can also be x number of equiv bits TRY!
@@ -1232,7 +1234,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       break;
 
   case 17:/// we record mask and use this to mask the regular DAC... - could also be other-than-standard DACs
-        gate[wh].strobed=1;
+    gate[wh].strobed=1;
     if (strobe) // we record the mask  S
 	{
 	  mask[wh]=(otherpar&4095); // or reg can be otherpar/SR
@@ -1249,7 +1251,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (n[wh]>otherpar) {
       n[wh]=0;
     if (otherpar==3){
-      if ((shift &4)==4) x=4095;
+      if ((shift &4)==4) nom[wh]=4095;
       else nom[wh]=0;
     }
     else nom[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
@@ -1263,7 +1265,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (n[wh]>otherpar) {
       n[wh]=0;
     if (otherpar==3){
-      if ((shift &4)==4) x=4095;
+      if ((shift &4)==4) nom[wh]=4095;
       else nom[wh]=0;
     }
     else nom[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshiftalt[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
@@ -1405,7 +1407,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       else x=0;
     }
     else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
-    
+    otherpar=4095-otherpar;
     //    if (otherpar>4095) otherpar=4095;
     mult=mixer[otherpar>>2]; // 10 bits - 0 is 1.0f so full dac
     pp=((float)(x) *  (1.0f-mult)) + ((float)(gate[dacfrom[daccount][wh]].dac)*mult); // mix with param
