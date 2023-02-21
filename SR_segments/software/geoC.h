@@ -1582,7 +1582,7 @@ static inline void setgapz(uint32_t wh, uint32_t which){ // new version which ke
   oldgap[wh]=which;
 }
 
-static inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){
+bstatic inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){
   fixedvalues[wh][which]=val; 
   gate[wh].matrixp[which]=&fixedvalues[wh][which]; 
 }

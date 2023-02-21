@@ -1,3 +1,255 @@
+////////// former matrixp to refer to:
+
+//////// 
+/// DEP below or rework
+// we need a different version - if we are in same matrixp but want to change it // can add reset to it
+static inline void setvargapzz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap? tested in test2.c yes it just sets one
+    if (which!=gate[wh].oldgap[0]){// only if we want a new one not to reset the same one...
+    gate[wh].matrixp[gate[wh].oldgap[0]]=gate[wh].matrixpG[gate[wh].oldgap[0]];//
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+  }
+    else if (gate[wh].matrixp[gate[wh].oldgap[0]]!=fixedvars[wh][var]){
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+    }
+  gate[wh].oldgap[0]=which;
+}
+
+/////////////////////////////////////////////fix below
+static inline void setgapz(uint32_t wh, uint32_t which){ 
+  if (which!=gate[wh].oldgap[0]){
+    //    gate[wh].matrixp[which]=&gate[wh].matrix[which]; // last value... // circular
+  }
+  gate[wh].oldgap[0]=which;
+}
+
+static inline void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
+  if (which!=gate[wh].oldgap[0]){
+    gate[wh].matrixp[gate[wh].oldgap[0]]=&gate[wh].matrix[gate[wh].oldgap[0]];// fixed one - what was there
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+  }
+  gate[wh].oldgap[0]=which;
+}
+
+static inline void setvarz(uint32_t wh, uint32_t which, uint32_t var){ // plain set
+  gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+  gate[wh].set[which]=1;
+}
+
+////////12.0
+
+void SR_geo_outer_C120(uint32_t w){   // strobe // slide across and set to CVL
+  if (gate[w].changed==0) {
+    setvargapz(w, maparrayCCS[(CV[w]>>8)], 5, 0); // 5 is CVL
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+// set to CV with CVL,
+void SR_geo_outer_C121(uint32_t w){   // strobe // slide across and set to CV
+  if (gate[w].changed==0) {
+    setvargapz(w, maparrayCCS[(CVL[w]>>8)], 4, 0); // 4 is CV
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+//  122. set to gshift dacfrom
+void SR_geo_outer_C122(uint32_t w){   // strobe // slide across and set to dacfrom // what do we do with CVL though - this can still be attached from the previous?
+  if (gate[w].changed==0) {
+    setvargapz(w, maparrayCCS[(CV[w]>>8)], 7+dacfrom[daccount][w], 0); // gshift starts from 7 
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+// dacfrom set to
+void SR_geo_outer_C123(uint32_t w){   // strobe // slide across and set to dacfrom // what do we do with CVL though - this can still be attached from the previous?
+  if (gate[w].changed==0) {
+    setvargapz(w, maparrayCCS[(CV[w]>>8)], dacfrom[daccount][w], 0); // dacfrom starts from 0
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+// 13.0
+
+void SR_geo_outer_C130(uint32_t w){   // set CV to CVL 
+  if (gate[w].changed==0) {
+    // set matrixp from CV and CVL
+    setvarz(w, maparrayCCS[(CV[w]>>8)], CVL[w]>>8); // 4 bits
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+void SR_geo_outer_C131(uint32_t w){   // set gap - tested!
+  if (gate[w].changed==0) {
+    setgapz(w, maparrayCCS[(CV[w]>>8)]);
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+// bleeding one as 130 CV and CVL
+void SR_geo_outer_C132(uint32_t w){   // set CV to CVL 
+  if (gate[w].changed==0) {
+    // set matrixp from CV and CVL
+    setvargapzbleed(w, maparrayCCS[(CV[w]>>8)], CVL[w]>>8); // 4 bits
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+// empty one for CV, CVL uses if any...
+void SR_geo_outer_C133(uint32_t w){ 
+  if (gate[w].changed==0) {
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+  }
+}
+
+// 140+ CVspeed so we need different mapping: maparrayCC
+/*
+ - we cant use CV to set, so what stategies do we have?
+
+- use of trigger to increment a local counter  - bit just means we bump on so not so exciting
+- use of SR as a mask or increment too
+ */
+
+void SR_geo_outer_C140(uint32_t w){  //if we just use here then don;t need indie version
+  static uint32_t cnnnt=0;
+  if (gate[w].changed==0) {
+    if (gate[w].trigger) {
+      cnnnt++;
+      if (cnnnt>15) cnnnt=0;
+    }
+    setvargapz(w, maparrayCC[cnnnt], 5, 0); // 5 is CVL
+    SR_geomantic_matrixcopyz(w);
+    // keep speed feels bit odd as we do set this
+    gate[w].matrix[1]=CV[w];
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepthdepth;//SR_geo_inner_gappedfunctionS; // for strobed set we need // can also be probdepth
+  }
+}
+
+void SR_geo_outer_C141(uint32_t w){   // dacfrom set
+  static uint32_t cnnnt=0;
+  if (gate[w].changed==0) {
+    if (gate[w].trigger) {
+      cnnnt++;
+      if (cnnnt>15) cnnnt=0;
+    }    
+    setvargapz(w, maparrayCCS[cnnnt], dacfrom[daccount][w], 0); // gshift starts from 7
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepth; //SR_geo_inner_gappedfunctionS;
+  }
+}
+
+// can just copy from strobes but can have different functions // 
+
+void SR_geo_outer_C142(uint32_t w){   // dacfrom set by SR
+  static uint32_t cnnnt=0;
+  if (gate[w].changed==0) {
+    cnnnt=gate[dacfromopp[daccount][w]].dac>>8; // 4
+    setvargapz(w, maparrayCCS[cnnnt], 4, 0); // CV
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepthdepth;//SR_geo_inner_gappedfunction;
+  }
+}
+
+void SR_geo_outer_C143(uint32_t w){   // dacfrom set trigger and mask
+  static uint32_t cnnnt=0;
+  if (gate[w].changed==0) {
+    if (gate[w].trigger) {
+      if (gate[dacfromopp[daccount][w]].shift_&0x01) cnnnt++;
+      if (cnnnt>15) cnnnt=0;
+    }    
+    setvargapzz(w, maparrayCCS[cnnnt], CV[w]>>8); 
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepth; //SR_geo_inner_gappedfunctionS;
+  }
+}
+
+// 150 - we can also have CV and CVL in non-strobe - 
+
+void SR_geo_outer_C150(uint32_t w){   // set CV to CVL 
+  if (gate[w].changed==0) {
+    // set matrixp from CV and CVL
+    setvargapzz(w, maparrayCCS[(CV[w]>>8)], CVL[w]>>8); // 4 bits
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepthdepth;//SR_geo_inner_gappedfunction;
+  }
+}
+
+// 151 - SR bits are set to CV or CVL defined...
+void SR_geo_outer_C151(uint32_t w){
+  uint32_t x, tmp,tmpp;
+  if (gate[w].changed==0) {
+    tmpp=gate[dacfrom[daccount][w]].shift_;
+    for (x=0;x<16;x++){
+      tmp=tmpp&0x01;
+      if (tmp) {
+	gate[w].matrixp[x]=&gate[w].matrix[x];
+	gate[w].set[x]=1;
+      }
+      tmpp=tmpp>>1;
+    }
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepth;//SR_geo_inner_gappedfunction;
+  }
+}
+
+// 152 SR bits are gaps in matrixp
+void SR_geo_outer_C152(uint32_t w){
+  uint32_t x, tmp,tmpp;
+  if (gate[w].changed==0) {
+    tmpp=gate[dacfrom[daccount][w]].shift_;
+    for (x=0;x<16;x++){
+      tmp=tmpp&0x01;
+      if (tmp) {
+	gate[w].matrixp[x]=&gate[w].matrix[x];
+	gate[w].set[x]=1;
+      }
+      tmpp=tmpp>>1;
+    }
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_gappedfunction;
+  }
+}
+
+
+
+/* 
+
+no strobe: 
+
+// also we can have nets which are placed over settings and influence which ones we set...
+
+// matrices also from SR, and set copied from SR - how to organise?
+
+ */
+
+
+
 /*
 // we need more fixed runglers: 
 

@@ -23,6 +23,8 @@ abstractbits_nostrobez
 
  */
 
+// extras: Zbinroutsplit, Zcyclesplit, Zbinroutsplitprob, Zbinroutsplitprob1, Zbinroutsplitprob2, Zbinroutsplitxor, Zbinroutsplitxor1//all except cycle with types - depth/no strobe
+
 uint32_t (*routebits_depth_typesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout_strip, Zbinroutor, Zviennabits, NZbinrout_probXY, NZbinrout_probXY1, NZbinroutfixed_prob1, NZbinroutfixed_prob2, NZbinroutfixed_prob3, NZbinroutfixed_prob4, zbinroutmycvalt, zbinroutorgap, zzsingleroutebits, pSRmatch, pbitLcvsrroute, pstream, pSRLLbumproute, pSRN13, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pSRN15, pSRxorSR, Zbinrout_strip, ZzsuccbitsIpp, Zzsuccbitspp, ZzsuccbitsIppin, Zzsuccbitsppin, pSRhold, pSRholdfromdac, Zbinroutfixed_probzero, NZbinroutfixed_probzero, pSR_recbinD_}; //  >>7 extent
 
 uint32_t depth_routebits_depth_typesz[32]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
@@ -32,10 +34,12 @@ uint32_t (*routebits_nodepth_typesz[64])(uint32_t depth, uint32_t in, uint32_t w
 
 uint32_t depth_routebits_nodepth_typesz[64]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; 
 
-
 // routebits/nostrobe/types - for strobe speeds
 
-uint32_t (*routebits_nostrobe_depth_typesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout_strip, Zbinroutor, Zviennabits, Zzsuccbitspp, ZzsuccbitsIpp, Zbinroutfixed_prob1, Zbinroutfixed_prob2, Zbinroutfixed_prob3, Zbinroutfixed_prob4, Zbinroutfixed_prob5, Zbinrout_probXY, Zbinrout_probXY1, NZbinrout_probXY, NZbinrout_probXY1, NZbinroutfixed_prob1, NZbinroutfixed_prob2, NZbinroutfixed_prob3, NZbinroutfixed_prob4, zbinroutmycvalt, zbinroutorgap, pSRmatch, pbitLcvsrroute, pstream, pSRN13, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pSRN15, pSRxorSR, pSR_recbinD_, /**/Zbinroutor, Zviennabits}; //28 // extent is 7
+// extras: Zbinroutsplit, Zcyclesplit, Zbinroutsplitprob, Zbinroutsplitprob1, Zbinroutsplitprob2, Zbinroutsplitxor, Zbinroutsplitxor1//all except cycle with types - depth/no strobe
+// ZbinroutsplitxorXX - for twin speeds in strobe
+
+uint32_t (*routebits_nostrobe_depth_typesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={Zbinrout_strip, Zbinroutor, ZbinroutsplitxorXX, Zviennabits, Zzsuccbitspp, ZzsuccbitsIpp, Zbinroutfixed_prob1, Zbinroutfixed_prob2, Zbinroutfixed_prob3, Zbinroutfixed_prob4, Zbinroutfixed_prob5, Zbinrout_probXY, Zbinrout_probXY1, NZbinrout_probXY, NZbinrout_probXY1, NZbinroutfixed_prob1, NZbinroutfixed_prob2, NZbinroutfixed_prob3, NZbinroutfixed_prob4, zbinroutmycvalt, zbinroutorgap, pSRmatch, pbitLcvsrroute, pstream, pSRN13, pprobintprob3, pprobintprob5_0, pprobintprob6_0, pSRN15, pSRxorSR, pSR_recbinD_, /**/Zbinroutor}; //28 // extent is 7
 
 uint32_t depth_routebits_nostrobe_depth_typesz[32]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
 
@@ -43,22 +47,24 @@ uint32_t (*routebits_nostrobe_nodepth_typesz[16])(uint32_t depth, uint32_t in, u
 
 uint32_t depth_routebits_nostrobe_nodepth_typesz[16]={0,0,0,0,  0,0,0,0, 0,0,0,0, 0,0,0,0};
 
-uint32_t (*routebits_anystrobe_depth_notypesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprob, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRN15, pSRNwas15, pSRprobxortog, pSRprobxortogx, pSR_layer1, pSR_layer2, pSR_reflect, triadexbits, /**/zsuccbitsprob, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, triadexbits};// 21+11 - added pSR_layer1, layer2  pSR_layer2, pSR_reflect which have depth, no type, no strobe
-
-uint32_t depth_routebits_anystrobe_depth_notypesz[16]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
-
 uint32_t (*routebits_nostrobe_depth_notypesz[16])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprob, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRN15, pSRNwas15, pSR_layer1, triadexbits}; // 16 // extent is 8
 // retest 14 and 15 above // pSRLcvSRmaskroute is good
 
 uint32_t depth_routebits_nostrobe_depth_notypesz[16]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
 
-uint32_t (*routebits_anystrobe_nodepth_notypesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, tailbitsnos, binroutAND0, binroutAND00, binrout_probXY2, binrout_probXY3, pbitSRroutelog, pbitSRroutelogxx, pSR32, pSRN62, pSRN22D_, pSRN21D_, pSRN12, pSRN11, binroutaltreset, pSRNwas13, pSRN10, pSRN65, pSRshroute, pSRprobxortogD_, pSRprobxortogxID_, pSRprobxortogID_, /**/zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, binroutAND0, binroutAND00, binrout_probXY2}; 
-
-uint32_t depth_routebits_anystrobe_nodepth_notypesz[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};   
-
 uint32_t (*routebits_nostrobe_nodepth_notypesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, tailbitsnos, binroutAND0, binroutAND00, binrout_probXY2, binrout_probXY3, pbitSRroutelog, pbitSRroutelogxx, pSR32, pSRN62, pSRN22D_, pSRN21D_, pSRN12, pSRN11, binroutaltreset, pSRNwas13, pSRN10, pSRN65,  pbitSRroutelogxxD_, pSR32D_, pSRN22D_, pSRN21D_, pSRR32D_,  /**/zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, binroutAND0, binroutAND00}; 
 
 uint32_t depth_routebits_nostrobe_nodepth_notypesz[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};   
+
+// anystrobe = notypes // can merge
+
+uint32_t (*routebits_anystrobe_depth_notypesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprob, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRN15, pSRNwas15, pSRprobxortog, pSRprobxortogx, pSR_layer1, pSR_layer2, pSR_reflect, triadexbits, /**/zsuccbitsprob, zTMsimplebits, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, Zcyclesplit};// 21+11 - added pSR_layer1, layer2  pSR_layer2, pSR_reflect which have depth, no type, no strobe
+
+uint32_t depth_routebits_anystrobe_depth_notypesz[16]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
+
+uint32_t (*routebits_anystrobe_nodepth_notypesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, tailbitsnos, binroutAND0, binroutAND00, binrout_probXY2, binrout_probXY3, pbitSRroutelog, pbitSRroutelogxx, pSR32, pSRN62, pSRN22D_, pSRN21D_, pSRN12, pSRN11, binroutaltreset, pSRNwas13, pSRN10, pSRN65, pSRshroute, pSRprobxortogD_, pSRprobxortogxID_, pSRprobxortogID_, /**/zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, binroutAND0, binroutAND00, binrout_probXY2}; 
+
+uint32_t depth_routebits_anystrobe_nodepth_notypesz[32]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};   
 
 
 // abstractbits/strobe=all - these now all use depth - some use in

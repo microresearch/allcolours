@@ -761,9 +761,9 @@ void SR_geo_outer_Nburst(uint32_t w){ // 2-prob of abstract entry or route entry
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[9]=15<<7; // trial  bursts
+  gate[w].matrix[9]=8<<7; // trial  bursts
   gate[w].matrix[10]=CVL[w]; // depth for prob
-  gate[w].inner=SR_geo_inner_probdacburst;// adcburst abstractburst
+  gate[w].inner=SR_geo_inner_probadcburst;// adcburst abstractburst
 }
 }
 
@@ -879,7 +879,7 @@ void SR_geo_outer_N42(uint32_t w){  // no route
   }
 }
 
-///++ trial add dac??? but waht is CVL? // sel abstract
+///++ trial add dac??? but what is CVL? // sel abstract
 void SR_geo_outer_N43(uint32_t w){  // no route
   if (gate[w].changed==0) {
     gate[w].matrix[0]=4<<7; // spdfrac1 now
@@ -892,10 +892,8 @@ void SR_geo_outer_N43(uint32_t w){  // no route
   }
 }
 
-//zosc1bitsfast, sigmadelta, osceq,  osceqx, zcountbits, zcountbitsI, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosceqbitsIx, zosc1bitsI, zlfsrbitsI, zflipbitsI, ztogglebits, zTMsimplebitsL, zTMsimplebits, zreturnnotbits, zTMsimplebits, pSRLcvSRmaskroute, pSRLcvroute, /**/zosc1bits, sigmadelta, osceq,  zcountbits, zcountbitsI, zprobbits, zprobbitsxorstrobe, zprobbitsxortoggle
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//// dacspeed runglers to keep!
+//// dacspeed runglers to keep! - and what of these with abstracts - to do in LL
 
 // adc with no route in... SR_geo_inner_norouteadcN
 void SR_geo_outer_N50(uint32_t w){ // dacspeed3x
@@ -1003,7 +1001,7 @@ void SR_geo_outer_Ntestprobreset(uint32_t w){
   //  gate[w].matrix[6]=CVL[w]; // length
   //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
   gate[w].matrix[7]=0<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
-  gate[w].matrix[9]=0<<6;// 3 is classic prob // 5 is strobe!
+  gate[w].matrix[9]=0<<6;// 
   gate[w].matrix[10]=CVL[w]; 
   gate[w].inner=SR_geo_inner_probadcreset;
   }
@@ -1017,7 +1015,7 @@ void SR_geo_outer_Ntestprobadvance(uint32_t w){
   //  gate[w].matrix[6]=CVL[w]; // length
   //  gate[w].matrix[8]=CVL[w]; // length for adc same as length
   gate[w].matrix[7]=0<<7;//CVL[w]; // set adc - 0 is zeroes // 18 and 19 need triggersa
-  gate[w].matrix[9]=0<<6;// 3 is classic prob // 5 is strobe!
+  gate[w].matrix[9]=0<<6;// 
   gate[w].matrix[10]=CVL[w]; 
   gate[w].inner=SR_geo_inner_probadcadvance;
   }

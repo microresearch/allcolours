@@ -174,6 +174,31 @@ void SR_geo_inner_functionprobzero(uint32_t w){
     }
 }
 
+void SR_geo_inner_functionproblast(uint32_t w){  
+  HEADNADA;
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+      }
+      else {
+	bitn = gate[w].lastest;
+      }
+	  
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
 void SR_geo_inner_probcycleC(uint32_t w){ 
   // what cv we need: probfs: 9type,10comp... 11IN 3,4,5 is gapped...
   HEADNADA;
@@ -452,6 +477,34 @@ void SR_geo_inner_probdepthdepth(uint32_t w){  // draft for probs with depth
     }
 }
 
+void SR_geo_inner_probdepthdepthS(uint32_t w){  // draft for probs with depth WE SET STROBE
+  HEADNADA;
+  uint32_t tmproute;
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)) {
+      bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w);
+    }
+  else {
+    //    bitn=(gate[w].funcbit[gate[w].matrix[12]>>gate[w].extent])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped
+    bitn=(routebits_depth_typesz[gate[w].matrix[12]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
+  }
+    gate[w].strobed=1;
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
 void SR_geo_inner_probdepthx(uint32_t w){  // draft for probs with depth NOIN
   HEADNADA;
   uint32_t tmproute;
@@ -641,7 +694,7 @@ void SR_geo_outer_C00(uint32_t w){  // set dactype, spdfrac, fixed route // for 
   }
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[13]=CVL[w]; // dactype
+  gate[w].matrix[13]=CVL[w]; // dactype = 13
   gate[w].inner=SR_geo_inner_globalC; // routetype/theroute so always at reset route/base global
 }
 
@@ -756,7 +809,8 @@ void SR_geo_outer_C22(uint32_t w){ // sel function. array with depth...routebits
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=CVL[w]; // function  select routebits_depth_typesz[32] 20 is good!
+  gate[w].matrix[3]=0;//CVL[w]; // function  select routebits_depth_typesz[32] 20 is good!
+  gate[w].matrix[4]=CVL[w];
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].funcbit=routebits_depth_typesz; //routebits_typeszz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
   gate[w].extent=7; 
@@ -953,8 +1007,8 @@ void SR_geo_outer_C51(uint32_t w){ // probzeroes
 void SR_geo_outer_C52(uint32_t w){ // probcycle
   if (gate[w].changed==0) {
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2  
-  gate[w].matrix[10]=CVL[w]; // probCV1
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
+  gate[w].matrix[9]=CVL[w];//28<<6; // TODO:test all of these: 5->10, 24, 28
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); // do any use IN? yes spdfrac versions - should have basic prob vs in tho...
   gate[w].inner=SR_geo_inner_probcycleC; 
   }
@@ -1311,9 +1365,6 @@ void SR_geo_outer_C113(uint32_t w){  // alt
 // last 16 are matrixp ops to try to sketch out... 4x4 below
 // start with matrixp strobe modes
 
-uint32_t fixedvalues[4][16]={ //  
-  {0},
-};
 
 uint32_t fixed=0, gap=0;
 
@@ -1326,8 +1377,9 @@ uint32_t *fixedvars[4][16]={ //was 20
   {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[3], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
 };
 
-uint32_t maparrayCCS[16]={4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 4, 5, 6, 9}; // for strobed
-uint32_t maparrayCC[16]={0,  1, 2, 3, 4, 5,    6, 9, 10, 11, 12, 13, 14, 16, 0, 1}; // unstrobed
+// fixed 21/2/2023
+uint32_t maparrayCCS[16]={6, 13, 14, 16, 15, 1, 2, 17, 4, 5, 9, 10, 11, 12, 15, 1};
+uint32_t maparrayCC[16]= {6, 13, 14, 16, 0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 0, 1}; 
 
 void SR_geomantic_matrixcopyz(uint32_t w){ 
   uint32_t x;
@@ -1336,61 +1388,9 @@ void SR_geomantic_matrixcopyz(uint32_t w){
   }
 }
 
-void SR_geomantic_matrixcopyfixz(uint32_t w){ 
-  uint32_t x;
-  for (x=0;x<22;x++){
-    if (gate[w].set[x]) gate[w].matrix[x]=*(gate[w].matrixp[x]);
-    else gate[w].matrixp[x]=&gate[w].matrix[x];// fixed one
-  }
-}
-
-// need to fix these start here:
-static inline void setvargapz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars -
-  static uint32_t oldgap[4]={2,2,2,2};
-  if (which!=oldgap[wh]){// only if we want a new one not to reset the same one...
-    //    matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    
-    gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];
-    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
-    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
-    gate[wh].set[which]=1;
-  }
-  oldgap[wh]=which;
-}
-
-// we need a different version - if we are in same matrixp but want to change it
-static inline void setvargapzz(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap? tested in test2.c yes it just sets one
-  static uint32_t oldgap[4]={2,2,2,2};
-    if (which!=oldgap[wh]){// only if we want a new one not to reset the same one...
-    gate[wh].matrixp[oldgap[wh]]=gate[wh].matrixpG[oldgap[wh]];//
-    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
-    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
-    gate[wh].set[which]=1;
-  }
-    else if (gate[wh].matrixp[oldgap[wh]]!=fixedvars[wh][var]){
-    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
-    gate[wh].set[which]=1;
-    }
-  oldgap[wh]=which;
-}
-
-
-
-static inline void setgapz(uint32_t wh, uint32_t which){ 
-  static uint32_t oldgap[4]={1,1,1,1};
-  if (which!=oldgap[wh]){
-    gate[wh].matrixp[which]=&gate[wh].matrix[which]; // last value...
-  }
-  oldgap[wh]=which;
-}
-
-static inline void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
-  static uint32_t oldgap[4]={1,1,1,1};
-  if (which!=oldgap[wh]){
-    gate[wh].matrixp[oldgap[wh]]=&gate[wh].matrix[oldgap[wh]];// fixed one
-    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
-    gate[wh].set[which]=1;
-  }
-  oldgap[wh]=which;
+static inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){
+  gate[wh].fixedvalues[which]=val; 
+  gate[wh].matrixp[which]=&gate[wh].fixedvalues[which]; 
 }
 
 static inline void setvarz(uint32_t wh, uint32_t which, uint32_t var){ // plain set
@@ -1398,214 +1398,102 @@ static inline void setvarz(uint32_t wh, uint32_t which, uint32_t var){ // plain 
   gate[wh].set[which]=1;
 }
 
-////////12.0
-
-void SR_geo_outer_C120(uint32_t w){   // strobe // slide across and set to CVL
-  if (gate[w].changed==0) {
-    setvargapz(w, maparrayCCS[(CV[w]>>8)], 5); // 5 is CVL
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+static inline void setgapz(uint32_t wh, uint32_t layer, uint32_t which){ 
+  if (which!=gate[wh].oldgap[layer]){
+    //    gate[wh].matrixp[which]=&gate[wh].matrix[which]; // last value... // circular
+    gate[wh].fixedvalues[which]=gate[wh].matrix[which];
+    gate[wh].matrixp[which]=&gate[wh].fixedvalues[which];
   }
+  gate[wh].oldgap[0]=which;
 }
 
-// set to CV with CVL,
-void SR_geo_outer_C121(uint32_t w){   // strobe // slide across and set to CV
-  if (gate[w].changed==0) {
-    setvargapz(w, maparrayCCS[(CVL[w]>>8)], 4); // 4 is CV
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
+static inline void setvargapzbleed(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
+  if (which!=gate[wh].oldgap[layer]){
+    gate[wh].matrixp[gate[wh].oldgap[layer]]=gate[wh].matrixpG[gate[wh].oldgap[layer]];
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+    gate[wh].fixedvalues[which]=*gate[wh].matrixp[which];
+    gate[wh].set[which]=1;
   }
+  gate[wh].oldgap[layer]=which;
 }
 
-//  122. set to gshift dacfrom
-void SR_geo_outer_C122(uint32_t w){   // strobe // slide across and set to dacfrom // what do we do with CVL though - this can still be attached from the previous?
-  if (gate[w].changed==0) {
-    setvargapz(w, maparrayCCS[(CV[w]>>8)], 7+dacfrom[daccount][w]); // gshift starts from 7 
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
-  }
-}
+//////////////////////////////////////////
 
-// dacfrom set to
-void SR_geo_outer_C123(uint32_t w){   // strobe // slide across and set to dacfrom // what do we do with CVL though - this can still be attached from the previous?
-  if (gate[w].changed==0) {
-    setvargapz(w, maparrayCCS[(CV[w]>>8)], dacfrom[daccount][w]); // dacfrom starts from 0
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
-  }
-}
-
-// 13.0
-
-void SR_geo_outer_C130(uint32_t w){   // set CV to CVL 
-  if (gate[w].changed==0) {
-    // set matrixp from CV and CVL
-    setvarz(w, maparrayCCS[(CV[w]>>8)], CVL[w]>>8); // 4 bits
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
-  }
-}
-
-void SR_geo_outer_C131(uint32_t w){   // set gap - tested!
-  if (gate[w].changed==0) {
-    setgapz(w, maparrayCCS[(CV[w]>>8)]);
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
-  }
-}
-
-// bleeding one as 130 CV and CVL
-void SR_geo_outer_C132(uint32_t w){   // set CV to CVL 
-  if (gate[w].changed==0) {
-    // set matrixp from CV and CVL
-    setvargapzbleed(w, maparrayCCS[(CV[w]>>8)], CVL[w]>>8); // 4 bits
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
-  }
-}
-
-// empty one for CV, CVL uses if any...
-void SR_geo_outer_C133(uint32_t w){ 
-  if (gate[w].changed==0) {
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionalt;
-  }
-}
-
-// 140+ CVspeed so we need different mapping: maparrayCC
-/*
- - we cant use CV to set, so what stategies do we have?
-
-- use of trigger to increment a local counter  - bit just means we bump on so not so exciting
-- use of SR as a mask or increment too
- */
-
-void SR_geo_outer_C140(uint32_t w){  //if we just use here then don;t need indie version
-  static uint32_t cnnnt=0;
-  if (gate[w].changed==0) {
-    if (gate[w].trigger) {
-      cnnnt++;
-      if (cnnnt>15) cnnnt=0;
-    }
-    setvargapz(w, maparrayCC[cnnnt], 5); // 5 is CVL
-    SR_geomantic_matrixcopyz(w);
-    // keep speed feels bit odd as we do set this
-    gate[w].matrix[1]=CV[w];
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepthdepth;//SR_geo_inner_gappedfunctionS; // for strobed set we need // can also be probdepth
-  }
-}
-
-void SR_geo_outer_C141(uint32_t w){   // dacfrom set
-  static uint32_t cnnnt=0;
-  if (gate[w].changed==0) {
-    if (gate[w].trigger) {
-      cnnnt++;
-      if (cnnnt>15) cnnnt=0;
-    }    
-    setvargapz(w, maparrayCCS[cnnnt], dacfrom[daccount][w]); // gshift starts from 7
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepth; //SR_geo_inner_gappedfunctionS;
-  }
-}
-
-// can just copy from strobes but can have different functions // 
-
-void SR_geo_outer_C142(uint32_t w){   // dacfrom set by SR
-  static uint32_t cnnnt=0;
-  if (gate[w].changed==0) {
-    cnnnt=gate[dacfromopp[daccount][w]].dac>>8; // 4
-    setvargapz(w, maparrayCCS[cnnnt], 4); // CV
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepthdepth;//SR_geo_inner_gappedfunction;
-  }
-}
-
-void SR_geo_outer_C143(uint32_t w){   // dacfrom set trigger and mask
-  static uint32_t cnnnt=0;
-  if (gate[w].changed==0) {
-    if (gate[w].trigger) {
-      if (gate[dacfromopp[daccount][w]].shift_&0x01) cnnnt++;
-      if (cnnnt>15) cnnnt=0;
-    }    
-    setvargapzz(w, maparrayCCS[cnnnt], CV[w]>>8); 
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepth; //SR_geo_inner_gappedfunctionS;
-  }
-}
-
-// 150 - we can also have CV and CVL in non-strobe - 
-
-void SR_geo_outer_C150(uint32_t w){   // set CV to CVL 
-  if (gate[w].changed==0) {
-    // set matrixp from CV and CVL
-    setvargapzz(w, maparrayCCS[(CV[w]>>8)], CVL[w]>>8); // 4 bits
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepthdepth;//SR_geo_inner_gappedfunction;
-  }
-}
-
-// 151 - SR bits are set to CV or CVL defined...
-void SR_geo_outer_C151(uint32_t w){
-  uint32_t x, tmp,tmpp;
-  if (gate[w].changed==0) {
-    tmpp=gate[dacfrom[daccount][w]].shift_;
-    for (x=0;x<16;x++){
-      tmp=tmpp&0x01;
-      if (tmp) {
-	gate[w].matrixp[x]=&gate[w].matrix[x];
-	gate[w].set[x]=1;
+// resett=1 is bleed... 2 is attach - seems to work
+static inline void setvargapz(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var, uint32_t resset){ // sets gap with one of fixedvars - tested in test2.c
+  if (resset==2) gate[wh].oldgap[layer]=22; //never hits 22
+  
+  if (which!= gate[wh].oldgap[layer]){// only if we want a new one not to reset the same one...
+    gate[wh].matrixp[gate[wh].oldgap[layer]]=gate[wh].matrixpG[gate[wh].oldgap[layer]];
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].set[which]=1;
+      if (resset==1){ //set back
+	gate[wh].fixedvalues[which]=*gate[wh].matrixp[which];
       }
-      tmpp=tmpp>>1;
-    }
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepth;//SR_geo_inner_gappedfunction;
   }
-}
-
-// 152 SR bits are gaps in matrixp
-void SR_geo_outer_C152(uint32_t w){
-  uint32_t x, tmp,tmpp;
-  if (gate[w].changed==0) {
-    tmpp=gate[dacfrom[daccount][w]].shift_;
-    for (x=0;x<16;x++){
-      tmp=tmpp&0x01;
-      if (tmp) {
-	gate[w].matrixp[x]=&gate[w].matrix[x];
-	gate[w].set[x]=1;
+      else if (gate[wh].matrixp[gate[wh].oldgap[layer]]!=fixedvars[wh][var]){
+      gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+      gate[wh].set[which]=1;
+      if (resset==1){ //set back
+	gate[wh].fixedvalues[which]=*gate[wh].matrixp[which];
       }
-      tmpp=tmpp>>1;
-    }
+      }
+  gate[wh].oldgap[layer]=which;
+}
+
+// layers: CV, CVL, gshift /or/ dac, then wildcard of CV and CVL// or 
+// options we have: ==2 will attach all (or can just be straight setvarz if we don't toggle)
+// always ==1 smear cv (or use setvargapzbleed)
+// just attach one cv
+
+// +strobe speed options x2 // 2 x CV = 4x4!
+
+// CV attach
+void SR_geo_outer_C120(uint32_t w){   // if trigger then bleed 
+  if (gate[w].changed==0) {
+    // what event we can trigger on and what to release 0,1 or 2
+    setvargapz(w, 0, maparrayCC[(CVL[w]>>8)], 4, gate[w].trigger); // CV
     SR_geomantic_matrixcopyz(w);
     gate[w].routetype=gate[w].matrix[16]>>9;
-    gate[w].inner=SR_geo_inner_gappedfunction;
+    gate[w].inner=SR_geo_inner_probdepthdepthS;//SR_geo_inner_gappedfunction;// S sets strobe
+  }
+}
+
+void SR_geo_outer_C121(uint32_t w){   // if trigger then bleed 
+  if (gate[w].changed==0) {
+    // what event we can trigger on and what to release 0,1 or 2
+    setvargapz(w, 0, maparrayCC[(CV[w]>>8)], 5, gate[w].trigger); // CVL
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepthdepthS;//SR_geo_inner_gappedfunction;// S sets strobe
+  }
+}
+
+// test further layerings // GSHIFT
+void SR_geo_outer_C122(uint32_t w){   // if trigger then bleed 
+  if (gate[w].changed==0) {
+    setvargapz(w, 1, maparrayCC[(CVL[w]>>8)], 7+dacfrom[daccount][w], gate[w].trigger);  // appropriate gshift
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepthdepthS;
+  }
+}
+
+//cv/cvl version - seems work fine
+void SR_geo_outer_C123(uint32_t w){   // if trigger then bleed 
+  if (gate[w].changed==0) {
+    setvargapz(w, 1, maparrayCC[(CV[w]>>8)], CVL[w]>>8, gate[w].trigger); 
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrix[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepthdepthS;
   }
 }
 
 
-
-/* 
-
-no strobe: 
-
-// also we can have nets which are placed over settings and influence which ones we set...
-
-// matrices also from SR, and set copied from SR - how to organise?
-
- */
+////////////////////////////////////////////////////////////////////////
 
 // 153: final one is reset but what does CVL do there? last bit or prob
 void SR_geo_outer_C153(uint32_t w){  // final all gapped reset
@@ -1620,3 +1508,49 @@ void SR_geo_outer_C153(uint32_t w){  // final all gapped reset
   gate[w].matrix[10]=CVL[w];  
   gate[w].inner=SR_geo_inner_gappedfunction;
     }
+
+
+///////////// tests
+
+void SR_geo_outer_Cf(uint32_t w){ // change function. nodepth. types
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6;//
+  gate[w].matrix[4]=CVL[w]; // function  param
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+  gate[w].extent=6; // 6 bits above // checked
+  gate[w].depths=depth_routebits_nodepth_typesz;
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+// and test for strobe with CV and CVL dual speeds of route in and cycle
+void SR_geo_outer_Cs(uint32_t w){   // simple fixed strobe 
+  if (gate[w].changed==0) {
+    gate[w].matrix[15]=0<<8;//  simple strobe
+    gate[w].matrix[3]=2<<7; ////ZbinroutsplitxorXX 4 and 5
+    gate[w].matrix[4]=CV[w];
+    gate[w].matrix[5]=CVL[w];
+  
+    gate[w].str_funcbit=routebits_nostrobe_depth_typesz;   // we make sure function is NO STROBE!
+    gate[w].str_extent=7; // checked!
+    gate[w].str_depths=depth_routebits_nostrobe_depth_typesz;
+
+    gate[w].inner=SR_geo_inner_str_function;
+  }
+}
+
+// prob of last remaining: SR_geo_inner_functionproblast(uint32_t w)
+void SR_geo_outer_Cplast(uint32_t w){ // problast - probf_anystrobe_depth // routebits_nodepth_typesz default 0
+  if (gate[w].changed==0) {
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv 
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
+  gate[w].matrix[9]=5<<6; // spdfrac
+  gate[w].matrix[10]=CVL[w]; // prob depth
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); // do any use IN? yes spdfrac versions - should have basic prob vs in tho...
+  gate[w].inner=SR_geo_inner_functionproblast;//
+  }
+}

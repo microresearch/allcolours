@@ -21,7 +21,6 @@ but much following CC so far - unless we can extend runglers...
 
 // allfrom geoCC so far ++
 
-
 void SR_geo_inner_gappedfunctionrung(uint32_t w){  // depth or cycle prob
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
@@ -46,6 +45,62 @@ void SR_geo_inner_gappedfunctionrung(uint32_t w){  // depth or cycle prob
     }
 }
 
+/// rework for abstract
+
+void SR_geo_inner_dacspeed3xnorouteabstractL(uint32_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+  if (spdfracdac3x(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*abstractbits_forrung[gate[w].matrix[20]>>7])(gate[w].matrix[18], gate[w].matrix[5], w); // abstractbits_forrung[32]
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geo_inner_dacspeed3selfnorouteabstractL(uint32_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+  if (spdfracdac3self(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*abstractbits_forrung[gate[w].matrix[20]>>7])(gate[w].matrix[18], gate[w].matrix[5], w); // abstractbits_forrung[32]
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geo_inner_dacspeed3selfrouteabstractL(uint32_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+  if (spdfracdac3self(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*abstractbits_forrung[gate[w].matrix[20]>>7])(gate[w].matrix[18], gate[w].matrix[5], w); // abstractbits_forrung[32]
+    bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geo_inner_dacspeed3xrouteasbtractL(uint32_t w){  
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+  if (spdfracdac3x(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*abstractbits_forrung[gate[w].matrix[20]>>7])(gate[w].matrix[18], gate[w].matrix[5], w); // abstractbits_forrung[32]
+    bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OUTER
 
@@ -64,8 +119,6 @@ void SR_geo_outer_L00(uint32_t w){  // set length or could better be TYPE
 }
 
 // next follow CC
-
-// next 16 follows geoCC but we need different runglers
 
 // 4 simple bit as clkfrom runglers:
 //rungler2: route in, clkfrom speedfrom SR
@@ -106,4 +159,82 @@ void SR_geo_outer_L43(uint32_t w){ // select function/gapped array - fixed route
   }
 }
 
-// add other type of abstract runglers...
+// TEST!
+///////////////////////////////////////////////////////////////////////////////////
+// add other type of abstract runglers... from NN now
+// select abstract + route
+void SR_geo_outer_L50(uint32_t w){ 
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=6<<7; // tested // try fixed speed - spdfrac3    
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    //    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped 5 is also for abstractbits
+    gate[w].matrix[20]=CVL[w]; // sel abstract
+    gate[w].inner=SR_geo_inner_rungC;
+  }
+}
+
+// no route in but we did sel... 
+void SR_geo_outer_L51(uint32_t w){  // no route
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=6<<7; // tested // try fixed speed - spdfrac3    
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; //
+    gate[w].matrix[5]=CVL[w];
+    gate[w].inner=SR_geo_inner_rungnoroute;
+  }
+}
+
+///++ trial add dac??? but what is CVL? // sel abstract
+void SR_geo_outer_L52(uint32_t w){  // no route
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=4<<7; // spdfrac1 now
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped 5 is also for abstractbits
+    gate[w].matrix[4]=gate[dacfromopp[daccount][w]].dac;
+    gate[w].matrix[20]=CVL[w]; // sel abstract // 20 we like
+    gate[w].inner=SR_geo_inner_rungnoroute;
+  }
+}
+
+/// to convert
+
+// adc with no route in... SR_geo_inner_norouteadcN // convert to abstract - but we need to have selected that
+void SR_geo_outer_L60(uint32_t w){ // dacspeed3x
+  if (gate[w].changed==0) {
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].inner=SR_geo_inner_dacspeed3xnorouteadcN; 
+  }
+}
+
+// repeat with route in
+void SR_geo_outer_L61(uint32_t w){ // dacspeed3x
+  if (gate[w].changed==0) {
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
+    gate[w].inner=SR_geo_inner_dacspeed3xrouteadcN; // gapped route function
+  }
+}
+
+// would be nice to be able to select where we get speedfrom - or have 4 options here... - our own speed? trial in new one // route // no route
+void SR_geo_outer_L62(uint32_t w){ // spdfracdac3self
+  if (gate[w].changed==0) {
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
+    gate[w].inner=SR_geo_inner_dacspeed3selfnorouteadcN; 
+  }
+}
+
+void SR_geo_outer_L63(uint32_t w){ // spdfracdac3self route in
+  if (gate[w].changed==0) {
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
+    gate[w].inner=SR_geo_inner_dacspeed3selfrouteadcN; 
+  }
+}

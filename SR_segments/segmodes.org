@@ -25,6 +25,8 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 ** ////XXXXXTODO XXXXXXX
 
+- question of 16 or 18 octaves and any hardware changes...
+
 -  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
 
 *re-check use of clk, pulsin, pulsout, strobey*
@@ -103,6 +105,64 @@ matrixp/globals in RR - to test from there
 
 - for NN, LL, RR what we have to gap in there?
 
+** TODO this week 20+/2/2023
+
+- finish runglers NN and LL and catalogue special functions for NN, LL, RR
+- test all geoCC one by one
+- finish and test matrixp ops - in progress
+- ready for full tests and tweaks
+
+** 21/2/2023
+
+- define special fixed functions or areas for each side: eg. new split speeds, xor speeds, runglers, what else?
+- more flexibility with lists of func arrays - how we can change these - array of these to assign, with extents and depths, join some together
+- where we can put Zlast (and cycle) into route arrays!?
+
+MATRIXP: 
+- we can have distorting matrices - ie. remap copy of matrixp - mask or move it with triggers and SR holes
+
+TODO:
+
+// globals, finalise runglers and fixed functions on each side...
+// extras to fit in/maybe remove others: Zbinroutsplit, Zcyclesplit, Zbinroutsplitprob, Zbinroutsplitprob1, Zbinroutsplitprob2, Zbinroutsplitxor, Zbinroutsplitxor1//all except cycle with types - depth/no strobe
+// new outer in CC: SR_geo_outer_Cplast last one held // can be like indie speed
+
+Zlast - should be option for routes//entry into probs, same as basic cycle
+
+TODO:
+- PROGRESSfix matrixp - latest notes... TESTINGadded reset which will attach changing, possibility of layers
+
+//other notes to explore: 
+- copy in layers of fixed arrays of CV and CVL etc - bump on through lists of fixed arrays
+
+[- too few...reduced translations say 3 bits 0-7 eg. layers of speed, bits, probs  eg. nostrobe: 0,1,2 /speed/ 3,4,5 bits 6len, 9,10,11,12/prob 13,14dactype 16 routetype, // others only used in NN, etc]
+
+- *route arrays - merge depth and nodepth for final matrixp as we don;t distinguish? or have pre-selected special arrays*
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+DONES:
+
+DONE: - new split speed - so speed of cycling of GSR/whatever does not have to be the same as SR speed - Zbinroutsplit, Zcyclesplit, Zbinroutsplitprob, Zbinroutsplitprob1, Zbinroutsplitprob2//all except cycle with types - 
+
+but this is same as prob (with speed) of route in vs. same/last value - not really or is it TRY
+
+- how can we do a function which just stores last value... we store bitn in outv macro! gate[w].lastest -> Zlast// but where we put that function
+
+DONE TODO:or just make inner with that as one option of prob
+
+DONE:dual speed for strobes and test this!
+
+DONE:Revise all spdfracs/spdvienna in probfs as a) these need seperate arrays/values b) they need to toggle on success/1rewrite as P_
+spdfracX, spdfrac1X, spdfrac3X, spdfrac4X, spdfrac5X, spdfracdac3X, strobespdfracX, spdviennaX TODO:test all of these: 5->10, 24, 28
+
+- DONEfixes to strobe again - =0 inside speed function and re-test with ??? with a strobe in NN???
+- DONE - is just as becomes average...why XOR tail fails? tail route in 0
+- doesnt seem so...why/does fast interrupt fail?
+
+
 ** 20/2/2023
 
 - *can we fit xorspeeds into CC? where? can lose one prob and throw in, bump C43 to C50*
@@ -110,9 +170,9 @@ matrixp/globals in RR - to test from there
 all about transition from fixed funcs to... generic funcs...
 
 
-*how in matrixp we can say set matrixp[x] to CVL and then be able to set others to DAC etc... and go back and forth*
+how in matrixp we can say set matrixp[x] to CVL and then be able to set others to DAC etc... and go back and forth*
 // tested in test.c if we stick with oldgap then we just change what we have and as we change next last defaults to oldest value
-// *only way to set is outside of oldgaps -- or we can have layers of oldgaps...*
+// only way to set is outside of oldgaps -- or we can have layers of oldgaps...*
 
 /////
 
@@ -122,7 +182,7 @@ TODO:
 - physical tests all CC modes one by one... and catalogue/check sanity of each
 - fill in gaps in NN, LL and RR
 
-- *we need to check depth in all function arrays*
+- *we need to check use of depth in all function arrays, see about combining or simplifying arrays*
 
 //// DONES:
 

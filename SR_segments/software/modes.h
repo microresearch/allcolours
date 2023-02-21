@@ -9,11 +9,20 @@ typedef struct heavens_ {
   uint32_t shift_;
   uint32_t gshift_;
   uint32_t dac;
-  float time_now;
   uint32_t lastest;
   float alpha;
   long last_time;
   long int_time;
+  float time_now;
+  float time_nowp;
+  long last_timep;
+  long int_timep;
+  float time_nowx;
+  long last_timex;
+  long int_timex;
+  float time_nowxx;
+  long last_timexx;
+  long int_timexx;
   uint32_t changed;
   uint32_t reset[9];
   int32_t gsrcnt[9];
@@ -25,9 +34,11 @@ typedef struct heavens_ {
   uint32_t lastspeed;
   uint32_t countspeed;
   uint32_t matrix[22];
+  uint32_t fixedvalues[22];
   uint32_t set[22];
-  uint32_t *matrixp[22];
-  uint32_t *matrixpG[22];
+  uint32_t *matrixp[23]; // +1 for reset
+  uint32_t *matrixpG[23];
+  uint32_t oldgap[4];
   float *logspeed; 
   float lowest;
   void (*inner)(uint32_t w);

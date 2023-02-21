@@ -39,7 +39,6 @@ static uint32_t outcnt=0;
   for (uint32_t y=0;y<22;y++){			\
     gate[0].set[y]=0;							\
   gate[0].matrix[y]=matrixNN[y];					\
-  gate[0].matrixp[y]=&gate[0].matrix[y];				\
   }									\
   }
 
@@ -47,7 +46,6 @@ static uint32_t outcnt=0;
   for (uint32_t y=0;y<22;y++){			\
     gate[1].set[y]=0;							\
   gate[1].matrix[y]=matrixLL[y];					\
-  gate[1].matrixp[y]=&gate[1].matrix[y];				\
   }									\
   }
 
@@ -55,7 +53,6 @@ static uint32_t outcnt=0;
   for (uint32_t y=0;y<22;y++){			\
     gate[2].set[y]=0;							\
   gate[2].matrix[y]=matrixCC[y];					\
-  gate[2].matrixp[y]=&gate[2].matrix[y];				\
   }									\
   }
 
@@ -63,7 +60,6 @@ static uint32_t outcnt=0;
   for (uint32_t y=0;y<22;y++){			\
     gate[3].set[y]=0;							\
   gate[3].matrix[y]=matrixRR[y];					\
-  gate[3].matrixp[y]=&gate[3].matrix[y];				\
   }									\
   }
 
@@ -599,6 +595,7 @@ static uint32_t outcnt=0;
     gate[w].flip^=1;							\
     if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrix[13]>>7])) bitn|=gate[w].trigger; \
     gate[w].shift_+=bitn;						\
+    gate[w].lastest=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].trigger); \
     if (val>4095) val=4095;						\
     PULSOUT;								\
