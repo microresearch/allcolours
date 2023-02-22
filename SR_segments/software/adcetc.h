@@ -1039,7 +1039,7 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
   return bita ^ bitaa; // default
 }
 
-uint32_t dacstrobe[32]={1,1,1,1, 0,0,1,1, 1,1,1,1, 1,1,0,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; //if dac doesn't use strobe=1!?
+uint32_t dacstrobe[32]={1,1,1,1, 1,0,0,1, 1,1,1,1, 1,1,1,1, 1,0,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; //if dac doesn't use strobe=1!?
 
 // 15/12/2022 - length changed to otherpar except where we change both - to be TESTED!!
 //     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); 
@@ -1237,7 +1237,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     gate[wh].strobed=1;
     if (strobe) // we record the mask  S
 	{
-	  mask[wh]=(otherpar&4095); // or reg can be otherpar/SR
+	  mask[wh]=Gshift__[otherpar>>10]; // or reg can be otherpar/SR
 	  }
     x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
     x=x|mask[wh];

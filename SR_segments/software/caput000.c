@@ -269,7 +269,7 @@ uint32_t itself(uint8_t w, uint32_t mood){ //
 {
        {SR_geo_outer_N00, /*SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03,  SR_geo_outer_N10, SR_geo_outer_N11, SR_geo_outer_N12, SR_geo_outer_N13, SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, SR_geo_outer_N30, SR_geo_outer_N31, SR_geo_outer_N32, SR_geo_outer_N33,  SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, SR_geo_outer_N60, SR_geo_outer_N61, SR_geo_outer_N62, SR_geo_outer_N63, SR_geo_outer_N70, SR_geo_outer_N71, SR_geo_outer_N72, SR_geo_outer_N73*/},
        {SR_geo_outer_L00, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C51, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73*/},
-       {SR_geo_outer_C123, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153*/}, 
+       {SR_geo_outer_C00, /*SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152,*/ SR_geo_outer_C153}, 
        {SR_geo_outer_R00, /*SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_R10, SR_geo_outer_R11, SR_geo_outer_R12, SR_geo_outer_R13, SR_geo_outer_R20, SR_geo_outer_R21, SR_geo_outer_R22, SR_geo_outer_R23, SR_geo_outer_R30, SR_geo_outer_R31, SR_geo_outer_R32, SR_geo_outer_R33, SR_geo_outer_R40, SR_geo_outer_R41, SR_geo_outer_R42, SR_geo_outer_R43, SR_geo_outer_R50, SR_geo_outer_R51, SR_geo_outer_R52, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_R61, SR_geo_outer_R62, SR_geo_outer_R63, SR_geo_outer_R70, SR_geo_outer_R71, SR_geo_outer_R72, SR_geo_outer_R73*/}, //R121 is orderings
 
 };
@@ -293,23 +293,37 @@ void mode_init(void){
   
   
   for (x=0;x<22;x++){
-    gate[0].set[x]=0;
-    gate[1].set[x]=0;
-    gate[2].set[x]=0;
-    gate[3].set[x]=0;
 
     gate[0].matrix[x]=matrixNN[x];
     gate[1].matrix[x]=matrixLL[x];
     gate[2].matrix[x]=matrixCC[x];
-    gate[2].fixedvalues[x]=matrixCC[x];
-    
     gate[3].matrix[x]=matrixRR[x];
 
-    gate[2].matrixp[x]=&gate[2].fixedvalues[x];
-    gate[2].matrixpG[x]=&gate[2].fixedvalues[x];
+    gate[0].matrixX[x]=matrixNN[x];
+    gate[1].matrixX[x]=matrixLL[x];
+    gate[2].matrixX[x]=matrixCC[x];
+    gate[3].matrixX[x]=matrixRR[x];
+    
+    gate[0].matrixp[x]=&gate[0].matrix[x]; // was fixedvalues
+    gate[0].matrixpG[x]=&gate[0].matrix[x];
+    gate[1].matrixp[x]=&gate[1].matrix[x];
+    gate[1].matrixpG[x]=&gate[1].matrix[x];
+    gate[2].matrixp[x]=&gate[2].matrix[x];
+    gate[2].matrixpG[x]=&gate[2].matrix[x];
+    gate[3].matrixp[x]=&gate[3].matrix[x];
+    gate[3].matrixpG[x]=&gate[3].matrix[x];
+    
   }
 
   //  RESETC;
+
+    gate[8].flip=0;
+    gate[8].shift_=0x15;
+    gate[8].Gshift_[0]=0;
+    gate[8].Gshift_[1]=0;
+    gate[8].Gshift_[2]=0;
+    gate[8].Gshift_[3]=0;
+
   
   for (x=0;x<4;x++){
     gate[x].flip=0;

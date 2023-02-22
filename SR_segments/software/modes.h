@@ -33,12 +33,12 @@ typedef struct heavens_ {
   uint32_t routetype;
   uint32_t lastspeed;
   uint32_t countspeed;
-  uint32_t matrix[22];
-  uint32_t fixedvalues[22];
-  uint32_t set[22];
+  uint32_t matrix[23];
+  uint32_t matrixX[23];
   uint32_t *matrixp[23]; // +1 for reset
   uint32_t *matrixpG[23];
-  uint32_t oldgap[4];
+  uint32_t offset[23];
+  uint32_t oldgap[16]; // 16 layers
   float *logspeed; 
   float lowest;
   void (*inner)(uint32_t w);

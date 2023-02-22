@@ -29,9 +29,9 @@ R - as C, but more abstract functions for runglers, more globals (where?)
 
 -  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
 
-*re-check use of clk, pulsin, pulsout, strobey*
+- *re-check use of clk, pulsin, pulsout, strobey*
 
-*for NN which outers do or dont use ADC- how to divide, organise*
+- *for NN which outers do or dont use ADC- how to divide, organise*
 
 - *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
 
@@ -54,6 +54,8 @@ maybe expand these arrays!!
 
 - check all extents, all arrays and all functions for sanity - geogen and each before we expand across all sides...
 - sanity check all code, line by line: LIST! main, caput00, adcetc, geogen, arrays, all resources, ALL!
+
+- check all resets
 
 - full tests as below
 - full tests CC modes before we go further and replicate, smaller tests on runglers
@@ -112,22 +114,62 @@ matrixp/globals in RR - to test from there
 - finish and test matrixp ops - in progress
 - ready for full tests and tweaks
 
+** 22/2/2023
+
+what new arrays we have in newbits from merges:
+
+routebits_anystrobe_notypesz
+
+routebits_nostrobe_nodepth
+routebits_nostrobe_depth
+routebits_nostrobe_typesz
+
+// *better define/check probs so far - of generic func vs. nodepths/depths - options?*
+
+TODO: 
+
+- test all geoCC functions one by one
+- finish and test matrixp ops - shift some modes to strobes as makes sense for speeds also there, but nice to have speed changes
+
+////////////
+
+- all of geoCC tests and fill in rest
+- all matrixp fills in
+
+DONE:
+
+- 1010101 from SR sets matrixp to CV/CVL chosen fixedvar
+- offsets in matrixp - see notes
+- layers as sep functions we have but also can be in one - see notes // as bleed/no bleed/triggers bleed
+- TESTednew scheme for globals with matrixX as new matrix in inners, and matrix become fixedvalue...DONE/TEST
+test: abstractbits_nostrobez
+DONEretests: routebits_anystrobe_depth_notypesz: C30 - should really test all bits again as part of CC
+- more flexibility with lists of func arrays - how we can change these - array of these to assign, with extents and depths, join some together*
+- as in merge/new groups of route functions // find space for extra functions and fill in gaps
+- DONEe need to check use of depth in all function arrays, see about combining or simplifying arrays*
+- DONE and fixed:test DACs and redo strobe there perhaps...
+
 ** 21/2/2023
 
 - define special fixed functions or areas for each side: eg. new split speeds, xor speeds, runglers, what else?
-- more flexibility with lists of func arrays - how we can change these - array of these to assign, with extents and depths, join some together
 - where we can put Zlast (and cycle) into route arrays!?
 
 MATRIXP: 
-- we can have distorting matrices - ie. remap copy of matrixp - mask or move it with triggers and SR holes
+//NO but can mask it!- we can have distorting matrices - ie. remap copy of matrixp - mask or move it with triggers and SR holes
 
 TODO:
 
 // globals, finalise runglers and fixed functions on each side...
-// extras to fit in/maybe remove others: Zbinroutsplit, Zcyclesplit, Zbinroutsplitprob, Zbinroutsplitprob1, Zbinroutsplitprob2, Zbinroutsplitxor, Zbinroutsplitxor1//all except cycle with types - depth/no strobe
+
+// *extras to fit in/maybe remove others - means testings:*
+
+split speeds, speedXORs, prob of last
+
+Zbinroutsplit, Zcyclesplit, Zbinroutsplitprob, Zbinroutsplitprob1, Zbinroutsplitprob2, Zbinroutsplitxor, Zbinroutsplitxor1//all except cycle with types - depth/no strobe
+
 // new outer in CC: SR_geo_outer_Cplast last one held // can be like indie speed
 
-Zlast - should be option for routes//entry into probs, same as basic cycle
+Zlast, zjustcycle/// - should be option for routes//entry into probs, same as basic cycle which we should add
 
 TODO:
 - PROGRESSfix matrixp - latest notes... TESTINGadded reset which will attach changing, possibility of layers
@@ -181,8 +223,6 @@ TODO:
 
 - physical tests all CC modes one by one... and catalogue/check sanity of each
 - fill in gaps in NN, LL and RR
-
-- *we need to check use of depth in all function arrays, see about combining or simplifying arrays*
 
 //// DONES:
 
