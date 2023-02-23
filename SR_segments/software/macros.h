@@ -119,6 +119,13 @@ static uint32_t outcnt=0;
   k=ADC_GetConversionValue(ADC1);					\
   }
 
+#define MIXin {								\
+    ADCgeneric;								\
+    float mult=mixer[in>>2];						\
+    float pp=((float)(k) *  (1.0f-mult)) + ((float)(gate[dacIN[daccount][w]].dac)*mult); \
+    k=(int)pp;								\
+}
+
 #define ADCgeneric2 {				\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
   ADC_SoftwareStartConv(ADC1);						\

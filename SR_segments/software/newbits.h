@@ -12,10 +12,17 @@ routebits_anystrobe_nodepth_notypesz
 
 NOstrobes - for strobe speeds:
 routebits_nostrobe_depth_typesz
+routebits_nostrobe_depth_notypesz
 routebits_nostrobe_nodepth_typesz
 routebits_nostrobe_nodepth_notypesz
 
-+ merged arrays bow...
++ merged arrays now:
+routebits_anystrobe_notypesz
+
+routebits_nostrobe_nodepth - all types
+routebits_nostrobe_depth - all types
+routebits_nostrobe_typesz - all depths
+
 
 all use depth but do we need signalling array...
 abstractbitsz
@@ -37,7 +44,7 @@ uint32_t depth_routebits_nodepth_typesz[64]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 #define extent_routebits_nodepth_typesz 6
 
-uint32_t (*routebits_anystrobe_depth_notypesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbitsIppd, zsuccbitsppd, zsuccbitsprobd, zsuccbits_noshiftd, zsuccbitsI_noshiftd, zsuccbitsIppd, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRNwas15, pSRprobxortog, pSRprobxortogx, pSR_layer1, pSR_layer2, pSR_reflect, triadexbits, binrout_probXY2, binrout_probXY3, Zcyclesplit, zTMsimplebitsL, zTMsimplebits, pSRN30};//32
+uint32_t (*routebits_anystrobe_depth_notypesz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zsuccbitsprobd, zsuccbitspp, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbitsIppd, zsuccbitsppd, zsuccbitsprob, zsuccbits_noshiftd, zsuccbitsI_noshiftd, zsuccbitsIppd, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRNwas15, pSRprobxortog, pSRprobxortogx, pSR_layer1, pSR_layer2, pSR_reflect, triadexbits, binrout_probXY2, binrout_probXY3, Zcyclesplit, zTMsimplebitsL, zTMsimplebits, pSRN30};//32
 
 uint32_t depth_routebits_anystrobe_depth_notypesz[32]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
 

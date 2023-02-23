@@ -36,8 +36,7 @@ void SR_geo_inner_gappedfunctionrung(uint32_t w){  // depth or cycle prob
 	  bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
       }
       else {
-	bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
-	//	bitn=0;
+	bitn=(routebits_depth_typesz[gate[w].matrixX[12]>>extent_routebits_depth_typesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
       }	  
     }
     BITN_AND_OUTV_; 
@@ -87,7 +86,7 @@ void SR_geo_inner_dacspeed3selfrouteabstractL(uint32_t w){
     }
 }
 
-void SR_geo_inner_dacspeed3xrouteasbtractL(uint32_t w){  
+void SR_geo_inner_dacspeed3xrouteabstractL(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
 

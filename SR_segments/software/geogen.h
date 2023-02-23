@@ -1,15 +1,3 @@
-/*
-
-- what did we add LFSR to and does exist non-depth?
-
-succbits we have already
-
-zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt - but needs fix for theroute - alts now
-
-and in exp_port.h
-
- */
-
 // new macro for binroutetypes - tmpp is type, tmp is route
 #define ROUTETYPE_ {				\
     switch(tmpp){				\
@@ -4274,21 +4262,39 @@ static inline uint32_t sigmadeltaS_(uint32_t depth, uint32_t in, uint32_t w){  /
 
 //////////////////////////////////////////////////////////////////////////
 //5
-//adc - these just become interpreters for IN values which can be adc! depth is control/CV
+// adc no longer an interpreter
 
-//uint32_t (*adcfromsd[20])(uint32_t depth, uint32_t in, uint32_t w)={zeros, zadcx, zadconebitsx, zadconebitsxreset, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, cipher, zadcLBURST0};///  test cipher
+//uint32_t (*inall[64])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadcx, zadconebitsx, zadcpadbits, zadc8bits, zadc4bits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadconecompbits, zadcLBURST0, zadcxdouble, zadc4bitsadd,  zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd/*24*/}; // double up for dacmix/macro
 
-
-static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t w){ // max 12 bits
+// fixing now
+static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t w){ // max 12 bits // new template for adcs - in is now mixer
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
-  
     if (bc<0) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
       if (depth<3) depth=3;
-      k=in>>(11-depth); 
+      ADCgeneric; 
+      k=k>>(11-depth); 
+      bc=depth; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadcxdac(uint32_t depth, uint32_t in, uint32_t w){ // max 12 bits // new template for adcs - in is now mixer
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      depth=depth>>7; // 5 bits
+      if (depth>11) depth=11; // max depth
+      if (depth<3) depth=3;
+      MIXin;
+      
+      k=k>>(11-depth); 
       bc=depth; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -4297,18 +4303,43 @@ static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t w){ // max 12
 }
 
 static inline uint32_t zadconebitsx(uint32_t depth, uint32_t in, uint32_t w){
-  uint32_t bt;
+  uint32_t bt,k;
   static uint32_t bc=31;
   static float integratorf=0.0f, oldvaluef=0.0f;
   float inb;
   depth=depth>>7; // 5 bits
-  //  depth=31-depth;
   if (bc>depth){
-  inb=(float)(in);
-  //  inb=inb-2048.0; //sounds better without this
-  //  inb=inb+CVL[0]; // offset
-  inb=inb/2048.0; // from 0 to 4095 but where is the middle? 2048
+    ADCgeneric;
+    inb=(float)(k);
+  inb=inb/4096.0f;
+  integratorf+=(inb-oldvaluef);
+  bc=0;
+  }
+  bc++;
+  if(integratorf>0.0)
+      {
+	oldvaluef=1.0;
+	bt=1;
+      }
+  else
+    {
+      oldvaluef=-1.0;
+      bt=0;
+    }
+  return bt;
+}
 
+static inline uint32_t zadconebitsxdac(uint32_t depth, uint32_t in, uint32_t w){
+  uint32_t bt,k;
+  static uint32_t bc=31;
+  static float integratorf=0.0f, oldvaluef=0.0f;
+  float inb;
+  depth=depth>>7; // 5 bits
+  if (bc>depth){
+    ADCgeneric;								
+    float mult=mixer[in>>2];						
+    inb=((float)(k) *  (1.0f-mult)) + ((float)(gate[dacIN[daccount][w]].dac)*mult); 
+    inb=inb/4096.0f;
   integratorf+=(inb-oldvaluef);
   bc=0;
   }
@@ -4331,7 +4362,23 @@ static inline uint32_t zadcpadbits(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t bc=31;
   static uint32_t k;
   if (bc<0) {
-    k=in;
+    ADCgeneric;
+    depth=depth>>7; // 5 bits
+    if (depth<12) k=k>>(11-depth);
+    else k=k<<(depth-11);
+    bc=depth; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadcpadbitsdac(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  if (bc<0) {
+    MIXin;
     depth=depth>>7; // 5 bits
     if (depth<12) k=k>>(11-depth);
     else k=k<<(depth-11);
@@ -4347,7 +4394,7 @@ static inline uint32_t zadc12bits(uint32_t depth, uint32_t in, uint32_t w){ // f
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       bc=11; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -4360,7 +4407,21 @@ static inline uint32_t zadc8bits(uint32_t depth, uint32_t in, uint32_t w){ // fi
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
+      k=k>>4;
+      bc=7; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first - no depth!
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc8bitsdac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12,8,4 - no depth!
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
       k=k>>4;
       bc=7; 
   }
@@ -4374,7 +4435,21 @@ static inline uint32_t zadc4bits(uint32_t depth, uint32_t in, uint32_t w){ // fi
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
+      k=k>>8;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4bitsdac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12,8,4 - no depth!
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
       k=k>>8;
       bc=3; 
   }
@@ -4388,7 +4463,7 @@ static inline uint32_t zadceqbits(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t bc=31;
   static uint32_t k;
   if (bc<0) {
-    k=in;
+    ADCgeneric;
     depth=depth>>7; // 5 bits
     //    if (depth>31) depth=31; // and if depth is higher?
     k=k/divy[depth];
@@ -4410,10 +4485,30 @@ static inline uint32_t zadcenergybits(uint32_t depth, uint32_t in, uint32_t w){ 
   int32_t tmp;
   static uint32_t k;
     depth=depth>>7; // 5 bits
-    //    depth=31-depth;
     if (bc>depth) {
+      ADCgeneric;
+      tmp=k-2048;
+      k=abs(tmp);
+      k=k/divy[depth];
+      bc=0;
+    }
+    if (k!=0) {
+      bt=1;
+      k--;
+    }
+    else bt=0;
+    bc++;    
+    return bt;
+}
 
-      k=in;
+static inline uint32_t zadcenergybitsdac(uint32_t depth, uint32_t in, uint32_t w){ // equiv bits energy TODO: use this
+  uint32_t bt;
+  static int32_t bc=31;
+  int32_t tmp;
+  static uint32_t k;
+    depth=depth>>7; // 5 bits
+    if (bc>depth) {
+      MIXin;
       tmp=k-2048;
       k=abs(tmp);
       k=k/divy[depth];
@@ -4433,7 +4528,7 @@ static inline uint32_t zadc12compbits(uint32_t depth, uint32_t in, uint32_t w){ 
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       if (k<2048) bitwise=1;
       else bitwise=0;
       k=abs(k-2048);
@@ -4450,7 +4545,7 @@ static inline uint32_t zadc8compbits(uint32_t depth, uint32_t in, uint32_t w){ /
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       k=k>>4;
       if (k<128) bitwise=1;
       else bitwise=0;
@@ -4468,7 +4563,7 @@ static inline uint32_t zadc4compbits(uint32_t depth, uint32_t in, uint32_t w){ /
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       k=k>>8;
       if (k<8) bitwise=1;
       else bitwise=0;
@@ -4486,7 +4581,7 @@ static inline uint32_t zadccompbits(uint32_t depth, uint32_t in, uint32_t w){ //
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;//   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
+      ADCgeneric;
       depth=depth>>7; // 5 bits
       if (depth<12) k=k>>(11-depth);
       else k=k<<(depth-11);
@@ -4502,12 +4597,88 @@ static inline uint32_t zadccompbits(uint32_t depth, uint32_t in, uint32_t w){ //
   return bt;
 }
 
+static inline uint32_t zadc12compbitsdac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12 bits 2s complement
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      if (k<2048) bitwise=1;
+      else bitwise=0;
+      k=abs(k-2048);
+      if (bitwise) k=(~k)+1;
+      bc=11; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc8compbitsdac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 8 bits 2s complement - no depth!
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=k>>4;
+      if (k<128) bitwise=1;
+      else bitwise=0;
+      k=abs(k-128);
+      if (bitwise) k=(~k)+1;
+      bc=7; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4compbitsdac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 4 bits 2s complement - no depth!
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=k>>8;
+      if (k<8) bitwise=1;
+      else bitwise=0;
+      k=abs(k-8);
+      if (bitwise) k=(~k)+1;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadccompbitsdac(uint32_t depth, uint32_t in, uint32_t w){ // variable depth 2s complement
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      depth=depth>>7; // 5 bits
+      if (depth<12) k=k>>(11-depth);
+      else k=k<<(depth-11);
+      bc=depth; 
+      
+      if (k<(1<<depth)) bitwise=1;
+      else bitwise=0;
+	  k=abs(k-(1<<depth));
+      if (bitwise) k=(~k)+1;
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+////
+
 static inline uint32_t zadc12onecompbits(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12 bits 1s complement - no depth!
   uint32_t bt, bitwise;
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       if (k<2048) bitwise=1;
       else bitwise=0;
       k=abs(k-2048);
@@ -4525,7 +4696,7 @@ static inline uint32_t zadc8onecompbits(uint32_t depth, uint32_t in, uint32_t w)
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       k=k>>4;
       if (k<128) bitwise=1;
       else bitwise=0;
@@ -4544,7 +4715,7 @@ static inline uint32_t zadc4onecompbits(uint32_t depth, uint32_t in, uint32_t w)
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       k=k>>8;
       if (k<8) bitwise=1;
       else bitwise=0;
@@ -4563,7 +4734,7 @@ static inline uint32_t zadconecompbits(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in;
+      ADCgeneric;
       depth=depth>>7; // 5 bits
       if (depth<12) k=k>>(11-depth);
       else k=k<<(depth-11);
@@ -4584,7 +4755,7 @@ static inline uint32_t zadconecompbits(uint32_t depth, uint32_t in, uint32_t w){
 
 
 static inline uint32_t zadcLBURST0(uint32_t depth, uint32_t in, uint32_t w){ // 
-  static uint32_t bt;
+  static uint32_t bt,k;
   gate[w].strobed=1;
   if (gate[w].trigger){
     train[w]=1;
@@ -4592,7 +4763,49 @@ static inline uint32_t zadcLBURST0(uint32_t depth, uint32_t in, uint32_t w){ //
   if (train[w]!=0 && train[w]< (1024-(depth>>2))){
   train[w]++;
   //  bitn^=ADC_(wh,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
-  bt=zadc4bits(0, in, w);
+  bt=zadc4bits(0, 0, w);
+  }
+  else {
+    train[w]=0;
+  }
+  return bt;
+}
+
+static inline uint32_t zadconecompbitsdac(uint32_t depth, uint32_t in, uint32_t w){ // variable 12 bits 1s complement
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      depth=depth>>7; // 5 bits
+      if (depth<12) k=k>>(11-depth);
+      else k=k<<(depth-11);
+      bc=depth; 
+
+      if (k<(1<<depth)) bitwise=1;
+      else bitwise=0;
+
+      k=abs(k-(1<<depth));
+      if (k==0) k=1;
+      if (bitwise) k=(~k);
+      //     bc=11; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+
+static inline uint32_t zadcLBURST0dac(uint32_t depth, uint32_t in, uint32_t w){ // 
+  static uint32_t bt,k;
+  gate[w].strobed=1;
+  if (gate[w].trigger){
+    train[w]=1;
+  }
+  if (train[w]!=0 && train[w]< (1024-(depth>>2))){
+  train[w]++;
+  //  bitn^=ADC_(wh,SRlength[w],0,gate[w].trigger,dacfrom[daccount][w],param[w], &gate[w].shift_);
+  bt=zadc4bitsdac(0, 0, w);
   }
   else {
     train[w]=0;
@@ -4601,9 +4814,10 @@ static inline uint32_t zadcLBURST0(uint32_t depth, uint32_t in, uint32_t w){ //
 }
 
 static inline uint32_t zadccomp(uint32_t depth, uint32_t in, uint32_t w){ // 
-  uint32_t bt=0;
+  uint32_t bt=0,k;
+  ADCgeneric;
   //  if (depth==(4095-(31<<7))) depth=15<<7;
-  if (in>depth) bt=1;
+  if (k>depth) bt=1;
   return bt;
 }
 
@@ -4615,7 +4829,26 @@ static inline uint32_t zadcxdouble(uint32_t depth, uint32_t in, uint32_t w){ // 
     if (bc<0) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
-      k=in>>(11-depth); 
+      ADCgeneric;
+      k=k>>(11-depth); 
+      bc=depth; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadcxdoubledac(uint32_t depth, uint32_t in, uint32_t w){ // max 12 bits
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  
+    if (bc<0) {
+      depth=depth>>7; // 5 bits
+      if (depth>11) depth=11; // max depth
+      MIXin;
+      k=k>>(11-depth); 
       bc=depth; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -4640,8 +4873,9 @@ static inline uint32_t zadcxcut(uint32_t depth, uint32_t in, uint32_t w){ // max
     if (length>11) length=11;
 
     if (n[w]<0) {
+      ADCgeneric;
       lastbt[w]=(gate[dacfrom[daccount][w]].dac)>>(11-length);
-      lastin[w]=in>>(11-length);
+      lastin[w]=k>>(11-length);
 	n[w]=length;
       }
       if (toggle[w]) bt = (lastin[w]>>n[w])&0x01; // this means that MSB comes out first
@@ -4656,7 +4890,8 @@ static inline uint32_t zadc4bitsadd(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=depth+in;
+      ADCgeneric;
+      k=depth+k;
       k=k>>8;
       k=k&15;
       bc=3; 
@@ -4671,7 +4906,8 @@ static inline uint32_t zadc4bitsaddmod(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=depth+in;
+      ADCgeneric;
+      k=depth+k;
       k=k%4095;
       k=k>>8;
       bc=3; 
@@ -4686,7 +4922,8 @@ static inline uint32_t zadc4bitsxor(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=depth^in;
+      ADCgeneric;
+      k=depth^k;
       //      if (k>4095) k=4095;
       k=k>>8;
       bc=3; 
@@ -4701,7 +4938,8 @@ static inline uint32_t zadc4bitsor(uint32_t depth, uint32_t in, uint32_t w){
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=depth|in;
+      ADCgeneric;
+      k=k|depth;
       k=k>>8;
       bc=3; 
   }
@@ -4717,7 +4955,8 @@ static inline uint32_t zadc4bitsand(uint32_t depth, uint32_t in, uint32_t w){
 
   //  if (depth==(4095-(31<<7))) depth=15<<7;
     if (bc<0) {
-      k=depth&in;
+      ADCgeneric;
+      k=depth&k;
       k=k>>8;
       bc=3; 
   }
@@ -4733,7 +4972,8 @@ static inline uint32_t zadc4bitsmodm(uint32_t depth, uint32_t in, uint32_t w){
   //    if (depth==(4095-(31<<7))) depth=31<<7;
 
   if (bc<0) {
-      k=in%depth;
+    ADCgeneric;
+      k=k%depth;
       k=k>>8;
       bc=3; 
   }
@@ -4747,7 +4987,8 @@ static inline uint32_t zadc4onecompbitsadd(uint32_t depth, uint32_t in, uint32_t
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in+depth;
+      ADCgeneric;
+      k=k+depth;
       k=k>>8;
       k=k&15;
       if (k<8) bitwise=1;
@@ -4767,7 +5008,8 @@ static inline uint32_t zadc4compbitsadd(uint32_t depth, uint32_t in, uint32_t w)
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in+depth;
+      ADCgeneric;
+      k=k+depth;
       k=k>>8;
       k=k&15;
       if (k<8) bitwise=1;
@@ -4786,7 +5028,8 @@ static inline uint32_t zadc4compbitsxor(uint32_t depth, uint32_t in, uint32_t w)
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0) {
-      k=in^depth;
+      ADCgeneric;
+      k=k^depth;
       k=k>>8;
       if (k<8) bitwise=1;
       else bitwise=0;
@@ -4806,7 +5049,8 @@ static inline uint32_t zadc4compbitsmodm(uint32_t depth, uint32_t in, uint32_t w
   //      if (depth==(4095-(31<<7))) depth=31<<7;
 
     if (bc<0) {
-      k=in%depth;
+      ADCgeneric;
+      k=k%depth;
       k=k>>8;
       if (k<8) bitwise=1;
       else bitwise=0;
@@ -4819,20 +5063,198 @@ static inline uint32_t zadc4compbitsmodm(uint32_t depth, uint32_t in, uint32_t w
   return bt;
 }
 
+////////
+
+static inline uint32_t zadc4bitsadddac(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=depth+k;
+      k=k>>8;
+      k=k&15;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4bitsaddmoddac(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=depth+k;
+      k=k%4095;
+      k=k>>8;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4bitsxordac(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=depth^k;
+      //      if (k>4095) k=4095;
+      k=k>>8;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4bitsordac(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=k|depth;
+      k=k>>8;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4bitsanddac(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+
+  //  if (depth==(4095-(31<<7))) depth=15<<7;
+    if (bc<0) {
+      MIXin;
+      k=depth&k;
+      k=k>>8;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4bitsmodmdac(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  static int32_t bc=31;
+  static uint32_t k;
+  //    if (depth==(4095-(31<<7))) depth=31<<7;
+
+  if (bc<0) {
+      MIXin;
+      k=k%depth;
+      k=k>>8;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4onecompbitsadddac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12 bits 1s complement - no depth!
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=k+depth;
+      k=k>>8;
+      k=k&15;
+      if (k<8) bitwise=1;
+      else bitwise=0;
+      k=abs(k-8);
+      if (k==0) k=1;      
+      if (bitwise) k=(~k);
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4compbitsadddac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 4 bits 2s complement - no depth!
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=k+depth;
+      k=k>>8;
+      k=k&15;
+      if (k<8) bitwise=1;
+      else bitwise=0;
+      k=abs(k-8);
+      if (bitwise) k=(~k)+1;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4compbitsxordac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 4 bits 2s complement - no depth!
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+    if (bc<0) {
+      MIXin;
+      k=k^depth;
+      k=k>>8;
+      if (k<8) bitwise=1;
+      else bitwise=0;
+      k=abs(k-8);
+      if (bitwise) k=(~k)+1;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
+
+static inline uint32_t zadc4compbitsmodmdac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 4 bits 2s complement - no depth!
+  uint32_t bt, bitwise;
+  static int32_t bc=31;
+  static uint32_t k;
+  //      if (depth==(4095-(31<<7))) depth=31<<7;
+
+    if (bc<0) {
+      MIXin;
+      k=k%depth;
+      k=k>>8;
+      if (k<8) bitwise=1;
+      else bitwise=0;
+      k=abs(k-8);
+      if (bitwise) k=(~k)+1;
+      bc=3; 
+  }
+  bt = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  return bt;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // adcs for prob or reset and/or hold
 
-// prototype
 static inline uint32_t zpadcx(uint32_t depth, uint32_t in, uint32_t w, uint32_t reset, uint32_t adv){ // max 12 bits
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
-  
+  //  ADCgeneric2;
     if (bc<0 || reset) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
-      k=in>>(11-depth); 
+      in=in>>(11-depth); 
       bc=depth; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first

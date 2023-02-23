@@ -1,3 +1,139 @@
+
+
+///////////// tests
+
+void SR_geo_outer_Cf(uint32_t w){ // change function. nodepth. types
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6;//
+  gate[w].matrix[4]=CVL[w]; // function  param
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+  gate[w].extent=extent_routebits_nodepth_typesz; // 6 bits above // checked
+  gate[w].depths=depth_routebits_nodepth_typesz;
+  gate[w].inner=SR_geo_inner_function; 
+  }
+}
+
+// and test for strobe with CV and CVL dual speeds of route in and cycle
+void SR_geo_outer_Cs(uint32_t w){   // simple fixed strobe 
+  if (gate[w].changed==0) {
+    gate[w].matrix[15]=0<<8;//  simple strobe
+    gate[w].matrix[17]=2<<7; ////ZbinroutsplitxorXX 
+    gate[w].matrix[4]=CV[w];
+    gate[w].matrix[5]=CVL[w];
+  
+    gate[w].str_funcbit=routebits_nostrobe_depth_typesz;   // we make sure function is NO STROBE!
+    gate[w].str_extent=extent_routebits_nostrobe_depth_typesz;
+    gate[w].str_depths=depth_routebits_nostrobe_depth_typesz;
+
+    gate[w].inner=SR_geo_inner_str_function;
+  }
+}
+
+//zosc1bits, sigmadelta, osceq, osceqx, zprobbits, zlfsrbits, zllfsrbits, zflipbits, 8zosceqbitsI, zosceqbitsIx, 10zosc1bitsI, 11zlfsrbitsI, zflipbitsI, 13zpattern4bits, zpattern8bits, zpattern4bitsI, 16zpattern8bitsI, zTMsimplebitsL, zTMsimplebits, zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbitsIppd, zsuccbitsppd, zsuccbitsprobd, zsuccbits_noshiftd, zreturnnotbits, pSRLcvSRmaskroute, pSRLcvroute, pSRNwas15, pSRN30};
+
+// testing abstractbits_nostrobez but not to use as a model
+void SR_geo_outer_CsX(uint32_t w){   // simple fixed strobe 
+  if (gate[w].changed==0) {
+    gate[w].matrix[15]=0<<8;//  simple strobe
+    gate[w].matrix[17]=CVL[w]; // [17] is for strobe function not [3]
+    gate[w].matrix[4]=CV[w];
+    gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2 - can also do offset here from CV
+   
+    gate[w].str_funcbit=abstractbits_nostrobez; // test this
+    gate[w].str_extent=extent_abstractbits;
+
+    gate[w].inner=SR_geo_inner_str_function;
+  }
+}
+
+
+//setgapz
+void SR_geo_outer_C134xx(uint32_t w){   
+  if (gate[w].changed==0) {
+    setgapz(w, 0, maparrayCC[(CV[w]>>8)]); 		   
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrixX[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionX; 
+  }
+}
+
+
+void SR_geo_outer_C120(uint32_t w){   
+  if (gate[w].changed==0) {
+    setvargapz(w, 0, maparrayCCS[(CVL[w]>>8)], 4, 0); // set to CV // or setvargapzbleed!
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrixX[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionX; 
+  }
+}
+
+void SR_geo_outer_C121(uint32_t w){  // CV sets CVL
+  if (gate[w].changed==0) {
+    setvargapz(w, 1, maparrayCCS[(CV[w]>>8)], 5, 0); // set to CV // or setvargapzbleed! with the 1
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrixX[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionX; 
+  }
+}
+
+void SR_geo_outer_C122(uint32_t w){  // CV sets CVL
+  if (gate[w].changed==0) {
+    if (maparrayCCS[(CV[w]>>8)]==1){ // speedcv
+    setvargapz(w, 2, maparrayCCS[(CV[w]>>8)], 7+speedfrom[spdcount][w], 0);  // speedfrom
+    }
+    else {
+    setvargapz(w, 2, maparrayCCS[(CV[w]>>8)], 7+dacfrom[daccount][w], 0);  // gshift
+    }
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrixX[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionX; 
+  }
+}
+
+
+
+
+
+/*
+
+//1.0////////// try to follow geoCC but need new inners all with adc now... theroute in, adcparam, length -> all with probs of entry, switch of entry on strobe
+// abstract ins/merge/prob of these...
+
+- NN entry of adc/abstract vs. fixed funcs/generic route funcs...
+
+also for RR:
+
+- just route in, adc in, abstract in only
+- some cycle probs but generally replace prob/switch of route vs cycle with route vs adc/abstract/dac
+- probs below of func vs. route in
+- runglers
+
+///
+
+- probs of x vs. y
+
+NN: not so much about speeds?
+
+- prob of adc/abstract vs. route // adc/abstract vs. adc/abstract^route
+
+[ Q: adc/abstract vs. [adc/abstract ^ cycle] ? ]
+
+- runglers with adc and abstract, what of route in?
+
+////
+
+older notes from geoN.h:
+
+adc, abstracts and routes only
+
+switches between these entries, abstracts as entry (no ADC)?
+
+ */
+
+
 ////////// former matrixp to refer to:
 
 //////// 

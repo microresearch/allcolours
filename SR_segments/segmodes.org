@@ -88,31 +88,146 @@ BASIC:
 //////////
 
 speed/prob
-4 
-5
-6
-7
+40 - basic rungler with gapped route function
+41 - dacspeed3 as fixed speedfunc
+42 - draft speedmodes
+43 - speedfunc select
+
+50 - select prob function - vs cycle
+51 - probzeroes - probdepth
+52 - probcycle - probdepth
+53 - cycleoxor - probdepth
+
+60 - select prob functions with no depth vs cycle
+61 - vs cyclexor
+62 - select altprob
+63 - back to full depth with alt
+
+70 - gapped. sel function. dac as depth
+71 - dac as length
+72 - select alt function
+73 - prob function dac depth
 
 strobe
-8
-9
-10
-11
+80 - simple fixed strobe with sel bitfunc and depth: routebits_nostrobe_depth_typesz >>7
+81 - simple fixed strobe with sel bitfunc and depth: routebits_nostrobe_depth_notypesz >>8
+82 - //routebits_nostrobe_nodepth_typesz >>8 and TYPE cv
+83 - strobe prob cycle
 
-matrixp/globals in RR - to test from there
-12
-13
-14
-15
+90 - // select strobe speed function with no depth, bit mode
+91 - routes with depth and gapped strobe speed 
+92 - routes with depth and gapped strobe speed 
+93 - select strobe speed function with depth and gap function // remove??? - try dual speed now
+
+100 - speed func and bit mode selected. dacfrom depth
+101 - dacfrom length
+102 - strobexor fixed strobe
+103 - strobxor var strobe speed
+
+110 - sel prob depth/ sel func2 - these could be improved???
+111 - prob mode cv1/2
+112 - alt= routebits_nostrobe_nodepth -  bitfunc/prob depth
+113 - alt above - bittdepth/prob depth
+
+matrixp//globals in RR 
+120 strobe//
+121
+122
+123
+
+130 strobe//
+131
+132
+133
+
+140 nostrobe//
+141
+142
+143
+
+150 nostrobe//
+151
+152
+153
+
+/// what do we need to fit in CC? and where
+
+// prob of last remaining: SR_geo_inner_functionproblast(uint32_t w)
+// trial xorspeed
+// probroutes
 
 - for NN, LL, RR what we have to gap in there?
 
 ** TODO this week 20+/2/2023
 
 - finish runglers NN and LL and catalogue special functions for NN, LL, RR
-- test all geoCC one by one
+- test all geoCC one by one// nearly
 - finish and test matrixp ops - in progress
 - ready for full tests and tweaks
+
+** 23/2/2023
+
+TODO:
+
+- test each of CC //catalogue - last matrixp funcs to test!
+
+
+- NN entry of [adc/abstract] vs. fixed funcs/generic route funcs...
+
+- how matrixp for NN differs? different matrix of course, what else?
+- if we can fit problast and split strobe speed at end of CC into CC functions
+- binroutes and speedroutes to check and expand, finish altroutes
+
+- resolve prob options//started on this:
+
+funcarray vs. funcarray
+  //          fixed/defined
+
+how many we have of funcarrays:
+
+nostrobe:
+merged one: routebits_anystrobe_notypezs (64, depth/no depth) (for matrixp, maybe all probs)
+routebits_depth_typezs 64
+routebits_nodepth_typesz 64
+
+so we have 3x probs alts///
+
+strobe: 2x alts
+routebits_nostrobe_nodepth 64 - all types
+routebits_nostrobe_depth 32 - all types
+
+DONE:
+
+Q:
+testing questions: cycle has same frequency (esp in CC as we fix that to speed).... which becomes penetrating... but this is length!
+
+for defaults what is prob funcbit=routebits_nostrobe_depth_typesz;
+vs:
+routebits_nostrobe_depth_typesz - so the same???
+
+alts: 
+routebits_nostrobe_nodepth 64 - all types
+routebits_nostrobe_depth 32 - all types
+
+
+- take cycle out of gapped function and put in:
+
+    bitn=(routebits_depth_typesz[gate[w].matrixX[12]>>extent_routebits_depth_typesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
+
+//rework NN - adc depth and abstract depth now share [8], how do we signal mix which is one [21]? - how we know we have that >x <y TRIAL
+
+- adc etc. entry and strobe is now question // where are strobes in ADC in // abstracts? // we can ignore...
+
+//to redraft so we just have selected in with abstracts and with dac in as first
+
+reduce adc, adcx2=64 for dacin, dacin mix (where we set?) + selected abstracts=
+
+zosc1bitsfast, sigmadelta, osceqf, osceqxf, zcountbits, zcountbitsI, zprobbits, zprobbitsxorstrobe, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsIf, zosceqbitsIxf, zosc1bitsIf, zlfsrbitsI, zflipbitsI
+
+- fixed first NN init arrays as we don't know extents of functions...
+- check latest matrixp ops in test2.c - also fixedvarsDONE... layers seems to work but each leaves its residue
+- TEST-strobe matrixp in CC (but speed doesnt affect attachment)
+
 
 ** 22/2/2023
 
@@ -130,11 +245,6 @@ TODO:
 
 - test all geoCC functions one by one
 - finish and test matrixp ops - shift some modes to strobes as makes sense for speeds also there, but nice to have speed changes
-
-////////////
-
-- all of geoCC tests and fill in rest
-- all matrixp fills in
 
 DONE:
 

@@ -1,5 +1,40 @@
 * notes towards manual/caput draconis
 
+** basic blurb description: 
+
+Caput draconis (CD) is the latest ourorack ... companion
+
+to have done with the judgement of god
+
+successive dislocations 
+
+Successive Slidings of Pleasure (French: Glissements progressifs du plaisir) RG
+
+
+
+** design/inspirations
+
+- collect stack/SR diagrams, ascii art, panel sketches, moon phases
+- print quality and binding?
+
+how to image/notate panel - that the description and panel/images are themselves subjected to shift reg (eg. each piksel line of panel image - try this!)
+
+** 23/2/2023
+
+notebook notes:
+
+moon nodes and diagrams, connection to geomancy, ascii thurneysser
+
+ascend/descend, digital moon
+
+layout diagram of connected segments, show that can be shifting like turing reader drawings (and to do own reader)
+
+layers - speed, route, prob, types
+
+each side has...
+
+modes...
+
 ** 20/2/2023
 
 tips such as use of pulse ins if sections start to run out, also to mix in signals...
@@ -13,7 +48,14 @@ how to patch following geomantic instructions
 
 ** 9/2/2023
 
-- how interacts with AC to fill in from notes! notebook?
+- how interacts with AC to fill in from notes:
+
+- use of HF clock signals as strobe clock for CD
+- use of comped noise as strobe and as noise/snare entry 
+- feedback path with AC
+- pulses from CD -> ?
+- AC as audio source
+- use of comparator for clocks
 
 ** new 4/5/2022+
 

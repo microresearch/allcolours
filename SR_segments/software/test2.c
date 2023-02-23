@@ -1066,8 +1066,8 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
       x=x<<tmp;
           }
 
-    uint32_t pointer=1, pointerx=13, pointery=5,nul=0;
-    uint32_t *varr[10]={&pointery,&pointer,&pointer,&pointer,&pointer,&pointer,&pointerx,&pointery,&pointer,&pointer};
+    uint32_t pointer=1, pointerx=13, pointery=5,nul=0, pinter=66;
+    uint32_t *varr[10]={&pointery, &pointer, &pointer, &pointer, &pointer, &pointer, &pointerx, &pointery, &pointer, &pinter};
     uint32_t fixey[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
     uint32_t matrix[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
     uint32_t *matrixp[21]={&fixey[0],&fixey[1],&fixey[2],&fixey[3],&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul, &nul, &nul};
@@ -1089,35 +1089,20 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
     */
   static uint32_t oldgap[4][4];
 
-        void setvargap(uint32_t wh, uint32_t which, uint32_t var){
+  void setfixedvarz(uint32_t wh, uint32_t which, uint32_t var){ // sets fixed value at var var
+    fixey[which]=*varr[var];
+    matrixp[which]=&fixey[which]; 
+  }
+
+  void setvar(uint32_t wh, uint32_t which, uint32_t var){
       matrixp[which]=varr[var]; // new one
 	}
 
 	void res(uint32_t wh){
 	  oldgap[wh][0]=20;
 	}
+
 	
-	void setvargapz(uint32_t wh, uint32_t which, uint32_t var, uint32_t res){ // sets gap with one of fixedvars - is not really a gap?
-      uint32_t y;
-      if (res) oldgap[wh][0]=20;
-    if (which!=oldgap[wh][0]){
-      //      pointer++;
-      //nul++;
-      //      matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
-      matrixp[oldgap[wh][0]]=matrixpG[oldgap[wh][0]];//
-      matrixpG[which]=matrixp[which]; // previous  
-      matrixp[which]=varr[var]; // new one
-      oldgap[wh][0]=which;
-      set[which]=1;
-    }
-
-    for (y=0;y<20;y++){
-      //      if (set[y]) matrix[y]=*matrixp[y];
-      printf("%d",matrix[y]);
-    }
-      printf("\n");
-    }
-
 // we need a different version - if we are in same matrixp but want to change it
 void setvargapalt(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap? tested in test2.c yes it just sets one
   static uint32_t oldgap[4]={2,2,2,2};
@@ -1142,18 +1127,25 @@ void setvargapalt(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with o
       printf("\n");  
 }
 
+ void printer(void){
+    for (y=0;y<20;y++){
+      printf("%d",*matrixp[y]);
+      matrix[y]=*matrixp[y];
+    }
+      printf("\n");  
+ }
 
 	
-        void setvargapz1(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
+        void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
       uint32_t y;
-    if (which!=oldgap[wh][1]){
+    if (which!=oldgap[wh][layer]){
       //      pointer++;
       //nul++;
       //      matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
-      matrixp[oldgap[wh][1]]=matrixpG[oldgap[wh][1]];//
+      matrixp[oldgap[wh][layer]]=matrixpG[oldgap[wh][layer]];//
       matrixpG[which]=matrixp[which]; // previous  
       matrixp[which]=varr[var]; // new one
-      oldgap[wh][1]=which;
+      oldgap[wh][layer]=which;
     }
 
     for (y=0;y<20;y++){
@@ -1192,28 +1184,35 @@ void setvargapalt(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with o
     setvargapz(0,1,7,0);
 	*/
 
-        for (x=0;x<2000;x++){
+	/*        for (x=0;x<2000;x++){
 	  //	  if (x==4)       setvargapz(0,x,5,1);
 	  //	  else setvargapz(0,x,5,0);
 	  setvargapalt(0,rand()%20,5);
 
 	  pointer++;
-    }
-    
+	  }*/
+	
+	pointery=5;
 	pointerx=8;
-    printf("non\n\n");
-    setvargapalt(0,0,7); // pointery 5
-    setvargapalt(0,0,6); // pointerx
+    printf("layer0\n");
     pointery++;
-    setvargapalt(0,1,6); // pointerx
-    setvargapalt(0,0,7); // pointery 5
-    
-    
-	//    for (x=0;x<20;x++){
-	//      setvargapz(0,x,5);
-	//    }
+    setvargapzR(0,0,1,7); // pointery 5
+    pointery++;
+    setvargapzR(0,0,2,7); // pointery 5
 
+    printf("layer1\n");
+    pointery++;
+    setvargapzR(0,1,13,7); // pointery 5
+    pointery++;
+    setvargapzR(0,1,11,7); // pointery 5
 
+    printf("layer0\n");
+    pointery++;
+    setvargapzR(0,0,16,7); // pointery 5
+    pointery++;
+    setvargapzR(0,0,13,7); // pointery 5
+    //    pointery++;
+    //    printer();
     
     nn=0;
     int32_t totn, temp;
