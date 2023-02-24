@@ -27,6 +27,34 @@
     }						\
      }
 
+#define ROUTETYPEBIN_ {				\
+    switch(tmpp){				\
+    case 1:					\
+    BINROUTESR_;				\
+    break;					\
+    case 2:					\
+    BINROUTEalt_;				\
+    break;					\
+    case 3:					\
+    BINROUTEZERO_;				\
+    break;					\
+    case 4:					\
+    BINROUTESHARE_;			\
+    break;					\
+    case 5:					\
+    BINROUTENOG_;				\
+    break;					\
+    case 6:					\
+    BINROUTEtrig_;				\
+    break;					\
+    case 7:					\
+    BINROUTEnoalt_;			\
+    break;					\
+    default:					\
+    BINROUTE_;				\
+    }						\
+     }
+
 // strips is all cycles??? - for succbits
 #define ROUTETYPES_ {				\
   switch(tmpp){					\
@@ -132,10 +160,9 @@ static inline uint32_t Zbinrouteforalt(uint32_t depth, uint32_t in, uint32_t w){
 
 static inline uint32_t Zbinrouteforaltalt(uint32_t depth, uint32_t in, uint32_t w){   // 
   uint32_t bitrr, tmp, tmpp, x, bitn=0;
-  depth=altbinroute[count][w]; 
+  tmp=altbinroute[count][w]; 
     // deal with no route
       tmpp=gate[w].routetype;
-      tmp=depth;
       ROUTETYPE_;
   return bitn;
 }
@@ -144,10 +171,8 @@ static inline uint32_t Zbinrout_strip(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t bitrr, tmp, tmpp, x, bitn=0;
   depth=depth>>8; // 4 bits
   tmpp=gate[w].routetype;
-  if (depth==0) { // SR5 is 8th which is outside these bits 
-    x=8;//
-    //    x=w;
-    ROUTETYPES_;
+  if (depth==0) { 
+    ROUTETYPEBIN_;
   } else
     {
       tmp=depth;
@@ -165,10 +190,9 @@ static inline uint32_t Zbinroutor(uint32_t depth, uint32_t in, uint32_t w){ // 4
   depth=depth| (gate[tmp].shift_&15);    
   depth=depth&15;
     // deal with no route
-    if (depth==0) { // SR5 is 8th which is outside these bits 
-    x=8;//
-    ROUTETYPES_;
-  } else
+    if (depth==0) { 
+    ROUTETYPEBIN_;
+    } else
   {
       tmpp=gate[w].routetype;
       tmp=depth;
@@ -189,10 +213,8 @@ static inline uint32_t Zviennabits(uint32_t depth, uint32_t in, uint32_t w){
     tmpp|=(gate[others[w][0]].shift_)&15;    
   }
   
-  if (tmpp==0 && w==2) { // SR5 is 8th which is outside these bits - for modeC only
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
-    gate[w].shift_ ^=gate[8].Gshare_;
-    bitn=bitrr;
+  if (tmpp==0 && w==2) {// - for modeC only
+    ROUTETYPEBIN_;
   }
 else
   {
@@ -357,9 +379,8 @@ static inline uint32_t Zbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w)
     tmp=gate[dacfrom[count][w]].dac>>8;//|binary[w];    
   }
   tmpp=gate[w].routetype;
-  if (tmp==0) { // SR5 is 8th which is outside these bits 
-    x=8;//
-    ROUTETYPES_;
+  if (tmp==0) { 
+    ROUTETYPEBIN_;
   } else
     {
   ROUTETYPE_;
@@ -377,9 +398,8 @@ static inline uint32_t NZbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w
     tmp=gate[dacfrom[count][w]].dac>>8;//|binary[w];    
   }
   tmpp=gate[w].routetype;
-  if (tmp==0) { // SR5 is 8th which is outside these bits 
-    x=8;//
-    ROUTETYPES_;
+  if (tmp==0) { 
+  ROUTETYPEBIN_;
   } else
     {
   ROUTETYPE_;
@@ -653,9 +673,8 @@ static inline uint32_t Zbinroutfixed_prob5(uint32_t depth, uint32_t in, uint32_t
   tmp=binroute[count][w]|binary[w];
   }
   else tmp=in>>8;
-  if (tmp==0) { // SR5 is 8th which is outside these bits 
-    x=8;//
-    ROUTETYPES_;
+  if (tmp==0) { 
+  ROUTETYPEBIN_;
   } else
     {
   ROUTETYPE_;
@@ -799,19 +818,24 @@ void fliptail(void){ //
   //    gate[8].shift_=LFSR_[0];
 }
 
-static inline void flip(void){ //at full speed is just average ... so is boring
-  // what could be inspired by tails/caput tail mouth
+// replace flip with - tail as cut off segment repeats/sides
+// on entry copy reg and just circulate
+void sever(void){ 
   uint32_t w=8;
-  GSHIFTRED_;
-  //  gate[8].flip^=1;//+=gate[3].flip;
-  gate[8].shift_+=gate[0].flip;
-  //   gate[8].shift_+=LFSR_[0]&0x01;
+  HEADNADAT;
+  static uint32_t sharey=0xffff;
+  GSHIFT_;
+  if (gate[3].changed==1) { // but changed stays 
+    sharey=gate[3].Gshare_;    
+      }
+  bitn=(sharey>>SRlength[w]) & 0x01;
+  sharey=(sharey<<1)+bitn;
+  gate[w].shift_+=bitn;  
 }
-
 
 void basictail(void){ // tail here is basic 4th binroute at full speed // now 2ndn//left side
   uint32_t w=8;
-  HEADNADA;
+  HEADNADAT;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -887,7 +911,7 @@ void tailC(void){
 
 void basictailnos(void){ // tail here is basic 4th binroute at full speed
   uint32_t w=8;
-  HEADNADA;
+  HEADNADAT;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -957,7 +981,7 @@ void succtailbacknos(void){
 
 void basictailinv(void){ // tail here is basic 4th binroute at full speed
   uint32_t w=8;
-  HEADNADA;
+  HEADNADAT;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -1033,7 +1057,7 @@ void tailCinv(void){
 
 void basictailnosinv(void){ // tail here is basic 4th binroute at full speed
   uint32_t w=8;
-  HEADNADA;
+  HEADNADAT;
   GSHIFT_;
   tmp=binroute[count][2]; // was 2... routes from ? 8124=2 // not 3?
   for (x=0;x<4;x++){
@@ -1511,7 +1535,7 @@ static inline uint32_t binroutor(uint32_t depth, uint32_t in, uint32_t w){ // 4 
   depth=depth&15;
   
     // deal with no route
-  if (depth==0) { // SR5 is 8th which is outside these bits 
+  if (depth==0) { 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bt^=bitrr;
@@ -1533,7 +1557,7 @@ static inline uint32_t zsingleroutebits(uint32_t depth, uint32_t in, uint32_t w)
   uint32_t bt=0, bitrr;
   depth=depth>>10; // 12 bits to 2 bits
     // deal with no route
-  if (depth==0) { // SR5 is 8th which is outside these bits 
+  if (depth==0) { 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bt^=bitrr;
@@ -1592,10 +1616,10 @@ static inline uint32_t zbinroutebits_noshift_transitd(uint32_t depth, uint32_t i
   uint32_t btt=0,bt=0, bitrr;
   static uint32_t lastone;
   depth=depth>>8;
-   if (depth==0) { // SR5 is 8th which is outside these bits 
+   if (depth==0) { 
     bitrr = (gate[8].shift_>>SRlength[8]) & 0x01; 
     bt^=bitrr;
-  } else
+   } else
     {
   for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
@@ -1720,9 +1744,9 @@ static inline uint32_t zSRBURSTflipS_(uint32_t depth, uint32_t in, uint32_t w){ 
 static inline uint32_t zbinroutebits_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... shared bits now - no shift of GSR<<
   uint32_t bt=0, bitrr;
   depth=depth>>8;
-  if (depth==0) { // SR5 is 8th which is outside these bits 
+  if (depth==0) { 
     bitrr = (gate[8].shift_>>SRlength[8]) & 0x01; 
-    bt^=bitrr;
+    bt^=bitrr;    
   } else
     {
   for (uint32_t x=0;x<4;x++){
@@ -1924,8 +1948,9 @@ static inline uint32_t zbinrouteSRbits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt=0, bitrr;
   depth=depth>>8;
   //  depth=15-depth;
-  if (depth==0) { // SR5 is 8th which is outside these bits 
-    bt = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
+  if (depth==0) { 
+    bitrr = (gate[8].shift_>>SRlength[8]) & 0x01; 
+    bt^=bitrr;    
   } else
     {
   for (uint32_t x=0;x<4;x++){
@@ -1943,7 +1968,7 @@ static inline uint32_t zbinrouteSRbitsS_(uint32_t depth, uint32_t in, uint32_t w
   uint32_t bt=0, bitrr;
   depth=depth>>8;
   //  depth=15-depth;
-  if (depth==0 || depth==(1<<w)) { // SR5 is 8th which is outside these bits 
+  if (depth==0 || depth==(1<<w)) { 
     bitrr = (gate[8].Gshift_[w]>>SRlength[8]) & 0x01; 
     bt=bitrr;
   } else
@@ -1963,7 +1988,7 @@ static inline uint32_t zbinrouteSRbitsS_(uint32_t depth, uint32_t in, uint32_t w
 static inline uint32_t zbinroutebitsI_noshiftd(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel...
   uint32_t bt=0, bitrr;
   depth=depth>>8;
-  if (depth==0) { // SR5 is 8th which is outside these bits 
+  if (depth==0) { 
     bitrr = (gate[8].shift_>>SRlength[8]) & 0x01; 
     bt^=bitrr;
   } else
@@ -2091,7 +2116,7 @@ static inline uint32_t binroutorg(uint32_t depth, uint32_t in, uint32_t w){
   depth=depth|binroute[count][w]|binary[w]; 
 
     // deal with no route
-    if (depth==0) { // SR5 is 8th which is outside these bits 
+    if (depth==0) { 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bt^=bitrr;
@@ -2112,20 +2137,10 @@ static inline uint32_t binroutorg(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zbinroutorg(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bitn=0, x, tmpp, tmp, bitrr;
   depth=depth>>8; // 12 bits to 4 bits
-  //  depth=binroute[count][w]|binary[w]; 
-
   depth=depth|binroute[count][w]|binary[w]; 
-    // deal with no route
-    if (depth==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
-    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
-    bitn^=bitrr;
-  } else
-    {
-      tmpp=gate[w].routetype;
-      tmp=depth;
-      ROUTETYPE_;
-    }
+  tmpp=gate[w].routetype;
+  tmp=depth;
+  ROUTETYPE_;
   return bitn;
 }
 
@@ -2133,7 +2148,6 @@ static inline uint32_t zbinroutorg(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t binroutgap(uint32_t depth, uint32_t in, uint32_t w){  // no depth
   uint32_t bt=0, bitrr;
   depth=binroute[count][w]|binary[w]; 
-
     for (uint32_t x=0;x<4;x++){
   if (depth&0x01){
     bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
@@ -2150,7 +2164,7 @@ static inline uint32_t binroutorgap(uint32_t depth, uint32_t in, uint32_t w){// 
   depth=depth>>8; // 4 bits 
     depth|=binroute[count][w];
     // deal with no route
-    if (depth==0) { // SR5 is 8th which is outside these bits 
+    if (depth==0) { 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bt^=bitrr;
@@ -2173,7 +2187,7 @@ static inline uint32_t zbinroutorgap(uint32_t depth, uint32_t in, uint32_t w){  
   depth=depth>>8;
   depth=depth|binroute[count][w];
     // deal with no route
-    if (depth==0) { // SR5 is 8th which is outside these bits 
+    if (depth==0) { 
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
     gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
     bitn^=bitrr;
@@ -5250,11 +5264,10 @@ static inline uint32_t zpadcx(uint32_t depth, uint32_t in, uint32_t w, uint32_t 
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
-  //  ADCgeneric2;
     if (bc<0 || reset) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
-      in=in>>(11-depth); 
+      k=in>>(11-depth); 
       bc=depth; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -5908,7 +5921,7 @@ static inline uint32_t viennabits(uint32_t depth, uint32_t in, uint32_t w){
     tmpp|=(gate[others[w][0]].shift_)&15;    
   }
   
-  if (tmpp==0 && w==2) { // SR5 is 8th which is outside these bits - for modeC only
+  if (tmpp==0 && w==2) { //- for modeC only
     bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
     gate[w].shift_ ^=gate[8].Gshare_;
     bt=bitrr;
@@ -5930,9 +5943,9 @@ else
 
 //////////////// [+outside functions+] and ports from experiment.h - observation that most OUTSIDE functions should be paired with specific inside/bits
 
-static uint32_t delayline[512]; //shared delay line
-static uint32_t delaylineUN[4][512]; //UNshared delay line
-
+//static uint32_t delayline[512]; //shared delay line
+//static uint32_t delaylineUN[4][512]; //UNshared delay line
+/*
 static inline uint32_t delay_line_in(uint32_t depth, uint32_t w){
   uint32_t bt=0, bitrr, tmp, tmpp;
   static uint32_t bits[4]={0,0,0,0}; // 32 bits of bits
@@ -5967,7 +5980,7 @@ uint32_t SRdelay_lineOUT(uint32_t depth, uint32_t in, uint32_t w){  // could als
   if (cxxnt[w]>16383) cxxnt[w]=0;
   return bitn;
 }
-
+*/
 //////////////////////////////////////////////////////////////////////////
 ////// right hand functions which change things... what are the counts we use, where are our examples
 

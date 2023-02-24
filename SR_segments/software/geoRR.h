@@ -373,14 +373,15 @@ void SR_geo_outer_R152(uint32_t w){ // cvnroute
 
 //finally
 void SR_geo_outer_R153(uint32_t w){  // final all gapped reset
-  if (gate[w].changed==1) {
-    RESETG; 
-    gate[w].changed=0;
-  }
+    if (gate[w].changed==1) {
+      RESETG; 
+      gate[w].changed=0;
+      }
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].matrix[4]=CVL[w];
   gate[w].matrix[10]=CVL[w];  
-  gate[w].inner=SR_geo_inner_gappedfunction;
+  //  gate[w].inner=SR_geo_inner_gappedfunction;
+  gate[w].inner=SR_geo_inner_globalC; //
     }

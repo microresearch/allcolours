@@ -257,7 +257,7 @@ static inline uint32_t pSR_altbin1(uint32_t depth, uint32_t in, uint32_t w){ // 
 
 static inline uint32_t pSR_recbin(uint32_t depth, uint32_t in, uint32_t w){ //depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  bitn=binroutebits(depth,w); // how these layers can differ - 4 layers... 
+    bitn=binroutebits(depth,w); // how these layers can differ - 4 layers... 
   if (bitn){ 
     bitn=binroutebits(depth,w); 
   }
@@ -266,13 +266,13 @@ static inline uint32_t pSR_recbin(uint32_t depth, uint32_t in, uint32_t w){ //de
   }
   if (bitn){
     bitn=binroutebits(depth,w);
-  }
+    }
   return bitn;
 }
 
 static inline uint32_t pSR_recbinD_(uint32_t depth, uint32_t in, uint32_t w){ //depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  bitn=binroutebitsD_(depth,w); // how these layers can differ - 4 layers... 
+    bitn=binroutebitsD_(depth,w); // how these layers can differ - 4 layers... 
   if (bitn){ 
     bitn=binroutebitsD_(depth,w); 
   }
@@ -281,7 +281,7 @@ static inline uint32_t pSR_recbinD_(uint32_t depth, uint32_t in, uint32_t w){ //
   }
   if (bitn){
     bitn=binroutebitsD_(depth,w);
-  }
+    }
   return bitn;
 }
 
@@ -432,6 +432,7 @@ static inline uint32_t pSRmatch(uint32_t depth, uint32_t in, uint32_t w){ // dep
   return bitn;
 }
 
+/*
 static uint32_t sharedindexes[4]={0,0,0,0};
 static uint32_t bufferd[1024];
 static uint32_t head;
@@ -476,6 +477,8 @@ static inline uint32_t pSRshare(uint32_t depth, uint32_t in, uint32_t w){
   ROUTETYPE_;  
   return bitn;
 }
+*/
+
 
 static inline uint32_t pSRGswop(uint32_t depth, uint32_t in, uint32_t w){ // STROBE
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;

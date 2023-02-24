@@ -198,6 +198,9 @@ static uint32_t outcnt=0;
 
 #define HEADNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
+#define HEADNADAT int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx; \
+
+
 //
 
 #define ENDER {					\

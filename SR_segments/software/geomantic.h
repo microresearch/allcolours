@@ -23,17 +23,9 @@ uint32_t (*speedfromstrobe_all[32])(uint32_t depth, uint32_t in, uint32_t wh)={s
 
 // 2. adc
 
-uint32_t (*adcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadcx, zadconebitsx, zadcpadbits, zadc12bits, zadc8bits, zadc4bits, zadceqbits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadc12onecompbits, zadc8onecompbits, zadc4onecompbits, zadconecompbits, cipher, zadcLBURST0, zadccomp, zadcxdouble, zadcxcut, zadc4bitsadd,  zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd};
-
-uint32_t adcfromsd_depth[32]={1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1};
-
-//4, 7, 13, 14, 15, 17, 19, 21
-
 uint32_t (*inall[64])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadcx, zadconebitsx, zadcpadbits, zadc8bits, zadc4bits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadconecompbits, zadcLBURST0, zadcxdouble, zadc4bitsadd,  zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd, /*24*/zadcxdac, zadcxdac, zadconebitsxdac, zadcpadbitsdac, zadc8bitsdac, zadc4bitsdac, zadcenergybitsdac, zadc12compbitsdac, zadc8compbitsdac, zadc4compbitsdac, zadccompbitsdac, zadconecompbitsdac, zadcLBURST0dac, zadcxdoubledac, zadc4bitsadddac,  zadc4bitsaddmoddac, zadc4bitsxordac, zadc4bitsordac, zadc4bitsanddac, zadc4bitsmodmdac, zadc4compbitsadddac, zadc4compbitsxordac, zadc4compbitsmodmdac, zadc4onecompbitsadddac, /*24*/zosc1bitsfast, sigmadelta, osceqf, osceqxf, zcountbits, zcountbitsI, zprobbits, zprobbitsxorstrobe, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsIf, zosceqbitsIxf, zosc1bitsIf, zlfsrbitsI, zflipbitsI/*16*/}; 
 
 uint32_t inall_depth[64]={1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1/*24*/, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1/*24*/, 2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2};
-
-// what of strobe here?
 
 // with extra vars for reset and advance for probability
 uint32_t (*padcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset, uint32_t adv)={zpadcx, zpadcx, zpadconebitsx, zpadcpadbits, zpadc12bits, zpadc8bits, zpadc4bits, zpadceqbits, zpadcenergybits, zpadc12compbits, zpadc8compbits, zpadc4compbits, zpadccompbits, zpadc12onecompbits, zpadc8onecompbits, zpadc4onecompbits, zpadconecompbits, pcipher, zpadcLBURST0, zpadccomp, zpadcxdouble, zpadcxcut, zpadc4bitsadd,  zpadc4bitsaddmod, zpadc4bitsxor, zpadc4bitsor, zpadc4bitsand, zpadc4bitsmodm, zpadc4compbitsadd, zpadc4compbitsxor, zpadc4compbitsmodm, zpadc4onecompbitsadd};
@@ -54,10 +46,10 @@ uint32_t (*probf_anystrobe_depth_noin[32])(uint32_t depth, uint32_t in, uint32_t
 
 uint32_t (*probf_anystrobe_nodepth[16])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutebits_noshift, zbinroutebits_noshift_transit, zbinroutebitsI_noshift, zjusttail, strobe, ztogglebitsnod, ztogglebitsshnod, stroberoute, strobezsuccbits_noshift, strobezsuccbitsI_noshift, strzbinroutfixed_noshift_transit, strzbinroutfixed_noshift_transitI, strzbinroutfixed_noshift, strzbinroutfixedI_noshift, zbinroutebits_noshift, zbinroutebits_noshift_transit}; // >>8 
 
-uint32_t (*probf_nostrobe_depth[33])(uint32_t depth, uint32_t in, uint32_t wh)={zinvprobbits, zprobbits, zsprobbits, zownprobbits, zownGprobbits, spdfracP_, spdfrac1P_, spdfrac3P_, spdfrac4P_, spdfrac5P_, spdfracdac3P_, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zosc1bitsslow, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, sigmadelta, spdviennaP_, zsuccbitsI_noshift, zsuccbits_noshift, zSRNbits, zbinroutebits_noshiftd, zbinroutebits_noshift_transitd, zbinroutebitsI_noshiftd, zbinrouteSRbits, zsuccbitsI_noshiftd, zsuccbits_noshiftd}; // 33
+uint32_t (*probf_nostrobe_depth[32])(uint32_t depth, uint32_t in, uint32_t wh)={zinvprobbits, zprobbits, zsprobbits, zownprobbits, zownGprobbits, spdfracP_, spdfrac1P_, spdfrac3P_, spdfrac4P_, spdfrac5P_, spdfracdac3P_, zTMsimplebits, osceq, zosc1bits, zosc1bitsI, zosc1bitsslow, zENbits, zENbitsI,  zENsbits, zENsbitsI, zENsroutedbits, zcompbits, sigmadelta, spdviennaP_, zsuccbitsI_noshift, zsuccbits_noshift, zSRNbits, zbinroutebits_noshiftd, zbinroutebits_noshift_transitd, zbinroutebitsI_noshiftd, zbinrouteSRbits, zsuccbitsI_noshiftd}; // 32
 
 // 5. tails
-void (*dotail[32])(void)= {flip, fliptail, basictail, succtail, succtailback, tailC, tailL, tailR, tailN, basictailnos, succtailnos, succtailbacknos, tailCnos, tailLnos, tailRnos, tailNnos, basictailinv, succtailinv, succtailbackinv, tailCinv, tailLinv, tailRinv, tailNinv, basictailnosinv, succtailnosinv, succtailbacknosinv, tailCnosinv, tailLnosinv, tailRnosinv, tailNnosinv, tailXOR0, tailXOR1}; // 1 is basictail. default >>7
+void (*dotail[32])(void)= {sever, fliptail, basictail, succtail, succtailback, tailC, tailL, tailR, tailN, basictailnos, succtailnos, succtailbacknos, tailCnos, tailLnos, tailRnos, tailNnos, basictailinv, succtailinv, succtailbackinv, tailCinv, tailLinv, tailRinv, tailNinv, basictailnosinv, succtailnosinv, succtailbacknosinv, tailCnosinv, tailLnosinv, tailRnosinv, tailNnosinv, tailXOR0, tailXOR1}; // 1 is basictail. default >>7
 
 // 6. global opps - add those which operate on various global flags, and orderings (we have no?)
 void (*globalls[32])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, SRRglobaltailset, /**/binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync}; // 20+12 >>7

@@ -2,22 +2,57 @@
 
 ** basic blurb description: 
 
-Caput draconis (CD) is the latest ourorack ... companion
+Caput draconis (CD) is/will be the latest ourorack ... companion
 
 to have done with the judgement of god
 
-successive dislocations 
+successive pleasurable and tortuous dislocations 
 
-Successive Slidings of Pleasure (French: Glissements progressifs du plaisir) RG
+//Successive Slidings of Pleasure (French: Glissements progressifs du plaisir) RG
+
+extends the pulse driven shift register schemes of All
+Colours with 4 and more interlocking shift registers or "runglers"
+(each with 64 modes of operation) running at all different speeds. The
+emphasis is on complex CV generation and processing of analogue
+signals, as well as clock and pulse outputs. Release date March 2023.
+
+[All the Colours of the Noise is a new rosarium of eurorack module for
+ouroboric becoming-noise at all timescales and frequencies, from the
+cloudy smoke of stray industrial furnace noise burning snakes to
+thunder and lightning noise from stricken server farms.]
 
 
+Closer to caput draconis as the crescent moon moves into the northern ecliptic hemisphere at 18.56 GMT this evening. 
+
+Successive pleasurable and tortuous dislocations 
 
 ** design/inspirations
 
 - collect stack/SR diagrams, ascii art, panel sketches, moon phases
 - print quality and binding?
 
-how to image/notate panel - that the description and panel/images are themselves subjected to shift reg (eg. each piksel line of panel image - try this!)
+how to image/notate panel - that the description and panel/images are themselves subjected to shift reg (eg. each pixel line of panel image - try this!)
+
+
+** 24/2/2023
+
+announce moon node at 19.58!
+
+As the crescent ...
+
+images: new panelSr, inspired alch, moon diagram, geomantic
+
+- image trial for panel - use forhyyt python to pass through 1-4 SRs (in test.c?)
+
+with add functions but do basic test:
+
+image -> string
+
+C or python code manipulates string...
+
+string -> image (and colour)
+
+- thinking that manual could be A3 riso (but then folded?) poster... or set of cards like AC (for all?)
 
 ** 23/2/2023
 
@@ -104,8 +139,7 @@ Heavens\ extends the pulse driven shift register schemes of All
 Colours with 4 and more interlocking shift registers or "runglers"
 (each with 64 modes of operation) running at all different speeds. The
 emphasis is on complex CV generation and processing of analogue
-signals, as well as clock and pulse outputs. Release date
-December 2021.
+signals, as well as clock and pulse outputs. Release date March 2023.
 
 ** basic description
 

@@ -165,12 +165,143 @@ matrixp//globals in RR
 - finish and test matrixp ops - in progress
 - ready for full tests and tweaks
 
+extras for CC?:
+
+- if we can fit problast and split strobe speed at end of CC into CC functions
+added SR_geo_inner_probdepthnodepth but we need outer to use it!
+added SR_geo_inner_probdepthdepthSS ^^^^^ for matrixp
+
+** 24/2/2023
+
+moon node at 19.58!
+
+// *all filled in but we need to test and sort, esp for NN and with probs*
+
+- we will hit limit of memory so have to double up - 99.5% now - where else we could save: recbin, shared and cut some functions
+
+also we havenow  all as speed18 18 octaves?
+
+genericise: NN strobes: DONE 
+
+NN probs (careful with params) DONE 
+
+///
+
+*probs to still work on with nodepth options in NN and additionals in CC - see below?*
+
+/////// in progress
+
+- define probs NN.
+
+NN:
+[probfunc] of [adc/etc] vs [gapped funcbit] [fixedroute] [depthroute] [fixedxor] [gappedxor] [depthxor] [zero]
+
+[for gapped we need to have defined func already]
+probfuncs we have: probf_anystrobe_nodepth[16], probf_anystrobe_depth[64], probf_anystrobe_depth_noin[32]
+
+what do we have already?
+
+SR_geo_inner_probadcentry: anystrobe_depth, fixedroute in N03
+SR_geo_inner_probadcentryxor: anystrobe_depth, fixedroutexor in UNUSED
+
+
+SR_geo_inner_probadcentryX: anystrobe_depth, funcbit in N40
+SR_geo_inner_probadcentryxorX: anystrobe_depth, funcbitxor in UNUSED
+
+*add depthroute and depthxor - as options*
+
+probzero also: SR_geo_inner_adcprobzero added
+
+*nod options added to above*
+
+////
+
+SR_geo_inner_probadcburst: anystrobe_forNN_depth, fixedroute in SR_geo_outer_Nadcburst
+
++ probs of advance, and reset also use anystrobe_depth // also with nod option  - do we use these as are adc only? how?
+
+DONEprobf_anystrobe_nodepth >>8 for all... burst? as we have those all - maybe for early mode
+
+
+/////
+
+- CC probs to add:
+
+added SR_geo_inner_probdepthnodepth but we need outer to use it!
+added SR_geo_inner_probdepthdepthSS ^^^^^
+
+//////////////////////////////////
+we need to assign:
+[9] probf function
+[10][11] probcv // nodeptth
+[[3] for regular funcbit - was [17]str
+[12] alt funcbit
+[4][5] bits there - and not always have alt as dacfrom
+
+in anystrobe we have:
+
+[probfunc] of [gapped funcbit] vs []
+
+probfuncs we have: probf_anystrobe_nodepth[16], probf_anystrobe_depth[64], probf_anystrobe_depth_noin[32]
+
+vs []
+routebits_anystrobe_notypesz 64 - unused but could have some of matrixp
+routebits_depth_typezs 64
+routebits_nodepth_typezs 64
+
+probnodepth: probf_anystrobe_nodepth // routebits_nodepth_typesz - C62
+probdepth: probf_anystrobe_depth // routebits_depth_typesz - C63
+probdepthx: probf_anystrobe_depth_noin // routebits_depth_typesz - 72, 73
+gappedfunction: probf_anystrobe_depth // routebits_depth_typesz - many
+
+2 types TODO
+probdepthdepthS: FOR matrixp: probf_anystrobe_depth // routebits_depth_typesz - matrixp
+
+/////
+in strobe we have: SR_geo_inner_str_probfunctionalt and SR_geo_inner_str_probfunction which present both option and which we use
+
+SR_geo_inner_str_probfunctionX uses routebits_nostrobe_depth...
+
+probf_nostrobe_depth!
+
+we need to assign:
+[9] probf function
+[10][11] probcv
+[17] str funcbit ([3] for regular funcbit)  
+[12] alt funcbit
+[4][5] bits there - and not always have alt as dacfrom
+
+CC:
+
+probfunc of [gapped funcbit] vs []
+
+vs. nostrobe:
+routebits_anystrobe_notypezs (for matrixp, maybe all probs)
+routebits_depth_typezs 64
+routebits_nodepth_typesz 64
+
+strobe: 
+routebits_nostrobe_nodepth 64
+routebits_nostrobe_depth 32 
+                                
+///////////////
+- CC: last matrixp funcs to test!
+
+DONE: reverted >>6 in adcetc as wasnt hitting last mode
+
+DONE: to test - NN matrixp (is just array I think and functions: both done) - question is which way prob should be 
+
+DONEabstract runglers for LL and RR
+
+DONEcheck extents of all probs, speeds]*
+
+- depth==0 becomes binroute|bin in most cases
+- TESTEDtail as cut off segment repeats/sides - check? new function SEVER to test: routebits_anystrobe_nodepth_notypesz 28<<7 C21 
+- fixed big bug in modes assign
+
 ** 23/2/2023
 
 TODO:
-
-- test each of CC //catalogue - last matrixp funcs to test!
-
 
 - NN entry of [adc/abstract] vs. fixed funcs/generic route funcs...
 
@@ -197,6 +328,8 @@ routebits_nostrobe_nodepth 64 - all types
 routebits_nostrobe_depth 32 - all types
 
 DONE:
+
+- DONEtest each of CC //catalogue
 
 Q:
 testing questions: cycle has same frequency (esp in CC as we fix that to speed).... which becomes penetrating... but this is length!
@@ -239,7 +372,7 @@ routebits_nostrobe_nodepth
 routebits_nostrobe_depth
 routebits_nostrobe_typesz
 
-// *better define/check probs so far - of generic func vs. nodepths/depths - options?*
+// better define/check probs so far - of generic func vs. nodepths/depths - options?*
 
 TODO: 
 
