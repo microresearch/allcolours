@@ -1099,8 +1099,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     // beta is now (6/12/2021) always param - just if is generated from cv or speed or ... betaf=0.4f is usual value
     // 0.4=par/4096.0
     //    if (otherpar>4096) otherpar=4096;
-    //    otherpar=4096-otherpar;
-    if (otherpar==0) otherpar=1;
+    otherpar=4096-otherpar;
+    //    if (otherpar==0) otherpar=1;
     betaf=(float)(otherpar)/4096.0f; // between 0 and 1?
     //    betaf=0.025;
     y=(shift >>length)&1;
