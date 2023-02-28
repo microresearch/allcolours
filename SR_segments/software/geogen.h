@@ -27,33 +27,6 @@
     }						\
      }
 
-#define ROUTETYPEBIN_ {				\
-    switch(tmpp){				\
-    case 1:					\
-    BINROUTESR_;				\
-    break;					\
-    case 2:					\
-    BINROUTEalt_;				\
-    break;					\
-    case 3:					\
-    BINROUTEZERO_;				\
-    break;					\
-    case 4:					\
-    BINROUTESHARE_;			\
-    break;					\
-    case 5:					\
-    BINROUTENOG_;				\
-    break;					\
-    case 6:					\
-    BINROUTEtrig_;				\
-    break;					\
-    case 7:					\
-    BINROUTEnoalt_;			\
-    break;					\
-    default:					\
-    BINROUTE_;				\
-    }						\
-     }
 
 // strips is all cycles??? - for succbits
 #define ROUTETYPES_ {				\
@@ -171,13 +144,13 @@ static inline uint32_t Zbinrout_strip(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t bitrr, tmp, tmpp, x, bitn=0;
   depth=depth>>8; // 4 bits
   tmpp=gate[w].routetype;
-  if (depth==0) { 
-    ROUTETYPEBIN_;
+  if (depth==0) {
+        tmp=binroute[count][w]|binary[w];  
   } else
     {
       tmp=depth;
-      ROUTETYPE_;
     }
+  ROUTETYPE_;
   return bitn;
 }
 
@@ -191,13 +164,13 @@ static inline uint32_t Zbinroutor(uint32_t depth, uint32_t in, uint32_t w){ // 4
   depth=depth&15;
     // deal with no route
     if (depth==0) { 
-    ROUTETYPEBIN_;
+      tmp=binroute[count][w]|binary[w];	  
     } else
   {
-      tmpp=gate[w].routetype;
       tmp=depth;
+  }
+      tmpp=gate[w].routetype;
       ROUTETYPE_;
-    }
   return bitn;
 }
 
@@ -214,14 +187,14 @@ static inline uint32_t Zviennabits(uint32_t depth, uint32_t in, uint32_t w){
   }
   
   if (tmpp==0 && w==2) {// - for modeC only
-    ROUTETYPEBIN_;
+    tmp=binroute[count][w]|binary[w]; 
   }
 else
   {
     tmp=(tmpp&15); // lowest 4 bits - other logical ops - logops from bits - noisy as CV noise
+  }
     tmpp=gate[w].routetype;
     ROUTETYPE_;
-  }
   return bitn;
 }
 
@@ -261,7 +234,7 @@ static inline uint32_t ZzsuccbitsppS_(uint32_t depth, uint32_t in, uint32_t w){ 
   tmpp=gate[w].routetype;
   ROUTETYPES_;
   if ((depth>>4)>(LFSR__[w]>>4)) x++;
-  if (bitn==1)   gate[w].strobed=0;
+  if (bitn==1)   gate[w].strobed=0; // this is for speeds!
   return bitn;
 }
 
@@ -376,15 +349,13 @@ static inline uint32_t Zbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w)
     tmp=binroute[count][w]|binary[w];
   }
   else {
-    tmp=gate[dacfrom[count][w]].dac>>8;//|binary[w];    
+    tmp=gate[dacfrom[daccount][w]].dac>>8;//|binary[w];    
   }
   tmpp=gate[w].routetype;
   if (tmp==0) { 
-    ROUTETYPEBIN_;
-  } else
-    {
+    tmp=binroute[count][w]|binary[w];    
+  } 
   ROUTETYPE_;
-    }
   return bitn;
 }
 
@@ -395,15 +366,13 @@ static inline uint32_t NZbinrout_probXY1(uint32_t depth, uint32_t in, uint32_t w
     tmp=binroute[count][w]|binary[w];
   }
   else {
-    tmp=gate[dacfrom[count][w]].dac>>8;//|binary[w];    
+    tmp=gate[dacfrom[daccount][w]].dac>>8;//|binary[w];    
   }
   tmpp=gate[w].routetype;
   if (tmp==0) { 
-  ROUTETYPEBIN_;
-  } else
-    {
-  ROUTETYPE_;
-    }
+    tmp=binroute[count][w]|binary[w];
+  }
+    ROUTETYPE_;
   return bitn;
 }
 
@@ -674,11 +643,9 @@ static inline uint32_t Zbinroutfixed_prob5(uint32_t depth, uint32_t in, uint32_t
   }
   else tmp=in>>8;
   if (tmp==0) { 
-  ROUTETYPEBIN_;
-  } else
-    {
+    tmp=binroute[count][w]|binary[w];
+  }
   ROUTETYPE_;
-    }
   return bitn;
 }
 
@@ -1233,7 +1200,7 @@ static inline uint32_t zjusttail(uint32_t depth, uint32_t in, uint32_t w){ // ju
 static inline uint32_t zjusttailwithdepth(uint32_t depth, uint32_t in, uint32_t w){ // just tail// with depth - how?
   uint32_t bt;
   float speed;
-  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -1250,7 +1217,7 @@ static inline uint32_t zjusttailwithdepth(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t zjusttailwithdepthS_(uint32_t depth, uint32_t in, uint32_t w){ // just tail// with depth - how?
   uint32_t bt;
   float speed;
-  speed=logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2046,23 +2013,6 @@ static inline uint32_t zbinroutebitscycleI_noshift(uint32_t depth, uint32_t in, 
   return bt;
 }
 
-static inline uint32_t zbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... cycle added on strobe!
-  uint32_t bt=0, bitrr;
-  gate[w].strobed=1;
-  depth=binroute[count][w]|binary[w]; 
-  //  depth=depth|w; // add itself in
-    if (gate[w].trigger) depth=depth|(1<<w); // adds itself
-  for (uint32_t x=0;x<4;x++){
-  if (depth&0x01){
-    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; // if we have multiple same routes they always shift on same one - ind version
-    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;
-    bt^=bitrr;
-  }
-  depth=depth>>1;
-  }
-  return bt;
-}
-
 static inline uint32_t ZzbinroutebitscyclestrI(uint32_t depth, uint32_t in, uint32_t w){   // depth as routesel... cycle added on strobe!
   uint32_t x, bt=0, bitrr, tmp, tmpp, bitn=0;
   gate[w].strobed=1;
@@ -2222,7 +2172,7 @@ static inline uint32_t lastspd(uint32_t depth, uint32_t in, uint32_t w){ // last
 static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out
   uint32_t bt=0;
   float speed;
-  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2238,7 +2188,7 @@ static inline uint32_t spdfrac(uint32_t depth, uint32_t in, uint32_t w){ // for 
 static inline uint32_t spdfracx(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out
   uint32_t bt=0;
   float speed;
-  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_nowx += speed;
   gate[w].last_timex = gate[w].int_timex;
   gate[w].int_timex = gate[w].time_nowx;
@@ -2253,7 +2203,7 @@ static inline uint32_t spdfracx(uint32_t depth, uint32_t in, uint32_t w){ // for
 static inline uint32_t spdfracxx(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out
   uint32_t bt=0;
   float speed;
-  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_nowxx += speed;
   gate[w].last_timexx = gate[w].int_timexx;
   gate[w].int_timexx = gate[w].time_nowxx;
@@ -2268,7 +2218,7 @@ static inline uint32_t spdfracxx(uint32_t depth, uint32_t in, uint32_t w){ // fo
 static inline uint32_t spdfracP_(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out
   static uint32_t bt=0;
   float speed;
-  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_nowp += speed;
   gate[w].last_timep = gate[w].int_timep;
   gate[w].int_timep = gate[w].time_nowp;
@@ -2286,8 +2236,8 @@ static inline uint32_t spdfracP_(uint32_t depth, uint32_t in, uint32_t w){ // fo
 static inline uint32_t spdfracend(uint32_t depth, uint32_t in, uint32_t w){ // for speed now with dac/interpol pulled out // version with STOP on lowest
   uint32_t bt=0;
   float speed;
-  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
-  if (speed>gate[w].lowest || w==2){ // or w==2 means no END for geoC ended... 
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
+  if (speed>LOWEST || w==2){ // or w==2 means no END for geoC ended... 
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2311,7 +2261,7 @@ static inline uint32_t spdfrac2(uint32_t depth, uint32_t in, uint32_t w){ // dep
   else tmp=depth%in;
   //  tmp=in+depth;
   //  if (tmp>4095) tmp=4095;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2332,7 +2282,7 @@ static inline uint32_t spdfrac1(uint32_t depth, uint32_t in, uint32_t w){ // dep
   //  else tmp=depth%in;
   tmp=in+depth;
   if (tmp>4095) tmp=4095;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2353,7 +2303,7 @@ static inline uint32_t spdfrac1P_(uint32_t depth, uint32_t in, uint32_t w){ // d
   //  else tmp=depth%in;
   tmp=in+depth;
   if (tmp>4095) tmp=4095;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_nowp += speed;
   gate[w].last_timep = gate[w].int_timep;
   gate[w].int_timep = gate[w].time_nowp;
@@ -2373,7 +2323,7 @@ static inline uint32_t spdfrac3(uint32_t depth, uint32_t in, uint32_t w){ // we 
   int32_t tmp;
   tmp=(in>>1)+(depth>>1);
   if (tmp>4095) tmp=4095;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2392,7 +2342,7 @@ static inline uint32_t spdfrac3P_(uint32_t depth, uint32_t in, uint32_t w){ // w
   int32_t tmp;
   tmp=(in>>1)+(depth>>1);
   if (tmp>4095) tmp=4095;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_nowp += speed;
   gate[w].last_timep = gate[w].int_timep;
   gate[w].int_timep = gate[w].time_nowp;
@@ -2412,7 +2362,7 @@ static inline uint32_t spdfrac5(uint32_t depth, uint32_t in, uint32_t w){ // we 
   int32_t tmp;
   tmp=in+depth;
   tmp=tmp&4095;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2431,7 +2381,7 @@ static inline uint32_t spdfrac5P_(uint32_t depth, uint32_t in, uint32_t w){ // w
   int32_t tmp;
   tmp=in+depth;
   tmp=tmp&4095;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_nowp += speed;
   gate[w].last_timep = gate[w].int_timep;
   gate[w].int_timep = gate[w].time_nowp;
@@ -2452,7 +2402,7 @@ static inline uint32_t spdfrac4(uint32_t depth, uint32_t in, uint32_t w){ // add
   tmp+=(in>>2);  
   if (tmp<0) tmp=0;
   else if (tmp>1023) tmp=1023;
-  speed=gate[w].logspeed[tmp]; 
+  speed=logspeed18[tmp]; 
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2473,7 +2423,7 @@ static inline uint32_t spdfrac4P_(uint32_t depth, uint32_t in, uint32_t w){ // a
   tmp+=(in>>2);  
   if (tmp<0) tmp=0;
   else if (tmp>1023) tmp=1023;
-  speed=gate[w].logspeed[tmp]; 
+  speed=logspeed18[tmp]; 
   gate[w].time_nowp += speed;
   gate[w].last_timep = gate[w].int_timep;
   gate[w].int_timep = gate[w].time_nowp;
@@ -2491,10 +2441,10 @@ static inline uint32_t spdfracdac3(uint32_t depth, uint32_t in, uint32_t w){ // 
   float speed;
   int32_t tmp;
   if (in==0) in=1;
-  tmp=gate[dacfrom[count][w]].dac%(in); //changed
+  tmp=gate[dacfrom[daccount][w]].dac%(in); //changed
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2515,7 +2465,7 @@ static inline uint32_t spdfracdac3P_(uint32_t depth, uint32_t in, uint32_t w){ /
   tmp=gate[dacfromopp[count][w]].dac%(in); //changed
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_nowp += speed;
   gate[w].last_timep = gate[w].int_timep;
   gate[w].int_timep = gate[w].time_nowp;
@@ -2536,7 +2486,7 @@ static inline uint32_t spdfracdac3x(uint32_t depth, uint32_t in, uint32_t w){ //
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
 
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2557,7 +2507,7 @@ static inline uint32_t spdfracdac3self(uint32_t depth, uint32_t in, uint32_t w){
   tmp=gate[w].dac%(in); //changedx
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2576,11 +2526,11 @@ static inline uint32_t spdfracdac4(uint32_t depth, uint32_t in, uint32_t w){ // 
   float speed;
   int32_t tmp;
   if (in==0) in=1;
-  tmp=(gate[dacfrom[count][w]].dac%in)-(in>>1); // in/2 int32_t tmp
+  tmp=(gate[dacfrom[daccount][w]].dac%in)-(in>>1); // in/2 int32_t tmp
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
   if (tmp<0) tmp=0;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2602,7 +2552,7 @@ static inline uint32_t spdfracdac4x(uint32_t depth, uint32_t in, uint32_t w){ //
   tmp+=depth;
   if (tmp>4095) tmp=4095;    
   if (tmp<0) tmp=0;
-  speed=gate[w].logspeed[tmp>>2]; // 12 bits to 10 bits
+  speed=logspeed18[tmp>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2629,7 +2579,7 @@ static inline uint32_t strobespdfrac(uint32_t depth, uint32_t in, uint32_t w){ /
   uint32_t bt=0;
   float speed;
   gate[w].strobed=1;
-  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_now += speed;
   gate[w].last_time = gate[w].int_time;
   gate[w].int_time = gate[w].time_now;
@@ -2645,7 +2595,7 @@ static inline uint32_t strobespdfracP_(uint32_t depth, uint32_t in, uint32_t w){
   static uint32_t bt=0;
   float speed;
   gate[w].strobed=1;
-  speed=gate[w].logspeed[depth>>2]; // 12 bits to 10 bits
+  speed=logspeed18[depth>>2]; // 12 bits to 10 bits
   gate[w].time_nowp += speed;
   gate[w].last_timep = gate[w].int_timep;
   gate[w].int_timep = gate[w].time_nowp;
@@ -6021,11 +5971,11 @@ static inline uint32_t selectglob(uint32_t depth, uint32_t in, uint32_t w){ // r
 }
 
 static inline void SRRglobalbumpS(uint32_t depth){ // strobe only
-  gate[3].strobed=1;
+  //  gate[3].strobed=1;
   if (gate[3].trigger) // outside speed?
     {
       count++;
-      if (count>15) count=0; // we have 16 so far, but can add more
+      if (count>31) count=0; // we have 16 so far, but can add more
       daccount++;
       if (daccount>15) daccount=0;
       spdcount++;
@@ -6038,7 +5988,7 @@ static inline void SRRglobalbumpbit0(uint32_t depth){ // nada but depth could be
   if (gate[dacfrom[daccount][3]].shift_) // outside speed?
     {
       count++;
-      if (count>15) count=0; // we have 16 so far, but can add more
+      if (count>31) count=0; // we have 16 so far, but can add more
       daccount++;
       if (daccount>15) daccount=0;
       spdcount++;
@@ -6050,7 +6000,7 @@ static inline void SRRglobalbumpbit1(uint32_t depth){ // nada but depth could be
   if (gate[dacfrom[daccount][3]].Gshift_[3]) // outside speed?
     {
       count++;
-      if (count>15) count=0; // we have 16 so far, but can add more
+      if (count>31) count=0; // we have 16 so far, but can add more
       daccount++;
       if (daccount>15) daccount=0;
       spdcount++;
@@ -6062,7 +6012,7 @@ static inline void SRRglobalbumpbit2(uint32_t depth){ // nada but depth AS route
   if (gate[depth>>10].Gshift_[3]) // outside speed?
     {
       count++;
-      if (count>15) count=0; // we have 16 so far, but can add more
+      if (count>31) count=0; // we have 16 so far, but can add more
       daccount++;
       if (daccount>15) daccount=0;
       spdcount++;
@@ -6071,16 +6021,16 @@ static inline void SRRglobalbumpbit2(uint32_t depth){ // nada but depth AS route
 }
 
 static inline void SRRglobalbumproute(uint32_t depth){ // strobe only
-  gate[3].strobed=1;
+  //  gate[3].strobed=1;
   if (gate[3].trigger) // outside speed?
     {
       count++;
-      if (count>15) count=0; // we have 16 so far, but can add more
+      if (count>31) count=0; // we have 16 so far, but can add more
     }
 }
 
 static inline void SRRglobalbumpdac(uint32_t depth){ // strobe only
-    gate[3].strobed=1;
+  //    gate[3].strobed=1;
   if (gate[3].trigger) // outside speed?
     {
       daccount++;
@@ -6089,7 +6039,7 @@ static inline void SRRglobalbumpdac(uint32_t depth){ // strobe only
 }
 
 static inline void SRRglobalbumpspd(uint32_t depth){ // strobe only
-    gate[3].strobed=1;
+  //    gate[3].strobed=1;
   if (gate[3].trigger) // outside speed?
     {
       spdcount++;
@@ -6102,26 +6052,25 @@ static inline void SRRglobalbumpcv(uint32_t depth){ // strobe only
     gate[3].strobed=1;
   if (gate[3].trigger) // outside speed?
     {
-      tmp=depth>>8; ///4 bits
+      tmp=depth>>7; ///5 bits
       count=tmp;
-      daccount=tmp;
-      spdcount=tmp;
+      daccount=tmp>>1;
+      spdcount=tmp>>1;
       //      binroutetypecount=tmp;
     }
 }
 
 static inline void SRRglobalbumpcvn(uint32_t depth){ // depth
   uint32_t tmp;
-  tmp=depth>>8; ///4 bits
+  tmp=depth>>7; ///5 bits
   count=tmp;
-  daccount=tmp;
-  spdcount=tmp;
-  //  binroutetypecount=tmp;
+  daccount=tmp>>1;
+  spdcount=tmp>>1;
 }
 
 static inline void SRRglobalbumpcvnroute(uint32_t depth){ // depth
   uint32_t tmp;
-  tmp=depth>>8; ///4 bits
+  tmp=depth>>7; ///5 bits
   count=tmp;
 }
 

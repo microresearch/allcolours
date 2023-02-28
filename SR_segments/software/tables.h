@@ -1,4 +1,4 @@
-uint32_t orderings[64][16]={ // orderings - first is length
+uint32_t orderings[64][15]={ // orderings - first is length
   {4,0,1,2,3},
   {5,0,0,1,2,3},
   {6,0,0,0,1,2,3},
@@ -67,50 +67,79 @@ uint32_t orderings[64][16]={ // orderings - first is length
 
 // can also have array of binary or singular routing tables to work through:
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
-uint32_t binroute[17][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
+uint32_t binroute[32][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
     {8,1,2,4}, // new default: 8 1 2 4 // default was 8121 // now we have full route 8124
-  //  {0,0,1,0}, //  test
-	{8,1,2,2}, // notexpanding
-	{8,1,2,1}, // notexpanding
-	{8,1,2,8}, // expanding
-	{8,1,2,9}, // expanding
-	{8,1,2,11}, // expanding
-	{8,1,2,12}, // expanding
-	{8,1,2,4}, // route in one big circle
-	{0,1,2,4},
-	{9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
-	{1,2,4,8}, // only loop - this is what is added to get loop too for prob
-	{8,1,2,2}, // as defroutee 3/0/1/1
-	{8,1,1,2}, // as altroute 3/0/0/1
-	{8,9,1,2}, // bounce L and R back and forth
-	{8,1,2,5}, // others
+    {4,1,8,2},
+    {8,1,2,2}, // notexpanding
+    {8,1,2,1}, // notexpanding
+    {8,1,2,8}, // expanding
+    {8,1,2,9}, // expanding
+    {8,1,2,11}, // expanding
+    {8,1,2,12}, // expanding
+    {8,1,2,4}, // route in one big circle
+    {0,1,2,4},
+    {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
+    {1,2,4,8}, // only loop - this is what is added to get loop too for prob
+    {8,1,2,2}, // as defroutee 3/0/1/1
+    {8,1,1,2}, // as altroute 3/0/0/1
+    {8,9,1,2}, // bounce L and R back and forth
+    {8,1,2,5}, // others
     {2,4,8,1}, // reverse round route
-    {0,0,0,0} // drop all routes
-}; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
+    {1,1,1,1},    // was drop all routes but why?
+    {8,1,1,1},
+    {2,8,2,1},
+    {4,4,8,1},
+    {8,8,8,1},
+    {10,5,10,5},
+    {6,9,9,6},
+    {10,13,2,3},
+    {10,5,2,1},
+    {10,5,2,9},
+    {10,5,2,9},
+    {10,13,2,11},  
+    {10,5,10,13},
+    {10,5,10,5},
+    {2,5,10,4},
+}; 
 
-uint32_t altbinroute[17][4]={ // for probs - can be more like double route but trial first one and fill in rest TODO
-    {12,9,10,5}, // new default: 8 1 2 4 // default was 8121 // now we have full route 8124
-  //  {0,0,1,0}, //  test
-	{8,1,2,2}, // notexpanding
-	{8,1,2,1}, // notexpanding
-	{8,1,2,8}, // expanding
-	{8,1,2,9}, // expanding
-	{8,1,2,11}, // expanding
-	{8,1,2,12}, // expanding
-	{8,1,2,4}, // route in one big circle
-	{0,1,2,4},
-	{9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
-	{1,2,4,8}, // only loop - this is what is added to get loop too for prob
-	{8,1,2,2}, // as defroutee 3/0/1/1
-	{8,1,1,2}, // as altroute 3/0/0/1
-	{8,9,1,2}, // bounce L and R back and forth
-	{8,1,2,5}, // others
-    {2,4,8,1}, // reverse round route
-    {0,0,0,0} // drop all routes
+uint32_t altbinroute[32][4]={ // for probs - can be more like double route but trial first one and fill in rest TODO
+  {10,5,10,5},
+  {6,9,9,6},
+  {10,13,2,3},
+  {10,5,2,1},
+  {10,5,2,9},
+  {10,5,2,9},
+  {10,13,2,11},  
+  {10,5,10,13},
+  {10,5,10,5},
+  {2,5,10,4},
+  {9,9,10,9},
+  {2,4,8,8},
+  {10,13,2,3},
+  {14,9,1,3},
+  {14,9,1,5},
+  {10,5,10,5},
+  {10,5,10,5},
+  {8,1,2,4},
+  {14,1,1,1},
+  {10,13,2,3},  
+  {12,4,11,5},
+  {8,8,8,7},  
+  {8,1,2,4}, // new default: 8 1 2 4 // default was 8121 // now we have full route 8124
+  {4,1,8,2},
+  {8,1,2,2}, // notexpanding
+  {8,1,2,1}, // notexpanding
+  {8,1,2,8}, // expanding
+    {8,1,2,9}, // expanding
+    {8,1,2,11}, // expanding
+    {8,1,2,12}, // expanding
+    {8,1,2,4}, // route in one big circle
+    {0,1,2,4},
 };
 
-uint32_t inroute[16][4]={ // who we have main incoming route from 0-3 - from above
+uint32_t inroute[32][4]={ // who we have main incoming route from 0-3 - from above
         {3,0,1,2}, // default 8121 // now 8124
+	{3,0,3,2},
 	{3,0,1,1}, // expanding
 	{3,0,1,2}, // expanding
 	{3,0,1,3}, // expanding
@@ -126,7 +155,22 @@ uint32_t inroute[16][4]={ // who we have main incoming route from 0-3 - from abo
 	{3,3,0,1}, // bounce L and R back and forth
 	{3,0,1,2}, // others
 	{1,2,3,0}, // reverse round route
-}; // TODO: add 8,1,1,1 and different expansions so could be 32 of these
+    {0,0,0,0},    // drop all routes
+    {3,0,0,0},
+    {1,3,1,0},
+    {2,3,3,0},
+    {3,3,3,0},
+    {3,1,1,0},
+    {2,3,0,3},
+    {3,2,1,0},
+    {3,2,1,0},
+    {3,2,1,0},
+    {3,2,1,0},
+    {3,2,1,0},  
+    {3,2,1,0},
+    {3,2,1,0},
+    {1,2,1,0},
+}; 
 
 uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  and also relate to binroute // or use different count
   {3,3,3,1}, // default
@@ -172,7 +216,7 @@ uint32_t dacfromopp[16][4]={ // TODO and needs to match lengthy of binroute TEST
   {3,1,3,3}
 };
 
-uint32_t strobefrom[4]={0,0,1,2};// 0 we dont bother with - strobe from previous
+uint32_t strobefrom[4]={3,0,1,0};// strobe from previous
 
 uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first route in which must be different
   {2,3,3,1}, // default
@@ -195,7 +239,6 @@ uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first ro
   {2,3,1,1},
   {2,3,1,1}
 };
-
 
 uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
   {1,3,1,1}, // default for rungler

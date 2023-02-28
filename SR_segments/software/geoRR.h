@@ -30,6 +30,26 @@ older from geoLR.h:
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// INNER
 
+void SR_geo_inner_norouteabstractL(uint32_t w){  // new template
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
 void SR_geo_inner_function_glob(uint32_t w){  
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
@@ -51,7 +71,7 @@ void SR_geo_inner_function_glob(uint32_t w){
 
 void SR_geo_inner_function_globoutside(uint32_t w){  
   HEADNADA;
-  (*globalls_depth[glob>>8])(gate[w].matrix[19]);
+  (*globalls_depth[glob>>8])(gate[w].matrix[19]); // but we need to hold strobed just do later
 
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
@@ -103,9 +123,9 @@ void SR_geo_inner_gappedfunction_glob(uint32_t w){  // depth or cycle prob - glo
     }
 }
 
-void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle prob
+void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle prob - no depth glob
   HEADNADA;
-  (*globalls_nodepth[glob>>8])(0);
+  (*globalls_nodepth[glob>>8])(0); // nodepth
 
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
@@ -115,6 +135,7 @@ void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle pro
   else gate[w].dac = delay_buffer[w][1];
 
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    gate[w].strobed=1;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
@@ -128,7 +149,6 @@ void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle pro
 	//	bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
 	bitn=(routebits_depth_typesz[gate[w].matrixX[12]>>extent_routebits_depth_typesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
       }
-	  
     }
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -141,7 +161,7 @@ void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle pro
 
 //0.0////////
 
-void SR_geo_outer_R00(uint32_t w){  // set length // set length or could better be TYPE
+void SR_geo_outer_R00(uint32_t w){  // set length // set length or could better be TYPE - route in
   if (gate[w].changed==1) {
     RESETR; // added 21/12 only reset on change also does RESETG global reset
     gate[w].changed=0;
@@ -152,26 +172,40 @@ void SR_geo_outer_R00(uint32_t w){  // set length // set length or could better 
   gate[w].inner=SR_geo_inner_globalC; //
 }
 
-// for RR: what fixed abstracts/adcs we can have with/without route in: - simple fixed abstracts in eg: zosc1bits or osceq, sigmadelta, zTMsimplebits with/without route ins
+void SR_geo_outer_R01(uint32_t w){ //R01 abstract sel: no route
+  if (gate[w].changed==0){
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[20]=CVL[w]; // abstract bits
+  gate[w].inner=SR_geo_inner_norouteabstractL;
+  }
+}
 
-// REDO from here! - abstracts etc. from NN once tested
+void SR_geo_outer_R02(uint32_t w){ //R02 abstract depth: with route in
+  if (gate[w].changed==0){
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[5]=CVL[w];
+  gate[w].inner=SR_geo_inner_globalC; // now handles abstract bits
+  }
+}
 
-/* and list how they crossover
-
-R00: above
-R01: N02 - abstract
-R02: N03 - abstract/depth
-R03: Nxx - route in only
-
-// abstract ^ route, route types, length, route functions
-
-// also probs route vs cycle can work here... from CC
-
- */
-
+void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed route entry  
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[9]=0<<6; // invprobbits
+  gate[w].matrix[10]=CVL[w]; // depth for prob
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
+  gate[w].inner=SR_geo_inner_probadcentry;// fixed as probbits and fixed entry
+  }
+}
+ 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////
 // 12.0+
+
+//0binaryN, 1binaryX, 2SRRglobalbumpcv, 3SRRglobalbumpcvn, 4SRRglobalbumpcvnroute, 5SRRglobalbumpcvndac, 6SRRglobalbumpcvnspd, 7SRRglobalorder, 8SRRglobaltailset, 9binaryN, 10binaryX,
 
 void SR_geo_outer_R120(uint32_t w){ //binaryN
   if (gate[w].changed==0) {
@@ -219,6 +253,10 @@ void SR_geo_outer_R123(uint32_t w){ // tailset
   }
 }
 
+////130
+
+//0binaryN, 1binaryX, 2SRRglobalbumpcv, 3SRRglobalbumpcvn, 4SRRglobalbumpcvnroute, 5SRRglobalbumpcvndac, 6SRRglobalbumpcvnspd, 7SRRglobalorder, 8SRRglobaltailset, 9binaryN, 10binaryX,
+
 void SR_geo_outer_R130(uint32_t w){ //binaryX
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed 
@@ -265,7 +303,7 @@ void SR_geo_outer_R133(uint32_t w){ // SRRglobalbumpcvnspd
 
 
 /*
-void (*globalls_depth[16])(uint32_t depth)={binaryN, binaryX, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalorder, SRRglobaltailset, binaryN, binaryX, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd}; //>>8
+void (*globalls_depth[16])(uint32_t depth)={0binaryN, 1binaryX, 2SRRglobalbumpcv, 3SRRglobalbumpcvn, 4SRRglobalbumpcvnroute, 5SRRglobalbumpcvndac, 6SRRglobalbumpcvnspd, 7SRRglobalorder, 8SRRglobaltailset, 9binaryN, 10binaryX, 
 
 void (*globalls_nodepth[16])(uint32_t depth)={resett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalsync, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, esett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd}; // >>8
 
@@ -280,6 +318,8 @@ rest are DAC -> bit0, globalorderbumpbit
 
 outside and we use CV
 
+trigs!
+
 */
 
 void SR_geo_outer_R140(uint32_t w){ // globalorderbumpS, 
@@ -293,6 +333,8 @@ void SR_geo_outer_R140(uint32_t w){ // globalorderbumpS,
     gate[w].inner=SR_geo_inner_gappedfunction_globoutside;
   }
 }
+
+//resett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalsync, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit
 
 void SR_geo_outer_R141(uint32_t w){ // bumpS
   if (gate[w].changed==0) {
@@ -331,6 +373,7 @@ void SR_geo_outer_R143(uint32_t w){ // bumpdac
 }
 
 //150+ 3 dac led depthies: bumpcvn, cvnroute, globalorder - so again we have free CV and use 
+
 // SR_geo_inner_gappedfunction_glob
 void SR_geo_outer_R150(uint32_t w){ // globalorder
   if (gate[w].changed==0) {
@@ -363,7 +406,7 @@ void SR_geo_outer_R152(uint32_t w){ // cvnroute
     gate[w].matrix[1]=CV[w];// speed 
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-    glob=4<<8; //
+    glob=4<<8; //checked
     gate[w].matrix[19]=(gate[dacfrom[daccount][w]].dac);
     gate[w].matrix[4]=CVL[w];
     gate[w].matrix[10]=CVL[w];  
@@ -372,16 +415,19 @@ void SR_geo_outer_R152(uint32_t w){ // cvnroute
 }
 
 //finally
-void SR_geo_outer_R153(uint32_t w){  // final all gapped reset
+void SR_geo_outer_R153(uint32_t w){  // final all gapped reset - with just route reset...
     if (gate[w].changed==1) {
-      RESETG; 
+      RESETG; // now doesn't reset count but does reset binary
       gate[w].changed=0;
       }
-  gate[w].matrix[1]=CV[w];// speed
+    gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-  gate[w].matrix[4]=CVL[w];
-  gate[w].matrix[10]=CVL[w];  
+  glob=4<<8; //checked
+  gate[w].matrix[19]=CVL[w]; // for route
+  //  gate[w].matrix[4]=CVL[w];
+  //  gate[w].matrix[10]=CVL[w];  
   //  gate[w].inner=SR_geo_inner_gappedfunction;
-  gate[w].inner=SR_geo_inner_globalC; //
-    }
+  //  gate[w].inner=SR_geo_inner_globalC; //
+  gate[w].inner=SR_geo_inner_function_globoutside;
+}

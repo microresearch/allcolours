@@ -51,6 +51,9 @@ static uint32_t CV[4]={0,0,0,0};
 static uint32_t CVL[4]={0,0,0,0};
 static uint32_t CVM[4]={0,0,0,0};
 
+#define LOWEST 0.000005f
+
+
 // add in dactype, dacpar
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16troutetype, 17 route->now strobe function index}, 18 is abstract CV, 19 is now glob, 20 is now abstract index, 21 is mix
@@ -61,7 +64,7 @@ uint32_t matrixRR[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    25<<
 uint32_t matrixTT[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    25<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
 //                     speed   bit       len   adc,adc-cv    prob   alt     dac      strobespdindex, type, route, abstrct cv, glob, abstract index, mixer
 
-static uint32_t nul=0;
+//static uint32_t nul=0;
 
 static uint32_t binary[9]={0,0,0,0}; // binary global routing
 static uint32_t ADCin;
@@ -134,14 +137,6 @@ static uint32_t GGshift_[4][4]={ // for freezers
   {0xff,0xff,0xff,0xff}
 };
 
-static uint32_t storedlength[4][4]={
-  {31,31,31,31},
-  {31,31,31,31},
-  {31,31,31,31},
-  {31,31,31,31}
-};
-
-
 static uint32_t GGGshift_[4]; // gshift is 4 even though we don't use one // GG is ghost in ghost
 static uint32_t Gshift_rev[4][256], Gshift_revcnt[4]={0,0,0,0}, Gshift_revrevcnt[4]={0,0,0,0};
 
@@ -182,12 +177,8 @@ volatile uint16_t *pulsoutHI[8]={&(GPIOB->BSRRL), &(GPIOB->BSRRL), &(GPIOB->BSRR
 //                                  0              0              PB2                PC15           PB4               PA12           PB3                PA11 
 volatile uint16_t *pulsoutLO[8]={&(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOB->BSRRH), &(GPIOC->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH), &(GPIOB->BSRRH), &(GPIOA->BSRRH) }; // both are 16 bit registers
 
-static uint32_t counter[7]={0,0,0,0, 0,0,0};  // last 3 for fake clks
-static uint32_t counterd[4]={0,0,0,0};  // extra counter
-static uint32_t counterr=0, counterl=0;
-
 #define DELAY_SIZE 6 // was 40 --- 3*width=16 = 3*16=48-5=43 - use 7 for simplea
-static int32_t delay_buffer[9][2] = { 0 }; // was 48 but it doesn't need to be so big
+static int32_t delay_buffer[4][2] = { 0 }; // was 48 but it doesn't need to be so big
 
 static inline void new_data(uint32_t data, uint32_t ww)
 {
@@ -243,23 +234,12 @@ void SRspeedtest(uint8_t w){ // null
   {SR_geo_outer_N00, SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, /**/SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33, /**/SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, /**/SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_N153},
        {SR_geo_outer_L00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_L41, SR_geo_outer_L42, SR_geo_outer_L43, SR_geo_outer_L51, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_L60, SR_geo_outer_L61, SR_geo_outer_L62, SR_geo_outer_L63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73,  SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_L153},
        {SR_geo_outer_C00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153}, 
-       {SR_geo_outer_R00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_L41, SR_geo_outer_L42, SR_geo_outer_L43, SR_geo_outer_L51, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_L60, SR_geo_outer_L61, SR_geo_outer_L62, SR_geo_outer_L63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73,  SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_R120, SR_geo_outer_R121, SR_geo_outer_R122, SR_geo_outer_R123, SR_geo_outer_R130, SR_geo_outer_R131, SR_geo_outer_R132, SR_geo_outer_R133, SR_geo_outer_R140, SR_geo_outer_R141, SR_geo_outer_R142, SR_geo_outer_R143, SR_geo_outer_R150, SR_geo_outer_R151, SR_geo_outer_R152, SR_geo_outer_R153}, //R121 is orderings - 120-153 // as LL for 01 to 110
+       {SR_geo_outer_R00, SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_L41, SR_geo_outer_L42, SR_geo_outer_L43, SR_geo_outer_L51, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_L60, SR_geo_outer_L61, SR_geo_outer_L62, SR_geo_outer_L63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73,  SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_R120, SR_geo_outer_R121, SR_geo_outer_R122, SR_geo_outer_R123, SR_geo_outer_R130, SR_geo_outer_R131, SR_geo_outer_R132, SR_geo_outer_R133, SR_geo_outer_R140, SR_geo_outer_R141, SR_geo_outer_R142, SR_geo_outer_R143, SR_geo_outer_R150, SR_geo_outer_R151, SR_geo_outer_R152, SR_geo_outer_R153}, //R121 is orderings - 120-153 // as LL for 01 to 110
 
 };
  
 void mode_init(void){
   uint32_t x;
-
-  gate[0].logspeed=logspeed18;
-  gate[1].logspeed=logspeed18;
-  gate[2].logspeed=logspeed18;
-  gate[3].logspeed=logspeed18;
-
-  gate[0].lowest=0.000016f;
-  gate[1].lowest=0.000016f;
-  gate[2].lowest=0.000016f;
-  gate[3].lowest=0.000005f;
-  
   
   for (x=0;x<22;x++){
 
@@ -360,7 +340,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   //  uint32_t outindex=0;
   uint32_t outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
-    //    if (www==3) outindex=mode[www]; // testing TYPE on CVL
+  //  if (www==3) outindex=57;//mode[www]; // testing TYPE on CVL
   //  if (outindex>15) outindex=15;
 
   /*
@@ -402,8 +382,5 @@ if (www==2)  {
       TIM1->CCR1 = 0;
     }
    }
-
-  counter[www]++; // used I think for multiple speeds
-  counterd[www]++; 
 }
  

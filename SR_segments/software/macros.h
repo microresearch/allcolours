@@ -16,17 +16,6 @@ static uint32_t outcnt=0;
 #define ROUTETYPE (gate[w].matrix[16]>>9)
 
 #define SETROUTETYPE (gate[w].matrix[16])
-#define SETROUTE (gate[w].matrix[17])
-
-#define SETROUTECV {				\
-  gate[w].matrix[17]=CVL[w];			\
-  gate[w].theroute=CVL[w]>>8;			\
-  }
-
-#define SETROUTEDAC {				\
-    gate[w].matrix[17]=gate[dacfrom[daccount][w]].dac;	\
-    gate[w].theroute=(gate[dacfrom[daccount][w]].dac)>>8;	\
-  }
 
 #define SETROUTETYPECV {				\
   gate[w].matrix[16]=CVL[w];			\
@@ -65,9 +54,9 @@ static uint32_t outcnt=0;
 
 #define RESETC binary[2]=0; gate[2].altroute=0; gate[2].routetype=0; gate[2].funcbit=routebits_nodepth_typesz; gate[2].extent=6; gate[2].depths=depth_routebits_nodepth_typesz; gate[2].str_funcbit=routebits_nostrobe_depth_typesz; gate[2].str_extent=7; gate[2].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTC;
 
-#define RESETR binary[3]=0; gate[3].altroute=0; gate[3].routetype=0; gate[3].funcbit=routebits_nodepth_typesz; gate[3].extent=6; gate[3].depths=depth_routebits_nodepth_typesz; gate[3].str_funcbit=routebits_nostrobe_depth_typesz; gate[3].str_extent=7; gate[3].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTR; RESETG; 
+#define RESETR binary[3]=0; gate[3].altroute=0; gate[3].routetype=0; gate[3].funcbit=routebits_nodepth_typesz; gate[3].extent=6; gate[3].depths=depth_routebits_nodepth_typesz; gate[3].str_funcbit=routebits_nostrobe_depth_typesz; gate[3].str_extent=7; gate[3].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTR; RESETG; count=0;
 
-#define RESETG count=0; daccount=0; spdcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; 
+#define RESETG ordercount=0; daccount=0; spdcount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; 
 
 #define STR0 (gate[w].trigger)
 

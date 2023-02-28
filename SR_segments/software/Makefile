@@ -31,7 +31,8 @@ OBJECTS = 	startup_stm32f4xx.o system_stm32f4xx.o main.o adcnew.o \
 LDSCRIPT = stm32_flash.ld
 
 # -DTESTING option for wavetables...
-# we need -Os to keep size in limits
+#  -flto for shorter
+
 
 CFLAGS  =  -I. -IInclude -Iinc -std=gnu99 \
 	 -D'__FPU_PRESENT=1' -DARM_MATH_CM4 \
@@ -40,7 +41,7 @@ CFLAGS  =  -I. -IInclude -Iinc -std=gnu99 \
 	-c -lm -lc -fno-common -O3 -funroll-loops \
 	-mcpu=cortex-m4 \
 	-mfloat-abi=hard \
-	-fsingle-precision-constant -fsigned-char -Wdouble-promotion -ffunction-sections -fdata-sections
+	-fsingle-precision-constant -fshort-enums -fsigned-char -Wdouble-promotion -ffunction-sections -fdata-sections
 
 
 AFLAGS  = -mlittle-endian -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -mfloat-abi=hard

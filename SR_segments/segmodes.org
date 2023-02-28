@@ -4,51 +4,24 @@ By degrees the idea of cultivation subsided into that of merely
 pastoral care. This slowly became merged in a sense of retirement —
 this again in a consciousness of solitude.
 
-module for one bit landscape gardening...
+A ourorack module for one bit landscape gardening.
 
 serpent's head, caput draconis (rather than heavens\) - lunar node and link of geomantic figures with dots/dot matrix/bits... (see CCRU also)
 
 A dragon with 5 heads!
 
 ///////////////////
-- C: matrixp expand, sketched out
-- N: adc/abstract choices, prob of route entry as important, cutting and mixing...
-- L: continuity, multiple routes...
-- R: can be abstract, globals, some basic routings
-
-N - less binroute, adc probs, adc types, prob of cycle/adc/binroute, adc xor//adc or//binr, more blocks/bursts or coming in of adc, binr, cycle? how?
-L - as C, routes and probs, no abstract
-C - as we have, check prob of DAC outsES-61/62
-R - as C, but more abstract functions for runglers, more globals (where?)
-
-///////////////////
 
 ** ////XXXXXTODO XXXXXXX
 
-- question of 16 or 18 octaves and any hardware changes...
-
--  *if (gate[w].changed==0) { // 1=change 0= no change and other ops in basic outer model!*
-
-- *re-check use of clk, pulsin, pulsout, strobey*
-
-- *for NN which outers do or dont use ADC- how to divide, organise*
-
+- *re-check use of clk, pulsin, pulsout, strobe*
 - *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
-
 - *GeoCC ... or keep all first 16 sans gaps, fixed which might include rungler etc. - adjust when we have everything*
 
-- *LL,, RR, NN pull rungler ops into first 16 basic modes - as in rungler with basic route in. 2x runglers - LL, RR, NN*
-
-- *for gappedfunction we need always:*
+- *check: for gappedfunction we need always:*
   gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
   gate[w].matrix[4]=CVL[w];
   gate[w].matrix[10]=CVL[w];  
-
-- ????uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
-
-- check binroute, speedroute arrays etc... to see that makes sense
-
-maybe expand these arrays!!
 
 - tweak: shift all strobe funcs to end of arrays and recheck all fixed speeds/funcs
 
@@ -58,7 +31,7 @@ maybe expand these arrays!!
 - check all resets
 
 - full tests as below
-- full tests CC modes before we go further and replicate, smaller tests on runglers
+- tests on runglers
 - final tests and tweaks eg. orderings of functions in arrays and check these against fixed references for functions
 
 ** catalogue
@@ -150,26 +123,51 @@ matrixp//globals in RR
 152
 153
 
-/// what do we need to fit in CC? and where
-
+/// what do we need to fit in CC? and where ??? 
 // prob of last remaining: SR_geo_inner_functionproblast(uint32_t w)
 // trial xorspeed
 // probroutes
 
 - for NN, LL, RR what we have to gap in there?
 
-** TODO this week 20+/2/2023
+** TODO 27+
 
-- finish runglers NN and LL and catalogue special functions for NN, LL, RR
-- test all geoCC one by one// nearly
-- finish and test matrixp ops - in progress
-- ready for full tests and tweaks
+see 27/2++
 
-extras for CC?:
+where to put extras for CC?:
 
 - if we can fit problast and split strobe speed at end of CC into CC functions
 added SR_geo_inner_probdepthnodepth but we need outer to use it!
+also we have:
 added SR_geo_inner_probdepthdepthSS ^^^^^ for matrixp
+
+** 28/2
+
+DONE/TESTED: last RR mode can be CVL set route as we can always set route to 0, so changed resetG and had to add ordercount=0 as was missing
++ checked all global modes, checked and fixed strobed bug there
+
+DONE/TESTED: does RR miss abstracts in first 16 modes - how to find memory to place these (or as versions of NN ones if (w==3)...
+//recbin is routebits_depth_typesz -> 38<<6 - tested and nice to keep
+
+DONE/TESTED: binroutes to expand, altbinroutes to finish - see new notes // fixed limits in globals for now count 0-31
+// *TESTEDwhere to test altbinroute? Zbinrouteforaltalt which is in: routebits_nodepth_typesz 2<<6 so CC wise is: C20 -> 
+
+DONEremoved binroutebin macro and bugs there - 99.1% now
+
+TESTED- check resets are working on all sides // DONEcheck reset code
+
+
+** 27/2/2023 
+
+final tweaks and tests+
+
+- check/annotate how modes use CV(x) and CVL(y)
+- sanity check all: especially probabilities and w==0 of substitute functions
+- check gaps we filled across LL NN and RR for runglers - are they in the right places, are right things set, do they cover everything
+- replace order of strobes in function arrays so they are last and re-check length of all arrays
+- above notes and below - what we didn't have a chance to use:
+- test static sides and then NN, LL, RR in turns...
+- check probs make sense and gapped functions also
 
 ** 24/2/2023
 
@@ -404,7 +402,7 @@ TODO:
 
 // globals, finalise runglers and fixed functions on each side...
 
-// *extras to fit in/maybe remove others - means testings:*
+// extras to fit in/maybe remove others - means testings:*
 
 split speeds, speedXORs, prob of last
 
@@ -422,7 +420,7 @@ TODO:
 
 [- too few...reduced translations say 3 bits 0-7 eg. layers of speed, bits, probs  eg. nostrobe: 0,1,2 /speed/ 3,4,5 bits 6len, 9,10,11,12/prob 13,14dactype 16 routetype, // others only used in NN, etc]
 
-- *route arrays - merge depth and nodepth for final matrixp as we don;t distinguish? or have pre-selected special arrays*
+- route arrays - merge depth and nodepth for final matrixp as we don;t distinguish? or have pre-selected special arrays*
 
 
 
@@ -450,7 +448,7 @@ spdfracX, spdfrac1X, spdfrac3X, spdfrac4X, spdfrac5X, spdfracdac3X, strobespdfra
 
 ** 20/2/2023
 
-- *can we fit xorspeeds into CC? where? can lose one prob and throw in, bump C43 to C50*
+- can we fit xorspeeds into CC? where? can lose one prob and throw in, bump C43 to C50*
 
 all about transition from fixed funcs to... generic funcs...
 
@@ -543,7 +541,7 @@ DONE-retest all probfs ... DONE/TODO: for comparisons 8 bits depth is better so 
 
 if we get sole speed from the one we route into we have issues???*
 
-- *catalogue and finish/test runglers for NN: we need simpler fixed runglers*
+- catalogue and finish/test runglers for NN: we need simpler fixed runglers*
 
 ///
 
@@ -557,7 +555,7 @@ TESTEDtesting allof: routebits_nodepth_typesz,
 
 default: routebits_nodepth_typesz;
 
-*TODO: first do sanity check, then test all CC and catalogue below, fill in LL and NN runglers and test these*
+TODO: first do sanity check, then test all CC and catalogue below, fill in LL and NN runglers and test these*
 
 - *IN PROCESS: unreverse logspeedsDONE and invert all CV//DONE and CVL/DONE but then we need to go through and correct all functions for this - lenDONE
 - *DONEthus fix inv functions in geogen... - test all!
@@ -786,7 +784,7 @@ prob
 - all tests below
 - first modes fill in new NN: DONEtest N02, N03 etc,,,
 
-*LL follows CC apart from first one and later rungler, RR follows more or less NN but without ADC, some of CC (eg. route vs. cycle)*
+LL follows CC apart from first one and later rungler, RR follows more or less NN but without ADC, some of CC (eg. route vs. cycle)*
 
 - DONE/tested: seperate matrix for abstract ops - replace what was route with 18 and maybe DONE:take care of all theroute and globflags already
 // but we also need abstract CV on 19! to addDONE - test all
@@ -808,7 +806,7 @@ TODO: tests from below:
 - DONEzcountbitsI added TEST
 - DONEtest strobe (no depth) xor with speedmodes (just strobe or strobe_modes, spdfrac or speedmodes) - but how we select each... fixed sel *SR_geo_outer_strobexor
 
-/// *possible other xor/or*: 
+/// possible other xor/or*: 
 strobe_nodepth [xor/or] speed_depth
 strobe_depth [xor/or] speed_nodepth
 
@@ -928,7 +926,7 @@ if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7]): SR_geo_outer_gapp
 
 - DONEcheck new abstract list... one by one - and new abstract list for runglers now...
 
-- *in progress: maybe divide depth and no depth as mix is confusing for use of depth* 
+- in progress: maybe divide depth and no depth as mix is confusing for use of depth* 
 
 - what are abstracts with no depth (and can we use them?): justcycle, flipflop what else?
 
@@ -1005,7 +1003,7 @@ NZbinroutfixed_prob5: lfsr
 
 //NO?did it crash? how to crash test - with rand on modes but doesn't crash and is slow...*
 
-*we need simpler modes and changes of functions/style across sides*
+we need simpler modes and changes of functions/style across sides*
 
 Note: so far LL, CC and RR are all same apart from first reset... upto 16
 
@@ -1021,7 +1019,7 @@ NN is always different...
 
 notebook: DONEnew abstract countup function
 
-- *strobe function from below: prob (depth vs. in/LFSR) of route X(global/theroute) vs route Y(another depth) - so we need that function*
+- strobe function from below: prob (depth vs. in/LFSR) of route X(global/theroute) vs route Y(another depth) - so we need that function*
 
 older:
 

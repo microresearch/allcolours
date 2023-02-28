@@ -306,7 +306,7 @@ static inline uint32_t pSRholdfromdac(uint32_t depth, uint32_t in, uint32_t w){ 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
 
-  tmp=gate[dacfrom[count][w]].dac%(depth+1);
+  tmp=gate[dacfrom[daccount][w]].dac%(depth+1);
   bitn=SRproc_hold(tmp>>4,bitn);
   return bitn;
 }
@@ -986,7 +986,7 @@ static inline uint32_t pSRN33cipher(uint32_t depth, uint32_t in, uint32_t w){//S
     tmp=binroute[count][w]|binary[w]; 
 
     tmpp=gate[w].routetype;
-  ROUTETYPE_;  
+    ROUTETYPE_;  
 
     
     GGGshift_[w]+=bitn;

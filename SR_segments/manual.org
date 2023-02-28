@@ -3,8 +3,27 @@
 ** basic blurb description: 
 
 Caput draconis (CD) is/will be the latest ourorack ... companion
+extending the ouroboric becoming-noise of the contemporary eurorack
+rosarium
 
-to have done with the judgement of god
+Caput draconis (CD) is the latest ourorack (ouroboric) module for
+gnarlular processing, and advanced cross frequency CV and audio
+pattern generation, encoding a series of successively pleasurable and
+tortuous sliding dislocations
+
+intended as lonely serpent's head or as companion for All the Colours
+of the Noise extending the ouroboric becoming-noise of the
+contemporary eurorack rosarium
+
+Four draconic shift registers are enchained, interlocked, woven and
+segmented, recursively feeding on each other in turn, vomiting noise
+and wormy symphonies. moon phases and nodal paths. It is to have done
+with the judgement of gods.
+
+CD can be considerd as 64^4 different instruments depending on modal
+configuration informed by lunar phases and astrogeomantic time signatures.
+
+towards a synthesis without modules...
 
 successive pleasurable and tortuous dislocations 
 
@@ -26,13 +45,106 @@ Closer to caput draconis as the crescent moon moves into the northern ecliptic h
 
 Successive pleasurable and tortuous dislocations 
 
-** design/inspirations
+we also had:
 
-- collect stack/SR diagrams, ascii art, panel sketches, moon phases
-- print quality and binding?
+By degrees the idea of cultivation subsided into that of merely
+pastoral care. This slowly became merged in a sense of retirement —
+this again in a consciousness of solitude.
+
+module for one bit landscape gardening...
+
+
+** design/inspirations POSTER
+
+cover as card image in colour - cover/back + 6 sides with poster - cover and back head and tail! scan
+
+in no specific order A5:
+
+1 - blurb and credits
+2 - panel layout
+3 - 4 sets of major modes listed
+4 - hints and tips /working with AC
+5 - theory of operation
+6 - glossary
+
+
+poster [could also be booklet for TOAD/andy later]
+
+[- collect stack/SR diagrams, ascii art, panel sketches, moon phases]
+[- print quality and binding?]
 
 how to image/notate panel - that the description and panel/images are themselves subjected to shift reg (eg. each pixel line of panel image - try this!)
 
+** 28/2/2023
+
+theory of operation:
+
+generic: 4 interlocked (software) shift registers, with configurable
+routing, speed and length. each has CV control, an adjustable mode,
+and clock or pulse inputs. All is bits, 1s and 0s but analogue signals
+can be input and can be generated using combinations of these bits.
+
+hardware in detail:
+
+Each side has 3 knobs and 2 CV inputs, and a clock or pulse input. The
+central knob on each side controls the mode for that SR, the first
+knob (left to right, up to down) is X, the third is Y. In the first 32
+modes on each side, and other modes depending on mode, the X control
+(CV and knob) controls speed. In modes 33-48 speed is set by the clock
+input. In these cases, and in other modes which use the clock for sync
+or triggering a condition, clock input is normed to an artificial
+clock signal internally generated. Otherwise the clock is left free
+and can be used as a regular pulse input. Left and right SRs both have
+a pulse input which is simply XORed into the SR; it can be use to mix
+new signals into each SR. Left, right and lower SRs each have two
+different pulse outputs directly from their own SR bits. 
+
+The top SR has an audio input, the bottom SR has an audio
+output. Different input and output encodings can be chosen using the
+first mode [0] in the case of top and bottom SRs.
+
+serpent as blackbox:
+
+Each of the four SRs has internally length, speed, incoming route,
+function and type of interlock with incoming SRs. Speed can be set and
+manipulated by the X (CV/knob) parameter, output from other SRs
+(feedback and rungling), or by the clock input depending one of 64
+different modes.
+
+Length, route, interlock and function are also set and configured
+within the modes. Moving quickly across modes does not result in
+setting intermediate values. Length is the length of each segment
+(1-32), route specifies the incoming routes (these can be multiple)
+from other SRs, function is the mode of operation (eg. is it allowed
+to cycle, or the fix the probability of an incoming bit), and
+interlock is how it deals with incoming SRs which are faster or slower
+than itself. These can be imagined as churning, interlocking wheels.
+
+Modes in general are grouped as to functions on route, function and so
+on. The first 16 modes on each side are basic in control, with the
+first [0. far left] mode always as a default reset and a simple route
+in, with configuration of incoming/outgoing signal codec (top, bottom)
+or of length (left, right) on the Y knob/CV. The next 16 modes are
+more tricky, then we have the 16 strobe modes and finally, except on
+the right side, there are 16 recursive modes which fold back
+parameters onto each other under CV control. These can be reset in the
+last (far right) mode setting. Modes are mostly aligned across all
+SRs.
+
+On the last 16 modes of the right side, there are the global modes
+which affect global order of execution (which SR runs after which, not
+the same as route) routing and recursive parameters. These are reset
+in the final (far right turn) mode which also sets and can reset the
+global route using the Y parameter. The default route is from top to
+left to bottom to right (and back to top if allowed). But each SR can
+control its own route in some modes, and can choose when and if it
+allows bits in. // 0 mode on RR also resets all
+
+what else to add? tails, 
+
+[Glossary: SeRpent - shift register]
+
+Rungler
 
 ** 24/2/2023
 
@@ -52,7 +164,7 @@ C or python code manipulates string...
 
 string -> image (and colour)
 
-- thinking that manual could be A3 riso (but then folded?) poster... or set of cards like AC (for all?)
+[- thinking that manual could be A3 riso (but then folded?) poster... or set of cards like AC (for all?)]
 
 ** 23/2/2023
 
@@ -91,6 +203,12 @@ how to patch following geomantic instructions
 - pulses from CD -> ?
 - AC as audio source
 - use of comparator for clocks
+
+hints and tips also: feedback of pulses, what to do when it runs out
+
+how to play it - consider the combinations of the 4 modes/nodes as an
+instrument itself determined by the collision of modes and the moon's
+phases.
 
 ** new 4/5/2022+
 

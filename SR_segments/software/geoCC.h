@@ -20,7 +20,8 @@ void SR_geo_inner_globalC(uint32_t w){  // fixed route only - no probability, no
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7];
-    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
+    if (w==3) bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
     bitn^=binroutesel0(0,0,w); // global route which is ... and routetype
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -358,7 +359,6 @@ void SR_geo_inner_rungC(uint32_t w){
 
 void SR_geo_inner_probnodepth(uint32_t w){  // draft for probs with no depth
   HEADNADA;
-  uint32_t tmproute;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
@@ -376,7 +376,6 @@ void SR_geo_inner_probnodepth(uint32_t w){  // draft for probs with no depth
   else {
     if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
     else bitn=(routebits_nodepth_typesz[gate[w].matrix[12]>>extent_routebits_nodepth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
-    gate[w].theroute=tmproute;
   }
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -385,7 +384,6 @@ void SR_geo_inner_probnodepth(uint32_t w){  // draft for probs with no depth
 
 void SR_geo_inner_probdepthnodepth(uint32_t w){  // draft for probs with no depth alt
   HEADNADA;
-  uint32_t tmproute;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
@@ -402,7 +400,6 @@ void SR_geo_inner_probdepthnodepth(uint32_t w){  // draft for probs with no dept
     }
   else {
     bitn=(routebits_nodepth_typesz[gate[w].matrix[12]>>extent_routebits_nodepth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
-    gate[w].theroute=tmproute;
   }
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -411,7 +408,6 @@ void SR_geo_inner_probdepthnodepth(uint32_t w){  // draft for probs with no dept
 
 void SR_geo_inner_probdepth(uint32_t w){  // draft for probs with depth
   HEADNADA;
-  uint32_t tmproute;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
@@ -439,7 +435,6 @@ void SR_geo_inner_probdepth(uint32_t w){  // draft for probs with depth
 // for matrixP ops!
 void SR_geo_inner_probdepthdepthS(uint32_t w){  // draft for probs with depth WE SET STROBE - uses matrixX! 
   HEADNADA;
-  uint32_t tmproute;
   if (interpfromnostrobe[gate[w].matrixX[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
@@ -468,7 +463,6 @@ void SR_geo_inner_probdepthdepthS(uint32_t w){  // draft for probs with depth WE
 
 void SR_geo_inner_probdepthdepthSS(uint32_t w){  // draft for probs with depth WE SET STROBE - uses matrixX! 
   HEADNADA;
-  uint32_t tmproute;
   if (interpfromnostrobe[gate[w].matrixX[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
@@ -517,7 +511,6 @@ void SR_geo_inner_str_probfunctionX(uint32_t w){  // generic prob 	// routebits_
 
 void SR_geo_inner_probdepthx(uint32_t w){  // draft for probs with depth NOIN
   HEADNADA;
-  uint32_t tmproute;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
     gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
     gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
@@ -797,7 +790,7 @@ void SR_geo_outer_C20(uint32_t w){ // change function. nodepth. types
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=CVL[w]; // function  select
+  gate[w].matrix[3]=2<<6;//CVL[w]; // function  select
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
   gate[w].extent=extent_routebits_nodepth_typesz; 
@@ -1651,19 +1644,6 @@ void SR_geo_outer_C150(uint32_t w){   // no trigger
     else map=maparrayCC;
     tmp=CV[w]>>8;// 4 bits 16 layers
     setvargapz(w, tmp, map[tmp], CVL[w]>>8, 0); //CVL is var...
-    SR_geomantic_matrixcopyz(w);
-    gate[w].routetype=gate[w].matrixX[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepthdepthS;
-  }
-}
-
-void SR_geo_outer_C151x(uint32_t w){   // trigger - extra with bleed/trigger
-  uint32_t tmp;
-  if (gate[w].changed==0) {
-    if (w==0) map=maparrayCCA;
-    else map=maparrayCC;
-    tmp=CV[w]>>8;// 4 bits 4 layers
-    setvargapz(w, tmp, map[tmp], CVL[w]>>8, gate[w].trigger); //CVL is var...
     SR_geomantic_matrixcopyz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
     gate[w].inner=SR_geo_inner_probdepthdepthS;

@@ -167,7 +167,9 @@ void SR_geo_inner_probadcentry(uint32_t w){  // ADC only - prob for adc itself -
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     
     if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-      bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
+      if (w==3) bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+
+      else bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
     }
       
     else bitn=binroutesel0(0,0,w); // theroute which is ... and routetype
@@ -499,11 +501,11 @@ void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
     gate[w].inner=SR_geo_inner_norouteadcN; 
 }
 
-void SR_geo_outer_N01(uint32_t w){ // set adc type[CV] // fixed route in
+void SR_geo_outer_N01(uint32_t w){ // set adc depth // fixed route in
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[7]=CVL[w]; // adctype
+  gate[w].matrix[8]=CVL[w]; // adc depth also for abstrcats
   gate[w].inner=SR_geo_inner_globalC; //
   }
 }

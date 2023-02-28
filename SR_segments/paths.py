@@ -33,6 +33,7 @@ for x in range(15):
 
 # 
 
+print("xxxxxxxxxxx")
 # so there are single paths which begin and end with N and use all just once...
 for x in range(1000):
     pathy=[]
@@ -43,12 +44,13 @@ for x in range(1000):
     pathy.append(0)
     if pathy not in paths:
         paths.append(pathy)
-#print paths
+        print pathy
+print paths
 
 for path in paths:
     for p in path:
         print names[p],
-    print path
+#    print path
 
 # translate into route from
 for path in paths:

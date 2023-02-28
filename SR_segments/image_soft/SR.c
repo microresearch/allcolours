@@ -31,8 +31,8 @@ int main(void)
 // read in file test1.bmp and convert to binary array of size x
   char *buffer;
 
-#define MAX (1024*1000*8)
-#define MAXP (1024*1000)
+#define MAX (1024*1326*8*3)
+#define MAXP (1024*1326*3)
 
   unsigned char bufferp[MAXP];
   
@@ -44,7 +44,7 @@ int main(void)
   unsigned char bitt,cc;
 
 
-  sfile=fopen("test2.bmp", "r");
+  sfile=fopen("test2col.bmp", "r");
 
   //  read(sfile,buffer,1);
   
@@ -52,12 +52,14 @@ int main(void)
     ch = fgetc(sfile);
     // ch to binary and into array
     //    printbits(ch);
+    if (x>134){
     cc=1;
     for (y=0;y<8;y++){ // lowest bit first
       if ((ch&(1<<y))==(1<<y)) bitt=1;
       else bitt=0;
       buffer[cnt++]=bitt;
       cc=cc<<1;
+    }
     }
   }
   
@@ -68,7 +70,7 @@ int main(void)
   // we need other processes here... small cycles of bits of x length
   // how we can do 4 srs.. diff speeds...x
   
-  for (y=0;y<11;y++){  
+  for (y=0;y<4;y++){  
 // shift left and feed back x times
 //    last=0; 
     for (x=0;x<MAX;x++){
