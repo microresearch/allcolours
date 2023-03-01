@@ -2,8 +2,8 @@
 
 // CC: dactype and param, probs or route/etc, routes, speed mods as primary
 
-extern void send_command(int command, void *message);
-char buffx[10];
+//extern void send_command(int command, void *message);
+//char buffx[10];
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// INNER
@@ -21,7 +21,7 @@ void SR_geo_inner_globalC(uint32_t w){  // fixed route only - no probability, no
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7];
     if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
-    if (w==3) bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    else if (w==3) bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
     bitn^=binroutesel0(0,0,w); // global route which is ... and routetype
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -65,7 +65,6 @@ void SR_geo_inner_testdacasdepth(uint32_t w){  //
     }
 }
 
-
 void SR_geo_inner_function_strobexor(uint32_t w){ 
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
@@ -106,7 +105,22 @@ void SR_geo_inner_dacspeed3(uint32_t w){
     }
 }
 
-void SR_geo_inner_str_function(uint32_t w){  // for strobe functions 
+void SR_geo_inner_str_function(uint32_t w){  // for strobe functions  - but here we do just in nor in^bit
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromstrobe_nodepth[gate[w].matrix[15]>>8])(0, 0, w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7];
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+    bitn^=(gate[w].str_funcbit[gate[w].matrix[17]>>gate[w].str_extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+// just changes for NN
+void SR_geo_inner_str_functionN(uint32_t w){  // for strobe functions  - but here we do just in nor in^bit
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
 
@@ -128,7 +142,7 @@ void SR_geo_inner_str_function2(uint32_t w){  // for strobe functions  speedfrom
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
-    else bitn=(gate[w].str_funcbit[gate[w].matrix[17]>>gate[w].str_extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+    bitn^=(gate[w].str_funcbit[gate[w].matrix[17]>>gate[w].str_extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -173,7 +187,8 @@ void SR_geo_inner_functionproblast(uint32_t w){
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
     if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-      bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+      if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+      else bitn=(gate[w].str_funcbit[gate[w].matrix[17]>>gate[w].str_extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
       }
       else {
 	bitn = gate[w].lastest;
@@ -224,12 +239,13 @@ void SR_geo_inner_probroutes(uint32_t w){
   if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
 
     if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-      bitn=Zbinrouteforalt(gate[w].matrix[4], gate[w].matrix[5], w); 
+      bitn^=Zbinrouteforalt(gate[w].matrix[4], gate[w].matrix[5], w); 
   }
   else {
-    bitn=Zbinrouteforaltalt(gate[w].matrix[4], gate[w].matrix[5], w); 
+    bitn^=Zbinrouteforaltalt(gate[w].matrix[4], gate[w].matrix[5], w); 
   }    
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -284,7 +300,6 @@ void SR_geo_inner_probcyclexorC(uint32_t w){
       if (w==0)     bitn^=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix
       else bitn^=((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);	   // cycle bit
     }
-    
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -311,7 +326,6 @@ void SR_geo_inner_probcyclexorCnodepth(uint32_t w){
       if (w==0) bitn^=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
       else bitn^=((gate[w].Gshift_[w]>>SRlength[w]) & 0x01);	   // cycle bit
     }
-    
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -337,7 +351,6 @@ void SR_geo_inner_probcyclexorinvC(uint32_t w){
     if (!(*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
       bitn^=(!(gate[w].Gshift_[w]>>SRlength[w]) & 0x01);	   // cycle bit INV
     }
-    
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -399,7 +412,8 @@ void SR_geo_inner_probdepthnodepth(uint32_t w){  // draft for probs with no dept
         bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w);
     }
   else {
-    bitn=(routebits_nodepth_typesz[gate[w].matrix[12]>>extent_routebits_nodepth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+    else bitn=(routebits_nodepth_typesz[gate[w].matrix[12]>>extent_routebits_nodepth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
   }
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -450,7 +464,7 @@ void SR_geo_inner_probdepthdepthS(uint32_t w){  // draft for probs with depth WE
       bitn=(gate[w].funcbit[gate[w].matrixX[3]>>gate[w].extent])(gate[w].matrixX[4], gate[w].matrixX[5], w);
     }
   else {
-    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+    if (w==0) bitn=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  // fixed
     else bitn=(routebits_depth_typesz[gate[w].matrixX[12]>>extent_routebits_depth_typesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
     // what alternatives could be? routebits_anystrobe_notypezs // depth and no depth mixed
     // or routebits_nodepth_typesz
@@ -460,6 +474,36 @@ void SR_geo_inner_probdepthdepthS(uint32_t w){  // draft for probs with depth WE
     new_data(val,w);
     }
 }
+
+// NN only 
+void SR_geo_inner_probdepthdepthSN(uint32_t w){  // draft for probs with depth WE SET STROBE - uses matrixX! 
+  HEADNADA;
+  if (interpfromnostrobe[gate[w].matrixX[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrixX[0]>>7])(gate[w].matrixX[1], gate[w].matrixX[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrixX[6]>>7]; 
+
+    if (!(*probf_anystrobe_depth[gate[w].matrixX[9]>>6])(gate[w].matrixX[10], gate[w].matrixX[11], w)) {
+      bitn=(gate[w].funcbit[gate[w].matrixX[3]>>gate[w].extent])(gate[w].matrixX[4], gate[w].matrixX[5], w);
+    }
+  else {
+    if (w==0) bitn=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  // fixed
+    bitn^=(routebits_depth_typesz[gate[w].matrixX[12]>>extent_routebits_depth_typesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
+    // what alternatives could be? routebits_anystrobe_notypezs // depth and no depth mixed
+    // or routebits_nodepth_typesz
+  }
+    gate[w].strobed=1;
+    BITN_AND_OUTVX_; 
+    new_data(val,w);
+    }
+}
+
 
 void SR_geo_inner_probdepthdepthSS(uint32_t w){  // draft for probs with depth WE SET STROBE - uses matrixX! 
   HEADNADA;
@@ -478,7 +522,8 @@ void SR_geo_inner_probdepthdepthSS(uint32_t w){  // draft for probs with depth W
       bitn=(gate[w].funcbit[gate[w].matrixX[3]>>gate[w].extent])(gate[w].matrixX[4], gate[w].matrixX[5], w);
     }
   else {
-    bitn=(routebits_anystrobe_notypesz[gate[w].matrixX[12]>>extent_routebits_anystrobe_notypesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
+    if (w==0) bitn=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  // fixed
+    else bitn=(routebits_anystrobe_notypesz[gate[w].matrixX[12]>>extent_routebits_anystrobe_notypesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
     // what alternatives could be? routebits_anystrobe_notypezs // depth and no depth mixed
     // or routebits_nodepth_typesz
   }
@@ -500,7 +545,31 @@ void SR_geo_inner_str_probfunctionX(uint32_t w){  // generic prob 	// routebits_
 	    bitn=(gate[w].str_funcbit[gate[w].matrixX[17]>>gate[w].str_extent])(gate[w].matrixX[4], gate[w].matrixX[5], w); 
           }
           else {
-	    if (w==0)     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// WHICH WAY round?
+	    if (w==0)     bitn=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  /// WHICH WAY round?
+	    else bitn=(routebits_nostrobe_depth[gate[w].matrixX[12]>>extent_routebits_nostrobe_depth])(gate[w].matrixX[5], gate[w].matrixX[4], w); // swopped
+	// what are alternatives for this:  routebits_nostrobe_nodepth 64 - all types
+	  }	  
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+// just differs for w==0
+void SR_geo_inner_str_probfunctionXX(uint32_t w){  // generic prob 	// routebits_nostrobe_depth_notypesz >>8
+  HEADNADA;
+  gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromstrobe_all[gate[w].matrixX[15]>>7])(gate[w].matrixX[1], gate[w].matrixX[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrixX[6]>>7]; 
+          if ((*probf_nostrobe_depth[gate[w].matrixX[9]>>7])(gate[w].matrixX[10], gate[w].matrixX[11], w)){
+	    bitn=(gate[w].str_funcbit[gate[w].matrixX[17]>>gate[w].str_extent])(gate[w].matrixX[4], gate[w].matrixX[5], w); 
+          }
+          else {
+	    if (w==0) {
+	      bitn=(gate[w].str_funcbit[gate[w].matrixX[17]>>gate[w].str_extent])(gate[w].matrixX[4], gate[w].matrixX[5], w); 
+	      bitn^=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  /// WHICH WAY round?
+	    }
 	    else bitn=(routebits_nostrobe_depth[gate[w].matrixX[12]>>extent_routebits_nostrobe_depth])(gate[w].matrixX[5], gate[w].matrixX[4], w); // swopped
 	// what are alternatives for this:  routebits_nostrobe_nodepth 64 - all types
 	  }	  
@@ -557,7 +626,7 @@ void SR_geo_inner_gappedfunction(uint32_t w){  // depth or alt
 	  bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
       }
       else {
-	bitn^=(routebits_depth_typesz[gate[w].matrixX[12]>>extent_routebits_depth_typesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
+	bitn^=(routebits_depth_typesz[gate[w].matrix[12]>>extent_routebits_depth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w);
       }
     }
     BITN_AND_OUTV_; 
@@ -586,7 +655,7 @@ void SR_geo_inner_gappedfunctionC(uint32_t w){  // depth or alt
 	  bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
       }
       else {
-	if (w==0)     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix
+	if (w==0)     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix // prob of entry
 	else bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;	   // cycle bit
       }
     }
@@ -612,7 +681,7 @@ void SR_geo_inner_str_gappedfunction(uint32_t w){  // depth or cycle prob
 	bitn^=(gate[w].str_funcbit[gate[w].matrix[17]>>gate[w].str_extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
       }
       else {
-	bitn^=(routebits_nostrobe_depth[gate[w].matrixX[12]>>extent_routebits_nostrobe_depth])(gate[w].matrixX[5], gate[w].matrixX[4], w);
+	bitn^=(routebits_nostrobe_depth[gate[w].matrix[12]>>extent_routebits_nostrobe_depth])(gate[w].matrix[5], gate[w].matrix[4], w);
       }	  
     }
     BITN_AND_OUTV_; 
@@ -663,14 +732,16 @@ void SR_geo_inner_null(uint32_t w){
   // nada
 }
 
-void SR_geo_innerxorC(uint32_t w){  // xor with fixed route - but we don't track cv??? means what?
+void SR_geo_innerxorC(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
   //
   if ( (*speedfromcvforxor[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w) ^ speedfromforxor[0](0,0,w) ){ // speedfunc xor with fromforxor->binroutfixed...
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
-    bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+    else bitn=(gate[w].str_funcbit[gate[w].matrix[17]>>gate[w].str_extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -723,7 +794,6 @@ void SR_geo_outer_C02(uint32_t w){ // prob1 - route vs cycle
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[6]=CV[w];
   gate[w].matrix[3]=5<<6; // NZbinroutfixed_prob1 - type/prob against LFSR and globflag - checked for new array
   gate[w].matrix[4]=CVL[w]; //
   gate[w].funcbit=routebits_depth_typesz;
@@ -790,7 +860,7 @@ void SR_geo_outer_C20(uint32_t w){ // change function. nodepth. types
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=2<<6;//CVL[w]; // function  select
+  gate[w].matrix[3]=CVL[w]; // function  select
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
   gate[w].extent=extent_routebits_nodepth_typesz; 
@@ -845,7 +915,7 @@ void SR_geo_outer_C30(uint32_t w){ //  // notypes select
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=CVL[w]; // sel
+  gate[w].matrix[3]=CVL[w]; // sel function
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].funcbit=routebits_anystrobe_depth_notypesz;
   gate[w].extent=extent_routebits_anystrobe_depth_notypesz; //7 
@@ -858,12 +928,11 @@ void SR_geo_outer_C31(uint32_t w){ // notypes. depth
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[4]=CVL[w]; // depth
+  gate[w].matrix[4]=CVL[w]; // depth ok
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   gate[w].funcbit=routebits_anystrobe_depth_notypesz;
   gate[w].extent=extent_routebits_anystrobe_depth_notypesz; // 
   gate[w].depths=depth_routebits_anystrobe_depth_notypesz;
-
   gate[w].inner=SR_geo_inner_function; 
   }
 }
@@ -873,7 +942,7 @@ void SR_geo_outer_C32(uint32_t w){ // draft gapped funcbit - if depthbit is 0 do
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-  gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__
   gate[w].matrix[4]=CVL[w];
   gate[w].matrix[10]=CVL[w];  
   gate[w].inner=SR_geo_inner_gappedfunctionC; // 24/2 
@@ -885,7 +954,7 @@ void SR_geo_outer_C33(uint32_t w){ // do prob anyways but different [ func [xor]
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-  gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__
   gate[w].matrix[10]=CVL[w];
   gate[w].inner=SR_geo_inner_probcyclexorC; 
   }
@@ -905,7 +974,7 @@ void SR_geo_outer_C33(uint32_t w){ // do prob anyways but different [ func [xor]
 
 void SR_geo_outer_C40(uint32_t w){ // basic rungler with gapped route function
   if (gate[w].changed==0) {
-    gate[w].matrix[0]=24<<7; //zbinrouteSRbits I hope 
+    gate[w].matrix[0]=24<<7; //zbinrouteSRbits checked
     gate[w].matrix[1]=CV[w]; // depth as route in this case
     gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
     gate[w].matrix[4]=CVL[w];
@@ -1042,7 +1111,8 @@ void SR_geo_outer_C62(uint32_t w){
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
   gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2  
-  gate[w].matrix[12]=CVL[w]; // select alt prob function
+  if (w==0) gate[w].matrix[8]=CVL[w]; // select alt prob function or if cv==0
+  else gate[w].matrix[12]=CVL[w]; 
   gate[w].inner=SR_geo_inner_probnodepth; 
   }
 }
@@ -1076,13 +1146,14 @@ void SR_geo_outer_C70(uint32_t w){ // gapped speedfunc. dac for depth...
   }
 }
 
-void SR_geo_outer_C71(uint32_t w){ // gapped speedfunc. gapped func. dac for length
+void SR_geo_outer_C71(uint32_t w){ // gapped speedfunc. gapped func. dac for length // or if w==0
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     gate[w].matrix[3]=CVL[w]; // select function or could be depth
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-    gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac);  // length
+    if (w==0) gate[w].matrix[8]=(gate[dacfrom[daccount][w]].dac);  // adccv
+    else gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac);  // length
     gate[w].inner=SR_geo_inner_function; // 
   }
 }
@@ -1092,8 +1163,9 @@ void SR_geo_outer_C72(uint32_t w){ // as above but cv sel of alt function
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
   gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2  
-  gate[w].matrix[12]=CVL[w]; // select alt
-  gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac); 
+  if (w==0) gate[w].matrix[8]=CVL[w];
+  else gate[w].matrix[12]=CVL[w]; // select alt
+  gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac);  // length
   gate[w].inner=SR_geo_inner_probdepthx; 
   }
 }
@@ -1116,14 +1188,15 @@ void SR_geo_outer_C80(uint32_t w){   // simple fixed strobe with sel bitfunc and
   if (gate[w].changed==0) {
     gate[w].matrix[15]=0<<8;//  simple strobe
     gate[w].matrix[17]=CV[w]; // bit mode
-    gate[w].matrix[4]=CVL[w]; // depth
+    if (w==0) gate[w].matrix[8]=CVL[w];
+    else gate[w].matrix[4]=CVL[w]; // depth
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
   
     gate[w].str_funcbit=routebits_nostrobe_depth_typesz;   // we make sure function is NO STROBE!
     gate[w].str_extent=extent_routebits_nostrobe_depth_typesz;
     gate[w].str_depths=depth_routebits_nostrobe_depth_typesz;
 
-    gate[w].inner=SR_geo_inner_str_function;
+    gate[w].inner=SR_geo_inner_str_functionN; // just changes for NN solo
   }
 }
 
@@ -1166,10 +1239,8 @@ void SR_geo_outer_C83(uint32_t w){   //
     gate[w].str_funcbit=routebits_nostrobe_nodepth_notypesz;   // we make sure function is NO STROBE!
     gate[w].str_extent=extent_routebits_nostrobe_nodepth_notypesz;
     gate[w].str_depths=depth_routebits_nostrobe_nodepth_notypesz;
-
     gate[w].matrix[9]=0; // invprobbits // gapped probs
     gate[w].matrix[10]=CVL[w];
-    
     gate[w].inner=SR_geo_inner_str_probfunction;
   }
 }
@@ -1187,7 +1258,6 @@ void SR_geo_outer_C90(uint32_t w){   //
     gate[w].str_funcbit=routebits_nostrobe_nodepth_typesz;   // we make sure function is NO STROBE!
     gate[w].str_extent=extent_routebits_nostrobe_nodepth_typesz;
     gate[w].str_depths=depth_routebits_nostrobe_nodepth_typesz;
-    
     gate[w].inner=SR_geo_inner_str_function;
   }
 }
@@ -1211,7 +1281,9 @@ void SR_geo_outer_C92(uint32_t w){   // // routes with depth and gapped strobe s
   if (gate[w].changed==0) {
     gate[w].matrix[4]=CVL[w];
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-    gate[w].matrix[6]=CV[w]; // length
+
+    if (w==0) gate[w].matrix[8]=CV[w]; // adccv
+    else gate[w].matrix[6]=CV[w]; // length
 
     gate[w].str_funcbit=routebits_nostrobe_depth_typesz;   // we make sure function is NO STROBE!
     gate[w].str_extent=extent_routebits_nostrobe_depth_typesz;
@@ -1222,31 +1294,14 @@ void SR_geo_outer_C92(uint32_t w){   // // routes with depth and gapped strobe s
 }
 
 // // select strobe speed function with depth and gap function // not so XXXXX
-void SR_geo_outer_C93xxxxx(uint32_t w){   // speedfromstrobe_depth >>8
+void SR_geo_outer_C93(uint32_t w){   // speedfromstrobe_depth >>8
   if (gate[w].changed==0) {
-    gate[w].matrix[15]=6<<8;//CVL[w]; // select
+    gate[w].matrix[15]=CVL[w]; // select
     gate[w].matrix[1]=CV[w]; // speed
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
     gate[w].inner=SR_geo_inner_str_function2;
   }
 }
-
-// and test for strobe with CV and CVL dual speeds of route in and cycle
-void SR_geo_outer_C93(uint32_t w){   // simple fixed strobe 
-  if (gate[w].changed==0) {
-    //    gate[w].matrix[15]=0<<8;//  simple strobe or gapped...
-    gate[w].matrix[17]=2<<7; ////ZbinroutsplitxorXX checked
-    gate[w].matrix[4]=CV[w];
-    gate[w].matrix[5]=CVL[w];
-  
-    gate[w].str_funcbit=routebits_nostrobe_depth_typesz;  // need to keep this
-    gate[w].str_extent=extent_routebits_nostrobe_depth_typesz;
-    gate[w].str_depths=depth_routebits_nostrobe_depth_typesz;
-
-    gate[w].inner=SR_geo_inner_str_function;
-  }
-}
-
 
 // 10.0
 // or throw in dacfrom depth and length here...
@@ -1312,7 +1367,8 @@ void SR_geo_outer_C110(uint32_t w){
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv1/cv2
     // first func is gapped
     gate[w].matrix[10]=CVL[w]; // depth
-    gate[w].matrix[12]=CV[w]; // select func2 which is fixed as with depth  
+    if (w==0)  gate[w].matrix[8]=CV[w]; 
+    else gate[w].matrix[12]=CV[w]; // select func2 which is fixed as with depth  but not in NN case
     // for prob we have:
     /*    [9]: selprob
 	  [10]: depth
@@ -1328,7 +1384,8 @@ void SR_geo_outer_C110(uint32_t w){
 
 void SR_geo_outer_C111(uint32_t w){  
   if (gate[w].changed==0) {
-    gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); // cv1/cv2
+    if (w==0) gate[w].matrix[8]=(gate[dacfromopp[daccount][w]].dac); // cv1/cv2
+    else gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); // cv1/cv2
     // first func is gapped
     gate[w].matrix[9]=CVL[w]; // selprob
     gate[w].matrix[5]=CV[w]; // cv1/cv2
@@ -1373,14 +1430,16 @@ uint32_t *fixedvars[4][16]={ //was 20
 
 // fixed 21/2/2023
 
+
+// {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16troutetype, 17 route->now strobe function index}, 18 is abstract CV, 19 is now glob, 20 is now abstract index, 21 is mix
+
+
 uint32_t *map;
+uint32_t maparrayCCS[16]={6, 13, 14, 16, 15, 1, 2, 17, 4, 5, 9, 10, 11, 12, 15, 1}; // strobes
+uint32_t maparrayCCSA[16]={6, 15, 1, 2, 17, 4, 5, 9, 10, 11, 12, 15, 7, 8, 20, 21};// 16
 
-uint32_t maparrayCCS[16]={6, 13, 14, 16, 15, 1, 2, 17, 4, 5, 9, 10, 11, 12, 15, 1};
 uint32_t maparrayCC[16]= {6, 13, 14, 16, 0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 0, 1}; 
-
-// map for adc/adcstrobe - we have 7, 8, 18, 20, 21 and lose altfuncindex 12 and dactypes13 14
-uint32_t maparrayCCSA[16]={6, 15, 1, 2, 17, 4, 5, 9, 10, 11, 15, 7, 8, 18, 20, 21};// 16
-uint32_t maparrayCCA[16]= {6, 16, 0, 1, 2, 3, 4, 5, 9, 10, 11, 7, 8, 18, 20, 21};// 16
+uint32_t maparrayCCA[16]= {6, 16, 0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 7, 8, 20, 21};// 16
 
 // and for LL as same as CC
 
@@ -1525,7 +1584,7 @@ void SR_geo_outer_C130(uint32_t w){
     setfixedvarz(w, map[(CV[w]>>8)], CVL[w]>>8); 		   
     SR_geomantic_matrixcopyz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionX; 
+    gate[w].inner=SR_geo_inner_str_probfunctionXX; 
   }
 }
 
@@ -1536,7 +1595,7 @@ void SR_geo_outer_C131(uint32_t w){
     setvarz(w, map[(CV[w]>>8)], CVL[w]>>8); 		   
     SR_geomantic_matrixcopyz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionX; 
+    gate[w].inner=SR_geo_inner_str_probfunctionXX; 
   }
 }
 
@@ -1553,7 +1612,7 @@ void SR_geo_outer_C132(uint32_t w){
     }
     SR_geomantic_matrixcopyz(w); // or offset?
     gate[w].routetype=gate[w].matrixX[16]>>9;
-    gate[w].inner=SR_geo_inner_str_probfunctionX;
+    gate[w].inner=SR_geo_inner_str_probfunctionXX;
   }
 }
 
@@ -1572,7 +1631,7 @@ void SR_geo_outer_C133(uint32_t w){  // // can also be gaps and 2 processes agai
       setfixedvarz(w, maparrayCC[(CV[w]>>8)], CVL[w]>>8); 		   
       SR_geomantic_matrixcopyz(w); // or offset?
       gate[w].routetype=gate[w].matrixX[16]>>9;
-      gate[w].inner=SR_geo_inner_str_probfunctionX;
+      gate[w].inner=SR_geo_inner_str_probfunctionXX;
   }
 }
 
@@ -1646,7 +1705,7 @@ void SR_geo_outer_C150(uint32_t w){   // no trigger
     setvargapz(w, tmp, map[tmp], CVL[w]>>8, 0); //CVL is var...
     SR_geomantic_matrixcopyz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepthdepthS;
+    gate[w].inner=SR_geo_inner_probdepthdepthSN;
   }
 }
 
@@ -1658,7 +1717,7 @@ void SR_geo_outer_C151(uint32_t w){   // trial offset
     gate[w].offset[map[CV[w]>>8]]=CVL[w];
     SR_geomantic_matrixcopyoffsetz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepthdepthS;//SR_geo_inner_gappedfunction;// S sets strobe
+    gate[w].inner=SR_geo_inner_probdepthdepthSN;//SR_geo_inner_gappedfunction;// S sets strobe
   }
 }
 
@@ -1667,7 +1726,7 @@ void SR_geo_outer_C152(uint32_t w){
   if (gate[w].changed==0) {
     SR_geomantic_matrixcopyoffsetz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
-    gate[w].inner=SR_geo_inner_probdepthdepthS;//SR_geo_inner_gappedfunction;// S sets strobe
+    gate[w].inner=SR_geo_inner_probdepthdepthSN;//SR_geo_inner_gappedfunction;// S sets strobe
   }
 }
 

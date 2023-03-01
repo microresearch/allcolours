@@ -10,30 +10,6 @@ serpent's head, caput draconis (rather than heavens\) - lunar node and link of g
 
 A dragon with 5 heads!
 
-///////////////////
-
-** ////XXXXXTODO XXXXXXX
-
-- *re-check use of clk, pulsin, pulsout, strobe*
-- *strobe inners and all inners need take account of depth -check - unless is fixed array, or we use depth*
-- *GeoCC ... or keep all first 16 sans gaps, fixed which might include rungler etc. - adjust when we have everything*
-
-- *check: for gappedfunction we need always:*
-  gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__
-  gate[w].matrix[4]=CVL[w];
-  gate[w].matrix[10]=CVL[w];  
-
-- tweak: shift all strobe funcs to end of arrays and recheck all fixed speeds/funcs
-
-- check all extents, all arrays and all functions for sanity - geogen and each before we expand across all sides...
-- sanity check all code, line by line: LIST! main, caput00, adcetc, geogen, arrays, all resources, ALL!
-
-- check all resets
-
-- full tests as below
-- tests on runglers
-- final tests and tweaks eg. orderings of functions in arrays and check these against fixed references for functions
-
 ** catalogue
 
 catalogue CC in groups of 4:
@@ -123,23 +99,70 @@ matrixp//globals in RR
 152
 153
 
+- for NN, LL, RR what we have to gap in there?
+
+
+** TODO 
+- check how all esp, strobe inners handle specific use of depth in outer ???
+- *re-check use of clk, pulsin, pulsout, strobe*
+- tests on runglers - spdfrac3 or spdfrac4
+- sanity check all: especially probabilities
+- sanity check all code, line by line: 
+- look at all probs and analysis below
+
+main.c
+caput000.c
+
+#include "adcetc.h"
+#include "geogen.h"
+#include "exp_port.h"
+#include "geomantic.h"
+#include "geoCC.h"
+#include "geoNN.h"
+#include "geoLL.h"
+#include "geoRR.h"
+///
+
+- *do we need more abstract cases for w==3 in RR???, and no route in or prob of route in - where to place?*
+- *check runglers on LL and RR*
+
+*UNUSED*
+
+where to put extras for CC:
+
+- if we can fit problast and split strobe speed at end of CC into CC functions
+
+
 /// what do we need to fit in CC? and where ??? 
 // prob of last remaining: SR_geo_inner_functionproblast(uint32_t w)
 // trial xorspeed
 // probroutes
 
-- for NN, LL, RR what we have to gap in there?
 
-** TODO 27+
 
-see 27/2++
-
-where to put extras for CC?:
-
-- if we can fit problast and split strobe speed at end of CC into CC functions
 added SR_geo_inner_probdepthnodepth but we need outer to use it!
 also we have:
 added SR_geo_inner_probdepthdepthSS ^^^^^ for matrixp
+
+NN:
+
+probzeros, probadcburst
+
+
+** 1/3/2023
+
+///////
+-DONElotsof fixes on NN runglers - so need to check all!
+-DONEchanges in CC and 000 list bit need to test:Lfigure out of adc/abstract cv setting in NN and duplicated CC! - also Q of where in NN we set [3] type and cv[4]?*
+-DONE check matrixp array maps - fixed [18] bug for altfuncs
+-DONE- recheck all fixed speeds/funcs
+-DONE- check all extents, all arraysDONE
+-DONErecheck global arrays*
+-DONE/tweak: shift all strobe funcs to end of arrays
+-DONEcheck ^ for bits in CC-fixed matrixX bugs
+-DONEcheck w==0 of substitute functions in CC
+-DONEC93 is odd - to check... also if it works for NN//changed
+-DONE- check we didn't leave any default values for CV/CVL in CC/NN etc
 
 ** 28/2
 
@@ -154,30 +177,30 @@ DONE/TESTED: binroutes to expand, altbinroutes to finish - see new notes // fixe
 
 DONEremoved binroutebin macro and bugs there - 99.1% now
 
-TESTED- check resets are working on all sides // DONEcheck reset code
+DONE/TESTED- check resets are working on all sides // DONEcheck reset code
 
 
 ** 27/2/2023 
 
 final tweaks and tests+
 
-- check/annotate how modes use CV(x) and CVL(y)
-- sanity check all: especially probabilities and w==0 of substitute functions
+- check/annotate how modes use CV(x) and CVL(y) - list of modes and how they repeat across sides...
 - check gaps we filled across LL NN and RR for runglers - are they in the right places, are right things set, do they cover everything
 - replace order of strobes in function arrays so they are last and re-check length of all arrays
-- above notes and below - what we didn't have a chance to use:
 - test static sides and then NN, LL, RR in turns...
 - check probs make sense and gapped functions also
+- above notes and below - what we didn't have a chance to use: // if we can fit it in
+
 
 ** 24/2/2023
 
 moon node at 19.58!
 
-// *all filled in but we need to test and sort, esp for NN and with probs*
+// all filled in but we need to test and sort, esp for NN and with probs*
 
 - we will hit limit of memory so have to double up - 99.5% now - where else we could save: recbin, shared and cut some functions
 
-also we havenow  all as speed18 18 octaves?
+also we have now  all as speed18 18 octaves?
 
 genericise: NN strobes: DONE 
 
@@ -470,7 +493,7 @@ TODO:
 DONEin matrixp we need to change from probcycles everywhere to...*
 
 DONE/testing- do we have route X vs route Y as prob/burst eg. single route 2 in vs double eg. 6 in
-as prob funcn of  binroute vs altroute[count] // sans binary Zbinrouteforalt - *need to finish altroutes...*
+as prob funcn of  binroute vs altroute[count] // sans binary Zbinrouteforalt - DONEneed to finish altroutes...*
 
 pull altroute into arrays
 
@@ -603,7 +626,7 @@ grids/SR attachings
 
 ** 13/2/2023
 
-- DONE-to test all //globalls without depth (list) will need gapped inner fuction with prob...TODO* fixed inners - to *re/test*
+- DONE-to test all //globalls without depth (list) will need gapped inner fuction with prob...TODO* fixed inners - to re/test*
 
 TODO:
 
@@ -908,7 +931,7 @@ DONEclkfrom other/incoming dataTESTED: *zbinrouteSRbits is rungler depth->route-
 DONE: would be nice to gap funcbit but then we don;t know what is done with depth - now we have depth array in gate[w] trial this... // draft function*//tested
 if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7]): SR_geo_outer_gappedfunc
 
-// *for some functions we need IN as gate[dacfromopp[daccount][w]].dac*
+// xxfor some functions we need IN as gate[dacfromopp[daccount][w]].dac*
 
 - DONE:check new functions against depth
 
@@ -1062,7 +1085,7 @@ DONE:still to fix all default adc so we have output
 
 - NONcheck: do we still use in flag:   if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac;   else gate[w].matrix[5]=LFSR__[w];*
 
-- *Q: to invert entry into arrays eg. dac,adctype, all functions as 0 is far right so confusing//in outer or inners TODO // some are inverted*
+- Q: to invert entry into arrays eg. dac,adctype, all functions as 0 is far right so confusing//in outer or inners TODO // some are inverted*
 
 - DONE:drafting 16 geoC modes/ drafted and testing?
 
@@ -1076,7 +1099,7 @@ new prob below...26/1
 
 - do we have prob of route x vs route y* // depth for prob
   so... leaves what? for strobe modes only with prob on cv and cvl as
-  x vs. theroute *TODO* how that works? do as special inner and depth
+  x vs. theroute TODO* how that works? do as special inner and depth
 
 - other bit collections like: routebitsnostrobedepthprob ???check out - what used for and update -> we use these against LFSR anyways...//ignore or work through*
 
@@ -1139,7 +1162,7 @@ TODO:
 
 - new function arrays in newbits, draft first 16 modes for each side and test these...
 
-DONE:maybe pull uses of depth into all non-depth so we don't need: if (nodepth==1)/// *note: we still need fix no depths in case of probs...*
+DONE:maybe pull uses of depth into all non-depth so we don't need: if (nodepth==1)/// note: we still need fix no depths in case of probs...*
 
 FOR GLOBAL rmodes:::
 - 16 last global modes*
@@ -1269,7 +1292,7 @@ newbits.h redo all bitsn for new types: and fill in exp_port as route/abstract/s
 
 // start by cleaning up bitsn functions and then work through geoC new modes and solve questions as we go along...
 
-*we need to sort following: global flag (gate[w].globflag)/routes, use of IN flag (gate[w].in), depth/no depth, global dacfrom?// also speedfrom dac, setting of route/type (16 and 17). which arrays to use for functions//how these match*
+XXwe need to sort following: global flag (gate[w].globflag)/routes, use of IN flag (gate[w].in), depth/no depth, global dacfrom?// also speedfrom dac, setting of route/type (16 and 17). which arrays to use for functions//how these match*
 
 if (gate[w].in) gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // example
 else gate[w].matrix[5]=LFSR__[w]; // we do need this

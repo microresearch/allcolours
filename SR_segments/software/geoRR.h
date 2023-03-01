@@ -194,7 +194,7 @@ void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint3
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[9]=0<<6; // invprobbits
+  gate[w].matrix[9]=0<<6; // probbits
   gate[w].matrix[10]=CVL[w]; // depth for prob
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_probadcentry;// fixed as probbits and fixed entry
@@ -212,8 +212,6 @@ void SR_geo_outer_R120(uint32_t w){ //binaryN
     gate[w].matrix[1]=CV[w];// speed 
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
-    // set global fixed or select... eg.
-    //    binaryN(CVL[w]);
     glob=0<<8;
     gate[w].matrix[19]=CVL[w];
     gate[w].inner=SR_geo_inner_function_glob; // uses depth
@@ -301,13 +299,6 @@ void SR_geo_outer_R133(uint32_t w){ // SRRglobalbumpcvnspd
   }
 }
 
-
-/*
-void (*globalls_depth[16])(uint32_t depth)={0binaryN, 1binaryX, 2SRRglobalbumpcv, 3SRRglobalbumpcvn, 4SRRglobalbumpcvnroute, 5SRRglobalbumpcvndac, 6SRRglobalbumpcvnspd, 7SRRglobalorder, 8SRRglobaltailset, 9binaryN, 10binaryX, 
-
-void (*globalls_nodepth[16])(uint32_t depth)={resett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalsync, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, esett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd}; // >>8
-
- */
 //140
 
 /*
@@ -333,8 +324,6 @@ void SR_geo_outer_R140(uint32_t w){ // globalorderbumpS,
     gate[w].inner=SR_geo_inner_gappedfunction_globoutside;
   }
 }
-
-//resett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalsync, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit
 
 void SR_geo_outer_R141(uint32_t w){ // bumpS
   if (gate[w].changed==0) {

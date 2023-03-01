@@ -21,7 +21,7 @@ and wormy symphonies. moon phases and nodal paths. It is to have done
 with the judgement of gods.
 
 CD can be considerd as 64^4 different instruments depending on modal
-configuration informed by lunar phases and astrogeomantic time signatures.
+configuration informed by lunar phases and astrogeomantic time signatures. 
 
 towards a synthesis without modules...
 
@@ -51,6 +51,8 @@ By degrees the idea of cultivation subsided into that of merely
 pastoral care. This slowly became merged in a sense of retirement —
 this again in a consciousness of solitude.
 
+[E. A. Poe. The Domain of Arnheim.]
+
 module for one bit landscape gardening...
 
 
@@ -60,7 +62,24 @@ cover as card image in colour - cover/back + 6 sides with poster - cover and bac
 
 in no specific order A5:
 
-1 - blurb and credits
+1 - blurb and credits: Poe quote, description
+
+Credits/info: 
+
+For Rob Hordijk and all shifting registers.
+
+Technical and HOWTO
+20HP, 150mA at +12V, 30mA at -12V, 0mA at 5v. Multiple CV inputs and audio outputs. Power is red stripe/-12V DOWN.
+
+Design files at: https://github.com/microresearch/allcolours
+
+Cheatsheet with manual cards: https://1010.co.uk/AlltheColours_extendedmanual.pdf
+
+With thanks to Ioana Vreme Moser for manual layout and design.
+
+All the Colours... is released under the GPL GNU General Public License.
+
+
 2 - panel layout
 3 - 4 sets of major modes listed
 4 - hints and tips /working with AC
@@ -101,7 +120,11 @@ different pulse outputs directly from their own SR bits.
 
 The top SR has an audio input, the bottom SR has an audio
 output. Different input and output encodings can be chosen using the
-first mode [0] in the case of top and bottom SRs.
+first mode [0] in the case of top and bottom SRs. In some cases on
+mode 0 for the top, audio entry SR, internal signals are generated
+(noise, oscillation). In the case where no audio signal is plugged in
+physically, the output signal from the 2nd output SR is normed to the
+input for feedback. Note that feedback can wail or die!
 
 serpent as blackbox:
 
@@ -120,16 +143,16 @@ to cycle, or the fix the probability of an incoming bit), and
 interlock is how it deals with incoming SRs which are faster or slower
 than itself. These can be imagined as churning, interlocking wheels.
 
-Modes in general are grouped as to functions on route, function and so
-on. The first 16 modes on each side are basic in control, with the
-first [0. far left] mode always as a default reset and a simple route
-in, with configuration of incoming/outgoing signal codec (top, bottom)
-or of length (left, right) on the Y knob/CV. The next 16 modes are
-more tricky, then we have the 16 strobe modes and finally, except on
-the right side, there are 16 recursive modes which fold back
-parameters onto each other under CV control. These can be reset in the
-last (far right) mode setting. Modes are mostly aligned across all
-SRs.
+Modes in general are grouped as to functions dealing with route,
+function and so on. The first 16 modes on each side are basic in
+control, with the first [0. far left] mode always as a default reset
+and a simple route in, with configuration of incoming/outgoing signal
+codec (top, bottom) or of length (left, right) on the Y knob/CV. The
+next 16 modes are more tricky, then we have the 16 strobe modes and
+finally, except on the right side, there are 16 recursive modes which
+fold back parameters onto each other under CV control. These can be
+reset in the last (far right) mode setting. Modes are mostly aligned
+across all SRs.
 
 On the last 16 modes of the right side, there are the global modes
 which affect global order of execution (which SR runs after which, not
@@ -140,7 +163,11 @@ left to bottom to right (and back to top if allowed). But each SR can
 control its own route in some modes, and can choose when and if it
 allows bits in. // 0 mode on RR also resets all
 
+Input and output settings
+
 what else to add? tails, 
+
+Glossary:
 
 [Glossary: SeRpent - shift register]
 

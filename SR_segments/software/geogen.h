@@ -4449,6 +4449,7 @@ static inline uint32_t zadcenergybits(uint32_t depth, uint32_t in, uint32_t w){ 
   int32_t tmp;
   static uint32_t k;
     depth=depth>>7; // 5 bits
+    depth=31-depth;
     if (bc>depth) {
       ADCgeneric;
       tmp=k-2048;
@@ -4471,6 +4472,7 @@ static inline uint32_t zadcenergybitsdac(uint32_t depth, uint32_t in, uint32_t w
   int32_t tmp;
   static uint32_t k;
     depth=depth>>7; // 5 bits
+    depth=31-depth;
     if (bc>depth) {
       MIXin;
       tmp=k-2048;
@@ -5959,15 +5961,6 @@ static inline void binaryX(uint32_t depth){
 
 static inline void resett(uint32_t depth){ // resett // no depth
     RESETG;
-}
-
-/// add in master set of glob index into these with a fixed route
-//// but then we still need depth - one sets glob, one does glob work and any other 
-static inline uint32_t selectglob(uint32_t depth, uint32_t in, uint32_t w){ // resett
-  uint32_t bt;
-  bt=binroutfixed(0,0,w);
-  glob=depth>>8; // 4 bits=16
-  return bt;
 }
 
 static inline void SRRglobalbumpS(uint32_t depth){ // strobe only
