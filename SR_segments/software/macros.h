@@ -1,17 +1,5 @@
 // for new struct sets of modes:
 
-/*
-static uint32_t dactypecnt=0;
-static uint32_t spdfunccnt=0;
-static uint32_t lengthfunccnt=0;
-static uint32_t adcfunccnt=0;
-static uint32_t bitfunccnt=0;
-static uint32_t extfunccnt=0;
-static uint32_t outfunccnt=0;
-static uint32_t gscnt=0;
-static uint32_t outcnt=0;
-*/
-
 // unused but what we do with cv... is for matrixp ops ROUTE is now dep
 #define ROUTETYPE (gate[w].matrix[16]>>9)
 
@@ -72,20 +60,6 @@ static uint32_t outcnt=0;
 
 ////////
 
-#define CLKSR {					\
-  if (intflag[w]) {				\
-  gate[w].trigger=1;				\
-  intflag[w]=0;					\
-  clksrG_[w]=clksr_[w];				\
-  clksr_[w]=(clksr_[w]<<1)+1;						\
-  }									\
-  else  {								\
-  gate[w].trigger=0;							\
-  clksr_[w]=(clksr_[w]<<1);						\
-  }									\
-  clksr_[w]&=4095;							\
-}
-
 #define ADCone {					\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
   ADC_SoftwareStartConv(ADC1);						\
@@ -93,7 +67,6 @@ static uint32_t outcnt=0;
   k[reg]=ADC_GetConversionValue(ADC1)>>(11-length);			\
   }
 
-// TEST INVERSION  - was invrted but now not
 #define ADCtwo {				\
     ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
   ADC_SoftwareStartConv(ADC1);						\
@@ -130,73 +103,12 @@ static uint32_t outcnt=0;
   k=ADC_GetConversionValue(ADC1)>>(11-depth);				\
   }
 
-#define CVOPEN {				\
-    alpha = gate[w].time_now - (float)gate[w].int_time;			\
-    gate[w].dac = ((float)delay_buffer[w][1] * alpha) + ((float)delay_buffer[w][0] * (1.0f - alpha)); \
-    if (gate[w].dac>4095) gate[w].dac=4095;				\
-    gate[w].time_now += speedf_[w];					\
-    gate[w].last_time = gate[w].int_time;				\
-    gate[w].int_time = gate[w].time_now;				\
-  }
-
-#define CVOPENNOINTERPOL {				\
-    gate[w].dac = delay_buffer[w][1];					\
-    gate[w].time_now += speedf_[w];					\
-    gate[w].last_time = gate[w].int_time;				\
-    gate[w].int_time = gate[w].time_now;				\
-  }
-// 1 is always the new data
-
-// this one is used for DACspeed modes and others
-#define CVOPENDAC {				\
-    alpha = gate[w].time_now - (float)gate[w].int_time;			\
-    gate[w].dac = ((float)delay_buffer[w][1] * alpha) + ((float)delay_buffer[w][0] * (1.0f - alpha)); \
-    if (gate[w].dac>4095) gate[w].dac=4095;				\
-    gate[w].time_now += speedf__;					\
-    gate[w].last_time = gate[w].int_time;				\
-    gate[w].int_time = gate[w].time_now;				\
-  }
-
-#define CVOPENDACNOINTERPOL {				\
-    gate[w].dac = delay_buffer[w][1];					\
-    gate[w].time_now += speedf__;					\
-    gate[w].last_time = gate[w].int_time;				\
-    gate[w].int_time = gate[w].time_now;				\
-  }
-
-
 // we cannot place this inside other macros! fixed 12/1/2021
 // HEADN for modesN
-
-//#define HEADN float alpha; uint32_t bitn=0, bitrr, tmp, val, x, xx, lengthbit=15, new_stat; gate[3].dactype=66; \
-
-#define HEAD float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; speedf_[w]=speedf[w]; \
-
-#define HEADC float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=lookuplenall[CVL[w]>>7]; speedf_[w]=logspeed[CV[w]>>2];
-
-// these ones are for NO SRlength - stays as is and we can use CVL 12 bits
-
-#define HEADSIN float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; speedf_[w]=speedf[w]; \
-
-// these ones are for no speed changes
-
-#define HEADSSIN float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; SRlength[w]=SRlength_[w]; \
-
-// and for NADA both the same
-#define HEADSSINNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
 #define HEADNADA float alpha; int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx, lengthbit=15, new_stat; \
 
 #define HEADNADAT int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx; \
-
-
-//
-
-#define ENDER {					\
-  new_data(val,w);							\
-  gate[w].time_now-=1.0f;						\
-  gate[w].int_time=0;							\
-  }
 
 // redefining for struct - adding in count for lastspeed
 #define GSHIFT_ {				\
@@ -205,11 +117,10 @@ static uint32_t outcnt=0;
     gate[w].Gshift_[1]=gate[w].shift_;			\
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
-    gate[w].Gshift_[8]=gate[w].shift_;			\
+    gate[w].Gshift_[4]=gate[w].shift_;			\
     gate[w].Gshare_=gate[w].shift_;			\
     Gshift__[w]=gate[w].shift_&4095;			\
     gate[w].shift_=gate[w].shift_<<1;			\
-    gate[w].countspeed++;				\
 }
 
 #define GSHIFTRED_ {				\
@@ -222,17 +133,15 @@ static uint32_t outcnt=0;
     gate[w].shift_=gate[w].shift_<<1;			\
 }
 
-
 #define GSHIFTNOS_ {				\
     gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
     gate[w].Gshift_[0]=gate[w].shift_;			\
     gate[w].Gshift_[1]=gate[w].shift_;			\
     gate[w].Gshift_[2]=gate[w].shift_;			\
     gate[w].Gshift_[3]=gate[w].shift_;			\
-    gate[w].Gshift_[8]=gate[w].shift_;			\
+    gate[w].Gshift_[4]=gate[w].shift_;			\
     gate[w].Gshare_=gate[w].shift_;			\
     Gshift_[w]=gate[w].shift_&4095;			\
-    gate[w].countspeed++;				\
 }
 
 #define JUSTCYCLE_ {					\
@@ -246,11 +155,11 @@ static uint32_t outcnt=0;
   if (tmp&0x01){				\
   if (gate[x].reset[w]){			\
   gate[x].reset[w]=0;				\
-  gate[w].gsrcnt[x]=SRlength[x];		\
+  gate[x].gsrcnt[w]=SRlength[x];		\
   }								\
-    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
-    gate[w].gsrcnt[x]--;					\
-    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitrr = (gate[x].Gshift_[w]>>gate[x].gsrcnt[w]) & 0x01;	\
+    gate[x].gsrcnt[w]--;					\
+    if (gate[x].gsrcnt[w]<0) gate[x].gsrcnt[w]=SRlength[x];	\
     bitn^=bitrr;						\
   }								\
   tmp=tmp>>1;							\
@@ -262,11 +171,11 @@ static uint32_t outcnt=0;
   if (tmp&0x01){				\
   if (gate[x].reset[w]){			\
   gate[x].reset[w]=0;				\
-  gate[w].gsrcnt[x]=SRlength[x];		\
+  gate[x].gsrcnt[w]=SRlength[x];		\
   }								\
-    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
-    gate[w].gsrcnt[x]--;					\
-    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitrr = (gate[x].Gshift_[w]>>gate[x].gsrcnt[w]) & 0x01;	\
+    gate[x].gsrcnt[w]--;					\
+    if (gate[x].gsrcnt[w]<0) gate[x].gsrcnt[w]=SRlength[x];	\
     bitn^=bitrr;						\
   }								\
   tmp=tmp>>1;							\
@@ -276,11 +185,11 @@ static uint32_t outcnt=0;
 #define BINROUTEaltstrips_ {				\
   if (gate[x].reset[w]){			\
   gate[x].reset[w]=0;				\
-  gate[w].gsrcnt[x]=SRlength[x];		\
+  gate[x].gsrcnt[w]=SRlength[x];		\
   }								\
-    bitn = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
-    gate[w].gsrcnt[x]--;					\
-    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitn = (gate[x].Gshift_[w]>>gate[x].gsrcnt[w]) & 0x01;	\
+    gate[x].gsrcnt[w]--;					\
+    if (gate[x].gsrcnt[w]<0) gate[x].gsrcnt[w]=SRlength[x];	\
   }
 
 
@@ -289,9 +198,9 @@ static uint32_t outcnt=0;
     tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
-    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
-    gate[w].gsrcnt[x]--;					\
-    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitrr = (gate[x].Gshift_[w]>>gate[x].gsrcnt[w]) & 0x01;	\
+    gate[x].gsrcnt[w]--;					\
+    if (gate[x].gsrcnt[w]<0) gate[x].gsrcnt[w]=SRlength[x];	\
     bitn^=bitrr;						\
   }								\
   tmp=tmp>>1;							\
@@ -302,9 +211,9 @@ static uint32_t outcnt=0;
 #define BINROUTEnoaltstrip_ {				\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
-    bitrr = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
-    gate[w].gsrcnt[x]--;					\
-    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitrr = (gate[x].Gshift_[w]>>gate[x].gsrcnt[w]) & 0x01;	\
+    gate[x].gsrcnt[w]--;					\
+    if (gate[x].gsrcnt[w]<0) gate[x].gsrcnt[w]=SRlength[x];	\
     bitn^=bitrr;						\
   }								\
   tmp=tmp>>1;							\
@@ -312,9 +221,9 @@ static uint32_t outcnt=0;
   }
 
 #define BINROUTEnoaltstrips_ {				\
-    bitn = (gate[x].Gshift_[w]>>gate[w].gsrcnt[x]) & 0x01;	\
-    gate[w].gsrcnt[x]--;					\
-    if (gate[w].gsrcnt[x]<0) gate[w].gsrcnt[x]=SRlength[x];	\
+    bitn = (gate[x].Gshift_[w]>>gate[x].gsrcnt[w]) & 0x01;	\
+    gate[x].gsrcnt[w]--;					\
+    if (gate[x].gsrcnt[w]<0) gate[x].gsrcnt[w]=SRlength[x];	\
   }
 
 #define BINROUTEZERO_ {			\
@@ -531,41 +440,6 @@ static uint32_t outcnt=0;
   }							\
   }
 
-
-// only advance incomings
-#define BINROUTEADV_ {				\
-  tmp=binroute[count][w];				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-}
-
-#define BINROUTEANDCYCLENOG_ {				\
-    tmp=(binroute[count][w])|(1<<w);			\
-  for (x=0;x<4;x++){					\
-    if (tmp&0x01 || (x==w)){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  bitn^=bitrr;					\
-  }							\
-    tmp=tmp>>1;						\
-  }							\
-  }
-
-#define BINROUTEORNOG_ {				\
-  tmp=binroute[count][w];				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  bitn|=bitrr;							\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  }
-
 #define PULSOUT {							\
     if (w!=0){								\
     tmp=(w<<1);								\
@@ -582,33 +456,53 @@ static uint32_t outcnt=0;
 }
 
 //DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
-// this one is for fractional speeds/interpol
 // added pulsout macro to simplify 30/5/2022
 // 19/12/2022 - question is how to work it if DAC sets strobed... (dacstrobe[gate[w].matrix[13]>>7])
+// fixed clkin strobe 2/3/2023
 #define BITN_AND_OUTV_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
-    if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrix[13]>>7])) bitn|=gate[w].trigger; \
+    if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrix[13]>>7])) bitn^=(!(*clkins[w] & clkinpins[w])); \
     gate[w].shift_+=bitn;						\
     gate[w].lastest=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].trigger); \
     if (val>4095) val=4095;						\
     PULSOUT;								\
 }
-// added pulsin_xor
 
+// strobed version so we don't need check
+#define BITN_AND_OUTVS_ {						\
+    PULSIN_XOR;								\
+    gate[w].flip^=1;							\
+    gate[w].shift_+=bitn;						\
+    gate[w].lastest=bitn;						\
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].trigger); \
+    if (val>4095) val=4095;						\
+    PULSOUT;								\
+}
+
+// for MatrixX
 #define BITN_AND_OUTVX_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
-    if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrixX[13]>>7])) bitn|=gate[w].trigger; \
+    if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrixX[13]>>7])) bitn^=(!(*clkins[w] & clkinpins[w])); \
     gate[w].shift_+=bitn;						\
     gate[w].lastest=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrixX[13]>>7, gate[w].matrixX[14], gate[w].trigger); \
     if (val>4095) val=4095;						\
     PULSOUT;								\
 }
-// added pulsin_xor
 
+// strobe version so we don't check
+#define BITN_AND_OUTVXS_ {						\
+    PULSIN_XOR;								\
+    gate[w].flip^=1;							\
+    gate[w].shift_+=bitn;						\
+    gate[w].lastest=bitn;						\
+    val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrixX[13]>>7, gate[w].matrixX[14], gate[w].trigger); \
+    if (val>4095) val=4095;						\
+    PULSOUT;								\
+}
 
 #define PULSIN_XOR {				\
   if (pulse[w]){				\

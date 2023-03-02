@@ -213,6 +213,8 @@ modes...
 
 tips such as use of pulse ins if sections start to run out, also to mix in signals...
 
+work from bottom up - useful configuration on bottom, leave it and start work from top
+
 Computers for the Arts - Higgins, Dick as model with printed printouts/permutations, permutate our own instructions
 
 the user shoots

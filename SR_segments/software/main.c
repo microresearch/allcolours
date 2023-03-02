@@ -27,12 +27,6 @@ PROG HEADER: yellow, green, blue, purple//down
 
 */
 
-/* DMA buffer for ADC  & copy */
-
-//extern heavens gate[4];
-
-
-
 #define delay()						 do {	\
     register unsigned int ix;					\
     for (ix = 0; ix < 10000; ++ix)				\
@@ -44,8 +38,6 @@ PROG HEADER: yellow, green, blue, purple//down
     for (ix = 0; ix < 10000000; ++ix)				\
       __asm__ __volatile__ ("nop\n\t":::"memory");		\
   } while (0)
-
-//extern void (*testN)(), (*testL)(), (*testR)(), (*testC)(), (*Nnoroute0)(), (*N0)(), (*N1)();
 
 extern void mode_init();  
 
@@ -88,7 +80,7 @@ void io_config2 (void) {
 
 //Initialize clock config
 
-//Siehe: https://github.com/jkerdels/stm32edu/blob/master/src/rcc.c
+//Siehe: https://github.com/jkerdels/stm32edu/blob/master/src/rcc.c but here is from?
 
 #define false 0
 
@@ -204,10 +196,7 @@ int main(void)
     
     // 13 channels now
 	ADC1_Init();
-	//	ADC1_Init((uint16_t *)adc_buffer);
-
-
-  mode_init();
+	mode_init();
 	
     GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -283,9 +272,6 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
- 
-  
-
   
   // inpulse interrupts to attach are: CSR: PC3-moved to PB7, NSR: PC4, RSR: PC5, LSR: PB6
 
@@ -307,7 +293,6 @@ int main(void)
 
   // PC7/8 pulsein (LSR/RSR), PC9-MCB, to PC14-LSB of 6 bits
   
-
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
@@ -509,12 +494,6 @@ int main(void)
       */
     }
 }
-
-
-
-
-
-
 
 #ifdef  USE_FULL_ASSERT
 #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))

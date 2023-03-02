@@ -43,9 +43,9 @@ static inline uint32_t binroutebits(uint32_t depth, uint8_t w){   // depth as ro
     // deal with no route
   depth=binroute[count][w]|binary[w];
   if (depth==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
-    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
-    bitn^=bitrr;
+    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01; 
+    gate[4].Gshare_=(gate[4].Gshare_<<1)+bitrr;
+    bitn=bitrr;
   } else
     {
       tmpp=gate[w].routetype;
@@ -61,9 +61,9 @@ static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as 
     // deal with no route
   //.  depth=binroute[count][w]|binary[w];
   if (depth==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
-    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
-    bitn^=bitrr;
+    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01; 
+    gate[4].Gshare_=(gate[4].Gshare_<<1)+bitrr;
+    bitn=bitrr;
   } else
     {
       tmpp=gate[w].routetype;
@@ -98,8 +98,8 @@ static inline uint32_t pSR_routeSRbits01(uint32_t depth, uint32_t in, uint32_t w
   bitrr=0;
 
   if (tmp==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
-    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01; 
+    gate[4].Gshare_=(gate[4].Gshare_<<1)+bitrr;
     bitn=bitrr;
   } else
     {
@@ -124,8 +124,8 @@ static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w
     tmp=binroute[count][w]|binary[w]; 
   bitrr=0;
     if (tmp==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01; 
-    gate[8].Gshare_=(gate[8].Gshare_<<1)+bitrr;
+    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01; 
+    gate[4].Gshare_=(gate[4].Gshare_<<1)+bitrr;
     bitn=bitrr;
   } else
     {
@@ -161,9 +161,9 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
   //    tmp=binroute[count][w]|binary[w]; 
   
   if (tmp==0 || ((depth>>7)&1)) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
-    gate[w].shift_ ^=gate[8].Gshare_;
-    bitn^=bitrr;
+    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01;
+    gate[w].shift_ ^=gate[4].Gshare_;
+    bitn=bitrr;
     }
 
     for (x=0;x<4;x++){
@@ -187,9 +187,9 @@ static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // d
   //    tmp=binroute[count][w]|binary[w]; 
   //  tmp=gate[dacfrom[count][w]].shift_&15;
     if (tmp==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[8].Gshare_>>SRlength[8]) & 0x01;
-    gate[w].shift_ ^=gate[8].Gshare_;
-    bitn^=bitrr;
+    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01;
+    gate[w].shift_ ^=gate[4].Gshare_;
+    bitn=bitrr;
   }
     else {
     for (x=0;x<4;x++){
@@ -703,7 +703,7 @@ static inline uint32_t pbitLSRroutexxxlog(uint32_t depth, uint32_t in, uint32_t 
 static inline uint32_t pstream(uint32_t depth, uint32_t in, uint32_t w){ // all do ADC//depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
   //  bitn^=adcpadbits(11);
-  bitn^=adcpadbits(depth>>7); // 5 bits
+  bitn=adcpadbits(depth>>7); // 5 bits
   //  BINROUTE_;
   tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;

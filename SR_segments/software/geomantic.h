@@ -5,11 +5,11 @@ uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spd
 
 uint32_t (*speedfromnostrobe_noIN[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, zprobbitsS_, zTMsimplebitsLS_, osceqS_, zosc1bitsS_, zosc1bitsIS_, zENbitsS_, zENbitsIS_, zENsbitsS_, zENsbitsIS_, sigmadeltaS_, zbinrouteSRbitsS_, zwiardnotinvbitsLS_, zsuccbitsppS_, zsuccbitsprobS_, zsuccbits_noshiftS_, zsuccbitsI_noshiftS_, zsuccbits_noshiftdS_, zsuccbitsIppS_, zsuccbitsI_noshiftdS_, zSRNbitsS_, zsprobbits, zcountbitsS_, zcountbitsIS_, zSRBURSTflipS_, ztemplateBURSTflipS_, /*29*/spdfrac, spdfrac, spdfracend}; 
 
-uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,1,0,1}; // TODO match with speedfromnostrobe
+uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,1,0,1}; // matched with speedfromnostrobe
 
 //uint32_t speednoin[36]={0,0,0,0, 1,1,1,1, 1,1,1,0, 0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0}; // in the above which ones use IN -> dacfrom
 
-uint32_t (*speedfromforxor[5])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift}; 
+//uint32_t (*speedfromforxor[5])(uint32_t depth, uint32_t in, uint32_t wh)={zbinroutfixed_noshift, zbinroutfixed_noshift_transit, zbinroutfixedcycle_noshift, zbinroutfixedI_noshift, zbinroutfixedcycleI_noshift}; 
 
 uint32_t (*speedfromcvforxor[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac1, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend, zprobbitsS_, zTMsimplebitsLS_, osceqS_, zosc1bitsS_, zosc1bitsIS_, zENbitsS_, zENbitsIS_,  zENsbitsS_, zENsbitsIS_, zcompbitsS_, zosc1bitsS_, sigmadeltaS_, cipherforspeed, spdviennaS_, zwiardinvbitsS_, zjusttailwithdepthS_, zsuccbitsI_noshiftS_, zsuccbits_noshiftS_, /**/zSRBURSTflipS_, ztemplateBURSTflipS_, spdfrac1, spdfrac3, spdfrac4, spdfracdac3, spdfrac, spdfracend};// no strobes, no routes and only CV ones... doubled up --- but cipher has strobe?
 
@@ -23,7 +23,7 @@ uint32_t (*speedfromstrobe_all[32])(uint32_t depth, uint32_t in, uint32_t wh)={s
 
 // 2. adc
 
-uint32_t (*inall[64])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadcx, zadconebitsx, zadcpadbits, zadc8bits, zadc4bits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadconecompbits, zadcxdouble, zadc4bitsadd, zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd, zadcLBURST0, /*24*/zadcxdac, zadcxdac, zadconebitsxdac, zadcpadbitsdac, zadc8bitsdac, zadc4bitsdac, zadcenergybitsdac, zadc12compbitsdac, zadc8compbitsdac, zadc4compbitsdac, zadccompbitsdac, zadconecompbitsdac, zadcxdoubledac, zadc4bitsadddac, zadc4bitsaddmoddac, zadc4bitsxordac, zadc4bitsordac, zadc4bitsanddac, zadc4bitsmodmdac, zadc4compbitsadddac, zadc4compbitsxordac, zadc4compbitsmodmdac, zadc4onecompbitsadddac, zadcLBURST0dac, /*24*/zosc1bitsfast, sigmadelta, osceqf, osceqxf, zcountbits, zcountbitsI, zprobbits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsIf, zosceqbitsIxf, zosc1bitsIf, zlfsrbitsI, zflipbitsI, zprobbitsxorstrobe/*16*/}; 
+uint32_t (*inall[64])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadcx, zadconebitsx, zadcpadbits, zadc8bits, zadc4bits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadconecompbits, zadcxdouble, zadc4bitsadd, zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd, zadcx, /*24*/zadcxdac, zadcxdac, zadconebitsxdac, zadcpadbitsdac, zadc8bitsdac, zadc4bitsdac, zadcenergybitsdac, zadc12compbitsdac, zadc8compbitsdac, zadc4compbitsdac, zadccompbitsdac, zadconecompbitsdac, zadcxdoubledac, zadc4bitsadddac, zadc4bitsaddmoddac, zadc4bitsxordac, zadc4bitsordac, zadc4bitsanddac, zadc4bitsmodmdac, zadc4compbitsadddac, zadc4compbitsxordac, zadc4compbitsmodmdac, zadc4onecompbitsadddac, zadcx, /*24*/zosc1bitsfast, sigmadelta, osceqf, osceqxf, zcountbits, zcountbitsI, zprobbits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsIf, zosceqbitsIxf, zosc1bitsIf, zlfsrbitsI, zflipbitsI, zprobbitsxorstrobe/*16*/}; 
 
 uint32_t inall_depth[64]={1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /*24dac*/2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, /*16abstract*/1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; 
 

@@ -3,8 +3,8 @@ typedef struct heavens_ {
   uint32_t trigger;
   uint32_t flip;
   uint32_t strobed; // set this when we need fake strobe...  
-  uint32_t Gshift_[9];
-  uint32_t localGSR[9];
+  uint32_t Gshift_[5];
+  uint32_t localGSR[5];
   uint32_t Gshare_;
   uint32_t shift_;
   uint32_t gshift_;
@@ -24,13 +24,11 @@ typedef struct heavens_ {
   long last_timexx;
   long int_timexx;
   uint32_t changed;
-  uint32_t reset[9];
-  int32_t gsrcnt[9];
+  uint32_t reset[5];
+  int32_t gsrcnt[5];
   uint32_t route;
   uint32_t altroute;
   uint32_t routetype;
-  uint32_t lastspeed;
-  uint32_t countspeed;
   uint32_t matrix[23];
   uint32_t matrixX[23];
   uint32_t *matrixp[23]; // +1 for reset

@@ -448,7 +448,7 @@ void SR_geo_innerxorNN(uint32_t w){  // xor with fixed route
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
   //
-  if ( (*speedfromcvforxor[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w) ^ speedfromforxor[0](0,0,w) ){ // speedfunc xor with fromforxor->binroutfixed...
+  if ( (*speedfromcvforxor[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w) ^ zbinroutfixed_noshift(0,0,w) ){ // speedfunc xor with fromforxor->binroutfixed...
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 

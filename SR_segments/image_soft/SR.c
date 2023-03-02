@@ -25,18 +25,34 @@ void printbits(unsigned char bitz){
 }
 
 
+#define MAX (1024*1326*8)
+#define MAXP (1024*1326)
+
+
+unsigned char shifter(unsigned char *buffer){
+  int x, tmp, last;
+    for (x=0;x<MAX;x++){
+      tmp=buffer[x];
+      buffer[x]=last;
+      last=tmp;
+      //      printf("%d", last);
+    }
+    buffer[0]=last; //cycling
+    return last;
+  }
+
 int main(void)
 {
 
 // read in file test1.bmp and convert to binary array of size x
-  char *buffer;
-
-#define MAX (1024*1326*8*3)
-#define MAXP (1024*1326*3)
+  char *buffer, *buffer2, *buffer3;
 
   unsigned char bufferp[MAXP];
-  
+
   buffer=( char*)malloc(sizeof(  char)*MAX);
+  buffer2=( char*)malloc(sizeof(  char)*MAX);
+  buffer3=( char*)malloc(sizeof(  char)*MAX);
+  
   FILE *sfile;
   int cnt=0, cntt=0;
   unsigned char ch;
@@ -44,7 +60,7 @@ int main(void)
   unsigned char bitt,cc;
 
 
-  sfile=fopen("test2col.bmp", "r");
+  sfile=fopen("test2.bmp", "r");
 
   //  read(sfile,buffer,1);
   
@@ -69,25 +85,33 @@ int main(void)
 
   // we need other processes here... small cycles of bits of x length
   // how we can do 4 srs.. diff speeds...x
-  
+  /*  
   for (y=0;y<4;y++){  
-// shift left and feed back x times
-//    last=0; 
-    for (x=0;x<MAX;x++){
-      tmp=buffer[x];
-      buffer[x]=last;
-      last=tmp;
-      //      printf("%d", last);
-    }
-    buffer[0]=last;
+    shifter(buffer);
   }
+  */
 
+  /*
+ - we want to shift buffer then enter shifted bit into buffer2, simulate with speeds what we have of entry one into another
+   */
+  unsigned char bitn;
+  int speed1=0;
+  for (x=0;x<MAX;x++){
+    if (y>speed1){
+    bitn=shifter(buffer);
+    speed1=0;
+    }
+    speed1++;
+  buffer2[0]=buffer2[0]^bitn;
+  bitn=shifter(buffer2);
+  }
+  
   cnt=0; cntt=0;
 // convert back to file and save as test2
     for (x=0;x<MAXP;x++){
       tmp=0;
       for (y=0;y<8;y++){ // lowest bit first ???
-	if (buffer[cntt++]&1) tmp+=(1<<y);
+	if (buffer2[cntt++]&1) tmp+=(1<<y);
       }
       bufferp[x]=tmp;      
       //printf("%d ", tmp);

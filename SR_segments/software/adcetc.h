@@ -1,4 +1,3 @@
-/// from here
 static inline uint32_t countbits(uint32_t i)
 {
   /*
@@ -8,203 +7,6 @@ static inline uint32_t countbits(uint32_t i)
   return (i * 0x01010101) >> 24;          // horizontal sum of bytes
   */
      return( countbts[i&0xFFFF] + countbts[i>>16] );
-}
-  
-
-
-
-static inline uint8_t probableCV(uint32_t reg, uint32_t type){
-  // LFSR<SR // LFSR<otherSR // SR<otherSR // LFSR<PARAM // or CV but we are not in INTmode
-  // prob of cycling bit let's say or ADC bit in or...
-  switch(type){  case 0:
-    if ((LFSR_[reg] & 4095 )< (gate[reg].shift_& 4095))      return 1;
-    break;
-  case 1:
-    if ((LFSR_[reg] & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
-    break;
-  case 2:
-    if ((gate[reg].shift_ & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
-    break;
-  case 3:
-    //    if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
-    break;
-  }    
-  return 0;
-}
-
-static inline uint8_t otherprobableCV(uint32_t reg, uint32_t type){ // this one is 2 bits
-  // LFSR<SR // LFSR<otherSR // SR<otherSR // LFSR<PARAM // or CV but we are not in INTmode
-  // prob of cycling bit let's say or ADC bit in or...
-  switch(type){
-  case 0:
-    if ((LFSR_[reg] & 4095 )< (gate[reg].shift_& 4095))      return 1;
-    break;
-  case 1:
-    if ((LFSR_[reg] & 4095 )< (gate[dacfrom[daccount][reg]].shift_ & 4095))      return 1;
-    break;
-  case 2:
-    //    if ((LFSR_[reg] & 4095 ) < (param[reg] & 4095))      return 1;
-    break;
-  }    
-  return 0;
-}
-
-// 19/1/22 return of more generic ADC_ in = so income is passed in function and can be DAC+ADC etc so we have different handlings
-// 7 modes
-static inline int ADCg_(uint32_t reg, uint32_t length, uint32_t type, uint32_t *SR, uint32_t income){
-  static int32_t n[4]={0,0,0,0}, nn[4]={0,0,0,0}, nnn[4]={0,0,0,0}; // counters
-  static int32_t integrator=0, oldValue=0;
-  static uint32_t k;//, lastbt[4]={0}; // 21/9 - we didn't have k for one bits as static - FIXED/TEST!
-  //  static uint8_t lc=0;
-  uint32_t bt=0, bit=0;
-
-  switch(type){
-  case 0: // basic sequential length of upto 12 bits cycling in MSB first    
-      if (length>11) length=11;
-      if (n[reg]<0) {
-	k=(income)>>(11-length);
-	n[reg]=length;
-    }
-      bt = (k>>n[reg])&0x01; // this means that MSB comes out first
-    n[reg]--;    
-    break;
-
-  case 1: // equivalent bits: we don't need limit on number of bits
-    if (n[reg]>length) {
-      k=(income); //
-      k=k/divy[length];
-      n[reg]=0;
-    }
-    if (k!=0) {
-      bt=1;
-      k--;
-    }
-    else bt=0;
-    n[reg]++;    
-    break;
-
-  case 2: // variations on one bit audio - also phasey - sigma-delta - FIX 
-    k=(income); // from 0 to 4095 but where is the middle? - also we do nothing here with length
-    integrator+=(k-oldValue);
-   if(integrator>2048)
-  {
-     oldValue=4095;
-     bt=1;
-  }
-   else
-   {
-      oldValue=0;
-      bt=0;
-   }   
-   break;    
-
-  case 3: // basic sequential length as in 0 but with padding if >11 bits **
-    // as above but closer to 5
-    // also try as MSB - now...
-    if (n[reg]<0) { // 12 bits
-      if (length<12) {
-	k=(income)>>(11-length);
-	n[reg]=length;
-      }
-      else {
-	k=(income);
-	n[reg]=length; // changed 14/3/2022
-      }
-    }
-    bt = (k>>n[reg])&0x01;
-    n[reg]--;    
-    break;
-
-  case 4:  // special case for spaced bit entry depending on length
-    *SR &=spacmask[length]; //cleared
-    k=(income)>>8; // we want 4 bits
-    *SR+=(k&1)+((k&2)<<spacc[length][0])+((k&4)<<spacc[length][1])+((k&8)<<spacc[length][2]);
-    // 4 bits goes in
-    // no bt return
-    bt=0;
-    break;   
-    
-  case 5: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc... // ***
-    if (n[reg]<0) { // 12 bits = can also be 8 bits or less
-	k=(income);
-	n[reg]=11;
-    }
-    bt = (k>>n[reg])&0x01; // top bit first
-    n[reg]--;    
-    break;
-
-  case 6: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc... // ***
-    if (n[reg]<0) { // 8 bits
-	k=(income>>4);
-	n[reg]=7;
-    }
-    bt = (k>>n[reg])&0x01; // top bit first
-    n[reg]--;    
-    break;
-
-  case 7: // basic sequential length of upto 12 bits cycling in - can also be xbits from param, max bits etc... // ***
-    if (n[reg]<0) { // 4 bits
-	k=(income>>8);
-	n[reg]=3;
-    }
-    bt = (k>>n[reg])&0x01; // top bit first
-    n[reg]--;    
-    break;
-  }
-  return bt;
-}
-  
-///////////////////////////////////////////
-/*
-16 encoders without comparator
-
-- maximum 12 bits 1
-- padded any number of bits 2
-- fixed number of bits: 12,8,4 345
-- one bit encoding 6
-- equivalent bits 7
-
-- energy equivalent bits (abs value) 8
-- fixed 12 bits 2s complement: can also be 8,4 //9.10.11
-- variable depth 2s comp //12
-- fixed 12 bits 1s complement: can also be 8,4 //13/14/15
-- variable depth 1s comp 16
-*/
-
-
-// port so is always with wh even if we don't used it so is compatible with abstracts
-static inline uint32_t adcxbitsx(uint32_t depth, uint8_t wh){ // max 12 bits
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      if (depth>11) depth=11; // max depth
-      ADCgeneric11; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
-      bc=depth; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t noadc(uint32_t depth, uint8_t wh){
-  return 0;  
-}
-
-// what are variations on this? - for padding (x bits treated as y bits):
-// restrict to 12 bits (can also be x bits fixed), pad to x bits, always static number of bits
-static inline uint32_t adcxbits(uint32_t depth){ // max 12 bits
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      if (depth>11) depth=11; // max depth
-      ADCgeneric11; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
-      bc=depth; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
 }
 
 static inline uint32_t adcpadbits(uint32_t depth){ // TODO: eg. what happens if used consecutively... we have that in stream...  // how we could share same bits?
@@ -221,726 +23,6 @@ static inline uint32_t adcpadbits(uint32_t depth){ // TODO: eg. what happens if 
   bc--;
   return bt;
 }
-
-static inline uint32_t adc12bits(uint32_t depth){ // fixed 12,8,4  - no depth!
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric; 
-      bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adc8bits(uint32_t depth){ // fixed 12,8,4 - no depth!
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric;
-      k=k>>4;
-      bc=7; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first - no depth!
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adc4bits(uint32_t depth){ // fixed 12,8,4 - no depth!
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric;
-      k=k>>8;
-      bc=3; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-/*
-    k[reg]=k[reg]-2048;
-    inb=(((float)k[reg])/2047.0f); // from 0 to 4095 but where is the middle? 2048
-
-    integratorf+=(inb-oldvaluef);
-    if(integratorf>0.0f)
-      {
-	oldvaluef=1.0f;
-	bt=1;
-      }
-    else
-      {
-	oldvaluef=-1.0f;
-	bt=0;
-	*/
-// but why does this sound different to one above from adc_ - as one above lost static float so was just inb as plus minus/comparator
-// which works ok
-static inline uint32_t adconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
-  uint32_t bt;
-  static int32_t bc=31;
-  int32_t k; // fixed 10/5
-  static float integratorf=0.0f, oldvaluef=0.0f;
-  static float inb;
-  if (bc>depth){
-  ADCgeneric;
-  //  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
-  k=k-2048;
-  inb=(((float)k)/2047.0f); // from 0 to 4095 but where is the middle? 2048
-
-  bc=0;
-  }
-  integratorf+=(inb-oldvaluef);
-
-  if(integratorf>0.0f)
-  {
-     oldvaluef=1.0f;
-     bt=1;
-  }
-   else
-   {
-      oldvaluef=-1.0f;
-      bt=0;
-   }
-    bc++;
-  return bt;
-}
-
-#define GAIN 0.5f
-
-static inline uint32_t adconebitsx(void){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta - no depth!
-  uint32_t bt, k;
-  static float integratorf=0.0f, oldvaluef=0.0f;
-  float inb;
-  ADCgeneric;
-  //  k=2048.0f;
-  inb=(float)(k);
-  //  inb=inb-2048.0; //sounds better without this
-  //  inb=inb+CVL[0]; // offset
-  inb=inb/2048.0; // from 0 to 4095 but where is the middle? 2048
-
-  integratorf+=(inb-oldvaluef);
-  //  integratorf=inb;
-  
-  if(integratorf>0.0)
-      {
-	oldvaluef=1.0;
-	bt=1;
-      }
-  else
-    {
-      oldvaluef=-1.0;
-      bt=0;
-    }
-  return bt;
-}
-
-static inline uint32_t adconebitsmid(uint32_t depth, uint8_t w){ // set midpoint NO! IGNORE
-  uint32_t bt, k;
-  static float integratorf=0.0f, oldvaluef=0.0f;
-  static float inb;
-
-    ADCgeneric;
-    inb=(float)k;
-    inb=inb-(float)depth;
-    inb=inb/2047.0f; // from 0 to 4095 but where is the middle? 2048
-  
-    integratorf+=(inb-(oldvaluef));
-    
-    if(integratorf>0.0f)
-      {
-	oldvaluef=1.0f;
-     bt=1;
-  }
-   else
-   {
-      oldvaluef=-1.0f;
-      bt=0;
-   }
-  return bt;
-}
-
-static inline uint32_t adconebitsmidnof(uint32_t depth, uint8_t w){ // set midpoint
-  uint32_t bt;
-  int32_t k;
-  static signed long integrator=0, oldValue=0;
-  
-  ADCgeneric;
-  k=k-depth;
-  integrator+=(k-oldValue);
-  if(integrator>0)
-  {
-    oldValue=2048;
-    bt=1;
-  }
-   else
-   {
-     oldValue=-2048;
-     bt=0;
-   }   
-  return bt;
-}
-
-static inline uint32_t adconebitsreset(uint32_t depth, uint8_t w){ // depth is ignored or could be parameter for how often we sampleTODO/DONE  - sigma-delta
-  uint32_t bt;
-  static int32_t bc=31;
-  int32_t k;
-  static float integratorf=0.0f, oldvaluef=0.0f;
-  static float inb, SmoothData[9]={0.0f,0.0f,0.0f,0.0f};
-  //float gg=(float)depth/1024.0f;
-    if (bc>depth){
-    ADCgeneric;
-    // try lowpass on k
-    /*
-    betaf=(float)(depth)/4096.0f; // between 0 and 1?
-    //betaf=0.1f;
-    SmoothData[w] = SmoothData[w] - (betaf * (SmoothData[w]-(float)(k))); //
-    inb=SmoothData[w];
-    */
-    inb=(float)k;
-    //k=2048;
-    //  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
-    inb=inb-2048.0f;
-    inb=inb/2047.0f; // from 0 to 4095 but where is the middle? 2048
-    //inb=0.0f;
-    bc=0;
-    }
-    if (gate[w].trigger==1) integratorf=0.0f;
-  
-  
-  integratorf+=(inb-(oldvaluef));
-  // test clipping
-  //  if (integratorf>2.0f) integratorf=2.0f;
-  //  else if (integratorf<=-2.0f) integratorf=-2.0f;
-  
-  if(integratorf>0.0f)
-  {
-     oldvaluef=1.0f;
-     bt=1;
-  }
-   else
-   {
-      oldvaluef=-1.0f;
-      bt=0;
-   }
-    bc++;
-  return bt;
-}
-
-
-static inline uint32_t adceqbits(uint32_t depth){
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-  if (bc<0) {
-    ADCgeneric;
-    if (depth>31) depth=31; // and if depth is higher?
-    k=k/divy[depth];
-    bc=depth;
-  }
-    if (k!=0) {
-      bt=1;
-      k--;
-    }
-    else bt=0;
-    
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adcenergybits(uint32_t depth){ // equiv bits energy TODO: use this
-  uint32_t bt;
-  static int32_t bc=31;
-  int32_t tmp;
-  static uint32_t k;
-  if (bc>depth) {
-      ADCgeneric;
-      tmp=k-2048;
-      k=abs(tmp);
-      k=k/divy[depth];
-      bc=0;
-    }
-    if (k!=0) {
-      bt=1;
-      k--;
-    }
-    else bt=0;
-    bc++;    
-    return bt;
-}
-
-static inline uint32_t adc12compbits(uint32_t depth){ // fixed 12 bits 2s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric; 
-      if (k<2048) bitwise=1;
-      else bitwise=0;
-      k=abs(k-2048);
-      if (bitwise) k=(~k)+1;
-      bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adc8compbits(uint32_t depth){ // fixed 8 bits 2s complement - no depth!
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric;
-      k=k>>4;
-      if (k<128) bitwise=1;
-      else bitwise=0;
-      k=abs(k-128);
-      if (bitwise) k=(~k)+1;
-      bc=7; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adc4compbits(uint32_t depth){ // fixed 4 bits 2s complement - no depth!
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric;
-      k=k>>8;
-      if (k<8) bitwise=1;
-      else bitwise=0;
-      k=abs(k-8);
-      if (bitwise) k=(~k)+1;
-      bc=3; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adccompbits(uint32_t depth){ // variable depth 2s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
-      if (depth<12) k=k>>(11-depth);
-      else k=k<<(depth-11);
-      bc=depth; 
-      
-      if (k<(1<<depth)) bitwise=1;
-      else bitwise=0;
-	  k=abs(k-(1<<depth));
-      if (bitwise) k=(~k)+1;
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adc12onecompbits(uint32_t depth){ // fixed 12 bits 1s complement - no depth!
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric; 
-      if (k<2048) bitwise=1;
-      else bitwise=0;
-      k=abs(k-2048);
-      if (k==0) k=1;      
-      if (bitwise) k=(~k);
-      bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adc8onecompbits(uint32_t depth){ // fixed 8 bits 1s complement - no depth!
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric; 
-      k=k>>4;
-      if (k<128) bitwise=1;
-      else bitwise=0;
-      k=abs(k-128);
-      if (k==0) k=1;      
-      if (bitwise) k=(~k);
-      bc=7; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adc4onecompbits(uint32_t depth){ // fixed 12 bits 1s complement - no depth!
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric;
-      k=k>>8;
-      if (k<16) bitwise=1;
-      else bitwise=0;
-      k=abs(k-16);
-      if (k==0) k=1;      
-      if (bitwise) k=(~k);
-      bc=3; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t adconecompbits(uint32_t depth){ // variable 12 bits 1s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      ADCgeneric; 
-      if (depth<12) k=k>>(11-depth);
-      else k=k<<(depth-11);
-      bc=depth; 
-
-      if (k<(1<<depth)) bitwise=1;
-      else bitwise=0;
-
-      k=abs(k-(1<<depth));
-      if (k==0) k=1;
-      if (bitwise) k=(~k);
-      //     bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-// could even be list of functions here - how we integrate...
-uint32_t (*adcbitstreams[16])(uint32_t depth)={adcxbits, adcpadbits, adc12bits, adc8bits, adc4bits, adconebits, adceqbits, adcenergybits, adc12compbits, adc8compbits, adc4compbits, adccompbits, adc12onecompbits, adc8onecompbits, adc4onecompbits, adconecompbits}; // which ones use depth parameter
-
-//DACs
-
-static inline uint32_t dacxbits(uint32_t depth){ // max 12 bits
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-  if (bc<0) {
-    k=(gate[defdac].dac)>>(11-depth);
-    if (depth>11) depth=11; // max depth
-    bc=depth;
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dacpadbits(uint32_t depth){ 
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-  if (bc<0) {
-    //    ADCgeneric; 
-    k=(gate[defdac].dac); 
-    if (depth<12) k=k>>(11-depth);
-    else k=k<<(depth-11);
-    bc=depth; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac12bits(uint32_t depth){ // fixed 12,8,4
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac8bits(uint32_t depth){ // fixed 12,8,4
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      k=k>>4;
-      bc=7; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac4bits(uint32_t depth){ // fixed 12,8,4
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      k=k>>8;
-      bc=3; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t daconebits(uint32_t depth){ // depth is ignored or could be parameter for how often we sampleTODO/DONE
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-  static float integratorf=0.0f, oldvaluef=0.0f;
-  static float inb;
-  if (bc>depth){
-    //  ADCgeneric;
-    k=(gate[defdac].dac); 
-  inb=(((float)k)/2048.0f)-1.0f; // from 0 to 4095 but where is the middle?
-  bc=0;
-  }
-  integratorf+=(inb-oldvaluef);
-
-  if(integratorf>0.0f)
-  {
-     oldvaluef=1.0f;
-     bt=1;
-  }
-   else
-   {
-      oldvaluef=-1.0f;
-      bt=0;
-   }
-    bc++;
-  return bt;
-}
-
-static inline uint32_t daceqbits(uint32_t depth){
-  uint32_t bt;
-  static int32_t bc=31;
-  static uint32_t k;
-  if (bc<0) {
-    //    ADCgeneric;
-    k=(gate[defdac].dac); 
-    if (depth>31) depth=31; // and if depth is higher?
-    k=k/divy[depth];
-    bc=depth;
-  }
-    if (k!=0) {
-      bt=1;
-      k--;
-    }
-    else bt=0;
-    
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dacenergybits(uint32_t depth){ // equiv bits energy TODO: use this
-  uint32_t bt;
-  static int32_t bc=31;
-  int32_t tmp;
-  static uint32_t k;
-  if (bc>depth) {
-    //      ADCgeneric;
-    k=(gate[defdac].dac); 
-      tmp=k-2048;
-      k=abs(tmp);
-      k=k/divy[depth];
-      bc=0;
-    }
-    if (k!=0) {
-      bt=1;
-      k--;
-    }
-    else bt=0;
-    bc++;    
-    return bt;
-}
-
-static inline uint32_t dac12compbits(uint32_t depth){ // fixed 12 bits 2s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      if (k<2048) bitwise=1;
-      else bitwise=0;
-      k=abs(k-2048);
-      if (bitwise) k=(~k)+1;
-      bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac8compbits(uint32_t depth){ // fixed 8 bits 2s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      k=k>>4;
-      if (k<128) bitwise=1;
-      else bitwise=0;
-      k=abs(k-128);
-      if (bitwise) k=(~k)+1;
-      bc=7; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac4compbits(uint32_t depth){ // fixed 4 bits 2s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      k=k>>8;
-      if (k<8) bitwise=1;
-      else bitwise=0;
-      k=abs(k-8);
-      if (bitwise) k=(~k)+1;
-      bc=3; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t daccompbits(uint32_t depth){ // variable depth 2s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric; //   k=ADC_GetConversionValue(ADC1)>>(11-depth)  is included
-      k=(gate[defdac].dac); 
-      if (depth<12) k=k>>(11-depth);
-      else k=k<<(depth-11);
-      bc=depth; 
-      
-      if (k<(1<<depth)) bitwise=1;
-      else bitwise=0;
-	  k=abs(k-(1<<depth));
-      if (bitwise) k=(~k)+1;
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac12onecompbits(uint32_t depth){ // fixed 12 bits 1s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      if (k<2048) bitwise=1;
-      else bitwise=0;
-      k=abs(k-2048);
-      if (k==0) k=1;      
-      if (bitwise) k=(~k);
-      bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac8onecompbits(uint32_t depth){ // fixed 8 bits 1s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      k=k>>4;
-      if (k<128) bitwise=1;
-      else bitwise=0;
-      k=abs(k-128);
-      if (k==0) k=1;      
-      if (bitwise) k=(~k);
-      bc=7; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t dac4onecompbits(uint32_t depth){ // fixed 12 bits 1s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      k=k>>8;
-      if (k<16) bitwise=1;
-      else bitwise=0;
-      k=abs(k-16);
-      if (k==0) k=1;      
-      if (bitwise) k=(~k);
-      bc=3; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-static inline uint32_t daconecompbits(uint32_t depth){ // variable 12 bits 1s complement
-  uint32_t bt, bitwise;
-  static int32_t bc=31;
-  static uint32_t k;
-    if (bc<0) {
-      //      ADCgeneric;
-      k=(gate[defdac].dac); 
-      if (depth<12) k=k>>(11-depth);
-      else k=k<<(depth-11);
-      bc=depth; 
-
-      if (k<(1<<depth)) bitwise=1;
-      else bitwise=0;
-
-      k=abs(k-(1<<depth));
-      if (k==0) k=1;
-      if (bitwise) k=(~k);
-      //     bc=11; 
-  }
-  bt = (k>>bc)&0x01; // this means that MSB comes out first
-  bc--;
-  return bt;
-}
-
-// could even be list of functions here - how we integrate...
-uint32_t (*dacbitstreams[16])(uint32_t depth)={dacxbits, dacpadbits, dac12bits, dac8bits, dac4bits, daconebits, daceqbits, dacenergybits, dac12compbits, dac8compbits, dac4compbits, daccompbits, dac12onecompbits, dac8onecompbits, dac4onecompbits, daconecompbits};
-
-
-//////////////xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
 
 static inline uint16_t leaks(uint16_t x, uint16_t y, uint16_t prob, uint16_t who){ // try lazy, stickyt, leaky, decaying logic here... // who is new 20/9 for which SR we take logic from...
   //  static uint16_t timer=0;
@@ -1039,19 +121,17 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
   return bita ^ bitaa; // default
 }
 
-uint32_t dacstrobe[32]={1,1,1,1, 1,0,0,1, 1,1,1,1, 1,1,1,1, 1,0,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; //if dac doesn't use strobe=1!?
+uint32_t dacstrobe[32]={1,1,1,1, 1,0,0,1, 1,1,1,0, 1,1,1,1, 1,0,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; //if dac doesn't use strobe=1!? // checked 2/3
 
 // 15/12/2022 - length changed to otherpar except where we change both - to be TESTED!!
 //     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); 
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
   uint32_t x=0;
   float f=0.0f;
-  static uint32_t n[9]={0,0,0,0,0,0,0,0,0};
-  static uint32_t nom[9]={0,0,0,0};
-  static float SmoothData[9]={0.0, 0.0, 0.0, 0.0};
-  //  static float lastx[4]={0.0, 0.0, 0.0, 0.0};
-  static uint32_t lastout[9]={0,0,0,0,0,0,0,0,0};
-  static uint32_t toggle[9]={0,0,0,0};
+  static uint32_t n[4]={0,0,0,0};
+  static float SmoothData[4]={0.0, 0.0, 0.0, 0.0};
+  static uint32_t lastout[4]={0,0,0,0};
+  static uint32_t toggle[4]={0,0,0,0};
   static uint32_t mask[4]={0,0,0,0};
 
   float betaf=0.4f, mult,pp;
@@ -1064,10 +144,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 // strobed=5, 
   
   switch(type){
-
-  case 666: // null case for testings
-    x=0;
-    break;
     
   case 0: // length doesn't change much except at slow speeds - ADC x bits out - modded for new draft
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
@@ -1173,6 +249,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
   case 11: //  one SR is sieved out over clksr for that sr. XOR as sieve?  - SKIPPED/retry instead of 11
+    gate[wh].strobed=1;
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
     x=x^((clksr_[wh] & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
@@ -1218,8 +295,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (n[wh]>otherpar) {
       n[wh]=0;
       x=((shift & masky[length])>>(rightshift[length]))<<leftshift[length];
-      //      length=1;
-      //      x=(shift & masky[length])<<11;
       lastout[wh]=x;
     }
     x=lastout[wh];
@@ -1243,21 +318,18 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x=x|mask[wh];
     break;
 
-    //    // case 15 was as case 2 but with
-    //   param for filter - and now always has param
-
   case 18:// standard bit DAC for x bits - new mode here
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     if (n[wh]>otherpar) {
       n[wh]=0;
     if (otherpar==3){
-      if ((shift &4)==4) nom[wh]=4095;
-      else nom[wh]=0;
+      if ((shift &4)==4) lastout[wh]=4095;
+      else lastout[wh]=0;
     }
-    else nom[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
+    else lastout[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
     }
     n[wh]++;
-    x=nom[wh];
+    x=lastout[wh];
     break;
 
   case 19:// alt standard bit DAC for x bits - new mode here
@@ -1265,13 +337,13 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     if (n[wh]>otherpar) {
       n[wh]=0;
     if (otherpar==3){
-      if ((shift &4)==4) nom[wh]=4095;
-      else nom[wh]=0;
+      if ((shift &4)==4) lastout[wh]=4095;
+      else lastout[wh]=0;
     }
-    else nom[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshiftalt[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
+    else lastout[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshiftalt[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
     }
     n[wh]++;
-    x=nom[wh];
+    x=lastout[wh];
     break;
     
   case 20: // 22/3/2022 sliding bits.moving window - we have depth/length and where it is, wrap or not, shift or not
@@ -1387,7 +459,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
   case 26: //2s comp back in one go
-    //      x=shift&masky[11]; // 12 bits but we want the top 12 bits of length
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     x=((shift>>rightshift[otherpar])<<leftshift[otherpar])&masky[11];
       if (x&(1<<11)) {
@@ -1408,19 +479,17 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     }
     else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
     otherpar=4095-otherpar;
-    //    if (otherpar>4095) otherpar=4095;
     mult=mixer[otherpar>>2]; // 10 bits - 0 is 1.0f so full dac
     pp=((float)(x) *  (1.0f-mult)) + ((float)(gate[dacfrom[daccount][wh]].dac)*mult); // mix with param
     x=(int)pp;
     break;
     
   case 29: // default for all other DACs - modded for new draft // no otherpar
-    //    x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length];
-        x=shift&4095;
+    x=shift&4095;
     break;
 
   case 30: // 4 bit DAC aside from length - try now with delay // no otherpar
-      x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
+    x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
     break;
 
   case 31: // straight 4 bit dac // no otherpar
@@ -1494,37 +563,26 @@ void PendSV_Handler(void)
 
 void EXTI4_IRQHandler(void){ // working NSR 
   uint32_t tmp, tmpp;
-if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
+  if (EXTI_GetITStatus(EXTI_Line4) != RESET) { // PC4
   intflag[0]=1; //NSR
-  //  param[0]=counter_[0];
-  //  counter_[0]=0;
   EXTI_ClearITPendingBit(EXTI_Line4);
  }
  }
 
 void EXTI9_5_IRQHandler(void){ // PC5 RSR works and PB6 LSR share same line but both work out
-  uint32_t tmp, tmpp;
-  uint16_t j, bit, xx, x;
-  uint32_t lengthbitl=15, new_statl, new_statr,new_statc, lengthbitc=15, lengthbitr=15; // for 2nd bit on lsr, rsr and csr
     
-  if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  
+  if (EXTI_GetITStatus(EXTI_Line5) != RESET) { //RSR  PC5
     intflag[3]=1; //RSR
-    //    param[3]=counter_[3];
-    //      counter_[3]=0;
     EXTI_ClearITPendingBit(EXTI_Line5);
  }
 
-  if (EXTI_GetITStatus(EXTI_Line6) != RESET) { //LSR
+  if (EXTI_GetITStatus(EXTI_Line6) != RESET) { //LSR PB6
     intflag[1]=1; //LSR
-    //    param[1]=counter_[1];
-    //    counter_[1]=0;
     EXTI_ClearITPendingBit(EXTI_Line6);
  } 
 
-  if (EXTI_GetITStatus(EXTI_Line7) != RESET) {// CSR
+  if (EXTI_GetITStatus(EXTI_Line7) != RESET) {// CSR moved to PB7
     intflag[2]=1; //CSR
-    //    param[2]=counter_[2];
-    //    counter_[2]=0;
     EXTI_ClearITPendingBit(EXTI_Line7);
  } 
 }
@@ -1562,19 +620,15 @@ void TIM4_IRQHandler(void)
      else GPIOB->BSRRL=clk_route_new[2];
     */
       modecnt=0;
-      //    }
       
   //moden
   ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(adc_buffer[2]+lastlastmoden+lastmoden)/3; 
-  temp=temp;
   temp=(temp+lastlastmoden+lastmoden)/3; 
   lastlastmoden=lastmoden;
   lastmoden=temp;
-  //  CVM[0]=temp;    
   mode[0]=temp>>6; 
   if (lastmode[0]!=mode[0]) gate[0].changed=1;
   else gate[0].changed=0;
@@ -1585,14 +639,10 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(adc_buffer[11]+lastlastmodec+lastmodec)/3;
-  temp=temp;
   temp=(temp+lastlastmodec+lastmodec)/3; 
   lastlastmodec=lastmodec;
   lastmodec=temp;
-  //  CVM[2]=temp;
   mode[2]=temp>>6;
-  //    mode[2]=(temp>>6); 
   if (lastmode[2]!=mode[2]) gate[2].changed=1; 
   else gate[2].changed=0;
   lastmode[2]=mode[2];
@@ -1603,11 +653,8 @@ void TIM4_IRQHandler(void)
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   temp=(temp+lastlastmodel+lastmodel)/3; 
-  //  temp=(adc_buffer[5]+lastlastmodel+lastmodel)/3; 
-  temp=temp;
   lastlastmodel=lastmodel;
   lastmodel=temp;
-  //  CVM[1]=temp;
   mode[1]=temp>>6; 
   if (lastmode[1]!=mode[1]) gate[1].changed=1;
   else gate[1].changed=0;
@@ -1618,12 +665,9 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(adc_buffer[8]+lastlastmoder+lastmoder)/3;
-  temp=temp;
   temp=(temp+lastlastmoder+lastmoder)/3; 
   lastlastmoder=lastmoder;
   lastmoder=temp;
-  //  CVM[3]=temp;
   mode[3]=temp>>6; 
   if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
   else gate[3].changed=0;
@@ -1632,7 +676,6 @@ void TIM4_IRQHandler(void)
   
   // speedn
   totn=totn-smoothn[nn];
-  //  smoothn[nn]=adc_buffer[0];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
@@ -1642,28 +685,21 @@ void TIM4_IRQHandler(void)
   if (nn>=SMOOTHINGS) nn=0;
   temp=totn/SMOOTHINGS;  
   CV[0]=4095-temp;
-  //  speedf[0]=logspeed[temp>>2]; // was logspeed
-  //  speedf_[0]=0.1f;
   
   // speedl
-  
   totl=totl-smoothl[ll];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   smoothl[ll]=ADC_GetConversionValue(ADC1);
-  //  smoothl[ll]=adc_buffer[3];
   totl+=smoothl[ll];
   ll++;
   if (ll>=SMOOTHINGS) ll=0;
   temp=totl/SMOOTHINGS;
-  //  CV[1]=4095-ADC_GetConversionValue(ADC1);
   CV[1]=4095-temp;
-  //  speedf[1]=logspeed[temp>>2];
   
   // speedr
   totr=totr-smoothr[rr];
-  //  smoothr[rr]=adc_buffer[6];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
@@ -1673,35 +709,28 @@ void TIM4_IRQHandler(void)
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
   CV[3]=4095-temp;
-  //  speedf[3]=logspeed20[temp>>2]; // 20 octaves - slowest one
   
     // speedc
   totc=totc-smoothc[cc];
-  //  smoothc[cc]=adc_buffer[9];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_144Cycles); // was 10
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   smoothc[cc]=ADC_GetConversionValue(ADC1);
-
   totc+=smoothc[cc];
   cc++;
   if (cc>=SMOOTHINGS) cc=0;
   temp=totc/SMOOTHINGS;  
   CV[2]=4095-temp;
-  //  speedf[2]=logspeed[temp>>2];
   
-  // lens from 4 to 32 - 8/11/2021 we reversed the list to save some time!
-
+  // lengths
   ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(adc_buffer[1]);
   CVL[0]=4095-temp;
   temp=temp>>7; // 12 bits to 5 bits
   SRlength_[0]=lookuplenall[temp];
 
-  //temp=(adc_buffer[4]);
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
@@ -1718,12 +747,11 @@ void TIM4_IRQHandler(void)
   temp=temp>>7; 
   SRlength_[3]=lookuplenall[temp];
   
-  //temp=(adc_buffer[10]);
   ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   CVL[2]=4095-temp;
   temp=temp>>7; 
-  SRlength_[2]=lookuplenall[temp]; // TODO: take speed and lens out so we can detach easier
+  SRlength_[2]=lookuplenall[temp]; 
 }

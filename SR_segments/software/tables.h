@@ -188,7 +188,7 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  
   {2,3,0,1}, // opposites
   {1,0,3,2},
 
-  {1,2,3,0}, // nexts
+  {1,2,3,0}, // nexts 
   {3,2,1,0}, /// rev
   {1,3,1,1},
   {1,3,1,1}
@@ -216,7 +216,7 @@ uint32_t dacfromopp[16][4]={ // TODO and needs to match lengthy of binroute TEST
   {3,1,3,3}
 };
 
-uint32_t strobefrom[4]={3,0,1,0};// strobe from previous
+uint32_t strobefrom[4]={3,0,1,0};// strobe from previous almost
 
 uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first route in which must be different
   {2,3,3,1}, // default
@@ -236,8 +236,8 @@ uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first ro
 
   {3,2,3,0}, // nexts
   {1,2,1,0}, /// rev
-  {2,3,1,1},
-  {2,3,1,1}
+  {3,0,0,0},
+  {2,3,1,0}
 };
 
 uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
@@ -265,7 +265,7 @@ uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: c
   {1,2,3,0}, // nexts
   {3,2,1,0}, /// rev
   {1,3,1,1},
-  {1,3,1,1}
+  {1,3,1,0}
 };
 
 // can also have lists for each one to bump along

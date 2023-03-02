@@ -1,10 +1,3 @@
-//  case 0: // ADC x bits out but only 12/8/4/2/1 bits or could be 12 6 3 1
-//    x=(shift_[reg]>>newr[length])<<news[length];
-// 8= 12,10,8,6, 4,2,1,1
-
-
-// how to calculate these?
-
 static uint32_t prub[8]={0,3,7,15, 31,63,127,255};
 
 static uint32_t padding[20]={0,

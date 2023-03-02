@@ -8,6 +8,7 @@ y=1326
 #first 54 bytes remove
 #data=data[1:]
 x=1024
-img = Image.frombuffer('RGB', (1024,y), data) # was 512+x
+#img = Image.frombuffer('RGB', (1024,y), data) # was 512+x
+img = Image.frombuffer('L', (1024,y), data) # was 512+x
 filename="test"+str(x)+".png"
 img.save(filename)
