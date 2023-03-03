@@ -69,7 +69,7 @@ uint32_t orderings[64][15]={ // orderings - first is length
 // these could also be 4x4 = 16 bit values... as maybe easier to decode...
 uint32_t binroute[32][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
     {8,1,2,4}, // new default: 8 1 2 4 // default was 8121 // now we have full route 8124
-    {4,1,8,2},
+    {4,1,8,2}, // good
     {8,1,2,2}, // notexpanding
     {8,1,2,1}, // notexpanding
     {8,1,2,8}, // expanding
@@ -78,6 +78,7 @@ uint32_t binroute[32][4]={ // add more routes, also what seq change of routes ma
     {8,1,2,12}, // expanding
     {8,1,2,4}, // route in one big circle
     {0,1,2,4},
+    
     {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
     {1,2,4,8}, // only loop - this is what is added to get loop too for prob
     {8,1,2,2}, // as defroutee 3/0/1/1

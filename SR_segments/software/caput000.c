@@ -55,7 +55,7 @@ static uint32_t CVL[4]={0,0,0,0};
 uint32_t matrixNN[22]={0,4095,0,  0,0,2047,31<<7, 0, 3<<7, 0,2048,0,0,      0<<7,0, 0, 0, 0, 2048, 0, 0, 2048}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
 uint32_t matrixLL[22]={0,4095,0,  0,0,0, 31<<7,   0,0,        0,2048,0,0,   30<<7,0, 0, 0, 0, 0, 0, 0, 2048};
 uint32_t matrixCC[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    30<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
-uint32_t matrixRR[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    30<<7,0, 0, 0, 0, 0, 0, 0, 2048};  // spdfracend TEST
+uint32_t matrixRR[22]={2<<7,4095,0,  0,0,2047, 31<<7, 0,0,         0,2048,0,0,    30<<7,0, 0, 0, 0, 0, 0, 0, 2048};  // spdfracend
 uint32_t matrixTT[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    0<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
 //                     speed   bit       len   adc,adc-cv    prob   alt     dac      strobespdindex, type, route, abstrct cv, glob, abstract index, mixer
 

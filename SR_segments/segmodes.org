@@ -103,9 +103,8 @@ matrixp//globals in RR
 
 
 ** TODO 
-- check how all esp, strobe inners handle specific use of depth in outer ????
-- sanity check all code, line by line: 
-- look at all probabilities and analysis below
+
+check code:
 
 XXmacros.h
 XXmain.c
@@ -117,11 +116,12 @@ XXtables.h - can attend more to dacfrom etc...
 XX#include "adcetc.h"
 
 #include "geogen.h"
-#include "exp_port.h"
+#include "exp_port.h" - cleaned up a bit but needs full check
 #include "geoCC.h"
+
 #include "geoNN.h"
 #include "geoLL.h"
-#include "geoRR.h"
+XX#include "geoRR.h"
 
 arrays: 
 XXgeomantic.h
@@ -149,17 +149,30 @@ NN:
 
 probzeros, probadcburst
 
-** 2/3/2023
+** 3/3/2023
 
 TODO:
 
+- *first part of binroutes not so exciting*
+- *thinking if abstracts should be in array of routebits_anystrobe_depth_notypesz ???*
+- check how all esp, strobe inners handle specific use of depth in outer ????
+- look at all probabilities and analysis below
 - *if L50+ should be adapted for NN and then swop out c60 for c70?*
-- check inner and outer for globals on right side.,,
+- sanity check all code, line by line - see above
 
 TEST: 
 
 - test extra functions to see if is worth including: from above but we need to make outers
 - *check runglers on LL and RR*
+
+
+DONE:
+DONE- test globals again - one by one
+DONE- check new corrected route types: mode=C10
+DONE- check inner and outer speed/sets within globals on right side...???clean up those again...
+DONEaltfunc for R00 to test*
+
+** 2/3/2023
 
 sanityCHECKED:
 - macros.h - fixed major mistake in many binroutes - to re-test

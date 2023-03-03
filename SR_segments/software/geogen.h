@@ -5927,7 +5927,7 @@ static inline void binaryN(uint32_t depth){
   uint32_t tmp;
   // all counts need that extra or
   //  count=16; // sets to zero - but could also be ORed with route we already have as another version // count16 is  0,0,0,0, null routes... // but we set all counts the same so have a problem
-  tmp=depth>>10;// 2 bits
+  tmp=depth>>10;// 2 bits - nice to use more bits?
   binary[0]=gate[tmp].shift_&15; // which SR? itself/runs out - binary will also need to be reset 
   binary[1]=(gate[tmp].shift_>>4)&15;
   binary[2]=(gate[tmp].shift_>>8)&15;
@@ -5936,7 +5936,7 @@ static inline void binaryN(uint32_t depth){
 
 static inline void binaryX(uint32_t depth){
   uint32_t tmp;
-  count=0; // reset... or should be oldroutecnt
+  count=0; // reset
   tmp=depth>>10; // 2 bits
   binary[0]=gate[tmp].shift_&15; // which SR? itself/runs out - binary will also need to be reset 
   binary[1]=(gate[tmp].shift_>>4)&15;
@@ -5951,43 +5951,6 @@ static inline void resett(uint32_t depth){ // resett // no depth
 static inline void SRRglobalbumpS(uint32_t depth){ // strobe only
   //  gate[3].strobed=1;
   if (gate[3].trigger) // outside speed?
-    {
-      count++;
-      if (count>31) count=0; // we have 16 so far, but can add more
-      daccount++;
-      if (daccount>15) daccount=0;
-      spdcount++;
-      if (spdcount>15) spdcount=0;
-    }
-}
-
-// TODO: more singular variations of these
-static inline void SRRglobalbumpbit0(uint32_t depth){ // nada but depth could be route
-  if (gate[dacfrom[daccount][3]].shift_) // outside speed?
-    {
-      count++;
-      if (count>31) count=0; // we have 16 so far, but can add more
-      daccount++;
-      if (daccount>15) daccount=0;
-      spdcount++;
-      if (spdcount>15) spdcount=0;
-    }
-}
-
-static inline void SRRglobalbumpbit1(uint32_t depth){ // nada but depth could be route
-  if (gate[dacfrom[daccount][3]].Gshift_[3]) // outside speed?
-    {
-      count++;
-      if (count>31) count=0; // we have 16 so far, but can add more
-      daccount++;
-      if (daccount>15) daccount=0;
-      spdcount++;
-      if (spdcount>15) spdcount=0;
-    }
-}
-
-static inline void SRRglobalbumpbit2(uint32_t depth){ // nada but depth AS route
-  if (gate[depth>>10].Gshift_[3]) // outside speed?
     {
       count++;
       if (count>31) count=0; // we have 16 so far, but can add more
@@ -6025,9 +5988,9 @@ static inline void SRRglobalbumpspd(uint32_t depth){ // strobe only
     }
 }
 
-static inline void SRRglobalbumpcv(uint32_t depth){ // strobe only
+static inline void SRRglobalbumpcv(uint32_t depth){ // strobe only // unused
   uint32_t tmp;
-    gate[3].strobed=1;
+  //    gate[3].strobed=1;
   if (gate[3].trigger) // outside speed?
     {
       tmp=depth>>7; ///5 bits

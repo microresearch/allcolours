@@ -1,3 +1,7 @@
+//extern void send_command(int command, void *message);
+//char buffx[24];
+
+
 static inline uint32_t countbits(uint32_t i)
 {
   /*

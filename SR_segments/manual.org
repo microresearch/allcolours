@@ -81,7 +81,7 @@ All the Colours... is released under the GPL GNU General Public License.
 
 
 2 - panel layout
-3 - 4 sets of major modes listed
+3 - 4 sets of major modes listed - Q of knob angles
 4 - hints and tips /working with AC
 5 - theory of operation
 6 - glossary
@@ -234,6 +234,8 @@ how to patch following geomantic instructions
 - use of comparator for clocks
 
 hints and tips also: feedback of pulses, what to do when it runs out
+
+use of globals - order of playing
 
 how to play it - consider the combinations of the 4 modes/nodes as an
 instrument itself determined by the collision of modes and the moon's

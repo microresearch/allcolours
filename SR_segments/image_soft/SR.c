@@ -97,11 +97,12 @@ int main(void)
   unsigned char bitn;
   int speed1=0;
   for (x=0;x<MAX;x++){
+    //    printf("round %d \n",x);
     if (y>speed1){
     bitn=shifter(buffer);
-    speed1=0;
+    y=0;
     }
-    speed1++;
+    y++;
   buffer2[0]=buffer2[0]^bitn;
   bitn=shifter(buffer2);
   }

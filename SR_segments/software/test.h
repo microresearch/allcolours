@@ -160,12 +160,12 @@ void SR_geo_outer_testfunctions(uint32_t w){
 
   //  =(mod)<<6;
 
-  /*  if (mod!=oldmod){ */
-  /* itoa(mod, buffx, 10); */
-  /* uint32_t m[] = { 2/\*stderr*\/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 }; */
-  /* send_command(0x05/\* some interrupt ID *\/, m); */
-  /* } */
-  /* oldmod=mod; */
+   if (mod!=oldmod){
+  itoa(mod, buffx, 10);
+  uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 };
+  send_command(0x05/* some interrupt ID */, m);
+  }
+  oldmod=mod;
 
   if (depth_routebits_typesz[gate[w].matrix[3]>>6]) gate[w].matrix[4]=CVL[w]; // bit cv
   else SETROUTECV; // 

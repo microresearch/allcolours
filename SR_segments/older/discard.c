@@ -1,3 +1,125 @@
+/*
+static uint32_t sharedindexes[4]={0,0,0,0};
+static uint32_t bufferd[1024];
+static uint32_t head;
+
+// tested in test3.c 22/4/2022
+static inline uint32_t shared(uint8_t wh){ // ADC for pSRshare below 
+  uint32_t bt=0;
+  static int32_t bc=31;
+  static uint32_t k;
+
+  sharedindexes[wh]++;
+
+  if (resetz==1){
+    head++;
+    if (head>1023) head=0;
+
+    // new bit - can also be passed to other generators
+    if (bc<0) {
+      ADCgeneric;
+      k=k>>8;
+      bc=3; 
+    }
+    bt = (k>>bc)&0x01; // this means that MSB comes out first
+    bc--;
+    
+    bufferd[head]=bt;
+    resetz=0; 
+  }
+
+  if (sharedindexes[wh]>1024) sharedindexes[wh]=0;
+  bt=bufferd[sharedindexes[wh]];
+  return bt;
+}
+
+static inline uint32_t pSRshare(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
+  bitn^=shared(w); 
+  //  BINROUTE_; // or not
+  tmp=binroute[count][w]|binary[w]; 
+
+  tmpp=gate[w].routetype;
+  ROUTETYPE_;  
+  return bitn;
+}
+*/
+
+
+
+/* no depth versions
+
+pSRprobxortogD_, pSRprobxortogxID_, pSRprobxortogID_, pbitSRroutelogD_, pbitSRroutelogxxD_, pbitSRroutelogxxxD_, pbitSRroutedoitD_, pSR32D_, pSRbumprouteD_, pSRLLswopD_, pSRN22D_, pSRN21D_, pSRR32D_ // 12 // pSRprobxortogD_, pSRprobxortogxID_, pSRprobxortogID_
+
+ */
+
+
+
+
+- default speed as spdfracend?
+
+/*
+
+RR: routes, global, abstracts functions - prob of abstract vs route (as in ADC)
+
+- follow rough scheme of NN but obviously without ADC!
+
+- *DONEquestion if we slow down speed of geoRR so is half or quarter - 17, 18 octaves, to test. as seems a bit too fast*
+
+on globals:
+
+*We can also imagine slippage/attachment of settings in global modes eg. we have array of count daccount speeedcnt etc and we attach as in matrixp to these*
+
+FOR GLOBAL rmodes:::
+- *16 last global modes*
+- *global modes all hold last function (eg. it could be abstract function)*
+
+we need to sort following: depth/no depth, global dacfrom?// also speedfrom dac, setting of route/type (16 and 17). which arrays to use for functions//how these match*
+
+////////////////////////////////
+
+
+
+older from geoLR.h:
+*/
+
+
+// TODO: more singular variations of these
+static inline void SRRglobalbumpbit0(uint32_t depth){ // nada but depth could be route
+  if (gate[dacfrom[daccount][3]].shift_) // outside speed?
+    {
+      count++;
+      if (count>31) count=0; // we have 16 so far, but can add more
+      daccount++;
+      if (daccount>15) daccount=0;
+      spdcount++;
+      if (spdcount>15) spdcount=0;
+    }
+}
+
+static inline void SRRglobalbumpbit1(uint32_t depth){ // nada but depth could be route
+  if (gate[dacfrom[daccount][3]].Gshift_[3]) // outside speed?
+    {
+      count++;
+      if (count>31) count=0; // we have 16 so far, but can add more
+      daccount++;
+      if (daccount>15) daccount=0;
+      spdcount++;
+      if (spdcount>15) spdcount=0;
+    }
+}
+
+static inline void SRRglobalbumpbit2(uint32_t depth){ // nada but depth AS route
+  if (gate[depth>>10].Gshift_[3]) // outside speed?
+    {
+      count++;
+      if (count>31) count=0; // we have 16 so far, but can add more
+      daccount++;
+      if (daccount>15) daccount=0;
+      spdcount++;
+      if (spdcount>15) spdcount=0;
+    }
+}
 
 
 
