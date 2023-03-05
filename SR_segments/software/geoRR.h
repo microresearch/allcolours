@@ -3,6 +3,19 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// INNER
 
+
+void SR_geo_inner_rungnorouteA(uint32_t w){  
+  HEADNADA;
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    gate[w].dac = delay_buffer[w][1];
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
 void SR_geo_inner_norouteabstractR(uint32_t w){ 
   HEADNADA;
 
@@ -141,7 +154,7 @@ void SR_geo_outer_R00x(uint32_t w){  // set length // set length or could better
 // alt for above as we set length later... prob 1 route against cycle
 void SR_geo_outer_R00(uint32_t w){  // set length // set length or could better be TYPE - route in
   if (gate[w].changed==1) {
-    RESETR; // added 21/12 only reset on change also does RESETG global reset
+    RESETR; // added 21/12 only reset on change and RESETR also does RESETG global reset
     gate[w].changed=0;
   }
   gate[w].matrix[0]=0<<7; // spdfrac
@@ -182,7 +195,63 @@ void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint3
   gate[w].inner=SR_geo_inner_probadcentry;// fixed as probbits and fixed entry
   }
 }
- 
+
+///// runglers which differ from LL as they have no route in
+void SR_geo_outer_R52(uint32_t w){  // no route
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=6<<7; // tested // try fixed speed - spdfrac4    
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[4]=gate[dacfrom[daccount][w]].dac; //
+    gate[w].matrix[5]=CVL[w];
+    gate[w].inner=SR_geo_inner_rungnorouteA;
+  }
+}
+
+///++ trial add dac??? but what is CVL? // sel abstract
+void SR_geo_outer_R53(uint32_t w){  // no route
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=4<<7; // spdfrac1 now
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped 5 is also for abstractbits
+    gate[w].matrix[4]=gate[dacfromopp[daccount][w]].dac;
+    gate[w].matrix[20]=CVL[w]; // sel abstract // 20 we like
+    gate[w].inner=SR_geo_inner_rungnorouteA;
+  }
+}
+
+// R60, L60, R62, L63
+
+// abstract with no route in... SR_geo_inner_norouteadcN // convert to abstract - but we need to have selected that above
+void SR_geo_outer_R60(uint32_t w){ // dacspeed3x
+  if (gate[w].changed==0) {
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].inner=SR_geo_inner_dacspeed3xnorouteabstractL; 
+  }
+}
+
+void SR_geo_outer_R62(uint32_t w){ // spdfracdac3
+  if (gate[w].changed==0) {
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
+    gate[w].inner=SR_geo_inner_dacspeed3_1_norouteabstractL; 
+  }
+}
+
+void SR_geo_outer_R63(uint32_t w){ // spdfracdac3
+  if (gate[w].changed==0) {
+    gate[w].matrix[1]=CV[w];// speed cv1
+    gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
+    gate[w].inner=SR_geo_inner_dacspeed3_4_norouteabstractL; 
+  }
+}
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////
 // 12.0+

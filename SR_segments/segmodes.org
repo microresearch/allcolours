@@ -121,38 +121,14 @@ XX#include "adcetc.h"
 
 #include "geoNN.h"
 #include "geoLL.h"
-XX#include "geoRR.h"
+#include "geoRR.h"
 
 arrays: 
 XXgeomantic.h
 XXnewbits.h
 
-
-///
-
-*UNUSED*
-
-where to put extras for CC:
-
-- if we can fit problast and split strobe speed at end of CC into CC functions
-
-/// what do we need to fit in CC? and where ??? 
-// prob of last remaining: SR_geo_inner_functionproblast(uint32_t w)
-// trial xorspeed
-// probroutes
-
-added SR_geo_inner_probdepthnodepth but we need outer to use it!
-also we have:
-added SR_geo_inner_probdepthdepthSS ^^^^^ for matrixp
-
-NN:
-
-probzeros, probadcburst
-
-** 3/3/2023
-
 TODO:
-
+- *additional probs and functions?*
 - *first part of binroutes not so exciting*
 - *thinking if abstracts should be in array of routebits_anystrobe_depth_notypesz ???*
 - check how all esp, strobe inners handle specific use of depth in outer ????
@@ -160,11 +136,37 @@ TODO:
 - *if L50+ should be adapted for NN and then swop out c60 for c70?*
 - sanity check all code, line by line - see above
 
+///
+
+*UNUSED*
+
+SR_geo_outer_Cplast - where to fit? on any side?
+
+added SR_geo_inner_probdepthnodepth but we need outer to use it!
+also we have:
+added SR_geo_inner_probdepthdepthSS ^^^^^ for matrixp
+
+NN: 
+probzeros: SR_geo_inner_adcprobzero, SR_geo_inner_adcprobzeronod
+probadcburst: SR_geo_inner_probadcburst
+
+SR_geo_inner_probadcentryxornod
+
+** 5/3/2023
+
 TEST: 
 
-- test extra functions to see if is worth including: from above but we need to make outers
-- *check runglers on LL and RR*
+DONE:
+- recheck where cv hits on mode knobDONE
+- DONEwhy RR effects 153: dacfrom for alt function with depth?
+FIXED:fixed/checking shared/statics in geogen, not tested all but...
+DONEtested seems fine: SR_geo_outer_Cplast 
+DONEcheck runglers on LL and RR: 
+LL: changed L52 and L53, and later ones so not route self and have route in...
+RR: changed ordering but need to check these now: SR_geo_outer_R52XX, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_R62, SR_geo_outer_R63
+DONENN: check self routed runglers: 
 
+** 3/3/2023
 
 DONE:
 DONE- test globals again - one by one

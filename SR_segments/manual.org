@@ -94,6 +94,16 @@ poster [could also be booklet for TOAD/andy later]
 
 how to image/notate panel - that the description and panel/images are themselves subjected to shift reg (eg. each pixel line of panel image - try this!)
 
+** 5/3/2023
+
+- table for modes:
+
+-  | function | x | y - what they do... /// x4 for each side - and similar blocks shaded or coloured... spreadsheet?
+1  |
+64 |
+
+function is what is the bit and how does it enter? can also effect shifting (types of shift - what these are) and other SRs
+
 ** 28/2/2023
 
 theory of operation:

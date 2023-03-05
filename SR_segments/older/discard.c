@@ -1,3 +1,38 @@
+void SR_geo_inner_rungnorouteA(uint32_t w){  
+  HEADNADA;
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    gate[w].dac = delay_buffer[w][1];
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    //    bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
+    bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+// probroutes
+void SR_geo_outer_probroutes(uint32_t w){ 
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
+  gate[w].matrix[9]=CVL[w];//15<<6; // select probfs - zinvprobbits here against LFSR__
+  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac); // CVL[w];
+  gate[w].inner=SR_geo_inner_probroutes; 
+  }
+}
+
+//trial xorspeed
+void SR_geo_outer_speedxorC(uint32_t w){  // which gaps/functions - but we have CVL used
+  gate[w].matrix[0]=CVL[w];   // what is appropriate speed function????
+  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // 1 and 2 we don't use and CV is free
+  gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but do we need 2nd cv???
+  gate[w].inner=SR_geo_innerxorC;
+}  
+
+
 /*
 static uint32_t sharedindexes[4]={0,0,0,0};
 static uint32_t bufferd[1024];

@@ -365,7 +365,7 @@ void SR_geo_inner_rungC(uint32_t w){
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
-    bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
     bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -1778,30 +1778,10 @@ void SR_geo_outer_Cplast(uint32_t w){ // problast - probf_anystrobe_depth // rou
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv 
   gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-  gate[w].matrix[9]=5<<6; // spdfrac
+  gate[w].matrix[9]=5<<6; // spdfracP_
   gate[w].matrix[10]=CVL[w]; // prob depth
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); // do any use IN? yes spdfrac versions - should have basic prob vs in tho...
   gate[w].inner=SR_geo_inner_functionproblast;//
-  }
-}
-
-//trial xorspeed
-void SR_geo_outer_speedxorC(uint32_t w){  // which gaps/functions - but we have CVL used
-  gate[w].matrix[0]=CVL[w];   // what is appropriate speed function????
-  gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // 1 and 2 we don't use and CV is free
-  gate[w].matrix[2]=gate[dacfrom[daccount][w]].dac; // but do we need 2nd cv???
-  gate[w].inner=SR_geo_innerxorC;
-}  
-
-// probroutes
-void SR_geo_outer_probroutes(uint32_t w){ 
-  if (gate[w].changed==0) {
-  gate[w].matrix[0]=0<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-  gate[w].matrix[9]=CVL[w];//15<<6; // select probfs - zinvprobbits here against LFSR__
-  gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac); // CVL[w];
-  gate[w].inner=SR_geo_inner_probroutes; 
   }
 }
 

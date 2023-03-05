@@ -39,11 +39,11 @@ void SR_geo_inner_dacspeed3xnorouteadcN(uint32_t w){
     }
 }
 
-void SR_geo_inner_dacspeed3selfnorouteadcN(uint32_t w){  
+void SR_geo_inner_dacspeed3xxnorouteadcN(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
 
-  if (spdfracdac3self(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+  if (spdfracdac34(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix
@@ -52,11 +52,11 @@ void SR_geo_inner_dacspeed3selfnorouteadcN(uint32_t w){
     }
 }
 
-void SR_geo_inner_dacspeed3selfrouteadcN(uint32_t w){  
+void SR_geo_inner_dacspeed3xxrouteadcN(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
 
-  if (spdfracdac3self(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+  if (spdfracdac34(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
@@ -317,7 +317,7 @@ void SR_geo_inner_probadcentryXnod(uint32_t w){  // ADC only - prob for adc itse
     }
 }
 
-void SR_geo_inner_probadcentryxorX(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
+void SR_geo_inner_probadcentryxorX(uint32_t w){  
   HEADNADA;
 
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
@@ -340,7 +340,7 @@ void SR_geo_inner_probadcentryxorX(uint32_t w){  // ADC only - prob for adc itse
     }
 }
 
-void SR_geo_inner_probadcentryxorXnod(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
+void SR_geo_inner_probadcentryxorXnod(uint32_t w){  
   HEADNADA;
 
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
@@ -362,12 +362,6 @@ void SR_geo_inner_probadcentryxorXnod(uint32_t w){  // ADC only - prob for adc i
     new_data(val,w);
     }
 }
-
-// strobe for testings
-//    ADCgeneric2; 
-//    bitn=(*adcfromsd[gate[w].matrix[7]>>7])(gate[w].matrix[8], ADCin, w); 
-// TODO: strobe with route, generic strobe/gapped, strobe with just adc, strobe with prob of entry of route
-
 
 void SR_geo_inner_rungnoroute(uint32_t w){  
   HEADNADA;
@@ -700,25 +694,25 @@ void SR_geo_outer_N51(uint32_t w){ // dacspeed3x
 }
 
 // would be nice to be able to select where we get speedfrom - or have 4 options here... - our own speed? trial in new one // route // no route
-void SR_geo_outer_N52(uint32_t w){ // spdfracdac3self
+void SR_geo_outer_N52(uint32_t w){ // spdfracdac31
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
     if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=gate[dacfrom[daccount][w]].dac; 
     else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=gate[dacfrom[daccount][w]].dac;
     else gate[w].matrix[6]=gate[dacfrom[daccount][w]].dac;
-    gate[w].inner=SR_geo_inner_dacspeed3selfnorouteadcN; 
+    gate[w].inner=SR_geo_inner_dacspeed3xxnorouteadcN; 
   }
 }
 
-void SR_geo_outer_N53(uint32_t w){ // spdfracdac3self route in
+void SR_geo_outer_N53(uint32_t w){ // spdfracdac31 route in
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
     if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=gate[dacfrom[daccount][w]].dac; 
     else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=gate[dacfrom[daccount][w]].dac;
     else gate[w].matrix[6]=gate[dacfrom[daccount][w]].dac;
-    gate[w].inner=SR_geo_inner_dacspeed3selfrouteadcN; 
+    gate[w].inner=SR_geo_inner_dacspeed3xxrouteadcN; 
   }
 }
 

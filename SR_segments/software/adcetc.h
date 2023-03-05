@@ -647,6 +647,11 @@ void TIM4_IRQHandler(void)
   lastlastmodec=lastmodec;
   lastmodec=temp;
   mode[2]=temp>>6;
+  
+  //  itoa(mode[2], buffx, 10);
+  //  uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 };
+  //  send_command(0x05/* some interrupt ID */, m);
+
   if (lastmode[2]!=mode[2]) gate[2].changed=1; 
   else gate[2].changed=0;
   lastmode[2]=mode[2];
