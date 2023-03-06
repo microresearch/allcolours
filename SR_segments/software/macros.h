@@ -1,6 +1,3 @@
-// for new struct sets of modes:
-
-// unused but what we do with cv... is for matrixp ops ROUTE is now dep
 #define ROUTETYPE (gate[w].matrix[16]>>9)
 
 #define SETROUTETYPE (gate[w].matrix[16])
@@ -10,7 +7,6 @@
   gate[w].routetype=CVL[w]>>9;			\
   }
 
-// do we need to reset all matrices?
 
 #define RESETTN {				\
   for (uint32_t y=0;y<22;y++){			\
@@ -110,7 +106,6 @@
 
 #define HEADNADAT int32_t tmp; uint32_t bitn=0, bitrr, val, x, xx; \
 
-// redefining for struct - adding in count for lastspeed
 #define GSHIFT_ {				\
     gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
     gate[w].Gshift_[0]=gate[w].shift_;					\
@@ -143,11 +138,6 @@
     gate[w].Gshare_=gate[w].shift_;			\
     Gshift_[w]=gate[w].shift_&4095;			\
 }
-
-#define JUSTCYCLE_ {					\
-  bitrr = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;		\
-  bitn^=bitrr;						\
-  }
 
 #define BINROUTEalt_ {				\
     tmp=binroute[count][w]|binary[w];		\
@@ -192,8 +182,6 @@
     if (gate[x].gsrcnt[w]<0) gate[x].gsrcnt[w]=SRlength[x];	\
   }
 
-
-// was newgsr_nores
 #define BINROUTEnoalt_ {				\
     tmp=binroute[count][w]|binary[w];			\
   for (x=0;x<4;x++){				\
@@ -238,6 +226,50 @@
   bitn^=bitrr;						\
   }							\
   tmp=tmp>>1;						\
+  }							\
+}
+
+// new one
+#define BINROUTECYC_ {			\
+    tmp=binroute[count][w]|binary[w];		\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+  if (gate[x].reset[w]){				\
+  bitrr = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  gate[x].reset[w]=0;					\
+  }							\
+  else {						\
+    bitrr=((gate[w].Gshift_[w]>>SRlength[w])& 0x01);						\
+  }							\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+}
+
+#define BINROUTECYCstrip_ {			\
+  for (x=0;x<4;x++){				\
+  if (tmp&0x01){				\
+  if (gate[x].reset[w]){				\
+  bitrr = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  gate[x].reset[w]=0;					\
+  }							\
+  else {						\
+    bitrr=((gate[w].Gshift_[w]>>SRlength[w])& 0x01);						\
+  }							\
+  bitn^=bitrr;						\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+}
+
+#define BINROUTECYCstrips_ {			\
+  if (gate[x].reset[w]){				\
+  bitn = (gate[x].shift_>>SRlength[x]) & 0x01;		\
+  gate[x].reset[w]=0;					\
+  }							\
+  else {						\
+    bitn=((gate[w].Gshift_[w]>>SRlength[w])& 0x01);						\
   }							\
 }
 
@@ -292,7 +324,7 @@
 
 #define BINROUTEstrips_ {				\
   bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
+  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitn;		\
   }
 
 
@@ -377,69 +409,6 @@
   bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
   }
 
-#define BINROUTEtrig_ {				\
-    tmp=binroute[count][w]|binary[w];			\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  bitn^=bitrr;							\
-  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  }
-
-#define BINROUTEtrigstrip_ {				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  bitn^=bitrr;							\
-  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  }
-
-#define BINROUTEtrigstrips_ {				\
-  bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitn;	\
-  }
-
-#define BINROUTEOR_ {				\
-    tmp=binroute[count][w]|binary[w];			\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  bitn=bitn|bitrr;							\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  }
-
-#define BINROUTEORstrip_ {				\
-  for (x=0;x<4;x++){					\
-  if (tmp&0x01){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  bitn=bitn|bitrr;							\
-  }							\
-  tmp=tmp>>1;						\
-  }							\
-  }
-
-#define BINROUTEANDCYCLE_ {				\
-    tmp=(binroute[count][w]|binary[w])|(1<<w);		\
-  for (x=0;x<4;x++){					\
-    if (tmp&0x01 || (x==w)){					\
-  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
-  gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;		\
-  bitn^=bitrr;					\
-  }							\
-    tmp=tmp>>1;						\
-  }							\
-  }
-
 #define PULSOUT {							\
     if (w!=0){								\
     tmp=(w<<1);								\
@@ -518,14 +487,6 @@
   }						\
 }
 
-// prob is upto 32 // 5 bits
-#define PULSIN_LEAK {				\
-  if (pulse[w]){					\
-    xx=!(GPIOC->IDR & pulsins[w]);			\
-    bitn=otherleaks(bitn,xx,prob,w);			\
-  }							\
-}
-
 // reverse 32 bits for tmpp - but how to reverse based on length - reverse lowest srlength bits ?
 #define REV32 {				\
   tmpp = ((tmpp >> 1) & 0x55555555) | ((tmpp & 0x55555555) << 1);	\
@@ -534,8 +495,4 @@
   tmpp = ((tmpp >> 8) & 0x00FF00FF) | ((tmpp & 0x00FF00FF) << 8);	\
   tmpp = ( tmpp >> 16             ) | ( tmpp               << 16);	\
   }
-
-
-//for INTmodes ???
-#define CVin31 (31-(adc_buffer[lookupadc[w]]>>7)); 
 

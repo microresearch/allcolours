@@ -52,10 +52,10 @@ static uint32_t CVL[4]={0,0,0,0};
 #define LOWEST 0.000005f
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16troutetype, 17 route->now strobe function index}, 18 is abstract CV/unused, 19 is now glob, 20 is now abstract index, 21 is mix
-uint32_t matrixNN[22]={0,4095,0,  0,0,2047,31<<7, 0, 3<<7, 0,2048,0,0,      0<<7,0, 0, 0, 0, 2048, 0, 0, 2048}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
-uint32_t matrixLL[22]={0,4095,0,  0,0,0, 31<<7,   0,0,        0,2048,0,0,   30<<7,0, 0, 0, 0, 0, 0, 0, 2048};
-uint32_t matrixCC[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    30<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
-uint32_t matrixRR[22]={2<<7,4095,0,  0,0,2047, 31<<7, 0,0,         0,2048,0,0,    30<<7,0, 0, 0, 0, 0, 0, 0, 2048};  // spdfracend
+uint32_t matrixNN[22]={0,4095,0,  0,2047,2047,31<<7, 0, 1<<7, 0,2048,0,0,      0<<7,0, 0, 0, 0, 2048, 0, 0, 2048}; // binroutfixed... last in len -- 12 bits  31<<7 is lowest length
+uint32_t matrixLL[22]={0,4095,0,  0,2047,0, 31<<7,   0,0,        0,2048,0,0,   30<<7,0, 0, 0, 0, 0, 0, 0, 2048};
+uint32_t matrixCC[22]={0,4095,0,  0,2047,0, 31<<7, 0,0,         0,2048,0,0,    30<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
+uint32_t matrixRR[22]={2<<7,4095,0,2047,0,2047, 31<<7, 0,0,   0,2048,0,0,    30<<7,0, 0, 0, 0, 0, 0, 0, 2048};  // spdfracend
 uint32_t matrixTT[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    0<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
 //                     speed   bit       len   adc,adc-cv    prob   alt     dac      strobespdindex, type, route, abstrct cv, glob, abstract index, mixer
 
@@ -220,7 +220,11 @@ void mode_init(void){
   uint32_t x;
   
   for (x=0;x<22;x++){
-
+    gate[0].offset[x]=0;
+    gate[1].offset[x]=0;
+    gate[2].offset[x]=0;	
+    gate[3].offset[x]=0;
+    
     gate[0].matrix[x]=matrixNN[x];
     gate[1].matrix[x]=matrixLL[x];
     gate[2].matrix[x]=matrixCC[x];
@@ -274,7 +278,7 @@ void mode_init(void){
   gate[x].funcbit=routebits_nodepth_typesz;
   gate[x].extent=6;
   gate[x].depths=depth_routebits_nodepth_typesz;
-  gate[x].str_funcbit=routebits_nostrobe_depth_typesz;
+  gate[x].str_funcbit=routebits_nostrobe_depth_typesz; 
   gate[x].str_extent=7;
   gate[x].str_depths=depth_routebits_nostrobe_depth_typesz;
   }
@@ -348,7 +352,7 @@ if (www==2)  {
    {
      if (gate[0].strobed){ // still q of strobey
        //   tmp= gate[speedfrom[spdcount][0]].dac; // now is set by count/array
-       tmp= (gate[4].shift_)&4095; // now is set by count/array //fixed 20/2/2023
+       tmp= (gate[strobefrom[www]].shift_)&4095; // now is set by count/array //fixed 20/2/2023
       tmp+=320;
       TIM1->ARR =tmp; // what range this should be? - connect to SRlengthc
       TIM1->CCR1 = tmp/2; // pulse width

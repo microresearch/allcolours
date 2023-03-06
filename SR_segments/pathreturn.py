@@ -6,7 +6,7 @@ import sys
 import random
 import re
 
-pathy=[8,8,8,1]
+pathy=[4,1,10,1]
 pathr=[1,2,4,8]
 frommy=[]
 # where from is convert binary and then mask

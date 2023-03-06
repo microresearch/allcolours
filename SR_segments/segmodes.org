@@ -106,35 +106,32 @@ matrixp//globals in RR
 
 check code:
 
-XXmacros.h
 XXmain.c
 XXcaput000.c 
-
 XXresources.h
 XXtables.h - can attend more to dacfrom etc...
-
 XX#include "adcetc.h"
+XXdoneagain-macros.h 
 
 #include "geogen.h"
-#include "exp_port.h" - cleaned up a bit but needs full check
 #include "geoCC.h"
-
 #include "geoNN.h"
 #include "geoLL.h"
 #include "geoRR.h"
+#include "exp_port.h" - cleaned up a bit but needs full check
 
 arrays: 
 XXgeomantic.h
 XXnewbits.h
 
 TODO:
-- *additional probs and functions?*
-- *first part of binroutes not so exciting*
-- *thinking if abstracts should be in array of routebits_anystrobe_depth_notypesz ???*
-- check how all esp, strobe inners handle specific use of depth in outer ????
-- look at all probabilities and analysis below
-- *if L50+ should be adapted for NN and then swop out c60 for c70?*
+- *check defaults we copy into first arrays*
+- *check parameters for probs in functions*
+- *any additional probs and functions?*
+- look at all probabilities themselves
+- *if L50, L51, L52, L53 should be adapted for NN and then swop out c60range for c70range in NN?*
 - sanity check all code, line by line - see above
+- we need more memory if we add/change too much
 
 ///
 
@@ -143,18 +140,48 @@ TODO:
 SR_geo_outer_Cplast - where to fit? on any side?
 
 added SR_geo_inner_probdepthnodepth but we need outer to use it!
-also we have:
-added SR_geo_inner_probdepthdepthSS ^^^^^ for matrixp
 
 NN: 
 probzeros: SR_geo_inner_adcprobzero, SR_geo_inner_adcprobzeronod
-probadcburst: SR_geo_inner_probadcburst
+SR_geo_inner_probadcentryxornod and all nod/no depths below - which need outers?
 
+QUESTION:1. check missing probs and where they could fit.
+NN NOD are unused: 
+SR_geo_inner_probadcentrynod
 SR_geo_inner_probadcentryxornod
+SR_geo_inner_probadcentryXnod -> SR_geo_inner_probdepth???
+SR_geo_inner_probadcentryxorXnod
+SR_geo_inner_adcprobzeronod -> with probzero
+
+CC:
+- SR_geo_inner_probdepthnodepth: anystrobe depth//routebits_no depth UNUSED
+- we need also probf_anystrobe_nodepth vs routebits_depth_typesz
+DONE-Now in SN for matrixp alts: SR_geo_inner_probdepthdepthSS: probdepth//notypesz
+
+** 6/3/2023
+
+TODO:
+
+DONE:
+- fixed some use of gate[w].matrix[11] for gapped and probs
+- fixed bug in binroutes in macros
+- DONEsome alternative binroutes TODO and alts for those
+- DONETEST:*new type of binroute. cycle own bits if there is no new bit
+
+TEST:
+DONE//-TESTesp110-113across all sides FIXED/CHANGED XXDONEcheck how all esp, strobe inners handle specific use of depth in outer ????
+DONE-NO-removed!TEST: thinking if abstracts should be in array of routebits_anystrobe_depth_notypeszX and even in routebits_nostrobe_depth_notypesz but sans strobes???*
+-TEST:Now in SN for matrixp alts: dep//SR_geo_inner_probdepthdepthSS: probdepth//notypesz // where?
+
+SR_geo_inner_probdepthdepthSN - C150-152
+
+  other:routebits_nodepth_typesz;
+  strobe: routebits_nostrobe_depth_typesz;
+
+prob for strobe is against: routebits_nostrobe_depth
+prob cvspeed is against: routebits_depth_typesz
 
 ** 5/3/2023
-
-TEST: 
 
 DONE:
 - recheck where cv hits on mode knobDONE
@@ -283,7 +310,7 @@ probzero also: SR_geo_inner_adcprobzero added
 
 ////
 
-SR_geo_inner_probadcburst: anystrobe_forNN_depth, fixedroute in SR_geo_outer_Nadcburst
+//SR_geo_inner_probadcburst: anystrobe_forNN_depth, fixedroute in SR_geo_outer_Nadcburst
 
 + probs of advance, and reset also use anystrobe_depth // also with nod option  - do we use these as are adc only? how?
 

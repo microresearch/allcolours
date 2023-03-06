@@ -26,7 +26,7 @@ void printbits(unsigned char bitz){
 
 #define MAX (1024*1326*8)
 #define MAXP (1024*1326)
-#define MAXPP (1024*1326/4)
+#define MAXPP (1024*1326/4) // 8x4 =32 bits
 
 unsigned char shifter(unsigned char *buffer){
   int x, tmp, last;
@@ -112,8 +112,12 @@ int main(void)
 */ 
 
   unsigned int shifter[4], shifted, xx;
+  unsigned char coynt=0;
+  unsigned char speed=4;
   // how to shift one bit right and cycle array
   for (y=0;y<(MAX);y++){ // MAX or MAXP
+    if (coynt>speed){
+      coynt=0;
   for (x=0;x<MAXPP;x++){
     shifted=(bufferx[x]<<1);
     shifter[0]=(shifted&255) +carry; // bottom byte
@@ -123,6 +127,8 @@ int main(void)
     carry=(bufferx[x]&(1<<31))>>31; // top bit
     bufferx[x]=shifter[0]+(shifter[1]<<8)+(shifter[2]<<16)+(shifter[3]<<24);	  
 	  }
+    }
+    coynt++;
   // bufferxx uses carry
   for (x=0;x<MAXPP;x++){
     shifted=(bufferxx[x]<<1);

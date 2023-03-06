@@ -170,15 +170,14 @@ void SR_geo_inner_dacspeed3xrouteabstractL(uint32_t w){
 
 //0.0////////
 
-void SR_geo_outer_L00(uint32_t w){  // set length or could better be TYPE
+void SR_geo_outer_L00(uint32_t w){  // set TYPE
   if (gate[w].changed==1) {
     RESETL; // added 21/12 only reset on change
     gate[w].changed=0;
   }
-    
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[6]=CVL[w]; // length
+  SETROUTETYPECV;
   gate[w].inner=SR_geo_inner_globalC; // routetype/theroute so always at reset route/base global
 }
 
@@ -206,7 +205,7 @@ void SR_geo_outer_L42(uint32_t w){ // select function/gapped array
     gate[w].matrix[3]=CVL[w];// selfunction <<6//
     gate[w].matrix[4]=CV[w];
     gate[w].matrix[10]=CV[w];  
-    gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+    gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
     gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__ 
     gate[w].inner=SR_geo_inner_gappedfunction; // as we have depth here
   }
@@ -218,8 +217,9 @@ void SR_geo_outer_L43(uint32_t w){ // select function/gapped array - fixed route
     gate[w].matrix[3]=CVL[w];// selfunction
     gate[w].matrix[4]=CV[w];
     gate[w].matrix[10]=CV[w];  
-    gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+    gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
     gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__
+    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_gappedfunctionrung; // as we have depth here 
   }
 }
@@ -236,8 +236,8 @@ void SR_geo_outer_L50(uint32_t w){ // abstract in
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
     gate[w].matrix[9]=0<<6; // probbits
     gate[w].matrix[10]=CVL[w]; // depth for prob
-    
-    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
+    gate[w].matrix[5]=gate[dacfromopp[daccount][w]].dac; // CV2 or gapped
+    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_probabstractentryX;
   }
 }
@@ -326,8 +326,9 @@ void SR_geo_outer_L153(uint32_t w){  // final all gapped reset
   }
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
   gate[w].matrix[4]=CVL[w];
-  gate[w].matrix[10]=CVL[w];  
+  gate[w].matrix[10]=CVL[w];
+  gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac);
   gate[w].inner=SR_geo_inner_gappedfunction;
     }

@@ -70,19 +70,21 @@ uint32_t orderings[64][15]={ // orderings - first is length
 uint32_t binroute[32][4]={ // add more routes, also what seq change of routes makes sense now we have 16 routes
     {8,1,2,4}, // new default: 8 1 2 4 // default was 8121 // now we have full route 8124
     {4,1,8,2}, // good
-    {8,1,2,2}, // notexpanding
-    {8,1,2,1}, // notexpanding
-    {8,1,2,8}, // expanding
-    {8,1,2,9}, // expanding
-    {8,1,2,11}, // expanding
-    {8,1,2,12}, // expanding
+
+    {4,1,10,1},
+    {0,1,3,1},
+    {8,1,1,2}, // from below and below changed 8,1,1,6 replace in alts
+    {0,1,10,1},
+    {4,1,10,1},
+    {10,4,1,4},
+
     {8,1,2,4}, // route in one big circle
     {0,1,2,4},
     
     {9,3,6,9}, // as 3/0/1/0 but add loop itself - subtract above to get only looping
     {1,2,4,8}, // only loop - this is what is added to get loop too for prob
     {8,1,2,2}, // as defroutee 3/0/1/1
-    {8,1,1,2}, // as altroute 3/0/0/1
+    {8,1,1,6}, // as altroute 3/0/0/1
     {8,9,1,2}, // bounce L and R back and forth
     {8,1,2,5}, // others
     {2,4,8,1}, // reverse round route
@@ -103,21 +105,34 @@ uint32_t binroute[32][4]={ // add more routes, also what seq change of routes ma
     {2,5,10,4},
 }; 
 
+/* new routes to replace some of first - and fill alts below
+4,1,10,1
+0,1,3,1
+8,1,1,2// we had so...
+
+0,1,10,1
+4,1,10,1
+10,4,1,4
+ */
+
 uint32_t altbinroute[32][4]={ // for probs - can be more like double route but trial first one and fill in rest TODO
   {10,5,10,5},
   {6,9,9,6},
-  {10,13,2,3},
-  {10,5,2,1},
-  {10,5,2,9},
-  {10,5,2,9},
-  {10,13,2,11},  
-  {10,5,10,13},
+
+  {14,5,11,5}, //toreplace
+  {14,5,3,1},
+  {14,9,1,3},
+
+  {10,5,10,5},
+  {14,5,11,5},  
+  {14,5,11,5},
+
   {10,5,10,5},
   {2,5,10,4},
   {9,9,10,9},
   {2,4,8,8},
   {10,13,2,3},
-  {14,9,1,3},
+  {14,9,9,7}, //xxdone
   {14,9,1,5},
   {10,5,10,5},
   {10,5,10,5},

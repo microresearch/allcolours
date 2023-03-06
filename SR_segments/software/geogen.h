@@ -17,7 +17,7 @@
     BINROUTENOGstrip_;				\
     break;					\
     case 6:					\
-    BINROUTEtrigstrip_;				\
+    BINROUTECYCstrip_;				\
     break;					\
     case 7:					\
     BINROUTEnoaltstrip_;			\
@@ -47,7 +47,7 @@
     BINROUTENOGstrips_;				\
     break;					\
     case 6:					\
-      BINROUTEtrigstrips_;			\
+      BINROUTECYCstrips_;			\
     break;					\
     case 7:					\
     BINROUTEnoaltstrips_;			\
@@ -1275,27 +1275,6 @@ static inline uint32_t binroutaltreset(uint32_t depth, uint32_t in, uint32_t w){
   }
   return bt;
 }
-  
-
-// TODO: check binroutes: the route itself // type of binroute... binroutetypes[binroutetypecount][w];
-/* 
-routes: 
-tmp=binroute[count][w]|binary[w];
-depth=depth>>8; // 12 bits to 4 bits // but we do tail for that one too
-
-each has one of  8: BINROUTE_, BINROUTESR_; BINROUTEalt_; BINROUTEZERO_; BINROUTESHARE_; BINROUTENOG_; BINROUTEtrig_; BINROUTEnoalt_;  // new one which just cycles and doesn't reset
-
-so we have 24... do we want to fill all of those out!?
-*/
-
-// adding in ANDs and OR routes
-
-//binroutfixedmy, binroutfixedmy, binroutmybumpS, binroutmycv
-// these now are changed for all as theroute
-
-// zbinroutfixedmy., zbinroutfixedmyreset, zbinroutmybumpS, zbinroutmybumpbit, zbinroutmybumpbitt, zbinroutmycv
-
-// these fixed: zbinroutmybumpSSXXX, zbinroutmybumpbitXXX, zbinroutmybumpbittXXX, zbinroutmycvD 
 
 static inline uint32_t zbinroutmycvalt(uint32_t depth, uint32_t in, uint32_t w){   // CV->myroute so we can use DAC // depth
   uint32_t bitn=0, bitrr, tmp, tmpp, x;
@@ -1380,7 +1359,7 @@ uint32_t tmpp=gate[w].routetype;
       BINROUTENOG_;
     break;
     case 6:
-      BINROUTEtrig_;
+      BINROUTECYC_;
     break;
     case 7:
       BINROUTEnoalt_;  // new one which just cycles and doesn't reset
@@ -1417,7 +1396,7 @@ static inline uint32_t binroutesel1(uint32_t depth, uint32_t in, uint32_t w){ //
       BINROUTENOGstrip_;
     break;
     case 6:
-      BINROUTEtrigstrip_;
+      BINROUTECYCstrip_;
     break;
     case 7:
       BINROUTEnoaltstrip_;
@@ -1450,7 +1429,7 @@ static inline uint32_t binroutesel4(uint32_t depth, uint32_t in, uint32_t w){ //
       BINROUTENOGstrip_;
     break;
     case 6:
-      BINROUTEtrigstrip_;
+      BINROUTECYCstrip_;
     break;
     case 7:
       BINROUTEnoaltstrip_;  // new one which just cycles and doesn't reset
@@ -6170,7 +6149,7 @@ static inline uint32_t Zbinroutsplit(uint32_t depth, uint32_t in, uint32_t w){  
   tmpp=gate[w].routetype;
   ROUTETYPE_;
   bbb[w]=bitn;
-    }
+  }
   return bbb[w];
 }
 

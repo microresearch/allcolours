@@ -1,3 +1,131 @@
+void SR_geo_inner_probadcentryX(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
+    }
+    else bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+void SR_geo_inner_probadcentryXnod(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probf_anystrobe_nodepth[gate[w].matrix[9]>>8])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
+    }
+    else bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
+void SR_geo_inner_routeadcN(uint32_t w){  
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+    bitn^=binroutesel0(0,0,w); // theroute which is ... and routetype
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
+
+void SR_geo_inner_probroutes(uint32_t w){ 
+  // what cv we need: probfs: 9type,10comp... 11IN 3,4,5 is gapped...
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
+
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      bitn^=Zbinrouteforalt(gate[w].matrix[4], gate[w].matrix[5], w); 
+  }
+  else {
+    bitn^=Zbinrouteforaltalt(gate[w].matrix[4], gate[w].matrix[5], w); 
+  }    
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
+
+#define BINROUTEtrigstrips_ {					\
+  bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitn;	\
+  }
+
+
+
+#define BINROUTEtrig_ {				\
+    tmp=binroute[count][w]|binary[w];			\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;							\
+  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
+#define BINROUTEtrigstrip_ {				\
+  for (x=0;x<4;x++){					\
+  if (tmp&0x01){					\
+  bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
+  bitn^=bitrr;							\
+  if (gate[x].trigger) gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;	\
+  }							\
+  tmp=tmp>>1;						\
+  }							\
+  }
+
 void SR_geo_inner_rungnorouteA(uint32_t w){  
   HEADNADA;
   if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc

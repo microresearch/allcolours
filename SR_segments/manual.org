@@ -11,17 +11,20 @@ gnarlular processing, and advanced cross frequency CV and audio
 pattern generation, encoding a series of successively pleasurable and
 tortuous sliding dislocations
 
-intended as lonely serpent's head or as companion for All the Colours
-of the Noise extending the ouroboric becoming-noise of the
-contemporary eurorack rosarium
+Intended as lonely serpent's head or as companion for All the Colours
+of the Noise extends in four directions the ouroboric becoming-noise
+of the contemporary eurorack rosarium.
 
-Four draconic shift registers are enchained, interlocked, woven and
+Four draconic heavily simulated shift registers are enchained, interlocked, woven and
 segmented, recursively feeding on each other in turn, vomiting noise
-and wormy symphonies. moon phases and nodal paths. It is to have done
-with the judgement of gods.
+and wormy symphonies according to moon phases and shifting nodal
+paths. It is to have done with the judgement of god/s.
 
-CD can be considerd as 64^4 different instruments depending on modal
+CD can be considered as 64^4 different instruments depending on modal
 configuration informed by lunar phases and astrogeomantic time signatures. 
+
+emphasise that it is about the creation of more than 16777216 unique
+instruments through manipulation of modes and parameters
 
 towards a synthesis without modules...
 
@@ -181,7 +184,19 @@ Glossary:
 
 [Glossary: SeRpent - shift register]
 
-Rungler
+describe SR as a function 
+
+SR can be described as a serpentine function which eats bits, passes
+each bit at clock speed along all its segments, and then excretes that
+bit - either to feed on it in a delayed ouroboric cycle or to pass
+this bit to another register. It is a form or wormy memory.
+
+Rungler: 
+
+The creation of Rob Hordijk, a rungler is a shift register clocked by
+one oscillator and receiving its data input from the other
+oscillator. In the recursive cases of CD, the oscillators are any abstract
+function or input which can be implemented by an SR.
 
 ** 24/2/2023
 
@@ -221,7 +236,11 @@ modes...
 
 ** 20/2/2023
 
-tips such as use of pulse ins if sections start to run out, also to mix in signals...
+tips:
+
+- such as use of pulse ins if sections start to run out, also to mix in signals...
+- take out clock ins if not being used for strobe speeds or pulses
+- operate right hand side at slower speeds or use slow pulsing clock in // not always
 
 work from bottom up - useful configuration on bottom, leave it and start work from top
 

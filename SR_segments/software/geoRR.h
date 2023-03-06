@@ -152,7 +152,7 @@ void SR_geo_outer_R00x(uint32_t w){  // set length // set length or could better
 }
 
 // alt for above as we set length later... prob 1 route against cycle
-void SR_geo_outer_R00(uint32_t w){  // set length // set length or could better be TYPE - route in
+void SR_geo_outer_R00(uint32_t w){  //leave as
   if (gate[w].changed==1) {
     RESETR; // added 21/12 only reset on change and RESETR also does RESETG global reset
     gate[w].changed=0;
@@ -363,7 +363,8 @@ void SR_geo_outer_R140(uint32_t w){ // globalorderbumpS,
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
     glob=3; //     
     gate[w].matrix[4]=CVL[w];
-    gate[w].matrix[10]=CVL[w];  
+    gate[w].matrix[10]=CVL[w];
+    gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_gappedfunction_globoutside; // outside speed
   }
 }
@@ -375,7 +376,8 @@ void SR_geo_outer_R141(uint32_t w){ // bumpS
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
     glob=0; //     
     gate[w].matrix[4]=CVL[w];
-    gate[w].matrix[10]=CVL[w];  
+    gate[w].matrix[10]=CVL[w];
+    gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_gappedfunction_globoutside; // outside speed
   }
 }
@@ -387,7 +389,8 @@ void SR_geo_outer_R142(uint32_t w){ // bumproute
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
     glob=1; //     
     gate[w].matrix[4]=CVL[w];
-    gate[w].matrix[10]=CVL[w];  
+    gate[w].matrix[10]=CVL[w];
+    gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_gappedfunction_globoutside; // outside speed no depth
   }
 }
@@ -399,7 +402,8 @@ void SR_geo_outer_R143(uint32_t w){ // bumpdac
     gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
     glob=2; //     
     gate[w].matrix[4]=CVL[w];
-    gate[w].matrix[10]=CVL[w];  
+    gate[w].matrix[10]=CVL[w];
+    gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_gappedfunction_globoutside; // outside speed no depth
   }
 }
@@ -415,7 +419,7 @@ void SR_geo_outer_R150(uint32_t w){ // globalorder
     glob=7; //
     gate[w].matrix[19]=(gate[dacfrom[daccount][w]].dac);
     gate[w].matrix[4]=CVL[w];
-    gate[w].matrix[10]=CVL[w];  
+    gate[w].matrix[10]=CVL[w];    
     gate[w].inner=SR_geo_inner_gappedfunction_glob;  // inside speed depth
   }
 }
@@ -457,9 +461,5 @@ void SR_geo_outer_R153(uint32_t w){  // final all gapped reset - with just route
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
   glob=4; //checked
   gate[w].matrix[19]=CVL[w]; // for route
-  //  gate[w].matrix[4]=CVL[w];
-  //  gate[w].matrix[10]=CVL[w];  
-  //  gate[w].inner=SR_geo_inner_gappedfunction;
-  //  gate[w].inner=SR_geo_inner_globalC; //
   gate[w].inner=SR_geo_inner_function_globoutside; // outside speed
 }

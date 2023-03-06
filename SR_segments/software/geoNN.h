@@ -82,25 +82,6 @@ void SR_geo_inner_dacspeed3xrouteadcN(uint32_t w){
 
 
 
-void SR_geo_inner_routeadcN(uint32_t w){  
-  HEADNADA;
-
-  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
-    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
-    if (gate[w].dac>4095) gate[w].dac=4095;
-  }
-  else gate[w].dac = delay_buffer[w][1];
-
-    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-    GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
-    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
-    bitn^=binroutesel0(0,0,w); // theroute which is ... and routetype
-    BITN_AND_OUTV_; 
-    new_data(val,w);
-    }
-}
 
 void SR_geo_inner_adcprobzero(uint32_t w){  
   HEADNADA;
@@ -266,52 +247,6 @@ void SR_geo_inner_probadcburst(uint32_t w){  // ADC only - prob for adc itself -
     }      
     else bitn=binroutesel0(0,0,w); // theroute which is ... and routetype
     
-    BITN_AND_OUTV_; 
-    new_data(val,w);
-    }
-}
-
-void SR_geo_inner_probadcentryX(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
-  HEADNADA;
-
-  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
-    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
-    if (gate[w].dac>4095) gate[w].dac=4095;
-  }
-  else gate[w].dac = delay_buffer[w][1];
-
-  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-    GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
-
-    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-      bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
-    }
-    else bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
-    BITN_AND_OUTV_; 
-    new_data(val,w);
-    }
-}
-
-void SR_geo_inner_probadcentryXnod(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
-  HEADNADA;
-
-  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
-    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
-    if (gate[w].dac>4095) gate[w].dac=4095;
-  }
-  else gate[w].dac = delay_buffer[w][1];
-
-  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-    GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
-
-    if ((*probf_anystrobe_nodepth[gate[w].matrix[9]>>8])(gate[w].matrix[10], gate[w].matrix[11], w)){
-      bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
-    }
-    else bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
@@ -495,9 +430,9 @@ void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed route entry
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[9]=0<<6; // invprobbits
+  gate[w].matrix[9]=0<<6; // probbits
   gate[w].matrix[10]=CVL[w]; // depth for prob
-  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
+  //  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_probadcentry;// fixed as probbits and fixed entry
 }
 }
@@ -506,9 +441,9 @@ void SR_geo_outer_N03(uint32_t w){ // 1-prob of ADC entry or fixed route entry  
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[9]=0<<6; // invprobbits
+  gate[w].matrix[9]=0<<6; // probbits
   gate[w].matrix[10]=CVL[w]; // depth for prob
-  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
+  //  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_probadcentryxor;// fixed as probbits and fixed entry
 }
 }
