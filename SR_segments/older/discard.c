@@ -1,3 +1,179 @@
+//////////////// [+outside functions+] and ports from experiment.h - observation that most OUTSIDE functions should be paired with specific inside/bits
+
+//static uint32_t delayline[512]; //shared delay line
+//static uint32_t delaylineUN[4][512]; //UNshared delay line
+/*
+static inline uint32_t delay_line_in(uint32_t depth, uint32_t w){
+  uint32_t bt=0, bitrr, tmp, tmpp;
+  static uint32_t bits[4]={0,0,0,0}; // 32 bits of bits
+  // put into delay line - need index and bit index
+  tmp=bits[w]/32;
+  tmpp=bits[w]%32;
+  delaylineUN[w][tmp]&=bitmasky[tmpp];
+  delaylineUN[w][tmp]|=(depth<<(tmpp));
+  bits[w]++;
+  if (bits[w]>16383) bits[w]=0;
+}
+
+static inline uint32_t delay_line_out(uint32_t depth, uint32_t w){
+  uint32_t bt=0, tmp;
+  tmp=depth/32;
+  bt=(delaylineUN[w][tmp]>>(depth%32))&0x01;
+  return bt;
+}
+
+uint32_t OUT_SRdelay_lineIN(uint32_t depth, uint32_t w){  // could also be shared version of this // we need delay_lineOUT to match
+  uint32_t bitn, tmp,x, bitrr;
+  BINROUTESR_; // or other forms
+  delay_line_in(bitn,w);
+  return 0;
+}
+
+uint32_t SRdelay_lineOUT(uint32_t depth, uint32_t in, uint32_t w){  // could also be shared version of this //XX  -- well cnt was shared so...
+  static uint32_t cxxnt[4]={0,0,0,0};
+  uint32_t bitn;
+  bitn=delay_line_out(cxxnt[w],w); // or detach - length not used - this is our binroute
+  cxxnt[w]++;
+  if (cxxnt[w]>16383) cxxnt[w]=0;
+  return bitn;
+}
+*/
+
+
+/////////////////////////////////////////////////////////////////
+// value functions
+// return a value from bits (this is what dacs do)... process a value... generate a value (eg. from a route)
+// but question is how many bits... always 12
+
+//SRx determines route SRy to give value to determine route SRz to  ... value from route... ->  routevalue(routevalue(x,in,w),in,w) - how much depth
+//followed by binroute
+//single route or multiples
+//try multiples...
+// value from value
+static inline uint32_t routevalue(uint32_t depth, uint32_t in, uint32_t w){ //
+  uint32_t bt=0, bitrr;
+  depth=binroute[count][w]|binary[w]; 
+  for (uint32_t x=0;x<4;x++){
+  if (depth&0x01){
+    bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 4095; // 12 bits no shift
+    bt^=bitrr;
+  }
+  depth=depth>>1;
+  }
+  return bt; // as a value 12 bits
+}
+  
+
+
+
+static uint32_t lfsr_taps_mirrored[32][4] = {
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 1, 1, 1},
+        {3, 2, 2, 0},
+        {4, 2, 1, 0},
+        {5, 3, 2, 0},
+        {6, 2, 1, 0},
+        {7, 3, 2, 1},
+        {8, 3, 2, 0},
+        {9, 3, 2, 0},
+        {10, 3, 1, 0},
+        {11, 5, 3, 0},
+        {12, 3, 2, 0},
+        {13, 4, 2, 0},
+        {14, 3, 1, 0},
+        {15, 4, 2, 1},
+        {16, 2, 1, 0},
+        {17, 4, 1, 0},
+        {18, 4, 1, 0},
+        {19, 5, 3, 0},
+        {20, 4, 1, 0},
+        {21, 4, 3, 2},
+        {22, 4, 2, 0},
+        {23, 3, 2, 0},
+        {24, 2, 1, 0},
+        {25, 5, 1, 0},
+        {26, 4, 1, 0},
+        {27, 5, 3, 0},
+        {28, 3, 1, 0},
+        {29, 5, 3, 0},
+        {30, 2, 1, 0},
+        {31, 6, 5, 1},
+	 };
+
+static uint32_t ghost_tapsR[32][4] = { // right hands path
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 1, 1, 1},
+        {3, 2, 2, 0},
+        {4, 2, 1, 0},
+        {5, 3, 2, 0},
+        {6, 2, 1, 0},
+        {7, 3, 2, 1},
+        {8, 3, 2, 0},
+        {9, 3, 2, 0},
+        {10, 3, 1, 0},
+        {11, 5, 3, 0},
+        {12, 3, 2, 0},
+        {13, 4, 2, 0},
+        {14, 3, 1, 0},
+        {15, 4, 2, 1},
+        {16, 2, 1, 0},
+        {17, 4, 1, 0},
+        {18, 4, 1, 0},
+        {19, 5, 3, 0},
+        {20, 4, 1, 0},
+        {21, 4, 3, 2},
+        {22, 4, 2, 0},
+        {23, 3, 2, 0},
+        {24, 2, 1, 0},
+        {25, 5, 1, 0},
+        {26, 4, 1, 0},
+        {27, 5, 3, 0},
+        {28, 3, 1, 0},
+        {29, 5, 3, 0},
+        {30, 2, 1, 0},
+        {31, 6, 5, 1},
+	 };
+
+
+static uint32_t ghost_tapsL[32][4] = { // left hand path
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {3, 2, 0, 0},
+        {4, 3, 2, 1},
+        {5, 4, 2, 1},
+        {6, 5, 4, 3},
+        {7, 5, 4, 3},
+        {8, 7, 5, 4},
+        {9, 8, 6, 5},
+        {10, 9, 8, 6},
+        {11, 10, 7, 5},
+        {12, 11, 9, 8},
+        {13, 12, 10, 8},
+        {14, 13, 12, 10},
+        {15, 13, 12, 10},
+        {16, 15, 14, 13},
+        {17, 16, 15, 12},
+        {18, 17, 16, 13},
+        {19, 18, 15, 13},
+        {20, 19, 18, 15},
+        {21, 18, 17, 16},
+        {22, 21, 19, 17},
+        {23, 22, 20, 19},
+        {24, 23, 22, 21},
+        {25, 24, 23, 19},
+        {26, 25, 24, 21},
+        {27, 26, 23, 21},
+        {28, 27, 26, 24},
+        {29, 28, 25, 23},
+        {30, 29, 28, 27},
+        {31, 29, 25, 24},
+  };
+
+
+
 void SR_geo_inner_probadcentryX(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
   HEADNADA;
 

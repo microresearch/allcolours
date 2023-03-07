@@ -113,25 +113,34 @@ XXtables.h - can attend more to dacfrom etc...
 XX#include "adcetc.h"
 XXdoneagain-macros.h 
 
-#include "geogen.h"
+XX#include "geogen.h"
+
+*notes:*
+- do we need if ==w in succbits
+- zcopyGSR, zcopyGSR_s unused and potential indie versions
+
 #include "geoCC.h"
 #include "geoNN.h"
 #include "geoLL.h"
 #include "geoRR.h"
-#include "exp_port.h" - cleaned up a bit but needs full check
+
+XX#include "exp_port.h" - cleaned up a bit but needs full check.
 
 arrays: 
 XXgeomantic.h
 XXnewbits.h
 
-TODO:
+TODO: Wed/T/F
+
+// divide into code checks, tests and if we can fit any additional code?
+
 - *check defaults we copy into first arrays*
-- *check parameters for probs in functions*
-- *any additional probs and functions?*
+- *check we have parameters for probs in functions*
 - look at all probabilities themselves
-- *if L50, L51, L52, L53 should be adapted for NN and then swop out c60range for c70range in NN?*
 - sanity check all code, line by line - see above
-- we need more memory if we add/change too much
+
+- *any additional probs and functions?*
+- *if L50, L51, L52, L53 should be adapted for NN and then swop out c60range for c70range in NN? again memory Q*
 
 ///
 
@@ -139,7 +148,7 @@ TODO:
 
 SR_geo_outer_Cplast - where to fit? on any side?
 
-added SR_geo_inner_probdepthnodepth but we need outer to use it!
+added in geoCC: SR_geo_inner_probdepthnodepth but we need outer to use it! -> is probf depth with routebits_nodepth_typesz 
 
 NN: 
 probzeros: SR_geo_inner_adcprobzero, SR_geo_inner_adcprobzeronod
@@ -156,22 +165,28 @@ SR_geo_inner_adcprobzeronod -> with probzero
 CC:
 - SR_geo_inner_probdepthnodepth: anystrobe depth//routebits_no depth UNUSED
 - we need also probf_anystrobe_nodepth vs routebits_depth_typesz
-DONE-Now in SN for matrixp alts: SR_geo_inner_probdepthdepthSS: probdepth//notypesz
+
+** 7/3/2023
+
+*potential adc in mode - adcin as depth and all abstract choices// maybe some more simpler ones esp on NN*
+*also abstract depth from dac on RR TODO 0- where to fill in -c13 in both cases!*
+
+DONEwhere. also we need dac->depth early on // replace 3rd*DONE
+DONE-test in full// test re-map mode knob - but will need memory
 
 ** 6/3/2023
-
-TODO:
 
 DONE:
 - fixed some use of gate[w].matrix[11] for gapped and probs
 - fixed bug in binroutes in macros
 - DONEsome alternative binroutes TODO and alts for those
 - DONETEST:*new type of binroute. cycle own bits if there is no new bit
+DONE-Now in SN for matrixp alts: SR_geo_inner_probdepthdepthSS: probdepth//notypesz
 
-TEST:
+TESTED:
 DONE//-TESTesp110-113across all sides FIXED/CHANGED XXDONEcheck how all esp, strobe inners handle specific use of depth in outer ????
 DONE-NO-removed!TEST: thinking if abstracts should be in array of routebits_anystrobe_depth_notypeszX and even in routebits_nostrobe_depth_notypesz but sans strobes???*
--TEST:Now in SN for matrixp alts: dep//SR_geo_inner_probdepthdepthSS: probdepth//notypesz // where?
+DONE-TEST:Now in SN for matrixp alts: dep//SR_geo_inner_probdepthdepthSS: probdepth//notypesz // where?
 
 SR_geo_inner_probdepthdepthSN - C150-152
 

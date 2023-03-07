@@ -421,12 +421,21 @@ void SR_geo_outer_N01(uint32_t w){ // set adc depth // fixed route in
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[8]=CVL[w]; // adc depth also for abstrcats // but should also be mix
+  gate[w].matrix[8]=CVL[w]; // adc depth also for abstr//cats // but should also be mix
   gate[w].inner=SR_geo_inner_globalC; //
   }
 }
 
-void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed route entry  
+void SR_geo_outer_N02(uint32_t w){ // set adc depth // fixed route in
+  if (gate[w].changed==0){
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[8]=(gate[dacfrom[daccount][w]].dac); 
+  gate[w].inner=SR_geo_inner_globalC; //
+  }
+}
+
+void SR_geo_outer_N03(uint32_t w){ // 1-prob of ADC entry or fixed route entry  
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
@@ -437,7 +446,7 @@ void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed route entry
 }
 }
 
-void SR_geo_outer_N03(uint32_t w){ // 1-prob of ADC entry or fixed route entry  XOR
+void SR_geo_outer_N03x(uint32_t w){ // 1-prob of ADC entry or fixed route entry  XOR
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
@@ -663,9 +672,10 @@ void SR_geo_outer_N153(uint32_t w){  // final all gapped reset
   }
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
   gate[w].matrix[4]=CVL[w];
-  gate[w].matrix[10]=CVL[w];  
+  gate[w].matrix[10]=CVL[w];
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
   gate[w].inner=SR_geo_inner_gappedfunction;
     }
 

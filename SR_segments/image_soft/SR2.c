@@ -114,11 +114,14 @@ int main(void)
   unsigned int shifter[4], shifted, xx;
   unsigned char coynt=0;
   unsigned char speed=4;
+  unsigned char coynt1=0;
+  unsigned char speed1=3;
+
   // how to shift one bit right and cycle array
   for (y=0;y<(MAX);y++){ // MAX or MAXP
-    if (coynt>speed){
-      coynt=0;
-  for (x=0;x<MAXPP;x++){
+    if (coynt1>speed1){
+      coynt1=0;
+    for (x=0;x<MAXPP;x++){
     shifted=(bufferx[x]<<1);
     shifter[0]=(shifted&255) +carry; // bottom byte
     shifter[1]=(shifted>>8)&255;
@@ -128,9 +131,10 @@ int main(void)
     bufferx[x]=shifter[0]+(shifter[1]<<8)+(shifter[2]<<16)+(shifter[3]<<24);	  
 	  }
     }
-    coynt++;
   // bufferxx uses carry
-  for (x=0;x<MAXPP;x++){
+    if (coynt>speed){
+      coynt=0;
+      for (x=0;x<MAXPP;x++){
     shifted=(bufferxx[x]<<1);
     shifter[0]=(shifted&255) +carry; // bottom byte
     shifter[1]=(shifted>>8)&255;
@@ -139,7 +143,9 @@ int main(void)
     carry=(bufferxx[x]&(1<<31))>>31; // top bit
     bufferxx[x]=shifter[0]+(shifter[1]<<8)+(shifter[2]<<16)+(shifter[3]<<24);	  
 	  }
-  }
+    }
+    coynt++; coynt1++;
+    }
     
   cnt=0; cntt=0;
 // convert back to file and save as test2

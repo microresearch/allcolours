@@ -1711,9 +1711,10 @@ void SR_geo_outer_C153(uint32_t w){  // final all gapped reset
   }
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
   gate[w].matrix[4]=CVL[w];
-  gate[w].matrix[10]=CVL[w];  
+  gate[w].matrix[10]=CVL[w];
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
   gate[w].inner=SR_geo_inner_gappedfunction;
     }
 

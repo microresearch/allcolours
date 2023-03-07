@@ -1,5 +1,5 @@
-//extern void send_command(int command, void *message);
-//char buffx[24];
+extern void send_command(int command, void *message);
+char buffx[24];
 
 
 static inline uint32_t countbits(uint32_t i)
@@ -633,7 +633,8 @@ void TIM4_IRQHandler(void)
   temp=(temp+lastlastmoden+lastmoden)/3; 
   lastlastmoden=lastmoden;
   lastmoden=temp;
-  mode[0]=temp>>6; 
+  //  mode[0]=temp>>6;
+  mode[0]=mapping[temp>>2];
   if (lastmode[0]!=mode[0]) gate[0].changed=1;
   else gate[0].changed=0;
   lastmode[0]=mode[0];
@@ -646,11 +647,13 @@ void TIM4_IRQHandler(void)
   temp=(temp+lastlastmodec+lastmodec)/3; 
   lastlastmodec=lastmodec;
   lastmodec=temp;
-  mode[2]=temp>>6;
-  
-  //  itoa(mode[2], buffx, 10);
-  //  uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 };
-  //  send_command(0x05/* some interrupt ID */, m);
+  //  mode[2]=temp>>6;
+  mode[2]=mapping[temp>>2];
+
+  /* itoa(mode[2], buffx, 10); */
+  /*   buffx[sizeof(buffx)+1]=" "; */
+  /*   uint32_t m[] = { 2/\*stderr*\/, (uint32_t)buffx, sizeof(buffx)/sizeof(char)+1}; */
+  /*   send_command(0x05/\* some interrupt ID *\/, m); */
 
   if (lastmode[2]!=mode[2]) gate[2].changed=1; 
   else gate[2].changed=0;
@@ -664,7 +667,8 @@ void TIM4_IRQHandler(void)
   temp=(temp+lastlastmodel+lastmodel)/3; 
   lastlastmodel=lastmodel;
   lastmodel=temp;
-  mode[1]=temp>>6; 
+  //  mode[1]=temp>>6;
+  mode[1]=mapping[temp>>2];
   if (lastmode[1]!=mode[1]) gate[1].changed=1;
   else gate[1].changed=0;
   lastmode[1]=mode[1];
@@ -677,7 +681,8 @@ void TIM4_IRQHandler(void)
   temp=(temp+lastlastmoder+lastmoder)/3; 
   lastlastmoder=lastmoder;
   lastmoder=temp;
-  mode[3]=temp>>6; 
+  //  mode[3]=temp>>6;
+  mode[3]=mapping[temp>>2];
   if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
   else gate[3].changed=0;
   lastmode[3]=mode[3];

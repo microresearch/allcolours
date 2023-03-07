@@ -1,21 +1,4 @@
 // geoLL
-
-// can have some abstract runglers from NN here...
-
-/*
-
-LL: routes as primary, speeds 0 follows CC but add extra rungler!
-
-older from geoLR.h:
-
-L-routes only and etc, R etc, abstracts, routes, and globals...
-
-prime rungler territory
-
-but much following CC so far - unless we can extend runglers...
-
- */
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// INNER
 
@@ -66,9 +49,6 @@ void SR_geo_inner_probabstractentryX(uint32_t w){  // ADC only - prob for adc it
     new_data(val,w);
     }
 }
-
-
-/// reworked for abstract
 
 void SR_geo_inner_dacspeed3xnorouteabstractL(uint32_t w){  
   HEADNADA;
@@ -329,6 +309,6 @@ void SR_geo_outer_L153(uint32_t w){  // final all gapped reset
   gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
   gate[w].matrix[4]=CVL[w];
   gate[w].matrix[10]=CVL[w];
-  gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac);
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
   gate[w].inner=SR_geo_inner_gappedfunction;
     }

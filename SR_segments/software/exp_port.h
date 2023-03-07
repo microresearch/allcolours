@@ -40,9 +40,8 @@ static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as 
   uint32_t bitn=0, bitrr, x, tmp, tmpp;
   depth=depth>>8; // 12 bits to 4 bits
   if (depth==0) { // SR5 is 8th which is outside these bits 
-    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01; 
-    gate[4].Gshare_=(gate[4].Gshare_<<1)+bitrr;
-    bitn=bitrr;
+    bitn = (gate[4].Gshare_>>SRlength[4]) & 0x01; 
+    gate[4].Gshare_=(gate[4].Gshare_<<1)+bitn;
   } else
     {
       tmpp=gate[w].routetype;
@@ -54,16 +53,16 @@ static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as 
 
 //- holder function - hold bits for /depth/ time - which bits? - this is more of a processor though...
 // delay line or hold until new value we can take
-static inline uint32_t SRproc_hold(uint32_t depth, uint32_t bit){ 
-  static uint32_t bt=0;
-  static uint32_t cxnt=0, top=0;
-  cxnt++;
-  if (cxnt>top){
-    top=(depth>>2);
-    bt=bit;
-    cxnt=0;
+static inline uint32_t SRproc_hold(uint32_t w, uint32_t depth, uint32_t bit){ 
+  static uint32_t bt[4]={0,0,0,0};
+  static uint32_t cxnt[4]={0,0,0,0}, top[4]={0,0,0,0};
+  cxnt[w]++;
+  if (cxnt[w]>top[w]){
+    top[w]=(depth>>2);
+    bt[w]=bit;
+    cxnt[w]=0;
   }
-  return bt;
+  return bt[w];
 }
 
 //////////////////////////// start of real functions
@@ -103,7 +102,6 @@ static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w
   tmp=bitrr;
   tmpp=gate[w].routetype;
   ROUTETYPE_;
-
   return bitn;
 }
 
@@ -111,9 +109,8 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
   uint32_t x, tmp, bitrr, temp, bitn=0;
     tmp=(depth>>8); // lowest 4 bits - but we could use 1 extra bit for 8th
   if (tmp==0 || ((depth>>7)&1)) { 
-    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01;
+    bitn = (gate[4].Gshare_>>SRlength[4]) & 0x01;
     gate[w].shift_ ^=gate[4].Gshare_;
-    bitn=bitrr;
     }
 
     for (x=0;x<4;x++){
@@ -132,11 +129,10 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
 
 static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
-      tmp=(depth>>8); //
+  tmp=(depth>>8); //
     if (tmp==0) { 
-    bitrr = (gate[4].Gshare_>>SRlength[4]) & 0x01;
+    bitn = (gate[4].Gshare_>>SRlength[4]) & 0x01;
     gate[w].shift_ ^=gate[4].Gshare_;
-    bitn=bitrr;
   }
     else {
     for (x=0;x<4;x++){
@@ -144,7 +140,7 @@ static inline uint32_t pSR_layer2(uint32_t depth, uint32_t in, uint32_t w){ // d
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
 	bitn^=bitrr; // we need bitn for pulses
 	gate[w].shift_ ^=gate[x].Gshift_[w];
-	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; // versions which just use SR and no gshift or don;t shift it
+	//	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; // versions which just use SR and no gshift or don;t shift it
       }
       tmp=tmp>>1; // 4 bits
     }
@@ -232,7 +228,7 @@ static inline uint32_t pSRhold(uint32_t depth, uint32_t in, uint32_t w){ // dept
   tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
-  bitn=SRproc_hold(depth,bitn);
+  bitn=SRproc_hold(w,depth,bitn);
   return bitn;
 }
 
@@ -242,7 +238,7 @@ static inline uint32_t pSRholdfromdac(uint32_t depth, uint32_t in, uint32_t w){ 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
   tmp=gate[dacfrom[daccount][w]].dac%(depth+1);
-  bitn=SRproc_hold(tmp>>4,bitn);
+  bitn=SRproc_hold(w,tmp>>4,bitn);
   return bitn;
 }
 
@@ -306,6 +302,7 @@ static inline uint32_t pSRaddroutes(uint32_t depth, uint32_t in, uint32_t w){// 
 
 static inline uint32_t pSRprobxortogx(uint32_t depth, uint32_t in, uint32_t w){ // depth -//STROBE
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
+  gate[w].strobed=1;
   bitn=probbitsxortoggle(depth,w);
   tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
@@ -343,7 +340,6 @@ static inline uint32_t pSRprobxortogID_(uint32_t depth, uint32_t in, uint32_t w)
   bitn=probbitsxortoggleID_(depth,w);
   return bitn;
 }
-
 
 static inline uint32_t pSRmatch(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0, val;
@@ -391,7 +387,7 @@ static inline uint32_t pSRshroute(uint32_t depth, uint32_t in, uint32_t w){ // n
 static inline uint32_t pSRsigma(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t x, tmpp, tmp, val, bitrr, temp, bitn=0;
   int32_t cycle;
-  static int32_t integrator;
+  static int32_t integrator[4];
   tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
@@ -401,8 +397,8 @@ static inline uint32_t pSRsigma(uint32_t depth, uint32_t in, uint32_t w){
   if (CYCl) cycle=1;
   else cycle=-1;
   
-  integrator+=(val-cycle);
-  if (integrator>0) bitn=1;
+  integrator[w]+=(val-cycle);
+  if (integrator[w]>0) bitn=1;
   else bitn=0;
   return bitn;
 }
@@ -410,7 +406,7 @@ static inline uint32_t pSRsigma(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t ZpSRsigma(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t x, tmp, tmpp, val, bitrr, temp, bitn=0;
   int32_t cycle;
-  static int32_t integrator;
+  static int32_t integrator[4];
   tmpp=gate[w].routetype;
   tmp=binroute[count][w]|binary[w]; 
 
@@ -421,8 +417,8 @@ static inline uint32_t ZpSRsigma(uint32_t depth, uint32_t in, uint32_t w){
   if (CYCl) cycle=1;
   else cycle=-1;
   
-  integrator+=(val-cycle);
-  if (integrator>0) bitn=1;
+  integrator[w]+=(val-cycle);
+  if (integrator[w]>0) bitn=1;
   else bitn=0;
   
   return bitn;
@@ -473,14 +469,14 @@ static inline uint32_t pbitLcvsrroute(uint32_t depth, uint32_t in, uint32_t w){ 
 
 static inline uint32_t pbitSRroutelogxxx(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
-  static uint32_t lastdacfrom=0;
-    tmpp=(gate[lastdacfrom].Gshift_[w])&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
+  static uint32_t lastdacfrom[4]={0,0,0,0};
+    tmpp=(gate[lastdacfrom[w]].Gshift_[w])&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
     tmp=(gate[tmpp].Gshift_[w])&255; // 8 bits
-    lastdacfrom=tmpp;
+    lastdacfrom[w]=tmpp;
     
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
-	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
+	bitrr= (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 
 	gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr; 
 	bitn=logopx(bitn,bitrr,(tmp)&0x03);
       }
@@ -491,10 +487,10 @@ static inline uint32_t pbitSRroutelogxxx(uint32_t depth, uint32_t in, uint32_t w
 
 static inline uint32_t pbitSRroutelogxxxD_(uint32_t depth, uint32_t in, uint32_t w){ // depth
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
-  static uint32_t lastdacfrom=0;
-    tmpp=(gate[lastdacfrom].Gshift_[w])&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
+  static uint32_t lastdacfrom[4]={0,0,0,0};
+    tmpp=(gate[lastdacfrom[w]].Gshift_[w])&3; // +2 bits //// dacfrom 8 bits (gate[dacfrom[daccount][w]].Gshift_[w])
     tmp=(gate[tmpp].Gshift_[w])&255; // 8 bits
-    lastdacfrom=tmpp;
+    lastdacfrom[w]=tmpp;
     
     for (x=0;x<4;x++){ 
       if ((tmp&0x03) !=0){ // should be fine so we have 01, 10, 11 as 3 logical ops 
@@ -549,7 +545,6 @@ static inline uint32_t pstream(uint32_t depth, uint32_t in, uint32_t w){ // all 
   tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;  
-  
   return bitn;
 }
 
@@ -632,14 +627,12 @@ static inline uint32_t pSRDACroutestrobe(uint32_t depth, uint32_t in, uint32_t w
   gate[w].strobed=1;
   if (gate[w].trigger){
   tmp=gate[dacfrom[daccount][w]].dac&15;
-  tmpp=gate[w].routetype;
-  ROUTETYPE_;  
   }
   else {
     tmp=binroute[count][w]|binary[w]; 
-    tmpp=gate[w].routetype;
-    ROUTETYPE_;  
   }
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
   return bitn;
 }
 
@@ -714,16 +707,16 @@ static inline uint32_t pSRNwas13(uint32_t depth, uint32_t in, uint32_t w){//STRO
 
 static inline uint32_t pSRN65(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  static uint8_t tmpt; static uint8_t cw=0;
+  static uint32_t tmpt[4]; static uint32_t cw[4]={0,0,0,0};
     gate[w].strobed=1;
-      cw++;
-      if (cw>31) cw=0;
-      if (gate[w].trigger) tmpt=cw;
+      cw[w]++;
+      if (cw[w]>31) cw[w]=0;
+      if (gate[w].trigger) tmpt[w]=cw[w];
       tmp=binroute[count][w]|binary[w]; 
 
       for (x=0;x<4;x++){ 
 	if (tmp&0x01) {  
-	    bitrr = (gate[x].Gshift_[w]>>tmpt) & 0x01; // or can just keep tmpt for this one and len of previous
+	    bitrr = (gate[x].Gshift_[w]>>tmpt[w]) & 0x01; // or can just keep tmpt for this one and len of previous
 	    gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitrr;  // we had x and w wrong way round - x is ghost SR number, w is our own copy for this SR
 	    bitn^=bitrr;
 	  }
@@ -944,8 +937,6 @@ static inline uint32_t pSRRLLswop(uint32_t depth, uint32_t in, uint32_t w){//STR
   tmp=binroute[count][w]|binary[w]; 
     tmpp=gate[w].routetype;
     ROUTETYPE_;  
-
-   
     if (gate[w].trigger) {
       lin=127-(depth>>5); //7= 2 bits for whichone and start which can be 5
       lout=31-(in>>7); // 5 bits for length
@@ -1045,7 +1036,8 @@ static inline uint32_t pprobtoggle3(uint32_t depth, uint32_t in, uint32_t w){ //
     tmp=binroute[count][w]|binary[w]; 
     tmpp=gate[w].routetype;
     if (!tug[w]) tmp=tmp|(1<<w);
-  return bitn;
+    ROUTETYPE_;  
+    return bitn;
 }
 
 static inline uint32_t pprobtoggle4(uint32_t depth, uint32_t in, uint32_t w){ // STROBE
