@@ -171,6 +171,7 @@ void SR_geo_outer_R01(uint32_t w){ //R01 abstract sel: no route
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[20]=CVL[w]; // abstract bits
+  gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_norouteabstractR;
   }
 }
@@ -180,6 +181,7 @@ void SR_geo_outer_R02(uint32_t w){ //R02 abstract depth: with no route in
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[5]=CVL[w];
+  gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_norouteabstractR;
   //  gate[w].inner=SR_geo_inner_globalC; // now handles abstract bits
   }
@@ -191,10 +193,24 @@ void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint3
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[9]=0<<6; // probbits
   gate[w].matrix[10]=CVL[w]; // depth for prob
+  gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_probadcentry;// fixed as probbits and fixed entry
   }
 }
+
+// also abstract depth from dac on RR TODO - where to fill in -c13 in both cases!// both?*
+void SR_geo_outer_R13(uint32_t w){ // set adc type from CVL and depth from dacfrom // fixed route in or no route in
+  if (gate[w].changed==0){
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[20]=CVL[w]; //abstract type
+  gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac);
+  gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
+  gate[w].inner=SR_geo_inner_norouteabstractR;
+  }
+}
+
 
 ///// runglers which differ from LL as they have no route in
 void SR_geo_outer_R52(uint32_t w){  // no route
@@ -228,6 +244,8 @@ void SR_geo_outer_R60(uint32_t w){ // dacspeed3x
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac);
+    gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped ???
     gate[w].inner=SR_geo_inner_dacspeed3xnorouteabstractL; 
   }
 }
@@ -236,6 +254,7 @@ void SR_geo_outer_R62(uint32_t w){ // spdfracdac3
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
     gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
     gate[w].inner=SR_geo_inner_dacspeed3_1_norouteabstractL; 
   }
@@ -245,6 +264,7 @@ void SR_geo_outer_R63(uint32_t w){ // spdfracdac3
   if (gate[w].changed==0) {
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=CVL[w];//gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+    gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
     gate[w].matrix[5]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped
     gate[w].inner=SR_geo_inner_dacspeed3_4_norouteabstractL; 
   }

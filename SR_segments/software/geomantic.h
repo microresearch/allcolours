@@ -23,10 +23,6 @@ uint32_t (*speedfromstrobe_all[32])(uint32_t depth, uint32_t in, uint32_t wh)={s
 
 // 2. adc
 
-uint32_t (*inall[64])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadcx, zadconebitsx, zadcpadbits, zadc8bits, zadc4bits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadconecompbits, zadcxdouble, zadc4bitsadd, zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd, zadcx, /*24*/zadcxdac, zadcxdac, zadconebitsxdac, zadcpadbitsdac, zadc8bitsdac, zadc4bitsdac, zadcenergybitsdac, zadc12compbitsdac, zadc8compbitsdac, zadc4compbitsdac, zadccompbitsdac, zadconecompbitsdac, zadcxdoubledac, zadc4bitsadddac, zadc4bitsaddmoddac, zadc4bitsxordac, zadc4bitsordac, zadc4bitsanddac, zadc4bitsmodmdac, zadc4compbitsadddac, zadc4compbitsxordac, zadc4compbitsmodmdac, zadc4onecompbitsadddac, zadcx, /*24*/zosc1bitsfast, sigmadelta, osceqf, osceqxf, zcountbits, zcountbitsI, zprobbits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsIf, zosceqbitsIxf, zosc1bitsIf, zlfsrbitsI, zflipbitsI, zprobbitsxorstrobe/*16*/}; 
-
-uint32_t inall_depth[64]={1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /*24dac*/2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, /*16abstract*/1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; 
-
 // with extra vars for reset and advance for probability
 uint32_t (*padcfromsd[32])(uint32_t depth, uint32_t in, uint32_t wh, uint32_t reset, uint32_t adv)={zpadcx, zpadcx, zpadconebitsx, zpadcpadbits, zpadc12bits, zpadc8bits, zpadc4bits, zpadceqbits, zpadcenergybits, zpadc12compbits, zpadc8compbits, zpadc4compbits, zpadccompbits, zpadc12onecompbits, zpadc8onecompbits, zpadc4onecompbits, zpadconecompbits, pcipher, zpadcLBURST0, zpadccomp, zpadcxdouble, zpadcxcut, zpadc4bitsadd,  zpadc4bitsaddmod, zpadc4bitsxor, zpadc4bitsor, zpadc4bitsand, zpadc4bitsmodm, zpadc4compbitsadd, zpadc4compbitsxor, zpadc4compbitsmodm, zpadc4onecompbitsadd};
 

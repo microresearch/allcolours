@@ -3151,7 +3151,7 @@ static inline uint32_t zsuccbitsI_noshiftdS_(uint32_t depth, uint32_t in, uint32
   uint32_t bt=0, bitrr;
   static uint32_t x[4]={0};
   if (x[w]==w) x[w]++;
-  if (x[w]>3) x[w]=0;
+  if (x[w]>3) x[w]=0; // needed
   bt = (gate[x[w]].shift_>>SRlength[x[w]]) & 0x01;
   if ((depth>>4)>(LFSR__[w]>>4)) x[w]++;
   if (bt==1)   gate[w].strobed=0;
@@ -4618,7 +4618,7 @@ static inline uint32_t zadc4bitsand(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
-
+  depth=~depth;
   //  if (depth==(4095-(31<<7))) depth=15<<7;
     if (bc<0) {
       ADCgeneric;
@@ -4639,8 +4639,9 @@ static inline uint32_t zadc4bitsmodm(uint32_t depth, uint32_t in, uint32_t w){
 
   if (bc<0) {
     ADCgeneric;
-      k=k%depth;
+      k=k+depth;
       k=k>>8;
+      k=k%256;
       bc=3; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -4716,8 +4717,9 @@ static inline uint32_t zadc4compbitsmodm(uint32_t depth, uint32_t in, uint32_t w
 
     if (bc<0) {
       ADCgeneric;
-      k=k%depth;
+      k=k+depth;
       k=k>>8;
+      k=k%256;
       if (k<8) bitwise=1;
       else bitwise=0;
       k=abs(k-8);
@@ -4798,6 +4800,7 @@ static inline uint32_t zadc4bitsanddac(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
+  depth=~depth;
 
   //  if (depth==(4095-(31<<7))) depth=15<<7;
     if (bc<0) {
@@ -4819,8 +4822,9 @@ static inline uint32_t zadc4bitsmodmdac(uint32_t depth, uint32_t in, uint32_t w)
 
   if (bc<0) {
       MIXin;
-      k=k%depth;
+      k=k+depth;
       k=k>>8;
+      k=k%256;
       bc=3; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -4896,8 +4900,9 @@ static inline uint32_t zadc4compbitsmodmdac(uint32_t depth, uint32_t in, uint32_
 
     if (bc<0) {
       MIXin;
-      k=k%depth;
+      k=k+depth;
       k=k>>8;
+      k=k%256;
       if (k<8) bitwise=1;
       else bitwise=0;
       k=abs(k-8);
@@ -5341,6 +5346,7 @@ static inline uint32_t zpadc4bitsand(uint32_t depth, uint32_t in, uint32_t w, ui
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
+  depth=~depth;
     if (bc<0  || reset) {
       k=depth&in;
       k=k>>8;
@@ -5356,8 +5362,9 @@ static inline uint32_t zpadc4bitsmodm(uint32_t depth, uint32_t in, uint32_t w, u
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0  || reset) {
-      k=in%depth;
+      k=in+depth;
       k=k>>8;
+      k=k%256;
       bc=3; 
   }
   bt = (k>>bc)&0x01; // this means that MSB comes out first
@@ -5427,8 +5434,9 @@ static inline uint32_t zpadc4compbitsmodm(uint32_t depth, uint32_t in, uint32_t 
   static int32_t bc=31;
   static uint32_t k;
     if (bc<0  || reset) {
-      k=in%depth;
+      k=in+depth;
       k=k>>8;
+      k=k%256;
       if (k<8) bitwise=1;
       else bitwise=0;
       k=abs(k-8);

@@ -11,24 +11,32 @@
 #define RESETTN {				\
   for (uint32_t y=0;y<22;y++){			\
   gate[0].matrix[y]=matrixNN[y];					\
-  }									\
+  gate[0].matrixX[y]=matrixNN[y];					\
+  gate[0].offset[y]=0;							\
+}						\
   }
 
 #define RESETTL {				\
   for (uint32_t y=0;y<22;y++){			\
   gate[1].matrix[y]=matrixLL[y];					\
+  gate[1].matrixX[y]=matrixLL[y];					\
+  gate[1].offset[y]=0;							\
   }									\
   }
 
 #define RESETTC {				\
   for (uint32_t y=0;y<22;y++){			\
   gate[2].matrix[y]=matrixCC[y];					\
+  gate[2].matrixX[y]=matrixCC[y];					\
+  gate[2].offset[y]=0;							\
   }									\
   }
 
 #define RESETTR {				\
   for (uint32_t y=0;y<22;y++){			\
   gate[3].matrix[y]=matrixRR[y];					\
+  gate[3].matrixX[y]=matrixRR[y];					\
+  gate[3].offset[y]=0;							\
   }									\
   }
 
@@ -56,25 +64,12 @@
 
 ////////
 
-#define ADCone {					\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
-  ADC_SoftwareStartConv(ADC1);						\
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
-  k[reg]=ADC_GetConversionValue(ADC1)>>(11-length);			\
-  }
-
-#define ADCtwo {				\
-    ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
-  ADC_SoftwareStartConv(ADC1);						\
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
-  k[reg]=ADC_GetConversionValue(ADC1);					\
-  }
-
 #define ADCgeneric {				\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   k=ADC_GetConversionValue(ADC1);					\
+  ADCin=k;								\
   }
 
 #define MIXin {								\
@@ -115,16 +110,6 @@
     gate[w].Gshift_[4]=gate[w].shift_;			\
     gate[w].Gshare_=gate[w].shift_;			\
     Gshift__[w]=gate[w].shift_&4095;			\
-    gate[w].shift_=gate[w].shift_<<1;			\
-}
-
-#define GSHIFTRED_ {				\
-    gate[w].reset[0]=1; gate[w].reset[1]=1; gate[w].reset[2]=1; gate[w].reset[3]=1; \
-    gate[w].Gshift_[0]=gate[w].shift_;					\
-    gate[w].Gshift_[1]=gate[w].shift_;			\
-    gate[w].Gshift_[2]=gate[w].shift_;			\
-    gate[w].Gshift_[3]=gate[w].shift_;			\
-    gate[w].Gshare_=gate[w].shift_;			\
     gate[w].shift_=gate[w].shift_<<1;			\
 }
 

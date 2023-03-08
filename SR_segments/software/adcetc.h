@@ -638,6 +638,13 @@ void TIM4_IRQHandler(void)
   if (lastmode[0]!=mode[0]) gate[0].changed=1;
   else gate[0].changed=0;
   lastmode[0]=mode[0];
+
+   //  if (gate[0].changed){
+  //  itoa(mode[0], buffx, 10);
+  //  buffx[sizeof(buffx)+1]=" ";
+  //  uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char)+1};
+  //  send_command(0x05/* some interrupt ID */, m);
+  //  }
   
   // modec
   ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 1, ADC_SampleTime_144Cycles);
@@ -649,11 +656,6 @@ void TIM4_IRQHandler(void)
   lastmodec=temp;
   //  mode[2]=temp>>6;
   mode[2]=mapping[temp>>2];
-
-  /* itoa(mode[2], buffx, 10); */
-  /*   buffx[sizeof(buffx)+1]=" "; */
-  /*   uint32_t m[] = { 2/\*stderr*\/, (uint32_t)buffx, sizeof(buffx)/sizeof(char)+1}; */
-  /*   send_command(0x05/\* some interrupt ID *\/, m); */
 
   if (lastmode[2]!=mode[2]) gate[2].changed=1; 
   else gate[2].changed=0;

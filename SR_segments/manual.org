@@ -97,6 +97,10 @@ poster [could also be booklet for TOAD/andy later]
 
 how to image/notate panel - that the description and panel/images are themselves subjected to shift reg (eg. each pixel line of panel image - try this!)
 
+** 8/3/2023
+
+- less cycle on NN and RR, make plain in manual how we use these
+
 ** 5/3/2023
 
 - table for modes:

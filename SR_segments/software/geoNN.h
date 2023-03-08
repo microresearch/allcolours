@@ -414,23 +414,30 @@ void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[7]=CVL[w]; // adctype
-    gate[w].inner=SR_geo_inner_norouteadcN; 
+
+  gate[w].inner=SR_geo_inner_norouteadcN; 
 }
 
 void SR_geo_outer_N01(uint32_t w){ // set adc depth // fixed route in
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[8]=CVL[w]; // adc depth also for abstr//cats // but should also be mix
+  //  gate[w].matrix[8]=CVL[w]; // adc depth also for abstr//cats // but should also be mix -> gap depth for 21...XXX
+  if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CVL[w];
+  else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=CVL[w]; // mix for dacs
+  else gate[w].matrix[6]=CVL[w]; // length
   gate[w].inner=SR_geo_inner_globalC; //
   }
 }
 
-void SR_geo_outer_N02(uint32_t w){ // set adc depth // fixed route in
+void SR_geo_outer_N02(uint32_t w){ // set adc type from CVL and depth from dacfrom // fixed route in // or no route in???
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[8]=(gate[dacfrom[daccount][w]].dac); 
+  gate[w].matrix[7]=CVL[w]; // adctype added!
+  if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=(gate[dacfrom[daccount][w]].dac);
+  else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=(gate[dacfrom[daccount][w]].dac); // mix for dacs
+  else gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac); // length
   gate[w].inner=SR_geo_inner_globalC; //
   }
 }
@@ -439,9 +446,8 @@ void SR_geo_outer_N03(uint32_t w){ // 1-prob of ADC entry or fixed route entry
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
-  gate[w].matrix[9]=0<<6; // probbits
+  gate[w].matrix[9]=1<<6; // invprobbits
   gate[w].matrix[10]=CVL[w]; // depth for prob
-  //  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_probadcentry;// fixed as probbits and fixed entry
 }
 }
@@ -461,6 +467,40 @@ void SR_geo_outer_N03x(uint32_t w){ // 1-prob of ADC entry or fixed route entry 
 //1.0 params
 
 // C10, C12, C13, C20 in that order
+void SR_geo_inner_routeabstractR(uint32_t w){ 
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w);
+    bitn^=binroutesel0(0,0,w); // global route which is ... and routetype
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
+//*N13 - potential adc in mode - adcin as depth and all abstract choices// q of route in or not?
+void SR_geo_outer_N13(uint32_t w){ // 1-prob of ADC entry or fixed route entry  XOR
+  uint32_t k;
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[20]=CVL[w]; // select abstract bits only
+  ADCgeneric;
+  gate[w].matrix[4]=(gate[dacfrom[daccount][w]].dac); 
+  gate[w].matrix[5]=k;
+  gate[w].inner=SR_geo_inner_routeabstractR;
+  }
+}
 
 /////////////////////////////////////////
 //// 2.0 - more probs
@@ -659,9 +699,6 @@ void SR_geo_outer_N53(uint32_t w){ // spdfracdac31 route in
     gate[w].inner=SR_geo_inner_dacspeed3xxrouteadcN; 
   }
 }
-
-// can have 3 other fixed speedfroms! but then doubled by route/no route?
-
 
 /////////// final
 // 153: final one is reset but what does CVL do there? last bit or prob

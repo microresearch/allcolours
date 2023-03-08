@@ -32,9 +32,10 @@ typedef struct heavens_ {
   uint32_t matrix[23];
   uint32_t matrixX[23];
   uint32_t *matrixp[23]; // +1 for reset
-  uint32_t *matrixpG[23];
+  uint32_t *matrixpG[23][16];
   uint32_t offset[23];
-  uint32_t oldgap[16]; // 16 layers
+  uint32_t oldgap;
+  uint32_t oldgapp[16];// 16 layers
   void (*inner)(uint32_t w);
   uint32_t (**funcbit)(uint32_t depth, uint32_t in, uint32_t wh);
   uint32_t *depths; // which use depths

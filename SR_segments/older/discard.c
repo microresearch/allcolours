@@ -1,3 +1,16 @@
+
+// original
+static inline void setvargapzbleedx(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
+  if (which!=gate[wh].oldgap[layer]){
+    gate[wh].matrixp[gate[wh].oldgap[layer]]=gate[wh].matrixpG[gate[wh].oldgap[layer]];
+    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
+    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+    gate[wh].matrix[which]=*gate[wh].matrixp[which];
+  }
+  gate[wh].oldgap[layer]=which;
+}
+
+
 //////////////// [+outside functions+] and ports from experiment.h - observation that most OUTSIDE functions should be paired with specific inside/bits
 
 //static uint32_t delayline[512]; //shared delay line

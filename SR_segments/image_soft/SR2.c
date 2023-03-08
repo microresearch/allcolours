@@ -113,12 +113,12 @@ int main(void)
 
   unsigned int shifter[4], shifted, xx;
   unsigned char coynt=0;
-  unsigned char speed=4;
+  unsigned char speed=5;
   unsigned char coynt1=0;
-  unsigned char speed1=3;
+  unsigned char speed1=2;
 
   // how to shift one bit right and cycle array
-  for (y=0;y<(MAX);y++){ // MAX or MAXP
+  for (y=0;y<(MAX*16);y++){ // MAX or MAXP
     if (coynt1>speed1){
       coynt1=0;
     for (x=0;x<MAXPP;x++){

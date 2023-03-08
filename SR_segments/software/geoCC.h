@@ -339,7 +339,8 @@ void SR_geo_inner_rungC(uint32_t w){
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
-    bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix
+    else  bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
     bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -468,12 +469,12 @@ void SR_geo_inner_probdepthdepthN(uint32_t w){  // draft for probs with depth WE
     SRlength[w]=lookuplenall[gate[w].matrixX[6]>>7]; 
 
     if (!(*probf_anystrobe_depth[gate[w].matrixX[9]>>6])(gate[w].matrixX[10], gate[w].matrixX[11], w)) {
-      bitn=(gate[w].funcbit[gate[w].matrixX[3]>>gate[w].extent])(gate[w].matrixX[4], gate[w].matrixX[5], w);
-    }
-  else {
-    if (w==0) bitn=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  // fixed
-    bitn^=(routebits_anystrobe_notypesz[gate[w].matrixX[12]>>extent_routebits_anystrobe_notypesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
-    }
+          bitn=(gate[w].funcbit[gate[w].matrixX[3]>>gate[w].extent])(gate[w].matrixX[4], gate[w].matrixX[5], w);
+        }
+      else {
+	if (w==0) bitn=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  // fixed
+	bitn^=(routebits_anystrobe_notypesz[gate[w].matrixX[12]>>extent_routebits_anystrobe_notypesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
+        }
     BITN_AND_OUTVX_; 
     new_data(val,w);
     }
@@ -1002,6 +1003,7 @@ void SR_geo_outer_C51(uint32_t w){ // probzeroes with depth
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
   gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
+  gate[w].matrix[9]=25<<6;
   gate[w].matrix[10]=CVL[w]; // prob depth
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); // do any use IN? yes spdfrac versions - should have basic prob vs in tho...
   gate[w].inner=SR_geo_inner_functionprobzero;//
@@ -1156,7 +1158,7 @@ void SR_geo_outer_C80(uint32_t w){   // simple fixed strobe with sel bitfunc and
 // we also have TYPE, length 
 void SR_geo_outer_C81(uint32_t w){   // simple fixed strobe with sel bitfunc and depth: routebits_nostrobe_depth_notypesz >>8
   if (gate[w].changed==0) {
-    gate[w].matrix[15]=0<<8;//  simple strobe
+    gate[w].matrix[15]=0<<8;//  TMsimplebits
     if (w==0) {
       gate[w].matrix[8]=CVL[w]; // depth for adc/abstract
       gate[w].matrix[7]=CV[w]; // adc/abstract mode
@@ -1376,15 +1378,15 @@ void SR_geo_outer_C113(uint32_t w){  // alt
 
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16troutetype, 17 route->now strobe function index}, 18 is abstract CV, 19 is now glob, 20 is now abstract index, 21 is mix
 
-uint32_t fixed=0, gap=0;
+//uint32_t fixed=0, gap=0;
 
 // cut to 16 here and we don't use fixed/gap // lose param
 // and these all need to be 12 bit versions
 uint32_t *fixedvars[4][16]={ //was 20 
-  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[0], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
-  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[1], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
-  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[2], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
-  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[3], &Gshift__[8], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[0], &CVL[0], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[0], &Gshift__[4], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[1], &CVL[1], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[1], &Gshift__[4], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[2], &CVL[2], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[2], &Gshift__[4], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
+  {&gate[0].dac, &gate[1].dac, &gate[2].dac, &gate[3].dac, &CV[3], &CVL[3], &ADCin, &Gshift__[0], &Gshift__[1], &Gshift__[2], &Gshift__[3], &clksr__[3], &Gshift__[4], &LFSR__[0], &LFSR__[1], &LFSR__[2]},
 };
 
 // fixed 21/2/2023
@@ -1432,52 +1434,45 @@ static inline void setvarz(uint32_t wh, uint32_t which, uint32_t var){ // plain 
 }
 
 static inline void setgapz(uint32_t wh, uint32_t layer, uint32_t which){ 
-  if (which!=gate[wh].oldgap[layer]){
     gate[wh].matrix[which]=gate[wh].matrixX[which]; // value
     gate[wh].matrixp[which]=&gate[wh].matrix[which]; // pointer
-  }
-  gate[wh].oldgap[layer]=which;
 }
 
-static inline void setvargapzbleed(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
-  if (which!=gate[wh].oldgap[layer]){
-    gate[wh].matrixp[gate[wh].oldgap[layer]]=gate[wh].matrixpG[gate[wh].oldgap[layer]];
-    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
-    gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
-    gate[wh].matrix[which]=*gate[wh].matrixp[which];
-  }
-  gate[wh].oldgap[layer]=which;
+// 8/3/2023 ??
+static inline void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
+  gate[wh].matrixp[gate[wh].oldgap]=&gate[wh].matrix[gate[wh].oldgap]; // old one points back to matrix
+  gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+  gate[wh].matrix[which]=*gate[wh].matrixp[which]; // value at matrix is updated...
+  gate[wh].oldgap=which;
 }
 
 //////////////////////////////////////////
 
-// resett=1 is bleed... 2 is attach - seems to work
+// resett=1 is bleed... 
 static inline void setvargapz(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var, uint32_t resset){ // sets gap with one of fixedvars - tested in test2.c
   //  if (resset==2) gate[wh].oldgap[layer]=22; //never hits 22
   
-  if (which!= gate[wh].oldgap[layer]){// only if we want a new one not to reset the same one...
-    gate[wh].matrixp[gate[wh].oldgap[layer]]=gate[wh].matrixpG[gate[wh].oldgap[layer]];
-    gate[wh].matrixpG[which]=gate[wh].matrixp[which]; // previous  
+  if (which!= gate[wh].oldgapp[layer]){// only if we want a new one not to reset the same one...
+    gate[wh].matrixp[gate[wh].oldgapp[layer]]=gate[wh].matrixpG[gate[wh].oldgapp[layer]][layer];
+    gate[wh].matrixpG[which][layer]=gate[wh].matrixp[which]; // previous  
     gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
       if (resset==1){ //set back
 	gate[wh].matrix[which]=*gate[wh].matrixp[which]; // was fixedvalues which matrixp points to
+	gate[wh].matrixp[which]=&gate[wh].matrix[which]; 
       }
   }
-      else if (gate[wh].matrixp[gate[wh].oldgap[layer]]!=fixedvars[wh][var]){
+      else if (gate[wh].matrixp[gate[wh].oldgapp[layer]]!=fixedvars[wh][var]){
       gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
       if (resset==1){ //set back
 	gate[wh].matrix[which]=*gate[wh].matrixp[which];
+	gate[wh].matrixp[which]=&gate[wh].matrix[which]; 
       }
       }
-  gate[wh].oldgap[layer]=which;
+  gate[wh].oldgapp[layer]=which;
 }
 
-
-// would be nice to set gapz etc - catalogue what we had from discard and here
+//////////////////////////////////////////////////////
 /*
-
-/////////
-
 setgapz.
 setvarz- just attach... CV and CVL
 setfixedvars - set value from eg. CVL etc...
@@ -1495,7 +1490,7 @@ void SR_geo_outer_C120(uint32_t w){ // CV/CVL
   if (gate[w].changed==0) {
     if (w==0) map=maparrayCCSA;
     else map=maparrayCCS;
-    setvargapzbleed(w, 3, map[(CV[w]>>8)], CVL[w]>>8);  // or vargapz
+    setvargapzbleed(w, map[(CV[w]>>8)], CVL[w]>>8);  // or vargapz
     SR_geomantic_matrixcopyz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
     gate[w].inner=SR_geo_inner_str_probfunctionX; 
@@ -1529,7 +1524,7 @@ void SR_geo_outer_C122(uint32_t w){ //SR_geomantic_matrixcopyoffsetz
 //empty one
 void SR_geo_outer_C123x(uint32_t w){   
   if (gate[w].changed==0) {
-    SR_geomantic_matrixcopyoffsetz(w);
+    //SR_geomantic_matrixcopyoffsetz(w);
     gate[w].routetype=gate[w].matrixX[16]>>9;
     gate[w].inner=SR_geo_inner_str_probfunctionX; 
   }
@@ -1692,7 +1687,7 @@ void SR_geo_outer_C151(uint32_t w){   // trial offset
   }
 }
 
-// blank here to make use of CV/CVL unattended? 133
+// empty blank here to make use of CV/CVL unattended? 133
 void SR_geo_outer_C152(uint32_t w){
   if (gate[w].changed==0) {
     SR_geomantic_matrixcopyoffsetz(w);

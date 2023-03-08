@@ -412,7 +412,7 @@ static uint32_t spacmask[32]={
 0b11111111110111111011111101111110
 };
 
-static int32_t lastspac[32][4]={
+static uint8_t lastspac[32][4]={
 {0, 1, 2, 3 },
 {0, 1, 2, 3 },
 {0, 1, 2, 3 },
@@ -447,7 +447,7 @@ static int32_t lastspac[32][4]={
 {6, 13, 20, 27 }
 };
 
-static uint32_t lastspacbac[32][4]={
+static uint8_t lastspacbac[32][4]={
 {0, 0, 0, 0 },
 {0, 0, 0, 0 },
 {0, 0, 0, 0 },
@@ -488,7 +488,7 @@ static uint32_t lastspacbac[32][4]={
 
 };
 
-static uint32_t others[4][3]={ // for triadex style - all but itself
+static uint8_t others[4][3]={ // for triadex style - all but itself
 {1,2,3},
 {0,2,3},
 {0,1,3},

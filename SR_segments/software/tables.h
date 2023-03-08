@@ -153,7 +153,7 @@ uint32_t altbinroute[32][4]={ // for probs - can be more like double route but t
     {0,1,2,4},
 };
 
-uint32_t inroute[32][4]={ // who we have main incoming route from 0-3 - from above
+uint8_t inroute[32][4]={ // who we have main incoming route from 0-3 - from above
         {3,0,1,2}, // default 8121 // now 8124
 	{3,0,3,2},
 	{3,0,1,1}, // expanding
@@ -211,8 +211,8 @@ uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  
 };
 
 uint32_t dacfromopp[16][4]={ // TODO and needs to match lengthy of binroute TEST!  and also relate to binroute // or use different count
-  {1,1,1,3}, // default
-  {3,1,3,3}, // new one for rungling 24/1/2022
+  {1,1,1,2}, // default
+  {3,1,3,2}, // new one for rungling 24/1/2022
   {1,2,3,0}, // from latest notebook prev ones: 3,0,1,2
   {2,3,0,1}, // itself
 
@@ -221,15 +221,15 @@ uint32_t dacfromopp[16][4]={ // TODO and needs to match lengthy of binroute TEST
   {0,0,0,0},
   {3,3,3,3},
 
-  {1,1,3,3},
+  {1,1,3,2},
   {3,3,1,1},
-  {0,1,2,3}, // opposites
+  {0,1,2,0}, // opposites
   {3,2,1,0},
 
   {3,0,1,2}, // nexts
   {1,0,3,2}, /// rev
-  {3,1,3,3},
-  {3,1,3,3}
+  {3,1,3,2},
+  {3,1,3,2}
 };
 
 uint32_t strobefrom[4]={3,0,1,0};// strobe from previous almost
@@ -285,7 +285,7 @@ uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: c
 };
 
 // can also have lists for each one to bump along
-uint32_t myroute[4][16]={
+uint8_t myroute[4][16]={
   {8, 4, 2, 1,  9, 5, 3, 1,  2, 4, 8, 1,  3, 5, 9, 1},
   {1, 8, 4, 2,  3, 10, 6, 2,  4, 8, 1, 2,  6, 10, 3, 2},
   {2, 1, 8, 4,  6, 5, 12, 4,  8, 1, 2, 4,  12, 5, 6, 4},
