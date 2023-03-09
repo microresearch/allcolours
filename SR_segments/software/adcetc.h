@@ -141,11 +141,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   float betaf=0.4f, mult,pp;
   int32_t rem;
   uint32_t y,tmp;
-
-// if we use otherpar as length we need to add:
-// otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
-
-// strobed=5, 
   
   switch(type){
     
@@ -207,7 +202,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 5: // only output standard DAC on param->strobe/clock! so just maintain lastout S
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
-    gate[wh].strobed=1;
     if (strobe) {
       x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
   //  x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
@@ -218,7 +212,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 6: // toggle to hold/release DAC
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
-    gate[wh].strobed=1;
     if (strobe) toggle[wh]^=1;
     if (toggle[wh]) {
       x=lastout[wh];
@@ -253,7 +246,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     break;
 
   case 11: //  one SR is sieved out over clksr for that sr. XOR as sieve?  - SKIPPED/retry instead of 11
-    gate[wh].strobed=1;
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
     x=x^((clksr_[wh] & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
@@ -313,7 +305,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       break;
 
   case 17:/// we record mask and use this to mask the regular DAC... - could also be other-than-standard DACs
-    gate[wh].strobed=1;
     if (strobe) // we record the mask  S
 	{
 	  mask[wh]=Gshift__[otherpar>>10]; // or reg can be otherpar/SR

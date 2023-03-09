@@ -817,8 +817,8 @@ heavens gate[4];
             if (last_time[w]<int_time[w])      {
 	val++;
 	lastdac[w]=val;
-	printf("last_time: %d\n", last_time[w]);
-	printf("now: %f\n", time_now[w]);
+	//	printf("last_time: %d\n", last_time[w]);
+	//	printf("now: %f\n", time_now[w]);
 	//	printf("xx ");
 	time_now[w]=time_now[w]-1.0f; // trial
 	int_time[w]-=1; // int_time[w]=0;
@@ -830,11 +830,11 @@ heavens gate[4];
 
 
   uint8_t elf[8]={1, 3, 6, 19, 15, 18, 20, 22};
-  printf("%ud\n",(~elf[3]&255));
+  //  printf("%ud\n",(~elf[3]&255));
 
   uint8_t oreq=0;
   oreq|=1;
-  printf("oreq %d\n",oreq);
+  //  printf("oreq %d\n",oreq);
   int n=0, nn=0, otherpar=1, length=0;
   /*
   for (x=0;x<640;x++){
@@ -856,7 +856,7 @@ heavens gate[4];
   int32_t k=0; int tmppp;
   tmppp=abs(k-2048);
   //  tmppp=0b00000000000000000000000000001111;
-  printf("%u\n",tmppp);
+  //  printf("%u\n",tmppp);
 
   // movemasky
   /*
@@ -900,8 +900,8 @@ heavens gate[4];
   printf("%u\n",k);
   */
   for (x=0;x<32;x++){
-    printf("1<<%d",x);
-    printf("= %d\n",1<<x);
+    //    printf("1<<%d",x);
+    //    printf("= %d\n",1<<x);
   }
  
   int prob=0;
@@ -924,10 +924,10 @@ heavens gate[4];
   */
 
   prob=3;
-  if (prob&2) printf("OK\n");
+  //  if (prob&2) printf("OK\n");
 
   uint32_t ffxf[4]={17,17,17,17};
-  printf("OK %d\n",ffxf[3]);
+  //  printf("OK %d\n",ffxf[3]);
   
   //  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
   //  LFSR_[www] = (LFSR_[www]<<1) + tmp;
@@ -993,7 +993,7 @@ heavens gate[4];
       oldValue=0;
       bt=-1;
    }   
-       printf("integrator: %d bt: %d\n",integrator, bt);
+   //       printf("integrator: %d bt: %d\n",integrator, bt);
     }
 
     //    recurse(recurse);
@@ -1001,7 +1001,7 @@ heavens gate[4];
 
     for (x=0;x<32;x++){
       //      printf("%u, ", ~(1<<x)); 
-      print32bits(~(1<<x));
+      //      print32bits(~(1<<x));
       //      printf(", \n");
     }
     
@@ -1037,10 +1037,10 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
     yum=countbits(yum);
     
     for (x=0;x<4;x++){
-          printf("count %d\n",yum);
+      //          printf("count %d\n",yum);
     }
 
-    printf("<<8 %d\n",(15<<8)>>6);
+    //    printf("<<8 %d\n",(15<<8)>>6);
 
     length=11; otherpar=1<<7;
     uint32_t tmpp;
@@ -1055,7 +1055,7 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
       //      y=shift&masky[tmp]; 
       tmpp=11-(tmp);
       y=y<<tmpp;
-      printf("y shifty: %d\n", y);
+      //      printf("y shifty: %d\n", y);
       x=x&4095;
       x=x>>(otherpar-tmp);
       x=x+y;
@@ -1071,6 +1071,8 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
     uint32_t fixey[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
     uint32_t matrix[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
     uint32_t *matrixp[21]={&fixey[0],&fixey[1],&fixey[2],&fixey[3],&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul, &nul, &nul};
+    uint32_t matrixX[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
+
     uint32_t *matrixpG[21]={&fixey[0],&fixey[1],&fixey[2],&fixey[3],&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul, &nul, &nul};
     uint32_t set[32]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     
@@ -1113,15 +1115,15 @@ void setvargapalt(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with o
 
   if (which!=oldgap[wh]){// only if we want a new one not to reset the same one...
     matrixp[oldgap[wh]]=matrixpG[oldgap[wh]];//
-    matrixpG[which]=matrixp[which]; // previous  
     matrixp[which]=varr[var]; // new one
+    matrixpG[which]=matrixp[which]; // previous  
   }
     else if (matrixp[oldgap[wh]]!=varr[var]){
     matrixp[which]=varr[var]; // new one
     }
   oldgap[wh]=which;
     for (y=0;y<20;y++){
-      printf("%d",*matrixp[y]);
+           printf("%d",*matrixp[y]);
       matrix[y]=*matrixp[y];
     }
       printf("\n");  
@@ -1135,88 +1137,105 @@ void setvargapalt(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with o
       printf("\n");  
  }
 
-	
-        void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
-      uint32_t y;
-    if (which!=oldgap[wh][layer]){
-      //      pointer++;
-      //nul++;
-      //      matrixp[oldgap[wh]]=&matrix[oldgap[wh]];//    // TODO/TEST: filling in old gaps - something in there to progress from!
+
+
+ 
+ void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
+   uint32_t y, resset=1;
+      //    if (which!=oldgap[wh][layer]){
       matrixp[oldgap[wh][layer]]=matrixpG[oldgap[wh][layer]];//
       matrixpG[which]=matrixp[which]; // previous  
       matrixp[which]=varr[var]; // new one
-      oldgap[wh][layer]=which;
-    }
+      //    }
 
+      if (resset==1){ //reset back = bleed
+	matrix[which]=*varr[var];
+	matrixp[oldgap[wh][layer]]=&matrix[which];
+  }
+      oldgap[wh][layer]=which;
+
+      
     for (y=0;y<20;y++){
-      printf("%d",*matrixp[y]);
-      matrix[y]=*matrixp[y];
+      matrixX[y]=*matrixp[y];
+      printf("%d",matrixX[y]);
     }
       printf("\n");
     }
 
-    
-	/*    
-    printf("non\n\n");
-    
-    setvargapz(0,1,6,0); // pointerx 13
-    pointerx++;
-    setvargapz(0,0,7,0); // pointery 5
-    pointery++;
-    setvargapz(0,1,6,0);
-    pointerx++;    
-    setvargapz(0,0,7,0);
-
-    setvargapz(0,18,6,0); // pointerx 13
-
-    printf("  resr\n\n");
-
-    
-    setvargapz(0,19,6,1); // pointerx 13
-    setvargapz(0,18,6,1); // pointerx 13
-    
-    setvargapz(0,2,6,0); // pointerx 3
-    pointerx++;
-    setvargapz(0,1,7,0); // pointery 5
-    pointery++;
-    setvargapz(0,0,6,0);
-    pointerx++;    
-    setvargapz(0,1,7,0);
-	*/
-
-	/*        for (x=0;x<2000;x++){
-	  //	  if (x==4)       setvargapz(0,x,5,1);
-	  //	  else setvargapz(0,x,5,0);
-	  setvargapalt(0,rand()%20,5);
-
-	  pointer++;
-	  }*/
-	
-	pointery=5;
-	pointerx=8;
+ // void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap? 
+ pointery=1;
+ pointerx=7;
+ /*
     printf("layer0\n");
     pointery++;
-    setvargapzR(0,0,1,7); // pointery 5
+    setvargapzR(0,0,1,7); // pointery is 7, 6 is pointerx
     pointery++;
-    setvargapzR(0,0,2,7); // pointery 5
+    setvargapzR(0,0,2,7); // pointery
 
     printf("layer1\n");
     pointery++;
-    setvargapzR(0,1,13,7); // pointery 5
-    pointery++;
-    setvargapzR(0,1,11,7); // pointery 5
+    //    printf("here...");
+    setvargapzR(0,1,0,6); // pointerx 7
+    pointery++; 
+    setvargapzR(0,1,1,6); // pointerx 7
 
     printf("layer0\n");
     pointery++;
-    setvargapzR(0,0,16,7); // pointery 5
-    pointery++;
-    setvargapzR(0,0,13,7); // pointery 5
+    setvargapzR(0,0,16,7); // pointery
+    pointerx++;
+    setvargapzR(0,0,13,7); // pointery 
     //    pointery++;
     //    printer();
+    printf("layer1-2\n");
+    //    printf("here...");
+    setvargapzR(0,1,19,6); // pointerx
+    pointery++;
+    setvargapzR(0,1,19,7); // pointery
+    pointerx++;
+    pointery++;
+    setvargapzR(0,1,19,6); // pointerx
+ */
+    /*
+static inline void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
+  gate[wh].matrixp[gate[wh].oldgap]=&gate[wh].matrix[gate[wh].oldgap]; // old one points back to matrix
+  gate[wh].matrixp[which]=fixedvars[wh][var]; // new one
+  gate[wh].matrix[which]=*gate[wh].matrixp[which]; // value at matrix is updated...
+  gate[wh].oldgap=which;
+}
+    */
+
+    uint32_t oldgapp=2;
     
-    nn=0;
-    int32_t totn, temp;
-    int32_t smoothn[SMOOTHINGS]={0};
+void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
+  int32_t y;
+  matrixp[oldgapp]=&matrix[oldgapp]; // old one points back to matrix
+  matrixp[which]=varr[var]; // new one
+  matrix[which]=*matrixp[which]; // value at matrix is updated...
+  oldgapp=which;
+
+    for (y=0;y<20;y++){
+      matrixX[y]=*matrixp[y];
+      printf("%d",matrixX[y]);
+    }
+      printf("\n");
+
+}
+
+ setvargapzbleed(0,19,6); // pointerx
+ pointerx++;
+ setvargapzbleed(0,17,6); // pointerx
+ pointerx++;
+ setvargapzbleed(0,15,6); // pointerx
+ pointerx++;
+ setvargapzbleed(0,15,7); // pointery
+ pointery++;
+ setvargapzbleed(0,13,7); // pointery
+ pointerx++;
+
+ 
+    //    nn=0;
+    //    int32_t totn, temp;
+    //    int32_t smoothn[SMOOTHINGS]={0};
     /*
     for (x=0;x<12800;x++){
     // speedn
@@ -1287,6 +1306,6 @@ uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
  }
  printf("\n");
     */
-    printf(" xxxxxxxxxxxxx %d\n", 8<<7);
+    //    printf(" xxxxxxxxxxxxx %d\n", 8<<7);
     
 }

@@ -27,30 +27,6 @@ void SR_geo_inner_gappedfunctionrung(uint32_t w){  // depth or cycle prob
     }
 }
 
-void SR_geo_inner_probabstractentryX(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
-  HEADNADA;
-
-  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
-    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
-    if (gate[w].dac>4095) gate[w].dac=4095;
-  }
-  else gate[w].dac = delay_buffer[w][1];
-
-  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-    GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
-
-    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-      if (w==0)     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix
-      else bitn=(*abstractbitsz[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done      
-    }
-    else bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); // >>6 as there are 64 // some use IN?
-    BITN_AND_OUTV_; 
-    new_data(val,w);
-    }
-}
-
 void SR_geo_inner_dacspeed3xnorouteabstractL(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
@@ -162,10 +138,7 @@ void SR_geo_outer_L00(uint32_t w){  // set TYPE
   gate[w].inner=SR_geo_inner_globalC; // routetype/theroute so always at reset route/base global
 }
 
-// next follow CC
-
 // 4 simple bit as clkfrom runglers:
-//rungler2: route in, clkfrom speedfrom SR
 // L40 from C40
 
 void SR_geo_outer_L41(uint32_t w){ // select function/gapped array
@@ -209,7 +182,7 @@ void SR_geo_outer_L43(uint32_t w){ // select function/gapped array - fixed route
 ///////////////////////////////////////////////////////////////////////////////////
 // add other type of abstract runglers... from NN now
 
-// adc in with prob of route in and speed - inner_functionN
+// abstract in with prob of route in and speed - inner_functionN
 void SR_geo_outer_L50(uint32_t w){ // abstract in
   if (gate[w].changed==0) {
     gate[w].matrix[0]=6<<7; // tested // try fixed speed - spdfrac4
@@ -267,6 +240,7 @@ void SR_geo_outer_L53(uint32_t w){  // no route
     gate[w].matrix[0]=4<<7; // spdfrac1 now
     gate[w].matrix[1]=CV[w];// speed cv1
     gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv2
+
     if (w==0){
     gate[w].matrix[8]=gate[dacfrom[daccount][w]].dac; // CV2 or gapped 5 is also for abstractbits
     gate[w].matrix[21]=gate[dacfromopp[daccount][w]].dac;
@@ -324,19 +298,3 @@ void SR_geo_outer_L63(uint32_t w){ // spdfracdac3
 }
 
 
-/////////////////////////////////////////////END!
-///// last
-// 153: final one is reset but what does CVL do there? last bit or prob
-void SR_geo_outer_L153(uint32_t w){  // final all gapped reset
-  if (gate[w].changed==1) {
-    RESETL; 
-    gate[w].changed=0;
-  }
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
-  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-  gate[w].matrix[4]=CVL[w];
-  gate[w].matrix[10]=CVL[w];
-  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
-  gate[w].inner=SR_geo_inner_gappedfunction;
-    }

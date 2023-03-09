@@ -16,25 +16,6 @@ void SR_geo_inner_rungnorouteA(uint32_t w){
     }
 }
 
-void SR_geo_inner_norouteabstractR(uint32_t w){ 
-  HEADNADA;
-
-  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
-    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
-    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
-    if (gate[w].dac>4095) gate[w].dac=4095;
-  }
-  else gate[w].dac = delay_buffer[w][1];
-
-    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-    GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
-    bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); 
-    BITN_AND_OUTV_; 
-    new_data(val,w);
-    }
-}
-
 void SR_geo_inner_function_glob(uint32_t w){  
   HEADNADA;
   if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
@@ -116,7 +97,6 @@ void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle pro
   else gate[w].dac = delay_buffer[w][1];
 
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
-    gate[w].strobed=1;
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
@@ -152,7 +132,7 @@ void SR_geo_outer_R00x(uint32_t w){  // set length // set length or could better
 }
 
 // alt for above as we set length later... prob 1 route against cycle
-void SR_geo_outer_R00(uint32_t w){  //leave as
+void SR_geo_outer_R01(uint32_t w){  //leave as
   if (gate[w].changed==1) {
     RESETR; // added 21/12 only reset on change and RESETR also does RESETG global reset
     gate[w].changed=0;
@@ -166,13 +146,13 @@ void SR_geo_outer_R00(uint32_t w){  //leave as
   gate[w].inner=SR_geo_inner_function;
 }
 
-void SR_geo_outer_R01(uint32_t w){ //R01 abstract sel: no route
+void SR_geo_outer_R00(uint32_t w){ //R01 abstract sel: no route
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[20]=CVL[w]; // abstract bits
   gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
-  gate[w].inner=SR_geo_inner_norouteabstractR;
+  gate[w].inner=SR_geo_inner_norouteadcN;
   }
 }
 
@@ -182,12 +162,12 @@ void SR_geo_outer_R02(uint32_t w){ //R02 abstract depth: with no route in
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[5]=CVL[w];
   gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
-  gate[w].inner=SR_geo_inner_norouteabstractR;
+  gate[w].inner=SR_geo_inner_norouteadcN;
   //  gate[w].inner=SR_geo_inner_globalC; // now handles abstract bits
   }
 }
 
-void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed route entry  
+void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed entry  
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
@@ -207,7 +187,7 @@ void SR_geo_outer_R13(uint32_t w){ // set adc type from CVL and depth from dacfr
   gate[w].matrix[20]=CVL[w]; //abstract type
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac);
   gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
-  gate[w].inner=SR_geo_inner_norouteabstractR;
+  gate[w].inner=SR_geo_inner_norouteadcN;
   }
 }
 

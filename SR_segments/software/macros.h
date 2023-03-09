@@ -7,6 +7,7 @@
   gate[w].routetype=CVL[w]>>9;			\
   }
 
+#define TRIGGER (!(*clkins[w] & clkinpins[w]))
 
 #define RESETTN {				\
   for (uint32_t y=0;y<22;y++){			\
@@ -416,7 +417,6 @@
 #define BITN_AND_OUTV_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
-    if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrix[13]>>7])) bitn^=(!(*clkins[w] & clkinpins[w])); \
     gate[w].shift_+=bitn;						\
     gate[w].lastest=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].trigger); \
@@ -424,7 +424,7 @@
     PULSOUT;								\
 }
 
-// strobed version so we don't need check
+// strobed version so we don't need check - same as above now we removed strobe but no harm
 #define BITN_AND_OUTVS_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
@@ -439,7 +439,6 @@
 #define BITN_AND_OUTVX_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\
-    if ( (!gate[w].strobed) && (dacstrobe[gate[w].matrixX[13]>>7])) bitn^=(!(*clkins[w] & clkinpins[w])); \
     gate[w].shift_+=bitn;						\
     gate[w].lastest=bitn;						\
     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrixX[13]>>7, gate[w].matrixX[14], gate[w].trigger); \

@@ -117,23 +117,23 @@ theory of operation:
 
 generic: 4 interlocked (software) shift registers, with configurable
 routing, speed and length. each has CV control, an adjustable mode,
-and clock or pulse inputs. All is bits, 1s and 0s but analogue signals
-can be input and can be generated using combinations of these bits.
+and clock inputs. Some have pulse inputs. All is bits, 1s and 0s but
+analogue signals can be input and can be generated using combinations
+of these bits.
 
 hardware in detail:
 
-Each side has 3 knobs and 2 CV inputs, and a clock or pulse input. The
-central knob on each side controls the mode for that SR, the first
-knob (left to right, up to down) is X, the third is Y. In the first 32
-modes on each side, and other modes depending on mode, the X control
-(CV and knob) controls speed. In modes 33-48 speed is set by the clock
-input. In these cases, and in other modes which use the clock for sync
-or triggering a condition, clock input is normed to an artificial
-clock signal internally generated. Otherwise the clock is left free
-and can be used as a regular pulse input. Left and right SRs both have
-a pulse input which is simply XORed into the SR; it can be use to mix
-new signals into each SR. Left, right and lower SRs each have two
-different pulse outputs directly from their own SR bits. 
+Each side has 3 knobs and 2 CV inputs, and a clock input. The left and
+right sides have a pulse input. The central knob on each side controls
+the mode for that SR, the first knob (left to right, up to down) is X,
+the third is Y. In the first 32 modes on each side, and other modes
+depending on mode, the X control (CV and knob) controls speed. In
+modes 33-48 speed is set by the clock input. The clock input is normed
+to an artificial, internally generated clock signal. Of course,
+inserting a cable here, dissolves this connection. Left and right SRs
+both have a pulse input which is simply XORed into the SR; it can be
+use to mix new signals into each SR. Left, right and lower SRs each
+have two different pulse outputs directly from their own SR bits.
 
 The top SR has an audio input, the bottom SR has an audio
 output. Different input and output encodings can be chosen using the

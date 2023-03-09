@@ -1,4 +1,121 @@
 
+/////////// final
+// 153: final one is reset but what does CVL do there? last bit or prob
+void SR_geo_outer_N153(uint32_t w){  // final all gapped reset
+  if (gate[w].changed==1) {
+    RESETN; 
+    gate[w].changed=0;
+  }
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
+  gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
+  gate[w].matrix[4]=CVL[w];
+  gate[w].matrix[10]=CVL[w];
+  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
+  gate[w].inner=SR_geo_inner_gappedfunction;
+    }
+
+
+
+
+
+void SR_geo_inner_functionproblast(uint32_t w){  
+  HEADNADA;
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    if ((*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      //      if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
+      if (w==3) bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); 
+      else bitn=(gate[w].str_funcbit[gate[w].matrix[17]>>gate[w].str_extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+      }
+      else {
+	bitn = gate[w].lastest;
+      }
+	  
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
+
+/*
+QUESTION:1. check missing probs and where they could fit.
+NN NOD are unused: 
+SR_geo_inner_probadcentrynod
+SR_geo_inner_probadcentryxornod
+SR_geo_inner_probadcentryXnod -> SR_geo_inner_probdepth???
+SR_geo_inner_probadcentryxorXnod
+SR_geo_inner_adcprobzeronod -> with probzero
+*/
+
+
+/*
+rungler1: osc1 or selected gapped/abstract with speed or depth from speedfrom dac
+
+- adc only// adc param
+- select abstract
+- depth abstract with route/no route
+*/
+
+//spdfrac, spdfrac, spdfracend, spdfracend, 4spdfrac1, 5spdfrac3, 6spdfrac4, spdfrac5
+//- adc only// adc param or now prob route in//route cv
+
+
+
+void SR_geo_outer_N03x(uint32_t w){ // 1-prob of ADC entry or fixed route entry  XOR
+  if (gate[w].changed==0) { 
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];
+  gate[w].matrix[9]=0<<6; // probbits
+  gate[w].matrix[10]=CVL[w]; // depth for prob
+  //  gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
+  gate[w].inner=SR_geo_inner_probadcentryxor;// fixed as probbits and fixed entry
+}
+}
+
+
+
+/*
+
+- list arrays:
+
+ANYstrobes:
+routebits_depth_typezs 
+routebits_nodepth_typesz
+routebits_anystrobe_depth_notypesz is same as: routebits_nostrobe_depth_notypesz if we leave out new ones...
+routebits_anystrobe_nodepth_notypesz
+
+NOstrobes - for strobe speeds:
+routebits_nostrobe_depth_typesz
+routebits_nostrobe_depth_notypesz
+routebits_nostrobe_nodepth_typesz
+routebits_nostrobe_nodepth_notypesz
+
++ merged arrays now:
+routebits_anystrobe_notypesz
+
+routebits_nostrobe_nodepth - all types
+routebits_nostrobe_depth - all types
+routebits_nostrobe_typesz - all depths
+
+all use depth but do we need signalling array...
+abstractbitsz
+abstractbitsz_forrung
+abstractbits_nostrobez
+
+ */
+
+
+
 // original
 static inline void setvargapzbleedx(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
   if (which!=gate[wh].oldgap[layer]){

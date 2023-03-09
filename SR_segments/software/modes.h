@@ -2,7 +2,6 @@
 typedef struct heavens_ { 
   uint32_t trigger;
   uint32_t flip;
-  uint32_t strobed; // set this when we need fake strobe...  
   uint32_t Gshift_[5];
   uint32_t localGSR[5];
   uint32_t Gshare_;
@@ -32,7 +31,7 @@ typedef struct heavens_ {
   uint32_t matrix[23];
   uint32_t matrixX[23];
   uint32_t *matrixp[23]; // +1 for reset
-  uint32_t *matrixpG[23][16];
+  uint32_t *matrixpG[23];
   uint32_t offset[23];
   uint32_t oldgap;
   uint32_t oldgapp[16];// 16 layers

@@ -99,9 +99,6 @@ matrixp//globals in RR
 152
 153
 
-- for NN, LL, RR what we have to gap in there?
-
-
 ** TODO 
 
 - check that all LL, CC etc have right parameters for each function set!
@@ -121,8 +118,8 @@ XX#include "geogen.h"
 // check when we have all in place: esp. for right params, for probabilities
 
 #include "geoCC.h"
-#include "geoNN.h"
-#include "geoLL.h"
+XX#include "geoNN.h"
+XX#include "geoLL.h"
 #include "geoRR.h"
 
 XX#include "exp_port.h" - cleaned up a bit but needs full check.
@@ -131,38 +128,34 @@ arrays:
 XXgeomantic.h
 XXnewbits.h
 
-TODO: Wed/T/F
-
-- *any additional probs and functions below?*
-- *if L50, L51, L52, L53 should be adapted for NN and then swop out c60range for c70range in NN? again memory Q*
-
 ///
 
-*UNUSED*
+** 9/3/2023
 
-SR_geo_outer_Cplast - where to fit? on any side?
+notes:
 
-added in geoCC: SR_geo_inner_probdepthnodepth but we need outer to use it! -> is probf depth with routebits_nodepth_typesz 
+- last reset on RR, LL and NN doesn't make so much sense - have as blank and add another matrixp mode!
 
-NN: 
-probzeros: SR_geo_inner_adcprobzero, SR_geo_inner_adcprobzeronod
-SR_geo_inner_probadcentryxornod and all nod/no depths below - which need outers?
+TODO: code checks above, play/tweak!
 
-QUESTION:1. check missing probs and where they could fit.
-NN NOD are unused: 
-SR_geo_inner_probadcentrynod
-SR_geo_inner_probadcentryxornod
-SR_geo_inner_probadcentryXnod -> SR_geo_inner_probdepth???
-SR_geo_inner_probadcentryxorXnod
-SR_geo_inner_adcprobzeronod -> with probzero
+DONE/TEST:
+DONE- some trigers changed now changed trigger to bit but which is better for speeds // find out
+- TESTEDresolve matrixp/layers. revert older code and test what we have in test2.c DONE/TEST
+TESTED- C150 only- in matrixp do we have set on strobe function? TEST 
+TESTED- remove strobe in all. is always running and we never use it as pulse in! TEST
+- TESTED/ADDED some basic strobe functions: STR and TOG adding 
 
-CC:
-- SR_geo_inner_probdepthnodepth: anystrobe depth//routebits_no depth UNUSED
-- we need also probf_anystrobe_nodepth vs routebits_depth_typesz
+
+routebits_depth_typesz: 61->63<<6
+
+depth_typez: Zbinrout_stripSTR, Zbinrout_stripTOG, Zbinroutfixed_prob1STR, Zbinroutfixed_prob1STR, NZbinroutfixed_prob1STR, NZbinroutfixed_prob1TOG
+nodepth_typez: ZbinroutSTR, ZbinroutTOG
+depth_notypez: zTMsimplebitsLSTR, zTMsimplebitsLTOG, zTMsimplebitsSTR, zTMsimplebitsTOG - no space to add
+nodepth_notypes: ZjustcycleSTR, ZjustcycleTOG
 
 ** 8/3/2023
 
-still todo: TEST!- matrixp modes and if they make sense: // some changes to functions/layers to explore there
+//- if we know inner only has fixed caller then fix it! done in NN
 
 DONEif L50, L51, L52, L53 should be adapted for NN and then swop out c60range for c70range in NN? again memory Q*
 DONE- check defaults // using an empty mode on each side -> where is?
