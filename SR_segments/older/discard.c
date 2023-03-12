@@ -1,3 +1,27 @@
+
+void SR_geo_outer_C151x(uint32_t w){
+  uint32_t tmp;
+  if (gate[w].changed==0) {
+    if (w==0) map=maparrayCCA;
+    else map=maparrayCC;
+    tmp=CV[w]>>8;// 4 bits 16 layers
+    if (gate[w].trigger) setvargapzbleed(w, map[tmp], reamp[CVL[w]>>8]); //CVL is var... //    setvargapzbleed(w, map[(CV[w]>>8)], CVL[w]>>8);  // or vargapz
+    SR_geomantic_matrixcopyz(w);
+    gate[w].routetype=gate[w].matrixX[16]>>9;
+    gate[w].inner=SR_geo_inner_probdepthdepthN;
+  }
+}
+
+//empty one
+void SR_geo_outer_C123x(uint32_t w){   
+  if (gate[w].changed==0) {
+    //SR_geomantic_matrixcopyoffsetz(w);
+    gate[w].routetype=gate[w].matrixX[16]>>9;
+    gate[w].inner=SR_geo_inner_str_probfunctionX; 
+  }
+}
+
+
 //alt  now
 void SR_geo_outer_R00x(uint32_t w){  // set length // set length or could better be TYPE - route in
   if (gate[w].changed==1) {

@@ -407,7 +407,6 @@ void SR_geo_inner_probabstractentryX(uint32_t w){  // ADC only - prob for adc it
     BITN_AND_OUTV_; 
     new_data(val,w);
     }
-
 }
 
 // OUTERS
@@ -558,7 +557,7 @@ void SR_geo_outer_N23(uint32_t w){
   gate[w].funcbit=routebits_depth_typesz;
   gate[w].extent=extent_routebits_depth_typesz; 
 
-  if ((gate[w].matrix[7]>>6)>23) {
+  if ((gate[w].matrix[7]>>6)>23) { // dacs or abstracts
   if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CVL[w];
   else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=CVL[w]; // mix
   else gate[w].matrix[6]=CVL[w]; // length

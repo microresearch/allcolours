@@ -69,11 +69,19 @@
   ADCin=k;								\
   }
 
+#define ADCgenericsin {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  k=ADC_GetConversionValue(ADC1);					\
+  }
+
 #define MIXin {								\
-    ADCgeneric;								\
+    ADCgenericsin;								\
     float mult=mixer[in>>2];						\
     float pp=((float)(k) *  (1.0f-mult)) + ((float)(gate[dacIN[daccount][w]].dac)*mult); \
     k=(int)pp;								\
+    ADCin=k;								\
 }
 
 #define ADCgeneric2 {				\
@@ -81,14 +89,6 @@
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   ADCin=ADC_GetConversionValue(ADC1);					\
-  }
-
-
-#define ADCgeneric11 {				\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_144Cycles); \
-  ADC_SoftwareStartConv(ADC1);						\
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
-  k=ADC_GetConversionValue(ADC1)>>(11-depth);				\
   }
 
 // we cannot place this inside other macros! fixed 12/1/2021
@@ -442,7 +442,7 @@
     PULSOUT;								\
 }
 
-// strobe version so we don't check
+// same now as above
 #define BITN_AND_OUTVXS_ {						\
     PULSIN_XOR;								\
     gate[w].flip^=1;							\

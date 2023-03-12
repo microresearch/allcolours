@@ -117,25 +117,69 @@ XX#include "geogen.h"
 
 // check when we have all in place: esp. for right params, for probabilities
 
-#include "geoCC.h"
+*#include "geoCC.h"*
 XX#include "geoNN.h"
 XX#include "geoLL.h"
 XX#include "geoRR.h"
 
-XX#include "exp_port.h" - cleaned up a bit but needs full check.
+XX#include "exp_port.h" 
 
 arrays: 
 XXgeomantic.h
 XXnewbits.h
 
-///
+** 12/3
 
-** 10/3/+
+- question if we use CV, CVL if we shield these in arrays for matrixp
 
-- less routes in on NN, and RR: looking at in NN, esp strobes to check and matrixp which is all route in
+DONE:
+TEST strobes on NN
+DONE/TEST C151- could have reduced array for matrixp in some functions
+////
+DONE- *check now RR strobe/route functions (w==3)
+DONEless routes in on NN, and RR: looking at in NN, esp strobes to check and matrixp which is all route in// added reduced// matrixp is not on RR
+DONE/check strobes for route ins on NN/RR
+NO- first 4 strobes on NN/RR with no entry? but further changes
+FIXED- do we have toggle as speed?
+//what are strobe speed possibilities: 
+uint32_t (*speedfromstrobe_depth[16]) - just in SR_geo_inner_str_function2 ok in C93
+uint32_t (*speedfromstrobe_nodepth[16]) - well used
+// merge these 2 if we dont care about depth
+uint32_t (*speedfromstrobe_all[32]) -> used in matrixp
 
-- check we have decent range of functions on each side!?
+- do we have all func selects on strobes:
 
+//what are all function possibilities for nostrobe??:
+
+depth/types: 80, 
+nodepth/types: 82
+depth/notypes: 81
+nodepth/notypes: 83
+
+merges: 
+routebits_nostrobe_typesz:
+routebits_nostrobe_depth: used in probs
+routebits_nostrobe_nodepth: in probs
+
+- range on NN - q of c21_ and 
+
+N: N0-3, C10,12,13,20, N20-23, C30-33, N40-N53, L50-51, C70-73 C80-153
+NN: we miss C11, c21+, C40 C50 C60
+
+C20, C22, 31, 32, 33 to look at!
+
+C20: routebits_nodepth_typesz
+C22: routebits_depth_typesz - but where to set depth?
+C31: routebits_anystrobe_depth_notypesz - depth
+C32: gapped/// depth
+C33: xor func??? - replace with C23
+
+so go for: C20, C22, C23, C31, C32 on NN DONE
+
+
+** 10/11/3
+
+DONE:
 - DONEtry different route types eg. noshift=5<<9, zero=3<<9 ), - changed default route for NN and RR to 3<<9/zero
 - or less route on RR also...
 DONEswop back in c70+?

@@ -2,10 +2,6 @@
 
 ** basic blurb description: 
 
-Caput draconis (CD) is/will be the latest ourorack ... companion
-extending the ouroboric becoming-noise of the contemporary eurorack
-rosarium
-
 Caput draconis (CD) is the latest ourorack (ouroboric) module for
 gnarlular processing, and advanced cross frequency CV and audio
 pattern generation, encoding a series of successively pleasurable and
@@ -29,6 +25,11 @@ instruments through manipulation of modes and parameters
 towards a synthesis without modules...
 
 successive pleasurable and tortuous dislocations 
+
+Caput draconis (CD) is/will be the latest ourorack ... companion
+extending the ouroboric becoming-noise of the contemporary eurorack
+rosarium
+
 
 //Successive Slidings of Pleasure (French: Glissements progressifs du plaisir) RG
 
@@ -78,22 +79,19 @@ Design files at: https://github.com/microresearch/allcolours
 
 Cheatsheet with manual cards: https://1010.co.uk/AlltheColours_extendedmanual.pdf
 
-With thanks to Ioana Vreme Moser for manual layout and design.
+With thanks to Melissa Aguilar for poster/manual layout and design.
 
 All the Colours... is released under the GPL GNU General Public License.
 
 
 2 - panel layout
-3 - 4 sets of major modes listed - Q of knob angles
-4 - hints and tips /working with AC
-5 - theory of operation
+3 - general desc/theory
+4 - theory of operation
+5 - hints and tips /working with AC
 6 - glossary
 
 
 poster [could also be booklet for TOAD/andy later]
-
-[- collect stack/SR diagrams, ascii art, panel sketches, moon phases]
-[- print quality and binding?]
 
 how to image/notate panel - that the description and panel/images are themselves subjected to shift reg (eg. each pixel line of panel image - try this!)
 

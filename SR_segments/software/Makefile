@@ -36,7 +36,7 @@ LDSCRIPT = stm32_flash.ld
 
 CFLAGS  =  -I. -IInclude -Iinc -std=gnu99 \
 	 -D'__FPU_PRESENT=1' -DARM_MATH_CM4 \
-	-mthumb \
+	-mthumb -flto \
 	-mfpu=fpv4-sp-d16 \
 	-c -lm -lc -fno-common -O3 -funroll-loops \
 	-mcpu=cortex-m4 \
