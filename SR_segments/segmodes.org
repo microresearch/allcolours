@@ -120,7 +120,7 @@ XX#include "geogen.h"
 #include "geoCC.h"
 XX#include "geoNN.h"
 XX#include "geoLL.h"
-#include "geoRR.h"
+XX#include "geoRR.h"
 
 XX#include "exp_port.h" - cleaned up a bit but needs full check.
 
@@ -130,14 +130,22 @@ XXnewbits.h
 
 ///
 
+** 10/3/+
+
+- less routes in on NN, and RR: looking at in NN, esp strobes to check and matrixp which is all route in
+
+- check we have decent range of functions on each side!?
+
+- DONEtry different route types eg. noshift=5<<9, zero=3<<9 ), - changed default route for NN and RR to 3<<9/zero
+- or less route on RR also...
+DONEswop back in c70+?
+DONE*we need to set speedfunc in LL, NN, RR but where?//done as N40, and now as c40
+
 ** 9/3/2023
-
-notes:
-
-- last reset on RR, LL and NN doesn't make so much sense - have as blank and add another matrixp mode!
 
 TODO: code checks above, play/tweak!
 
+- DONElast reset on RR, LL and NN doesn't make so much sense - have as blank and add another matrixp mode!
 DONE/TEST:
 DONE- some trigers changed now changed trigger to bit but which is better for speeds // find out
 - TESTEDresolve matrixp/layers. revert older code and test what we have in test2.c DONE/TEST

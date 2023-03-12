@@ -1,3 +1,16 @@
+//alt  now
+void SR_geo_outer_R00x(uint32_t w){  // set length // set length or could better be TYPE - route in
+  if (gate[w].changed==1) {
+    RESETR; // added 21/12 only reset on change also does RESETG global reset
+    gate[w].changed=0;
+  }
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[6]=CVL[w]; // length
+  gate[w].inner=SR_geo_inner_globalC; //
+}
+
+
 
 /////////// final
 // 153: final one is reset but what does CVL do there? last bit or prob

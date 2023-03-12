@@ -95,11 +95,11 @@ void SR_geo_inner_dacspeed3_4_routeabstractL(uint32_t w){
     }
 }
 
-void SR_geo_inner_dacspeed3_4_norouteabstractL(uint32_t w){  
+void SR_geo_inner_dacspeed3_3_norouteabstractL(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
 
-  if (spdfracdac34(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+  if (spdfracdac33(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
     bitn=(*abstractbits_forrung[gate[w].matrix[20]>>7])(gate[w].matrix[5], gate[w].matrix[4], w); // abstractbits_forrung[32]

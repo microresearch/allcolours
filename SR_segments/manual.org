@@ -111,6 +111,8 @@ how to image/notate panel - that the description and panel/images are themselves
 
 function is what is the bit and how does it enter? can also effect shifting (types of shift - what these are) and other SRs
 
+make clear that previous settings affect future modes and that there is a complete reset
+
 ** 28/2/2023
 
 theory of operation:
