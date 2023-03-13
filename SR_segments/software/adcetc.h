@@ -621,10 +621,9 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  temp=(temp+lastlastmoden+lastmoden)/3; 
-  lastlastmoden=lastmoden;
-  lastmoden=temp;
-  //  mode[0]=temp>>6;
+  //  temp=(temp+lastlastmoden+lastmoden)/3; 
+  //  lastlastmoden=lastmoden;
+  //  lastmoden=temp;
   mode[0]=mapping[temp>>2];
   if (lastmode[0]!=mode[0]) gate[0].changed=1;
   else gate[0].changed=0;
@@ -642,10 +641,9 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  temp=(temp+lastlastmodec+lastmodec)/3; 
-  lastlastmodec=lastmodec;
-  lastmodec=temp;
-  //  mode[2]=temp>>6;
+  //  temp=(temp+lastlastmodec+lastmodec)/3; 
+  //  lastlastmodec=lastmodec;
+  //  lastmodec=temp;
   mode[2]=mapping[temp>>2];
 
   if (lastmode[2]!=mode[2]) gate[2].changed=1; 
@@ -657,9 +655,9 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  temp=(temp+lastlastmodel+lastmodel)/3; 
-  lastlastmodel=lastmodel;
-  lastmodel=temp;
+  //  temp=(temp+lastlastmodel+lastmodel)/3; 
+  //  lastlastmodel=lastmodel;
+  //  lastmodel=temp;
   //  mode[1]=temp>>6;
   mode[1]=mapping[temp>>2];
   if (lastmode[1]!=mode[1]) gate[1].changed=1;
@@ -671,10 +669,9 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  temp=(temp+lastlastmoder+lastmoder)/3; 
-  lastlastmoder=lastmoder;
-  lastmoder=temp;
-  //  mode[3]=temp>>6;
+  //  temp=(temp+lastlastmoder+lastmoder)/3; 
+  //  lastlastmoder=lastmoder;
+  //  lastmoder=temp;
   mode[3]=mapping[temp>>2];
   if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
   else gate[3].changed=0;

@@ -31,15 +31,6 @@ static inline uint32_t probbitsxortoggleID_(uint32_t depth, uint8_t w){   // PRO
   return bt[w];
 }
 
-static inline uint32_t binroutebits(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now // USED only in SRrecbin here....
-  uint32_t bitn=0, bitrr, x, tmp, tmpp;
-  depth=binroute[count][w]|binary[w];
-  tmpp=gate[w].routetype;
-  tmp=depth;
-  ROUTETYPE_;      
-  return bitn;
-}
-
 static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now // USED only in SRrecbin here....
   uint32_t bitn=0, bitrr, x, tmp, tmpp;
   depth=depth>>8; // 12 bits to 4 bits
@@ -193,21 +184,6 @@ static inline uint32_t pSR_altbin1(uint32_t depth, uint32_t in, uint32_t w){ // 
 	bitn^=bitrr;
       }
     tmp=tmp>>1;
-    }
-  return bitn;
-}
-
-static inline uint32_t pSR_recbin(uint32_t depth, uint32_t in, uint32_t w){ //depth
-  uint32_t x, tmp, bitrr, temp, bitn=0;
-    bitn=binroutebits(depth,w); // how these layers can differ - 4 layers... 
-  if (bitn){ 
-    bitn=binroutebits(depth,w); 
-  }
-  if (bitn){
-    bitn=binroutebits(depth,w);
-  }
-  if (bitn){
-    bitn=binroutebits(depth,w);
     }
   return bitn;
 }

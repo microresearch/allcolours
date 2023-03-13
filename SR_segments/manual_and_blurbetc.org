@@ -1,5 +1,37 @@
 * notes towards manual/caput draconis
 
+** blurb 2
+
+caput draconis is an ourorack (ouroboric eurorack) module for
+gnarlular audio processing, and advanced serpentine all-frequency CV
+and audio pattern generation, encoding a series of successively
+pleasurable and tortuous sliding dislocations.
+
+Four draconic heavily simulated shift registers are enchained,
+interlocked, woven and segmented, recursively and excessively feeding
+on each other in turns, vomiting noise and wormy symphonies according
+to moon phases and shifting nodal and modal paths. It is to have done
+with the judgement of god/s, snaking towards a synthesis without
+modules.
+ 
+With sixty-four modes per serpentine section, caput draconis is best
+viewed as en-worming more than 16777216 (64^16) unique and complex
+instruments, equally invoked and informed by lunar phases and
+astrogeomantic time signatures.
+
+** site/announce description - fill in
+
+Technical and HOWTO
+20HP, mA at +12V, mA at -12V, 0mA at 5v. Multiple CV inputs and audio outputs. Power is red stripe/-12V DOWN.
+
+Design files at: https://github.com/microresearch/allcolours
+
+Cheatsheet with manual cards: https://1010.co.uk/AlltheColours_extendedmanual.pdf
+
+With thanks to Melissa Aguilar for poster/manual layout and design.
+
+All the Colours... is released under the GPL GNU General Public License.
+
 ** basic blurb description: 
 
 Caput draconis (CD) is the latest ourorack (ouroboric) module for
@@ -248,8 +280,6 @@ tips:
 
 work from bottom up - useful configuration on bottom, leave it and start work from top
 
-Computers for the Arts - Higgins, Dick as model with printed printouts/permutations, permutate our own instructions
-
 the user shoots
 the user kills
 
@@ -323,7 +353,7 @@ Colours with 4 and more interlocking shift registers or "runglers"
 emphasis is on complex CV generation and processing of analogue
 signals, as well as clock and pulse outputs. Release date March 2023.
 
-** basic description
+** basic older description
 
 how we call SR: as rungler, as a walk-in
 
@@ -382,3 +412,9 @@ further manipulate their own incoming ghost registers.
 - other random
 - http://www.ccru.net/digithype/Afrobinary.htm
 - https://monoskop.org/images/f/f1/CCRU_Abstract_Culture_Digital_Hyperstition_1999.pdf
+
+geomancy
+
+shift registers
+
+lunar nodes and alignments

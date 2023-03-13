@@ -497,7 +497,7 @@ void SR_geo_outer_N13(uint32_t w){
 
 /////////////////////////////////////////
 //// 2.0 - more probs
-void SR_geo_outer_N20(uint32_t w){ // prob of entry of depthroute
+void SR_geo_outer_N20(uint32_t w){ // prob of entry of depthroute // but we have no depth!
   if (gate[w].changed==0) {
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
@@ -529,9 +529,9 @@ void SR_geo_outer_N22(uint32_t w){  // these are with last route in
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
 
-  gate[w].matrix[3]=0<<6; // Zbinrout_strip=0 checked
-  gate[w].funcbit=routebits_depth_typesz;
-  gate[w].extent=extent_routebits_depth_typesz; 
+  //  gate[w].matrix[3]=0<<6; // Zbinrout_strip=0 checked
+  //  gate[w].funcbit=routebits_depth_typesz;
+  //  gate[w].extent=extent_routebits_depth_typesz; 
 
   if ((gate[w].matrix[7]>>6)>23) { // we hit dacs or abstracts
   if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CVL[w];
@@ -553,9 +553,9 @@ void SR_geo_outer_N23(uint32_t w){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
 
-  gate[w].matrix[3]=0<<6; // Zbinrout_strip=0 checked
-  gate[w].funcbit=routebits_depth_typesz;
-  gate[w].extent=extent_routebits_depth_typesz; 
+  //  gate[w].matrix[3]=0<<6; // Zbinrout_strip=0 checked
+  //  gate[w].funcbit=routebits_depth_typesz;
+  //  gate[w].extent=extent_routebits_depth_typesz; 
 
   if ((gate[w].matrix[7]>>6)>23) { // dacs or abstracts
   if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CVL[w];

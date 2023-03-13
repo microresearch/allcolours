@@ -462,6 +462,23 @@ static inline uint32_t NZbinroutfixed_prob1(uint32_t depth, uint32_t in, uint32_
   return bitn;
 }
 
+static inline uint32_t NZbinroutfixed_prob1A(uint32_t depth, uint32_t in, uint32_t w){   // prob of routed or cycling
+  uint32_t bitn=0, bitrr, x, tmpp, tmp;
+  //  if (depth<(LFSR__[w]>>4)) {
+  ADCgen;
+  if ((depth>>4)<((LFSR__[w]>>4))){
+    tmp=binroute[count][w]|binary[w];
+    tmpp=gate[w].routetype;
+    ROUTETYPE_;
+  }
+  else
+    {
+    bitn = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01; 
+    }
+  return bitn;
+}
+
+
 static inline uint32_t Zbinroutfixed_prob1STR(uint32_t depth, uint32_t in, uint32_t w){   // prob of routed or cycling
   uint32_t bitn=0, bitrr, x, tmpp, tmp;
   //  if ((depth>>4)<(in>>4)) {
@@ -2938,6 +2955,49 @@ static inline uint32_t osceqxf(uint32_t depth, uint32_t in, uint32_t w){  // so 
      return bt;
 }
 
+static inline uint32_t osceqfA(uint32_t depth, uint32_t in, uint32_t w){  // so all share
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+  ADCgen;
+  depth=4095-depth;
+  depth=depth>>4;
+  in=in>>4;
+     if (n>depth) {
+       bt=0;
+       if (nn>=in) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
+
+static inline uint32_t osceqxfA(uint32_t depth, uint32_t in, uint32_t w){  // so all share
+  uint32_t bt;
+  static int32_t n=0,nn=0;
+  ADCgen;
+  depth=4095-depth;
+  depth=depth>>4;
+  in=in>>4;
+     if (n>in) {
+       bt=0;
+       if (nn>=depth) { // so equal bits from 0 / length 0 = 101010
+	 n=0;
+       }
+       nn++;
+     } // n     
+     else {
+       bt=1;
+       n++;
+       nn=0;
+     }         
+     return bt;
+}
 
 static inline uint32_t flipflop(uint32_t depth, uint32_t in, uint32_t w){  // so all share // 
   uint32_t bt;
@@ -3023,6 +3083,13 @@ static inline uint32_t zprobbits(uint32_t depth, uint32_t in, uint32_t w){   // 
   return bt;
 }
 
+static inline uint32_t zprobbitsA(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode
+  uint32_t bt=0;
+  ADCgen;
+  if ((depth>>4)<(LFSR__[w]>>4)) bt=1;
+  return bt;
+}
+
 static inline uint32_t zprobbitsS_(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode
   uint32_t bt=0;
   if ((depth>>4)>(LFSR__[w]>>4)) {
@@ -3061,6 +3128,14 @@ static inline uint32_t zsprobbits(uint32_t depth, uint32_t in, uint32_t w){   //
 
 static inline uint32_t zprobbitsxorstrobe(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode xor strobe - can be more ops
   uint32_t bt=0;
+      if ((depth>>4)<(LFSR__[w]>>4)) bt=1;
+    bt=bt^gate[w].trigger;
+  return bt;
+}
+
+static inline uint32_t zprobbitsxorstrobeA(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode xor strobe - can be more ops
+  uint32_t bt=0;
+  ADCgen;
       if ((depth>>4)<(LFSR__[w]>>4)) bt=1;
     bt=bt^gate[w].trigger;
   return bt;
@@ -3434,6 +3509,21 @@ static inline uint32_t zosc1bitsfast(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
+static inline uint32_t zosc1bitsfastA(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt=0,n=0;
+  ADCgen;
+  depth=4095-depth;
+  depth=depth>>4;
+  if (n>depth)  {
+    lastbt^=1;
+    n=0;
+  }
+  n++;
+  bt=lastbt;
+  return bt;
+}
+
 static inline uint32_t zosc1bitsslow(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t lastbt=0,n=0;
@@ -3471,6 +3561,46 @@ static inline uint32_t zcountbits(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zcountbitsI(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t flop[4]={0,0,0,0}, n[4]={0,0,0,0}, nn[4]={0,0,0,0};
+  depth=4095-depth;
+  if (n[w]>depth)  {
+    n[w]=0;
+  }
+  // we want n number of flops output
+  if (nn[w]>n[w]){
+    nn[w]=0;
+    flop[w]^=1;
+    n[w]++;
+  }
+  bt=flop[w];
+  nn[w]++; 
+  
+  return bt;
+}
+
+static inline uint32_t zcountbitsA(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t flop=0, n=0, nn=0;
+  ADCgen;
+  depth=4095-depth;
+  if (n>depth)  {
+    n=0;
+  }
+  // we want n number of flops output
+  if (nn>n){
+    nn=0;
+    flop^=1;
+    n++;
+  }
+  bt=flop;
+  nn++; 
+  
+  return bt;
+}
+
+static inline uint32_t zcountbitsIA(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t flop[4]={0,0,0,0}, n[4]={0,0,0,0}, nn[4]={0,0,0,0};
+  ADCgen;
   depth=4095-depth;
   if (n[w]>depth)  {
     n[w]=0;
@@ -3529,6 +3659,14 @@ static inline uint32_t zTMsimplebits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;
   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
   if ((depth>>4)>(in>>4)) bt=!bt;
+  return bt;
+}
+
+static inline uint32_t zTMsimplebitsLA(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  ADCgen;
+  bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01;				
+  if ((depth>>4)>(LFSR__[w]>>4)) bt=!bt;
   return bt;
 }
 
@@ -3712,9 +3850,43 @@ static inline uint32_t zllfsrbits(uint32_t depth, uint32_t in, uint32_t w){
   return bt;
 }
 
+static inline uint32_t zlfsrbitsA(uint32_t depth, uint32_t in, uint32_t w){
+  uint32_t bt;
+  static uint32_t k;
+  ADCgen;
+  depth=depth>>7; // 5 bits
+  bt = ((ADCshift_[w] >> (lfsr_taps[depth][0])) ^ (ADCshift_[w] >> (lfsr_taps[depth][1])) ^ (ADCshift_[w] >> (lfsr_taps[depth][2])) ^ (ADCshift_[w] >> (lfsr_taps[depth][3]))) & 1u;
+  ADCshift_[w]=(ADCshift_[w]<<1)+bt;
+  if (ADCshift_[w]==0) ADCshift_[w]=0xff;
+  return bt;
+}
+
+static inline uint32_t zllfsrbitsA(uint32_t depth, uint32_t in, uint32_t w){ 
+  uint32_t bt;
+  // out from lfsr at full speed
+  ADCgen;
+  bt=(LFSR_[w]>>31)&0x01;
+  if ((depth>>4)<(LFSR__[w]>>4)) bt=((gate[w].Gshift_[w]>>SRlength[w]) & 0x01); 
+  return bt;
+}
+
 static inline uint32_t zflipbits(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t lastbt,n;
+  depth=depth>>4; // 8 bits say
+  bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01; // returnbits				
+  if (n>depth)  {
+    bt=!bt;
+    n=0;
+  }
+  n++;
+  return bt;
+}
+
+static inline uint32_t zflipbitsA(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt,n;
+  ADCgen;
   depth=depth>>4; // 8 bits say
   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01; // returnbits				
   if (n>depth)  {
@@ -3819,6 +3991,29 @@ static inline uint32_t zosceqbitsIf(uint32_t depth, uint32_t in, uint32_t w){
      return bt;
 }
 
+static inline uint32_t zosceqbitsIfA(uint32_t depth, uint32_t in, uint32_t w){   
+  uint32_t bt;
+  static int32_t n[4]={0};
+  static int32_t nn[4]={0};
+  ADCgen;
+  depth=depth>>4;
+  in=in>>4;
+
+     if (n[w]>depth) {
+       bt=0;
+       if (nn[w]>=in) { // so equal bits from 0 / length 0 = 101010
+	 n[w]=0;
+       }
+       nn[w]++;
+     } // n     
+     else {
+       bt=1;
+       n[w]++;
+       nn[w]=0;
+     }         
+     return bt;
+}
+
 static inline uint32_t zosceqbitsIxf(uint32_t depth, uint32_t in, uint32_t w){   // swopped dpeth and in
   uint32_t bt;
   static int32_t n[4]={0};
@@ -3840,7 +4035,30 @@ static inline uint32_t zosceqbitsIxf(uint32_t depth, uint32_t in, uint32_t w){  
      }         
      return bt;
 }
-     
+
+static inline uint32_t zosceqbitsIxfA(uint32_t depth, uint32_t in, uint32_t w){   // swopped dpeth and in
+  uint32_t bt;
+  static int32_t n[4]={0};
+  static int32_t nn[4]={0};
+  ADCgen;
+  depth=depth>>4;
+  in=in>>4;
+
+     if (n[w]>in) {
+       bt=0;
+       if (nn[w]>=depth) { // so equal bits from 0 / length 0 = 101010
+	 n[w]=0;
+       }
+       nn[w]++;
+     } // n     
+     else {
+       bt=1;
+       n[w]++;
+       nn[w]=0;
+     }         
+     return bt;
+}
+
 static inline uint32_t zosc1bitsIf(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t lastbt[4]={0};
@@ -3856,7 +4074,25 @@ static inline uint32_t zosc1bitsIf(uint32_t depth, uint32_t in, uint32_t w){
   bt=lastbt[w];
   return bt;
 }
- 
+
+static inline uint32_t zosc1bitsIfA(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t lastbt[4]={0};
+  static uint32_t n[4]={0};
+  ADCgen;
+  depth=4095-depth;
+  depth=depth>>4;
+
+  if (n[w]>depth)  {
+    lastbt[w]^=1;
+    n[w]=0;
+  }
+  n[w]++;
+  bt=lastbt[w];
+  return bt;
+}
+
+
 static inline uint32_t zosc1bitsIslow(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t lastbt[4]={0};
@@ -3917,6 +4153,31 @@ static inline uint32_t zlfsrbitsI(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zflipbitsI(uint32_t depth, uint32_t in, uint32_t w){  
   uint32_t bt;
   static uint32_t n[4];
+  depth=depth>>4; // 8 bits say
+  bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01; // returnbits				
+  if (n[w]>depth)  {
+    bt=!bt;
+    n[w]=0;
+  }
+  n[w]++;
+  return bt;
+}
+
+static inline uint32_t zlfsrbitsIA(uint32_t depth, uint32_t in, uint32_t w){
+  uint32_t bt;
+  ADCgen;
+  depth=depth>>7;// how many?lfsr_taps[32][4]
+  //  depth=31-depth;
+    bt = ((ADCshift_[w] >> (lfsr_taps[depth][0])) ^ (ADCshift_[w] >> (lfsr_taps[depth][1])) ^ (ADCshift_[w] >> (lfsr_taps[depth][2])) ^ (ADCshift_[w] >> (lfsr_taps[depth][3]))) & 1u;
+    ADCshift_[w]=(ADCshift_[w]<<1)+bt;
+    if (ADCshift_[w]==0) ADCshift_[w]=0xff;
+    return bt;
+}
+
+static inline uint32_t zflipbitsIA(uint32_t depth, uint32_t in, uint32_t w){  
+  uint32_t bt;
+  static uint32_t n[4];
+  ADCgen;
   depth=depth>>4; // 8 bits say
   bt = (gate[w].Gshift_[w]>>SRlength[w]) & 0x01; // returnbits				
   if (n[w]>depth)  {
@@ -4014,6 +4275,24 @@ static inline uint32_t zpattern8bitsI(uint32_t depth, uint32_t in, uint32_t w){ 
 static inline uint32_t sigmadelta(uint32_t depth, uint32_t in, uint32_t w){  // processor for any int/depth
   uint32_t bt=0;
   static int32_t integrator[4]={0,0,0,0}, oldValue[4]={0,0,0,0};
+  integrator[w]+=(depth-oldValue[w]);
+   if(integrator[w]>2048)
+  {
+     oldValue[w]=4095;
+     bt=1;
+  }
+   else
+   {
+      oldValue[w]=0;
+      bt=0;
+   }   
+  return bt;
+}
+
+static inline uint32_t sigmadeltaA(uint32_t depth, uint32_t in, uint32_t w){  // processor for any int/depth
+  uint32_t bt=0;
+  static int32_t integrator[4]={0,0,0,0}, oldValue[4]={0,0,0,0};
+  ADCgen;
   integrator[w]+=(depth-oldValue[w]);
    if(integrator[w]>2048)
   {
@@ -4228,6 +4507,23 @@ static inline uint32_t zadc4bits(uint32_t depth, uint32_t in, uint32_t w){ // fi
   return bt;
 }
 
+static inline uint32_t zadc4bitssplit(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12,8,4 - no depth!
+  uint32_t bt;
+  static int32_t bc=31, bb;
+  static uint32_t k;
+  //  depth=4095-depth;
+  if (spdfracx(depth, in, w)){
+    if (bc<0) {
+      ADCgeneric;
+      k=k>>8;
+      bc=3; 
+  }
+  bb = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  }
+  return bb;
+}
+
 static inline uint32_t zadc4bitsin(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12,8,4 - no depth!
   uint32_t bt;
   static int32_t bc=31;
@@ -4255,6 +4551,24 @@ static inline uint32_t zadc4bitsdac(uint32_t depth, uint32_t in, uint32_t w){ //
   bc--;
   return bt;
 }
+
+static inline uint32_t zadc4bitssplitdac(uint32_t depth, uint32_t in, uint32_t w){ // fixed 12,8,4 - no depth!
+  uint32_t bt;
+  static int32_t bc=31, bb;
+  static uint32_t k;
+  //  depth=4095-depth;
+  if (spdfracx(depth, in, w)){
+    if (bc<0) {
+      MIXin;
+      k=k>>8;
+      bc=3; 
+  }
+  bb = (k>>bc)&0x01; // this means that MSB comes out first
+  bc--;
+  }
+  return bb;
+}
+
 
 static inline uint32_t zadceqbits(uint32_t depth, uint32_t in, uint32_t w){
   uint32_t bt;

@@ -144,7 +144,7 @@ void SR_geo_outer_R01(uint32_t w){ //R02 abstract depth: with no route in
 }
 
 // alt for older as we set length later... prob 1 route against cycle
-void SR_geo_outer_R02(uint32_t w){  //leave as
+void SR_geo_outer_R03(uint32_t w){  //leave as
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
@@ -156,7 +156,7 @@ void SR_geo_outer_R02(uint32_t w){  //leave as
   }
 }
 
-void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed entry  
+void SR_geo_outer_R02(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed entry  
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];

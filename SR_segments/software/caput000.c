@@ -54,7 +54,7 @@ static uint32_t CVL[4]={0,0,0,0};
 // {0speedfrom/index, 1speedcv1, 2speedcv2, 3bit/index, 4bitcv1, 5bitcv2, 6lencv, 7adc, 8adccv, 9prob/index, 10probcv1, 11probvcv2, 12altfuncindex, 13dactype, 14dacpar, 15strobespd, 16troutetype, 17 route->now strobe function index}, 18 is abstract CV/unused, 19 is now glob, 20 is now abstract index, 21 is mix
 uint32_t matrixNN[22]={5<<7,4095,0,  0,2047,2047,31<<7, 0, 1<<7, 0,4095,0,0,      30<<7,0, 0, 3<<9, 0, 2048, 0, 0, 2048}; // trial types 16]
 uint32_t matrixLL[22]={0,4095,0,  0,2047,0, 31<<7,   0,0,     0,2048,0,0,      30<<7,0, 0, 0, 0, 0, 0, 0, 2048};
-uint32_t matrixCC[22]={0,4095,0,  0,2047,0, 31<<7, 0,0,       0,2048,0,0,      30<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
+uint32_t matrixCC[22]={1<<7,4095,0,  0,2047,0, 31<<7, 0,0,       0,2048,0,0,      30<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
 uint32_t matrixRR[22]={2<<7,4095,0,2047,0,2047, 31<<7, 0,0,   0,2048,0,0,      30<<7,0, 0, 3<<9, 0, 0, 0, 0, 2048};  // spdfracend
 //uint32_t matrixTT[22]={0,4095,0,  0,0,0, 31<<7, 0,0,         0,2048,0,0,    0<<7,0, 0, 0, 0, 0, 0, 0, 2048}; 
 //                     speed   bit       len   adc,adc-cv    prob   alt     dac      strobespdindex, type, route, abstrct cv, glob, abstract index, mixer
@@ -74,7 +74,7 @@ static uint32_t tailcount=0; // for tail choice
 #define FULL 0b11111111111111111111111111111111 //32 bits full
 #define HALB 0b10101010101010101010101010101010 //32 bits 1010
 #define MAXVALUE 4095
-#define SMOOTHINGS 512 // we can hold 65536 of our 16 bit ADC values...speed
+#define SMOOTHINGS 32 // we can hold 65536 of our 16 bit ADC values...speed
 uint32_t cc=0, totc=0, smoothc[SMOOTHINGS]={0};
 uint32_t ll=0, totl=0, smoothl[SMOOTHINGS]={0};
 uint32_t rr=0, totr=0, smoothr[SMOOTHINGS]={0};
@@ -82,8 +82,8 @@ uint32_t nn=0, totn=0, smoothn[SMOOTHINGS]={0};
 
 uint32_t mode[4]={0,0,0,0};
 uint32_t lastmode[4]={1,1,1,1};
-uint32_t lastmodec, lastmoden, lastmodel, lastmoder;
-uint32_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
+//uint32_t lastmodec, lastmoden, lastmodel, lastmoder;
+//uint32_t lastlastmodec, lastlastmoden, lastlastmodel, lastlastmoder;
 
 volatile uint32_t intflag[4]={0,0,0,0}; // interrupt flag...
 uint32_t SRlength_[5]={31,31,31,31,31};
@@ -206,8 +206,8 @@ R: R00-3, C10-40 now R13, L41-63, [now R52, 53, R60, R62,63] C70-C113, R120-R153
 
  void (*SRgeo_outer[4][64])(uint32_t w)=
 {
-  {SR_geo_outer_N00, SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03, SR_geo_outer_C10, SR_geo_outer_C12, SR_geo_outer_N13, SR_geo_outer_C20, /**/SR_geo_outer_N20, SR_geo_outer_N21, SR_geo_outer_N22, SR_geo_outer_N23, /**/SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C31, SR_geo_outer_C32, /**/SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, /**/SR_geo_outer_L50, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153},
-  {SR_geo_outer_L00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, /**/SR_geo_outer_L41, SR_geo_outer_L42, SR_geo_outer_L43, SR_geo_outer_L50, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_L60, SR_geo_outer_L61, SR_geo_outer_L62, SR_geo_outer_L63, /**/SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63,  SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153},
+  {SR_geo_outer_N00, SR_geo_outer_N01, SR_geo_outer_N02, SR_geo_outer_N03, SR_geo_outer_C10, SR_geo_outer_C12, SR_geo_outer_N13, SR_geo_outer_C20, /**/SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_N22, SR_geo_outer_N23, /**/SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C31, SR_geo_outer_C32, /**/SR_geo_outer_N40, SR_geo_outer_N41, SR_geo_outer_N42, SR_geo_outer_N43, SR_geo_outer_N50, SR_geo_outer_N51, SR_geo_outer_N52, SR_geo_outer_N53, /**/SR_geo_outer_L50, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153},
+  {SR_geo_outer_L00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_L11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, /**/SR_geo_outer_L41, SR_geo_outer_L42, SR_geo_outer_L43, SR_geo_outer_L50, SR_geo_outer_L51, SR_geo_outer_L52, SR_geo_outer_L53, SR_geo_outer_L60, SR_geo_outer_L61, SR_geo_outer_L62, SR_geo_outer_L63, /**/SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63,  SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153},
   {SR_geo_outer_C00, SR_geo_outer_C01, SR_geo_outer_C02, SR_geo_outer_C03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, SR_geo_outer_C41, SR_geo_outer_C42, SR_geo_outer_C43, SR_geo_outer_C50, SR_geo_outer_C51, SR_geo_outer_C52, SR_geo_outer_C53, SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63, SR_geo_outer_C70, SR_geo_outer_C71, SR_geo_outer_C72, SR_geo_outer_C73, SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, SR_geo_outer_C120, SR_geo_outer_C121, SR_geo_outer_C122, SR_geo_outer_C123, SR_geo_outer_C130, SR_geo_outer_C131, SR_geo_outer_C132, SR_geo_outer_C133, SR_geo_outer_C140, SR_geo_outer_C141, SR_geo_outer_C142, SR_geo_outer_C143, SR_geo_outer_C150, SR_geo_outer_C151, SR_geo_outer_C152, SR_geo_outer_C153}, 
   {SR_geo_outer_R00, SR_geo_outer_R01, SR_geo_outer_R02, SR_geo_outer_R03,  SR_geo_outer_C10, SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_R13, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33,  SR_geo_outer_C40, /**/SR_geo_outer_L41, SR_geo_outer_L42, SR_geo_outer_L43, SR_geo_outer_L50, SR_geo_outer_L51, SR_geo_outer_R52, SR_geo_outer_R53, SR_geo_outer_R60, SR_geo_outer_L60, SR_geo_outer_R62, SR_geo_outer_R63, /**/SR_geo_outer_C60, SR_geo_outer_C61, SR_geo_outer_C62, SR_geo_outer_C63,  SR_geo_outer_C80, SR_geo_outer_C81, SR_geo_outer_C82, SR_geo_outer_C83, SR_geo_outer_C90, SR_geo_outer_C91, SR_geo_outer_C92, SR_geo_outer_C93, SR_geo_outer_C100, SR_geo_outer_C101, SR_geo_outer_C102, SR_geo_outer_C103, SR_geo_outer_C110, SR_geo_outer_C111, SR_geo_outer_C112, SR_geo_outer_C113, /**/SR_geo_outer_R120, SR_geo_outer_R121, SR_geo_outer_R122, SR_geo_outer_R123, SR_geo_outer_R130, SR_geo_outer_R131, SR_geo_outer_R132, SR_geo_outer_R133, SR_geo_outer_R140, SR_geo_outer_R141, SR_geo_outer_R142, SR_geo_outer_R143, SR_geo_outer_R150, SR_geo_outer_R151, SR_geo_outer_R152, SR_geo_outer_R153}, 
 };
@@ -251,8 +251,10 @@ void mode_init(void){
     gate[4].Gshift_[2]=0;
     gate[4].Gshift_[3]=0;
 
+    
   
   for (x=0;x<4;x++){
+    gate[x].inner=SR_geo_inner_globalC;
     gate[x].flip=0;
     gate[x].altroute=0;
     gate[x].routetype=0;
@@ -290,7 +292,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   
   TIM_ClearITPendingBit(TIM2, TIM_IT_Update); // needed
   //////////////////////////////////////////////////////
-  
   if (intflag[www]) { // process INT
     gate[www].trigger=1;
     intflag[www]=0;
@@ -301,17 +302,19 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   }
   else gate[www].trigger=0;
   
+  
   ww++;
   if (ww>orderings[ordercount][0]){
     ww=1;
     resetz=1;
     (*dotail[tailcount])(); // or this is 5th [www==4] www  - can also be seperate case... // fixed bug in use of Gshift_[4] now...
   }
-  www=orderings[ordercount][ww];
-
-  tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
-  LFSR_[www] = (LFSR_[www]<<1) + tmp;
-  LFSR__[www]=LFSR_[www]&4095; // MUST be 12 bits
+  
+    www=orderings[ordercount][ww];
+    
+   tmp= ((LFSR_[www] >> 31) ^ (LFSR_[www] >> 19) ^ (LFSR_[www] >> 25) ^ (LFSR_[www] >> 24)) & 1u; // 32 is 31, 19, 25, 24
+   LFSR_[www] = (LFSR_[www]<<1) + tmp;
+   LFSR__[www]=LFSR_[www]&4095; // MUST be 12 bits
   
   //  uint32_t outindex=0;
   uint32_t outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
@@ -332,7 +335,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
   //    SRspeedtest(www); // test slowest speed
  
 if (www==2)  {
-   DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
+  DAC_SetChannel1Data(DAC_Align_12b_R, 4095-gate[2].dac); // 1000/4096 * 3V3 == 0V8
  }
  
  if (www!=0){ 

@@ -138,6 +138,21 @@ void SR_geo_outer_L00(uint32_t w){  // set TYPE
   gate[w].inner=SR_geo_inner_globalC; // routetype/theroute so always at reset route/base global
 }
 
+void SR_geo_outer_L11(uint32_t w){ // prob depth
+  if (gate[w].changed==0) {
+    gate[w].matrix[0]=0<<7;
+    gate[w].matrix[1]=CV[w];// speed
+    gate[w].matrix[9]=0; // probbits
+    gate[w].matrix[3]=0; // zbin
+    gate[w].matrix[10]=CVL[w];
+
+    gate[w].funcbit=routebits_nodepth_typesz; //new one // alts: routebits_nodepth_typesz[64] >>6 extent and routebits_depth_typesz[32]  >>7 extent // trial these
+    gate[w].extent=extent_routebits_nodepth_typesz; 
+    gate[w].depths=depth_routebits_nodepth_typesz;
+    gate[w].inner=SR_geo_inner_functionprobzero; // gapped
+  }
+}
+
 // 4 simple bit as clkfrom runglers:
 // L40 from C40
 

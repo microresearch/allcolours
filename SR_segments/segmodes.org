@@ -37,10 +37,10 @@ BASIC:
 //////////
 
 speed/prob
-40 - basic rungler with gapped route function
-41 - dacspeed3 as fixed speedfunc
-42 - draft speedmodes
-43 - speedfunc select
+40 - select speed func
+41 - rungler
+42 - dacspeed3
+43 - 
 
 50 - select prob function - vs cycle
 51 - probzeroes - probdepth
@@ -128,11 +128,25 @@ arrays:
 XXgeomantic.h
 XXnewbits.h
 
-** 12/3
+// crash test in RR // full crash test
+// test and check all runglers
 
-- question if we use CV, CVL if we shield these in arrays for matrixp
+** 13/3
+
+- *TODO: retest mode across values with new mode no smoothing*
 
 DONE:
+DONEC153 last tested = new last mode with sliding functions and offset speed
+replaced with new probzero and tested//Q. of C11 in L side - out depth? what it could be?
+// why is CV slow respond? reduced smoothings to 32
+//- smd replace
+// where do we place TYPES on each side? L00, C10-> in all others...
+// DONEcheck ADCin attach in matrixp - if we don't have ADCin mode then is an issue??? unless we always do adc how???
+ 
+** 12/3
+
+DONE:
+- question if we use CV, CVL if we shield these in arrays for matrixp DONE in some cases with remap
 TEST strobes on NN
 DONE/TEST C151- could have reduced array for matrixp in some functions
 ////
