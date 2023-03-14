@@ -120,7 +120,18 @@ void SR_geo_inner_gappedfunction_globoutside(uint32_t w){  // depth or cycle pro
 
 //0.0////////
 
-void SR_geo_outer_R00(uint32_t w){ //R01 abstract sel: no route
+void SR_geo_outer_R00(uint32_t w){  // set TYPE
+  if (gate[w].changed==1) {
+    RESETR; // added 21/12 only reset on change
+    gate[w].changed=0;
+  }
+  gate[w].matrix[0]=2<<7; // spdfracend
+  gate[w].matrix[1]=CV[w];// speed
+  SETROUTETYPECV;
+  gate[w].inner=SR_geo_inner_globalC; // routetype/theroute so always at reset route/base global
+}
+
+void SR_geo_outer_R01(uint32_t w){ //R01 abstract sel: no route
   if (gate[w].changed==1) {
     RESETR; // added 21/12 only reset on change and RESETR also does RESETG global reset
     gate[w].changed=0;
@@ -132,7 +143,7 @@ void SR_geo_outer_R00(uint32_t w){ //R01 abstract sel: no route
   gate[w].inner=SR_geo_inner_norouteadcN;
 }
 
-void SR_geo_outer_R01(uint32_t w){ //R02 abstract depth: with no route in
+void SR_geo_outer_R02(uint32_t w){ //R02 abstract depth: with no route in
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
@@ -143,20 +154,7 @@ void SR_geo_outer_R01(uint32_t w){ //R02 abstract depth: with no route in
   }
 }
 
-// alt for older as we set length later... prob 1 route against cycle
-void SR_geo_outer_R03(uint32_t w){  //leave as
-  if (gate[w].changed==0){
-  gate[w].matrix[0]=0<<7; // spdfrac
-  gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=5<<6; // NZbinroutfixed_prob1 - type/prob against LFSR and globflag - checked for new array
-  gate[w].matrix[4]=CVL[w]; 
-  gate[w].funcbit=routebits_depth_typesz;
-  gate[w].extent=extent_routebits_depth_typesz; 
-  gate[w].inner=SR_geo_inner_function;
-  }
-}
-
-void SR_geo_outer_R02(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed entry  
+void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed entry  
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
@@ -165,6 +163,19 @@ void SR_geo_outer_R02(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint3
   gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
   gate[w].inner=SR_geo_inner_probadcentry;// fixed as probbits and fixed entry
+  }
+}
+
+// alt for older as we set length later... prob 1 route against cycle
+void SR_geo_outer_R10(uint32_t w){  //leave as
+  if (gate[w].changed==0){
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=5<<6; // NZbinroutfixed_prob1 - type/prob against LFSR and globflag - checked for new array
+  gate[w].matrix[4]=CVL[w]; 
+  gate[w].funcbit=routebits_depth_typesz;
+  gate[w].extent=extent_routebits_depth_typesz; 
+  gate[w].inner=SR_geo_inner_function;
   }
 }
 

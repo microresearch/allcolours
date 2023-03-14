@@ -33,7 +33,7 @@ static inline uint32_t probbitsxortoggleID_(uint32_t depth, uint8_t w){   // PRO
 
 static inline uint32_t binroutebitsD_(uint32_t depth, uint8_t w){   // depth as routesel... shared bits now // USED only in SRrecbin here....
   uint32_t bitn=0, bitrr, x, tmp, tmpp;
-  depth=depth>>8; // 12 bits to 4 bits
+  //  depth=depth>>8; // 12 bits to 4 bits
   if (depth==0) { // SR5 is 8th wich is outside these bits 
     bitn = (gate[4].Gshare_>>SRlength[4]) & 0x01; 
     gate[4].Gshare_=(gate[4].Gshare_<<1)+bitn;
@@ -190,6 +190,24 @@ static inline uint32_t pSR_altbin1(uint32_t depth, uint32_t in, uint32_t w){ // 
 
 static inline uint32_t pSR_recbinD_(uint32_t depth, uint32_t in, uint32_t w){ //depth
   uint32_t x, tmp, bitrr, temp, bitn=0;
+  depth=depth>>8;
+    bitn=binroutebitsD_(depth,w); // how these layers can differ - 4 layers... 
+  if (bitn){ 
+    bitn=binroutebitsD_(depth,w); 
+  }
+  if (bitn){
+    bitn=binroutebitsD_(depth,w);
+  }
+  if (bitn){
+    bitn=binroutebitsD_(depth,w);
+    }
+  return bitn;
+}
+
+// too much memory
+static inline uint32_t pSR_recbin(uint32_t depth, uint32_t in, uint32_t w){ //depth
+  uint32_t x, tmp, bitrr, temp, bitn=0;
+  depth=binroute[count][w]|binary[w]; 
     bitn=binroutebitsD_(depth,w); // how these layers can differ - 4 layers... 
   if (bitn){ 
     bitn=binroutebitsD_(depth,w); 

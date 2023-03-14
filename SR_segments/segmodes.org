@@ -128,12 +128,30 @@ arrays:
 XXgeomantic.h
 XXnewbits.h
 
-// crash test in RR // full crash test
-// test and check all runglers
+T/W/T/F 14, 15, 16, 17
+
+// crash test in RR // full crash tests
+// test and check all runglers, test all ouroboric
+
+** 14/3
+
+DONE:
+- *TODO: retest mode slur across values with new mode no smoothing, how??? with crash mode - slur is now 256 // ???
+- look again at CV smoothing -> where do we have this?  
+CV: we smooth // trail without
+CVL: no smooth
+mode: no smooth
+
+DONE- check all pulse outsXX, ghost clksXX, trigger ins
+DONE: fixed
+DONEC153: progressive slidings: 
+// re-jig NN and RR, where we set types on each
+NN-C10 
+LL-L00 but also has C10 so we have a problem thereFIXED
+CC-C10/C82(str)
+RR-C10
 
 ** 13/3
-
-- *TODO: retest mode across values with new mode no smoothing*
 
 DONE:
 DONEC153 last tested = new last mode with sliding functions and offset speed

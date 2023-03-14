@@ -372,19 +372,6 @@ void SR_geo_inner_probadcadvance(uint32_t w){  // ADC only - prob for adc itself
     }
 }
 
-void SR_geo_innerxorNN(uint32_t w){  // xor with fixed route speed
-  HEADNADA;
-  gate[w].dac = delay_buffer[w][1];
-  //
-  if ( (*speedfromcvforxor[gate[w].matrix[0]>>7])(gate[w].matrix[1],gate[w].matrix[2], w) ^ zbinroutfixed_noshift(0,0,w) ){ // speedfunc xor with fromforxor->binroutfixed...
-    GSHIFT_;
-    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
-    bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
-    BITN_AND_OUTV_; 
-    new_data(val,w);
-    }
-}
-
 void SR_geo_inner_probabstractentryX(uint32_t w){  // ADC only - prob for adc itself - from geomantic.h/geoC.h
   HEADNADA;
 
@@ -415,7 +402,7 @@ void SR_geo_inner_probabstractentryX(uint32_t w){  // ADC only - prob for adc it
 
 // 
 
-void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
+void SR_geo_outer_N00(uint32_t w){ // set adctype // route in
   if (gate[w].changed==1) {
     RESETN; // added 21/12 only reset on change
     gate[w].changed=0;
@@ -423,21 +410,21 @@ void SR_geo_outer_N00(uint32_t w){ // set adctype // no route in
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[7]=CVL[w]; // adctype
-  gate[w].inner=SR_geo_inner_norouteadcN; 
+  gate[w].inner=SR_geo_inner_globalC;//
 }
 
-void SR_geo_outer_N01(uint32_t w){ // set adc depth // fixed route in or?
+void SR_geo_outer_N01(uint32_t w){ // set adc depth // no route in
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];      
   if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CVL[w];
   else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=CVL[w]; // mix for dacs
   else gate[w].matrix[6]=CVL[w]; // length
-  gate[w].inner=SR_geo_inner_norouteadcN;//globalC; //
+  gate[w].inner=SR_geo_inner_globalC; //norouteadcN;//
   }
 }
 
-void SR_geo_outer_N02(uint32_t w){ // set adc type from CVL and depth from dacfrom // fixed route in // or no route in???
+void SR_geo_outer_N02(uint32_t w){ // set adc type from CVL and depth from dacfrom // fixed route in 
   if (gate[w].changed==0){
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];
@@ -445,7 +432,7 @@ void SR_geo_outer_N02(uint32_t w){ // set adc type from CVL and depth from dacfr
   if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=(gate[dacfrom[daccount][w]].dac);
   else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=(gate[dacfrom[daccount][w]].dac); // mix for dacs
   else gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac); // length
-  gate[w].inner=SR_geo_inner_norouteadcN;//globalC; //
+  gate[w].inner=SR_geo_inner_globalC; //
   }
 }
 

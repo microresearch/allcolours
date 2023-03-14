@@ -11,15 +11,18 @@
   gate[0].matrixX[y]=matrixNN[y];					\
   gate[0].offset[y]=0;							\
 }						\
-  }
+  gate[w].routetype=gate[w].matrix[16]>>9;		\
+}
 
 #define RESETTL {				\
   for (uint32_t y=0;y<22;y++){			\
   gate[1].matrix[y]=matrixLL[y];					\
   gate[1].matrixX[y]=matrixLL[y];					\
   gate[1].offset[y]=0;							\
-  }									\
-  }
+  }						\
+  gate[w].routetype=gate[w].matrix[16]>>9;		\
+}
+
 
 #define RESETTC {				\
   for (uint32_t y=0;y<22;y++){			\
@@ -27,6 +30,7 @@
   gate[2].matrixX[y]=matrixCC[y];					\
   gate[2].offset[y]=0;							\
   }									\
+  gate[w].routetype=gate[w].matrix[16]>>9;		\
   }
 
 #define RESETTR {				\
@@ -34,8 +38,9 @@
   gate[3].matrix[y]=matrixRR[y];					\
   gate[3].matrixX[y]=matrixRR[y];					\
   gate[3].offset[y]=0;							\
-  }									\
-  }
+}						\
+  gate[w].routetype=gate[w].matrix[16]>>9;		\
+}
 
 #define RESETN binary[0]=0; gate[0].altroute=0; gate[0].routetype=3<<9; gate[0].funcbit=routebits_nodepth_typesz; gate[0].extent=6; gate[0].depths=depth_routebits_nodepth_typesz; gate[0].str_funcbit=routebits_nostrobe_depth_typesz; gate[0].str_extent=7; gate[0].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTN;
 

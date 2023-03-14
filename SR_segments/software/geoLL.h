@@ -138,6 +138,20 @@ void SR_geo_outer_L00(uint32_t w){  // set TYPE
   gate[w].inner=SR_geo_inner_globalC; // routetype/theroute so always at reset route/base global
 }
 
+// we need L10 to replace C10 ??? NZbinroutfixed_prob3 - route against inv cycle
+void SR_geo_outer_L10(uint32_t w){ // prob3
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=7<<6; // NZbinroutfixed_prob3
+  gate[w].matrix[4]=CVL[w]; //
+  gate[w].funcbit=routebits_depth_typesz;
+  gate[w].extent=extent_routebits_depth_typesz; 
+  gate[w].inner=SR_geo_inner_function;
+  }
+}
+
+
 void SR_geo_outer_L11(uint32_t w){ // prob depth
   if (gate[w].changed==0) {
     gate[w].matrix[0]=0<<7;

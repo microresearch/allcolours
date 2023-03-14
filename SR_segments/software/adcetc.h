@@ -608,7 +608,7 @@ void TIM4_IRQHandler(void)
   // modes are NOT inverted!
   // maybe we can slow down modes
     modecnt++; 
-    if (modecnt>64){ // 128: what is the speed of this? 2/1 measured as 10 Hz (so 20x second ok)
+    if (modecnt>256){ // 128: what is the speed of this? 2/1 measured as 10 Hz (so 20x second ok) 256 say
     /* // flipper is on fake clock for CC
     flipperr^=1;
     if (flipperr) GPIOB->BSRRH=clk_route_new[2]; // we get from tail
@@ -719,11 +719,11 @@ void TIM4_IRQHandler(void)
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_144Cycles); // was 10
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-  smoothc[cc]=ADC_GetConversionValue(ADC1);
-  totc+=smoothc[cc];
-  cc++;
-  if (cc>=SMOOTHINGS) cc=0;
-  temp=totc/SMOOTHINGS;  
+   smoothc[cc]=ADC_GetConversionValue(ADC1);
+    totc+=smoothc[cc];
+    cc++;
+    if (cc>=SMOOTHINGS) cc=0;
+    temp=totc/SMOOTHINGS;
   CV[2]=4095-temp;
   
   // lengths

@@ -4511,7 +4511,7 @@ static inline uint32_t zadc4bitssplit(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t bt;
   static int32_t bc=31, bb;
   static uint32_t k;
-  //  depth=4095-depth;
+  depth=4095-depth;
   if (spdfracx(depth, in, w)){
     if (bc<0) {
       ADCgeneric;
@@ -4556,7 +4556,7 @@ static inline uint32_t zadc4bitssplitdac(uint32_t depth, uint32_t in, uint32_t w
   uint32_t bt;
   static int32_t bc=31, bb;
   static uint32_t k;
-  //  depth=4095-depth;
+  depth=4095-depth;
   if (spdfracx(depth, in, w)){
     if (bc<0) {
       MIXin;

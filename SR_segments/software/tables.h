@@ -189,7 +189,7 @@ uint8_t inroute[32][4]={ // who we have main incoming route from 0-3 - from abov
 }; 
 
 uint32_t dacfrom[16][4]={ // TODO and needs to match lengthy of binroute TEST!  and also relate to binroute // or use different count
-  {3,3,3,1}, // default
+  {3,3,3,0}, // default
   {1,3,1,1}, // new one for rungling 24/1/2022
   {3,0,1,2}, // from latest notebook prev ones: 3,0,1,2
   {0,1,2,3}, // itself
@@ -257,7 +257,7 @@ uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first ro
 };
 
 uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
-  {1,3,1,1}, // default for rungler
+  {1,3,1,0}, // default for rungler
   {0,0,0,0}, // synced...
   {1,1,1,1}, // synced...
   {2,2,2,2}, // synced...
