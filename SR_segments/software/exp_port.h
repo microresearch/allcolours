@@ -277,24 +277,6 @@ static inline uint32_t pSRxorroutes(uint32_t depth, uint32_t in, uint32_t w){ //
   return bitn;
 }
 
-static inline uint32_t pSRaddroutes(uint32_t depth, uint32_t in, uint32_t w){// STROBE - can use depth/routecv for route
-  uint32_t x, tmp, tmpp, bitrr, bitn=0;
-  long temp;
-    if (gate[w].trigger){ 
-  temp = (gate[xorroutes[w][0]].Gshift_[w]) + (gate[xorroutes[w][1]].Gshift_[w]);
-  gate[w].shift_=(temp&masky[SRlength_[w]]); //
-  // and we need bitn so shift
-  bitn=CYCl;
-  SHFT;
-  }
-  else
-    {
-      tmp=binroute[count][w]|binary[w]; 
-      tmpp=gate[w].routetype;
-      ROUTETYPE_;
-    }  
-  return bitn;
-}
 
 static inline uint32_t pSRprobxortogx(uint32_t depth, uint32_t in, uint32_t w){ // depth -//STROBE
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;

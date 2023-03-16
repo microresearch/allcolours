@@ -117,7 +117,7 @@ XX#include "geogen.h"
 
 // check when we have all in place: esp. for right params, for probabilities
 
-*#include "geoCC.h"*
+XX#include "geoCC.h
 XX#include "geoNN.h"
 XX#include "geoLL.h"
 XX#include "geoRR.h"
@@ -128,10 +128,27 @@ arrays:
 XXgeomantic.h
 XXnewbits.h
 
-T/W/T/F 14, 15, 16, 17
+W/T/F: 15, 16, 17
 
 // crash test in RR // full crash tests
-// test and check all runglers, test all ouroboric
+// test and check all runglers, test all ouroboric again
+
+** 15/3
+
+- TEST/fix???jumpiness in some modes - speed issues - how to test (pulse code in long functions), how to fix?), dacs tested now so not that
+
+TEST:
+TEST- check runglers on RR side: [now R52X, 53X, R60X, R62X, 63X] 
+so LL is: 41-43 50,51,52, 60
+
+DONE:
+TESTED- N22, N23 changed
+TESTED- test zsuccbitsIppA on top inall - last one
+TESTEDtest all DACs one by one... // 
+FIXED:spdfracend: SR_geo_outer_C11, SR_geo_outer_C12, SR_geo_outer_C20, SR_geo_outer_C21, SR_geo_outer_C22, SR_geo_outer_C23, SR_geo_outer_C30, SR_geo_outer_C31, SR_geo_outer_C32, SR_geo_outer_C33
+- check there is no accumulation (? adding say offset again and again)
+- check dacfrom array and speedfrom...
+- we checked globals and strobe functions - check first 32 now in CCXX, LLXX, NNXX, RRXX:
 
 ** 14/3
 

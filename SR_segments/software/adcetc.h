@@ -726,36 +726,34 @@ void TIM4_IRQHandler(void)
     temp=totc/SMOOTHINGS;
   CV[2]=4095-temp;
   
-  // lengths
+  // CVL
+  //  totnn=totnn-smoothnn[nnn];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
+  //    smoothnn[nnn]=ADC_GetConversionValue(ADC1);
+    //    totnn+=smoothnn[nnn];
+    //  nnn++;
+  //  if (nnn>=SMOOTHINGS) nnn=0;
+  //  temp=totnn/SMOOTHINGS;  
   CVL[0]=4095-temp;
-  temp=temp>>7; // 12 bits to 5 bits
-  SRlength_[0]=lookuplenall[temp];
 
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   CVL[1]=4095-temp;
-  temp=temp>>7; 
-  SRlength_[1]=lookuplenall[temp];
 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_144Cycles);
-  ADC_SoftwareStartConv(ADC1);
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-  temp=ADC_GetConversionValue(ADC1);
-  CVL[3]=4095-temp;
-  temp=temp>>7; 
-  SRlength_[3]=lookuplenall[temp];
-  
   ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   CVL[2]=4095-temp;
-  temp=temp>>7; 
-  SRlength_[2]=lookuplenall[temp]; 
+  
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_144Cycles);
+  ADC_SoftwareStartConv(ADC1);
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+  temp=ADC_GetConversionValue(ADC1);
+  CVL[3]=4095-temp;  
 }

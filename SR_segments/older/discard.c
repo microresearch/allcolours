@@ -1,3 +1,100 @@
+static inline uint32_t pSRaddroutes(uint32_t depth, uint32_t in, uint32_t w){// STROBE - can use depth/routecv for route
+  uint32_t x, tmp, tmpp, bitrr, bitn=0;
+  long temp;
+    if (gate[w].trigger){ 
+  temp = (gate[xorroutes[w][0]].Gshift_[w]) + (gate[xorroutes[w][1]].Gshift_[w]);
+  gate[w].shift_=(temp&masky[SRlength_[w]]); //
+  // and we need bitn so shift
+  bitn=CYCl;
+  SHFT;
+  }
+  else
+    {
+      tmp=binroute[count][w]|binary[w]; 
+      tmpp=gate[w].routetype;
+      ROUTETYPE_;
+    }  
+  return bitn;
+}
+//// 2.0 - more probs
+void SR_geo_outer_N20(uint32_t w){ // prob of entry of depthroute // but we have no depth!
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6; // Zbinrout_strip=0 checked
+  gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w];
+  gate[w].funcbit=routebits_depth_typesz;
+  gate[w].extent=extent_routebits_depth_typesz; 
+  gate[w].inner=SR_geo_inner_probabstractentryX; 
+  }
+}
+
+void SR_geo_outer_N21(uint32_t w){ // prob of entry of depthroute XOR
+  if (gate[w].changed==0) {
+  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[1]=CV[w];// speed
+  gate[w].matrix[3]=0<<6; // Zbinrout_strip=0 checked
+  gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__
+  gate[w].matrix[10]=CVL[w];
+  gate[w].funcbit=routebits_depth_typesz;
+  gate[w].extent=extent_routebits_depth_typesz; 
+  gate[w].inner=SR_geo_inner_probadcentryxorX; 
+  }
+}
+
+
+// changes for NN only ?? bit we can put SS in here
+void SR_geo_inner_probdepthdepthN(uint32_t w){  // draft for probs with depth - uses matrixX! 
+  HEADNADA;
+  if (interpfromnostrobe[gate[w].matrixX[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrixX[0]>>7])(gate[w].matrixX[1], gate[w].matrixX[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrixX[6]>>7]; 
+
+    if (!(*probf_anystrobe_depth[gate[w].matrixX[9]>>6])(gate[w].matrixX[10], gate[w].matrixX[11], w)) {
+          bitn=(gate[w].funcbit[gate[w].matrixX[3]>>gate[w].extent])(gate[w].matrixX[4], gate[w].matrixX[5], w);
+        }
+      else {
+	if (w==0) bitn=(*inall[gate[w].matrixX[7]>>6])(gate[w].matrixX[8], gate[w].matrixX[21], w);  // fixed
+	bitn^=(routebits_anystrobe_notypesz[gate[w].matrixX[12]>>extent_routebits_anystrobe_notypesz])(gate[w].matrixX[5], gate[w].matrixX[4], w);
+        }
+    BITN_AND_OUTVX_; 
+    new_data(val,w);
+    }
+}
+
+
+void SR_geo_inner_probcyclexorinvC(uint32_t w){  
+  // what cv we need: probfs: 9type,10comp... 11IN 3,4,5 is gapped...
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+  if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+
+    bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+
+    if (!(*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
+      bitn^=(!(gate[w].Gshift_[w]>>SRlength[w]) & 0x01);	   // cycle bit INV
+    }
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
 //////////////////////////////////////////////
 
 - *check NN and RR concerns in strobes esp. 82,83+*

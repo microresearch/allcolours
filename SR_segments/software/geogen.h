@@ -3080,6 +3080,7 @@ static inline uint32_t zSRRbits(uint32_t depth, uint32_t in, uint32_t w){
 static inline uint32_t zprobbits(uint32_t depth, uint32_t in, uint32_t w){   // PROBability mode
   uint32_t bt=0;
   if ((depth>>4)<(LFSR__[w]>>4)) bt=1;
+  //bt=1;
   return bt;
 }
 
@@ -3341,6 +3342,19 @@ static inline uint32_t zsuccbitsIppd(uint32_t depth, uint32_t in, uint32_t w){  
   if ((depth>>4)>(LFSR__[w]>>4)) x[w]++;
   return bt;
 }
+
+static inline uint32_t zsuccbitsIppdA(uint32_t depth, uint32_t in, uint32_t w){   // depth 
+  // include itself or not
+  uint32_t bt=0, bitrr;
+  static uint32_t x[4]={0};
+  ADCgen;
+  if (x[w]==w) x[w]++;
+  if (x[w]>3) x[w]=0;
+  bt = (gate[x[w]].Gshift_[w]>>SRlength[x[w]]) & 0x01;
+  if ((depth>>4)>(LFSR__[w]>>4)) x[w]++;
+  return bt;
+}
+
 
 static inline uint32_t zsuccbitsIppS_(uint32_t depth, uint32_t in, uint32_t w){   // depth 
   // include itself or not

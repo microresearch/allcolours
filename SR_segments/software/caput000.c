@@ -80,6 +80,9 @@ uint32_t ll=0, totl=0, smoothl[SMOOTHINGS]={0};
 uint32_t rr=0, totr=0, smoothr[SMOOTHINGS]={0};
 uint32_t nn=0, totn=0, smoothn[SMOOTHINGS]={0};
 
+//uint32_t nnn=0, totnn=0, smoothnn[SMOOTHINGS]={0};
+
+
 uint32_t mode[4]={0,0,0,0};
 uint32_t lastmode[4]={1,1,1,1};
 //uint32_t lastmodec, lastmoden, lastmodel, lastmoder;
