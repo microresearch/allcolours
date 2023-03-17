@@ -641,7 +641,7 @@ void SR_geo_innerxorC(uint32_t w){
 // OUTER
 
 void SR_geo_outer_route(uint32_t w){  // fixed route // the most basic but no reset
-  gate[w].matrix[0]=2<<7; // spdfracend with interpoll
+  gate[w].matrix[0]=3<<7; // spdfracend with interpoll
   gate[w].matrix[1]=CV[w];//gate[dacfrom[daccount][w]].dac; // speed
   gate[w].inner=SR_geo_inner_globalC; // global route
 }
@@ -717,19 +717,22 @@ void SR_geo_outer_C10(uint32_t w){ // change type.
   }
 }
 
+uint32_t dacy[32]={1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,0,0};
+
 void SR_geo_outer_C11(uint32_t w){ // dacparam... 
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[14]=CVL[w]; // set dacparam
+  if (dacy[gate[w].matrix[13]>>7]) gate[w].matrix[14]=CVL[w]; // set dacparam
+  else gate[w].matrix[6]=CVL[w];// length
   gate[w].inner=SR_geo_inner_globalC; 
   }
 }
 
 void SR_geo_outer_C12(uint32_t w){ // length - length only notices at slower speeds
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[6]=CVL[w]; // length
@@ -752,7 +755,7 @@ void SR_geo_outer_C13(uint32_t w){ // change route. gapped type // depth as rout
 //2.0//////// select functions, cv->depth
 void SR_geo_outer_C20(uint32_t w){ // change function. nodepth. types
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=CVL[w]; // function  select
@@ -767,7 +770,7 @@ void SR_geo_outer_C20(uint32_t w){ // change function. nodepth. types
 // routebits_anystrobe_nodepth_notypesz [32] (with depth as sel) // no depth: routebits_nodepth_typesz, routebits_anystrobe_nodepth_notypesz 
 void SR_geo_outer_C21(uint32_t w){ // change function. nodepth no types
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
 
   gate[w].matrix[1]=CV[w];// speed
@@ -782,7 +785,7 @@ void SR_geo_outer_C21(uint32_t w){ // change function. nodepth no types
 
 void SR_geo_outer_C22(uint32_t w){ // sel function. array with depth...routebits_depth_typesz
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=CVL[w]; // function  select routebits_depth_typesz[32] 20 is good!
@@ -796,7 +799,7 @@ void SR_geo_outer_C22(uint32_t w){ // sel function. array with depth...routebits
 
 void SR_geo_outer_C23(uint32_t w){ // depth - note depth will also leak into others with gapped depth like next one...
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[4]=CVL[w]; // depth
@@ -812,7 +815,7 @@ void SR_geo_outer_C23(uint32_t w){ // depth - note depth will also leak into oth
 //
 void SR_geo_outer_C30(uint32_t w){ //  // notypes select
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=CVL[w]; // sel function
@@ -826,7 +829,7 @@ void SR_geo_outer_C30(uint32_t w){ //  // notypes select
 
 void SR_geo_outer_C31(uint32_t w){ // notypes. depth
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
 
   gate[w].matrix[1]=CV[w];// speed
@@ -841,7 +844,7 @@ void SR_geo_outer_C31(uint32_t w){ // notypes. depth
 
 void SR_geo_outer_C32(uint32_t w){ // draft gapped funcbit - if depthbit is 0 do prob of cycle
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
@@ -854,7 +857,7 @@ void SR_geo_outer_C32(uint32_t w){ // draft gapped funcbit - if depthbit is 0 do
 
 void SR_geo_outer_C33(uint32_t w){ // do prob anyways but different [ func [xor] func with cycle] 
   if (gate[w].changed==0) {
-    if (w==3) gate[w].matrix[0]=2<<7; // spdfracend
+    if (w==3) gate[w].matrix[0]=3<<7; // spdfracend
     else  gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac); // cv2
@@ -897,7 +900,7 @@ void SR_geo_outer_C42(uint32_t w){   // dacspeed3 as fixed speedfunc ..
   }
 }
 
-void SR_geo_outer_C43(uint32_t w){   ////- draft /test speedmodes can have dac as depth (or cv plus dac etc) - *speedfromnostrobe_noIN* [32] // calc is in outer but new func in inner...
+void SR_geo_outer_C43(uint32_t w){   
   int32_t in, tmp, depth;
   if (gate[w].changed==0) {
     gate[w].matrix[0]=CVL[w]; // changes all speeds
@@ -1051,11 +1054,11 @@ void SR_geo_outer_C71(uint32_t w){ // gapped speedfunc. gapped func. dac for len
     else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=(gate[dacfrom[daccount][w]].dac); // mix for dacs
     else gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac); // length
     }
+    else if (w==2 && (dacy[gate[w].matrix[13]>>7])) gate[w].matrix[14]=(gate[dacfrom[daccount][w]].dac); // dacparam
     else gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac);  // length
     gate[w].inner=SR_geo_inner_function; // 
   }
 }
-
 
 void SR_geo_outer_C72(uint32_t w){ // as above but cv sel of alt function
   if (gate[w].changed==0) {
@@ -1699,19 +1702,6 @@ void SR_geo_outer_C152(uint32_t w){   // trial offset
   }
 }
 
-void (*geo_inners[16])(uint32_t w)={SR_geo_inner_globalC, SR_geo_inner_function, SR_geo_inner_function_strobexor, SR_geo_inner_dacspeed4, SR_geo_inner_dacspeed3, SR_geo_inner_functionprobzero, SR_geo_inner_probcycleC, SR_geo_inner_probcycleCnodepth, SR_geo_inner_probcyclexorC, SR_geo_inner_probcyclexorCnodepth, SR_geo_inner_rungC, SR_geo_inner_probnodepth, SR_geo_inner_probdepthnodepth, SR_geo_inner_probdepth, SR_geo_inner_gappedfunction, SR_geo_innerxorC};
-
-// rework: - *copy matrixp->matrix and slide inner array* but what can CV do.. funcbit???
-void SR_geo_outer_C153(uint32_t w){
-    if (gate[w].changed==0) {
-    if (w==0) map=maparrayCCA;
-    else map=maparrayCC;
-    //    setvargapz(w, 5, map[(CV[w]>>8)], 5, gate[w].trigger);    
-    SR_geomantic_matrixcopyX(w);
-    gate[w].funcbit=routebits_arr[CV[w]>>10]; gate[w].extent=routebits_ext[CV[w]>>10];
-    gate[w].inner=geo_inners[CVL[w]>>8];// 16//SR_geo_inner_probdepthdepthN; // sliding this one
-    }
-}
-
+// C153 in RR
 
 ////////////////////////////////////////////////////////////////////////

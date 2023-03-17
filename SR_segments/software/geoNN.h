@@ -22,6 +22,25 @@ void SR_geo_inner_norouteadcN(uint32_t w){
     }
 }
 
+void SR_geo_inner_norouteadcNN(uint32_t w){
+  HEADNADA;
+
+  if (interpfromnostrobe[gate[w].matrix[0]>>7]){ 
+    gate[w].alpha = gate[w].time_now - (float)gate[w].int_time;
+    gate[w].dac = ((float)delay_buffer[w][DELAY_SIZE-5] * gate[w].alpha) + ((float)delay_buffer[w][DELAY_SIZE-6] * (1.0f - gate[w].alpha));
+    if (gate[w].dac>4095) gate[w].dac=4095;
+  }
+  else gate[w].dac = delay_buffer[w][1];
+
+    if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
+    GSHIFT_;
+    SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
+    bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix
+    BITN_AND_OUTV_; 
+    new_data(val,w);
+    }
+}
+
 void SR_geo_inner_dacspeed3xnorouteadcN(uint32_t w){  
   HEADNADA;
   gate[w].dac = delay_buffer[w][1];
@@ -397,7 +416,7 @@ void SR_geo_outer_N00(uint32_t w){ // set adctype // route in
     RESETN; // added 21/12 only reset on change
     gate[w].changed=0;
   }
-  gate[w].matrix[0]=0<<7; // spdfrac
+  gate[w].matrix[0]=0<<7; // spdfrac - /with or no interpol
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[7]=CVL[w]; // adctype
   gate[w].inner=SR_geo_inner_globalC;//
@@ -410,7 +429,7 @@ void SR_geo_outer_N01(uint32_t w){ // set adc depth // no route in
   if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CVL[w];
   else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=CVL[w]; // mix for dacs
   else gate[w].matrix[6]=CVL[w]; // length
-  gate[w].inner=SR_geo_inner_globalC; //norouteadcN;//
+  gate[w].inner=SR_geo_inner_globalC; //norouteadcNN;//
   }
 }
 

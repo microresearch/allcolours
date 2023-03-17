@@ -150,7 +150,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       if ((shift&4)==4) x=4095; // changed 28/12
       else x=0;
     }
-    else     x=( (shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // doublecheck - fixed problem in shifts in resources 16/8
+    else  x=( (shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; // doublecheck - fixed problem in shifts in resources 16/8
     break;
     
   case 1:// equivalent bit DAC for x bits - 3/11 - 32 bits max now
@@ -160,13 +160,13 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
     x*=y;
     break;
 
-  case 2: // as 0 but alt
+  case 2: // as 0 but alt left shift
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     if (otherpar==3){
       if ((shift&4)==4) x=4095; // changed 28/12
       else x=0;
     }
-    else  x=( (shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshiftalt[otherpar-3]; // doublecheck - fixed problem in shifts in resources 16/8
+    else  x=( (shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshiftalt[otherpar]; // doublecheck - fixed problem in shifts in resources 16/8
     break;
 
     
@@ -203,8 +203,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 5: // only output standard DAC on param->strobe/clock! so just maintain lastout S
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
     if (strobe) {
-      x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
-  //  x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
+      x=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar];
       lastout[wh]=x;
     }
     else x=lastout[wh];
@@ -217,7 +216,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       x=lastout[wh];
     }
     else {
-      x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3];
+      x=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar];
       lastout[wh]=x;
     }      
     break;
@@ -235,20 +234,20 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 9: // one SR is sieved out over another? as DAC option. XOR as sieve? AND as mask! TODO
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
-    x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
-    x=x^(((gate[sieve[wh]].shift_ & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]); // seived through previous SR
+    x=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; 
+    x=x^(((gate[sieve[wh]].shift_ & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]); // seived through previous SR
     break;
 
   case 10: // alt above
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
-    x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
-    x=x^(((gate[sieve[wh]].shift_ & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshiftalt[otherpar-3]); // seived through previous SR
+    x=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; 
+    x=x^(((gate[sieve[wh]].shift_ & masky[otherpar])>>(rightshift[otherpar]))<<leftshiftalt[otherpar]); // seived through previous SR
     break;
 
   case 11: //  one SR is sieved out over clksr for that sr. XOR as sieve?  - SKIPPED/retry instead of 11
     otherpar=lookuplenall[otherpar>>7]; // 12->5 bits
-    x=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
-    x=x^((clksr_[wh] & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; 
+    x=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; 
+    x=x^((clksr_[wh] & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; 
     break;
 
   case 12:// standard bit DAC for x bits     ///bitx length as other param rather than length:
@@ -299,8 +298,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 
   case 16:// par is mask on standard bit DAC for x bits
     //    if (wh<4 && length>3 && length<32) 
-    // why (length-3)? to get down to 1 bit so could also have option for full bits!
-    x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
+    // why (length)? to get down to 1 bit so could also have option for full bits!
+    x=((shift & masky[length])>>(rightshift[length]))<<leftshift[length];
     x=x|(otherpar&4095);
       break;
 
@@ -309,7 +308,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
 	{
 	  mask[wh]=Gshift__[otherpar>>10]; // or reg can be otherpar/SR
 	  }
-    x=((shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3];
+    x=((shift & masky[length])>>(rightshift[length]))<<leftshift[length];
     x=x|mask[wh];
     break;
 
@@ -321,7 +320,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       if ((shift &4)==4) lastout[wh]=4095;
       else lastout[wh]=0;
     }
-    else lastout[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshift[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
+    else lastout[wh]=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshift[otherpar]; // we want 12 bits but is not really audible difference //Q of least bits
     }
     n[wh]++;
     x=lastout[wh];
@@ -335,7 +334,7 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       if ((shift &4)==4) lastout[wh]=4095;
       else lastout[wh]=0;
     }
-    else lastout[wh]=((shift & masky[otherpar-3])>>(rightshift[otherpar-3]))<<leftshiftalt[otherpar-3]; // we want 12 bits but is not really audible difference //Q of least bits
+    else lastout[wh]=((shift & masky[otherpar])>>(rightshift[otherpar]))<<leftshiftalt[otherpar]; // we want 12 bits but is not really audible difference //Q of least bits
     }
     n[wh]++;
     x=lastout[wh];
@@ -369,7 +368,8 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 21: // fixed 12 bits in 2s complement back to our encoding - but we have no use for length - except perhaps // no length no otherpar
     // try delay
     // here is fixed length
-    if (n[wh]>11) {
+    otherpar=otherpar>>7;
+    if (n[wh]>otherpar) {
       n[wh]=0;      
       x=shift&masky[11]; // 12 bits
       if (x&(1<<11)) {
@@ -472,25 +472,33 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
       if ((shift&4)==4) x=4095; // changed 28/12
       else x=0;
     }
-    else     x=( (shift & masky[length-3])>>(rightshift[length-3]))<<leftshift[length-3]; // doublecheck
+    else     x=( (shift & masky[length])>>(rightshift[length]))<<leftshift[length]; // doublecheck
     otherpar=4095-otherpar;
     mult=mixer[otherpar>>2]; // 10 bits - 0 is 1.0f so full dac
     pp=((float)(x) *  (1.0f-mult)) + ((float)(gate[dacfrom[daccount][wh]].dac)*mult); // mix with param
     x=(int)pp;
     break;
     
-  case 29: // default for all other DACs - modded for new draft // no otherpar
+  case 29: // done
+    otherpar=(otherpar>>6); //6 bits
+    if (n[wh]>otherpar) {
+      n[wh]=0;      
+      x=((shift & masky[length])>>(rightshift[length]))<<leftshift[length];
+      lastout[wh]=x;
+    }
+    x=lastout[wh];
+    n[wh]++;              
+    break;
+
+  case 30: // straight 4 bit dac // no otherpar
+    x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
+    break;   
+
+  case 31: // default for all other DACs - modded for new draft // no otherpar
     x=shift&4095;
     break;
 
-  case 30: // 4 bit DAC aside from length - try now with delay // no otherpar
-    x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
-    break;
-
-  case 31: // straight 4 bit dac // no otherpar
-    x=( (shift & masky[3])>>(rightshift[3]))<<leftshift[3];
-    break;   
- 
+    
     ///////
   } // switch    
   return x;
@@ -625,7 +633,12 @@ void TIM4_IRQHandler(void)
   //  lastlastmoden=lastmoden;
   //  lastmoden=temp;
   mode[0]=mapping[temp>>2];
-  if (lastmode[0]!=mode[0]) gate[0].changed=1;
+  if (lastmode[0]!=mode[0]) {
+    gate[0].changed=1;
+    gate[0].modes[gate[0].xx]=mode[0];
+    gate[0].xx++;
+    if (gate[0].xx>63) gate[0].xx=0;       
+  }
   else gate[0].changed=0;
   lastmode[0]=mode[0];
 
@@ -645,8 +658,12 @@ void TIM4_IRQHandler(void)
   //  lastlastmodec=lastmodec;
   //  lastmodec=temp;
   mode[2]=mapping[temp>>2];
-
-  if (lastmode[2]!=mode[2]) gate[2].changed=1; 
+  if (lastmode[2]!=mode[2]) {
+    gate[2].changed=1;
+    gate[2].modes[gate[2].xx]=mode[2];
+    gate[2].xx++;
+    if (gate[2].xx>63) gate[2].xx=0;       
+  }
   else gate[2].changed=0;
   lastmode[2]=mode[2];
 
@@ -660,11 +677,16 @@ void TIM4_IRQHandler(void)
   //  lastmodel=temp;
   //  mode[1]=temp>>6;
   mode[1]=mapping[temp>>2];
-  if (lastmode[1]!=mode[1]) gate[1].changed=1;
+  if (lastmode[1]!=mode[1]) {
+    gate[1].changed=1;
+    gate[1].modes[gate[1].xx]=mode[1];
+    gate[1].xx++;
+    if (gate[1].xx>63) gate[1].xx=0;       
+  }
   else gate[1].changed=0;
   lastmode[1]=mode[1];
 
-  // moder
+  // moder we dont record
   ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
@@ -726,34 +748,55 @@ void TIM4_IRQHandler(void)
     temp=totc/SMOOTHINGS;
   CV[2]=4095-temp;
   
-  // CVL
-  //  totnn=totnn-smoothnn[nnn];
+  // CVL0 NN
+  totnn=totnn-smoothnn[nnn];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-  temp=ADC_GetConversionValue(ADC1);
-  //    smoothnn[nnn]=ADC_GetConversionValue(ADC1);
-    //    totnn+=smoothnn[nnn];
-    //  nnn++;
-  //  if (nnn>=SMOOTHINGS) nnn=0;
-  //  temp=totnn/SMOOTHINGS;  
+  //  temp=ADC_GetConversionValue(ADC1);
+  smoothnn[nnn]=ADC_GetConversionValue(ADC1);
+  totnn+=smoothnn[nnn];
+  nnn++;
+  if (nnn>=SMOOTHINGS) nnn=0;
+  temp=totnn/SMOOTHINGS;  
   CVL[0]=4095-temp;
 
+  // CVL1 LL
+  totll=totll-smoothll[lll];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-  temp=ADC_GetConversionValue(ADC1);
+  smoothll[lll]=ADC_GetConversionValue(ADC1);
+  totll+=smoothll[lll];
+  lll++;
+  if (lll>=SMOOTHINGS) lll=0;
+  temp=totll/SMOOTHINGS;  
+  //  temp=ADC_GetConversionValue(ADC1);
   CVL[1]=4095-temp;
 
+  // CVL2 CC
+  totcc=totcc-smoothcc[ccc];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
+  smoothcc[ccc]=ADC_GetConversionValue(ADC1);
+  totcc+=smoothcc[ccc];
+  ccc++;
+  if (ccc>=SMOOTHINGS) ccc=0;
+  temp=totcc/SMOOTHINGS;  
   CVL[2]=4095-temp;
-  
+
+  // CVL3 RR
+  totrr=totrr-smoothrr[rrr];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-  temp=ADC_GetConversionValue(ADC1);
+  //  temp=ADC_GetConversionValue(ADC1);
+  smoothrr[rrr]=ADC_GetConversionValue(ADC1);
+  totrr+=smoothrr[rrr];
+  rrr++;
+  if (rrr>=SMOOTHINGS) rrr=0;
+  temp=totrr/SMOOTHINGS;  
   CVL[3]=4095-temp;  
 }

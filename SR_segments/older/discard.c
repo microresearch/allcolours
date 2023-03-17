@@ -1,3 +1,17 @@
+  
+  
+// rework: - *copy matrixp->matrix and slide inner array* but what can CV do.. funcbit???
+void SR_geo_outer_C153x(uint32_t w){
+    if (gate[w].changed==0) {
+    SR_geomantic_matrixcopyX(w);
+    gate[w].funcbit=routebits_arr[CV[w]>>10]; gate[w].extent=routebits_ext[CV[w]>>10];
+    //    gate[w].inner=geo_inners[CVL[w]>>8];
+    }
+}
+
+//void (*geo_inners[16])(uint32_t w)={SR_geo_inner_globalC, SR_geo_inner_function, SR_geo_inner_function_strobexor, SR_geo_inner_dacspeed4, SR_geo_inner_dacspeed3, SR_geo_inner_functionprobzero, SR_geo_inner_probcycleC, SR_geo_inner_probcycleCnodepth, SR_geo_inner_probcyclexorC, SR_geo_inner_probcyclexorCnodepth, SR_geo_inner_rungC, SR_geo_inner_probnodepth, SR_geo_inner_probdepthnodepth, SR_geo_inner_probdepth, SR_geo_inner_gappedfunction, SR_geo_innerxorC};
+
+
 static inline uint32_t pSRaddroutes(uint32_t depth, uint32_t in, uint32_t w){// STROBE - can use depth/routecv for route
   uint32_t x, tmp, tmpp, bitrr, bitn=0;
   long temp;

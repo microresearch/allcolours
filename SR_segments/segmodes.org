@@ -10,6 +10,10 @@ serpent's head, caput draconis (rather than heavens\) - lunar node and link of g
 
 A dragon with 5 heads!
 
+** new notes
+
+*3 changes to HW  - update board, output files and BOM accordingly/check production files on imac*
+
 ** catalogue
 
 catalogue CC in groups of 4:
@@ -101,10 +105,7 @@ matrixp//globals in RR
 
 ** TODO 
 
-- check that all LL, CC etc have right parameters for each function set!
-- look at all probabilities themselves
-
-check code:
+DONEcheck code:
 
 XXmain.c
 XXcaput000.c 
@@ -114,9 +115,6 @@ XX#include "adcetc.h"
 XXdoneagain-macros.h 
 
 XX#include "geogen.h"
-
-// check when we have all in place: esp. for right params, for probabilities
-
 XX#include "geoCC.h
 XX#include "geoNN.h"
 XX#include "geoLL.h"
@@ -128,18 +126,44 @@ arrays:
 XXgeomantic.h
 XXnewbits.h
 
-W/T/F: 15, 16, 17
+** 17/3
 
-// crash test in RR // full crash tests
-// test and check all runglers, test all ouroboric again
+Final tests: 
+
+- *test all ouroborics again*
+
+TESTED/done:
+- added dac mode 30
+
+dacfrom->DAC out param [14] in CC? added in C71 to test
+
+- check ADC/DAC: match basic adc with timed dac out and check again all adc/dac code
+/// 
+FIXED: dacs: 21, 29, 31 have no CV control!
+//ADC/in: input HW brings up/adds offset and inverts (do we invert reading)
+//- test dac[0] out // we invert output
+
+
+** 16/3
+
+- trial [0]=3<<7 // no interpol on right as default
+
+TESTED:
+;left inTEST- trial CVL smooth or not in general
+- check runglers on RR side: [now R52X, 53X, R60X, R62X, 63X] 
+////so LL is: 41-43 50,51,52, 60
+speed now at 42 in main.c so less jitter but see how that feels!
+- TEST/fix???jumpiness/noisiness in some modes - speed issues - how to test (pulse code in long functions), how to fix?), dacs tested now so not that
+last mode still to do - speed of move through inners... (what order
+  though - match list of last modes for each side - if mode has
+  changed add it but then array needs to match this??) is not on RR as that has own last mode
+
+DONE:
+measured: 110mA +12v, 20Ma -12v
+
+//- that speed mode is quite important for dac/dacfrom control - only as interpol/non interpol - but we set at C40, N40
 
 ** 15/3
-
-- TEST/fix???jumpiness in some modes - speed issues - how to test (pulse code in long functions), how to fix?), dacs tested now so not that
-
-TEST:
-TEST- check runglers on RR side: [now R52X, 53X, R60X, R62X, 63X] 
-so LL is: 41-43 50,51,52, 60
 
 DONE:
 TESTED- N22, N23 changed

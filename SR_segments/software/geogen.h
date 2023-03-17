@@ -4343,15 +4343,15 @@ static inline uint32_t sigmadeltaS_(uint32_t depth, uint32_t in, uint32_t w){  /
 
 //uint32_t (*inall[64])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadcx, zadconebitsx, zadcpadbits, zadc8bits, zadc4bits, zadcenergybits, zadc12compbits, zadc8compbits, zadc4compbits, zadccompbits, zadconecompbits, zadcLBURST0, zadcxdouble, zadc4bitsadd,  zadc4bitsaddmod, zadc4bitsxor, zadc4bitsor, zadc4bitsand, zadc4bitsmodm, zadc4compbitsadd, zadc4compbitsxor, zadc4compbitsmodm, zadc4onecompbitsadd/*24*/}; // double up for dacmix/macro
 
-// fixing now
-static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t w){ // max 12 bits // new template for adcs - in is now mixer
+static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t w){ 
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
+  
     if (bc<0) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
-      if (depth<3) depth=3;
+      //if (depth<3) depth=3;
       ADCgeneric; 
       k=k>>(11-depth); 
       bc=depth; 
@@ -4361,6 +4361,12 @@ static inline uint32_t zadcx(uint32_t depth, uint32_t in, uint32_t w){ // max 12
   return bt;
 }
 
+/* // when depth=0;
+      ADCgeneric;
+      k=k>>11; 
+      bt = k&0x01; // this means that MSB comes out first
+*/
+
 static inline uint32_t zadcxdac(uint32_t depth, uint32_t in, uint32_t w){ // max 12 bits // new template for adcs - in is now mixer
   uint32_t bt;
   static int32_t bc=31;
@@ -4368,9 +4374,7 @@ static inline uint32_t zadcxdac(uint32_t depth, uint32_t in, uint32_t w){ // max
     if (bc<0) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth
-      if (depth<3) depth=3;
       MIXin;
-      
       k=k>>(11-depth); 
       bc=depth; 
   }
@@ -4933,7 +4937,6 @@ static inline uint32_t zadcxdouble(uint32_t depth, uint32_t in, uint32_t w){ // 
   uint32_t bt;
   static int32_t bc=31;
   static uint32_t k;
-  
     if (bc<0) {
       depth=depth>>7; // 5 bits
       if (depth>11) depth=11; // max depth

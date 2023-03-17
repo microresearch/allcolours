@@ -125,7 +125,7 @@ void SR_geo_outer_R00(uint32_t w){  // set TYPE
     RESETR; // added 21/12 only reset on change
     gate[w].changed=0;
   }
-  gate[w].matrix[0]=2<<7; // spdfracend
+  gate[w].matrix[0]=3<<7; // spdfracend
   gate[w].matrix[1]=CV[w];// speed
   SETROUTETYPECV;
   gate[w].inner=SR_geo_inner_globalC; // routetype/theroute so always at reset route/base global
@@ -136,7 +136,7 @@ void SR_geo_outer_R01(uint32_t w){ //R01 abstract sel: no route
     RESETR; // added 21/12 only reset on change and RESETR also does RESETG global reset
     gate[w].changed=0;
   }
-  gate[w].matrix[0]=2<<7; // spdfracend
+  gate[w].matrix[0]=3<<7; // spdfracend
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[20]=CVL[w]; // abstract bits
   gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
@@ -145,7 +145,7 @@ void SR_geo_outer_R01(uint32_t w){ //R01 abstract sel: no route
 
 void SR_geo_outer_R02(uint32_t w){ //R02 abstract depth: with no route in
   if (gate[w].changed==0){
-  gate[w].matrix[0]=2<<7; // spdfracend
+  gate[w].matrix[0]=3<<7; // spdfracend
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[5]=CVL[w];
   gate[w].matrix[4]=(gate[dacfromopp[daccount][w]].dac); 
@@ -156,7 +156,7 @@ void SR_geo_outer_R02(uint32_t w){ //R02 abstract depth: with no route in
 
 void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint32_t w){ // 1-prob of ADC entry or fixed entry  
   if (gate[w].changed==0) { 
-  gate[w].matrix[0]=2<<7; // spdfracend
+  gate[w].matrix[0]=3<<7; // spdfracend
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[9]=0<<6; // probbits
   gate[w].matrix[10]=CVL[w]; // depth for prob
@@ -169,7 +169,7 @@ void SR_geo_outer_R03(uint32_t w){ // R03 abstractL: void SR_geo_outer_N02(uint3
 // alt for older as we set length later... prob 1 route against cycle
 void SR_geo_outer_R10(uint32_t w){  //leave as
   if (gate[w].changed==0){
-  gate[w].matrix[0]=2<<7; // spdfracend
+  gate[w].matrix[0]=3<<7; // spdfracend
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[3]=5<<6; // NZbinroutfixed_prob1 - type/prob against LFSR and globflag - checked for new array
   gate[w].matrix[4]=CVL[w]; 
@@ -182,7 +182,7 @@ void SR_geo_outer_R10(uint32_t w){  //leave as
 // abstract depth from dac on RR  - where to fill in -c13 in both cases!// both?*
 void SR_geo_outer_R13(uint32_t w){ // set abstract type from CVL and depth from dacfrom // fixed route in or no route in
   if (gate[w].changed==0){
-  gate[w].matrix[0]=2<<7; // spdfracend
+  gate[w].matrix[0]=3<<7; // spdfracend
   gate[w].matrix[1]=CV[w];
   gate[w].matrix[20]=CVL[w]; //abstract type
   gate[w].matrix[5]=(gate[dacfrom[daccount][w]].dac);
@@ -461,4 +461,26 @@ void SR_geo_outer_R153(uint32_t w){  // final all gapped reset - with just route
   glob=4; //checked
   gate[w].matrix[19]=CVL[w]; // for route
   gate[w].inner=SR_geo_inner_function_globoutside; // outside speed
+}
+
+// //4x arrays 64 long match each function C00->C64!
+void (*geo_inners[3][64])(uint32_t w)={ // RR doesn't call it
+  {SR_geo_inner_globalC, SR_geo_inner_globalC, SR_geo_inner_globalC, SR_geo_inner_probadcentry,  SR_geo_inner_globalC, SR_geo_inner_globalC, SR_geo_inner_routeabstractR, SR_geo_inner_function,  /*20*/SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_probadcadvance, SR_geo_inner_probadcreset,  SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_gappedfunctionC, /*40*/SR_geo_inner_rungC, SR_geo_inner_probabstractentryX, SR_geo_inner_rungnoroute, SR_geo_inner_rungnoroute,  SR_geo_inner_dacspeed3xnorouteadcN, SR_geo_inner_dacspeed3xrouteadcN, SR_geo_inner_dacspeed3xnorouteadcN, SR_geo_inner_dacspeed3xrouteadcN,  SR_geo_inner_probabstractentryX, SR_geo_inner_rungC, SR_geo_inner_rungC, SR_geo_inner_rungC, /*c70*/SR_geo_inner_gappedfunction, SR_geo_inner_function, SR_geo_inner_probdepthx, SR_geo_inner_probdepthx, /*80*/SR_geo_inner_str_functionN, SR_geo_inner_str_function, SR_geo_inner_str_function, SR_geo_inner_str_probfunction,  SR_geo_inner_str_functionN, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function2,  SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function, SR_geo_inner_function_strobexor, SR_geo_inner_function_strobexor,  SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunctionalt, SR_geo_inner_str_probfunction, /*120*/SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX,  SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS,  SR_geo_inner_probdepthdepthS, SR_geo_inner_matrixreduceX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS}, // matches NN-done
+ 
+  {SR_geo_inner_globalC, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_functionprobzero, SR_geo_inner_globalC, SR_geo_inner_function,  /*20*/SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function,  SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_gappedfunctionC, SR_geo_inner_probcyclexorC, /*40*/SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_gappedfunction, SR_geo_inner_gappedfunctionrung, SR_geo_inner_probabstractentryX, SR_geo_inner_rungC, SR_geo_inner_rungC, SR_geo_inner_rungC, SR_geo_inner_dacspeed3xrouteabstractL, SR_geo_inner_dacspeed3_1_routeabstractL, SR_geo_inner_dacspeed3_3_routeabstractL, SR_geo_inner_dacspeed3_4_routeabstractL, /*c60*/SR_geo_inner_probcycleCnodepth, SR_geo_inner_probcyclexorCnodepth, SR_geo_inner_probnodepth, SR_geo_inner_probdepth, /*80*/SR_geo_inner_str_functionN, SR_geo_inner_str_function, SR_geo_inner_str_function, SR_geo_inner_str_probfunction,  SR_geo_inner_str_functionN, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function2,  SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function, SR_geo_inner_function_strobexor, SR_geo_inner_function_strobexor,  SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunctionalt, SR_geo_inner_str_probfunction, /*120*/SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX,  SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS,  SR_geo_inner_probdepthdepthS, SR_geo_inner_matrixreduceX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS}, // matches LL0-done
+  
+  {SR_geo_inner_globalC, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_globalC, SR_geo_inner_globalC, SR_geo_inner_globalC, SR_geo_inner_function,  /*20*/SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function,  SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_gappedfunctionC, SR_geo_inner_probcyclexorC, /*40*/SR_geo_inner_function, SR_geo_inner_gappedfunction, SR_geo_inner_dacspeed3, SR_geo_inner_testdacasdepth,  SR_geo_inner_probcycleC, SR_geo_inner_functionprobzero, SR_geo_inner_probcycleC, SR_geo_inner_probcyclexorC,  SR_geo_inner_probcycleCnodepth, SR_geo_inner_probcyclexorCnodepth, SR_geo_inner_probnodepth, SR_geo_inner_probdepth, SR_geo_inner_gappedfunction, SR_geo_inner_function, SR_geo_inner_probdepthx, SR_geo_inner_probdepthx, /*80*/SR_geo_inner_str_functionN, SR_geo_inner_str_function, SR_geo_inner_str_function, SR_geo_inner_str_probfunction,  SR_geo_inner_str_functionN, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function2,  SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function, SR_geo_inner_function_strobexor, SR_geo_inner_function_strobexor,  SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunctionalt, SR_geo_inner_str_probfunction, /*120*/SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX,  SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS,  SR_geo_inner_probdepthdepthS, SR_geo_inner_matrixreduceX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS}, // matches CC-done
+};
+
+//spdfrom slides across - inner in outer also as a kind of model to go further with...
+void SR_geo_outer_C153(uint32_t w){
+  static uint32_t who[3]={0,0,0};
+    if (gate[w].changed==0) {
+    if ((*speedfromnostrobe[CVL[w]>>7])(CV[w],(gate[dacfrom[daccount][w]].dac) , w)){ // speedfunc
+      who[w]++;
+      if (who[w]>63) who[w]=0;
+    }
+      SR_geomantic_matrixcopyX(w);
+      gate[w].inner=geo_inners[w][gate[w].modes[who[w]]];
+    }
 }

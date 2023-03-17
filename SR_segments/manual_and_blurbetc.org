@@ -22,15 +22,15 @@ astrogeomantic time signatures.
 ** site/announce description - fill in
 
 Technical and HOWTO
-20HP, mA at +12V, mA at -12V, 0mA at 5v. Multiple CV inputs and audio outputs. Power is red stripe/-12V DOWN.
+20HP, 110mA at +12V, 20mA at -12V, 0mA at 5v. Multiple CV/pulse inputs, pulse outs and 1 audio/CV output. Power is red stripe/-12V DOWN.
 
-Design files at: https://github.com/microresearch/allcolours
+Design files at: https://github.com/microresearch/allcolours/SR_segments
 
-Cheatsheet with manual cards: https://1010.co.uk/AlltheColours_extendedmanual.pdf
+Cheatsheet with manual cards: https://1010.co.uk/
 
 With thanks to Melissa Aguilar for poster/manual layout and design.
 
-All the Colours... is released under the GPL GNU General Public License.
+caput draconis is released under the GPL GNU General Public License.
 
 ** basic blurb description: 
 

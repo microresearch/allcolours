@@ -25,6 +25,8 @@ typedef struct heavens_ {
   uint32_t changed;
   uint32_t reset[5];
   int32_t gsrcnt[5];
+  uint32_t modes[64]; // test recording modes
+  uint32_t xx; // index for this
   uint32_t route;
   uint32_t altroute;
   uint32_t routetype;

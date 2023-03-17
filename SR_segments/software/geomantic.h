@@ -5,7 +5,7 @@ uint32_t (*speedfromnostrobe[32])(uint32_t depth, uint32_t in, uint32_t wh)={spd
 
 uint32_t (*speedfromnostrobe_noIN[32])(uint32_t depth, uint32_t in, uint32_t wh)={spdfrac, spdfrac, spdfracend, spdfracend, zprobbitsS_, zTMsimplebitsLS_, osceqS_, zosc1bitsS_, zosc1bitsIS_, zENbitsS_, zENbitsIS_, zENsbitsS_, zENsbitsIS_, sigmadeltaS_, zbinrouteSRbitsS_, zwiardnotinvbitsLS_, zsuccbitsppS_, zsuccbitsprobS_, zsuccbits_noshiftS_, zsuccbitsI_noshiftS_, zsuccbits_noshiftdS_, zsuccbitsIppS_, zsuccbitsI_noshiftdS_, zSRNbitsS_, zsprobbits, zcountbitsS_, zcountbitsIS_, zSRBURSTflipS_, ztemplateBURSTflipS_, /*29*/spdfrac, spdfrac, spdfracend}; 
 
-uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,1,0,1}; // matched with speedfromnostrobe
+uint32_t interpfromnostrobe[32]={1,0,1,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}; // matched with speedfromnostrobe and noIN above
 
 //uint32_t speednoin[36]={0,0,0,0, 1,1,1,1, 1,1,1,0, 0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0}; // in the above which ones use IN -> dacfrom
 

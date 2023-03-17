@@ -71,6 +71,7 @@
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   k=ADC_GetConversionValue(ADC1);					\
+  k=4095-k;								\
   ADCin=k;								\
   }
 
@@ -79,6 +80,7 @@
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   ADCin=ADC_GetConversionValue(ADC1);					\
+  ADCin=4095-ADCin;								\
   }
 
 #define ADCgenericsin {				\
@@ -86,12 +88,13 @@
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   k=ADC_GetConversionValue(ADC1);					\
+  k=4095-k;								\
   }
 
 #define MIXin {								\
     ADCgenericsin;								\
     float mult=mixer[in>>2];						\
-    float pp=((float)(k) *  (1.0f-mult)) + ((float)(gate[dacIN[daccount][w]].dac)*mult); \
+    float pp=((float)(k) *  (mult)) + ((float)(gate[dacIN[daccount][w]].dac)*1.0f-(mult)); \
     k=(int)pp;								\
     ADCin=k;								\
 }
