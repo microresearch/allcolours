@@ -654,7 +654,7 @@ static inline uint32_t pSRmod(uint32_t depth, uint32_t in, uint32_t w){//
 
 static inline uint32_t pSRNwas13(uint32_t depth, uint32_t in, uint32_t w){//STROBE
   uint32_t x, tmp, bitrr, temp, bitn=0;
-  uint8_t prob; static uint8_t wich[4]={};
+  uint8_t prob; static uint8_t wich[4]={0,0,0,0};
   if (gate[w].trigger) {
     wich[w]++;
     if (wich[w]>SRlength[w]) wich[w]=0;
@@ -1010,23 +1010,21 @@ static inline uint32_t pprobtoggle5(uint32_t depth, uint32_t in, uint32_t w){ //
 
 static inline uint32_t pprobstrobe1(uint32_t depth, uint32_t in, uint32_t w){ // STROBE
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
-  //  BINROUTE_;
-      tmp=binroute[count][w]|binary[w]; 
-    tmpp=gate[w].routetype;
-    ROUTETYPE_;  
-    bitn^=gate[w].trigger;
+  tmp=binroute[count][w]|binary[w]; 
+  tmpp=gate[w].routetype;
+  ROUTETYPE_;  
+  bitn^=gate[w].trigger;
   return bitn;
 }
 
 static inline uint32_t pprobstrobe2(uint32_t depth, uint32_t in, uint32_t w){ // STROBE
   uint32_t x, tmp, tmpp, bitrr, temp, bitn=0;
-        tmp=binroute[count][w]|binary[w]; 
-      tmpp=gate[w].routetype;
-    if (!gate[w].trigger) {
-      tmp=tmp|(1<<w);
-    }
+  tmp=binroute[count][w]|binary[w]; 
+  tmpp=gate[w].routetype;
+  if (!gate[w].trigger) {
+    tmp=tmp|(1<<w);
+  }
     ROUTETYPE_;
-    
   return bitn;
 }
 
@@ -1094,4 +1092,3 @@ static inline uint32_t pSRN6(uint32_t depth, uint32_t in, uint32_t w){//STROBE
     }  
   return bitn;
 }
-
