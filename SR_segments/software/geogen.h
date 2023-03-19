@@ -5967,7 +5967,7 @@ static inline uint32_t spdvienna3(uint32_t depth, uint32_t in, uint32_t w){ // /
 }
 
 static inline uint32_t spdvienna4(uint32_t depth, uint32_t in, uint32_t w){ // //INx
-  uint32_t bt=0, speedy;
+  int32_t bt=0, speedy;
   // say CVL as depth, CV as in
   //  depth=4095-depth;
   uint32_t recurse=(7-(depth>>4))&3; // 2 bits

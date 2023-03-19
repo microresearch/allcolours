@@ -130,7 +130,7 @@ CODE FREEZE!
 
 ** 19/3
 
-bug fix in pSRLLbumproute // exp_port
+CHECK: bug fix in pSRLLbumproute // exp_port and spdvienna4
 
 - DONEre-test fixed mistake of copy to matrix in C153!
 - DONEre-test C133 and general fixes to layers across ouroborics, and c150 changed
