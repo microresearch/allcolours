@@ -126,6 +126,13 @@ arrays:
 XXgeomantic.h
 XXnewbits.h
 
+CODE FREEZE!
+
+** 19/3
+
+- DONEre-test fixed mistake of copy to matrix in C153!
+- DONEre-test C133 and general fixes to layers across ouroborics, and c150 changed
+
 ** 17/3
 
 Final tests: 

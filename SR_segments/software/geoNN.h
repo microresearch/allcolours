@@ -554,7 +554,6 @@ void SR_geo_outer_N40(uint32_t w){
   }
 }
 
-// adc in with prob of route in and speed - inner_functionN
 void SR_geo_outer_N41(uint32_t w){ // adc in
   if (gate[w].changed==0) {
     //    gate[w].matrix[0]=5<<7; // tested // try fixed speed - spdfrac3/4

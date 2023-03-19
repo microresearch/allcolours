@@ -472,6 +472,15 @@ void (*geo_inners[3][64])(uint32_t w)={ // RR doesn't call it
   {SR_geo_inner_globalC, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_globalC, SR_geo_inner_globalC, SR_geo_inner_globalC, SR_geo_inner_function,  /*20*/SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_function,  SR_geo_inner_function, SR_geo_inner_function, SR_geo_inner_gappedfunctionC, SR_geo_inner_probcyclexorC, /*40*/SR_geo_inner_function, SR_geo_inner_gappedfunction, SR_geo_inner_dacspeed3, SR_geo_inner_testdacasdepth,  SR_geo_inner_probcycleC, SR_geo_inner_functionprobzero, SR_geo_inner_probcycleC, SR_geo_inner_probcyclexorC,  SR_geo_inner_probcycleCnodepth, SR_geo_inner_probcyclexorCnodepth, SR_geo_inner_probnodepth, SR_geo_inner_probdepth, SR_geo_inner_gappedfunction, SR_geo_inner_function, SR_geo_inner_probdepthx, SR_geo_inner_probdepthx, /*80*/SR_geo_inner_str_functionN, SR_geo_inner_str_function, SR_geo_inner_str_function, SR_geo_inner_str_probfunction,  SR_geo_inner_str_functionN, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function2,  SR_geo_inner_str_gappedfunction, SR_geo_inner_str_function, SR_geo_inner_function_strobexor, SR_geo_inner_function_strobexor,  SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunction, SR_geo_inner_str_probfunctionalt, SR_geo_inner_str_probfunction, /*120*/SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX, SR_geo_inner_str_probfunctionX,  SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_str_probfunctionXX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS,  SR_geo_inner_probdepthdepthS, SR_geo_inner_matrixreduceX, SR_geo_inner_probdepthdepthS, SR_geo_inner_probdepthdepthS}, // matches CC-done
 };
 
+
+void SR_geomantic_matrixcopyX(uint32_t w){ 
+  uint32_t x;
+  for (x=0;x<22;x++){
+    gate[w].matrixX[x]=(*(gate[w].matrixp[x]));
+    gate[w].matrix[x]=(*(gate[w].matrixp[x]));
+  }
+}
+
 //spdfrom slides across - inner in outer also as a kind of model to go further with...
 void SR_geo_outer_C153(uint32_t w){
   static uint32_t who[3]={0,0,0};
@@ -480,7 +489,7 @@ void SR_geo_outer_C153(uint32_t w){
       who[w]++;
       if (who[w]>63) who[w]=0;
     }
-      SR_geomantic_matrixcopyX(w);
-      gate[w].inner=geo_inners[w][gate[w].modes[who[w]]];
+    SR_geomantic_matrixcopyX(w); // copy to matrix - re-test
+    gate[w].inner=geo_inners[w][gate[w].modes[who[w]]];
     }
 }

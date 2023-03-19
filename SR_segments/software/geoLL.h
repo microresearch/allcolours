@@ -230,7 +230,6 @@ void SR_geo_outer_L50(uint32_t w){ // abstract in
   }
 }
 
-// select abstract + route
 void SR_geo_outer_L51(uint32_t w){ 
   if (gate[w].changed==0) {
     gate[w].matrix[0]=6<<7; // tested // try fixed speed - spdfrac4    
@@ -251,7 +250,7 @@ void SR_geo_outer_L51(uint32_t w){
   }
 }
 
-void SR_geo_outer_L52(uint32_t w){  // no route
+void SR_geo_outer_L52(uint32_t w){  
   if (gate[w].changed==0) {
     gate[w].matrix[0]=6<<7; // tested // try fixed speed - spdfrac4    
     gate[w].matrix[1]=CV[w];// speed cv1

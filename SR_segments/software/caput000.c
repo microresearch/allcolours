@@ -261,7 +261,11 @@ void mode_init(void){
     gate[4].Gshift_[2]=0;
     gate[4].Gshift_[3]=0;
 
-    
+  for (x=0;x<64;x++){
+    gate[0].modes[x]=0;
+    gate[1].modes[x]=0;
+    gate[2].modes[x]=0;
+  }
   
   for (x=0;x<4;x++){
     gate[x].inner=SR_geo_inner_globalC;
