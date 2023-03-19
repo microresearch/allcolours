@@ -365,7 +365,7 @@ void SR_geo_inner_probdepth(uint32_t w){  // draft for probs with depth
   else {
     if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);
     else if (w==3) bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); 
-    else bitn=(routebits_depth_typesz[gate[w].matrix[12]>>extent_routebits_nodepth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
+    else bitn=(routebits_depth_typesz[gate[w].matrix[12]>>extent_routebits_depth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
     // what alts there could be - but this is good as default
   }
     BITN_AND_OUTV_; 
@@ -508,7 +508,7 @@ void SR_geo_inner_probdepthx(uint32_t w){  // draft for probs with depth NOIN
         }
       else {
     if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w); 
-    else bitn=(routebits_depth_typesz[gate[w].matrix[12]>>extent_routebits_nodepth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
+    else bitn=(routebits_depth_typesz[gate[w].matrix[12]>>extent_routebits_depth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w); // swopped - fix now so is different
     // can be alts...
       }
     BITN_AND_OUTV_; 
