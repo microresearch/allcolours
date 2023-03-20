@@ -22,6 +22,11 @@ typedef struct heavens_ {
   float time_nowxx;
   long last_timexx;
   long int_timexx;
+
+  float time_nowxxx;
+  long last_timexxx;
+  long int_timexxx;
+
   uint32_t changed;
   uint32_t reset[5];
   int32_t gsrcnt[5];

@@ -252,6 +252,9 @@ void mode_init(void){
     gate[3].matrixp[x]=&gate[3].matrix[x];    
   }
 
+    // testy attach 
+  //  gate[2].matrixp[1]=&CV[2];
+
   //  RESETC;
 
     gate[4].flip=0;
@@ -296,9 +299,6 @@ void mode_init(void){
   }
 }
 
-
-
-
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - how fast can we run this?
 // period 32, prescaler 8 = toggle of 104 KHz
 // 4 and 4 we go up to 800 KHz
@@ -333,7 +333,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
    LFSR__[www]=LFSR_[www]&4095; // MUST be 12 bits
   
   //  uint32_t outindex=0;
-  uint32_t outindex=mode[www]; // test for 5 bits of mode 0-31 in geoC
+  uint32_t outindex=mode[www]; 
   //  if (www==3) outindex=18;//mode[www]; // testing TYPE on CVL
   //  if (outindex>15) outindex=15;
 

@@ -485,11 +485,39 @@ void SR_geomantic_matrixcopyX(uint32_t w){
 void SR_geo_outer_C153(uint32_t w){
   static uint32_t who[3]={0,0,0};
     if (gate[w].changed==0) {
-    if ((*speedfromnostrobe[CVL[w]>>7])(CV[w],(gate[dacfrom[daccount][w]].dac) , w)){ // speedfunc
+      if ( spdfracxxx(CV[w], gate[dacfrom[daccount][w]].dac, w)){ // speedfunc - effects own speed...so we add 5
       who[w]++;
       if (who[w]>63) who[w]=0;
     }
-    SR_geomantic_matrixcopyX(w); // copy to matrix - re-test
+    SR_geomantic_matrixcopyX(w);
+    gate[w].matrix[6]=CVL[w]; //
     gate[w].inner=geo_inners[w][gate[w].modes[who[w]]];
     }
+}
+
+///////////////////////////////////////////////////
+// crash tester
+void SR_geo_outer_test(uint32_t w){  
+  static uint32_t x=0;
+  uint32_t tmp1, tmp2;
+  gate[w].funcbit=routebits_depth_typesz;
+  gate[w].extent=extent_routebits_depth_typesz;
+  x++;
+  if (x>63) x=0;
+  gate[w].matrix[0]=LFSR__[3]; // spd
+  gate[w].matrix[1]=4095;// fastest
+  gate[w].matrix[2]=LFSR__[0]; //
+  gate[w].matrix[3]=LFSR__[1]; //
+  gate[w].matrix[4]=LFSR__[2]; //
+  gate[w].matrix[5]=LFSR__[3]; //
+  gate[w].matrix[6]=LFSR__[0]; //
+  gate[w].matrix[7]=LFSR__[1]; //
+  gate[w].matrix[8]=LFSR__[2]; //
+  gate[w].matrix[9]=LFSR__[3]; //
+  gate[w].matrix[10]=LFSR__[0]; //
+  gate[w].matrix[11]=LFSR__[1]; //
+  gate[w].matrix[12]=LFSR__[2]; //
+  gate[w].matrix[13]=LFSR__[3]; //
+
+  gate[w].inner=geo_inners[w][x];
 }

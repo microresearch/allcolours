@@ -6,13 +6,9 @@ this again in a consciousness of solitude.
 
 A ourorack module for one bit landscape gardening.
 
-serpent's head, caput draconis (rather than heavens\) - lunar node and link of geomantic figures with dots/dot matrix/bits... (see CCRU also)
-
-A dragon with 5 heads!
-
 ** new notes
 
-*3 changes to HW  - update board, output files and BOM accordingly/check production files on imac*
+DONE:3 changes to HW  - update board, output files and BOM accordingly/check production files on imac
 
 ** catalogue
 
@@ -126,11 +122,13 @@ arrays:
 XXgeomantic.h
 XXnewbits.h
 
-CODE FREEZE!
+** 20/3 - CODE FREEZE! EQUINOX
+
+ONE - fixed speed issue in 153!
+DONE- DONEcrash tests and code checks, checked ADCadvance and reset...
+CHECKED: bug fix in pSRLLbumproute: routebits_depth_typesz 22<<6, and spdvienna4
 
 ** 19/3
-
-CHECK: bug fix in pSRLLbumproute // exp_port and spdvienna4
 
 - DONEre-test fixed mistake of copy to matrix in C153!
 - DONEre-test C133 and general fixes to layers across ouroborics, and c150 changed
@@ -139,7 +137,7 @@ CHECK: bug fix in pSRLLbumproute // exp_port and spdvienna4
 
 Final tests: 
 
-- *test all ouroborics again*
+DONEtest all ouroborics again
 
 TESTED/done:
 - added dac mode 30
@@ -431,7 +429,7 @@ NN probs (careful with params) DONE
 
 ///
 
-*probs to still work on with nodepth options in NN and additionals in CC - see below?*
+probs to still work on with nodepth options in NN and additionals in CC - see below?*
 
 /////// in progress
 
@@ -456,7 +454,7 @@ SR_geo_inner_probadcentryxorX: anystrobe_depth, funcbitxor in UNUSED
 
 probzero also: SR_geo_inner_adcprobzero added
 
-*nod options added to above*
+nod options added to above*
 
 ////
 

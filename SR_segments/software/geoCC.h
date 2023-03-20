@@ -288,7 +288,7 @@ void SR_geo_inner_rungC(uint32_t w){
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7]; 
 
     if (w==0) bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  /// new one with mix
-    else  bitn=(*abstractbitsz[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
+    else  bitn=(*abstractbits_forrung[gate[w].matrix[20]>>extent_abstractbits])(gate[w].matrix[5], gate[w].matrix[4], w); // problem is same CVs - or switch round//done
     bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
     BITN_AND_OUTV_; 
     new_data(val,w);
@@ -703,7 +703,7 @@ void SR_geo_outer_C01(uint32_t w){ // prob2 - invert
   if (gate[w].changed==0) { 
   gate[w].matrix[0]=0<<7; // spdfrac
   gate[w].matrix[1]=CV[w];// speed
-  gate[w].matrix[3]=6<<6; // NZbinroutfixed_prob2 - type/prob against LFSR and globflag // or 14 prob3? inv cycle - checked for new array and is 6
+  gate[w].matrix[3]=6<<6; // 6=NZbinroutfixed_prob2 - type/prob against LFSR and globflag // or 14 prob3? inv cycle - checked for new array and is 6
   gate[w].matrix[4]=CVL[w]; //
   gate[w].funcbit=routebits_depth_typesz;
   gate[w].extent=extent_routebits_depth_typesz;
@@ -990,7 +990,7 @@ void SR_geo_outer_C52(uint32_t w){ // probcycle with depth
   gate[w].matrix[1]=CV[w];// speed
   gate[w].matrix[2]=gate[speedfrom[spdcount][w]].dac; // 2nd speed cv
   gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-  gate[w].matrix[10]=CVL[w];// prob depth 28<<6; // TODO:test all of these: 5->10, 24, 28
+  gate[w].matrix[10]=CVL[w];// prob depth 28<<6; // 
   gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); // do any use IN? yes spdfrac versions - should have basic prob vs in tho...
   gate[w].inner=SR_geo_inner_probcycleC; 
   }
@@ -1176,7 +1176,7 @@ void SR_geo_outer_C81(uint32_t w){   // simple fixed strobe with sel bitfunc and
 void SR_geo_outer_C82(uint32_t w){   //
   if (gate[w].changed==0) {
     gate[w].matrix[15]=0<<8;//  simple strobe
-    gate[w].matrix[17]=CV[w]; // bit mode - test one at a time // str function has for w==0 ^
+    gate[w].matrix[17]=CV[w]; // bit mode 
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
     SETROUTETYPECV; 
     gate[w].str_funcbit=routebits_nostrobe_nodepth_typesz;   // we make sure function is NO STROBE!
@@ -1665,7 +1665,6 @@ void SR_geo_outer_C141(uint32_t w){   // if trigger then bleed // CVL attach usi
   }
 }
 
-// test further layerings // GSHIFT attach
 void SR_geo_outer_C142(uint32_t w){   // if trigger then bleed 
   if (gate[w].changed==0) {
     if (w==0) map=maparrayCCA;
@@ -1737,3 +1736,4 @@ void SR_geo_outer_C152(uint32_t w){   // offset
 // C153 in RR
 
 ////////////////////////////////////////////////////////////////////////
+

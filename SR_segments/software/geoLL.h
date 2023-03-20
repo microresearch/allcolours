@@ -207,7 +207,6 @@ void SR_geo_outer_L43(uint32_t w){ // select function/gapped array - fixed route
   }
 }
 
-// TEST!
 ///////////////////////////////////////////////////////////////////////////////////
 // add other type of abstract runglers... from NN now
 

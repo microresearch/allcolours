@@ -303,8 +303,6 @@
   tmp=tmp>>1;						\
   }							\
   }
-// pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
-// added in binary[w] for global bitroute testings
 
 // use tmp
 #define BINROUTEstrip_ {				\
