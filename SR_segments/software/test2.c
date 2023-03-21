@@ -1324,6 +1324,6 @@ uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
    y=DAC_(0, x, 0);
    printf("DAC length %d: %d\n", x, y);
  }
- printf(" xxxxxxxxxxxxx %d\n", (1<<11));
+ printf(" xxxxxxxxxxxxx %d\n", (24<<7)>>6);
 
 }

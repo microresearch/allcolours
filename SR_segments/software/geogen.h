@@ -6294,14 +6294,14 @@ static inline uint32_t Zbinroutsplitxor1(uint32_t depth, uint32_t in, uint32_t w
 }
 
 // and seperate speeds for strobe and CVL or... but then we need extra spdfracs?
-static inline uint32_t ZbinroutsplitxorXX(uint32_t depth, uint32_t in, uint32_t w){   // 
+static inline uint32_t  ZbinroutsplitxorXX(uint32_t depth, uint32_t in, uint32_t w){   // 
   uint32_t bitrr, tmp, tmpp, x, bitn=0;
   static uint32_t bob[5]={0,0,0,0};
   static uint32_t bbb[5]={0,0,0,0};
   if (spdfracx(depth, in, w)){
   bob[w]=(gate[w].Gshift_[w]>>SRlength[w]) & 0x01;
   }
-  if (spdfracx(in, depth, w)){
+  if (spdfracxx(in, depth, w)){
   tmp=binroute[count][w]|binary[w]; 
   tmpp=gate[w].routetype;
   ROUTETYPE_;
