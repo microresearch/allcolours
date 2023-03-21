@@ -658,6 +658,7 @@ void TIM4_IRQHandler(void)
   //  lastlastmodec=lastmodec;
   //  lastmodec=temp;
   mode[2]=mapping[temp>>2];
+
   if (lastmode[2]!=mode[2]) {
     gate[2].changed=1;
     gate[2].modes[gate[2].xx]=mode[2];
@@ -677,6 +678,7 @@ void TIM4_IRQHandler(void)
   //  lastmodel=temp;
   //  mode[1]=temp>>6;
   mode[1]=mapping[temp>>2];
+
   if (lastmode[1]!=mode[1]) {
     gate[1].changed=1;
     gate[1].modes[gate[1].xx]=mode[1];
@@ -695,6 +697,7 @@ void TIM4_IRQHandler(void)
   //  lastlastmoder=lastmoder;
   //  lastmoder=temp;
   mode[3]=mapping[temp>>2];
+
   if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
   else gate[3].changed=0;
   lastmode[3]=mode[3];
@@ -711,7 +714,7 @@ void TIM4_IRQHandler(void)
   if (nn>=SMOOTHINGS) nn=0;
   temp=totn/SMOOTHINGS;  
   CV[0]=4095-temp;
-  
+
   // speedl
   totl=totl-smoothl[ll];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_144Cycles);
@@ -735,7 +738,6 @@ void TIM4_IRQHandler(void)
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
   CV[3]=4095-temp;
-  
     // speedc
   totc=totc-smoothc[cc];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_144Cycles); // was 10
@@ -746,14 +748,14 @@ void TIM4_IRQHandler(void)
     cc++;
     if (cc>=SMOOTHINGS) cc=0;
     temp=totc/SMOOTHINGS;
-  CV[2]=4095-temp;
+    CV[2]=4095-temp;
+
   
   // CVL0 NN
   totnn=totnn-smoothnn[nnn];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-  //  temp=ADC_GetConversionValue(ADC1);
   smoothnn[nnn]=ADC_GetConversionValue(ADC1);
   totnn+=smoothnn[nnn];
   nnn++;
@@ -761,6 +763,7 @@ void TIM4_IRQHandler(void)
   temp=totnn/SMOOTHINGS;  
   CVL[0]=4095-temp;
 
+  
   // CVL1 LL
   totll=totll-smoothll[lll];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_144Cycles);
@@ -771,7 +774,6 @@ void TIM4_IRQHandler(void)
   lll++;
   if (lll>=SMOOTHINGS) lll=0;
   temp=totll/SMOOTHINGS;  
-  //  temp=ADC_GetConversionValue(ADC1);
   CVL[1]=4095-temp;
 
   // CVL2 CC
@@ -786,17 +788,17 @@ void TIM4_IRQHandler(void)
   if (ccc>=SMOOTHINGS) ccc=0;
   temp=totcc/SMOOTHINGS;  
   CVL[2]=4095-temp;
-
+  
   // CVL3 RR
   totrr=totrr-smoothrr[rrr];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-  //  temp=ADC_GetConversionValue(ADC1);
   smoothrr[rrr]=ADC_GetConversionValue(ADC1);
   totrr+=smoothrr[rrr];
   rrr++;
   if (rrr>=SMOOTHINGS) rrr=0;
   temp=totrr/SMOOTHINGS;  
-  CVL[3]=4095-temp;  
+  CVL[3]=4095-temp;
+
 }

@@ -1,8 +1,8 @@
 * notes towards manual/caput draconis
 
-** blurb 2
+** blurb - site/announce
 
-caput draconis is an ourorack (ouroboric eurorack) module for
+caput draconis is a new ourorack (ouroboric eurorack) module for
 gnarlular audio processing, and advanced serpentine all-frequency CV
 and audio pattern generation, encoding a series of successively
 pleasurable and tortuous sliding dislocations.
@@ -21,14 +21,16 @@ astrogeomantic time signatures.
 
 ** site/announce description - fill in
 
+images: 
+
 Technical and HOWTO
 20HP, 110mA at +12V, 20mA at -12V, 0mA at 5v. Multiple CV/pulse inputs, pulse outs and 1 audio/CV output. Power is red stripe/-12V DOWN.
 
 Design files at: https://github.com/microresearch/allcolours/SR_segments
 
-Cheatsheet with manual cards: https://1010.co.uk/
+Extended manual and reader: https://1010.co.uk/org/
 
-With thanks to Melissa Aguilar for poster/manual layout and design.
+With wonderful thanks to Melissa Aguilar for poster/manual layout and design.
 
 caput draconis is released under the GPL GNU General Public License.
 

@@ -42,13 +42,13 @@
   gate[w].routetype=gate[w].matrix[16]>>9;		\
 }
 
-#define RESETN binary[0]=0; gate[0].altroute=0; gate[0].routetype=3<<9; gate[0].funcbit=routebits_nodepth_typesz; gate[0].extent=6; gate[0].depths=depth_routebits_nodepth_typesz; gate[0].str_funcbit=routebits_nostrobe_depth_typesz; gate[0].str_extent=7; gate[0].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTN;
+#define RESETN binary[0]=0; gate[0].altroute=0; gate[0].funcbit=routebits_nodepth_typesz; gate[0].extent=6; gate[0].depths=depth_routebits_nodepth_typesz; gate[0].str_funcbit=routebits_nostrobe_depth_typesz; gate[0].str_extent=7; gate[0].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTN;
 
-#define RESETL binary[1]=0; gate[1].altroute=0; gate[1].routetype=0; gate[1].funcbit=routebits_nodepth_typesz; gate[1].extent=6; gate[1].depths=depth_routebits_nodepth_typesz; gate[1].str_funcbit=routebits_nostrobe_depth_typesz; gate[1].str_extent=7; gate[1].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTL;
+#define RESETL binary[1]=0; gate[1].altroute=0; gate[1].funcbit=routebits_nodepth_typesz; gate[1].extent=6; gate[1].depths=depth_routebits_nodepth_typesz; gate[1].str_funcbit=routebits_nostrobe_depth_typesz; gate[1].str_extent=7; gate[1].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTL;
 
-#define RESETC binary[2]=0; gate[2].altroute=0; gate[2].routetype=3<<9; gate[2].funcbit=routebits_nodepth_typesz; gate[2].extent=6; gate[2].depths=depth_routebits_nodepth_typesz; gate[2].str_funcbit=routebits_nostrobe_depth_typesz; gate[2].str_extent=7; gate[2].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTC;
+#define RESETC binary[2]=0; gate[2].altroute=0; gate[2].funcbit=routebits_nodepth_typesz; gate[2].extent=6; gate[2].depths=depth_routebits_nodepth_typesz; gate[2].str_funcbit=routebits_nostrobe_depth_typesz; gate[2].str_extent=7; gate[2].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTC;
 
-#define RESETR binary[3]=0; gate[3].altroute=0; gate[3].routetype=0; gate[3].funcbit=routebits_nodepth_typesz; gate[3].extent=6; gate[3].depths=depth_routebits_nodepth_typesz; gate[3].str_funcbit=routebits_nostrobe_depth_typesz; gate[3].str_extent=7; gate[3].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTR; RESETG; count=0;
+#define RESETR binary[3]=0; gate[3].altroute=0; gate[3].funcbit=routebits_nodepth_typesz; gate[3].extent=6; gate[3].depths=depth_routebits_nodepth_typesz; gate[3].str_funcbit=routebits_nostrobe_depth_typesz; gate[3].str_extent=7; gate[3].str_depths=depth_routebits_nostrobe_depth_typesz; RESETTR; RESETG; count=0;
 
 #define RESETG ordercount=0; daccount=0; spdcount=0; tailcount=0; binary[0]=0; binary[1]=0; binary[2]=0; binary[3]=0; 
 
@@ -94,8 +94,9 @@
 #define MIXin {								\
     ADCgenericsin;								\
     float mult=mixer[in>>2];						\
-    float pp=((float)(k) *  (mult)) + ((float)(gate[dacIN[daccount][w]].dac)*1.0f-(mult)); \
+    float pp=((float)(k) *  (mult)) + ((float)(gate[dacIN[daccount][w]].dac)*(1.0f-mult)); \
     k=(int)pp;								\
+    if (k>4095) k=4095;							\
     ADCin=k;								\
 }
 

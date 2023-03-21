@@ -462,7 +462,6 @@ static inline uint32_t NZbinroutfixed_prob1(uint32_t depth, uint32_t in, uint32_
 static inline uint32_t NZbinroutfixed_prob1A(uint32_t depth, uint32_t in, uint32_t w){   // prob of routed or cycling
   uint32_t bitn=0, bitrr, x, tmpp, tmp;
   //  if (depth<(LFSR__[w]>>4)) {
-  ADCgen;
   if ((depth>>4)<((LFSR__[w]>>4))){
     tmp=binroute[count][w]|binary[w];
     tmpp=gate[w].routetype;

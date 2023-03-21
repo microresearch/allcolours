@@ -1326,4 +1326,10 @@ uint32_t zosc1bits(uint32_t depth, uint32_t in, uint32_t w){
  }
  printf(" xxxxxxxxxxxxx %d\n", (24<<7)>>6);
 
+ float xx=4095;
+ float mult=0.9f;
+ float pp=((float)(xx) *  (mult)) + ((float)(xx)*(1.0f-mult));
+ 
+ printf(" FLOATER %f\n", pp);
+ 
 }

@@ -79,7 +79,7 @@ uint32_t (*inall[64])(uint32_t depth, uint32_t in, uint32_t wh)={zadcx, zadconeb
 
 // - adding to inall for NN: zTMsimplebits and also prob of route in/cycle: Zbinroutfixed_prob1...
 
-uint32_t inall_depth[64]={1, 1, 1, 1,  0, 0, 1, 0,  0, 0, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, /*23dac*/2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2,2, 2,2,2, /*18abstract*/1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1};// checked 
+uint32_t inall_depth[64]={1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /*23dac*/2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, /*18abstract*/1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};// 64checked 
 
 // abstractbits/strobe=all - these now all use depth - some use IN
 uint32_t (*abstractbitsz[32])(uint32_t depth, uint32_t in, uint32_t wh)={zosc1bitsfast, sigmadelta, osceq,  zcountbits, zcountbitsI, zprobbits, zlfsrbits, zllfsrbits, zflipbits, zosceqbitsI, zosc1bits, zlfsrbitsI, zflipbitsI, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zTMsimplebitsL, zTMsimplebitsL, zsuccbitsprob, zreturnnotbits, zTMsimplebits, pSRLcvSRmaskroute, pSRLcvroute, pSRNwas15, zsuccbitspp, zsuccbitsIpp, zsuccbits_noshift, zprobbitsxorstrobe, zprobbitsxortoggle, ztogglebitssh, ztogglebits}; // 28 +4
