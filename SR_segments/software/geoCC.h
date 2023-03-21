@@ -1671,7 +1671,7 @@ void SR_geo_outer_C142(uint32_t w){   // if trigger then bleed
     else map=maparrayCC;
 
     if (map[(CVL[w]>>8)]==1){ // speedcv // fixed...
-    setvargapz(w, 7+speedfrom[spdcount][w], 1, 7+speedfrom[spdcount][w], gate[w].trigger);  // speedfrom
+    setvargapz(w, 7+speedfrom[spdcount][w], 0, 7+speedfrom[spdcount][w], gate[w].trigger);  // speedfrom
     }
     else {
     setvargapz(w, 7+dacfrom[daccount][w], map[(CVL[w]>>8)], 7+dacfrom[daccount][w], gate[w].trigger);  // gshift
