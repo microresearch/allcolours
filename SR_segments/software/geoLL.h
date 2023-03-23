@@ -187,7 +187,7 @@ void SR_geo_outer_L42(uint32_t w){ // select function/gapped array
     gate[w].matrix[3]=CVL[w];// selfunction <<6//
     gate[w].matrix[4]=CV[w];
     gate[w].matrix[10]=CV[w];
-    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
+    //    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
     gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__ 
     gate[w].inner=SR_geo_inner_gappedfunction; // as we have depth here
@@ -202,7 +202,7 @@ void SR_geo_outer_L43(uint32_t w){ // select function/gapped array - fixed route
     gate[w].matrix[10]=CV[w];  
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
     gate[w].matrix[9]=0<<6; // select probfs - zprobbits here against LFSR__
-    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
+    //    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_gappedfunctionrung; // as we have depth here 
   }
 }

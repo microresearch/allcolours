@@ -1,4 +1,39 @@
-  
+
+static inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){ // fixed value like 1024
+  gate[wh].matrix[which]=val; 
+  gate[wh].matrixp[which]=&gate[wh].matrix[which]; 
+}
+
+
+///////////////////////////////////////////////////
+// crash tester
+void SR_geo_outer_test(uint32_t w){  
+  static uint32_t x=0;
+  uint32_t tmp1, tmp2;
+  gate[w].funcbit=routebits_depth_typesz;
+  gate[w].extent=extent_routebits_depth_typesz;
+  x++;
+  if (x>63) x=0;
+  gate[w].matrix[0]=LFSR__[3]; // spd
+  gate[w].matrix[1]=4095;// fastest
+  gate[w].matrix[2]=LFSR__[0]; //
+  gate[w].matrix[3]=LFSR__[1]; //
+  gate[w].matrix[4]=LFSR__[2]; //
+  gate[w].matrix[5]=LFSR__[3]; //
+  gate[w].matrix[6]=LFSR__[0]; //
+  gate[w].matrix[7]=LFSR__[1]; //
+  gate[w].matrix[8]=LFSR__[2]; //
+  gate[w].matrix[9]=LFSR__[3]; //
+  gate[w].matrix[10]=LFSR__[0]; //
+  gate[w].matrix[11]=LFSR__[1]; //
+  gate[w].matrix[12]=LFSR__[2]; //
+  gate[w].matrix[13]=LFSR__[3]; //
+
+  gate[w].inner=geo_inners[w][x];
+}
+
+
+
   
 // rework: - *copy matrixp->matrix and slide inner array* but what can CV do.. funcbit???
 void SR_geo_outer_C153x(uint32_t w){

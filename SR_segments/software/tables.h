@@ -250,32 +250,26 @@ uint32_t dacIN[16][4]={ // for dac into ADC - only really interested in first ro
   {2,3,1,0}
 };
 
-uint32_t speedfrom[32][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
+uint32_t speedfrom[16][4]={ // now for speedfrom just copied from above! TODO: changing: synced speeds...
   {1,3,1,0}, // default for rungler
-  {0,0,0,0}, // synced...
-  {1,1,1,1}, // synced...
-  {2,2,2,2}, // synced...
+  {3,0,0,0}, // synced...
+  {1,3,1,1}, // synced...
+  {2,2,3,2}, // synced...
 
   {3,3,3,3}, // synced...
-  {0,1,2,3}, // itself...???
+  {0,1,2,3}, // itself...??? just for change
   {2,2,0,0}, // was 1,3,1,1 -new one for rungling 24/1/2022
   {3,0,1,2}, // from latest notebook prev ones: 3,0,1,2
 
-  {0,1,2,3}, // itself
-  {3,2,1,0}, // reverse
-  {3,3,3,3},
-  {2,2,2,2},
-
-  {1,1,1,1},
+  {2,3,0,0},
   {3,3,1,1},
-  {1,1,3,3},
+  {1,2,3,3},
   {2,3,0,1}, // opposites
 
   {1,0,3,2},
   {1,2,3,0}, // nexts
   {3,2,1,0}, /// rev
-  {1,3,1,1},
-  {1,3,1,0}
+  {1,3,3,1}
 };
 
 // can also have lists for each one to bump along

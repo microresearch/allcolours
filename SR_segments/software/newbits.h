@@ -23,11 +23,6 @@ uint32_t depth_routebits_anystrobe_nodepth_notypesz[32]={0,0,0,0, 0,0,0,0, 0,0,0
 
 #define extent_routebits_anystrobe_nodepth_notypesz 7
 
-// arrays of bit functions:
-uint32_t (**routebits_arr[4])(uint32_t depth, uint32_t in, uint32_t wh)={routebits_depth_typesz, routebits_nodepth_typesz, routebits_anystrobe_depth_notypesz, routebits_anystrobe_nodepth_notypesz};
-
-uint32_t routebits_ext[4]={6,6,7,7};
-
 // merged above - depth and no depth
 uint32_t (*routebits_anystrobe_notypesz[64])(uint32_t depth, uint32_t in, uint32_t wh)={zTMsimplebitsL, zTMsimplebits, zsuccbitspp, zsuccbitsprob, zsuccbits_noshift, zsuccbitsI_noshift, zsuccbitsIppd, zsuccbitsppd, zsuccbitsprobd, zsuccbits_noshiftd, zsuccbitsI_noshiftd, zsuccbitsIppd, zpattern4bits, zpattern8bits, zpattern4bitsI, zpattern8bitsI, zbinrouteSRbits, pSR_altbin1, pbitLSRroutexxxlog, pSRLcvSRmaskroute, pSRLcvroute, pSRN30, pSRNwas15, pSR_layer1, pSR_layer2, pSR_reflect, triadexbits, binrout_probXY2, binrout_probXY3, Zcyclesplit, /*x*/zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, tailbitsnos, binroutAND0, binroutAND00, pbitSRroutelogD_, pbitSRroutelogxxD_, pSR32D_, pSRN62, pSRN22D_, pSRN21D_, Zlast, zjustcycle, /**/zbinroutebitsI_noshift, zbinroutebitscycleI_noshift, zbinrouteORbits, tailbits, binroutAND0, binroutAND00, pbitSRroutelogD_, zTMsimplebitsL, zTMsimplebits, pSRprobxortogx, pSRN12, pSRN11, binroutaltreset, pSRNwas13, pSRN10, pSRN65, pSRshroute, pSRprobxortogxID_, zcopyGSR_s};
 

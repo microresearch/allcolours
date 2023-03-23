@@ -246,7 +246,7 @@ void mode_init(void){
     gate[1].matrixpG[x]=&gate[1].matrix[x];
     gate[0].matrixpG[x]=&gate[0].matrix[x];
 
-    gate[0].matrixp[x]=&gate[0].matrix[x]; // was fixedvalues
+    gate[0].matrixp[x]=&gate[0].matrix[x]; 
     gate[1].matrixp[x]=&gate[1].matrix[x];
     gate[2].matrixp[x]=&gate[2].matrix[x];
     gate[3].matrixp[x]=&gate[3].matrix[x];    
@@ -257,18 +257,29 @@ void mode_init(void){
 
   //  RESETC;
 
+  for (x=0;x<64;x++){
+    gate[0].modes[x]=0;
+    gate[1].modes[x]=0;
+    gate[2].modes[x]=0;
+  }
+
     gate[4].flip=0;
     gate[4].shift_=0x15;
     gate[4].Gshift_[0]=0;
     gate[4].Gshift_[1]=0;
     gate[4].Gshift_[2]=0;
     gate[4].Gshift_[3]=0;
+    gate[4].reset[0]=0;
+    gate[4].reset[1]=0;
+    gate[4].reset[2]=0;
+    gate[4].reset[3]=0;
+    gate[4].route=0;
+    
+    gate[4].gsrcnt[0]=31;
+    gate[4].gsrcnt[1]=31;
+    gate[4].gsrcnt[2]=31;	
+    gate[4].gsrcnt[3]=31;
 
-  for (x=0;x<64;x++){
-    gate[0].modes[x]=0;
-    gate[1].modes[x]=0;
-    gate[2].modes[x]=0;
-  }
   
   for (x=0;x<4;x++){
     gate[x].inner=SR_geo_inner_globalC;
@@ -285,10 +296,10 @@ void mode_init(void){
     gate[x].reset[2]=0;
     gate[x].reset[3]=0;
     gate[x].route=0;
-    gate[0].gsrcnt[x]=31;
-    gate[1].gsrcnt[x]=31;
-    gate[2].gsrcnt[x]=31;	
-    gate[3].gsrcnt[x]=31;
+    gate[x].gsrcnt[0]=31;
+    gate[x].gsrcnt[1]=31;
+    gate[x].gsrcnt[2]=31;	
+    gate[x].gsrcnt[3]=31;
 
   gate[x].funcbit=routebits_nodepth_typesz;
   gate[x].extent=6;
@@ -317,8 +328,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz - ho
     clksr__[www]=clksr_[www]&4095;
   }
   else gate[www].trigger=0;
-  
-  
+    
   ww++;
   if (ww>orderings[ordercount][0]){
     ww=1;

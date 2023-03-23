@@ -125,8 +125,6 @@ static inline uint16_t logopxxx(uint32_t bita, uint32_t bitaa, uint32_t type){ /
   return bita ^ bitaa; // default
 }
 
-uint32_t dacstrobe[32]={1,1,1,1, 1,0,0,1, 1,1,1,0, 1,1,1,1, 1,0,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1}; //if dac doesn't use strobe=1!? // checked 2/3
-
 // 15/12/2022 - length changed to otherpar except where we change both - to be TESTED!!
 //     val=DAC_(w, gate[w].shift_, SRlength[w], gate[w].matrix[13]>>7, gate[w].matrix[14], gate[w].fake); 
 static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
@@ -497,7 +495,6 @@ static inline uint32_t DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32
   case 31: // default for all other DACs - modded for new draft // no otherpar
     x=shift&4095;
     break;
-
     
     ///////
   } // switch    
@@ -629,9 +626,6 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(temp+lastlastmoden+lastmoden)/3; 
-  //  lastlastmoden=lastmoden;
-  //  lastmoden=temp;
   mode[0]=mapping[temp>>2];
   if (lastmode[0]!=mode[0]) {
     gate[0].changed=1;
@@ -654,9 +648,6 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(temp+lastlastmodec+lastmodec)/3; 
-  //  lastlastmodec=lastmodec;
-  //  lastmodec=temp;
   mode[2]=mapping[temp>>2];
 
   if (lastmode[2]!=mode[2]) {
@@ -673,10 +664,6 @@ void TIM4_IRQHandler(void)
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(temp+lastlastmodel+lastmodel)/3; 
-  //  lastlastmodel=lastmodel;
-  //  lastmodel=temp;
-  //  mode[1]=temp>>6;
   mode[1]=mapping[temp>>2];
 
   if (lastmode[1]!=mode[1]) {
@@ -688,14 +675,11 @@ void TIM4_IRQHandler(void)
   else gate[1].changed=0;
   lastmode[1]=mode[1];
 
-  // moder we dont record
+  // moder we dont need to record
   ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_144Cycles);
   ADC_SoftwareStartConv(ADC1);
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
-  //  temp=(temp+lastlastmoder+lastmoder)/3; 
-  //  lastlastmoder=lastmoder;
-  //  lastmoder=temp;
   mode[3]=mapping[temp>>2];
 
   if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
@@ -738,7 +722,8 @@ void TIM4_IRQHandler(void)
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
   CV[3]=4095-temp;
-    // speedc
+
+  // speedc
   totc=totc-smoothc[cc];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_144Cycles); // was 10
   ADC_SoftwareStartConv(ADC1);
@@ -750,7 +735,6 @@ void TIM4_IRQHandler(void)
     temp=totc/SMOOTHINGS;
     CV[2]=4095-temp;
 
-  
   // CVL0 NN
   totnn=totnn-smoothnn[nnn];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_144Cycles);

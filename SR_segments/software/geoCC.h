@@ -528,17 +528,17 @@ void SR_geo_inner_gappedfunction(uint32_t w){  // depth or alt
     if ((*speedfromnostrobe[gate[w].matrix[0]>>7])(gate[w].matrix[1], gate[w].matrix[2], w)){ // speedfunc
     GSHIFT_;
     SRlength[w]=lookuplenall[gate[w].matrix[6]>>7];
-    if (w==0)     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  
-
-    if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*   
+    if (gate[w].depths[gate[w].matrix[3]>>gate[w].extent]) {// we use depth // *if (!depth_routebits_nostrobe_notypesz[gate[w].matrix[3]>>7])*
+      if (w==0)     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  
       bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
     }
     else { 
         if (!(*probf_anystrobe_depth[gate[w].matrix[9]>>6])(gate[w].matrix[10], gate[w].matrix[11], w)){
-	  bitn^=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
+	  bitn=(gate[w].funcbit[gate[w].matrix[3]>>gate[w].extent])(gate[w].matrix[4], gate[w].matrix[5], w); 
       }
       else {
-	bitn^=(routebits_depth_typesz[gate[w].matrix[12]>>extent_routebits_depth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w);
+	if (w==0)     bitn=(*inall[gate[w].matrix[7]>>6])(gate[w].matrix[8], gate[w].matrix[21], w);  
+	else bitn=(routebits_depth_typesz[gate[w].matrix[12]>>extent_routebits_depth_typesz])(gate[w].matrix[5], gate[w].matrix[4], w);
       }
     }
     BITN_AND_OUTV_; 
@@ -1067,7 +1067,8 @@ void SR_geo_outer_C70(uint32_t w){ // gapped speedfunc. dac for depth...
 
     //    gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__ gap that
     gate[w].matrix[4]=(gate[dacfrom[daccount][w]].dac); 
-    gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac); 
+    gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac);
+    gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac);
     gate[w].inner=SR_geo_inner_gappedfunction; // 
   }
 }
@@ -1152,16 +1153,16 @@ void SR_geo_outer_C80(uint32_t w){   // simple fixed strobe with sel bitfunc and
 void SR_geo_outer_C81(uint32_t w){   // simple fixed strobe with sel bitfunc and depth: routebits_nostrobe_depth_notypesz >>8
   if (gate[w].changed==0) {
     gate[w].matrix[15]=0<<8;//  simple strobe
-    if (w==0) {
+    /*    if (w==0) {
       gate[w].matrix[7]=CV[w]; // adc/abstract mode
       if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CVL[w];
       else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=CVL[w]; // mix for dacs
       else gate[w].matrix[6]=CVL[w]; // length
     }
-    else {
+    else {*/
       gate[w].matrix[4]=CVL[w]; // depth
       gate[w].matrix[17]=CV[w]; // bit mode
-    }
+//    }
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
   
     gate[w].str_funcbit=routebits_nostrobe_depth_notypesz;   // we make sure function is NO STROBE!
@@ -1228,6 +1229,7 @@ void SR_geo_outer_C91(uint32_t w){   // routes with depth and gapped strobe spee
     gate[w].matrix[4]=CVL[w];
     gate[w].matrix[10]=CVL[w]; // for gapped
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
+    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac); 
 
     //    gate[w].str_funcbit=routebits_nostrobe_depth_typesz;   // we make sure function is NO STROBE!
     //    gate[w].str_extent=extent_routebits_nostrobe_depth_typesz;
@@ -1242,7 +1244,8 @@ void SR_geo_outer_C92(uint32_t w){   // // routes with depth and gapped strobe s
     gate[w].matrix[4]=CVL[w];
     gate[w].matrix[10]=CVL[w]; // for gapped
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
-
+    gate[w].matrix[11]=(gate[dacfrom[daccount][w]].dac);
+    
     if (w==0) {
     if (inall_depth[gate[w].matrix[7]>>6]==1) gate[w].matrix[8]=CV[w];
     else if (inall_depth[gate[w].matrix[7]>>6]==2) gate[w].matrix[21]=CV[w]; // mix for dacs
@@ -1279,7 +1282,7 @@ void SR_geo_outer_C100(uint32_t w){   // depth
     //    gate[w].matrix[9]=0<<6; // select probfs - zinvprobbits here against LFSR__ // or gapped
     gate[w].matrix[4]=(gate[dacfrom[daccount][w]].dac); 
     gate[w].matrix[10]=(gate[dacfrom[daccount][w]].dac); 
-
+    gate[w].matrix[11]=(gate[dacfromopp[daccount][w]].dac); 
     gate[w].inner=SR_geo_inner_str_gappedfunction;
   }
 }
@@ -1421,14 +1424,14 @@ uint32_t remap[16]={0,1,2,3, 0,1,6,7, 8,9,10,11, 12,13,14,15};
 
 
 uint32_t *map;
-uint32_t maparrayCCS[16]={1, 15, 2, 17, 4, 5, 6, 13, 14, 16, 9, 10, 11, 12, 15, 1}; // strobes
-uint32_t maparrayCCSA[16]={1, 15, 2, 17, 4, 5, 6, 7, 8, 20, 21, 9, 10, 11, 12, 15};// 16
+uint32_t maparrayCCS[16]={1, 15, 2, 17,  4, 5, 6, 13,  14, 16, 9, 10,  11, 12, 15, 1}; // strobes
+uint32_t maparrayCCSA[16]={1, 15, 2, 17,  4, 5, 6, 7,  8, 20, 21, 9,  10, 11, 13, 14};// 16
 
 uint32_t maparrayCC[16]= {1, 0, 2, 3, 4, 5, 6, 13, 14, 16, 9, 10, 11, 12, 20, 1}; 
-uint32_t maparrayCCA[16]= {1, 0, 2, 3, 4, 5, 6, 16, 9, 10, 11, 12, 7, 8, 20, 21};// 16
+uint32_t maparrayCCA[16]= {1, 0, 2, 3,  4, 5, 6, 16,  9, 10, 11, 7,  8, 21, 13, 14};// 16 // not use 12 or 20
 
-uint32_t maparrayCCAreduce[16]= {1, 1, 0, 0,  2, 2, 6, 6,  7, 7, 8, 8,  20, 20, 21, 21};// 16 // reduced map for w==0/A with no route in/bitfunc:
-uint32_t maparrayCCreduce[16]= {1, 0, 2, 3, 4, 5, 6, 13, 14, 16, 20, 0, 1, 2, 3, 4};// and for no probs
+uint32_t maparrayCCAreduce[16]= {1, 1, 0, 0,  2, 2, 6, 6,  7, 7, 8, 8,  21, 21, 13, 13};// 16 // reduced map for w==0/A with no route in/bitfunc:
+uint32_t maparrayCCreduce[16]= {1, 0, 2, 3,  4, 5, 6, 13,  14, 16, 20, 0,  1, 2, 3, 4};// and for no probs
 
 //.////
 void SR_geomantic_matrixcopyz(uint32_t w){ 
@@ -1444,11 +1447,6 @@ void SR_geomantic_matrixcopyoffsetz(uint32_t w){
     gate[w].matrixX[x]=(*(gate[w].matrixp[x]))+gate[w].offset[x]; // value at + offset
     gate[w].matrixX[x]=gate[w].matrixX[x]%4095;
   }
-}
-
-static inline void setfixedz(uint32_t wh, uint32_t which, uint32_t val){ // fixed value like 1024
-  gate[wh].matrix[which]=val; 
-  gate[wh].matrixp[which]=&gate[wh].matrix[which]; 
 }
 
 static inline void setfixedvarz(uint32_t wh, uint32_t which, uint32_t var){ // sets fixed value at var var

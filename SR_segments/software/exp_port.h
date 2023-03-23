@@ -3,7 +3,6 @@
 // these from gen.h
 static inline uint32_t probbitsxortoggle(uint32_t depth, uint8_t w){   // PROBability mode xor strobe - can be more ops - can also be indie version
   static uint32_t bt=0;
-  //  if (TRIGGER) bt=bt^1;
   bt^=TRIGGER;
   if (depth<LFSR__[w]) bt^=1; // variations
   return bt;
@@ -11,7 +10,6 @@ static inline uint32_t probbitsxortoggle(uint32_t depth, uint8_t w){   // PROBab
 
 static inline uint32_t probbitsxortoggleI(uint32_t depth, uint8_t w){   // PROBability mode xor strobe - can be more ops - can also be indie version
   static uint32_t bt[4]={0,0,0,0};
-  //  if (TRIGGER) bt[w]=bt[w]^1;
   bt[w]^=TRIGGER;
   if (depth<LFSR__[w]) bt[w]^=1; // variations
   return bt[w];
@@ -19,14 +17,12 @@ static inline uint32_t probbitsxortoggleI(uint32_t depth, uint8_t w){   // PROBa
 
 static inline uint32_t probbitsxortoggleD_(uint32_t depth, uint8_t w){   // PROBability mode xor strobe - can be more ops - can also be indie version
   static uint32_t bt=0;
-  //  if (TRIGGER) bt=bt^1;
   bt^=TRIGGER;
   return bt;
 }
 
 static inline uint32_t probbitsxortoggleID_(uint32_t depth, uint8_t w){   // PROBability mode xor strobe - can be more ops - can also be indie version
   static uint32_t bt[4]={0,0,0,0};
-  //  if (TRIGGER) bt[w]=bt[w]^1;
   bt[w]^=TRIGGER;
   return bt[w];
 }
@@ -93,7 +89,6 @@ static inline uint32_t pSR_routeSRbits02(uint32_t depth, uint32_t in, uint32_t w
     }
     tmp=tmp>>1; // 4 bits
   }
-
   tmp=bitrr;
   tmpp=gate[w].routetype;
   ROUTETYPE_;
@@ -107,7 +102,6 @@ static inline uint32_t pSR_layer1(uint32_t depth, uint32_t in, uint32_t w){ //de
     bitn = (gate[4].Gshare_>>SRlength[4]) & 0x01;
     gate[w].shift_ ^=gate[4].Gshare_;
     }
-
     for (x=0;x<4;x++){
       if (tmp&0x01){
 	bitrr = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01; 

@@ -29,15 +29,19 @@ void printbits(unsigned char bitz){
 #define MAXP (1024*1326)
 
 
-unsigned char shifter(unsigned char *buffer){
+unsigned char shifter(unsigned char *buffer, unsigned char *orig){
   int x, tmp, last;
     for (x=0;x<MAX;x++){
       tmp=buffer[x];
-      buffer[x]=last;
+      buffer[x]=last^orig[x];
       last=tmp;
       //      printf("%d", last);
     }
     buffer[0]=last; //cycling
+
+    for (x=0;x<MAX;x++){
+      orig[x]=buffer[x];
+    }
     return last;
   }
 
@@ -73,7 +77,8 @@ int main(void)
     for (y=0;y<8;y++){ // lowest bit first
       if ((ch&(1<<y))==(1<<y)) bitt=1;
       else bitt=0;
-      buffer[cnt++]=bitt;
+      buffer[cnt]=bitt;
+      buffer2[cnt++]=bitt;
       cc=cc<<1;
     }
     }
@@ -85,17 +90,17 @@ int main(void)
 
   // we need other processes here... small cycles of bits of x length
   // how we can do 4 srs.. diff speeds...x
-  /*  
-  for (y=0;y<4;y++){  
-    shifter(buffer);
+    
+  for (y=0;y<16;y++){  
+    shifter(buffer, buffer2);
   }
-  */
-
+  
   /*
  - we want to shift buffer then enter shifted bit into buffer2, simulate with speeds what we have of entry one into another
    */
   unsigned char bitn;
   int speed1=0;
+  /*
   for (x=0;x<MAX;x++){
     //    printf("round %d \n",x);
     if (y>speed1){
@@ -106,13 +111,14 @@ int main(void)
   buffer2[0]=buffer2[0]^bitn;
   bitn=shifter(buffer2);
   }
-  
+  */  
+
   cnt=0; cntt=0;
 // convert back to file and save as test2
     for (x=0;x<MAXP;x++){
       tmp=0;
       for (y=0;y<8;y++){ // lowest bit first ???
-	if (buffer2[cntt++]&1) tmp+=(1<<y);
+	if (buffer[cntt++]&1) tmp+=(1<<y);
       }
       bufferp[x]=tmp;      
       //printf("%d ", tmp);

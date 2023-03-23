@@ -47,13 +47,7 @@ uint32_t (*probf_nostrobe_depth[32])(uint32_t depth, uint32_t in, uint32_t wh)={
 // 5. tails
 void (*dotail[32])(void)= {sever, fliptail, basictail, succtail, succtailback, tailC, tailL, tailR, tailN, basictailnos, succtailnos, succtailbacknos, tailCnos, tailLnos, tailRnos, tailNnos, basictailinv, succtailinv, succtailbackinv, tailCinv, tailLinv, tailRinv, tailNinv, basictailnosinv, succtailnosinv, succtailbacknosinv, tailCnosinv, tailLnosinv, tailRnosinv, tailNnosinv, tailXOR0, tailXOR1}; // 1 is basictail. default >>7
 
-// 6. global opps - add those which operate on various global flags, and orderings (we have no?) leave as is as we don't select from 1/3/2023
-//void (*globalls[32])(uint32_t depth)={resett, binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync, SRRglobalorder, SRRglobalbumpbit0, SRRglobalbumpbit1, SRRglobalbumpbit2, SRRglobalorderbumpS, SRRglobalorderbumpbit, SRRglobaltailset, /**/binaryN, binaryX, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd, SRRglobalbumpcv, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalsync}; // 20+12 >>7
-
 void (*globalls_depth[16])(uint32_t depth)={binaryN, binaryX, SRRglobalbumpcvn, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd, SRRglobalorder, SRRglobaltailset, /**/binaryN, binaryX, SRRglobalbumpcvn, SRRglobalbumpcvn, SRRglobalbumpcvnroute, SRRglobalbumpcvndac, SRRglobalbumpcvnspd};
-
-//0resett, X1SRRglobalbumpS, X2SRRglobalbumproute, X3SRRglobalbumpdac, 4SRRglobalbumpspd, 5SRRglobalsync, 6SRRglobalbumpbit0, 7SRRglobalbumpbit1, 8SRRglobalbumpbit2, X9SRRglobalorderbumpS, 10SRRglobalorderbumpbit, /**/resett, SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalbumpspd}; // >>8
-
 
 void (*globalls_nodepth[4])(uint32_t depth)={SRRglobalbumpS, SRRglobalbumproute, SRRglobalbumpdac, SRRglobalorderbumpS}; 
 

@@ -1069,7 +1069,7 @@ enum cvs {cvspeed, cvspeedmod, cvlength, cvdac, cvadc, cvadcIN,  cvbit, cvbitcom
 
     uint32_t pointer=1, pointerx=13, pointery=5,nul=0, pinter=66;
     uint32_t *varr[10]={&pointery, &pointer, &pointer, &pointer, &pointer, &pointer, &pointerx, &pointery, &pointer, &pinter};
-    uint32_t fixey[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
+    uint32_t fixey[21]={0,0,0,0,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
     uint32_t matrix[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
     uint32_t *matrixp[21]={&fixey[0],&fixey[1],&fixey[2],&fixey[3],&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul,&nul, &nul, &nul};
     uint32_t matrixX[21]={0,1,2,3,4, 5,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0};
@@ -1142,7 +1142,7 @@ void setvargapalt(uint32_t wh, uint32_t which, uint32_t var){ // sets gap with o
 
  
 void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap?
-   uint32_t y, resset=1;
+   uint32_t y, resset=0;
       //    if (which!=oldgap[wh][layer]){
       matrixp[oldgap[wh][layer]]=matrixpG[oldgap[wh][layer]];//
       matrixpG[which]=matrixp[which]; // previous  
@@ -1166,13 +1166,23 @@ void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // 
  // void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // sets gap with one of fixedvars - is not really a gap? 
  pointery=1;
  pointerx=7;
- /*
+ 
     printf("layer0\n");
     pointery++;
     setvargapzR(0,0,1,7); // pointery is 7, 6 is pointerx
     pointery++;
     setvargapzR(0,0,2,7); // pointery
+    pointery++;
+    setvargapzR(0,0,3,7); // pointery
+    pointery++;
+    setvargapzR(0,0,4,7); // pointery
+    pointery++;
+    setvargapzR(0,0,4,7); // pointery
+    pointery++;
+    setvargapzR(0,0,5,7); // pointery
 
+
+    
     printf("layer1\n");
     pointery++;
     //    printf("here...");
@@ -1195,7 +1205,7 @@ void setvargapzR(uint32_t wh, uint32_t layer, uint32_t which, uint32_t var){ // 
     pointerx++;
     pointery++;
     setvargapzR(0,1,19,6); // pointerx
- */
+
     /*
 static inline void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
   gate[wh].matrixp[gate[wh].oldgap]=&gate[wh].matrix[gate[wh].oldgap]; // old one points back to matrix
@@ -1204,7 +1214,7 @@ static inline void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ /
   gate[wh].oldgap=which;
 }
     */
-
+ /*
     uint32_t oldgapp=2;
     
 void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds values across but obscures any attachments
@@ -1232,7 +1242,7 @@ void setvargapzbleed(uint32_t wh, uint32_t which, uint32_t var){ // bleeds value
  pointery++;
  setvargapzbleed(0,13,7); // pointery
  pointerx++;
-
+ */
  
     //    nn=0;
     //    int32_t totn, temp;

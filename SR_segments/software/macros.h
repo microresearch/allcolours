@@ -193,7 +193,6 @@
   }								\
   }
 
-
 #define BINROUTEnoaltstrip_ {				\
   for (x=0;x<4;x++){				\
   if (tmp&0x01){				\
@@ -305,7 +304,6 @@
   }							\
   }
 
-// use tmp
 #define BINROUTEstrip_ {				\
   for (x=0;x<4;x++){					\
   if (tmp&0x01){					\
@@ -316,13 +314,11 @@
   tmp=tmp>>1;						\
   }							\
   }
-// pulled out:   if (!strobey[w][mode[w]]) bitn|=gate[w].trigger;	\
 
 #define BINROUTEstrips_ {				\
   bitn = (gate[x].Gshift_[w]>>SRlength[x]) & 0x01;		\
   gate[x].Gshift_[w]=(gate[x].Gshift_[w]<<1)+bitn;		\
   }
-
 
 // same more or less as BINROUTENOG_ but not with gshift
 #define BINROUTESR_ {				\
@@ -422,7 +418,6 @@
 
 //DAC_(uint32_t wh, uint32_t shift, uint32_t length, uint32_t type, uint32_t otherpar, uint32_t strobe){  // DAC is 12 bits
 // added pulsout macro to simplify 30/5/2022
-// 19/12/2022 - question is how to work it if DAC sets strobed... (dacstrobe[gate[w].matrix[13]>>7])
 // fixed clkin strobe 2/3/2023
 #define BITN_AND_OUTV_ {						\
     PULSIN_XOR;								\

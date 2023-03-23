@@ -1,4 +1,4 @@
-** sketch modes
+** caput draconis
 
 By degrees the idea of cultivation subsided into that of merely
 pastoral care. This slowly became merged in a sense of retirement —
@@ -10,7 +10,7 @@ A ourorack module for one bit landscape gardening.
 
 DONE:3 changes to HW  - update board, output files and BOM accordingly/check production files on imac
 
-** catalogue
+ ** catalogue
 
 catalogue CC in groups of 4:
 
@@ -99,28 +99,31 @@ matrixp//globals in RR
 152
 153
 
-** TODO 
 
-DONEcheck code:
+** 23/3 - final code checks ALL
 
-XXmain.c
-XXcaput000.c 
-XXresources.h
-XXtables.h - can attend more to dacfrom etc...
-XX#include "adcetc.h"
-XXdoneagain-macros.h 
+TESTED:ests/changes: C70, //C153 // check all speed cv and cv in*
 
-XX#include "geogen.h"
-XX#include "geoCC.h
-XX#include "geoNN.h"
-XX#include "geoLL.h"
-XX#include "geoRR.h"
+//DONE: where we use depths and thus need set prob:
 
-XX#include "exp_port.h" 
+SR_geo_inner_gappedfunction
+SR_geo_inner_gappedfunctionC
+SR_geo_inner_str_gappedfunction
 
-arrays: 
-XXgeomantic.h
-XXnewbits.h
+checked final mode C153
+
+DONE- where do we set and use [12]?
+
+setting:
+
+NN: C72 but not in w==0. do we use it? C70,71,72.73 to check: in 70: SR_geo_inner_gappedfunction we use it even with w==0 - FIX!?
+not set but used!
+
+LL: C62 we set but do we use it C60,61,62,63 to check - used in 63: probdepth -OK!
+  
+RR: C62 but not in w==3. do we use it C60,61,62,63 to check -used in 63: probdepth - but not used for w==3 - OK!
+
+// and is prob used in ouroboric functions? we are only concerned with w==0/NN NO!
 
 ** 20/3 - CODE FREEZE! EQUINOX
 
