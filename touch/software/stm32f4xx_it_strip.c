@@ -239,8 +239,6 @@ GPIO_InitTypeDef GPIO_InitStructure;
   }
 */
 
-
-// channel 5 case 2 doesn't work!
 #define REALADC {						\
 switch(daccount){						\
   case 0:							\
@@ -551,7 +549,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    ////// write to DAC
 	  // if playback add
 	    if (play==1 && daccount!=6) { //TEST: don't add for speed!
-	    if (real[daccount]>1023) real[daccount]=1023;
+	      if (real[daccount]>1023) real[daccount]=1023; // should it be?
 	    values[daccount]+=logval[(real[daccount])];
 	  }
 	  else {

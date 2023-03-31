@@ -1,0 +1,648 @@
+EESchema Schematic File Version 4
+LIBS:toad2-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Device:R_Small R?
+U 1 1 62BD4AC4
+P 2120 1930
+AR Path="/60663579/62BD4AC4" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD4AC4" Ref="R28"  Part="1" 
+F 0 "R28" V 2316 1930 50  0000 C CNN
+F 1 "10K" V 2225 1930 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2120 1930 50  0001 C CNN
+F 3 "~" H 2120 1930 50  0001 C CNN
+	1    2120 1930
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BD4ACB
+P 3145 1830
+AR Path="/60663579/62BD4ACB" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD4ACB" Ref="R89"  Part="1" 
+F 0 "R89" V 2949 1830 50  0000 C CNN
+F 1 "330R" V 3040 1830 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3145 1830 50  0001 C CNN
+F 3 "~" H 3145 1830 50  0001 C CNN
+	1    3145 1830
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BD4AD2
+P 2645 2655
+AR Path="/60663579/62BD4AD2" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD4AD2" Ref="R86"  Part="1" 
+F 0 "R86" V 2720 2630 50  0000 C CNN
+F 1 "10K" V 2570 2780 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2645 2655 50  0001 C CNN
+F 3 "~" H 2645 2655 50  0001 C CNN
+	1    2645 2655
+	0    1    1    0   
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 62BD4AD9
+P 930 1955
+AR Path="/60663579/62BD4AD9" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4AD9" Ref="#PWR058"  Part="1" 
+F 0 "#PWR058" H 930 2055 50  0001 C CNN
+F 1 "-12V" H 945 2128 50  0000 C CNN
+F 2 "" H 930 1955 50  0001 C CNN
+F 3 "" H 930 1955 50  0001 C CNN
+	1    930  1955
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 62BD4ADF
+P 930 995
+AR Path="/60663579/62BD4ADF" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4ADF" Ref="#PWR055"  Part="1" 
+F 0 "#PWR055" H 930 845 50  0001 C CNN
+F 1 "+12V" H 945 1168 50  0000 C CNN
+F 2 "" H 930 995 50  0001 C CNN
+F 3 "" H 930 995 50  0001 C CNN
+	1    930  995 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	930  1230 930  1280
+Wire Wire Line
+	930  1880 930  1955
+Wire Wire Line
+	2220 1930 2320 1930
+Wire Wire Line
+	2245 1730 2320 1730
+Wire Wire Line
+	2920 1830 3045 1830
+Wire Wire Line
+	2220 1930 2220 2480
+Wire Wire Line
+	2220 2480 2545 2480
+Connection ~ 2220 1930
+Wire Wire Line
+	2745 2480 2920 2480
+Wire Wire Line
+	3245 1830 3320 1830
+$Comp
+L power:GND #PWR?
+U 1 1 62BD4AEF
+P 2070 1480
+AR Path="/60663579/62BD4AEF" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4AEF" Ref="#PWR0152"  Part="1" 
+F 0 "#PWR0152" H 2070 1230 50  0001 C CNN
+F 1 "GND" H 2075 1307 50  0000 C CNN
+F 2 "" H 2070 1480 50  0001 C CNN
+F 3 "" H 2070 1480 50  0001 C CNN
+	1    2070 1480
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 62BD4AF5
+P 2645 2480
+AR Path="/60663579/62BD4AF5" Ref="C?"  Part="1" 
+AR Path="/62BD4879/62BD4AF5" Ref="C65"  Part="1" 
+F 0 "C65" V 2495 2555 50  0000 C CNN
+F 1 "100pF" V 2570 2605 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2645 2480 50  0001 C CNN
+F 3 "~" H 2645 2480 50  0001 C CNN
+	1    2645 2480
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2220 2480 2220 2655
+Wire Wire Line
+	2220 2655 2545 2655
+Connection ~ 2220 2480
+Wire Wire Line
+	2920 1830 2920 2480
+Wire Wire Line
+	3320 2655 3320 1830
+Wire Wire Line
+	2745 2655 3320 2655
+Connection ~ 3320 1830
+$Comp
+L Device:R_Small R?
+U 1 1 62BD4B03
+P 2245 1555
+AR Path="/60663579/62BD4B03" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD4B03" Ref="R83"  Part="1" 
+F 0 "R83" H 2186 1509 50  0000 R CNN
+F 1 "10K" H 2186 1600 50  0000 R CNN
+F 2 "Resistors_SMD:R_0805" H 2245 1555 50  0001 C CNN
+F 3 "~" H 2245 1555 50  0001 C CNN
+	1    2245 1555
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2070 1480 2070 1455
+Wire Wire Line
+	2070 1455 2245 1455
+Wire Wire Line
+	2245 1655 2245 1730
+$Comp
+L power:GND #PWR?
+U 1 1 62BD4B0D
+P 3545 2180
+AR Path="/60663579/62BD4B0D" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4B0D" Ref="#PWR0159"  Part="1" 
+F 0 "#PWR0159" H 3545 1930 50  0001 C CNN
+F 1 "GND" H 3550 2007 50  0000 C CNN
+F 2 "" H 3545 2180 50  0001 C CNN
+F 3 "" H 3545 2180 50  0001 C CNN
+	1    3545 2180
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3545 2130 3545 2180
+$Comp
+L Device:C_Small C?
+U 1 1 62BD4B14
+P 790 2685
+AR Path="/5EC7DA76/62BD4B14" Ref="C?"  Part="1" 
+AR Path="/5EB3CA17/62BD4B14" Ref="C?"  Part="1" 
+AR Path="/60663579/62BD4B14" Ref="C?"  Part="1" 
+AR Path="/62BD4879/62BD4B14" Ref="C34"  Part="1" 
+F 0 "C34" H 882 2731 50  0000 L CNN
+F 1 "100N" H 882 2640 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 790 2685 50  0001 C CNN
+F 3 "~" H 790 2685 50  0001 C CNN
+	1    790  2685
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 62BD4B1B
+P 1115 2660
+AR Path="/5EC7DA76/62BD4B1B" Ref="C?"  Part="1" 
+AR Path="/5EB3CA17/62BD4B1B" Ref="C?"  Part="1" 
+AR Path="/60663579/62BD4B1B" Ref="C?"  Part="1" 
+AR Path="/62BD4879/62BD4B1B" Ref="C38"  Part="1" 
+F 0 "C38" H 1207 2706 50  0000 L CNN
+F 1 "100N" H 1207 2615 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 1115 2660 50  0001 C CNN
+F 3 "~" H 1115 2660 50  0001 C CNN
+	1    1115 2660
+	1    0    0    -1  
+$EndComp
+$Comp
+L toad2-rescue:+12V-power-allcolours_analogue-rescue #PWR?
+U 1 1 62BD4B22
+P 790 2560
+AR Path="/5ED966D6/62BD4B22" Ref="#PWR?"  Part="1" 
+AR Path="/5EC7DA76/62BD4B22" Ref="#PWR?"  Part="1" 
+AR Path="/5EB3CA17/62BD4B22" Ref="#PWR?"  Part="1" 
+AR Path="/60663579/62BD4B22" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4B22" Ref="#PWR053"  Part="1" 
+F 0 "#PWR053" H 790 2410 50  0001 C CNN
+F 1 "+12V-power" H 790 2710 50  0000 C CNN
+F 2 "" H 790 2560 50  0001 C CNN
+F 3 "" H 790 2560 50  0001 C CNN
+	1    790  2560
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 62BD4B28
+P 1115 2810
+AR Path="/5ED966D6/62BD4B28" Ref="#PWR?"  Part="1" 
+AR Path="/5EC7DA76/62BD4B28" Ref="#PWR?"  Part="1" 
+AR Path="/5EB3CA17/62BD4B28" Ref="#PWR?"  Part="1" 
+AR Path="/60663579/62BD4B28" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4B28" Ref="#PWR059"  Part="1" 
+F 0 "#PWR059" H 1115 2910 50  0001 C CNN
+F 1 "-12V" H 1130 2983 50  0000 C CNN
+F 2 "" H 1115 2810 50  0001 C CNN
+F 3 "" H 1115 2810 50  0001 C CNN
+	1    1115 2810
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62BD4B2E
+P 790 2835
+AR Path="/5ED966D6/62BD4B2E" Ref="#PWR?"  Part="1" 
+AR Path="/5EC7DA76/62BD4B2E" Ref="#PWR?"  Part="1" 
+AR Path="/5EB3CA17/62BD4B2E" Ref="#PWR?"  Part="1" 
+AR Path="/60663579/62BD4B2E" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4B2E" Ref="#PWR054"  Part="1" 
+F 0 "#PWR054" H 790 2585 50  0001 C CNN
+F 1 "GND" H 740 2960 50  0000 C CNN
+F 2 "" H 790 2835 50  0001 C CNN
+F 3 "" H 790 2835 50  0001 C CNN
+	1    790  2835
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62BD4B34
+P 1215 2385
+AR Path="/5ED966D6/62BD4B34" Ref="#PWR?"  Part="1" 
+AR Path="/5EC7DA76/62BD4B34" Ref="#PWR?"  Part="1" 
+AR Path="/5EB3CA17/62BD4B34" Ref="#PWR?"  Part="1" 
+AR Path="/60663579/62BD4B34" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD4B34" Ref="#PWR060"  Part="1" 
+F 0 "#PWR060" H 1215 2135 50  0001 C CNN
+F 1 "GND" H 1165 2510 50  0000 C CNN
+F 2 "" H 1215 2385 50  0001 C CNN
+F 3 "" H 1215 2385 50  0001 C CNN
+	1    1215 2385
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	790  2785 790  2835
+Wire Wire Line
+	1115 2560 1115 2385
+Wire Wire Line
+	1115 2385 1215 2385
+Wire Wire Line
+	1115 2760 1115 2810
+Wire Wire Line
+	3320 1830 3545 1830
+$Comp
+L Device:R_Small R?
+U 1 1 62BD4B47
+P 930 1130
+AR Path="/60663579/62BD4B47" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD4B47" Ref="R25"  Part="1" 
+F 0 "R25" V 734 1130 50  0000 C CNN
+F 1 "100R" V 825 1130 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 930 1130 50  0001 C CNN
+F 3 "~" H 930 1130 50  0001 C CNN
+	1    930  1130
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	790  2560 790  2585
+Wire Wire Line
+	930  995  930  1030
+Wire Wire Line
+	2020 1930 2020 2030
+Text GLabel 2020 2030 3    50   Input ~ 0
+OUT1
+$Comp
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M?
+U 1 1 62BD4B52
+P 3845 2030
+AR Path="/60663579/62BD4B52" Ref="M?"  Part="1" 
+AR Path="/62BD4879/62BD4B52" Ref="M11"  Part="1" 
+F 0 "M11" H 3518 1992 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 3845 2030 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3875 2180 20  0001 C CNN
+F 3 "" H 3845 2030 60  0001 C CNN
+	1    3845 2030
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:TL074 U7
+U 1 1 62BD4EB9
+P 2620 1830
+F 0 "U7" H 2620 2197 50  0000 C CNN
+F 1 "TL074" H 2620 2106 50  0000 C CNN
+F 2 "" H 2570 1930 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2670 2030 50  0001 C CNN
+	1    2620 1830
+	1    0    0    -1  
+$EndComp
+Connection ~ 2920 1830
+$Comp
+L Amplifier_Operational:TL074 U7
+U 5 1 62BD6401
+P 1030 1580
+F 0 "U7" H 988 1626 50  0000 L CNN
+F 1 "TL074" H 988 1535 50  0000 L CNN
+F 2 "" H 980 1680 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 1080 1780 50  0001 C CNN
+	5    1030 1580
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BD96A3
+P 2100 3680
+AR Path="/60663579/62BD96A3" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD96A3" Ref="R27"  Part="1" 
+F 0 "R27" V 2296 3680 50  0000 C CNN
+F 1 "10K" V 2205 3680 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2100 3680 50  0001 C CNN
+F 3 "~" H 2100 3680 50  0001 C CNN
+	1    2100 3680
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BD96AA
+P 3125 3580
+AR Path="/60663579/62BD96AA" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD96AA" Ref="R88"  Part="1" 
+F 0 "R88" V 2929 3580 50  0000 C CNN
+F 1 "330R" V 3020 3580 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3125 3580 50  0001 C CNN
+F 3 "~" H 3125 3580 50  0001 C CNN
+	1    3125 3580
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BD96B1
+P 2625 4405
+AR Path="/60663579/62BD96B1" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD96B1" Ref="R85"  Part="1" 
+F 0 "R85" V 2700 4380 50  0000 C CNN
+F 1 "10K" V 2550 4530 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2625 4405 50  0001 C CNN
+F 3 "~" H 2625 4405 50  0001 C CNN
+	1    2625 4405
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2200 3680 2300 3680
+Wire Wire Line
+	2225 3480 2300 3480
+Wire Wire Line
+	2900 3580 3025 3580
+Wire Wire Line
+	2200 3680 2200 4230
+Wire Wire Line
+	2200 4230 2525 4230
+Connection ~ 2200 3680
+Wire Wire Line
+	2725 4230 2900 4230
+Wire Wire Line
+	3225 3580 3300 3580
+$Comp
+L power:GND #PWR?
+U 1 1 62BD96C0
+P 2050 3230
+AR Path="/60663579/62BD96C0" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD96C0" Ref="#PWR062"  Part="1" 
+F 0 "#PWR062" H 2050 2980 50  0001 C CNN
+F 1 "GND" H 2055 3057 50  0000 C CNN
+F 2 "" H 2050 3230 50  0001 C CNN
+F 3 "" H 2050 3230 50  0001 C CNN
+	1    2050 3230
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 62BD96C6
+P 2625 4230
+AR Path="/60663579/62BD96C6" Ref="C?"  Part="1" 
+AR Path="/62BD4879/62BD96C6" Ref="C61"  Part="1" 
+F 0 "C61" V 2475 4305 50  0000 C CNN
+F 1 "100pF" V 2550 4355 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2625 4230 50  0001 C CNN
+F 3 "~" H 2625 4230 50  0001 C CNN
+	1    2625 4230
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2200 4230 2200 4405
+Wire Wire Line
+	2200 4405 2525 4405
+Connection ~ 2200 4230
+Wire Wire Line
+	2900 3580 2900 4230
+Wire Wire Line
+	3300 4405 3300 3580
+Wire Wire Line
+	2725 4405 3300 4405
+Connection ~ 3300 3580
+$Comp
+L Device:R_Small R?
+U 1 1 62BD96D4
+P 2225 3305
+AR Path="/60663579/62BD96D4" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BD96D4" Ref="R82"  Part="1" 
+F 0 "R82" H 2166 3259 50  0000 R CNN
+F 1 "10K" H 2166 3350 50  0000 R CNN
+F 2 "Resistors_SMD:R_0805" H 2225 3305 50  0001 C CNN
+F 3 "~" H 2225 3305 50  0001 C CNN
+	1    2225 3305
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2050 3230 2050 3205
+Wire Wire Line
+	2050 3205 2225 3205
+Wire Wire Line
+	2225 3405 2225 3480
+$Comp
+L power:GND #PWR?
+U 1 1 62BD96DE
+P 3525 3930
+AR Path="/60663579/62BD96DE" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BD96DE" Ref="#PWR0158"  Part="1" 
+F 0 "#PWR0158" H 3525 3680 50  0001 C CNN
+F 1 "GND" H 3530 3757 50  0000 C CNN
+F 2 "" H 3525 3930 50  0001 C CNN
+F 3 "" H 3525 3930 50  0001 C CNN
+	1    3525 3930
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3525 3880 3525 3930
+Wire Wire Line
+	3300 3580 3525 3580
+Wire Wire Line
+	2000 3680 2000 3780
+Text GLabel 2000 3780 3    50   Input ~ 0
+OUT2
+$Comp
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M?
+U 1 1 62BD96E8
+P 3825 3780
+AR Path="/60663579/62BD96E8" Ref="M?"  Part="1" 
+AR Path="/62BD4879/62BD96E8" Ref="M10"  Part="1" 
+F 0 "M10" H 3498 3742 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 3825 3780 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3855 3930 20  0001 C CNN
+F 3 "" H 3825 3780 60  0001 C CNN
+	1    3825 3780
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BDA05A
+P 2055 5430
+AR Path="/60663579/62BDA05A" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BDA05A" Ref="R26"  Part="1" 
+F 0 "R26" V 2251 5430 50  0000 C CNN
+F 1 "10K" V 2160 5430 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2055 5430 50  0001 C CNN
+F 3 "~" H 2055 5430 50  0001 C CNN
+	1    2055 5430
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BDA061
+P 3080 5330
+AR Path="/60663579/62BDA061" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BDA061" Ref="R87"  Part="1" 
+F 0 "R87" V 2884 5330 50  0000 C CNN
+F 1 "330R" V 2975 5330 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 3080 5330 50  0001 C CNN
+F 3 "~" H 3080 5330 50  0001 C CNN
+	1    3080 5330
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 62BDA068
+P 2580 6155
+AR Path="/60663579/62BDA068" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BDA068" Ref="R84"  Part="1" 
+F 0 "R84" V 2655 6130 50  0000 C CNN
+F 1 "10K" V 2505 6280 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2580 6155 50  0001 C CNN
+F 3 "~" H 2580 6155 50  0001 C CNN
+	1    2580 6155
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2155 5430 2255 5430
+Wire Wire Line
+	2180 5230 2255 5230
+Wire Wire Line
+	2855 5330 2980 5330
+Wire Wire Line
+	2155 5430 2155 5980
+Wire Wire Line
+	2155 5980 2480 5980
+Connection ~ 2155 5430
+Wire Wire Line
+	2680 5980 2855 5980
+Wire Wire Line
+	3180 5330 3255 5330
+$Comp
+L power:GND #PWR?
+U 1 1 62BDA077
+P 2005 4980
+AR Path="/60663579/62BDA077" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BDA077" Ref="#PWR061"  Part="1" 
+F 0 "#PWR061" H 2005 4730 50  0001 C CNN
+F 1 "GND" H 2010 4807 50  0000 C CNN
+F 2 "" H 2005 4980 50  0001 C CNN
+F 3 "" H 2005 4980 50  0001 C CNN
+	1    2005 4980
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 62BDA07D
+P 2580 5980
+AR Path="/60663579/62BDA07D" Ref="C?"  Part="1" 
+AR Path="/62BD4879/62BDA07D" Ref="C39"  Part="1" 
+F 0 "C39" V 2430 6055 50  0000 C CNN
+F 1 "100pF" V 2505 6105 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0805" H 2580 5980 50  0001 C CNN
+F 3 "~" H 2580 5980 50  0001 C CNN
+	1    2580 5980
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2155 5980 2155 6155
+Wire Wire Line
+	2155 6155 2480 6155
+Connection ~ 2155 5980
+Wire Wire Line
+	2855 5330 2855 5980
+Wire Wire Line
+	3255 6155 3255 5330
+Wire Wire Line
+	2680 6155 3255 6155
+Connection ~ 3255 5330
+$Comp
+L Device:R_Small R?
+U 1 1 62BDA08B
+P 2180 5055
+AR Path="/60663579/62BDA08B" Ref="R?"  Part="1" 
+AR Path="/62BD4879/62BDA08B" Ref="R29"  Part="1" 
+F 0 "R29" H 2121 5009 50  0000 R CNN
+F 1 "10K" H 2121 5100 50  0000 R CNN
+F 2 "Resistors_SMD:R_0805" H 2180 5055 50  0001 C CNN
+F 3 "~" H 2180 5055 50  0001 C CNN
+	1    2180 5055
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2005 4980 2005 4955
+Wire Wire Line
+	2005 4955 2180 4955
+Wire Wire Line
+	2180 5155 2180 5230
+$Comp
+L power:GND #PWR?
+U 1 1 62BDA095
+P 3480 5680
+AR Path="/60663579/62BDA095" Ref="#PWR?"  Part="1" 
+AR Path="/62BD4879/62BDA095" Ref="#PWR0156"  Part="1" 
+F 0 "#PWR0156" H 3480 5430 50  0001 C CNN
+F 1 "GND" H 3485 5507 50  0000 C CNN
+F 2 "" H 3480 5680 50  0001 C CNN
+F 3 "" H 3480 5680 50  0001 C CNN
+	1    3480 5680
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3480 5630 3480 5680
+Wire Wire Line
+	3255 5330 3480 5330
+Wire Wire Line
+	1955 5430 1955 5530
+Text GLabel 1955 5530 3    50   Input ~ 0
+OUT3
+$Comp
+L toad2-rescue:AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M?
+U 1 1 62BDA09F
+P 3780 5530
+AR Path="/60663579/62BDA09F" Ref="M?"  Part="1" 
+AR Path="/62BD4879/62BDA09F" Ref="M3"  Part="1" 
+F 0 "M3" H 3453 5492 45  0000 R CNN
+F 1 "AUDIO-JACKERTHENVAR-PJ398" H 3780 5530 45  0001 L BNN
+F 2 "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles" H 3810 5680 20  0001 C CNN
+F 3 "" H 3780 5530 60  0001 C CNN
+	1    3780 5530
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amplifier_Operational:TL074 U7
+U 2 1 62BDC1A3
+P 2600 3580
+F 0 "U7" H 2600 3947 50  0000 C CNN
+F 1 "TL074" H 2600 3856 50  0000 C CNN
+F 2 "" H 2550 3680 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2650 3780 50  0001 C CNN
+	2    2600 3580
+	1    0    0    -1  
+$EndComp
+Connection ~ 2900 3580
+$Comp
+L Amplifier_Operational:TL074 U7
+U 3 1 62BDC436
+P 2555 5330
+F 0 "U7" H 2555 5697 50  0000 C CNN
+F 1 "TL074" H 2555 5606 50  0000 C CNN
+F 2 "" H 2505 5430 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2605 5530 50  0001 C CNN
+	3    2555 5330
+	1    0    0    -1  
+$EndComp
+Connection ~ 2855 5330
+$EndSCHEMATC

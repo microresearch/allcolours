@@ -1,0 +1,247 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# +12V-power-allcolours_analogue-rescue
+#
+DEF +12V-power-allcolours_analogue-rescue #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -150 50 H I C CNN
+F1 "+12V-power-allcolours_analogue-rescue" 0 140 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 2 0 1 0 -30 50 0 100 N
+P 2 0 1 0 0 0 0 100 N
+P 2 0 1 0 0 100 30 50 N
+X +12V 1 0 0 0 U 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# 1N4148-Diode-allcolours_analogue-rescue
+#
+DEF 1N4148-Diode-allcolours_analogue-rescue D 0 40 N N 1 F N
+F0 "D" 0 100 50 H V C CNN
+F1 "1N4148-Diode-allcolours_analogue-rescue" 0 -100 50 H V C CNN
+F2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" 0 -175 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ D*DO?35*
+$ENDFPLIST
+DRAW
+P 2 0 1 8 -50 50 -50 -50 N
+P 2 0 1 0 50 0 -50 0 N
+P 4 0 1 8 50 50 50 -50 -50 0 50 50 N
+X K 1 -150 0 100 R 50 50 1 1 P
+X A 2 150 0 100 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# AD633JR-eec
+#
+DEF AD633JR-eec U 0 40 Y Y 1 L N
+F0 "U" 0 200 50 H V L CNN
+F1 "AD633JR-eec" 0 300 50 H V L CNN
+F2 "Analog_Devices-AD633JN-*" 0 400 50 H I L CNN
+F3 "http://www.analog.com/media/en/technical-documentation/data-sheets/AD633.pdf" 0 500 50 H I L CNN
+F4 "Manufacturer URL" 0 600 50 H I L CNN "Component Link 1 Description"
+F5 "http://www.analog.com/en/index.html" 0 700 50 H I L CNN "Component Link 1 URL"
+F6 "Package Specification" 0 800 50 H I L CNN "Component Link 3 Description"
+F7 "http://www.analog.com/static/imported-files/packages/PKG_PDF/PDIP(N)/N_8.pdf" 0 900 50 H I L CNN "Component Link 3 URL"
+F8 "Rev. K" 0 1000 50 H I L CNN "Datasheet Version"
+F9 "Through Hole" 0 1100 50 H I L CNN "Mounting Technology"
+F10 "2" 0 1200 50 H I L CNN "Number of Channels"
+F11 "8-Pin Plastic Dual In-Line Package, Body 9.59 x 6.6 mm, Pitch 2.54 mm" 0 1300 50 H I L CNN "Package Description"
+F12 "07/2006" 0 1400 50 H I L CNN "Package Version"
+F13 "Tube" 0 1500 50 H I L CNN "Packing"
+F14 "20 V/us" 0 1600 50 H I L CNN "Slew Rate"
+F15 "6 mA" 0 1700 50 H I L CNN "Supply Current Max"
+F16 "70 degC" 0 1800 50 H I L CNN "Temperature Max"
+F17 "0 degC" 0 1900 50 H I L CNN "Temperature Min"
+F18 "IC" 0 2000 50 H I L CNN "category"
+F19 "82579f909b82c26c" 0 2100 50 H I L CNN "library id"
+F20 "Analog Devices" 0 2200 50 H I L CNN "manufacturer"
+F21 "MS-001" 0 2300 50 H I L CNN "package"
+F22 "D70804D2-C31E-4A78-88FF-EDD09AD4FF7C" 0 2400 50 H I L CNN "vault revision"
+F23 "yes" 0 2500 50 H I L CNN "imported"
+DRAW
+S 200 100 800 -700 1 1 0 f
+X Y1 1 100 -300 100 R 40 40 1 1 P
+X Y2 2 100 -400 100 R 40 40 1 1 P
+X -VS 3 900 -600 100 L 40 40 1 1 P
+X Z 4 900 -300 100 L 40 40 1 1 P
+X W 5 900 0 100 L 40 40 1 1 P
+X +VS 6 100 -600 100 R 40 40 1 1 P
+X X1 7 100 0 100 R 40 40 1 1 P
+X X2 8 100 -100 100 R 40 40 1 1 P
+ENDDRAW
+ENDDEF
+#
+# AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue
+#
+DEF ~AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue M 0 40 Y Y 1 L N
+F0 "M" -295 175 45 H V L BNN
+F1 "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue" 0 0 45 H I L BNN
+F2 "erthenvar_ERTHENVAR-JACK" 30 150 20 H I C CNN
+F3 "" 0 0 60 H I C CNN
+$FPLIST
+ *ERTHENVAR-JACK*
+$ENDFPLIST
+DRAW
+S -300 -200 -200 100 1 1 0 F
+P 2 1 0 0 -200 100 200 100 N
+P 2 1 0 0 -100 -200 -50 -150 N
+P 2 1 0 0 -50 -150 0 -200 N
+P 2 1 0 0 0 -200 200 -200 N
+P 2 1 0 0 50 -100 100 -100 N
+P 2 1 0 0 100 -150 50 -100 N
+P 2 1 0 0 100 -100 100 0 N
+P 2 1 0 0 100 -100 150 -100 N
+P 2 1 0 0 150 -100 100 -150 N
+P 2 1 0 0 200 0 100 0 N
+X RING 1 300 100 200 L 40 40 1 1 B N
+X NORM 2 300 0 200 L 40 40 1 1 B
+X TIP 3 300 -200 200 L 40 40 1 1 B
+ENDDRAW
+ENDDEF
+#
+# CONN_02X05-allcolours-rescue-allcolours_analogue-rescue
+#
+DEF CONN_02X05-allcolours-rescue-allcolours_analogue-rescue J 0 1 Y N 1 F N
+F0 "J" 0 300 50 H V C CNN
+F1 "CONN_02X05-allcolours-rescue-allcolours_analogue-rescue" 0 -300 50 H V C CNN
+F2 "" 0 -1200 50 H I C CNN
+F3 "" 0 -1200 50 H I C CNN
+$FPLIST
+ Pin_Header_Straight_2X*
+ Pin_Header_Angled_2X*
+ Socket_Strip_Straight_2X*
+ Socket_Strip_Angled_2X*
+ IDC_Header_Straight_*
+$ENDFPLIST
+DRAW
+S -100 -195 -50 -205 0 1 0 N
+S -100 -95 -50 -105 0 1 0 N
+S -100 5 -50 -5 0 1 0 N
+S -100 105 -50 95 0 1 0 N
+S -100 205 -50 195 0 1 0 N
+S -100 250 100 -250 0 1 0 N
+S 50 -195 100 -205 0 1 0 N
+S 50 -95 100 -105 0 1 0 N
+S 50 5 100 -5 0 1 0 N
+S 50 105 100 95 0 1 0 N
+S 50 205 100 195 0 1 0 N
+X P1 1 -250 200 150 R 50 50 1 1 P
+X P10 10 250 -200 150 L 50 50 1 1 P
+X P2 2 250 200 150 L 50 50 1 1 P
+X P3 3 -250 100 150 R 50 50 1 1 P
+X P4 4 250 100 150 L 50 50 1 1 P
+X P5 5 -250 0 150 R 50 50 1 1 P
+X P6 6 250 0 150 L 50 50 1 1 P
+X P7 7 -250 -100 150 R 50 50 1 1 P
+X P8 8 250 -100 150 L 50 50 1 1 P
+X P9 9 -250 -200 150 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# CP1_Small-device-allcolours_analogue-rescue
+#
+DEF CP1_Small-device-allcolours_analogue-rescue C 0 10 N N 1 F N
+F0 "C" 10 70 50 H V L CNN
+F1 "CP1_Small-device-allcolours_analogue-rescue" 10 -80 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ CP_*
+$ENDFPLIST
+DRAW
+A 0 -140 125 1186 614 0 1 12 N -60 -30 60 -30
+P 2 0 1 12 -60 20 60 20 N
+P 2 0 1 0 -50 60 -30 60 N
+P 2 0 1 0 -40 50 -40 70 N
+X ~ 1 0 100 80 D 50 50 1 1 P
+X ~ 2 0 -100 80 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# GND-power-allcolours_analogue-rescue
+#
+DEF GND-power-allcolours_analogue-rescue #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -250 50 H I C CNN
+F1 "GND-power-allcolours_analogue-rescue" 0 -150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 6 0 1 0 0 0 0 -50 50 -50 0 -100 -50 -50 0 -50 N
+X GND 1 0 0 0 D 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# Q_NPN_BEC-device-allcolours_analogue-rescue
+#
+DEF Q_NPN_BEC-device-allcolours_analogue-rescue Q 0 0 Y N 1 F N
+F0 "Q" 200 50 50 H V L CNN
+F1 "Q_NPN_BEC-device-allcolours_analogue-rescue" 200 -50 50 H V L CNN
+F2 "" 200 100 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+C 50 0 111 0 1 10 N
+P 2 0 1 0 25 25 100 100 N
+P 3 0 1 0 25 -25 100 -100 100 -100 N
+P 3 0 1 20 25 75 25 -75 25 -75 N
+P 5 0 1 0 50 -70 70 -50 90 -90 50 -70 50 -70 F
+X B 1 -200 0 225 R 50 50 1 1 I
+X E 2 100 -200 100 U 50 50 1 1 P
+X C 3 100 200 100 D 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# R_Small-Device-allcolours_analogue-rescue
+#
+DEF R_Small-Device-allcolours_analogue-rescue R 0 10 N N 1 F N
+F0 "R" 30 20 50 H V L CNN
+F1 "R_Small-Device-allcolours_analogue-rescue" 30 -40 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ R_*
+$ENDFPLIST
+DRAW
+S -30 70 30 -70 0 1 8 N
+X ~ 1 0 100 30 D 50 50 1 1 P
+X ~ 2 0 -100 30 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# TL084-4ms-ic
+#
+DEF TL084-4ms-ic U 0 20 Y Y 4 F N
+F0 "U" 50 150 50 H V L CNN
+F1 "TL084-4ms-ic" 100 -100 50 H V L CNN
+F2 "" -50 100 50 H I C CNN
+F3 "" 50 200 50 H I C CNN
+$FPLIST
+ SOIC*Pitch1.27mm*
+ DIP*W7.62mm*
+ TSSOP*4.4x5mm*Pitch0.65mm*
+ SSOP*
+ MSOP*
+$ENDFPLIST
+DRAW
+P 4 0 1 10 -200 200 200 0 -200 -200 -200 200 f
+X V- 11 -100 -300 150 U 50 50 0 1 W
+X V+ 4 -100 300 150 D 50 50 0 1 W
+X ~ 1 300 0 100 L 50 50 1 1 O
+X - 2 -300 -100 100 R 50 50 1 1 I
+X + 3 -300 100 100 R 50 50 1 1 I
+X + 5 -300 100 100 R 50 50 2 1 I
+X - 6 -300 -100 100 R 50 50 2 1 I
+X ~ 7 300 0 100 L 50 50 2 1 O
+X + 10 -300 100 100 R 50 50 3 1 I
+X ~ 8 300 0 100 L 50 50 3 1 O
+X - 9 -300 -100 100 R 50 50 3 1 I
+X + 12 -300 100 100 R 50 50 4 1 I
+X - 13 -300 -100 100 R 50 50 4 1 I
+X ~ 14 300 0 100 L 50 50 4 1 O
+ENDDRAW
+ENDDEF
+#
+#End Library

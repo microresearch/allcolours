@@ -1,8 +1,52 @@
+** 31/3/2023
+
+- all switched cap sections seem to behave differently - adding 100nf on -rail to schematic - TO_TEST - seems much more stable!
+
+2nd integrator has very high output though...
+
+/// to change back mults to see what differences are...
+
+[maybe after patch sprott - first with signum as we have it (but then no mult) _inv then... - need fixed signum!]
+
+sprott so far - first integrator is very high
+
+// note integrator cell is vca followed by integration
+
+///TODO:
+
+- try fixed signum with multiplier in // check sign again but looks like inverted...
+- make offset/atten board and try mindlin with this on mult ins...
+- check again both sprott and mindlin
+- trial with first multiplier option (not analogue thing)
+- document well and design as normed modular system...
+- base with jacks and no panel yet // with or without norming
+
+** 30/3/2023+
+
+- modular scheme???
+
+// test new schemes
+
+Mindlin: new layout fine, still clipping, to trial THAT multiplier works
+
+behaves differently on last switched caps - so maybe first is not functioning well (square waves)...
+
+but no indication why that is??? replacing one cap...47nF check... no wasn't it
+
+- *TOAD_FINAL/TOAD2 is the one...* // maybe make copy of this! *FINAL_FINAL*
+
+//start working on this for modular scheme
+
+// new layout of sprott to test: fixed signum into mult. *but do we need to invert it? test and document this clearly*
+
+- breadboard vca and offsets... // or solder... 
+- comparators and delta sig - delta sig is on other board - to be tested!
+
 ** newer 22/7/2022+
 
 // how to fix hard hitting: retrial Mindlin with just multipliers then trial extensions...DONE - still hits hard but can follow with smaller amp...
 
-or go back to dual filter notion: shared/normed clock - shared ins/as/outs?
+or go back to dual/double filter notion: shared/normed clock - shared ins/as/outs?
 
 ** 2/10
 
@@ -30,7 +74,7 @@ first attempts with Mindlin: first attempts still peak...
 
 (or part build old big proto board to handle sprott as we have all there - just a bit messy on breadboard for mindlin...)
 
-// sprott has 3x intergrators
+// sprott has 3x integrators
 
 // 
 

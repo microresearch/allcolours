@@ -279,13 +279,13 @@ void mode_init(void){
     gate[4].gsrcnt[1]=31;
     gate[4].gsrcnt[2]=31;	
     gate[4].gsrcnt[3]=31;
-
   
   for (x=0;x<4;x++){
     gate[x].inner=SR_geo_inner_globalC;
     gate[x].flip=0;
     gate[x].altroute=0;
-    //    gate[x].routetype=0;
+    gate[x].routetype=gate[x].matrix[16]>>9; // fixed!
+    
     gate[x].shift_=0x15;
     gate[x].Gshift_[0]=0;
     gate[x].Gshift_[1]=0;

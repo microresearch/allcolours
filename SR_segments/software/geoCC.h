@@ -1291,15 +1291,15 @@ void SR_geo_outer_C101(uint32_t w){   // length
   if (gate[w].changed==0) {
     gate[w].matrix[15]=CVL[w];// speed func
     //    gate[w].matrix[17]=CV[w]; // bit mode
-        if (w==0) {
+    /*        if (w==0) {
       gate[w].matrix[7]=CV[w]; // adc/abstract mode
     }
     else if (w==3){
       gate[w].matrix[20]=CV[w]; // bit mode
     }
-    else {
+    else {*/
       gate[w].matrix[17]=CV[w]; // bit mode
-    }
+      //    }
     gate[w].matrix[5]=(gate[dacfromopp[daccount][w]].dac); // cv2
     gate[w].matrix[6]=(gate[dacfrom[daccount][w]].dac);     // length
     // gapped func

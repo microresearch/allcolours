@@ -681,7 +681,7 @@ void TIM4_IRQHandler(void)
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
   temp=ADC_GetConversionValue(ADC1);
   mode[3]=mapping[temp>>2];
-
+  
   if (lastmode[3]!=mode[3]) gate[3].changed=1; // bug fixed 28/1/
   else gate[3].changed=0;
   lastmode[3]=mode[3];
@@ -722,7 +722,7 @@ void TIM4_IRQHandler(void)
   if (rr>=SMOOTHINGS) rr=0;
   temp=totr/SMOOTHINGS;  
   CV[3]=4095-temp;
-
+  
   // speedc
   totc=totc-smoothc[cc];
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_144Cycles); // was 10
@@ -784,5 +784,4 @@ void TIM4_IRQHandler(void)
   if (rrr>=SMOOTHINGS) rrr=0;
   temp=totrr/SMOOTHINGS;  
   CVL[3]=4095-temp;
-
 }

@@ -1,10 +1,44 @@
 * see also software/modes.org
 
+** 29/3/2022
+
+- start to define tasks from below
+
+- use debug to figure out rough rec speed?
+- test logspeed and speed modifiers (speed starts from slowest?)
+
+** 27/3/2022: REVISIT2
+
+TODO:
+- re-check basic functioning
+- HW and washers - as we don't seem to use them?, BOM/update any footprints (what are ones for assembly:
+
+Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm
+
+SM1206POL
+
+which is correct base PCB - last one?
+
+- re-acquaint code - how well it works as basic and calibrate speed again...
+- list of new modes to do in new_modes.org - check older code, modes lists
+
+it_strip.c
+
+- how to make sense? eg. speed ranges-logspeed, 1/8 speed, top bits ???
+
+- top bits are used in modes in it.c for individual speeds
+- range is logspeed - check this, 1/8 as we run through 8 DACs
+  sequentially..., top bits were reserved for individual speeds...
+
+- how fast does it run and  how many seconds of gestures by default???
+
+7000 values in each array: 2kHz we say (at 32 pre-scaler to check as was last at 8): and there are 8 sections so each runs at 2k/8=250Hz
+
+7000/250=28 seconds... TO CHECK!
+
 ** 4/10/2022
 
-- how we start to think about finishing this soon
-
-- also do we have functionality to change speed of recording - so jumps/blends=interpolates like a slur of values...
+- *also do we have functionality to change speed of recording - so jumps/blends=interpolates like a slur of values...*
 
 ** 20/7/2022: REVISIT
 

@@ -45,7 +45,7 @@ AFLAGS  = -mlittle-endian -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -mfl
 
 LFLAGS  = -T $(LDSCRIPT) -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 
 #LFLAGS_END = -larm_cortexM4lf_math -ldsplib_lm4f -Wl,--gc-sections,-Map=myfile.map -lm -lc
-LFLAGS_END =  -Wl,--gc-sections,-Map=myfile.map -lm -lc
+LFLAGS_END =  -Wl,--print-memory-usage,--gc-sections,-Map=myfile.map -lm -lc -dead_strip
 
 # Executables
 ARCH = arm-none-eabi
@@ -66,6 +66,8 @@ ODFLAGS	= -x --syms
 
 #FLASH = st-flash
 FLASH = /root/Downloads/stlink-1.4.0/st-flash
+
+
 
 # Targets
 all: main.bin
@@ -103,4 +105,7 @@ startup_stm32f4xx.o: startup_stm32f4xx.s
 
 %.o: %.c %.h
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+openocd: main.bin
+	openocd -s tcl -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program /root/projects/ERD_MODULES/all_colours/touch/software/main.bin verify reset exit 0x08000000"
 

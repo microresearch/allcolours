@@ -489,7 +489,7 @@ void SR_geo_outer_C153(uint32_t w){
     }
     SR_geomantic_matrixcopyX(w);
     gate[w].matrix[6]=CVL[w]; //
-    gate[w].routetype=gate[w].matrix[16]>>9; // fixed!
+    //    gate[w].routetype=gate[w].matrix[16]>>9; // fixed!
     gate[w].inner=geo_inners[w][gate[w].modes[who[w]]];
     }
 }
