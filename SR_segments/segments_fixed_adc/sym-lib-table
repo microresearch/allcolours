@@ -1,3 +1,2 @@
 (sym_lib_table
-  (lib (name segments-rescue)(type Legacy)(uri ${KIPRJMOD}/segments-rescue.lib)(options "")(descr ""))
 )
