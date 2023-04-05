@@ -1,3 +1,38 @@
+** 4/4/2023
+
+- tested offset thing - needs to adjust VCA/amp values 
+- TODO: 
+-test 10k in to mults, test with straight signal into counter//see below
+-layout/prototype schematic
+
+** 2/4/2023
+
+103.wav all ins from CD!
+104.wav with AC also
+
+** 1/4/2023++
+
+- already more or less tested with input impedance and out for each section. out=1k, in=10k/100k
+
+// just test multiplier... with 10k in
+
+decide on 10k ins...
+
+- for INTcells we have 100k in already, but need out
+
+- invertor could be 10k/100k - we have 10k alreadt
+- adapt multiplier... 10k in // which we did test
+- signum is 10k // can be 100k - not so diferent
+
+- TODO: test with signal into counter (no protection, no comparator - say use AC comp out) -> pin1 but we need to lose R20/1K and D3...
+- DONE - test with offset/atten board/vca to build/test BUILT 
+
+TESTED:
+- now with sprott signum section as fixed and followed by multiplier - no INV after and works ok. but still very high
+- trying now without amp after mults (as was in THAT) but still with divided input - similar and peaky...
+- now with no dividers (as we first had) - somehow bit rougher so maybe keep as option
+- then Mindlin - seems fine. to test further...
+
 ** 31/3/2023
 
 - all switched cap sections seem to behave differently - adding 100nf on -rail to schematic - TO_TEST - seems much more stable!
@@ -14,10 +49,14 @@ sprott so far - first integrator is very high
 
 ///TODO:
 
-- try fixed signum with multiplier in // check sign again but looks like inverted...
+- DONEtry fixed signum with multiplier in // [check sign again but looks like inverted...]
+
 - make offset/atten board and try mindlin with this on mult ins...
-- check again both sprott and mindlin
+- check again mindlin with VCA before integrator in each cell
+- check voltage for VCA to open, adjust to 5V and find simulations .txt
+
 - trial with first multiplier option (not analogue thing)
+- figure out all impedances (esp for offset and atten, and if that should be seperate)
 - document well and design as normed modular system...
 - base with jacks and no panel yet // with or without norming
 
