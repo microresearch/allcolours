@@ -1,17 +1,27 @@
 * see also software/modes.org
 
-** 29/3/2022
+** 29/3/2023 TODO:
 
-- start to define tasks from below
+- start to define tasks from below:
 
-- use debug to figure out rough rec speed?
+-basic functioning: what is prescalar, how long do we want top record for, what is frequency resolution, any artefacts, speed up and slow donw
+-define timings and check all mode/freezes etc.
+-define and implement modes
+-BOM, assembly...
+
+- use debug to figure out rough rec speed? every 6 or so seconds // prescalar of 8
+
+with prescalar of 32 we have 22 seconds (so not quite with out calculations)
+
+*which prescalar?*
+
 - test logspeed and speed modifiers (speed starts from slowest?)
 
-** 27/3/2022: REVISIT2
+** 27/3/2023: REVISIT2
 
 TODO:
 - re-check basic functioning
-- HW and washers - as we don't seem to use them?, BOM/update any footprints (what are ones for assembly:
+- HW and washers - as we don't seem to use them: tested now with one washer and is fine..., BOM/update any footprints (what are ones for assembly:
 
 Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm
 

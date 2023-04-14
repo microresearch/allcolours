@@ -317,7 +317,7 @@
       "global_label_dangling": "warning",
       "hier_label_mismatch": "error",
       "label_dangling": "error",
-      "lib_symbol_issues": "warning",
+      "lib_symbol_issues": "ignore",
       "multiple_net_names": "warning",
       "net_not_bus_member": "warning",
       "no_connect_connected": "warning",
@@ -425,16 +425,16 @@
       "bintic"
     ],
     [
-      "00000000-0000-0000-0000-000060663957",
-      "control"
-    ],
-    [
       "00000000-0000-0000-0000-000060663e79",
       "anlog"
     ],
     [
-      "00000000-0000-0000-0000-000062bd4879",
-      "OUTS"
+      "ee26550c-4acb-4de8-bc65-82ecbee430dd",
+      "IO"
+    ],
+    [
+      "5f16c429-76c1-4bff-9e87-fcd450860c90",
+      "cellmults"
     ],
     [
       "00000000-0000-0000-0000-00006066353e",

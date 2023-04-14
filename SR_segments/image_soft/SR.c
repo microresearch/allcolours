@@ -24,16 +24,17 @@ void printbits(unsigned char bitz){
   }
 }
 
+// was 1024*1326
 
-#define MAX (1024*1326*8)
-#define MAXP (1024*1326)
+#define MAX (276872*8)
+#define MAXP (276872)
 
 
 unsigned char shifter(unsigned char *buffer, unsigned char *orig){
   int x, tmp, last;
     for (x=0;x<MAX;x++){
       tmp=buffer[x];
-      buffer[x]=last^orig[x];
+      buffer[x]=last;//^orig[x];
       last=tmp;
       //      printf("%d", last);
     }
@@ -64,7 +65,7 @@ int main(void)
   unsigned char bitt,cc;
 
 
-  sfile=fopen("test2.bmp", "r");
+  sfile=fopen("test.wav", "r");
 
   //  read(sfile,buffer,1);
   
@@ -72,7 +73,7 @@ int main(void)
     ch = fgetc(sfile);
     // ch to binary and into array
     //    printbits(ch);
-    if (x>134){
+    //    if (x>134){
     cc=1;
     for (y=0;y<8;y++){ // lowest bit first
       if ((ch&(1<<y))==(1<<y)) bitt=1;
@@ -80,7 +81,7 @@ int main(void)
       buffer[cnt]=bitt;
       buffer2[cnt++]=bitt;
       cc=cc<<1;
-    }
+      //    }
     }
   }
   
@@ -91,7 +92,7 @@ int main(void)
   // we need other processes here... small cycles of bits of x length
   // how we can do 4 srs.. diff speeds...x
     
-  for (y=0;y<16;y++){  
+    for (y=0;y<3;y++){  
     shifter(buffer, buffer2);
   }
   

@@ -24,9 +24,9 @@ void printbits(unsigned char bitz){
   }
 }
 
-#define MAX (1024*1326*8)
-#define MAXP (1024*1326)
-#define MAXPP (1024*1326/4) // 8x4 =32 bits
+#define MAX (122964*8)
+#define MAXP (122964)
+#define MAXPP (122964/4) // 8x4 =32 bits
 
 unsigned char shifter(unsigned char *buffer){
   int x, tmp, last;
@@ -62,7 +62,7 @@ int main(void)
   unsigned char bitt,cc;
   unsigned char shift[4]={0,8,16,24};
 
-  sfile=fopen("test2.bmp", "r");
+  sfile=fopen("test.wav", "r");
 
   //  read(sfile,buffer,1);
   

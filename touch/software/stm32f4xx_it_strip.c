@@ -57,6 +57,11 @@ think it is in mode23 but we need to change the output pin here!
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_spi.h"
 #include "stm32f4xx_tim.h"
+#include <sys/unistd.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/times.h>
 #include "misc.h"
 #include "adc.h"
 #include "resources.h"
@@ -72,6 +77,17 @@ think it is in mode23 but we need to change the output pin here!
 
 GPIO_InitTypeDef GPIO_InitStructure;
 
+void send_command(int command, void *message)
+{
+   asm("mov r0, %[cmd];"
+       "mov r1, %[msg];"
+       "bkpt #0xAB"
+         :
+         : [cmd] "r" (command), [msg] "r" (message)
+         : "r0", "r1", "memory");
+}
+
+char buffx[10];
 
 // MACRO 
 
@@ -537,6 +553,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>7000) {
+		// debug print every time
+		itoa(777, buffx, 10);
+		buffx[sizeof(buffx)+1]=" ";
+		uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char)+1};
+		send_command(0x05/* some interrupt ID */, m);
+
+		
 		rec_cnt[daccount]=0;
 		overlap[daccount]=1;
 	      }

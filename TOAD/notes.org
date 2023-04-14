@@ -1,3 +1,60 @@
+
+** TODO: 
+
+*- check norms, check all schematic, see how looks as PCB/parts/size*
+
+// DONE:norm in mindlin*, do clock normsX, other norms??? (multX and clock inX)
+
+- DONEwe can norm both XY mult inputs to clock input! - means clock in on say Y in on both
+
+- DONEprint TOAD/ripley to size... panel design and size
+
+- NO:if we want extra multiplier and fix signum equation for variable B and C (probably not...)
+
+- **but we can also start to think about expanders for TOAD (more*
+  multipliers, if we can start to look further into neural spiking
+  equations)...
+
+- **also as expander we can have switched comparators and signum*
+
+** 12/4/2023
+
+RECHECKS!!
+- DONE- still peaky//re-check sprott again// then with fixed signum
+
+- mindlin in basic format... INV3 and INV4 (no in resistor) are now fixed 100n integrators...
+
+- check peaks/floor/ceiling in all sections - bit by bit - without feedback?
+
+trashed first VCA (replaced part chasing offsets from source), first switched cap is odd for sure)
+
+multiplier instead of VCA for offset Q - how to test??? // and we need to double output for 5v
+
+
+** 11/4/2023
+
+- DONE:return to THAT style multipliers... and think on how could deal with 10x in INV/collector...
+
+- DONEretest comparator circuit, 
+
+DONE//TEST-10x on INV
+
+- check ins and outs on schematic
+
+** 6/4/2023
+
+DONEpatch notes: clock in from pulse out of main audio CD and main CD into one of xy of toad
+
+- TESTED 10k in to mults/1k out // and 1k out of integrator (NOT from VCA) - but should be fine...
+
+- CHANGED now///tested straight clock in: bleeds in signal and does not give fine clock... added divider after diode and 47k GND - fixed...
+
+4.2v is high level in...
+
+- we can norm both XY mult inputs to clock input!
+
+- do we want 4x mults in - so add one mult
+
 ** 4/4/2023
 
 - tested offset thing - needs to adjust VCA/amp values 
@@ -20,7 +77,7 @@ decide on 10k ins...
 
 - for INTcells we have 100k in already, but need out
 
-- invertor could be 10k/100k - we have 10k alreadt
+- invertor could be 10k/100k - we have 10k already
 - adapt multiplier... 10k in // which we did test
 - signum is 10k // can be 100k - not so diferent
 
