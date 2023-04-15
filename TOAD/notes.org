@@ -3,6 +3,8 @@
 
 *- check norms, check all schematic, see how looks as PCB/parts/size*
 
+*norm multipliers to +V and need to adjust for 5v in/mult*
+
 // DONE:norm in mindlin*, do clock normsX, other norms??? (multX and clock inX)
 
 - DONEwe can norm both XY mult inputs to clock input! - means clock in on say Y in on both
