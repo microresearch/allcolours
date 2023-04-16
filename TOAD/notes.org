@@ -19,6 +19,12 @@
 
 - **also as expander we can have switched comparators and signum*
 
+** 16/4/2023
+
+- checked SVF setup patch - TOAD out from collector (as HP) works well in all configs 
+
+but for norming to make sense we would need to insert blank jacks to cut connections...
+
 ** 12/4/2023
 
 RECHECKS!!
