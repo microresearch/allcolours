@@ -1,5 +1,8 @@
-
 ** TODO: 
+
+size of PCB: height of seg base pcb was 108mm
+
+TRY width is 28HP=142.24mm
 
 *- check norms, check all schematic, see how looks as PCB/parts/size*
 
@@ -23,7 +26,9 @@
 
 - checked SVF setup patch - TOAD out from collector (as HP) works well in all configs 
 
-but for norming to make sense we would need to insert blank jacks to cut connections...
+- but for norming to make sense we would need to insert blank jacks to cut connections...
+
+- that we can also have different weightings for multipliers... (x10, x100)... TRY THIS!
 
 ** 12/4/2023
 
