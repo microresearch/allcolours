@@ -447,6 +447,9 @@
     (path "/00000000-0000-0000-0000-000060663e79/64a7bf9e-996d-42bf-90c1-09a21827b2b3"
       (reference "#PWR0120") (unit 1) (value "GND") (footprint "")
     )
+    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/4ae86b7d-fe62-42c5-ac68-f1b541a9cbbd"
+      (reference "#PWR0121") (unit 1) (value "GND") (footprint "")
+    )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/760560a6-c9d0-41e4-a032-1618ed69ffe3"
       (reference "#PWR0123") (unit 1) (value "GND") (footprint "")
     )
@@ -996,6 +999,9 @@
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/b05ed193-3224-452b-9d9e-5e541a92a290"
       (reference "M42") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
+    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/a8eb48f6-9ad3-41fe-bc9f-8650974d0751"
+      (reference "M43") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
+    )
     (path "/00000000-0000-0000-0000-00006066353e/00000000-0000-0000-0000-00005c3aa485"
       (reference "P1") (unit 1) (value "CONN_02X05") (footprint "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical")
     )
@@ -1161,7 +1167,7 @@
     (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/e1362610-951e-40b4-82e2-22869d698da7"
       (reference "R52") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
-    (path "/00000000-0000-0000-0000-000060663579/87796ac7-bb62-4155-8c01-5236a7a805b2"
+    (path "/00000000-0000-0000-0000-000060663e79/b5e4b16a-ab57-48a1-a84e-d0204ecbeaa1"
       (reference "R53") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/caa0168c-06c3-4af7-ab8c-3c4919699f66"

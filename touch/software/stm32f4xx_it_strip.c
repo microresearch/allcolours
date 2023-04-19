@@ -540,7 +540,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
 	    LASTPLAY;
 	    if (overlap[daccount]) rec_cnt[daccount]=7000;
-	    //	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
 	  else {
 	    lastplay=0;
@@ -554,12 +554,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>7000) {
 		// debug print every time
-		itoa(777, buffx, 10);
-		buffx[sizeof(buffx)+1]=" ";
-		uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char)+1};
-		send_command(0x05/* some interrupt ID */, m);
-
-		
+		/* itoa(777, buffx, 10); */
+		/* buffx[sizeof(buffx)+1]=" "; */
+		/* uint32_t m[] = { 2/\*stderr*\/, (uint32_t)buffx, sizeof(buffx)/sizeof(char)+1}; */
+		/* send_command(0x05/\* some interrupt ID *\/, m); */
+				
 		rec_cnt[daccount]=0;
 		overlap[daccount]=1;
 	      }
