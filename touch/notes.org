@@ -1,5 +1,12 @@
 * see also software/modes.org
 
+** 20/4/2023
+
+- that after freeze we can still add value to freeze as a
+  baseline. makes sense for VCA (and voltage). otherwise the pad does
+  nothing and can always be left alone. To make sure all modes make
+  sense, even if not sure which mode one is in...
+
 ** 29/3/2023 TODO:
 
 - start to define tasks from below:

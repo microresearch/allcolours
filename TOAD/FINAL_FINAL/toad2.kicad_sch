@@ -291,17 +291,11 @@
     (path "/00000000-0000-0000-0000-000060663e79/5e88dae7-445f-49eb-bfb1-36e8cc16ea9c"
       (reference "#PWR068") (unit 1) (value "GND") (footprint "")
     )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/db6e4faf-4acb-4c78-b3f3-c98de1e0dede"
-      (reference "#PWR069") (unit 1) (value "+7.5V") (footprint "")
-    )
     (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/f4c0d2c9-2d6d-4762-b8ae-69f2b13cbed6"
       (reference "#PWR070") (unit 1) (value "GND") (footprint "")
     )
     (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/354b3a38-9451-4ccc-ae80-4a667e437f57"
       (reference "#PWR071") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/df0f7b50-af01-4549-8c07-a7f6be3e6efe"
-      (reference "#PWR072") (unit 1) (value "+7.5V") (footprint "")
     )
     (path "/00000000-0000-0000-0000-000060663e79/42b7f250-ac3d-4c28-add4-472e57f633d5"
       (reference "#PWR073") (unit 1) (value "GND") (footprint "")
@@ -311,9 +305,6 @@
     )
     (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/380b4948-ce71-4ac0-9003-bf2f5faeb601"
       (reference "#PWR075") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/f0604c89-1465-4fac-baaf-1a60ec169f3b"
-      (reference "#PWR076") (unit 1) (value "+7.5V") (footprint "")
     )
     (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/57251558-b230-4913-8f6c-5e7e50880725"
       (reference "#PWR077") (unit 1) (value "GND") (footprint "")
@@ -674,6 +665,27 @@
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/cccd5cbc-cbf3-4268-b61d-bf73d2a67f1a"
       (reference "#PWR0204") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-000060663e79/08b15fd8-786e-466d-a090-6e01ab8a25b9"
+      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/0be4c8b9-68c8-4e2b-963e-547b19aa5491"
+      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-000060663e79/5cba5e53-8ba4-4ae8-a71a-30c81021f4ca"
+      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/901d54ec-6565-4010-8494-1aff883d2f90"
+      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-000060663e79/a2e4f94c-c635-43d4-b065-fbcf0512a1e0"
+      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/c5b1385e-509a-4cbc-ba19-c088eeceee48"
+      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-000060663e79/f6939a29-7620-472d-979b-ff93944b4d97"
+      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00006066353e/00000000-0000-0000-0000-00005c3aa4ab"
       (reference "C1") (unit 1) (value "10u") (footprint "Capacitor_Tantalum_SMD:CP_EIA-3216-18_Kemet-A")
