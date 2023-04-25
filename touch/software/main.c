@@ -12,7 +12,6 @@
 #include "stm32f4xx_tim.h"
 #include "stm32f4xx_hal_pwr.h"
 #include "misc.h"
-#include "adc.h"
 #include "stm32f4xx_conf.h"
 /*
 
@@ -284,9 +283,47 @@ int main(void)
 
 
     // Enable clock for ADC1
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+       //          RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC, ENABLE);
+       //    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
     
+    ADC_CommonInitTypeDef ADC_CommonInitStructure;
+    ADC_InitTypeDef ADC_InitStructure;
+
+    /* enable clocks for DMA2, ADC1, GPIOA ----------------------------------*/
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC, ENABLE);
+	//	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+	/* ADC Common Init ------------------------------------------------------*/
+	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
+	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2; // was 2
+ 	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
+	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles; // was 5?
+	ADC_CommonInit(&ADC_CommonInitStructure);
+
+	/* ADC1 Init ------------------------------------------------------------*/
+	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
+	ADC_InitStructure.ADC_ScanConvMode = DISABLE;
+	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; // was enable
+	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+	ADC_InitStructure.ADC_ExternalTrigConv = DISABLE;
+	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right; // was right - in CLOUDS is left? so is 12 bits
+	ADC_InitStructure.ADC_NbrOfConversion = 1;
+	//	ADC_InitStructure.ADC_NbrOfChannel = 10; not existing
+	ADC_Init(ADC1, &ADC_InitStructure);
+	ADC_Cmd(ADC1, ENABLE);
+	/*
+	  PA0->PA3 4
+	  PA5->PA7 3
+	  PC0->PC2 3
+	  PB0(ADC4), PB1(ADC8) 2
+	*/
+
+
+
+
+    //   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_84Cycles);
+
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;// as pin 4 is DAC
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // changes nothing
@@ -298,27 +335,7 @@ int main(void)
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-    ADC_CommonInitTypeDef ADC_CommonInitStructure;
-  ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
-  ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div8;
-  ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
-  ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_20Cycles;
-  ADC_CommonInit(&ADC_CommonInitStructure);    
     
-    // Init ADC1
-    ADC_InitTypeDef ADC_InitStruct;
-    ADC_InitStruct.ADC_ContinuousConvMode = DISABLE;
-    ADC_InitStruct.ADC_DataAlign = ADC_DataAlign_Right;
-    ADC_InitStruct.ADC_ExternalTrigConv = DISABLE;
-    ADC_InitStruct.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
-    ADC_InitStruct.ADC_NbrOfConversion = 1;
-    ADC_InitStruct.ADC_Resolution = ADC_Resolution_12b;
-    ADC_InitStruct.ADC_ScanConvMode = DISABLE;
-    ADC_Init(ADC1, &ADC_InitStruct);
-    ADC_Cmd(ADC1, ENABLE);
-
-    //   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_84Cycles);
-
     //- rec on PB2, play on PB4 - swopped with FR3, push on PB6 
     //- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
     
@@ -466,6 +483,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
+  /// XXXXX
   TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   // 4 is orig
   // 48 is too slow...

@@ -1,8 +1,71 @@
 * see also software/modes.org
 
+** 25/4/2023
+
+TODO: draft new modes eg. individual speeds of global sections, play/overlay each section, individual rec and playback...
+
+types of overlay: modulo, peak
+
+speed: additive, subtractive?TEST, adds from below (which is what we had) 
+
+how we can record changes in speed... tap of freeze on top speed one...
+
+from earlier notes: - *also do we have functionality to change speed of recording - so jumps/blends=interpolates like a slur of values...*
+
+- also question of voltage of each as speed of section in playback - as we need log and is odd mix... 0-3 is already log, 4->7 needs shift and log
+
+// if else i guess
+
+TODO: 
+
+- new touch panel // or could be on base with protection diodes and resistance
+
+todayDONE:
+
+- added ignore top bits which we will use later
+
+- full open and close of VCA - test on lowest one -> R26 OUT1TOMIX -> 27k tested, no bleed and full voltage (changed on PCB/schematic - but lots of errors to fix there)
+
+- max for our finger is 2.2v (so just 11 bits but that leaves us short)
+
+- log for vol, linear for value... - so do this in macro...
+
+// check voltage range from VCA bottom bit - we hit 1.5-2v
+  
+so for VCA let's stick with log approach and other is linear
+
+** 24/4/2023
+
+DONEcheck VCA full range, adjust parts
+
+Note: all adc is 12 bits but we treat as 10 bits ... how high do we go?
+
+- note that we don't get full VCA voltage out - do we need to re-adjust this? - see notes below at 4.2v - can we fix this in control...
+// or maybe just adjust final amplifier res to say 22k
+
+- full voltage out-> 5v checked...
+
+- does speed freeze...? no, should it just follow our CV?? this could be option - we try and works well with freeze
+
+// logspeed goes from 1/8th to 4x speed...
+
+*TODO: define MODES!*
+
+- list of new modes to do in new_modes.org - check older code, modes lists
+- use of top bits for individual speeds...
+
+//
+- freezer as way of detaching rec or playback of each section
+- if we are in playback can be ways of touch adding or modulating playback or use voltage as individual speed or another factor (like length of loop)
+
+eg. touch is not adding any voltage, but changing a parameter = speed, length, what else?
+
+- type of overlay - modulo, additive, subtractive
+
+
 ** 20/4/2023
 
-- that after freeze we can still add value to freeze as a
+- DISCARD->NOT working - as always jumps up on freeze... that after freeze we can still add value to freeze as a
   baseline. makes sense for VCA (and voltage). otherwise the pad does
   nothing and can always be left alone. To make sure all modes make
   sense, even if not sure which mode one is in...
@@ -18,7 +81,7 @@
 
 - use debug to figure out rough rec speed? every 6 or so seconds // prescalar of 8
 
-with prescalar of 32 we have 22 seconds (so not quite with out calculations)
+with prescalar of 32 we have 22 seconds (so not quite with our calculations)
 
 *which prescalar?*
 
@@ -52,6 +115,8 @@ it_strip.c
 7000 values in each array: 2kHz we say (at 32 pre-scaler to check as was last at 8): and there are 8 sections so each runs at 2k/8=250Hz
 
 7000/250=28 seconds... TO CHECK!
+
+*older below*
 
 ** 4/10/2022
 
@@ -141,6 +206,7 @@ replaced c9 with 1NF (from 47NF)
 
 
 +input filter is 15nF and 15k so gives cutoff of 700Hz x2=1.4KHz which is fine+
+
 
 but rec is 32 times slower and each dac is x8 so that is 32x8=256
 

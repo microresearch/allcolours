@@ -1,16 +1,23 @@
+* 2023+
+
+x2 addition/modulus as below::::
+
+0 - no speed changes...
+1 - global speed from top, speed as mid
+2 - global speed from top, speed as only adds
+etc... done
+
+--> 16??32???
+
+new mode from notes: tap to start and end section which is always recording and overlaying
+
+local speed of section -> from voltage so no overlay...
+
 * newer
 
 15/12/21: 
 
 - add basic mode with no speed changes ...DONE
-
-- problems with speeds and aliasing so need to rewrite code without 32 steps-TODO: how to handle slow downs and speed ups?
-
-14/12/21: TODO: we need to stop rec and play and all freezers if we change mode!
-
-Q of linear or exponential scales... at the moment is all linear...
-
-//problems with speeds and aliasing so need to rewrite code without 32 steps
 
 13/12/21: *maybe extra modes which change beginning/end of playback...*
 
@@ -27,14 +34,21 @@ X
 
 *so let's say 4 options for each* = 8 major modes:
 
-1- basic mode with freezers and speeds
-2- freezers as record additions
-3- freeze plays back last x seconds of that one
-4- freezers reverse section???
-5- freezers play/detach sections?
-6- voltage changes speed each section
-7- attach and detach recordings for each CV?
+1- basic mode with freezers and speedsDONE
+
+2- freezers as record additions - is same as 7? - as in 4 implemented below
+3- freeze plays back last x seconds of that one // how we get to x from voltage or from taps
+4- freezers reverse their own section???
+5- freezers stop/play/detach sections?
+6- voltage changes speed each section - independent or collectively recorded...
+
+7- attach and detach recordings for each CV? what this means?
+
+freeze->rec that section, tap again playback, with or without local speed... what do rec and play do? nothing? 
+
 8- length of playback changes - can be from voltage or from freezerTODO - for each section or for whole playback - so could be second mode
+
+++ change of recordings
 
 * list of modes / some implemented in it.c
 

@@ -1,49 +1,5 @@
-/**
-
-20/12+ - see notes.org for changes
-
-14/12: put in modechanging clearance into macro TOGGLE - still needs to be TESTED!
-
-13/12: changes to freeze/toggle logic which seem to work well, new macrosDONE
-
-6/12: try new freeze/toggle logics - working better so test for freezings, tested but try with other fingers before we put into TOGGLE MACRO TODO!
-
-2/12: re-check freeze etc.logic as seems odd - was wrong way round so corrected but still not 100% as needs release
-
-2/11: we have bleed on voltages - small but present and how can we fix this?
-
-18/10: on mode change should we stop rec/playback as this will change reading of data (only in some cases).DONE in macro 14/12
-
-14/10: filled in mode 0 to test all
-
-13/10: TODO: code in freezers, mode switch and rec/play with simple case 0 and test!
-
-11/10: TODO: simplify code sections and test all freezers, rec, mode, playback (basic mode)
-
-- what are our modes and where are these defined? in it.c
-
-Revisiting 30 Sept:
-
-- 30/9 tests: 2 and 3 not closing: 3 was adc issue which fixed
-   somehow, 2 still bleeds at 60mV, we adjusted TIM2 slower to get rid
-   of bleed across VCAs (why now?), still to test new freeze
-   functionality...also got rid of bitshift as was loud (to check on
-   scope), maybe try different resistor values for closings, testing
-   first freeze and seems to work
-
-
-//////////////////////////
-
-TODO: August 30+ 2021:
-
-- new PCB - we have trig on PC6 which needs to go high only when we sense any of trigs (freezers, rec, play, mode)
-
-- basic operations of VCA and voltage with new board (also now we have low pass in hardware)
-- new freezer/trig code and test all
-
-think it is in mode23 but we need to change the output pin here!
-
-- figure out modes, timings, log etc.
+/*
+TODO: see notes, modes
 
   */ 
 
@@ -63,13 +19,11 @@ think it is in mode23 but we need to change the output pin here!
 #include <sys/stat.h>
 #include <sys/times.h>
 #include "misc.h"
-#include "adc.h"
 #include "resources.h"
 
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
-#define BRK8 (64*8) // 64 at 4 in INT2 // so for 8 in main.c we need 32
-#define BRK 64
+#define BRK 8 // when we have have divider in main as 32...
 #define DELB 200 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 #define DELA 64 // for clear DAC
 
@@ -248,12 +202,6 @@ char buffx[10];
     }									\
   }
 
-/*
-#define REALADC {						\
-  real[daccount]=adc_buffer[daccount]<<shifter[daccount];	\
-  if (real[daccount]>4095) real[daccount]=4095;			\
-  }
-*/
 
 #define REALADC {						\
 switch(daccount){						\
@@ -261,15 +209,19 @@ switch(daccount){						\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);\
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
-  real[0]=ADC_GetConversionValue(ADC1);				\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  real[0]=ADC_GetConversionValue(ADC1);					\
+  if (real[0]>1023) real[0]=1023;					\
+  real[0]=logval[(real[0])];						\
   break;								\
   case 1:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_480Cycles);\
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   real[1]=ADC_GetConversionValue(ADC1);				\
+  if (real[1]>1023) real[1]=1023;					\
+  real[1]=logval[(real[1])];						\
   break;								\
   case 2:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_480Cycles);\
@@ -277,6 +229,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[2]=ADC_GetConversionValue(ADC1);					\
+  if (real[2]>1023) real[2]=1023;					\
+  real[2]=logval[(real[2])];						\
   break;								\
   case 3:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_480Cycles);\
@@ -284,6 +238,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[3]=ADC_GetConversionValue(ADC1);				\
+  if (real[3]>1023) real[3]=1023;					\
+  real[3]=logval[(real[3])];						\
   break;								\
   case 4:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_480Cycles);\
@@ -291,13 +247,17 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[4]=ADC_GetConversionValue(ADC1);				\
-  break;								\
+  real[4]=real[4]<<1;						\
+  if (real[4]>4095) real[4]=4095;				\
+  break;							\
   case 5:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_480Cycles);\
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   real[5]=ADC_GetConversionValue(ADC1);				\
+  real[5]=real[5]<<1;						\
+  if (real[5]>4095) real[5]=4095;					\
   break;								\
   case 6:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles);\
@@ -305,6 +265,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[6]=ADC_GetConversionValue(ADC1);				\
+  real[6]=real[6]<<1;						\
+  if (real[6]>4095) real[6]=4095;					\
   break;								\
   case 7:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_480Cycles);\
@@ -312,9 +274,12 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[7]=ADC_GetConversionValue(ADC1);				\
+  real[7]=real[7]<<1;							\
+  if (real[7]>4095) real[7]=4095;					\
   break;								\
    }									\
 }
+
 
 #define DOSPEED {				\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles); \
@@ -443,6 +408,7 @@ void PendSV_Handler(void)
       __asm__ __volatile__ ("nop\n\t":::"memory");		\
   } while (0)
 
+
 extern __IO uint16_t adc_buffer[8];
 static uint16_t recordings[8][7000]={0}; // 
 static uint16_t rec_cnt[8]={0};
@@ -495,9 +461,9 @@ uint16_t speedsample(float speedy, uint32_t lengthy, uint16_t dacc, uint16_t *sa
   upperPosition = mod0(lowerPosition + 1, lengthy);
 
     //  Return interpolated table value
-  float sample= (samples[lowerPosition] + 
+  float sample= ((samples[lowerPosition]&4095) + 
 		 ((play_cnt[dacc] - lowerPosition) *
-		  (samples[upperPosition] - samples[lowerPosition]))); // TODO: do we need to adapt for top bits
+		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); // adapted for top bits
 
       return (int)sample;
 }
@@ -513,8 +479,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     uint32_t prev[8]={1,2,3,4,5,6,7,0};
     uint32_t bits;
-    uint16_t values[8], real[8]; // not static
-    static uint32_t frozen[8]={0};
+    static uint32_t values[8], real[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static
+    static uint32_t frozen[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t playy[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t recc[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
     static uint32_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={7000}, recsp[8]={0};
     static uint32_t lasttriggered[11]={0}, breaker[11]={0};
@@ -525,21 +493,126 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=0; // testings
+	mode=1; // testings
 
 	switch(mode){
-	case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage is only increasing? or full speed?
-	  // mode could also be no change of speed
+	case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed changes at all...
+	  // overlay is peak
 	  FREEZERS;
 	  
-	  if (frozen[daccount]==0) {
+	  if (frozen[daccount]==0) { // freeze always holds
 	    REALADC;
 	  }
-
 	  // playback
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
 	    LASTPLAY;
 	    if (overlap[daccount]) rec_cnt[daccount]=7000;
+	    values[daccount]=speedsample(1.0f, rec_cnt[daccount], daccount, recordings[daccount]);
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all inc overlap
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>7000) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	      //	      overlap[daccount]=0; // ???
+	    }
+
+	    ////// write to DAC
+	  // if playback add
+	    if (play==1) {
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  }
+	  else {
+	    values[daccount]=(real[daccount]); 
+	  }
+	  WRITEDAC;
+	  
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    
+	    TOGGLES;      
+	  }       
+	  break; ///// case 0
+
+	case 1: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed changes at all...
+	  // overlay is mod
+	  FREEZERS;
+	  
+	  if (frozen[daccount]==0) { // freeze always holds
+	    REALADC;
+	  }
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=7000;
+	    values[daccount]=speedsample(1.0f, rec_cnt[daccount], daccount, recordings[daccount]);
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>7000) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	      overlap[daccount]=0;
+	    }
+
+	    ////// write to DAC
+	  // if playback add
+	    if (play==1) {
+	    values[daccount]+=real[daccount];
+	    values[daccount]=values[daccount]&4095;
+	  }
+	  else {
+	    values[daccount]=(real[daccount]); 
+	  }
+	  WRITEDAC;
+	  
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    
+	    TOGGLES;      
+	  }       
+	  break; ///// case 1
+	  
+	case 2: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
+	  FREEZERS;
+	  
+	  if (frozen[daccount]==0) { // freeze always holds
+	    REALADC;
+	  }
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=7000;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
 	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
 	  else {
@@ -553,12 +626,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>7000) {
-		// debug print every time
-		/* itoa(777, buffx, 10); */
-		/* buffx[sizeof(buffx)+1]=" "; */
-		/* uint32_t m[] = { 2/\*stderr*\/, (uint32_t)buffx, sizeof(buffx)/sizeof(char)+1}; */
-		/* send_command(0x05/\* some interrupt ID *\/, m); */
-				
 		rec_cnt[daccount]=0;
 		overlap[daccount]=1;
 	      }
@@ -571,12 +638,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    ////// write to DAC
 	  // if playback add
 	    if (play==1 && daccount!=6) { //TEST: don't add for speed!
-	      if (real[daccount]>1023) real[daccount]=1023; // should it be?
-	    values[daccount]+=logval[(real[daccount])];
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
 	  }
 	  else {
-	    if (real[daccount]>1023) real[daccount]=1023;
-	    values[daccount]=logval[(real[daccount])];    // otherwise just values
+	    values[daccount]=(real[daccount]); 
 	  }
 	  WRITEDAC;
 	  
@@ -584,14 +650,67 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (daccount==8) {
 	    daccount=0;
 	    count++;
-	    // speed only increasing above
-	    DOSPEED;
 	    TOGGLES;      
 	  }       
-	  break; ///// case 0
-	  ///////////////////////////////////////////
+	  break; ///// case 2
 
-	case 4: // speed test ONLY
+	case 3: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
+	  // modulo version
+	  FREEZERS;
+	  
+	  if (frozen[daccount]==0) { // freeze always holds
+	    REALADC;
+	  }
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=7000;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 10 bits
+	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>7000) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	      overlap[daccount]=0;
+	    }
+
+	    ////// write to DAC
+	  // if playback add
+	    if (play==1 && daccount!=6) { //TEST: don't add for speed!
+	    values[daccount]+=real[daccount];
+	    values[daccount]=values[daccount]&4095;
+	  }
+	  else {
+	    values[daccount]=(real[daccount]); 
+	  }
+	  WRITEDAC;
+	  
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    TOGGLES;      
+	  }       
+	  break; ///// case 3
+
+
+
+	  ///////////////////////////////////////////
+	case 666: // speed test ONLY
 	  GPIOC->BSRRH = 0b1110100000000000;		       
 	  DAC_SetChannel1Data(DAC_Align_12b_R, val);
 	  j = DAC_GetDataOutputValue (DAC_Channel_1);		
