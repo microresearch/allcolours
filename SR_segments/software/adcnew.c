@@ -35,8 +35,8 @@ void ADC1_Init(void)
 
 	/* ADC Common Init ------------------------------------------------------*/
 	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
-	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2;
-	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
+	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2; // was 2
+ 	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
 	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles; // was 5?
 	ADC_CommonInit(&ADC_CommonInitStructure);
 

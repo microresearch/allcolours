@@ -1,16 +1,112 @@
 * see also software/modes.org
 
+types of overlay: modulo, peak
+speed: additive/peak, subtractive, adds from below (which is what we had) 
+
+TODO:
+
+- modes as they come, more about how to divide different areas now... can also be say top and bottom
+- review modes and what we have,,,
+
+- all modes, tests
+- test timing in main/divider
+- test with different PSU and hands/fingers
+- add protection, re-test PCB - also with new processor if we choose, BOM and order
+- manual: layout and list of modes somehow... touchable, overlays, cutouts...
+
+** 27/4/2023
+
+what we need to do when we change modes - eg. lastrec and lastplay...
+
+DONE: diodes added on base PCB in new dir // to order and test...
+
+TODO:
+- DONE-LOG/and fixedlog//decide on linear or log speed across all? generate test arrays...
+- DONEnew log array for just additive speeds 1-16 test in: case 5:
+
+TESTED- case 7: voltage as sectional speed only on playback - differs for different adcs TESTING?
+makes more sense for individual modes as what if there is nothing recorded... also for record loop then speed...
+
+or 2 taps rec...
+
+- DONE:case 8rec slow down count (with fixed speed) - test - was which one... 6 has speedslow...
+
+- started as case 9:TODOloop mode: - mode which is always recording in loop (and type of overlay - start with modulus), and rec/play buttons (length of holding down) set start and end points?
+also as variable speed mode,,,
+
+
+///
+
+TODO- how we can record global changes in speed... tap of freeze on top speed one...
+
+//
+
+
+how and where do we record individual speeds - in loop...
+
+- list what modes we have or can port and how these can be modified:
+
+////////////////////////////////////
+//recent notebook:
+
+Divide modes global and local...
+
+- detach a section, what that means? re-record that section only, leave that section as live/unrecorded
+- loop of rec and overlay - key is length of loop and how to determine this
+
+          GLOBAL    | LOCAL
+-no speed
+-speed
+-loop and overlay
+-speed is recorded // when and where?
+
+// detach - global becomes local
+
+do we still use rec and play in local modes - eg. rec starts possibility to record, play plays back... see each case...
+
+x different speeds/different overlays if necessary
+
+speeds: faster, slower, starts slow
+
+** 26/4/2023
+
+TESTS as below:
+- DONE:test resolution...  seems high enough at 32
+- DONE case 4: subtractive speed (need new log scheme there - how slow... 1/64 - // fixed bug in speedsample
+
+- DONE case 5: change speed of global recording - but we get a jump if we change speed from voltage there... so we could have fixed sets of record speeds in modes...
+
+this is also is general issue of all simultaneous recordings - why we need *independent recordings and free/detached play/over-recordings...*
+
+*question of speed and ram - leave open for now...* 
+
+static uint16_t recordings[8][7000]={0}; // 
+
+but we wanted top bits for speed and we have 12 bits for values??? which leaves 4 for speed....
+
+// new stm - F413 is 100mhz, 320kb, STM32H7A3RGT is ++mhz and 1184KB , H573 are pin compatible... much more memory
+
+or 413RGT6 has 320k and is available at farnell
+
+we have 128kb ram... on f446 // 
+
+//////////////
+
+- panel filter pcb doesn't match schematic so it ALREADY has 15k there so we just need DIODES (so no need for extra resistors there) - base or panel... base?
+
+but we would need for freezers and any other pins exposed - 10k but should be fine...
+
 ** 25/4/2023
 
-TODO: draft new modes eg. individual speeds of global sections, play/overlay each section, individual rec and playback...
+TODO: port/draft new modes eg. individual speeds of global sections, play/overlay each section, individual rec and playback...
 
 types of overlay: modulo, peak
 
-speed: additive, subtractive?TEST, adds from below (which is what we had) 
+speed: additive, subtractive, adds from below (which is what we had) 
 
 how we can record changes in speed... tap of freeze on top speed one...
 
-from earlier notes: - *also do we have functionality to change speed of recording - so jumps/blends=interpolates like a slur of values...*
+from earlier notes: - DONETEST: also do we have functionality to change/slow down speed of recording - so jumps/blends=interpolates like a slur of values...
 
 - also question of voltage of each as speed of section in playback - as we need log and is odd mix... 0-3 is already log, 4->7 needs shift and log
 
@@ -82,6 +178,8 @@ eg. touch is not adding any voltage, but changing a parameter = speed, length, w
 - use debug to figure out rough rec speed? every 6 or so seconds // prescalar of 8
 
 with prescalar of 32 we have 22 seconds (so not quite with our calculations)
+
+
 
 *which prescalar?*
 
