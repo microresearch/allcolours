@@ -13,6 +13,7 @@
 #include <sys/times.h>
 #include "misc.h"
 #include "resources.h"
+#include "macros.h"
 
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
@@ -36,319 +37,6 @@ void send_command(int command, void *message)
 }
 
 char buffx[10];
-
-// MACRO 
-
-#define RESETT {					\
-  for (x=0;x<8;x++){				\
-  for (y=0;y<MAXREC;y++){			\
-    recordings[x][y]=0;				\
-  }						\
-  }						\
-}
-
-#define MODECHANGED {				\
-  freezer[0]=0;					\
-  freezer[1]=0;					\
-  freezer[2]=0;					\
-  freezer[3]=0;					\
-  freezer[4]=0;					\
-  freezer[5]=0;					\
-  freezer[6]=0;					\
-  freezer[7]=0;					\
-  rec=0;					\
-  play=0;					\
-}
-
-#define TOGGLES {				  \
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;  \
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-        GPIO_Init(GPIOC, &GPIO_InitStructure); \
-	GPIOC->BSRRL=(1)<<6; \
-	delay(); \
-	if (!(GPIOB->IDR & (1<<2))) {		\
-	lasttriggered[9]=breaker[9];		\
-	breaker[9]=0;				\
-	}					\
-	else {					  \
-	breaker[9]++;				  \
-	if (breaker[9]>1024) breaker[9]=1024;	  \
-	}					  \
-	GPIOC->BSRRH=(1)<<6;			  \
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-	GPIO_Init(GPIOC, &GPIO_InitStructure); \
-	delay(); \
-	if (lasttriggered[9]>BRK) {	\
-	  lasttriggered[9]=0;				\
-	  play^=1;					\
-	  if (rec && play) rec=0;			\
-	}						\
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-        GPIO_Init(GPIOC, &GPIO_InitStructure); \
-	GPIOC->BSRRL=(1)<<6; \
-	delay(); \
-	if (!(GPIOB->IDR & (1<<10))) {		\
-	lasttriggered[8]=breaker[8];		\
-	breaker[8]=0;				\
-	}					\
-	else {					  \
-	breaker[8]++;				  \
-	if (breaker[8]>1024) breaker[8]=1024;	  \
-	}					  \
-	GPIOC->BSRRH=(1)<<6;			  \
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-	GPIO_Init(GPIOC, &GPIO_InitStructure); \
-	delay(); \
-	if (lasttriggered[8]>BRK) {	\
-	  lasttriggered[8]=0;				\
-	  rec^=1; \
-	  if (play && rec) play=0; \
-	} \
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;     \
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-        GPIO_Init(GPIOC, &GPIO_InitStructure); \
-	GPIOC->BSRRL=(1)<<6; \
-	delay(); \
-	if (!(GPIOB->IDR & (1<<6))) {		\
-	lasttriggered[10]=breaker[10];		\
-	breaker[10]=0;				\
-	}					\
-	else {					  \
-	breaker[10]++;				  \
-	if (breaker[10]>1024) breaker[10]=1024;	  \
-	}					     \
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;    \
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-        GPIO_Init(GPIOC, &GPIO_InitStructure);			  \
-	delay(); \
-	if (lasttriggered[10]>BRK) {	\
-	  lasttriggered[10]=0;				\
-	  mode+=1;					\
-	  if (mode>=MAXMODES) mode=0;			\
-	  MODECHANGED;					\
-	}						\
-}
-
-#define FREEZERS {					\
-  if (daccount==7){							\
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-    GPIOC->BSRRL=(1)<<6;						\
-    delay();								\
-    if (!(GPIOC->IDR & (freezer[7]))) {					\
-      lasttriggered[7]=breaker[7];					\
-      breaker[7]=0;							\
-    }									\
-    else {								\
-      breaker[7]++;							\
-      if (breaker[7]>1024) breaker[7]=1024;				\
-    }									\
-    GPIOC->BSRRH=(1)<<6;						\
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-    delay();								\
-    if (lasttriggered[7]>BRK) {						\
-      frozen[7]^=1;							\
-      lasttriggered[7]=0;						\
-    }									\
-  }									\
-  else									\
-    {									\
-      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
-      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-      GPIOC->BSRRL=(1)<<6;						\
-      delay();								\
-      if (!(GPIOB->IDR & (freezer[daccount]))) {			\
-	lasttriggered[daccount]=breaker[daccount];			\
-	breaker[daccount]=0;						\
-      }									\
-      else {								\
-	breaker[daccount]++;						\
-	if (breaker[daccount]>1024) breaker[daccount]=1024;		\
-      }									\
-      GPIOC->BSRRH=(1)<<6;						\
-      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
-      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
-      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
-      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-      delay();								\
-      if (lasttriggered[daccount]>BRK) {				\
-	frozen[daccount]^=1;						\
-	lasttriggered[daccount]=0;					\
-      }									\
-    }									\
-  }
-
-
-#define REALADC {						\
-switch(daccount){						\
-  case 0:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
-  real[0]=ADC_GetConversionValue(ADC1);					\
-  if (real[0]>1023) real[0]=1023;					\
-  reall[0]=real[0];							\
-  real[0]=logval[(real[0])];						\
-  break;								\
-  case 1:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
-  real[1]=ADC_GetConversionValue(ADC1);				\
-  if (real[1]>1023) real[1]=1023;					\
-  reall[1]=real[1];							\
-  real[1]=logval[(real[1])];						\
-  break;								\
-  case 2:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
-  real[2]=ADC_GetConversionValue(ADC1);					\
-  if (real[2]>1023) real[2]=1023;					\
-  reall[2]=real[2];							\
-  real[2]=logval[(real[2])];						\
-  break;								\
-  case 3:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
-  real[3]=ADC_GetConversionValue(ADC1);				\
-  if (real[3]>1023) real[3]=1023;					\
-  reall[3]=real[3];							\
-  real[3]=logval[(real[3])];						\
-  break;								\
-  case 4:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
-  real[4]=ADC_GetConversionValue(ADC1);				\
-  real[4]=real[4]<<1;						\
-  if (real[4]>4095) real[4]=4095;				\
-  break;							\
-  case 5:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
-  real[5]=ADC_GetConversionValue(ADC1);				\
-  real[5]=real[5]<<1;						\
-  if (real[5]>4095) real[5]=4095;					\
-  break;								\
-  case 6:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
-  real[6]=ADC_GetConversionValue(ADC1);				\
-  real[6]=real[6]<<1;						\
-  if (real[6]>4095) real[6]=4095;					\
-  break;								\
-  case 7:							\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_480Cycles);\
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
-  real[7]=ADC_GetConversionValue(ADC1);				\
-  real[7]=real[7]<<1;							\
-  if (real[7]>4095) real[7]=4095;					\
-  break;								\
-   }									\
-}
-
-
-#define DOSPEED {				\
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles); \
-  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
-  ADC_SoftwareStartConv(ADC1);						\
-  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
-  speed=ADC_GetConversionValue(ADC1);					\
-  if (speed>1023) speed=1023;			\
-  }
-
-#define LASTPLAY {					\
-    if (lastplay==0) {					\
-      lastplay=1;					\
-      play_cnt[0]=0.0f;					\
-      play_cnt[1]=0.0f;					\
-      play_cnt[2]=0.0f;					\
-      play_cnt[3]=0.0f;					\
-      play_cnt[4]=0.0f;					\
-      play_cnt[5]=0.0f;					\
-      play_cnt[6]=0.0f;					\
-      play_cnt[7]=0.0f;					\
-      overlap[0]=0;					\
-      overlap[1]=0;					\
-      overlap[2]=0;					\
-      overlap[3]=0;					\
-    }							\
-  }
-
-#define LASTREC {					\
-    if (lastrec==0) {					\
-      overlap[0]=0;					\
-      overlap[1]=0;					\
-      overlap[2]=0;					\
-      overlap[3]=0;					\
-      lastrec=1;					\
-      rec_cnt[0]=0;					\
-      rec_cnt[1]=0;					\
-      rec_cnt[2]=0;					\
-      rec_cnt[3]=0;					\
-      rec_cnt[4]=0;					\
-      rec_cnt[5]=0;					\
-      rec_cnt[6]=0;					\
-      rec_cnt[7]=0;					\
-    }							\
-  }
-
-// closest we get - bleed from one to next is minimal
-// BSRRH is low, L is high
-#define CLEARDAC {						\
-      DAC_SetChannel1Data(DAC_Align_12b_R, 0);			\
-      j = DAC_GetDataOutputValue (DAC_Channel_1);		\
-  }
-
-#define WRITEDAC {						\
-  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]);	\
-  j = DAC_GetDataOutputValue (DAC_Channel_1);			\
-  GPIOC->BSRRH = 1<<11;						\
-  GPIOC->BSRRH = 0b1110000000000000;				\
-  GPIOC->BSRRL=(daccount)<<13;					\
-  delay2();							\
-  GPIOC->BSRRL = 1<<11;						\
-  CLEARDAC;							\
-}
 
 void NMI_Handler(void)
 {
@@ -416,9 +104,10 @@ void PendSV_Handler(void)
 
 
 extern __IO uint32_t adc_buffer[8];
-static uint32_t recordings[8][MAXREC]={0}; // 
+static uint32_t recordings[8][MAXREC+1]={0}; // 
 static uint32_t rec_cnt[8]={0};
 static float play_cnt[8]={0.0f};
+static float ownplay_cnt[8]={0.0f};
 //static uint32_t tgr_cnt[10]={0};
 static uint32_t rec=0, play=0;
 
@@ -435,9 +124,7 @@ inline static float mod0(float value, float length)
     return value;
 }
 
-// try now for float and interpolate speedsample - this seems to work but we need to figure out speed range
-// with speed as 0.125 to 4.0f - or use logspeed. - we use logspeed now to call this
-uint32_t speedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
+inline static uint32_t speedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition;
   
   play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
@@ -446,7 +133,7 @@ uint32_t speedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *sa
   lowerPosition = (int)play_cnt[dacc];
   upperPosition = mod0(lowerPosition + 1, lengthy);
   
-  int res=(play_cnt[dacc] - (float)lowerPosition);
+  int32_t res=(play_cnt[dacc] - (float)lowerPosition);
     //  Return interpolated table value
   float sample= ((samples[lowerPosition]&4095) + 
 		 (res *
@@ -454,24 +141,67 @@ uint32_t speedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *sa
 
       return (uint32_t)sample;
 }
+
+inline static uint32_t ownspeedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){ // for upper speed bits
+  uint32_t lowerPosition, upperPosition;
   
+  ownplay_cnt[dacc]=mod0(ownplay_cnt[dacc]+speedy, lengthy);
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)ownplay_cnt[dacc];
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+  
+  int32_t res=(ownplay_cnt[dacc] - (float)lowerPosition);
+    //  Return interpolated table value
+  float sample= ((samples[lowerPosition]>>16) + 
+		 (res *
+		  ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); // adapted for top bits
+
+      return (uint32_t)sample;
+}
+
+inline static uint32_t speedsamplestart(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition;
+  
+  play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)play_cnt[dacc];
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+  
+  int32_t res=(play_cnt[dacc] - (float)lowerPosition);
+    //  Return interpolated table value
+  float sample= ((samples[lowerPosition+start]&4095) + 
+		 (res *
+		  ((samples[upperPosition+start]&4095) - (samples[lowerPosition+start]&4095)))); // adapted for top bits
+
+      return (uint32_t)sample;
+}
+
+inline static void resetx(uint32_t which){
+  for (uint32_t y=0;y<MAXREC;y++){ 
+    recordings[which][y]=0;
+  }
+}
+
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   {
     static uint32_t daccount=0;
     static uint32_t speed=1, overlap[8]={0};
     volatile uint32_t k;
-    uint32_t j,x,y;
+    uint32_t j,x,y,val;
     // array to map freeze but exception is FR8 on PC4! 
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     uint32_t prev[8]={1,2,3,4,5,6,7,0};
-    uint32_t bits, recspeed;
+    uint32_t bits, recspeed, lengg, where;
     uint32_t values[8], real[8], reall[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static
     static uint32_t frozen[8]={0,0,0,0, 0,0,0,0};
     static uint32_t playy[8]={0,0,0,0, 0,0,0,0};
     static uint32_t recc[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrec=0, lastplay=0, lastvalue[8], added[8]={0}, lastmode=0;
     static uint32_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
-    static uint32_t lasttriggered[11]={0}, breaker[11]={0};
+    static uint32_t lasttriggered[11]={0}, breaker[11]={0}, lastlastrec=0, lastlastplay, lastlast;
+    static int32_t endpoint;
     
     uint32_t tmp, trigd;
     int32_t midder;
@@ -479,7 +209,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=9; // testy
+	mode=11; // testy
 
 	switch(mode){
 	case 0: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed changes at all...
@@ -614,7 +344,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    } // if rec
 	    else {
 	      lastrec=0;
-	      //	      overlap[daccount]=0;
 	    }
 
 	    ////// write to DAC
@@ -858,6 +587,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  break; 
 
 	case 7: // TEST for local speeds on each voltage - so we don't add any values there 
+	  // doesn't work so well as global as some have no contents
 	  FREEZERS;
 	  
 	  if (frozen[daccount]==0) { // freeze always holds
@@ -966,10 +696,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }       
 	  break; 
 
-	case 9: // start on looped recording and overlay - so it is always playing/recording - 
+	case 9: // looped recording and overlay - so it is always playing/recording - 
 	  // rec and play length held change start and end points
-	  // or they could just operate as start rec, start play...
+	  // or they could just operate as start rec, start play...???
 	  // fixed speed but additional speed mode could be interesting as re-records at different speeds
+	  // 2 diff versions or more
 	  FREEZERS;
 	  
 	  if (frozen[daccount]==0) { // freeze always holds
@@ -978,17 +709,129 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  ////
 	  LASTREC; // reset all
 	  LASTPLAY;
-
+	  RECLONG; // lastlastrec stores reclong which just increments itself 
+	  RECPLAY;
 	  speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	  values[daccount]=speedsample(1.0f, MAXREC, daccount, recordings[daccount]);
-	  values[daccount]+=real[daccount];
 
+	  endpoint=MAXREC-lastlastplay;
+	  if (endpoint<lastlastrec) {
+	    lastlastplay=0;
+	    endpoint=MAXREC;
+	  }
+	  
+	  if (lastlastrec>endpoint) lastlastrec=0;
+	  lengg=endpoint-lastlastrec;
+	  if (lengg<1) lengg=1;
+	  speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	  values[daccount]=speedsamplestart(logfast[speed], lengg, lastlastrec, daccount, recordings[daccount]); 
+	  values[daccount]+=real[daccount];
+	  if (values[daccount]>4095) values[daccount]=4095;
+	  
 	  recordings[daccount][rec_cnt[daccount]]=values[daccount];
 	  rec_cnt[daccount]++;
-	  if (rec_cnt[daccount]>MAXREC) {
-	    rec_cnt[daccount]=0;
-	  }
+	  if (rec_cnt[daccount]>endpoint) {
+	    rec_cnt[daccount]=lastlastrec;
+	    }
+	    
+	  WRITEDAC;
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    ///	    TOGGLES;       // we dont use rec or play
+	  }       
+	  break; ///// 
 
+	case 10: // start on looped recording and overlay - so it is always playing/recording - 
+	  // 2nd version with different recordings scheme
+	  FREEZERS;
+	  
+	  if (frozen[daccount]==0) { // freeze always holds
+	    REALADC;
+	  }
+	  ////
+	  LASTREC; // reset all
+	  LASTPLAY;
+	  RECLONG; // lastlastrec stores reclong which just increments itself 
+	  RECPLAY;
+	  speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+
+	  endpoint=MAXREC-lastlastplay;
+	  if (endpoint<lastlastrec) {
+	    lastlastplay=0;
+	    endpoint=MAXREC;
+	  }
+	  
+	  if (lastlastrec>endpoint) lastlastrec=0;
+	  lengg=endpoint-lastlastrec;
+	  if (lengg<1) lengg=1;
+	  speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	  values[daccount]=speedsamplestart(logspeed[speed], lengg, lastlastrec, daccount, recordings[daccount]); 
+	  values[daccount]+=real[daccount];
+	  if (values[daccount]>4095) values[daccount]=4095;
+	  
+	  recordings[daccount][rec_cnt[daccount]]+=real[daccount];
+	  if (recordings[daccount][rec_cnt[daccount]]>4095) recordings[daccount][rec_cnt[daccount]]=4095;
+	  rec_cnt[daccount]++;
+	  if (rec_cnt[daccount]>endpoint) {
+	    rec_cnt[daccount]=lastlastrec;
+	    }
+	    
+	  WRITEDAC;
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	    count++;
+	    ///	    TOGGLES;       // we dont use rec or play
+	  }       
+	  break; ///// 
+
+	case 11: // trial record speed - tap freeze to top voltage
+	  FREEZERS;
+	  
+	  if (frozen[daccount]==0 || daccount==6 ) { // freeze always holds except in case of 6TOP
+	    REALADC;
+	  }
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    speed+=(ownspeedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]))>>2;
+	    if (frozen[6]==1){ // we record the speed
+	      where=(int)ownplay_cnt[6];
+	      recordings[daccount][where]=(recordings[daccount][where]&4095)+(real[6]<<16); // top 16 bits are speed
+	      }
+	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	    }
+
+	    ////// write to DAC
+	  // if playback add
+	    if (play==1 && daccount!=6) { //TEST: don't add for speed! as speed shouldnt effect rec cv is independent
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  }
+	  else {
+	    values[daccount]=(real[daccount]); 
+	  }
 	  WRITEDAC;
 	  
 	  daccount++;
@@ -997,11 +840,26 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    count++;
 	    TOGGLES;      
 	  }       
-	  break; ///// 
-
+	  break;
 	  
 	  ///////////////////////////
+	case 666: // speed test ONLY 166.7Hz
+	  GPIOC->BSRRH = 0b1110100000000000;		       
+	  DAC_SetChannel1Data(DAC_Align_12b_R, val);
+	  j = DAC_GetDataOutputValue (DAC_Channel_1);		
+	  GPIOC->BSRRL=(daccount)<<13; // multiplex
+	  //CLEARDAC; // why we remove this but is there on writedac - timing?
+	  daccount++;
+	  if (daccount==8) {
+	    daccount=0;
+	  if (val==0) val=4095;
+	  else val=0;
+	  }
+	  //	  RESETT; // all resets... drops us to 15Hz so we lose 1/30th second... on full reset
+	  //	  RESET0; // one reset... drops to 142Hz so not so bad... 
+	  break;
 
+	  
 	} // end of modes switch    
     }
   }

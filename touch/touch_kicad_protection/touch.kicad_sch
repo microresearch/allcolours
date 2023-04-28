@@ -1261,7 +1261,7 @@
       (reference "U10") (unit 5) (value "TL074") (footprint "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm")
     )
     (path "/00000000-0000-0000-0000-00005eebc3aa/00000000-0000-0000-0000-00005f0570d5"
-      (reference "U11") (unit 1) (value "STM32F446RETx") (footprint "Housings_QFP:LQFP-64_10x10mm_Pitch0.5mm")
+      (reference "U11") (unit 1) (value "STM32F413was446RETx") (footprint "Housings_QFP:LQFP-64_10x10mm_Pitch0.5mm")
     )
     (path "/00000000-0000-0000-0000-00005f0cad2e/00000000-0000-0000-0000-00005f118a0b"
       (reference "U13") (unit 1) (value "40106") (footprint "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm")

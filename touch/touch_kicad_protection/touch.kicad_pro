@@ -55,10 +55,7 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [
-        "courtyards_overlap|94069999|101150001|00000000-0000-0000-0000-00005f97b430|00000000-0000-0000-0000-000060ac5c14",
-        "courtyards_overlap|94724999|101150001|00000000-0000-0000-0000-00005f97b430|00000000-0000-0000-0000-000060ac5c14"
-      ],
+      "drc_exclusions": [],
       "meta": {
         "filename": "board_design_settings.json",
         "version": 2
@@ -370,7 +367,7 @@
         "name": "Default",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.25,
+        "track_width": 0.6,
         "via_diameter": 0.8,
         "via_drill": 0.4,
         "wire_width": 6.0

@@ -5,42 +5,70 @@ speed: additive/peak, subtractive, adds from below (which is what we had)
 
 TODO:
 
+global modes, local modes and see all below
+
 - modes as they come, more about how to divide different areas now... can also be say top and bottom
 - review modes and what we have,,,
+- what needs to be set or reset when we change modes
+- init and zeroing of key arrays
 
 - all modes, tests
 - test timing in main/divider
 - test with different PSU and hands/fingers
-- add protection, re-test PCB - also with new processor if we choose, BOM and order
+- add protection, re-test PCB - also with new processor F413GTx, BOM and order
 - manual: layout and list of modes somehow... touchable, overlays, cutouts...
+
+** 28/4/2023
+
+TODO:
+
+DONE- case 9 and 10:loop mode: - mode which is always
+recording in loop (and type of overlay - start with modulus), and
+rec/play buttons (length of holding down) set start and end points?
+also as variable speed mode,,, bit odd as folds back on itself - 2
+different versions of this, also with/without speed...
+
+DONE/test further case 11: 
+how we can record global changes in speed... tap of freeze on top speed one... additive speed recordings
+- question of what speed we use to access recorded speeds... not so simple...
+
+but again for any additive rec we would need to clear that. how to time clearing speed? speedtest
+
+/// notebook notes:
+
+- freeze: 
+as freeze
+as detach -> leave playback, reattach back into sequence
+as re-record -> that section until next freeze
+as reset -> of section to blank, see how long that takes...TEST!
+what else?
+
+- how we deal with overlap? - over-record, I think this is default // add-rec is option
+- loop/rec/add - as limit4095//as modulo
+
+- add speed rec - how we start stop // order of:
+  recO->playO->speedrec? or playback is always speedrec in that mode,
+  length is length of rec, detach from speed/from rec
+
+- where is reset of each set of recordings?
 
 ** 27/4/2023
 
-what we need to do when we change modes - eg. lastrec and lastplay...
+- *what we need to do when we change modes - eg. lastrec and lastplay...*
 
 DONE: diodes added on base PCB in new dir // to order and test...
 
-TODO:
 - DONE-LOG/and fixedlog//decide on linear or log speed across all? generate test arrays...
 - DONEnew log array for just additive speeds 1-16 test in: case 5:
 
-TESTED- case 7: voltage as sectional speed only on playback - differs for different adcs TESTING?
-makes more sense for individual modes as what if there is nothing recorded... also for record loop then speed...
+DONETESTED- case 7: voltage as sectional speed only on playback - differs for different adcs TESTING?
+*makes more sense for individual modes as what if there is nothing recorded... also for record loop then speed...*
 
 or 2 taps rec...
 
 - DONE:case 8rec slow down count (with fixed speed) - test - was which one... 6 has speedslow...
 
-- started as case 9:TODOloop mode: - mode which is always recording in loop (and type of overlay - start with modulus), and rec/play buttons (length of holding down) set start and end points?
-also as variable speed mode,,,
-
-
-///
-
-TODO- how we can record global changes in speed... tap of freeze on top speed one...
-
 //
-
 
 how and where do we record individual speeds - in loop...
 
@@ -120,7 +148,7 @@ todayDONE:
 
 - added ignore top bits which we will use later
 
-- full open and close of VCA - test on lowest one -> R26 OUT1TOMIX -> 27k tested, no bleed and full voltage (changed on PCB/schematic - but lots of errors to fix there)
+- DONE**full open and close of VCA - test on lowest one -> R26 OUT1TOMIX -> 27k tested, no bleed and full voltage (changed on PCB/schematic - but lots of errors to fix there)
 
 - max for our finger is 2.2v (so just 11 bits but that leaves us short)
 

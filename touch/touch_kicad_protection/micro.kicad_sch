@@ -886,7 +886,6 @@
     )
   )
 
-
   (junction (at 118.237 53.086) (diameter 0) (color 0 0 0 0)
     (uuid 02bbbd5e-d888-4978-be0c-ec5a68e33047)
   )
@@ -1370,11 +1369,6 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 2accbfdb-199e-45ec-96ec-26444bb56988)
   )
-  (text "TODO: on panel or here- series R and diode protection for: \n\nadc0->adc7\ntrig = 9 diodes + move trug res "
-    (at 109.982 72.136 0)
-    (effects (font (size 1.27 1.27)) (justify left bottom))
-    (uuid 65b5ef4f-5dab-40eb-86c5-8e65541bc767)
-  )
   (text "NOW with onboard DAC and less ADC and toggles (x12 needed)"
     (at 28.829 29.21 0)
     (effects (font (size 2.9972 2.9972)) (justify left bottom))
@@ -1653,7 +1647,7 @@
     (in_bom yes) (on_board yes)
     (uuid 00000000-0000-0000-0000-00005f0570d5)
     (property "Reference" "U11" (id 0) (at 77.597 100.457 0))
-    (property "Value" "STM32F446RETx" (id 1) (at 76.835 122.428 0))
+    (property "Value" "STM32F413was446RETx" (id 1) (at 76.835 122.428 0))
     (property "Footprint" "Housings_QFP:LQFP-64_10x10mm_Pitch0.5mm" (id 2) (at 62.738 139.573 0)
       (effects (font (size 1.27 1.27)) (justify right) hide)
     )

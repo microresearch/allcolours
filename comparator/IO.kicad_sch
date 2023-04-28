@@ -411,8 +411,8 @@
     (uuid b122577a-dab1-43b7-aba8-562e6e731d69)
   )
   (text "Layout in 4 sections:\n\nO             O     compx_in1                                  compx_swin1\n   O (POT) O     =            compx_out   POTx   compx_swout\nO             O     compx_in2                                  compx_swin2"
-    (at 158.877 37.719 0)
-    (effects (font (size 2 2)) (justify left bottom))
+    (at 41.3766 177.4952 0)
+    (effects (font (size 3 3)) (justify left bottom))
     (uuid f2fdfb1c-4d80-4fee-8ff3-6391c45e4050)
   )
 
