@@ -1,14 +1,20 @@
 * see also software/modes.org
 
+MODIFIERS for modes (where relevant):
+
 types of overlay: modulo, peak
-speed: additive/peak, subtractive, adds from below (which is what we had) 
+speed: none, additive/peak, subtractive, adds from below (which is what we had) 
+++++if [6] is subject to freeze etc. and thus effects global speed?
 
 TODO:
 
 global modes, local modes and see all below
 
-- modes as they come, more about how to divide different areas now... can also be say top and bottom
-- review modes and what we have,,,
+- modes as they come, more about how to divide different areas now... can also be say top and bottom[???]
+
+- check which modes we need to clear rec (if is not going to be overwritten anyways)...
+
+- review modes and what we have,,, what are additional options for speeds and additives
 - what needs to be set or reset when we change modes
 - init and zeroing of key arrays
 
@@ -18,9 +24,25 @@ global modes, local modes and see all below
 - add protection, re-test PCB - also with new processor F413GTx, BOM and order
 - manual: layout and list of modes somehow... touchable, overlays, cutouts...
 
-** 28/4/2023
+** 2/5/2023
 
-TODO:
+TESTEDcase 11: problem is rapidly hits highest speed - speeds do reset on new record as we write over this...
+
+TODO: 
+
+-DONE mode12: record in loop on freeze and unfreeze is detach from speed...
+
+- DONE13DONEOK, 14,15: global/detach mode... rec and play as usual:
+14 is now not overdub just record anew!
+
+to overdub a section only-freeze, to free/detach/pull a section out of playback, re-attach // can this be on same mode?
+check rec_cnt vs play_cnt - as for overdubs need to be in sync
+
+//////
+
+- start on local modes, idea of groups/up.down//right.left also???
+
+** 28/4/2023
 
 DONE- case 9 and 10:loop mode: - mode which is always
 recording in loop (and type of overlay - start with modulus), and
@@ -28,11 +50,11 @@ rec/play buttons (length of holding down) set start and end points?
 also as variable speed mode,,, bit odd as folds back on itself - 2
 different versions of this, also with/without speed...
 
-DONE/test further case 11: 
+DONE/case 11: 
 how we can record global changes in speed... tap of freeze on top speed one... additive speed recordings
 - question of what speed we use to access recorded speeds... not so simple...
 
-but again for any additive rec we would need to clear that. how to time clearing speed? speedtest
+but again for any additive rec we would need to clear that. how to time clearing speed? speedtestDONE-just clear one
 
 /// notebook notes:
 
@@ -40,17 +62,17 @@ but again for any additive rec we would need to clear that. how to time clearing
 as freeze
 as detach -> leave playback, reattach back into sequence
 as re-record -> that section until next freeze
-as reset -> of section to blank, see how long that takes...TEST!
+as reset -> of section to blank, see how long that takes...TEST! rec will blank so only makes sense in certain modes
 what else?
 
-- how we deal with overlap? - over-record, I think this is default // add-rec is option
+- how we deal with overlap? - over-record, I think this is default when we over-run // add-rec is option
 - loop/rec/add - as limit4095//as modulo
 
 - add speed rec - how we start stop // order of:
   recO->playO->speedrec? or playback is always speedrec in that mode,
   length is length of rec, detach from speed/from rec
 
-- where is reset of each set of recordings?
+- where is reset of each set of recordings? and where do we need it?
 
 ** 27/4/2023
 
