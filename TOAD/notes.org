@@ -1,12 +1,46 @@
-** TODO: 
+** 8-9/5/2023
 
-size of PCB: height of seg base pcb was 108mm
+- fixing PCB:
 
-TRY width is 28HP=142.24mm
+1st 2 cells working... check 3rd - no!
 
-*- check norms, check all schematic, see how looks as PCB/parts/size*
+3rd cell now works: - fixed was badly placed R23, checked all parts, continuity, replaced 4051, very weak signal peaked at 10v from last section....
 
-*norm multipliers to +V and need to adjust for 5v in/mult*
+//NON! -bleed is more about norming...  or first 2 work otherwise and 3rd is fine??? // compare to breadboard each section...
+
+- multiplier signal seems fine - just last part INT3...
+- changed R3 and R13 to 330ohm for more power but still...
+
+(we can change lower part of dividers for power supply to 22k to raise voltage there to 7.5v but... -> R2 and R7
+
+what is overall current? what is measured voltage? 11.8v -11.9v
+
+from pnp/npn power - 5v is a bit low...
+
+91mA -V
+90mA +V
+
+///square seems low? ok - compare to breadboard//
+
+- work through all signal path... // do we want the normings...?
+
+TEST/TODO//change:
+
+- add extra TOAD INT1 out
+- change VDD from transistors... and see how this effects things
+- try amping multiplier a bit...
+- check full signal path
+- re-test signum (we have norms there too)... INT3->SIGNUM
+
+** DONE: 
+
+//size of PCB: height of seg base pcb was 108mm
+
+//TRY width is 28HP=142.24mm
+
+DONE- check norms, check all schematic, see how looks as PCB/parts/size*
+
+*DID WE:norm multipliers to +V and need to adjust for 5v in/mult*
 
 // DONE:norm in mindlin*, do clock normsX, other norms??? (multX and clock inX)
 

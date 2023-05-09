@@ -24,6 +24,114 @@ global modes, local modes and see all below
 - add protection, re-test PCB - also with new processor F413GTx, BOM and order
 - manual: layout and list of modes somehow... touchable, overlays, cutouts...
 
+** 9/5/2023
+
+- *8 or 16 basic modes to define for local and global*
+
+DONE:// add global mode where we also just use recorded top voltage as speed (freeze to attach detach that)...// testnew18!//mode numbers shifted...
+
+x4= x2 speed up/lowest up // x2 overlap modulo/peak
+
++ we have no reset of rec_cnt as extra mode only
+
+TODO: list all modes, test new HW, test new sets of local modes and narrow down modes...
+
+** 8/5/2023
+
+DONE: mode17: TESTED_TO TEST* TODO++ last of globals: freezer shifts start of each particular section towards the end...*
+
+- start on local modes 18+ but still question of what we do with rec and play???
+
+mode 18: DONETO TEST* - *as below for rec/playbacks. note we don't reset rec_cnt - 2 options there
+
+*USE OF REC/PLAY in locals: so far: sync rec or play (which)... /and/ rec can be enter speed record mode for all sections, playback???*
+
+freeze: record, tap again: playback
+
+play: global stop/start all playback (also sync)...
+rec: global rec (nada if we are already in rec)...
+
+- check all globals and it.c
+
+** 6/5/2023
+
+Note from PCB:
+
+*Notes: that frozen levels are saved to a stack and can be popped off the stack, various over-rides...????*
+
+** 4/5/2023
+
+DONE/test: slew is interpol to target (if we ignore successive targets until we reach it), on way to wormz, for globals and local, not in rec but overlay/playback
+
+- notebook notes:
+
+DONE-revoke lack of overlay on 6!
+
+- how we do speeds in local modes?
+
+-> global speeds from top as in global for all
+-> no speed
+-> speed instead of overlay = rec tap freeze, play tap freeze - now voltage is speed
+-> speed recordings
+
+global speeds=none, on top voltage, individual, recorded
+
+*-> do we need resets = maybe make it more developing!?*
+
+** 3/5/2023
+
+*Q for locals of what rec and play do - otherwise we replicate functions of globals*
+
+- what are local modes - as versions of all globals:
+
+          GLOBAL    | LOCAL
+- no speed-speed/types of speed/types of overlay
+- loop and overlay/types
+- speed is recorded // when and where?/types
+- slower rec
+- detachment etc
+
+*what do rec and play do in locals?*
+
+- as rec/play are GLOBAL - could also be sync starts
+- rec can be enter speed record mode for all sections, playback???
+
+global modes so far:
+
+0 - no speed. overlay is peak.
+//1 - no speed. overlay is mod.
+2 - global speed = lower up. overlay is peak.
+//3 - global speed = lower up. overlay is modulo
+4 - as 2. speed=slow
+//5 - as 2. speed=fast
+
+6 - globalspeed=slow speed. slowed record 
+7 - local speeds on each voltage 
+8 - no speed/fixed slower rec ??? comp to 6? why...
+
+9 - looped with speed=fast - 9 adds to rec value from speed new value
+10 - as 9 with different rec scheme - what they are? - 10 adds to rec value new value
+
+11 - record speed. speed is lower up (additive and can be modulus)
+12 - record speed. speed is lower up. differs from 11 in adds recorded speed... (additive and can be modulus)
+13 - freeze overdubs a section in playback mode
+14 - freeze records new section
+15 - freeze detachs section
+
+16 modes... x X for speeds x4, x2overlay peak, modulo = x8
+
+
+x different speeds/different overlays if necessary
+
+speeds: none, faster, slower, starts slow
+
+*- other modes todo from modes.org and check it.c*
+
+//NON!-4- freezers reverse their own section???
+
+target, speed of trying to get there...==DONE:TODO++ variable slew towards target*
+
+
 ** 2/5/2023
 
 TESTEDcase 11: problem is rapidly hits highest speed - speeds do reset on new record as we write over this...
@@ -116,7 +224,7 @@ do we still use rec and play in local modes - eg. rec starts possibility to reco
 
 x different speeds/different overlays if necessary
 
-speeds: faster, slower, starts slow
+speeds: none, faster, slower, starts slow
 
 ** 26/4/2023
 
@@ -195,9 +303,6 @@ Note: all adc is 12 bits but we treat as 10 bits ... how high do we go?
 
 // logspeed goes from 1/8th to 4x speed...
 
-*TODO: define MODES!*
-
-- list of new modes to do in new_modes.org - check older code, modes lists
 - use of top bits for individual speeds...
 
 //
@@ -268,7 +373,7 @@ it_strip.c
 
 ** 4/10/2022
 
-- *also do we have functionality to change speed of recording - so jumps/blends=interpolates like a slur of values...*
+- also do we have functionality to change speed of recording - so jumps/blends=interpolates like a slur of values...*
 
 ** 20/7/2022: REVISIT
 
