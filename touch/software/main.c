@@ -46,7 +46,7 @@ void io_config2 (void) {
        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
        //       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-       //       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
        GPIO_Init(GPIOA, &GPIO_InitStructure);
 
        /* DAC channel 1 Configuration */
@@ -62,102 +62,36 @@ void io_config2 (void) {
 
 }
 
-//Initialize clock config
-
-//Siehe: https://github.com/jkerdels/stm32edu/blob/master/src/rcc.c
-
 #define false 0
 
-void initClock(){
+void clocksetup413 (void)
+{
+  //  FLASH_SetLatency(LL_FLASH_LATENCY_3); - no HAL
+  FLASH->ACR = (1<<8) | (1<<9)| (1<<10)| (3<<0);
+      RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+    RCC_DeInit();//a must
+    
+    do{
+       RCC_HSEConfig(RCC_HSE_ON);
+      }
+     while (!RCC_WaitForHSEStartUp());
 
-  //Enable HSI-clock -> 16MHz
+    RCC_PLLConfig(RCC_PLLSource_HSE, 4, 100, 2, 2);//100MHZ
 
-  RCC -> CR |= RCC_CR_HSION;
+    do{
+       RCC_PLLCmd(ENABLE);
+      }
+   while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY)!=SET);
 
-  //Wait for HSI is stable running
+    RCC_HCLKConfig(RCC_SYSCLK_Div1);
+    RCC_PCLK1Config(RCC_HCLK_Div2);
+    RCC_PCLK2Config(RCC_HCLK_Div1);
 
-  while((RCC -> CR & RCC_CR_HSIRDY) == 0){}
-
-  
-
-  //Switch SYSCLK to HSI, SW -> 00
-
-  RCC -> CFGR &= ~RCC_CFGR_SW_0;
-
-  RCC -> CFGR &= ~RCC_CFGR_SW_1;
-
-  //Wait for switching SYSCLK is ready
-
-  while((RCC -> CFGR & RCC_CFGR_SWS_0 == false) && (RCC -> CFGR & RCC_CFGR_SWS_1 == false)){}
-
-  //Config waitstates for flash memory, cpu should run with nearly 180MHz@3,3V -> 5ws after table, page 64
-
-  FLASH -> ACR |= FLASH_ACR_LATENCY_5WS;
-
-  //Config realtime clock, set LSI as clocksource
-
-  RCC -> CSR |= RCC_CSR_LSION;
-
-  //Set AHB clock prescaler for main bus matrix, psc=1 for running with maximum speed -> 180MHz, Presc. =1
-
-  RCC -> CFGR |= RCC_CFGR_HPRE_DIV1;
-
-  //Set clock for APB1 to AHB/4 => 180MHz/4 -> 45MHz
-
-  RCC -> CFGR |= RCC_CFGR_PPRE1_DIV4;
-
-  //Set clock for APB2 to AHB/2 => 180MHz/2 -> 90MHz
-
-  RCC -> CFGR |= RCC_CFGR_PPRE2_DIV2;
-
-  //Set phase lock loop
-
-  //Disable PLL for config
-
-  RCC -> CR &= ~RCC_CR_PLLON;
-
-  RCC -> CR &= ~RCC_CR_PLLI2SON;
-
-  //Select HSI for pll clock source
-
-  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLSRC_HSI;
-
-  //Set prescaler for pll clock input: HSI(16MHz) -> input should be 2MHz -> Prescaler =8
-
-  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLM_3;
-
-  //Clock = fin*(N/M) -> 2MHz*(360/4) for 180MHz
-
-  //Set N=360 -> 0b1 0110 1000
-
-  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLN_8 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_3;
-
-  //Set M=4 0b100
-
-  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLM_2;
-
-  //Set 48MHz for VCO, -> 2*(N/Q) -> Set Q=15 -> 0b1111
-
-  RCC -> PLLCFGR |= RCC_PLLCFGR_PLLQ_3 | RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_1 | RCC_PLLCFGR_PLLQ_0;
-
-  //Enable PLL-Modul
-
-  RCC -> CR |= RCC_CR_PLLON;
-
-  //Wait for PLL is stable running
-
-  while(RCC -> CR & RCC_CR_PLLRDY){}
-
-  //Switch SYSCLK to PLL_P, SW -> 10
-
-  RCC -> CFGR |= RCC_CFGR_SW_1 & ~RCC_CFGR_SW_0;
-
-  //Wait for clock switch is ready -> SWS = 10
-
-  while(RCC -> CFGR & RCC_CFGR_SWS_PLL){};
-
+    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+   SystemCoreClockUpdate();
 }
 
+// initclock for 413???
 
 //DAC_InitTypeDef dac_init_s;
 
@@ -172,17 +106,18 @@ int main(void)
     i = adcr = j = k = 0;
     unsigned int dacval[8]={};
     GPIO_InitTypeDef GPIO_InitStructure;
-    //      SystemClock_Config();
+    //SystemClock_Config();
     //                initClock();
 
     // instead: 29/12/2021 - 180 MHz we should have from HSE external 8 MHz clock
     // as in SEG but do we need to update timings
     //Enable HSE clock
-        RCC_HSEConfig(RCC_HSE_ON);
-    //Wait for clock to stabilize
-       while (!RCC_WaitForHSEStartUp());
-
     
+    //    RCC_HSEConfig(RCC_HSE_ON);
+    //Wait for clock to stabilize
+    //    while (!RCC_WaitForHSEStartUp());
+
+    clocksetup413();
     // 8 channels
 	    //	    ADC1_Init((uint16_t *)adc_buffer);
 
@@ -233,8 +168,8 @@ int main(void)
     //   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_84Cycles);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;// as pin 4 is DAC
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // changes nothing
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+    //    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // changes nothing
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     
 	    	// adc8 is adc1_10 =pc0
@@ -386,13 +321,14 @@ int main(void)
   // 1024/4 is 8x 862Hz (toggle speed so 2x that which is fine for us but we need to lower the sample/hold cap...
 
   // 16/12 stay with 1024/8 for 1.5 KHz I think - check this
-  
+
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
   /// XXXXX
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 64; // was 32... for 413 try 16/// was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  // for 413 which seems run 8x slower now we have 5 which matches our old speed with 446
   // 4 is orig
   // 48 is too slow...
   // 30/9/3021: changed prescaler to 16 and then 32 to get rid of bleed
@@ -406,12 +342,12 @@ int main(void)
   NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM2, ENABLE);
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-  
+
   // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
   //    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
 
   //    uint8_t firstByte, secondByte, configBits;
-    
+      uint32_t daccount=0;    
     while(1) {
 
       
@@ -434,14 +370,12 @@ int main(void)
   // TEST setting k to ADC1
   //        value =(float)adc_buffer[SELX]/65536.0f; 
   //dacval[daccount]=0;//adc_buffer[daccount]>>4; // 12 bits for DAC
-  //      dacval[daccount]=4095;
       //  k=0;
       //  DAC_SetChannel1Data(DAC_Align_12b_R, k); // 1000/4096 * 3V3 == 0V8 
       //  j = DAC_GetDataOutputValue (DAC_Channel_1);
       //  daccount++;
       //  if (daccount==8) daccount=0;  
       //    delay();
-      
 
     }
 }

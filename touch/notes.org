@@ -17,12 +17,76 @@ global modes, local modes and see all below
 - review modes and what we have,,, what are additional options for speeds and additives
 - what needs to be set or reset when we change modes
 - init and zeroing of key arrays
+- streamline playback when we have base modes - see single.c
 
 - all modes, tests
 - test timing in main/divider
 - test with different PSU and hands/fingers
-- add protection, re-test PCB - also with new processor F413GTx, BOM and order
-- manual: layout and list of modes somehow... touchable, overlays, cutouts...
+- DONE//add protection, re-test PCB - also with new processor F413GTx, 
+- BOM and order
+- manual: layout and list of modes somehow... touchable, overlays//holes, cutouts...
+
+TODO2: test with new fingers, new modes around areas, geomantic?, finalise modes and modifiers
+
+** 16-17/5/2023
+
+*testing new prototype - now all working but a bit more noise than before, maybe gnded panel will fix that more...*
+
+- records for around 26 seconds with 9000 array = 346 per second // 35 seconds with 48 divider-> check noise here...
+
+// with prescalar of 64 we reduce noise, and could hit around 1 minute if we reduce memory a bit...
+
+- fixed timing so now runs at 100 MHz (faster than 466 - which must have been at half speed? 80MHz or so...), no need to adjust anything
+
+still have 200mV noise/jumpiness
+
+///
+
+// 413 is 100MHz - do we need to change our core timing.. 
+
+//at the moment nothing runs... no debug info...: bad soldering//checked again? startup issues/BOOT1 but is same as 446, clocks but default should run...
+
+// fixed with new system file... system_stm32f4xx.o replaced by system413.o  but seems jittery - play with timings
+
+- also all voltages out have an offset of 100Mv (200 with usb attached). 
+
+offset is in ADC - fix in software - not needed on VCAs
+
+////
+
+- check all voltages: 0 is 0v, 4095 is 6v: fingers: 
+
+VCA: finger is around 5v
+
+- check we run at 100 MHz (DONE) and check length of memory...
+
+and we need to fix 1st, 3rd, 4th VCAs on board...
+
+VCA0: 4.3v
+VCA1: 4.3v 
+VCA2: 4.3v 
+VCA3: 4.4v 
+
+// test against other base board: no offset in ADC, 100 Mv noise/not jittery... peak just over 5v on finger. vca finger is 4.8v (lower left dusg)
+
+** 15/5/2023
+
+//DONE: TEST:19 new global:* if we are in playback mode, freeze holds playback/rec voltage...
+
+2 different kinds of freeze: freeze which stops movement, freeze which just holds... TEST:20//2nd kind
+
+- TEST: 33: local: rec freezes all, play resets all counters, also now add 34: rec freezes playback as 19 and 34: that alt one above UNTESTED
+
+//DONE- TEST: 21: global: no reset of rec cnt
+
+
+- locals now at 30+
+
+- *new HW:* first prog tests: F413GTx (320k so we now go from 3800 samples to 9000+ - how fast is 9000, to time?)
+
+at first couldn't program with openocd then after using stlink seems to work???? problem was with openocd???x
+
+//older: with prescalar of 32 we have 22 seconds (so not quite with our calculations) - was that for the 17 secs...
 
 ** 9/5/2023
 

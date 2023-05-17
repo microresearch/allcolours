@@ -1,4 +1,31 @@
+** 16/5/2023
+
+- DONE: do we need to swop M20 and M19 so input is on outside? swopped...
+
+- how we diagram for manual the normings?
+
+*tests and changes to test on:*
+
+- voltage from divider and also 330R there for current/any bleed???
+- amplify square (eg. 2.5 x 2.5=6.25 /10=0.625 *4 = 2.5) = 1x1 =1 = 8x???
+- amp signum (reduce 56k?)
+- amp on all multipliers so 5v is 1x = 8x then so 1k/7k // leave inner cell mults as is???
+
+*start on manual ideas*
+
+** 15/5/2023
+
+further tests from notebook and below:
+
+- SIGNUM: 1.8vpp but works ok
+
+- DONEschematic: added extra TOAD out jack, new norm for comp2, also norm comp1 and comp2 to integratorVCAs
+
+DONE//TODO: how to map out basic bintic filter and sprott - diagrams,,,? 
+
 ** 8-9/5/2023
+
+- DONE:TODOnorm of cmp2/clk2 to 2nd set ins?
 
 - fixing PCB:
 
@@ -26,7 +53,7 @@ from pnp/npn power - 5v is a bit low...
 
 TEST/TODO//change:
 
-- add extra TOAD INT1 out
+- DONEadd extra TOAD INT1 out
 - change VDD from transistors... and see how this effects things
 - try amping multiplier a bit...
 - check full signal path
@@ -40,7 +67,7 @@ TEST/TODO//change:
 
 DONE- check norms, check all schematic, see how looks as PCB/parts/size*
 
-*DID WE:norm multipliers to +V and need to adjust for 5v in/mult*
+*DID WE//no!:norm multipliers to +V and need to adjust for 5v in/mult????means that we should double out (we have 1/2 in and x4 out so far)*
 
 // DONE:norm in mindlin*, do clock normsX, other norms??? (multX and clock inX)
 

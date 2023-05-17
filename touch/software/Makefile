@@ -13,14 +13,15 @@ CC      = $(PRG_PREFIX)gcc
 LD      = $(PRG_PREFIX)gcc
 
 # Object files
-OBJECTS = 	startup_stm32f4xx.o system_stm32f4xx.o main.o \
+OBJECTS = 	startup_stm32f4xx.o system413_2.o main.o \
 				stm32f4xx_tim.o stm32f4xx_pwr.o\
 				stm32f4xx_gpio.o stm32f4xx_it_strip.o stm32f4xx_rcc.o stm32f4xx_dac.o \
 				stm32f4xx_spi.o stm32f4xx_dma.o stm32f4xx_adc.o misc.o 
 
 
 # Linker script
-LDSCRIPT = stm32_flash.ld
+#LDSCRIPT = stm32_flash.ld
+LDSCRIPT = STM32F413ZHTx_FLASH.ld
 
 # -DTESTING option for wavetables...
 # we need -Os to keep size in limits
@@ -29,7 +30,7 @@ CFLAGS  =  -I. -IInclude -Iinc -std=gnu99  \
 	 -D'__FPU_PRESENT=1' -DARM_MATH_CM4 \
 	-mthumb \
 	-mfpu=fpv4-sp-d16 \
-	-c -lm -lc -fno-common \
+	-c -lm -lc -fno-common -O3 \
 	-mcpu=cortex-m4 \
 	-mfloat-abi=hard \
 	-fsingle-precision-constant -fsigned-char -Wdouble-promotion -ffunction-sections -fdata-sections

@@ -192,7 +192,7 @@ void PendSV_Handler(void)
 
 extern __IO uint16_t adc_buffer[8];
 
-static uint16_t recordings[8][7000]; // 
+static uint16_t recordings[8][1000]; // now we have 320k  
 static uint16_t rec_cnt[8]={0};
 static uint16_t play_cnt[8]={0};
 static uint16_t tgr_cnt[10]={0};
