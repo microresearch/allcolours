@@ -982,16 +982,16 @@
       (reference "R22") (unit 1) (value "100K") (footprint "Resistors_SMD:R_0805")
     )
     (path "/00000000-0000-0000-0000-00005ebfd180/00000000-0000-0000-0000-00005f0c5143"
-      (reference "R23") (unit 1) (value "27K") (footprint "Resistors_SMD:R_0805")
+      (reference "R23") (unit 1) (value "22K") (footprint "Resistors_SMD:R_0805")
     )
     (path "/00000000-0000-0000-0000-00005ebfd180/00000000-0000-0000-0000-00005ef6153e"
-      (reference "R24") (unit 1) (value "27K") (footprint "Resistors_SMD:R_0805")
+      (reference "R24") (unit 1) (value "22K") (footprint "Resistors_SMD:R_0805")
     )
     (path "/00000000-0000-0000-0000-00005ebfd180/00000000-0000-0000-0000-00005ef68272"
-      (reference "R25") (unit 1) (value "20k") (footprint "Resistors_SMD:R_0805")
+      (reference "R25") (unit 1) (value "22K") (footprint "Resistors_SMD:R_0805")
     )
     (path "/00000000-0000-0000-0000-00005ebfd180/00000000-0000-0000-0000-00005f0c510d"
-      (reference "R26") (unit 1) (value "27K") (footprint "Resistors_SMD:R_0805")
+      (reference "R26") (unit 1) (value "22K") (footprint "Resistors_SMD:R_0805")
     )
     (path "/00000000-0000-0000-0000-00005eed47d5/00000000-0000-0000-0000-00005f0ccf9c"
       (reference "R27") (unit 1) (value "10K") (footprint "Resistors_SMD:R_0805")

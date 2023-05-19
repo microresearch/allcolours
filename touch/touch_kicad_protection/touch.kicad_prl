@@ -62,8 +62,8 @@
       35,
       36
     ],
-    "visible_layers": "002f5bf_80000001",
-    "zone_display_mode": 0
+    "visible_layers": "003ffbf_80000001",
+    "zone_display_mode": 1
   },
   "meta": {
     "filename": "touch.kicad_prl",

@@ -441,11 +441,26 @@
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/4ae86b7d-fe62-42c5-ac68-f1b541a9cbbd"
       (reference "#PWR0121") (unit 1) (value "GND") (footprint "")
     )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/760560a6-c9d0-41e4-a032-1618ed69ffe3"
-      (reference "#PWR0123") (unit 1) (value "GND") (footprint "")
+    (path "/00000000-0000-0000-0000-000060663e79/5cba5e53-8ba4-4ae8-a71a-30c81021f4ca"
+      (reference "#PWR0122") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-000060663e79/f6939a29-7620-472d-979b-ff93944b4d97"
+      (reference "#PWR0123") (unit 1) (value "+12V-power") (footprint "")
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/3e63c2b5-37c8-411e-87c3-faa091f44a12"
       (reference "#PWR0124") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-000060663e79/08b15fd8-786e-466d-a090-6e01ab8a25b9"
+      (reference "#PWR0125") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-000060663e79/a2e4f94c-c635-43d4-b065-fbcf0512a1e0"
+      (reference "#PWR0126") (unit 1) (value "+12V-power") (footprint "")
+    )
+    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/687cf4fd-9a21-4b09-88b3-9fb53ab525f5"
+      (reference "#PWR0127") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/c5b1385e-509a-4cbc-ba19-c088eeceee48"
+      (reference "#PWR0128") (unit 1) (value "+12V-power") (footprint "")
     )
     (path "/00000000-0000-0000-0000-000060663e79/ea4a14cc-b7a5-4391-ad62-05ca830b3fb4"
       (reference "#PWR0129") (unit 1) (value "GND") (footprint "")
@@ -624,8 +639,8 @@
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/a8da982f-23d8-4b98-b08e-3325f802cfc7"
       (reference "#PWR0187") (unit 1) (value "GND") (footprint "")
     )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/37550b47-0916-4252-8d7c-af58828fd850"
-      (reference "#PWR0188") (unit 1) (value "GND") (footprint "")
+    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/0be4c8b9-68c8-4e2b-963e-547b19aa5491"
+      (reference "#PWR0188") (unit 1) (value "+12V-power") (footprint "")
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/c8448148-c3b6-4704-b6b8-ca3e4ae44f5a"
       (reference "#PWR0189") (unit 1) (value "GND") (footprint "")
@@ -636,8 +651,8 @@
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/788fce62-9851-425c-81e7-d88b2d889227"
       (reference "#PWR0191") (unit 1) (value "GND") (footprint "")
     )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/e22c7869-52b6-42de-8e74-b81edaa4f0a9"
-      (reference "#PWR0192") (unit 1) (value "GND") (footprint "")
+    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/901d54ec-6565-4010-8494-1aff883d2f90"
+      (reference "#PWR0192") (unit 1) (value "+12V-power") (footprint "")
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/4a7825a8-f7c8-4b5c-90a0-a33a1150a402"
       (reference "#PWR0193") (unit 1) (value "GND") (footprint "")
@@ -665,30 +680,6 @@
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/cccd5cbc-cbf3-4268-b61d-bf73d2a67f1a"
       (reference "#PWR0204") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/00000000-0000-0000-0000-000060663e79/08b15fd8-786e-466d-a090-6e01ab8a25b9"
-      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
-    )
-    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/0be4c8b9-68c8-4e2b-963e-547b19aa5491"
-      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
-    )
-    (path "/00000000-0000-0000-0000-000060663e79/5cba5e53-8ba4-4ae8-a71a-30c81021f4ca"
-      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
-    )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/687cf4fd-9a21-4b09-88b3-9fb53ab525f5"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/901d54ec-6565-4010-8494-1aff883d2f90"
-      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
-    )
-    (path "/00000000-0000-0000-0000-000060663e79/a2e4f94c-c635-43d4-b065-fbcf0512a1e0"
-      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
-    )
-    (path "/5f16c429-76c1-4bff-9e87-fcd450860c90/c5b1385e-509a-4cbc-ba19-c088eeceee48"
-      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
-    )
-    (path "/00000000-0000-0000-0000-000060663e79/f6939a29-7620-472d-979b-ff93944b4d97"
-      (reference "#PWR?") (unit 1) (value "+12V-power") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00006066353e/00000000-0000-0000-0000-00005c3aa4ab"
       (reference "C1") (unit 1) (value "10u") (footprint "Capacitor_Tantalum_SMD:CP_EIA-3216-18_Kemet-A")
@@ -894,9 +885,6 @@
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/d816e788-d8c0-41a5-9544-5900d33ce391"
       (reference "M2") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/34d602bb-00cb-41d0-aa32-08a1ae8b3481"
-      (reference "M3") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
-    )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/b3a92229-f57b-4967-809f-30c96898e54d"
       (reference "M4") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
@@ -981,9 +969,6 @@
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/5dd001e0-a62c-4d43-9f9f-76b3eb0820cc"
       (reference "M31") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/6c3a4943-1b8b-4c1f-9c40-9b1c5ae8c022"
-      (reference "M32") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
-    )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/9e067163-37e3-4069-b222-1667ba2383e9"
       (reference "M33") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
@@ -995,9 +980,6 @@
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/7c05dd80-3654-4043-bcb8-eb9cafd730c1"
       (reference "M36") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
-    )
-    (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/a2a5883c-fedd-4a2a-8580-2ae5afd99468"
-      (reference "M37") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/dbe015aa-85fa-4d3a-bf11-de797765048b"
       (reference "M38") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
@@ -1018,7 +1000,7 @@
       (reference "M43") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
     (path "/ee26550c-4acb-4de8-bc65-82ecbee430dd/2dd7ff3d-aebd-41ff-a816-a316d82212f2"
-      (reference "M?") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
+      (reference "M66") (unit 1) (value "AUDIO-JACKERTHENVAR-PJ398-allcolours-rescue") (footprint "new_kicad:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles")
     )
     (path "/00000000-0000-0000-0000-00006066353e/00000000-0000-0000-0000-00005c3aa485"
       (reference "P1") (unit 1) (value "CONN_02X05") (footprint "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical")

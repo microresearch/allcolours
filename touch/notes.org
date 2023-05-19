@@ -28,9 +28,31 @@ global modes, local modes and see all below
 
 TODO2: test with new fingers, new modes around areas, geomantic?, finalise modes and modifiers
 
+** 18/5/2023
+
+notebook notes:
+
+- define global and local modes // and modifiers: speed, addition etc.
+- how zones/areas could work eg. divide in two (left and lower, right and upper) and one is speed for other...
+
+*TODO: new modes:*
+
+- global and local: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
+
+alternatives: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
+
+23testedTODOmore- overlay mirror: all follow say lowest/bottom voltage 0 but add own
+  overlay (live and/or in recording/playback - what makes sense
+  here) + rec/speed versions of this
+and variations on this eg. all voltages only, all VCA, all
+
+TESTED-case22:- slew which doesn't wait until target - how to do rise and fall independent speeds??
+
 ** 16-17/5/2023
 
 *testing new prototype - now all working but a bit more noise than before, maybe gnded panel will fix that more...*
+
+DONE:panel black mask doesn't match PCB we have mask006 - doesn't render/plot as gerber??? where is original... slow render and ordered with GND and new mask 19/5
 
 - records for around 26 seconds with 9000 array = 346 per second // 35 seconds with 48 divider-> check noise here...
 

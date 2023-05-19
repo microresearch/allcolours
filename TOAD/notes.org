@@ -1,3 +1,29 @@
+** 19/5/2023
+
+- revised PCB for new norms, removed 3 jacks and swopped m19 and m20 so comp/norm is on the outside
+
+to check/send after playing with...
+
+** 17/5/2023
+
+CD and TOAD (and offset):
+186.wav
+187.wav
+188.wav **
+189.wav - +AC too
+190.wav - +AC
+191.wav - +AC
+192.wav - +AC
+193.wav - +AC
+194.wav - +AC
+195.wav - +AC
+196.wav - +AC  ***
+197.wav - +AC
+198.wav - +AC
+199.wav - +AC
+
+[last ones till 195 signum in=int1out, signum out to clock on int2, also signum out to free collector in]
+
 ** 16/5/2023
 
 - DONE: do we need to swop M20 and M19 so input is on outside? swopped...
@@ -6,10 +32,17 @@
 
 *tests and changes to test on:*
 
-- voltage from divider and also 330R there for current/any bleed???
-- amplify square (eg. 2.5 x 2.5=6.25 /10=0.625 *4 = 2.5) = 1x1 =1 = 8x???
-- amp signum (reduce 56k?)
-- amp on all multipliers so 5v is 1x = 8x then so 1k/7k // leave inner cell mults as is???
+- **voltage from divider and also 330R there for current/any bleed??? - dividers now 22k seems very samey,,, R3 and R13 still 330R*
+
+(we can change lower part of dividers for power supply to 22k to raise voltage there to 7.5v but... -> R2 and R7
+
+- NON!amplify square (eg. 2.5 x 2.5=6.25 /10=0.625 *4 = 2.5) = 1x1 =1 = 8x???  700k on R75 // or try 470k
+
+- amp signum (reduce R34 56k to????)??
+
+- NON!amp on all multipliers so 5v is 1x = 8x then so 100k/700k // leave inner cell mults as is??? R115, R116, R117
+
+all signals high so no amps...
 
 *start on manual ideas*
 
