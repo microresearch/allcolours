@@ -7716,7 +7716,7 @@
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 641af43f-79a2-40ea-9fdd-5e22da30b3d4)
     )
-    (fp_text value "STM32F446RETx" (at 0 -7.2 -90) (layer "B.Fab")
+    (fp_text value "STM32F413RGTx" (at 0 -7.2 -90) (layer "B.Fab")
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 8881c099-6698-4ca3-84f1-aef74588ea7b)
     )

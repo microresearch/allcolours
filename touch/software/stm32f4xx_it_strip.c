@@ -21,6 +21,7 @@
 #define DELB 200 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 #define DELA 64 // for clear DAC // was 64
 
+#define HOLDRESET 200 // time for full reset when hold the mode down - over 2 seconds now
 #define MAXMODES 4
 #define MAXREC 9500 // depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
 //#define MAXREC 3800
@@ -113,8 +114,9 @@ static float ownplay_cnt[8]={0.0f};
 //static uint32_t tgr_cnt[10]={0};
 static uint32_t rec=0, play=0;
 
-static uint32_t shifter[8]={2,2,2,2,2,2,2,2}; // shifter seperates vca from cv - VCA comes first
+//static uint32_t shifter[8]={2,2,2,2,2,2,2,2}; // shifter seperates vca from cv - VCA comes first
 //static uint32_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
+uint32_t previousone[8]={3,0,1,2, 7,4,5,6}; // lowest voltage=4?, then VCAs from bottom order=0,1,2,3, 4,5,6,7
 
 //static uint32_t order[8]={7,6,5,4,3,2,1,0}; // 0-3 is VCA from bottom
 //static uint32_t order[8]={5,5,5,5,5,5,5,5}; // 0-3 is VCA from bottom
@@ -142,6 +144,26 @@ inline static uint32_t speedsample(float speedy, uint32_t lengthy, uint32_t dacc
 		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); // adapted for top bits
 
       return (uint32_t)sample;
+}
+
+inline static uint32_t speedsamplecopy(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples, uint32_t *copyinto){
+  uint32_t lowerPosition, upperPosition;
+  
+  play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)play_cnt[dacc];
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+  
+  int32_t res=(play_cnt[dacc] - (float)lowerPosition);
+    //  Return interpolated table value
+  float sample= ((samples[lowerPosition]&4095) + 
+		 (res *
+		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); // adapted for top bits
+
+  copyinto[lowerPosition]=samples[lowerPosition];
+  
+  return (uint32_t)sample;
 }
 
 inline static uint32_t ownspeedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){ // for upper speed bits
@@ -209,10 +231,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint32_t playb[8]={0,0,0,0, 0,0,0,0};
     static uint32_t recd[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrecy[8]={0,0,0,0, 0,0,0,0};
-    static uint32_t lastrec=0, lastplay=0, added[8]={0}, lastmode=0;
+    static uint32_t lastrec=0, lastplay=0, added[8]={0}, modetoggle=0;
     static uint32_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
     static uint32_t lasttriggered[11]={0}, breaker[11]={0}, lastlastrec=0, lastlastplay, lastlast;
-    static int32_t endpoint, togrec=0, togplay=0;
+    static int32_t endpoint, togrec=0, togplay=0, modeheld=0;
     
     uint32_t tmp, trigd;
     int32_t midder;
@@ -225,7 +247,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=23; // testy
+	mode=0; // testy
 
 	switch(mode){
 	case 0: 
@@ -267,15 +289,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    else {
 	      lastrec=0;
 	    }
-	    //	    values[4]=0; //TESTY! 4 is lowest voltage
-          WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
+	    //	    values[4]=0; //TESTY! 4 is lowest voltage   
 	  break; ///// 
 
 	case 1: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed changes at all...
@@ -320,13 +334,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    TOGGLES;      
-	  }       
 	  break; 
 	  
 	case 2: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
@@ -370,14 +377,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	case 3: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
@@ -423,14 +422,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; 
 	  ///////////////////////////////////////////
 
@@ -479,14 +470,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break;
 
 	case 5: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
@@ -532,14 +515,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	  // NON!
@@ -592,14 +567,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	case 7: // TEST for local speeds on each voltage - so we don't add any values there 
@@ -643,14 +610,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    ////// write to DAC
 	    if (play==0)	    values[daccount]=(real[daccount]); 
 	    
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
 	case 8: // fixed speed and slower fixed rec////
@@ -702,14 +661,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	case 9: // looped recording and overlay - so it is always playing/recording - 
@@ -747,14 +698,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (rec_cnt[daccount]>endpoint) {
 	    rec_cnt[daccount]=lastlastrec;
 	    }
-	    
-	  WRITEDAC;
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    ///	    TOGGLES;       // we dont use rec or play
-	  }       
 	  break; ///// 
 
 	case 10: // start on looped recording and overlay - so it is always playing/recording - 
@@ -790,13 +733,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    rec_cnt[daccount]=lastlastrec;
 	    }
 	    
-	  WRITEDAC;
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    ///	    TOGGLES;       // we dont use rec or play
-	  }       
 	  break; ///// 
 
 	case 11: // trial record speed - tap freeze to record speed as top voltage, tap to stop rec...
@@ -846,14 +782,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break;
 
 	case 12: // trial record speed - tap freeze to record speed as top voltage, tap to stop rec...
@@ -904,14 +832,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break;
 
 	  //- 13, 14, 15: global/detach mode... rec and play as usual:
@@ -961,14 +881,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
 	case 14: // not overdub but just record new
@@ -1016,14 +928,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
 	  
@@ -1070,14 +974,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
 	case 16: // trial for slew of touch outside
@@ -1143,14 +1039,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(result[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
 	  // global: freezer shifts start of each particular section towards the end
@@ -1195,14 +1083,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
           case 18: // global mode where we also just use recorded top voltage as speed (freeze to attach detach that???)... 
@@ -1249,14 +1129,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 	  
 
 	case 19: // as 0 but if we are in playback mode, freeze holds playback/rec voltage...
@@ -1297,15 +1169,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    else {
 	      lastrec=0;
 	    }
-	    ////// write to DAC
-	    WRITEDAC;
-	  
-	    daccount++;
-	    if (daccount==8) {
-	      daccount=0;
-	      count++;
-	      TOGGLES;      
-	    }       
 	    break; ///// 
 
 	case 20: // as 19 above but different kind of freeze... speed still moves on samples...
@@ -1346,15 +1209,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    else {
 	      lastrec=0;
 	    }
-	    ////// write to DAC
-	    WRITEDAC;
-	  
-	    daccount++;
-	    if (daccount==8) {
-	      daccount=0;
-	      count++;
-	      TOGGLES;      
-	    }       
 	    break; ///// 
 	    
 	case 21: // as 0 but no reset of rec_cnt
@@ -1391,15 +1245,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    else {
 	      lastrec=0;
 	    }
-	    ////// write to DAC
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
 	case 22: // - slew which doesn't wait until target - TODO:how to do rise and fall independent speeds??
@@ -1477,14 +1322,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(result[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
 	  break; ///// 
 
           case 23:
@@ -1535,16 +1372,135 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    else {
 	      lastrec=0;
 	    }
-          WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    count++;
-	    TOGGLES;      
-	  }       
-	  break; ///// 
+	  break; /////23
 
+          case 24:
+	    //this one: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
+	    /////- global and local: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
+
+	  FREEZERS;
+	  
+	  //	  if (frozen[daccount]==0) { // freeze always holds
+	    REALADC;
+	    //	  }
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    if (frozen[daccount]) {
+	      values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[previousone[daccount]]); // all cnts are same in globals
+	    }
+	    else values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	    values[daccount]=(real[daccount]);
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	    }
+	  break; ///// 24
+
+	case 25:
+	    //- global and local: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
+
+	  FREEZERS;
+	  
+	  //	  if (frozen[daccount]==0) { // freeze always holds
+	    REALADC;
+	    //	  }
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    if (frozen[daccount]) {
+	      values[daccount]=speedsamplecopy(logfast[speed], rec_cnt[daccount], daccount, recordings[previousone[daccount]], recordings[daccount]); // all cnts are same in globals
+	    }
+	    else values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	    values[daccount]=(real[daccount]);
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	    }
+	  break; /////25 
+
+          case 26:
+	    // - these also suggest another mode which overlays the previous one on playback - so adds the 2 recs...
+	    //this one: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
+	    /////- global and local: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
+
+	  FREEZERS;
+	  
+	  //	  if (frozen[daccount]==0) { // freeze always holds
+	    REALADC;
+	    //	  }
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    if (frozen[daccount]) {
+	      values[daccount]+=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[previousone[daccount]]); // all cnts are same in globals
+	    }
+	    else 
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	    values[daccount]=(real[daccount]);
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	    }
+	  break; /////26
+	  
 	  //////////////////////////////////////////////////////
 	  //////////////////////////////////////////////////////
 	  
@@ -1610,13 +1566,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    TOGGLES;      
-	  }       
 	  break; 
 	  
 	  /// start on local modes - freeze is toggle rec/play
@@ -1681,13 +1630,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	case 32:
@@ -1758,13 +1700,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	case 33: // as 30 but - *rec freezes all, play resets all counters*
@@ -1826,13 +1761,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	case 35: // alt hold as 34 above 
@@ -1887,13 +1815,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    TOGGLES;      
-	  }       
 	  break; 
 
 	  	case 34: // as 33 but rec holds playback: as 30 but - *rec freezes all, play resets all counters*
@@ -1949,13 +1870,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  else {
 	    values[daccount]=(real[daccount]); 
 	  }
-	  WRITEDAC;
-	  
-	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
-	    TOGGLES;      
-	  }       
 	  break; 
 	 	  
 	  ///////////////////////
@@ -1977,6 +1891,35 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  //	  RESET0; // one reset... drops to 142Hz so not so bad... 
 	  break;
 
-	} // end of modes switch    
+	case 777: // tests of all toggles! rec, play, mode and freeze
+	  FREEZERS;
+	  
+	  if (frozen[daccount] || rec || play || modetoggle ) { // freeze always holds
+	    values[daccount]=4095;
+	  }
+	  else values[daccount]=0;
+	  break; /////
+
+	} // end of modes switch
+
+	
+	if (modeheld>HOLDRESET){
+	  //	  modeheld=0;
+	  //	  values[daccount]=4095; // TESTY
+	  RESETT;
+	  }
+	//	else values[daccount]=0; //TESTY
+	
+
+	// pulled this out here...
+	WRITEDAC;
+	daccount++;
+	if (daccount==8) {
+	  daccount=0;
+	  count++;
+	  TOGGLES;      
+	}
+	
+	
     }
   }

@@ -16,30 +16,45 @@ global modes, local modes and see all below
 
 - review modes and what we have,,, what are additional options for speeds and additives
 - what needs to be set or reset when we change modes
-- init and zeroing of key arrays
+- init and zeroing of key arrays if any...
 - streamline playback when we have base modes - see single.c
 
 - all modes, tests
 - test timing in main/divider
 - test with different PSU and hands/fingers
-- DONE//add protection, re-test PCB - also with new processor F413GTx, 
+- +DONE//add protection, re-test PCB - also with new processor F413GTx,+
 - BOM and order
 - manual: layout and list of modes somehow... touchable, overlays//holes, cutouts...
 
 TODO2: test with new fingers, new modes around areas, geomantic?, finalise modes and modifiers
 
-** 18/5/2023
+** 23/5/2023
+
+DONE:TODO: potential full reset mode if hold mode down >4 seconds... test with beep!
+
+** 20/5/2023
+
+*TODO: new modes:*
+DONE:- global and local: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
+
+DONE/test in full but seems ok: alternatives: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
+
+DONE/tested- these also suggest another mode which overlays the previous one on playback - so adds the 2 recs...
+
+older notes:
+1- global rec/play + speeds
+2- global rec/play and local speeds
+3- local sections
+4- loop all in constant overlay/type loop
+
++ modifiers
+
+** 18-19/5/2023
 
 notebook notes:
 
 - define global and local modes // and modifiers: speed, addition etc.
 - how zones/areas could work eg. divide in two (left and lower, right and upper) and one is speed for other...
-
-*TODO: new modes:*
-
-- global and local: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
-
-alternatives: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
 
 23testedTODOmore- overlay mirror: all follow say lowest/bottom voltage 0 but add own
   overlay (live and/or in recording/playback - what makes sense
