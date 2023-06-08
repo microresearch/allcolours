@@ -1,0 +1,17 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"M15,M12,M19,M2,M24,M16,M17,M14,M10,M6,M8,M9,M23,M22,M21,M3,M13,M5,M1,M18,M20,M4,M7,M11";"Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHolesKEEPOUT";24;"AUDIO-JACKERTHENVAR-PJ398";;;
+2;",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";"";32;"";;;
+3;"RV3,RV4,RV1,RV2";"Potentiometer_Alps-RK09";4;"10K";;;
+4;"R1,R3,R15,R13,R21,R7,R19,R20,R8,R12,R5,R11";"R_0805_2012Metric";12;"10K";;;
+5;"R25,R26,R29,R40,R38,R39,R37,R28,R30,R31,R32,R27";"R_0805_2012Metric";12;"1K";;;
+6;"C3,C5,C6,C14,C4";"C_0805_2012Metric";5;"100N";;;
+7;"U2,U3";"SOIC-14_3.9x8.7mm_P1.27mm";2;"TL074";;;
+8;"U6";"TO-252-2";1;"LM1117-5.0";;;
+9;"R6,R36,R34,R9,R2,R33,R35,R4";"R_0805_2012Metric";8;"100K";;;
+10;"C7,C11,C9,C12,C8,C10";"C_0805_2012Metric";6;"100NF";;;
+11;"D2,D1";"D_SOD-123";2;"1N5158";;;
+12;"R14,R23,R22,R18,R17,R10,R16,R24";"R_0805_2012Metric";8;"10k";;;
+13;"D3,D6,D4,D5";"D_SOD-123";4;"1N4148";;;
+14;"C13,C2,C1";"CP_EIA-3216-18_Kemet-A";3;"10u";;;
+15;"U4,U5";"SOIC-16_3.9x9.9mm_P1.27mm";2;"ADG413BNZ";;;
+16;"P1";"PinHeader_2x05_P2.54mm_Vertical";1;"CONN_02X05";;;

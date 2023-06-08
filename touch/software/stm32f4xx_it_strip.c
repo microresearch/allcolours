@@ -17,14 +17,17 @@
 
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
-#define BRK 4 // was 8 when we have have divider in main as 32...
+#define BRK 8 // was 8 when we have have divider in main as 32...
 #define DELB 200 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 #define DELA 64 // for clear DAC // was 64
 
-#define HOLDRESET 200 // time for full reset when hold the mode down - over 2 seconds now
+#define HOLDRESET 200 // time for full reset when hold the mode down - over 2 seconds
+#define SHORTMODE 2 // was 20ms could be shorter...
+#define LONGMODE 100 // 1sec
 #define MAXMODES 4
-#define MAXREC 9500 // depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
-//#define MAXREC 3800
+#define MAXMINOR 128 // 128 minor/modifiers - not all used...
+//#define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
+#define MAXREC 3800 // for older STM
 // with F413 we have 9000 which is how long - 26 seconds as runs a bit faster,,, 32// now div64 and 9500 gives us 55 seconds...
 
 GPIO_InitTypeDef GPIO_InitStructure;
@@ -108,9 +111,9 @@ void PendSV_Handler(void)
 
 extern __IO uint32_t adc_buffer[8];
 static uint32_t recordings[8][MAXREC+1]={0}; // 
-static uint32_t rec_cnt[8]={0};
-static float play_cnt[8]={0.0f};
-static float ownplay_cnt[8]={0.0f};
+static uint32_t rec_cnt[8]={0,0,0,0, 0,0,0,0};
+static float play_cnt[8]={0.0f,0.0f,0.0f,0.0f, 0.0f,0.0f,0.0f,0.0f,};
+static float ownplay_cnt[8]={0.0f,0.0f,0.0f,0.0f, 0.0f,0.0f,0.0f,0.0f,};
 //static uint32_t tgr_cnt[10]={0};
 static uint32_t rec=0, play=0;
 
@@ -118,7 +121,7 @@ static uint32_t rec=0, play=0;
 //static uint32_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
 uint32_t previousone[8]={3,0,1,2, 7,4,5,6}; // lowest voltage=4?, then VCAs from bottom order=0,1,2,3, 4,5,6,7
 
-//static uint32_t order[8]={7,6,5,4,3,2,1,0}; // 0-3 is VCA from bottom
+//static uint32_t order[8]={7,6,5,4,3,2,1,0}; // 03 is VCA from bottom
 //static uint32_t order[8]={5,5,5,5,5,5,5,5}; // 0-3 is VCA from bottom
 
 inline static float mod0(float value, float length)
@@ -227,18 +230,23 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     uint32_t values[8];
     static int32_t real[8], reall[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static????
     static uint32_t lastvalue[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t lastspeed=0, lastspeedd=0;
     static uint32_t frozen[8]={0,0,0,0, 0,0,0,0};
     static uint32_t playb[8]={0,0,0,0, 0,0,0,0};
     static uint32_t recd[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrecy[8]={0,0,0,0, 0,0,0,0};
-    static uint32_t lastrec=0, lastplay=0, added[8]={0}, modetoggle=0;
-    static uint32_t count=0, triggered[11]={0}, mode=0, starter[8]={0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
+    static uint32_t lastrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0;
+    static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0,starter[8]={0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
     static uint32_t lasttriggered[11]={0}, breaker[11]={0}, lastlastrec=0, lastlastplay, lastlast;
-    static int32_t endpoint, togrec=0, togplay=0, modeheld=0;
+    static int32_t endpoint, togrec=0, togplay=0, modeheld=0, modechanged=1, first=0;
     
     uint32_t tmp, trigd;
     int32_t midder;
 
+    uint32_t speeddiv[4]={1, 4, 16, 32};
+    float speeddivisor[4]={1.0, 0.25, 0.0625, 0.03125};
+
+    
     //    itoa(prev[0], buffx, 10);
     //  uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 };
     //  send_command(0x05/* some interrupt ID */, m);
@@ -250,38 +258,96 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	mode=0; // testy
 
 	switch(mode){
-	case 0: 
+	case 0: // 6/6/2023 - now with minor mode adjustments
 	  FREEZERS;
-	  
-	  if (frozen[daccount]==0) { // freeze always holds
-	    REALADC;
+	  REALADC;
+
+	  if (play==0) {
+	  if (frozen[daccount]==0) lastvalue[daccount]=real[daccount];
+	  else real[daccount]=lastvalue[daccount];// frozen
 	  }
+	  
 	  // playback
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
+	    if (!(minormode&8)) {
+	      LASTPLAY;
+	    }
 	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+
+	    if (minormode&2) { // speed as real or recorded
+	      if (minormode&32){ // freeze just freezes speed and not real
+		if (frozen[6]==0) {
+		  lastspeedd=(lastspeed>>2)+(real[6]>>2);
+		  if (lastspeedd>1023) lastspeedd=1023;
+	      }
+	      }
+		else { // freeze freezes real only and not speed
+		if (frozen[6]==0) {
+		  lastvalue[6]=real[6];
+		}
+		else {
+		  real[6]=lastvalue[6];
+		  lastspeedd=(lastspeed>>2)+(real[6]>>2);
+		  if (lastspeedd>1023) lastspeedd=1023;
+		}
+		}
+		speed=lastspeedd;
+	  }
+	  else {
+	    if (minormode&32){ // freeze just freezes speed and not real
+	      if (frozen[6]==0) lastspeedd=real[6];
+	    }
+	    else // freeze freezes real only and not speed
+	      {
+		if (frozen[6]==0) {
+		  lastvalue[6]=real[6];
+		  lastspeedd=real[6];
+		}
+		else {
+		  lastspeedd=reall[6];
+		  real[6]=lastvalue[6];
+		}
+	      }
+	      speed=lastspeedd>>2; // 24/4 // 25/4 now 12 to 10 bits
+	  }
+
+	    //	    minormode=64;
+	    if (minormode&64){	    // freeze stops playback
+	    if (frozen[daccount]==0) {
+	      if (minormode&1) values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	      else values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    }
+	    else values[daccount]=lastvalue[daccount];
+	    }
+	    else { // freeze just holds overlap
+	      if (minormode&1) values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	      else values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+
+	      if (frozen[daccount]==0) lastvalue[daccount]=real[daccount];
+	      else real[daccount]=lastvalue[daccount];// frozen
+	    }
+	    if (daccount==6) lastspeed=values[6];
+
 	    values[daccount]+=real[daccount];
+	    if (minormode&4){
 	    if (values[daccount]>4095) values[daccount]=4095;
+	    }
+	    else values[daccount]=values[daccount]&4095;
 	  } // if play
 	  else {
 	    lastplay=0;
 	    play=0;
-	    values[daccount]=(real[daccount]);
+	    values[daccount]=(real[daccount]); 
 	  }
     
 	  ///// recordings
 	    if (rec){ // we are recording
+	      if (!(minormode&16)) {
 	      LASTREC; // reset all
+	      }
 	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>MAXREC) {
-
-		//		itoa(rec_cnt[daccount], buffx, 10);
-		//		uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 };
-		//		send_command(0x05/* some interrupt ID */, m);
-		
 		rec_cnt[daccount]=0;
 		overlap[daccount]=1;
 	      }
@@ -292,51 +358,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    //	    values[4]=0; //TESTY! 4 is lowest voltage   
 	  break; ///// 
 
-	case 1: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed changes at all...
-	  // overlay is mod
-	  FREEZERS;
-	  
-	  if (frozen[daccount]==0) { // freeze always holds
-	    REALADC;
-	  }
-	  // playback
-	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    values[daccount]=speedsample(1.0f, rec_cnt[daccount], daccount, recordings[daccount]);
-	  } // if play
-	  else {
-	    lastplay=0;
-	    play=0;
-	  }
-    
-	  ///// recordings
-	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
-	    else {
-	      lastrec=0;
-	      //	      overlap[daccount]=0;
-	    }
+	  ////////////////////////////////////////////
+	  // adding 6/6 - but these will need to be changed for minormode scheme
 
-	    ////// write to DAC
-	  // if playback add
-	    if (play==1) {
-	    values[daccount]+=real[daccount];
-	    values[daccount]=values[daccount]&4095;
-	  }
-	  else {
-	    values[daccount]=(real[daccount]); 
-	  }
-	  break; 
-	  
-	case 2: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
+	  //	  2) overlay on next rec only (with/without reset - so without reset overlay would carry on from end of last rec...)
+	  //	       if no reset then this changes length of rec/play
+	  // but to overlay we need to play
+          case 1: 
 	  FREEZERS;
 	  
 	  if (frozen[daccount]==0) { // freeze always holds
@@ -344,64 +372,35 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }
 	  // playback
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
+	    LASTPLAY; // reset bits
 	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
 	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	  } // if play
-	  else {
-	    lastplay=0;
-	    play=0;
-	  }
-    
-	  ///// recordings
-	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
-	    else {
-	      lastrec=0;
-	    }
-
-	    ////// write to DAC
-	  // if playback add
-	    if (play==1) { 
-	    values[daccount]+=real[daccount];
+	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]); // speed bits
+	    values[daccount]+=real[daccount]; // overlap bits
 	    if (values[daccount]>4095) values[daccount]=4095;
-	  }
-	  else {
-	    values[daccount]=(real[daccount]); 
-	  }
-	  break; 
-
-	case 3: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
-	  // modulo version
-	  FREEZERS;
-	  
-	  if (frozen[daccount]==0) { // freeze always holds
-	    REALADC;
-	  }
-	  // playback
-	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    speed=real[6]>>2; // 24/4 // 25/4 now 10 bits
-	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
 	  else {
 	    lastplay=0;
 	    play=0;
+	    values[daccount]=(real[daccount]);
 	  }
     
 	  ///// recordings
 	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      LASTREC; // reset bits // *add no-reset opts*
+	      if (modechanged) {
+		modechanged=0;
+		// rec all new until we stop first one
+		first=1;
+	      }		
+	      if (first==1) recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      else {
+		recordings[daccount][rec_cnt[daccount]]+=real[daccount];
+		if (recordings[daccount][rec_cnt[daccount]]>4095) recordings[daccount][rec_cnt[daccount]]=4095;
+		// also overlay bits but we need to play
+		speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+		values[daccount]=recordings[daccount][rec_cnt[daccount]]; // no speed
+	      }
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>MAXREC) {
 		rec_cnt[daccount]=0;
@@ -410,127 +409,29 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    } // if rec
 	    else {
 	      lastrec=0;
-	      //	      overlap[daccount]=0;
-	    }
+	      first=0;
+	    }       
+	  break; ///// 
 
-	    ////// write to DAC
-	  // if playback add
-	    if (play==1) { 
-	    values[daccount]+=real[daccount];
-	    values[daccount]=values[daccount]&4095;
-	  }
-	  else {
-	    values[daccount]=(real[daccount]); 
-	  }
-	  break; 
-	  ///////////////////////////////////////////
-
-	  // NON!
-	case 4: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage gets slower
-	  /// speed lowering as case 2
-	  FREEZERS;
-	  
-	  if (frozen[daccount]==0) { // freeze always holds
-	    REALADC;
-	  }
-	  // playback
-	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    //	    speed=1;
-	    //	    values[daccount]=speedsample(logslow[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	  } // if play
-	  else {
-	    lastplay=0;
-	    play=0;
-	  }
-    
-	  ///// recordings
-	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
-	    else {
-	      lastrec=0;
-	      //	      overlap[daccount]=0;
-	    }
-
-	    ////// write to DAC
-	  // if playback add
-	    if (play==1) { //TEST: don't add for speed!
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
-	  }
-	  else {
-	    values[daccount]=(real[daccount]); 
-	  }
-	  break;
-
-	case 5: // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, speed on top voltage from lower up
-	  // with only speed upwards
-	  FREEZERS;
-	  
-	  if (frozen[daccount]==0) { // freeze always holds
-	    REALADC;
-	  }
-	  // playback
-	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	  } // if play
-	  else {
-	    lastplay=0;
-	    play=0;
-	  }
-    
-	  ///// recordings
-	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
-	    else {
-	      lastrec=0;
-	      //	      overlap[daccount]=0;
-	    }
-
-	    ////// write to DAC
-	  // if playback add
-	    if (play==1) { //TEST: don't add for speed!
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
-	  }
-	  else {
-	    values[daccount]=(real[daccount]); 
-	  }
-	  break; 
-
-	  // NON!
-	case 6: // speed with rec slow down
+	  /// 7/6
+	case 2: // FIXED speed - add in other modifiers TODO
+	  // fixed speeds and slower fixed rec//// modifiers used here for rec and speed dividers
 	  // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed
+	  // dividers can be out of sync also
 	  FREEZERS;
 	  
 	  if (frozen[daccount]==0) { // freeze always holds
 	    REALADC;
 	  }
+	    tmp=minormode&3;
+
 	  // playback
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
 	    LASTPLAY;
 	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    //	    values[daccount]=speedsample(logslow[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    //	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    //	    values[daccount]=speedsample(0.0625, rec_cnt[daccount], daccount, recordings[daccount]);
+	    values[daccount]=speedsample(speeddivisor[tmp], rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
 	  else {
 	    lastplay=0;
@@ -539,7 +440,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	  recsp[daccount]++;
 	  //	  recspeed=real[6]>>6; // gets faster for higher values
-	  recspeed=16; // TESTY fixed
+	  
+	  recspeed=speeddiv[tmp]; // TESTY was 16 fixed 1/16 speed=0.0625
 	  ///// recordings
 	    if (rec){ // we are recording
 	      LASTREC; // reset all
@@ -569,50 +471,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }
 	  break; 
 
-	case 7: // TEST for local speeds on each voltage - so we don't add any values there 
-	  // doesn't work so well as global as some have no contents
-	  FREEZERS;
-	  
-	  if (frozen[daccount]==0) { // freeze always holds
-	    REALADC;
-	  }
-	  // playback
-	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    // speed depends on real how we treat it!
-	    if (daccount>3) { // 4,5,6,7 voltages
-	    speed=real[daccount]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    }
-	    else {
-	      speed=reall[daccount]; // 10 bits
-	    }
-	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	  } // if play
-	  else {
-	    lastplay=0;
-	    play=0;
-	  }
-    
-	  ///// recordings
-	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
-	    else {
-	      lastrec=0;
-	    }
-	    ////// write to DAC
-	    if (play==0)	    values[daccount]=(real[daccount]); 
-	    
-	  break; ///// 
+	  ////////////////////////////////////////////
 
-	case 8: // fixed speed and slower fixed rec////
+	  
+	case 8: // now changing speed and slower fixed rec////
 	  // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed
 	  FREEZERS;
 	  
@@ -624,7 +486,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    LASTPLAY;
 	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
 	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    values[daccount]=speedsample(0.0625, rec_cnt[daccount], daccount, recordings[daccount]);
+	    //	    values[daccount]=speedsample(0.0625, rec_cnt[daccount], daccount, recordings[daccount]);
+	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
 	  } // if play
 	  else {
 	    lastplay=0;
@@ -633,7 +496,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	  recsp[daccount]++;
 	  //	  recspeed=real[6]>>6; // gets faster for higher values
-	  recspeed=16; // TESTY fixed
+	  recspeed=8; // TESTY was 16 fixed 1/16 speed=0.0625
 	  ///// recordings
 	    if (rec){ // we are recording
 	      LASTREC; // reset all
@@ -965,7 +828,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    ////// write to DAC
 	  // if playback add
 	    if (play==1) { //TEST: don't add for speed!
-	      if (frozen[daccount]==0) { // freeze always holds	      
+	      if (frozen[daccount]==0) { 
 		values[daccount]+=real[daccount];
 		if (values[daccount]>4095) values[daccount]=4095;
 	      }
@@ -1085,51 +948,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }
 	  break; ///// 
 
-          case 18: // global mode where we also just use recorded top voltage as speed (freeze to attach detach that???)... 
-	  FREEZERS;
-	  
-	  if (frozen[daccount]==0 || daccount==6) { // freeze always holds
-	    REALADC;
-	  }
-	  // playback
-	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    if (frozen[6]) {
-	      speed=(values[6]>>2); // 24/4 // 25/4 now 12 to 10 bits
-	      if (speed>1023) speed=1023;
-	    }
-	    else speed=real[6]>>2;
-	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	  } // if play
-	  else {
-	    lastplay=0;
-	    play=0;
-	  }
-    
-	  ///// recordings
-	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
-	    else {
-	      lastrec=0;
-	    }
-	    ////// write to DAC
-	  // if playback add
-	    if (play==1) { 
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
-	  }
-	  else {
-	    values[daccount]=(real[daccount]); 
-	  }
-	  break; ///// 	  
 
 	case 19: // as 0 but if we are in playback mode, freeze holds playback/rec voltage...
 	  FREEZERS;
@@ -1172,7 +990,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    break; ///// 
 
 	case 20: // as 19 above but different kind of freeze... speed still moves on samples...
-	  // as 0 but if we are in playback mode, freeze holds playback/rec voltage...
+	  // as 0 but if we are in playback mode, freeze holds playback/rec voltage... 
 	  FREEZERS;
 	  
 	  if (frozen[daccount]==0 || play) { // as we don;t want freeze in play 
@@ -1184,9 +1002,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
 	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
 	    values[daccount]=speedsample(logspeed[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	    lastvalue[daccount]=values[daccount];
+	    if (!frozen[daccount]) lastvalue[daccount]=values[daccount];
 
-	    if (frozen[daccount]) values[daccount]=lastvalue[daccount];
+	    if (frozen[daccount]) values[daccount]=lastvalue[daccount]; // 
 	    values[daccount]+=real[daccount];
 	    if (values[daccount]>4095) values[daccount]=4095;
 	  } // if play
@@ -1633,7 +1451,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  break; 
 
 	case 32:
-	  // as mode 20 but we reset rec_cnt once...
+	  // as mode 30?XX but we reset rec_cnt once...
 	  // basic mode with NO freezers, record and play and overlay with freeze/unfreeze of all, no speed changes at all...
 	  // alt logic - rec and play just reset counters as soon as hit
 	  // overlay is peak
@@ -1763,6 +1581,61 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }
 	  break; 
 
+	case 34: // as 33 but rec holds playback: as 30 but - *rec freezes all, play resets all counters*
+	  FREEZERS;
+	  REALADC;
+	  
+	  if (frozen[daccount]) { // rec on freezer -doesn't reset counter
+	    recd[daccount]=1;
+	    playb[daccount]=0;
+	  }
+	  else if (rec_cnt[daccount]) { // play if we have...
+	    recd[daccount]=0;
+	    playb[daccount]=1;
+	  }
+
+	  // REC and PLAY just reset all respective counters but only once
+
+	  if (togplay){
+	    LASTPLAY;
+	    LASTREC
+	  }
+	  else {
+	    lastplay=0;
+	    lastrec=0;
+	      }
+	  
+	  // playback
+	  if (playb[daccount] && rec_cnt[daccount]){// only play if we have something in rec // ALT LOGIC
+	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
+	    if (rec==0){
+	    values[daccount]=speedsample(1.0f, rec_cnt[daccount], daccount, recordings[daccount]);
+	    lastvalue[daccount]=values[daccount];
+	    }
+	    else values[daccount]=lastvalue[daccount];	    
+	  } // if play
+	  
+	  ///// recordings
+	    if (recd[daccount]){ // we are recording TESTY: we don't reset counter...rec_cnt // could also be if not playing...
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    
+	    ////// write to DAC
+	  // if playback add
+	    if (playb[daccount] && rec_cnt[daccount]) {
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  }
+	  else {
+	    values[daccount]=(real[daccount]); 
+	  }
+	  break; 
+
 	case 35: // alt hold as 34 above 
 	  FREEZERS;
 	  REALADC;
@@ -1817,61 +1690,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }
 	  break; 
 
-	  	case 34: // as 33 but rec holds playback: as 30 but - *rec freezes all, play resets all counters*
-	  FREEZERS;
-	  REALADC;
 	  
-	  if (frozen[daccount]) { // rec on freezer -doesn't reset counter
-	    recd[daccount]=1;
-	    playb[daccount]=0;
-	  }
-	  else if (rec_cnt[daccount]) { // play if we have...
-	    recd[daccount]=0;
-	    playb[daccount]=1;
-	  }
-
-	  // REC and PLAY just reset all respective counters but only once
-
-	  if (togplay){
-	    LASTPLAY;
-	    LASTREC
-	  }
-	  else {
-	    lastplay=0;
-	    lastrec=0;
-	      }
-	  
-	  // playback
-	  if (playb[daccount] && rec_cnt[daccount]){// only play if we have something in rec // ALT LOGIC
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    if (rec==0){
-	    values[daccount]=speedsample(1.0f, rec_cnt[daccount], daccount, recordings[daccount]);
-	    lastvalue[daccount]=values[daccount];
-	    }
-	    else values[daccount]=lastvalue[daccount];	    
-	  } // if play
-	  
-	  ///// recordings
-	    if (recd[daccount]){ // we are recording TESTY: we don't reset counter...rec_cnt // could also be if not playing...
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
-	    
-	    ////// write to DAC
-	  // if playback add
-	    if (playb[daccount] && rec_cnt[daccount]) {
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
-	  }
-	  else {
-	    values[daccount]=(real[daccount]); 
-	  }
-	  break; 
-	 	  
 	  ///////////////////////
 	  //////////////////////
 
@@ -1902,15 +1721,42 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	} // end of modes switch
 
-	
-	if (modeheld>HOLDRESET){
-	  //	  modeheld=0;
-	  //	  values[daccount]=4095; // TESTY
+	// start to test for long or short mode hits
+	static uint32_t testting=0;
+	if (modeheld>HOLDRESET && newmode) { //reset all
+	  newmode=0;
+	  modeheld=0;
 	  RESETT;
+	  //	  testting^=1; // testy
+	}
+	else if (modeheld>LONGMODE && modeheld<HOLDRESET && newmode) { // increment major mode
+	  newmode=0;
+	  modeheld=0;
+	  MODECHANGED;
+	  //  testting^=1; // testy
+	}	
+	else if (modeheld>SHORTMODE && modeheld<LONGMODE && newmode){ //inc minor mode matrix
+	  newmode=0;
+	  modeheld=0; // ??? was commented just for testing
+	  //	  testting^=1; // testy
+	  minormode++;
+	  if (minormode>MAXMINOR) minormode=0;
 	  }
-	//	else values[daccount]=0; //TESTY
-	
 
+	/*
+	  // decoding minor modes or is this done in modes...
+
+
+	  // what they are and how they are decoded...
+	  1-overlay:modulo/peak 
+	  23-speeds: add, add from below, nofreeze, freeze
+	  45-resets: play, rec
+	 */
+	
+//	if (testting) values[daccount]=4095; // TESTY
+//	else values[daccount]=0; // TESTY
+	
+	
 	// pulled this out here...
 	WRITEDAC;
 	daccount++;
