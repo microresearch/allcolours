@@ -1,3 +1,7 @@
+** 7/6/2023
+
+- changed very slightly M20 position... updated new panel for this shift...
+
 ** 19/5/2023
 
 - revised PCB for new norms, removed 3 jacks and swopped m19 and m20 so comp/norm is on the outside

@@ -91,8 +91,6 @@ void clocksetup413 (void)
    SystemCoreClockUpdate();
 }
 
-// initclock for 413???
-
 //DAC_InitTypeDef dac_init_s;
 
 int main(void)
@@ -117,7 +115,7 @@ int main(void)
     //Wait for clock to stabilize
     //    while (!RCC_WaitForHSEStartUp());
 
-    clocksetup413();
+    //    clocksetup413(); // leave out for 446 but how do we get that clock 413!!!!!TESTY
     // 8 channels
 	    //	    ADC1_Init((uint16_t *)adc_buffer);
 
@@ -315,6 +313,7 @@ int main(void)
     
   io_config2 ();
 
+  
   // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???
 
@@ -327,7 +326,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
   /// XXXXX
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 64; // was 32... for 413 try 16/// was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // was 64 //was 32... for 413 try 16/// was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   // for 413 which seems run 8x slower now we have 5 which matches our old speed with 446
   // 4 is orig
   // 48 is too slow...
