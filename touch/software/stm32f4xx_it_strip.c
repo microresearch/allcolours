@@ -21,7 +21,7 @@
 #define DELB 200 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 #define DELA 64 // for clear DAC // was 64
 
-#define HOLDRESET 200 // time for full reset when hold the mode down - over 2 seconds
+#define HOLDRESET 400 // time for full reset when hold the mode down - over 2 seconds
 #define SHORTMODE 2 // was 20ms could be shorter...
 #define LONGMODE 100 // 1sec
 #define MAXMODES 4
@@ -236,9 +236,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint32_t recd[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrecy[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0;
-    static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0,starter[8]={0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
+    static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0,starter[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
     static uint32_t lasttriggered[11]={0}, breaker[11]={0}, lastlastrec=0, lastlastplay, lastlast;
-    static int32_t endpoint, togrec=0, togplay=0, modeheld=0, modechanged=1, first=0;
+    static int32_t endpoint, togrec=0, togplay=0, modeheld=0, modechanged=1, first=0, firsty[8]={0};
+    static uint32_t testting=0;
     
     uint32_t tmp, trigd;
     int32_t midder;
@@ -255,7 +256,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=0; // testy
+	mode=3; // testy
 
 	switch(mode){
 	case 0: // 6/6/2023 - now with minor mode adjustments
@@ -471,6 +472,69 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  }
 	  break; 
 
+	case 3: //3) how to set length of play - at moment just plays until recend... freeze sets end of play... // but next play will reset that to recend
+	  ///this will need different modifiers for freeze almost
+	  // Test start of play... start then end... 
+	  // modifier 64 for overlay/rec
+	  // add modifiers also to seperate recspeed and rec voltage on [6] - so one is full length or not
+	  FREEZERS;
+          REALADC;
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    //	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    if (ender[daccount]>=starter[daccount]) lengg=ender[daccount]-starter[daccount];
+	    else lengg=(rec_cnt[daccount]-starter[daccount])+ender[daccount]; // wrap
+	    if (lengg<1) lengg=1;
+	    values[daccount]=speedsamplestart(logfast[speed], lengg, starter[daccount], daccount, recordings[daccount]);
+
+	    if (frozen[daccount]){
+	      // we need two states for start and end setting
+	      if (firsty[daccount]==0) {
+		starter[daccount]=(int)(play_cnt[daccount]);
+		firsty[daccount]=1;
+		}
+	    } // unfrozen
+	    else if (firsty[daccount]==1)
+	      {
+		ender[daccount]=(int)(play_cnt[daccount]);
+		firsty[daccount]=0;
+	      }
+
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	    //	    minormode=64; // TESTY!
+	    tmp=((int)play_cnt[daccount])+starter[daccount];
+	    if (tmp>rec_cnt[daccount]) tmp=rec_cnt[daccount];
+	    if (minormode&64) recordings[daccount][tmp]=values[daccount]; // record overlay! // that minormode might change!!! TESTY!
+	    
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	    values[daccount]=(real[daccount]);
+	  }
+   
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      rec_cnt[daccount]++;
+	      starter[daccount]=0;
+	      ender[daccount]=rec_cnt[daccount];
+	      if (rec_cnt[daccount]>MAXREC) {
+		ender[daccount]=MAXREC;
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	    }      
+	  break; ///// 
+	  
 	  ////////////////////////////////////////////
 
 	  
@@ -802,7 +866,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    //	  }
 	  // playback
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
+	    LASTPLAY; // reset
 	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
 	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
 	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]); // TESTY logfast
@@ -1701,8 +1765,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  GPIOC->BSRRL=(daccount)<<13; // multiplex
 	  //CLEARDAC; // why we remove this but is there on writedac - timing?
 	  daccount++;
-	  if (daccount==8) {
-	    daccount=0;
+	  if (daccount==8) { // 
+	    //	    daccount=0; // now at end
 	  if (val==0) val=4095;
 	  else val=0;
 	  }
@@ -1712,37 +1776,41 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	case 777: // tests of all toggles! rec, play, mode and freeze
 	  FREEZERS;
-	  
-	  if (frozen[daccount] || rec || play || modetoggle ) { // freeze always holds
-	    values[daccount]=4095;
+	  if (modetoggle ) { // freeze always holds
+	    values[4]=4095;
 	  }
-	  else values[daccount]=0;
+	  else values[4]=0;
 	  break; /////
 
+	case 778: // for hold timing tests below:
+	  if (testting) { // freeze always holds
+	    values[4]=4095;
+	  }
+	  else values[4]=0;
+	  break; /////
+	  
 	} // end of modes switch
 
-	// start to test for long or short mode hits
-	static uint32_t testting=0;
-	if (modeheld>HOLDRESET && newmode) { //reset all
+	if (newmode){
 	  newmode=0;
+	// start to test for long or short mode hits
+	if (modeheld>HOLDRESET) { //reset all
 	  modeheld=0;
 	  RESETT;
-	  //	  testting^=1; // testy
+	  testting^=1; // testy
 	}
-	else if (modeheld>LONGMODE && modeheld<HOLDRESET && newmode) { // increment major mode
-	  newmode=0;
+	else if (modeheld>LONGMODE && modeheld<HOLDRESET) { // increment major mode
 	  modeheld=0;
 	  MODECHANGED;
-	  //  testting^=1; // testy
+	  //	  testting^=1; // testy
 	}	
-	else if (modeheld>SHORTMODE && modeheld<LONGMODE && newmode){ //inc minor mode matrix
-	  newmode=0;
+	else if (modeheld>SHORTMODE && modeheld<LONGMODE){ //inc minor mode matrix
 	  modeheld=0; // ??? was commented just for testing
 	  //	  testting^=1; // testy
 	  minormode++;
 	  if (minormode>MAXMINOR) minormode=0;
 	  }
-
+	}
 	/*
 	  // decoding minor modes or is this done in modes...
 

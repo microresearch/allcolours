@@ -1,3 +1,7 @@
+** 9/6/2023
+
+- checked DRC all new - should be fine for assembly/BOM after test last prototype...
+
 ** 7/6/2023
 
 - changed very slightly M20 position... updated new panel for this shift...
