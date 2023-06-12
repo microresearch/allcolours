@@ -1,10 +1,7 @@
 // basic layout of case
           case X: 
 	  FREEZERS;
-	  
-	  if (frozen[daccount]==0) { // freeze always holds
-	    REALADC;
-	  }
+          REALADC;
 	  // playback
 	  if (play && rec_cnt[daccount]){// only play if we have something in rec
 	    LASTPLAY;
@@ -33,7 +30,6 @@
 	    else {
 	      lastrec=0;
 	    }
-	  }       
 	  break; ///// 
 
 
