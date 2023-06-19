@@ -697,6 +697,7 @@
     )
   )
 
+
   (junction (at 211.709 46.609) (diameter 0) (color 0 0 0 0)
     (uuid 0406fad7-eb79-4088-bc0f-986e55823294)
   )
@@ -4111,6 +4112,18 @@
     (path "/cdd22db9-7e5d-4364-82f5-0b4a369d4535"
       (reference "#PWR011") (unit 1) (value "+12V") (footprint "")
     )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/4b82491d-9a20-4fff-a7b3-9ffeb1ec3df5"
+      (reference "#PWR012") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/96c0b35e-236f-49df-bb5f-a61e35ce7c2f"
+      (reference "#PWR013") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/6f407fe8-69a3-4dee-988a-a36c01f64b63"
+      (reference "#PWR014") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/483d48ad-9f36-46fa-ab61-5b2cb31e9926"
+      (reference "#PWR015") (unit 1) (value "GND") (footprint "")
+    )
     (path "/3964f6c7-e105-40ce-9c30-c3fef39b0dff"
       (reference "#PWR016") (unit 1) (value "GND") (footprint "")
     )
@@ -4578,6 +4591,18 @@
     )
     (path "/c84e8d76-1063-4c99-92e7-3ee4d3915b0a"
       (reference "R40") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/58973223-7ca0-4437-8173-cb29b1446295"
+      (reference "R41") (unit 1) (value "10K") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/69572be7-db6b-4b5c-ab80-f8edeb2ab070"
+      (reference "R42") (unit 1) (value "10K") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/1171526e-08e6-4df8-809b-1d8500c26fe4"
+      (reference "R43") (unit 1) (value "10K") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
+    (path "/5efec9fa-4ed8-49cf-98db-4d65c42c6460/390863c5-7278-4f64-8136-524cc912ab1f"
+      (reference "R44") (unit 1) (value "10K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/7256c3a5-1b76-4b47-b4ca-c35d0bdd28e3"
       (reference "RV1") (unit 1) (value "10K") (footprint "martin module:Potentiometer_Alps-RK09")

@@ -114,8 +114,9 @@ int main(void)
     //    RCC_HSEConfig(RCC_HSE_ON);
     //Wait for clock to stabilize
     //    while (!RCC_WaitForHSEStartUp());
-
-    //    clocksetup413(); // leave out for 446 but how do we get that clock 413!!!!!TESTY
+#ifdef fouronethree
+        clocksetup413(); // leave out for 446 but how do we get that clock 413!!!!!TESTY
+#endif
     // 8 channels
 	    //	    ADC1_Init((uint16_t *)adc_buffer);
 

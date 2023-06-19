@@ -18,7 +18,7 @@
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
 #define BRK 8 // was 8 when we have have divider in main as 32...
-#define DELB 200 // delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
+#define DELB 20 // reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 #define DELA 64 // for clear DAC // was 64
 
 #define HOLDRESET 400 // time for full reset when hold the mode down - over 2 seconds
@@ -26,8 +26,12 @@
 #define LONGMODE 100 // 1sec
 #define MAXMODES 4
 #define MAXMINOR 128 // 128 minor/modifiers - not all used...
-//#define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
+
+#ifdef fouronethree
+#define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
+#else
 #define MAXREC 3800 // for older STM
+#endif
 // with F413 we have 9000 which is how long - 26 seconds as runs a bit faster,,, 32// now div64 and 9500 gives us 55 seconds...
 
 GPIO_InitTypeDef GPIO_InitStructure;
@@ -236,7 +240,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint32_t recd[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrecy[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0;
-    static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0,starter[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
+    static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0, starter[8]={0,0,0,0,0,0,0,0}, freezetoggle[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0};
     static uint32_t lasttriggered[11]={0}, breaker[11]={0}, lastlastrec=0, lastlastplay, lastlast;
     static int32_t endpoint, togrec=0, togplay=0, modeheld=0, modechanged=1, first=0, firsty[8]={0};
     static uint32_t testting=0;
@@ -256,13 +260,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=3; // testy
+	mode=2; // testy
 
 	switch(mode){
 	case 0: // 6/6/2023 - now with minor mode adjustments
-	  FREEZERS;
 	  REALADC;
 
+	  FREEZERS;
+	  
 	  if (play==0) {
 	  if (frozen[daccount]==0) lastvalue[daccount]=real[daccount];
 	  else real[daccount]=lastvalue[daccount];// frozen
@@ -334,12 +339,12 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    if (values[daccount]>4095) values[daccount]=4095;
 	    }
 	    else values[daccount]=values[daccount]&4095;
-	  } // if play
+	  } // if play // end playback
 	  else {
 	    lastplay=0;
 	    play=0;
 	    values[daccount]=(real[daccount]); 
-	  }
+	  } 
     
 	  ///// recordings
 	    if (rec){ // we are recording
@@ -357,7 +362,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      lastrec=0;
 	    }
 	    //	    values[4]=0; //TESTY! 4 is lowest voltage   
-	  break; ///// 
+
+
+	    break; ///// 
 
 	  ////////////////////////////////////////////
 	  // adding 6/6 - but these will need to be changed for minormode scheme
@@ -419,6 +426,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  // fixed speeds and slower fixed rec//// modifiers used here for rec and speed dividers
 	  // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed
 	  // dividers can be out of sync also
+	  // interesting to add in rec overlay
 	  FREEZERS;
 	  
 	  if (frozen[daccount]==0) { // freeze always holds
@@ -535,8 +543,60 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    }      
 	  break; ///// 
 	  
-	  ////////////////////////////////////////////
 
+	  //*TODO: freeze as additive. holds level on next freeze rather than releasing - is this more of a minimode: =freeze behaviours*
+	  // not really additive but just not releasing
+	  // but we do need 
+	case 4: // need to do for playback but just test concept here
+	  // works ok but is quite different 
+	  FREEZERS;
+          REALADC;
+
+	  if (play==0){
+	    	  if (freezetoggle[daccount])
+	    {
+	      lastvalue[daccount]=real[daccount];
+	      freezetoggle[daccount]=0;
+	    }
+		  else {
+		    if (real[daccount]<lastvalue[daccount])		    real[daccount]=lastvalue[daccount];// overlap option as minor mode
+		    //		    real[daccount]=lastvalue[daccount];// no overlap
+	  }
+	  }
+	  
+	  
+	  // playback
+	  if (play && rec_cnt[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  } // if play
+	  else {
+	    lastplay=0;
+	    play=0;
+	    values[daccount]=(real[daccount]);
+	  }
+    
+	  ///// recordings
+	    if (rec){ // we are recording
+	      LASTREC; // reset all
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    } // if rec
+	    else {
+	      lastrec=0;
+	    }
+	  break; ///// 
+
+
+	  ////////////////////////////////////////////
 	  
 	case 8: // now changing speed and slower fixed rec////
 	  // basic mode with freezers, record and play and overlay with freeze/unfreeze of all, no speed
@@ -659,7 +719,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  if (rec_cnt[daccount]>endpoint) {
 	    rec_cnt[daccount]=lastlastrec;
 	    }
-	    
 	  break; ///// 
 
 	case 11: // trial record speed - tap freeze to record speed as top voltage, tap to stop rec...
@@ -1776,7 +1835,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	case 777: // tests of all toggles! rec, play, mode and freeze
 	  FREEZERS;
-	  if (modetoggle ) { // freeze always holds
+	  if (modetoggle) { 
 	    values[4]=4095;
 	  }
 	  else values[4]=0;
