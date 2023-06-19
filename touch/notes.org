@@ -1,6 +1,6 @@
 * TODO:
 
-global modes, local modes and see all below
+*define global modes, global/local and local modes and see all below - maybe another way through LUNAR*
 
 - any influence from lunar, geomantics?
 
@@ -8,15 +8,31 @@ how many major modes? say 16= 8 global, 8 mixed/local
 
 minor modes= 7 bits/127 so far
 
-////charactersistics/parameters to work through:
+////characteristics/parameters to work through:
 
-rec/play: speed, length//start-end, counter, mirrors, overlays, freezers doX, resets of params...
+rec/play: speed, length//start-end, counter, mirrors, overlays, freezers do/behaviour, resets of params...
 
-*looped rec/overlay: or rec starts that loop/play, and stops, and play just plays back/no overlay*
+*looped rec/overlay: or rec starts that loop/play, and stops, and play just plays back/no recorded overlay, how do we reset?start rec again*
 
 local/global. sync
 
 ways of changing speed, start/end
+
+///
+
+Simplify as conditions of:
+
+real[daccount]: adc input // modifiers // freezers // play/rec // speeds
+
+no play/no rec: freezer behaviour, speeds
+play: overlays, freezer behaviour, resets, overdubs, start and end, mirrors, speeds
+rec: speed/slew, overlays, freezer behaviour, resets, overdubs, start and end, mirrors, speeds
+
+behaviours of speed control: freezers, recordings/overdubs 
+
+rec with play, play with rec [to record overlay we need to hear what we are overlaying on]
+
+
 
 ///
 
@@ -40,25 +56,24 @@ TODO2: test with new fingers, new modes around areas, geomantic?, finalise modes
 
 ** new major modes (and mods where we can)
 GLOBAL:
-1: basic/simple mode with all mods
-2: overlay on each rec 
-3: slower recording speeds - longer, steppy
+1: basic/simple mode with all mods: 0
+2: overlay on each rec: 1 // or is that minor?
+3: ????slower recording speeds - longer, steppy: 2 - test again // unsure as is behaviour change...
 
-4:
+global/local4: detach play: 15
 
-5: looped rec/overlay
-6: record speed seperately
+5: looped rec/overlay: 9/10
+6: record speed seperately: 11/12
 7:
-8; mirror - all follow one voltage[lowest=4] and overlay own...
+8; mirror - all follow one voltage[lowest=4] and overlay own... 23?
 
 GLOBAL/LOCAL:
-1: length of start/end (global/local tho!)
-2: freeze overdubs/new 
-3: freeze detachs playback
+1: length of start/end (global/local tho!) - 3
+2: freeze overdubs/new 13/14
+3: freeze detachs playback 15 - is above
 4: groups and reflections -mods could determine which group we use?
 
 LOCAL:
-
 
 ** catalogue modes and modifiers
 
@@ -69,8 +84,8 @@ GLOBALS:
 
 XX8: fixed slower recording speed - all fixed speed - TRY change one speed...- added that change 
 
-9: looped rec and overlay. always rec. peak overlay, fast speed
-10: looped rec and overlay- different rec scheme. *how?* slower speed
+9: looped rec and overlay. always rec. peak overlay, fast speed: recordings[daccount][rec_cnt[daccount]]=values[daccount]; [values also adds real but is different as speed dependent]
+10: looped rec and overlay- different rec scheme. slower speed: recordings[daccount][rec_cnt[daccount]]+=real[daccount];
 
 11: record speed on freeze top - always play back speed and re-record on freeze
 12: record speed: how differs from 11?CHECK? - this one is overlap - does it make more sense than 11? 
@@ -129,7 +144,7 @@ now we have major/minor split of modes
 default bits in mode 0 // 9/6/2023:
 
 12-speeds: add, add from below, speed as real or recorded
-3--overlay:modulo/peak 
+3--overlay:modulo/peak in playback and also see freeze behaviour below
 45-resets: play, rec
 6-freeze on [6] freezes speed, freezes value // can also be other seperators of speed/value - freeze dependent
 7-in playback: freeze stops playback, freeze holds overlap
@@ -139,6 +154,16 @@ default bits in mode 0 // 9/6/2023:
 1 2 4 8 16 32 64 // 128
 1 2 3 4 5  6  7 // 8
 We use NONE speed as major mode option -> 5 bits=32
+
+19/6 added in theory: freeze behaviours (also in playback with other modifiers): 
+
+- freeze as holding and we overlay on top (then we use type of overlay or do we need to double that)
+- freeze as just holding with no overlay (default we have now)
+
+- freeze only releases on reset (held for x time) - with or without overlay...
+
+also type of overlay - we can just add a new value or we can add difference - if it is greater than so just goes up and is released
+
 
 /// 
 
@@ -157,6 +182,33 @@ what can cross global/local: freezes, lengths, start/stop/sync, record of overla
 // define as: each section (defined as local.global.groups) has: 
 
 what we record (eg. overlay), what we playback (eg. live overlay), start and end of rec/play, speed of rec/play, freeze button, reset or not of counters
+
+** 19/6/2023
+
+- Kaffe has 6M finger (1cm distance) - so doesn't trigger, range too low - we can adjust range with pulldowns/// try also for triggers (we have 3M - can try 6M)
+
+- 10M still works for triggers (also tested on touch/toggle)... but 10M/3.3M/2M raises voltage/base offset...we can go 1M - try 1.6M = 400mV offset, 1.2M is negligable..
+// we can try 1.3M
+
+so we have 1.6M on lowest voltage and 10M on mode trigger - to test all with many fingers...
+
+TODO:
+DONE//TESTED as case 4 but implement fully for play too:TODO: freeze as additive. holds level on next freeze rather than releasing - is this more of a minimode: =freeze behaviours*
+// not really additive but just not releasing
+
+OK_RE_TEST how that works: 3//2: ???slower recording speeds - longer, steppy: 2 - test again
+
+- also how modes 9 and 10 differ...???
+
+** 15/6/2023
+
+- fixing new hardware but now with huge bleed on DAC (was it there before?)// was 74HC4051//replaced and fixed...all tested...fine...
+
+- rec etc pull up - why - is new panel with 47nF with 15nf but there is still a pull on both boards with any freezer // reduce delb!
+
+** 13/6/2023
+
+- latest new prototype and new programmer programming fine... to finish proto...
 
 ** 12/6/2023
 
@@ -190,12 +242,11 @@ length of freeze sets length - default is full rec_cnt
 
 *problem with kaffe finger triggers multiple (not 50Hz) modechanges on top mode (others fine):*
 
-- q of pullup/down: what is it? 3.3M pull down could be tested with 1M - *test on R34*
-
+- q of pullup/down: what is it? 3.3M pull down could be tested with 1M - test on R34
 - will new gnd-plane solve it?
 - do we need add lower gold (as finger hits full circle first)
 - maybe works better with ms held also
-- check mode code against others // changed 9/6 - *to be re-tested just for mode with different fingers*
+- check mode code against others // changed 9/6 - to be re-tested just for mode with different fingers
 
 DONE-seems better//re-test with held timing // new test code
 
@@ -349,7 +400,7 @@ TESTED-case22:- slew which doesn't wait until target - how to do rise and fall i
 
 DONE:panel black mask doesn't match PCB we have mask006 - doesn't render/plot as gerber??? where is original... slow render and ordered with GND and new mask 19/5
 
-- records for around 26 seconds with 9000 array = 346 per second // 35 seconds with 48 divider-> check noise here...
+- records for around 26 seconds with 9000 array = 346 per second 346hz  // 35 seconds with 48 divider-> check noise here...
 
 // with prescalar of 64 we reduce noise, and could hit around 1 minute if we reduce memory a bit...
 
@@ -839,6 +890,11 @@ replaced c9 with 1NF (from 47NF)
 
 +input filter is 15nF and 15k so gives cutoff of 700Hz x2=1.4KHz which is fine+
 
+10nF would be low pass of 1Khz
+
+22nF 500hz
+
+if we sample aorund 400 hz we want 200hz low pass=47nF and 15K???
 
 but rec is 32 times slower and each dac is x8 so that is 32x8=256
 
