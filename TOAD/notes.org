@@ -1,3 +1,70 @@
+** towards manual
+
+- collect resources
+- what we need to show: normings, possible patches
+- desc: hermaphrodite analogue computer driven by the times of pulses
+
+Mindlin
+Sprott
+
+
+** HW/desc notes
+
+- +12v 100mA
+- -12v 100mA
+
+** 3/7/2023
+
+PCB TODO:
+
+DONE- swop norms on M11 and M19: this in FINAL_FINAL
+
+DONEnew file for:
+- swop position of [M11][M12] and [M20][M19] and swop around so normy on outside
+- maybe add pinheader for main outs/cell outs and un-normed cell ins: how many?
+- also swop as above...
+
+//checked/ check flow and I/O
+
+** 29/6/2023
+
+Qs - why IN4 and IN5 go so easily thru?
+
+- tests with changing all mults to 47k (os x8 not x4) just raises pitch...
+
+// other options: just with multiplier... leave as is!
+
+leave weights for offsets...//weight 1,2 and 3 INs as x8, x4, x2 or x1 and test with/without multipliers
+
+- thinking to swop norms for M11=nowCOMP1_IN (1Y) and M19=nowCOMP2_IN (last one) on edges
+
+** 27-28/6/2023
+
+- DONE/28/6/tested same: replicate hardware so we know that all works fine: add in norms on
+  older board to match new ones - norm for comp2 and norm comps to
+  intergrators...
+
+- DONEtrial ad633 to see if match voltages: we have (as is /10 on result of multiplication - we just compensate 4x out amp for /2 on each input)
+
+- say for 10v is 1x in multiplier (we could halve that and have x8: 47k and 330k (300k is there) ... *maybe trial this on all mults?*
+
+- TEST: IN4 and IN5 - do they ever have a changing output signal? values there...
+
+[... +as seems like 3rd integrator doesn't work so well/possibly in  comparator... as seems fine with changing signal rather than
+  pulse... but seems ok with basic input - more about norming+ ]
+
+** 23/6/2023
+
+TOAD and CD: later wavs - 253, 254, 255, 256, 257, 258, 259**
+
+** 22/6/2023
+
+- checking HW, seems fine so far... add new norms to our diagram! // was added
+
+CD/AC/TOAD: 240->249.wav
+
+MANUALA?
+
 ** 9/6/2023
 
 - checked DRC all new - should be fine for assembly/BOM after test last prototype...
@@ -8,7 +75,9 @@
 
 ** 19/5/2023
 
-- revised PCB for new norms, removed 3 jacks and swopped m19 and m20 so comp/norm is on the outside
+- revised PCB for new norms: new norm for comp2, also norm comp1 and comp2 to integratorVCAs
+
+, removed 3 jacks and swopped m19 and m20 so comp/norm is on the outside
 
 to check/send after playing with...
 
@@ -60,7 +129,7 @@ further tests from notebook and below:
 
 - SIGNUM: 1.8vpp but works ok
 
-- DONEschematic: added extra TOAD out jack, new norm for comp2, also norm comp1 and comp2 to integratorVCAs
+- DONEschematic: added extra TOAD out jack, new norm for comp2 - means?, also norm comp1 and comp2 to integratorVCAs
 
 DONE//TODO: how to map out basic bintic filter and sprott - diagrams,,,? 
 

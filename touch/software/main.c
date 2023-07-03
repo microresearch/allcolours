@@ -53,7 +53,7 @@ void io_config2 (void) {
        DAC_InitTypeDef DAC_InitStructure1;
        DAC_InitStructure1.DAC_Trigger = DAC_Trigger_None;
        DAC_InitStructure1.DAC_WaveGeneration = DAC_WaveGeneration_None;
-       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Disable; // was Enable but disable gets rid of offset! both bleed
+       DAC_InitStructure1.DAC_OutputBuffer = DAC_OutputBuffer_Disable; // was Enable but disable gets rid of offset!
        DAC_Init(DAC_Channel_1, &DAC_InitStructure1);
        //       DAC_StructInit(&DAC_InitStructure1);
        /* Enable DAC Channel 1 */
@@ -327,7 +327,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
   /// XXXXX
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // was 64 //was 32... for 413 try 16/// was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 32; // was 32... for 413 try 16/// was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   // for 413 which seems run 8x slower now we have 5 which matches our old speed with 446
   // 4 is orig
   // 48 is too slow...

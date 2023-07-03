@@ -38,6 +38,19 @@
   )
 
   (setup
+    (stackup
+      (layer "F.SilkS" (type "Top Silk Screen"))
+      (layer "F.Paste" (type "Top Solder Paste"))
+      (layer "F.Mask" (type "Top Solder Mask") (thickness 0.01))
+      (layer "F.Cu" (type "copper") (thickness 0.035))
+      (layer "dielectric 1" (type "core") (thickness 1.51) (material "FR4") (epsilon_r 4.5) (loss_tangent 0.02))
+      (layer "B.Cu" (type "copper") (thickness 0.035))
+      (layer "B.Mask" (type "Bottom Solder Mask") (thickness 0.01))
+      (layer "B.Paste" (type "Bottom Solder Paste"))
+      (layer "B.SilkS" (type "Bottom Silk Screen"))
+      (copper_finish "None")
+      (dielectric_constraints no)
+    )
     (pad_to_mask_clearance 0)
     (pcbplotparams
       (layerselection 0x00010fc_ffffffff)
@@ -16963,6 +16976,9 @@
     (style (thickness 0.15) (arrow_length 1.27) (text_position_mode 0) (extension_height 0.58642) (extension_offset 0.5) keep_text_aligned)
   )
 
+  (via (at 104.725 94.275) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (free) (net 0) (tstamp 16217f20-b7b1-41aa-b4b0-8f83bfad3db1))
+  (via (at 68.9 63.225) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (free) (net 0) (tstamp 1762b4b5-80d5-4a66-93d8-7c62ad682e20))
+  (via (at 103.325 59.975) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (free) (net 0) (tstamp aa92582a-f049-4afa-a15f-9df57deeca95))
   (via (at 93.8 107.6) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 1) (tstamp 36707c69-3f16-46d1-bbe3-2613ade199f8))
   (via (at 79.3 103.9) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (free) (net 1) (tstamp e5387c77-9be6-4545-9951-3f338e4015bb))
   (segment (start 82.1 114.9) (end 79.3 112.1) (width 0.5) (layer "B.Cu") (net 1) (tstamp 3d7a3da7-baa9-42b9-81b7-2f79e3eda50e))
