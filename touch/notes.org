@@ -1,22 +1,40 @@
 * TODO:
 
+** hardware
+
+** DEFS
+
+- +12v:75mA
+- -12v:50mA
+
+
 *define global modes, global/local and local modes and see all below - maybe another way through LUNAR*
 
-- any influence from lunar, geomantics?
+define clear modes which don't change functions too much - what we want to achieve... - any influence from lunar, geomantics?
 
-how many major modes? say 16= 8 global, 8 mixed/local
+///
 
-minor modes= 7 bits/127 so far
+how many major modes? say 16= 8 global, 8 mixed/local // minor modes= 8 bits/255 so far
 
 ////characteristics/parameters to work through:
 
 rec/play: speed, length//start-end, counter, mirrors, overlays, freezers do/behaviour, resets of params...
 
-*looped rec/overlay: or rec starts that loop/play, and stops, and play just plays back/no recorded overlay, how do we reset?start rec again*
-
 local/global. sync
 
 ways of changing speed, start/end
+
+or from point of view of each section: speed, start, end, what freezer does...
+
+*so where we get speed from (eg. speed for each voltage comes from VCA of that section)?*
+
+///
+TODO:
+looping rec/play???
+tap rec/rec: start/end
+tap play/play: start/end
+
+freeze has differing functions and speed modifier too...
 
 ///
 
@@ -24,19 +42,19 @@ Simplify as conditions of:
 
 real[daccount]: adc input // modifiers // freezers // play/rec // speeds
 
-no play/no rec: freezer behaviour, speeds
-play: overlays, freezer behaviour, resets, overdubs, start and end, mirrors, speeds
-rec: speed/slew, overlays, freezer behaviour, resets, overdubs, start and end, mirrors, speeds
+no play/no rec: freezer behaviour=type of freeze
+play: overlays, freezer behaviour, resets, start and end, mirrors, speeds
+rec: speed/slew, live overlays, freezer behaviour, resets, type of overdubs, start and end, mirrors, speeds
 
 behaviours of speed control: freezers, recordings/overdubs 
 
 rec with play, play with rec [to record overlay we need to hear what we are overlaying on]
 
-
+link of rec and play...
 
 ///
 
-- modes as they come, more about how to divide different areas now... can also be say top and bottom[???]
+- modes as they come, more about how to divide different areas now... can also be say top and bottom[???], left and right. 4 sections
 
 - check which modes we need to clear rec (if is not going to be overwritten anyways)...
 
@@ -47,7 +65,7 @@ rec with play, play with rec [to record overlay we need to hear what we are over
 
 - all modes, tests
 - test timing in main/divider - decide on /64 divider for 1 minute - q of resolution??? now we have 32!
-- test with different PSU and hands/fingers
+- *test with different PSU and hands/fingers*
 - +DONE//add protection, re-test PCB - also with new processor F413GTx,+
 - BOM and order
 - manual: layout and list of modes somehow... touchable, overlays//holes, cutouts...
@@ -56,13 +74,14 @@ TODO2: test with new fingers, new modes around areas, geomantic?, finalise modes
 
 ** new major modes (and mods where we can)
 GLOBAL:
-1: basic/simple mode with all mods: 0
-2: overlay on each rec: 1 // or is that minor?
+1: basic/simple mode with all mods: 0 or *now 7*
+2: overlay on each rec: 1 // *or is that maybe as minor?*
 3: ????slower recording speeds - longer, steppy: 2 - test again // unsure as is behaviour change...
+4: no speed on [6] at all....???
 
 global/local4: detach play: 15
 
-5: looped rec/overlay: 9/10
+5: looped rec/overlay: XX9/10->new case 5 but also with alt overlay options
 6: record speed seperately: 11/12
 7:
 8; mirror - all follow one voltage[lowest=4] and overlay own... 23?
@@ -74,6 +93,8 @@ GLOBAL/LOCAL:
 4: groups and reflections -mods could determine which group we use?
 
 LOCAL:
+
+*TODO: ADD: local speed recordings - can use [top voltage] or local section's VCA*
 
 ** catalogue modes and modifiers
 
@@ -87,8 +108,8 @@ XX8: fixed slower recording speed - all fixed speed - TRY change one speed...- a
 9: looped rec and overlay. always rec. peak overlay, fast speed: recordings[daccount][rec_cnt[daccount]]=values[daccount]; [values also adds real but is different as speed dependent]
 10: looped rec and overlay- different rec scheme. slower speed: recordings[daccount][rec_cnt[daccount]]+=real[daccount];
 
-11: record speed on freeze top - always play back speed and re-record on freeze
-12: record speed: how differs from 11?CHECK? - this one is overlap - does it make more sense than 11? 
+11: record ind speed on freeze top - always play back speed and re-record on freeze
+12: record ind speed: how differs from 11?CHECK? - this one is overlap - does it make more sense than 11? 
 
 13: freeze overdubs in playback // otherwise?
 14: freeze records new in playback - can be option?
@@ -132,8 +153,7 @@ MODIFIERS for modes (where relevant):
 
 1.types of live [or recorded] overlay: modulo, peak
 2.speed: none, additive/peak, (subtractive), adds from below (which is what we had) 
---->in speed mode++++if [6] is subject to freeze etc. and thus effects global speed?
-*could be if we use rec speed or not...*
+--->in speed mode++++if [6] is subject to freeze etc. and thus effects global speed? *could be if we use rec speed or not...???*
 3.reset or not rec/play counter (2x modifiers) when we enter/leave those...
 
 = 2x overlay x 5x speeds: none, add, add from below, add/freeze, add from below/freeze x4  reset = none, rec, play, both
@@ -141,31 +161,37 @@ MODIFIERS for modes (where relevant):
 
 now we have major/minor split of modes
 
-default bits in mode 0 // 9/6/2023:
+default bits in mode 0 // 9/6/2023: 8 bits
 
-12-speeds: add, add from below, speed as real or recorded
-3--overlay:modulo/peak in playback and also see freeze behaviour below
-45-resets: play, rec
-6-freeze on [6] freezes speed, freezes value // can also be other seperators of speed/value - freeze dependent
-7-in playback: freeze stops playback, freeze holds overlap
+*CHANGING/UPDATE*
 
-*8-extra bit could be: record overlay or not? or keep as major mode...*
+12-speeds: add=logfast, add from below=logspeed, speed as real or recorded // playback
+3--overlay:modulo/peak in playback and also see freeze behaviour below // playback
+45-resets: play, rec // rec and play
+6-freeze on [6] freezes speed, freezes value // can also be other seperators of speed/value - freeze dependent // playback
+7-freeze stops playback, freeze holds overlap //= playback
+// *TODO:freeze stops playback, freeze holds playback value, freeze holds overlap - how to do this?:*
+
+*in case 7 we have now for freeze behaviour:*
+
+- stop/start playback
+- toggle/hold playback voltage
+- hold/release playback voltage
+- TODO:hold overlay voltage - as toggle // but this excludes other bits... how to deal with that... last cases...
+
+now [case 7 to expand and 0 to lose] we have:
+
+no sensitivity and new default freeze in no play/rec so no minormodes
+
+minormodes for rec keep seperate to play...
+ 
+*-extra bit could be: record overlay or not? or keep as major mode...*
 
 1 2 4 8 16 32 64 // 128
 1 2 3 4 5  6  7 // 8
-We use NONE speed as major mode option -> 5 bits=32
+??? We use NONE speed as major mode option -> 5 bits=32
 
-19/6 added in theory: freeze behaviours (also in playback with other modifiers): 
-
-- freeze as holding and we overlay on top (then we use type of overlay or do we need to double that)
-- freeze as just holding with no overlay (default we have now)
-
-- freeze only releases on reset (held for x time) - with or without overlay...
-
-also type of overlay - we can just add a new value or we can add difference - if it is greater than so just goes up and is released
-
-
-/// 
+///
 
 - global rec/and/play
 - local rec/and/play
@@ -183,14 +209,151 @@ what can cross global/local: freezes, lengths, start/stop/sync, record of overla
 
 what we record (eg. overlay), what we playback (eg. live overlay), start and end of rec/play, speed of rec/play, freeze button, reset or not of counters
 
+** finger catalogue - testing with 10M triggers, 1M dividers lowest vca/voltage, 47nF board, 32 divide, lowest sensitivity:
+
+other module toggles will change so have range: 1, 2.2, 4.7, 10 from SW4(bottom) to SW1(top)
+
+reverted to 4.7M for toggles on main touch (should do same for touch toggle)
+
+me: 470K all works fine but just on voltage pad, no touch to voltage we have 200mV 50Hz (using 15nF board and 32 divider)
+
+TRYING now with top panel with 47NF- hardly any noise (retry that with K) - but that also has 1M on lower 2 dividers (not 1.2M)
+
+Kati: 2M finger measures // touch/toggle brd: 10M works, 1M unreliable // voltage: max 4v wavy // VCA, fine at 4,4v // we added HELDER=4 to macro mode code // rec/play etc. fine
+
+[rec, play, freeze still at 3.3M-now updated to 10M]
+
+Kaffe: see below...
+
+Chris: 3.5M, // touch/toggle GOOD! // 4v or 5v // perfect toggle! 
+
+Rich: 3M // touch/toggle: jumpy!! // toggles // voltage 4v, medium noise // toggles all fine 
+
+UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine... 
+
+** 3/7/2023
+
+- ordered test pads for testing touch...
+
+// playing with all modules: overlay is most important to have... but then we need to clearly reset...
+
+** 30/6/2023
+
+//it is->fix gnd plane as is not consistent*
+
+- new top proto: rec is fine, play not, mode not...
+
+also thinking sample and hold cap needs to be reduced as holds too long - steppy also but why? on transition 0-4095
+
+with divider now as 16 or 8 in main seems less steppy/slow:
+
+- *complex relationship of divider, sample/hold cap, BRK, DELB and speed of whole - but now we run too fast - can slow down main loop but keep dac out faster...*
+
+// check for bleed in this case...
+
+** 24/6/2023
+
+TODO: fix toggles, basic operations are fine.... -> new panel ordered from aisler with filled inner circle...
+
+- space out outer circle -> 1.5mm (approx) and fill inner
+- [try larger circles with round middle for sensing, outside is voltage]
+
+//- resolve minor modes:
+
+- DONEdefault high sensitivity with no minormode
+- case 7 in progress: default freeze with overlay: NON-try with different overlays= peak (default), add with >4095, add with modulo
+- play freezes = regular voltage freeze as above, stop play and overlays, freeze play and overlays 
+
+//- resolve toggling:
+
+- find speed of main loop: 3 KHz (why when we do speed we remove cleardac)
+
+3000/50=60
+
+- now in main loop: test toggles in main loop with new timings
+
+//- TODOmode with no speed fixes rec and play speeds only in rec...
+
+//- DONEchanged speed of cleardac as main play loop effected highest voltage...
+
+DONE//NOTE- in mode 2 speed-div seems too fast-should be fixed//tested*
+
+** 23/6/2023
+
+- FIXED/test/test/still major issues with mode - warbling... and gets stuck - changed some code and values but in the end we need to test again all fingers...
+
+*make full tests on mode 6*
+
+DONE/*TEST-all totest*-- TODO: test in new case 6*: New approach: lowest 3 bits minormodes are just set in no rec/no play.. play and rec bits are seperate and set there
+
+////
+Notebook notes...
+
+do minormodes vary depending on state?
+
+States:         // minormodes
+
+- norec/no play: sensitivity / type of freeze
+- rec          : ^^         / ^^              / rec speed / resets
+- play         : ^^         / ^^              / overlay/freeze/speed/resets
+- rec+play:    : ^^         / ^^              / rec speed / overlay/freeze/speed/resets
+
+- rec and play: as special case/major mode... special case of play or or rec?
+
+MAJOR: 
+1-no speed changes... as case2
+2-speed changes - as 2
+
+** 21/6/2023
+
+DONE/TESTED: TODO: sensitivity as new minormode - lowest one... implement/test //YES!now//but do minormodes work?
+
+** 20/6/2023
+-
+DONE: TIMING of DAC - but stick to new one, check bleed // why is one module top 4095 voltage lower than the other? 4.2v on older 446, 6v on newer
+
+DONE- check closing of VCA
+
+DONE/TEST: CASE 5: *looped rec/overlay: or rec starts that loop/play, and stops, and play just plays back/no recorded overlay, how do we reset? we start rec again*
+what do we do about length tho? stops on rec of
+*or more rec is regular rec. rec off is overlay same size, play is just play*
+
+can be different kinds of overlay....
+
+*case 5 is simpler than 9/and/10 versions- but use the two different overlays from there TODO*
+
+
+*ISSUES to resolve:*
+
+- fix on filter values? do we want to filter at 50Hz?
+
+what is our current speed and how does that match DAC holds?
+
+- waviness of finger (does that depend on resistance - increase of voltage size on pads)
+
+- sensitivity/full range of fingers: shift in software...
+
+eg. in macros
+  real[4]=real[4]<<2;						\
+  real[4]-=1800;							\
+
+*-1800 gets rid of rec offset for overlays*
+
+now just on lowest
+
+1.2M just now for testing on lower voltage and VCA
+
+- triggers - all 10M/done and fixed a bit in software
+
+
 ** 19/6/2023
 
 - Kaffe has 6M finger (1cm distance) - so doesn't trigger, range too low - we can adjust range with pulldowns/// try also for triggers (we have 3M - can try 6M)
 
-- 10M still works for triggers (also tested on touch/toggle)... but 10M/3.3M/2M raises voltage/base offset...we can go 1M - try 1.6M = 400mV offset, 1.2M is negligable..
+- 10M still works for triggers - just now on MODE (also tested on touch/toggle)... but 10M/3.3M/2M raises voltage/base offset...we can go 1M - try 1.6M = 400mV offset, 1.2M is negligable..
 // we can try 1.3M
 
-so we have 1.6M on lowest voltage and 10M on mode trigger - to test all with many fingers...
+so we have 1.2M on lowest voltage and 10M on mode trigger - to test all with many fingers...
 
 TODO:
 DONE//TESTED as case 4 but implement fully for play too:TODO: freeze as additive. holds level on next freeze rather than releasing - is this more of a minimode: =freeze behaviours*
@@ -879,7 +1042,7 @@ replaced c9 with 1NF (from 47NF)
 
 14/12/2021 
 
-- CV out peaks at 6v - 6.6v is our maxium for 4095
+- CV out peaks at 6v - 6.6v is our maximum for 4095
 
 - VCA 4.24 VPP for 5v signal (4.6v is 4095 as I guess we close the VCA a bit) but we can only get to 4.2v on first VCA
 

@@ -33,9 +33,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 3.2,
-          "height": 3.3,
-          "width": 3.3
+          "drill": 0.0,
+          "height": 0.6,
+          "width": 1.95
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -440,6 +440,10 @@
     [
       "5efec9fa-4ed8-49cf-98db-4d65c42c6460",
       "IO"
+    ],
+    [
+      "20fb561a-0849-45c1-adac-d7fff2b26297",
+      "switch buffer"
     ]
   ],
   "text_variables": {}
