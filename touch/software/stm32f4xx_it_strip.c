@@ -119,6 +119,7 @@ extern __IO uint32_t adc_buffer[8];
 static uint32_t recordings[8][MAXREC+1]={0}; // 
 static uint32_t rec_cnt[8]={0,0,0,0, 0,0,0,0};
 static float play_cnt[8]={0.0f,0.0f,0.0f,0.0f, 0.0f,0.0f,0.0f,0.0f,};
+static float play_cnt_lop[8]={0.0f,0.0f,0.0f,0.0f, 0.0f,0.0f,0.0f,0.0f,};
 static float ownplay_cnt[8]={0.0f,0.0f,0.0f,0.0f, 0.0f,0.0f,0.0f,0.0f,};
 //static uint32_t tgr_cnt[10]={0};
 static uint32_t rec=0, play=0;
@@ -149,6 +150,24 @@ inline static uint32_t speedsample(float speedy, uint32_t lengthy, uint32_t dacc
   upperPosition = mod0(lowerPosition + 1, lengthy);
   
   int32_t res=(play_cnt[dacc] - (float)lowerPosition);
+    //  Return interpolated table value
+  float sample= ((samples[lowerPosition]&4095) + 
+		 (res *
+		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); // adapted for top bits
+
+      return (uint32_t)sample;
+}
+
+inline static uint32_t speedsamplelop(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition;
+  
+  play_cnt_lop[dacc]=mod0(play_cnt_lop[dacc]+speedy, lengthy);
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)play_cnt_lop[dacc];
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+  
+  int32_t res=(play_cnt_lop[dacc] - (float)lowerPosition);
     //  Return interpolated table value
   float sample= ((samples[lowerPosition]&4095) + 
 		 (res *
@@ -243,9 +262,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint32_t playb[8]={0,0,0,0, 0,0,0,0};
     static uint32_t recd[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrecy[8]={0,0,0,0, 0,0,0,0};
-    static uint32_t lastrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0;
+    static uint32_t lastrec=0, secondrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0, overlaid=0;
     static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0, starter[8]={0,0,0,0,0,0,0,0}, freezetoggle[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0}, baseminor=0,recminor=0,playminor=0;
-    static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0}, lastlastrec=0, lastlastplay, lastlast;
+    static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0}, lastlastrec=0, llrec=0,lastlastplay, lastlast;
     static int32_t endpoint, togrec=0, togplay=0, modeheld=0, modechanged=1, first=0, firsty[8]={0};
     static uint32_t testting=0;
     
@@ -264,7 +283,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=7; // testy - 7 is new test!
+	mode=79; // testy - 7 is new test!
 	
 	switch(mode){
 	case 0: // 6/6/2023 - now with minor mode adjustments
@@ -805,7 +824,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      lastvalue[daccount]=real[daccount];
 	      freezetoggle[daccount]=0;
 	    }
-	  else { // we have just one type of overlap
+	  else { // ***we have just one type of overlap
 	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
 	  }
 	  }
@@ -871,6 +890,225 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    }
 	    break; ///// 
 
+	    /////////////////////////////////////////////
+
+	    // new test modes: 77+ 4/7/2023+
+	    // no freeze or minor modes stuff yet
+
+	case 77: 
+	    /*enter mode:
+	      [usual no rec/no play - bjut not if we have been recording!]
+	      [rec] - start recording with no overlay[so erases]. overlay when we reach end and loop back
+
+	      [rec/end] - sets length of overlay/segment and keeps recording overlay - but we need to playback!
+	      
+	      [play]- plays back with live overlay
+	      [play]- no play: stops all playback 
+
+	      - how to distinguish no play /from/ no play/no rec/end-overlay?
+
+	    // if we leave play directly into rec we want it to be the first rec only???
+	    */
+	  FREEZERS;
+          REALADC;
+	  // 4 states: play, rec, overlay, nada	  
+
+	  if (play && ender[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) ender[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	    overlaid=0;
+	  } 
+	  else lastplay=0;
+	  
+	  ///// recordings
+	    if (rec){ // we are recording // on entry but not 2nd time
+	      LASTREC; // reset all only on entering
+	      values[daccount]=(real[daccount]);
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      ender[daccount]=rec_cnt[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+		ender[daccount]=MAXREC;
+	      }
+	    } // if rec
+	    else lastrec=0;
+
+	    // overlay
+	    if (overlaid){
+	      LSTREC;
+	      // playback and record overlap
+	      // TODO: different kinds of overlay
+	      speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]); 
+	      values[daccount]+=real[daccount];
+	      if (values[daccount]>4095) values[daccount]=4095;
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>ender[daccount]) {
+		rec_cnt[daccount]=0;
+	      }
+	    }
+	    else llrec=0;
+	    
+	    // nada
+	    if (rec==0 && play==0 && overlaid==0) values[daccount]=(real[daccount]);
+	    //	    if (overlaid) values[daccount]=4095;
+	    
+	    break; ///// 
+
+	case 78: 
+	    /*
+	     *Instead of new mode 77: rec started during play is overlay* (play started during rec is also overlay?)
+	     so we have 4 states:
+	     - NADA
+	     - rec/resets start of reccount, stop
+	     - play
+	     - rec+play: OVERLAY! stop rec: stops overlay, carries on playing// stop play: into NADA... (so are there 2 ways out?)
+	     // or should stop play just revert to rec with no overlay// and reset on entry // but there is no entry as we are there, so carries on/extends.. ?
+	     // *question of stop play returning to bare reset rec*
+	    */
+
+	  FREEZERS;
+          REALADC;
+	  // 4 states: play, rec, overlay, nada
+	  if (rec && play){
+	    if (ender[daccount]) overlaid=1;
+	    else {
+	      overlaid=0;
+	      play=0; // we have nothing to play
+	    }
+	  }
+	  else overlaid=0;
+	  
+	  if ((!overlaid) && play && ender[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) ender[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  } 
+	  
+	  ///// recordings
+	  if ((!overlaid) && rec){ // we are recording // on entry but not 2nd time
+	      LASTREC; // reset all only on entering
+	      values[daccount]=(real[daccount]);
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      ender[daccount]=rec_cnt[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+		ender[daccount]=MAXREC;
+	      }
+	    } // if rec
+	    else lastrec=0;
+	    
+	    // overlay
+	    if (overlaid){
+	      LSTREC;
+	      // playback and record overlap
+	      // TODO: different kinds of overlay
+	      speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  // see older cases 9/10 TODO!
+	      values[daccount]+=real[daccount]; // could depend on freeze
+	      if (values[daccount]>4095) values[daccount]=4095;
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>ender[daccount]) {
+		rec_cnt[daccount]=0;
+	      }
+	    }
+	    else llrec=0;
+	    
+	    // nada
+	    if (rec==0 && play==0 && overlaid==0) values[daccount]=(real[daccount]);
+	    break; ///// 
+
+	    /////////////
+
+	case 79: // as 78 but: 
+	    /*
+	     *MODEX:local mode with different lengths but can repeat to full length with different overlays...*
+	     simply= *play as looped, re-record/overlay is getting up to full length. any variations on this?*
+	     // but not so simple as we want to play that overlay the next time round ... so is not just a loop...
+	     // one speed looping for rec, the other playing overlay
+	     */
+
+	  FREEZERS;
+          REALADC;
+	  // 4 states: play, rec, overlay, nada
+	  if (rec && play){
+	    if (ender[daccount]) overlaid=1;
+	    else {
+	      overlaid=0;
+	      play=0; // we have nothing to play
+	    }
+	  }
+	  else overlaid=0;
+	  
+	  if ((!overlaid) && play && ender[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    if (overlap[daccount]) ender[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  } 
+	  
+	  ///// recordings
+	  if ((!overlaid) && rec){ // we are recording // on entry but not 2nd time
+	      LASTREC; // reset all only on entering
+	      values[daccount]=(real[daccount]);
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      ender[daccount]=rec_cnt[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+		ender[daccount]=MAXREC;
+	      }
+	    } // if rec
+	    else lastrec=0;
+	    
+	    // overlay
+	    if (overlaid){
+	      LSTREC;
+	      // playback and record overlap
+	      // TODO: different kinds of overlay
+	      speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  // see older cases 9/10 TODO!
+	      values[daccount]+=real[daccount]; // could depend on freeze
+	      if (values[daccount]>4095) values[daccount]=4095;
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+
+	      // other process
+	      values[daccount]=speedsamplelop(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);  // see older cases 9/10 TODO!
+	      
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+	      }
+	    }
+	    else llrec=0;
+	    
+	    // nada
+	    if (rec==0 && play==0 && overlaid==0) values[daccount]=(real[daccount]);
+	    break; /////
+	    
+	    /////////////////////////////////////////////
+	    
+	case 88:
+	  REALADC;
+	  values[daccount]=(real[daccount]);
+	  break;
 	    /////////////////////////////////////////////
 	    
 	case 8: // now changing speed and slower fixed rec////
@@ -2141,14 +2379,14 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	// pulled this out here...
 
-	TOGGLES;      // only place where toggles - pulled out of ==8 section
+	//	TOGGLES;      // only place where toggles - pulled out of ==8 section
 	  //       	TRIALTOGGLE;
 	WRITEDAC;
 	daccount++;
 	if (daccount==8) {
 	  daccount=0;
 	  count++;
-	  //	  TOGGLES;      // only place where toggles
+	  TOGGLES;      // only place where toggles
 	
 	  if (newmode){
 	  newmode=0;

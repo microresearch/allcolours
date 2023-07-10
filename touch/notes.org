@@ -1,22 +1,65 @@
 * TODO:
 
-** hardware
+** 10/7+ MODES
 
-** DEFS
+*how to define - behaviours which are then modded by freeze behaviours...*
+
+major modes:
+
+- 78 default overlay
+- speed/no speed/slower rec speeds... how we handle speed is major question
+
+- local speed on voltages (could even slow on mode taps): - where we get speed from (eg. speed for each voltage comes from VCA of that section)
+local speed recordings? see which mode...?
+
+*TODO: tap freeze top in rec+play/overlay: record speed seperate and leave voltage (q of speed overlays or not), same for freeze on locals in another mode...*
+
+- thus add: global speed recorded seperately in overlay
+- fragmented/repeat overlay (segments we can call this)
+- +looping always - what do rec and play buttons do and freezers???+
+- mirrorings
+
+- and are different freezer behaviour modes major: eg. detachment etc...
+
+// recording speed as different to voltage it is recorded on...
+
+minors:
+
+play: overlay, resets, speed setting, how we deal with speed
+rec: resets, rec speed
+rec+play: type of recorded overlay(see cases 9/10), speed dealings
+
+speed as key in play/rec+play (what we have?):
+
+- logfast/logspeed(slow-add from below)
+- freeze on [6] freezes speed, freezes value
+- split [6] as rec speed/rec voltage (eg. rec speed only, *rec voltage only*, frees) - levels: freeze, rec, freerunning
+
+
+** hardware
 
 - +12v:75mA
 - -12v:50mA
 
+** DEFS
 
-*define global modes, global/local and local modes and see all below - maybe another way through LUNAR*
+*define global/local modes - maybe another way through LUNAR*
 
 define clear modes which don't change functions too much - what we want to achieve... - any influence from lunar, geomantics?
 
-///
+how many major modes? say 16= 8 global, 8 mixed/local // minor modes= 8 bits/255 so far // or less
 
-how many major modes? say 16= 8 global, 8 mixed/local // minor modes= 8 bits/255 so far
+** recent july notes/playthrough:
 
-////characteristics/parameters to work through:
+- *78 is new default with freezes and minormodes!*
+
+Now we have 4 states and all as global/local (as rec/play always global unless we think of local mods of these so they mean different things for different segments)
+
+freeze button is what makes it LOCAL: local stop start in each mode (but how that overrides...)
+
+play/rec detachment are more major modes, as is loop/rec // if these still make sense...
+
+** characteristics/parameters to work through:
 
 rec/play: speed, length//start-end, counter, mirrors, overlays, freezers do/behaviour, resets of params...
 
@@ -26,18 +69,6 @@ ways of changing speed, start/end
 
 or from point of view of each section: speed, start, end, what freezer does...
 
-*so where we get speed from (eg. speed for each voltage comes from VCA of that section)?*
-
-///
-TODO:
-looping rec/play???
-tap rec/rec: start/end
-tap play/play: start/end
-
-freeze has differing functions and speed modifier too...
-
-///
-
 Simplify as conditions of:
 
 real[daccount]: adc input // modifiers // freezers // play/rec // speeds
@@ -45,6 +76,7 @@ real[daccount]: adc input // modifiers // freezers // play/rec // speeds
 no play/no rec: freezer behaviour=type of freeze
 play: overlays, freezer behaviour, resets, start and end, mirrors, speeds
 rec: speed/slew, live overlays, freezer behaviour, resets, type of overdubs, start and end, mirrors, speeds
+overlaid: 
 
 behaviours of speed control: freezers, recordings/overdubs 
 
@@ -72,7 +104,7 @@ link of rec and play...
 
 TODO2: test with new fingers, new modes around areas, geomantic?, finalise modes and modifiers
 
-** new major modes (and mods where we can)
+** OLDER:new major modes (and mods where we can)
 GLOBAL:
 1: basic/simple mode with all mods: 0 or *now 7*
 2: overlay on each rec: 1 // *or is that maybe as minor?*
@@ -231,11 +263,162 @@ Rich: 3M // touch/toggle: jumpy!! // toggles // voltage 4v, medium noise // togg
 
 UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine... 
 
+Meli: //touch toggle a bit jumpy // test the rest!
+
+** 10/7/2023
+
+- notes from below///repeat/overlay mode and start to define each major mode:
+
+We have so far:
+
+- older modes such as always loop/overlay to check out
+- 78 as standard - to add freezes
+- new overlay below...
+
+- define minormodes for each state:
+
+// new notebook notes/TODO - variations on case 78:
+
+- *MODEX: overlay: we want to be able to overlay only one section of playback (and this section is fixed? how?) for each section?*
+
+[start------------end] - according to rec...
+[------][xxxxx][-----]
+no play  play   no play
+[   [freeze/freeze]  ]       
+
+and same for rec - so ISLANDS of rec/play - and how this works for overlap?=just detach play/and/rec or just rec so we overlay only island
+
+// does it make sense for rec... sort of...?
+
+////
+whereas detach is more stop and start
+
+- detach play=stop play(or keep running but no playNO-as that would not unsync) so unsyncs that one
+- detach rec in overlay and re-attach...
+- detach play/rec=unsync
+
+*TODO_TEST: MODE 79:local mode with different lengths but can repeat to full length with different overlays...*
+
+eg. we keep looping but re-record overlay as one long section of repeats and changing overlays
+
+[we could also do the same for the overlap record above - question of when overlap of repeat hits end of memory and overlaps there...]
+
+simply= play as looped, re-record/overlay is full length. any variations on this?
+
+*MODEX: tap freeze top in rec+play/overlay: record speed seperate and leave voltage free running (q of speed overlays or not), same for freeze on locals in another mode...*
+
+/////
+
+state/mode  | freezer
+
+NADA        - freeze (default type is overlay/peak as in case 7)
+REC         - stop(loop/local end)/start(extend) 
+PLAY        - stop/start (unsync) - (and options to freeze play or keep counting but no playback)
+              or start/end - loop/extend
+              or as above if that differs from detach
+            - use of rec voltage as speed or not (see above) 
+OVERLAY     - overlay/simple rec
+              overlay/no change ??? and as above/detachments      
+	      stop.start (unsync) - but we have rec and play syncs/starts...
+
+notes:
+- in overlay freeze can stop and start overlay - see below - stop is no rec not reset below
+- in overlay freeze can reset that section to 0 - so no overlay just re-record that section once then overlay (how?)
+
+plus modifiers:
+
+notes on mods:
+
+** 6/7/2023
+
+DONE- remove rec0play0 logic from macros:
+
+if (play && rec) play=0; \
+if (rec && play) rec=0;			\
+	  
+// and implement new mode below for overlay on rec+play
+
+DONE: tested fine but still question of rec+play, then we drop play and are just left with rec....
+
+playing mode 78:
+
+- we need way of detaching, extending sections in overlay... so is not such a clear loop across all...
+- freeze in NADA, but not so necessary - other REC/PLAY/OVERLAY have different uses for that button
+- in overlay freeze can stop and start overlay - see below - stop is no rec not reset below
+- in overlay freeze can reset that section to 0 - so no overlay just re-record that section once then overlay (how?)
+
+how we implement - as major modes or as bits????
+
+** 5/7/2023
+
+*REC and PLAY are global, freeze/control is local*
+
+*all is global AND local now* - neither just local, nor just global - with modifiers (can still be major and minor)...
+
+eg. On playback we decide we want to overlay - hit rec to overlay/keep
+playing from position. stop rec, stop overlay but not play, play stop
+stops all play, overlay/rec
+
+*Instead of new mode 77: rec started during play is overlay* (play started during rec is also overlay?)
+
+so we have 4 states:
+
+- NADA
+- rec/resets start of reccount, stop
+- play
+- rec+play: OVERLAY! stop rec: stops overlay, carries on playing// stop play: into NADA... (so are there 2 ways out?)
+
+// or should stop play just revert to rec with no overlay// and reset on entry // but there is no entry as we are there, so carries on/extends.. ?
+// *question of stop play returning to bare reset rec*
+
+*and global/local mode of this with freeze as enter/leave overlay*
+
+// In global/locals freeze mods play, rec, voltage/freeze and what else???
+
+*modifier or major mode (as it is not bitwise maybe best as major mode)= what FREEZER (local indicator) does:*
+
+- freeze (and associated behaviours of speed/playback freezers)
+- detach=stop/start/sync playback of that section
+- overlay that section/start re-record that section etc...
+
+but also with modifiers for each so we can, say, *detach speed as playback*
+
+*jekyll/hyde for top speed modifier - it has 2/several personalities* 
+
+// 
+
+** 4/7/2023
+
+playing notes: that we want to choose when to overlay on the moment // freeze as overlay/stop overlay = global/local mode
+
+also in 77 when we are in play - next rec can overlay... rather than reset no matter what...
+
+// placed toggles in ==8 section // timing might need to be fixed
+
+DONE>>>// checking back pin conns 
+
+// +last of 4 VCA has wierd echo/drag - bad solder???fixed+
+
+- new major mode definitions as:
+
+TESTED/DONE:
+NEW mode 77:
+
+enter mode:
+[usual no rec/no play]
+[rec] - start recording with no overlay[so erases].
+[rec] - sets length of overlay/segment and keeps recording overlay
+
+[play]- plays back with live overlay
+[play]- no play: stops playback
+
+*TODO: also as local mode for each one - how? - also code more for states and transitions marked in macros*
+
 ** 3/7/2023
 
 - ordered test pads for testing touch...
 
-// playing with all modules: overlay is most important to have... but then we need to clearly reset...
+// playing with all modules: overlay is most important to have... but then we need to clearly reset... see latest notebook
 
 ** 30/6/2023
 
@@ -282,23 +465,19 @@ DONE//NOTE- in mode 2 speed-div seems too fast-should be fixed//tested*
 
 - FIXED/test/test/still major issues with mode - warbling... and gets stuck - changed some code and values but in the end we need to test again all fingers...
 
-*make full tests on mode 6*
-
 DONE/*TEST-all totest*-- TODO: test in new case 6*: New approach: lowest 3 bits minormodes are just set in no rec/no play.. play and rec bits are seperate and set there
 
 ////
 Notebook notes...
 
-do minormodes vary depending on state?
+do minormodes vary depending on state? yes
 
 States:         // minormodes
 
-- norec/no play: sensitivity / type of freeze
-- rec          : ^^         / ^^              / rec speed / resets
-- play         : ^^         / ^^              / overlay/freeze/speed/resets
-- rec+play:    : ^^         / ^^              / rec speed / overlay/freeze/speed/resets
-
-- rec and play: as special case/major mode... special case of play or or rec?
+- norec/no play: nada
+- rec          :  rec speed / resets
+- play         :  overlay/freeze/speed/resets
+- rec+play:    :  rec speed / overlay/freeze/speed/resets
 
 MAJOR: 
 1-no speed changes... as case2
@@ -380,9 +559,9 @@ PLAN: finish last modes, define all major modes, clean modes we have and add all
 - thinking more of start and end - as when we set length is more like just changing end//
 
 DONE/tested:change 3 also for start and end: new mode 3
-*when we enter freeze is start/exit freeze is end*
+when we enter freeze is start/exit freeze is end
 
-case3=DONE4 is just rec overlay version of this // *or that can be a minor mode/mod - now is mod 64 bit*
+case3=DONE4 is just rec overlay version of this // or that can be a minor mode/mod - now is mod 64 bit
 4) freeze = length of individual rec/loops rec with overlay... stop rec=stop all/reset
 with/without recording overlay
 eg. rec-record, play-freeze is start and end// if end<start then we loop round...
@@ -432,8 +611,6 @@ Added in case 0 (now new template):
 new modifiers: 
 32: freezes speed/not real, freezes real/not speed
 64: freeze stops playback/freeze just for overlay
-
-*TODO: test all options*
 
 - DONEfreeze options for speed*
 
@@ -669,7 +846,7 @@ DONE-revoke lack of overlay on 6!
 
 global speeds=none, on top voltage, individual, recorded
 
-*-> do we need resets = maybe make it more developing!?*
+-> do we need resets = maybe make it more developing!?*
 
 ** 3/5/2023
 
@@ -684,7 +861,7 @@ Q for locals of what rec and play do - otherwise we replicate functions of globa
 - slower rec
 - detachment etc
 
-*what do rec and play do in locals?*
+what do rec and play do in locals?*
 
 - as rec/play are GLOBAL - could also be sync starts
 - rec can be enter speed record mode for all sections, playback???
