@@ -263,7 +263,31 @@ Rich: 3M // touch/toggle: jumpy!! // toggles // voltage 4v, medium noise // togg
 
 UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine... 
 
-Meli: //touch toggle a bit jumpy // test the rest!
+Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND works well (as a possible solution) // voltage 6v // toggles to test with new test board
+
+** 12/7/2023
+
+- *thinking about using top 16 bits of each recording/samples for other purposes:*
+
+*also longer rec in some modes if we double up/fold over eg. if rec_cnt>...*
+
+eg. *TODO* *REWORK mode 79, we can store original loop there, and expand overlay in top bits*
+
+*like a ghost recording, a double, a mirror*
+
+*MODE81-TEST!: or it could also be the original and we make all overlays in top bits, freeze/unfreeze toggles between the two for each!!*
+
+// tested mode 80 but both 78 and 80 seem to lose sync which is maybe ok (rec_cnt running) - *we can have different mods for this*
+
+as speed changes play_cnt so we would skip samples, test sync on entry
+
+// DONE:also exit from rec+play via play is odd as leaves us in rec- maybe that exit should leave us in nada - ie. reset play and rec to zero // done!
+
+// offset ups it - changed SENSEOFFSET as was 1600, to 1800 for higher sensitivity
+
+** 11/7/2023
+
+- TESTED 78/79changed reset for overlay so resets to play_cnt and not zero of rec...
 
 ** 10/7/2023
 
@@ -271,15 +295,17 @@ Meli: //touch toggle a bit jumpy // test the rest!
 
 We have so far:
 
-- older modes such as always loop/overlay to check out
+- older modes such as always loop/overlay to check out // *DEP*
 - 78 as standard - to add freezes
-- new overlay below...
+- new overlays below: NON79DONE/TEST, 
+
+80: TODO!
 
 - define minormodes for each state:
 
 // new notebook notes/TODO - variations on case 78:
 
-- *MODEX: overlay: we want to be able to overlay only one section of playback (and this section is fixed? how?) for each section?*
+- *TESTEDOKMODE80overlay: we want to be able to overlay only one section of playback (and this section is fixed? how?) for each section?*
 
 [start------------end] - according to rec...
 [------][xxxxx][-----]
@@ -288,7 +314,9 @@ no play  play   no play
 
 and same for rec - so ISLANDS of rec/play - and how this works for overlap?=just detach play/and/rec or just rec so we overlay only island
 
-// does it make sense for rec... sort of...?
+// does it make sense just for rec... sort of...? not really as default is rec which means a wierd start... or we default other way...???
+
+// we also need freeze for NADA and for rec...
 
 ////
 whereas detach is more stop and start
@@ -297,7 +325,7 @@ whereas detach is more stop and start
 - detach rec in overlay and re-attach...
 - detach play/rec=unsync
 
-*TODO_TEST: MODE 79:local mode with different lengths but can repeat to full length with different overlays...*
+*NON/REWORK NOW:TODO_TEST: MODE 79:local mode with different lengths but can repeat to full length with different overlays...*
 
 eg. we keep looping but re-record overlay as one long section of repeats and changing overlays
 
@@ -305,7 +333,7 @@ eg. we keep looping but re-record overlay as one long section of repeats and cha
 
 simply= play as looped, re-record/overlay is full length. any variations on this?
 
-*MODEX: tap freeze top in rec+play/overlay: record speed seperate and leave voltage free running (q of speed overlays or not), same for freeze on locals in another mode...*
+*MODEX: tap freeze top in rec+play/overlay: record speed seperate and leave voltage free running (q of speed overlays or not), TODOsame for freeze on locals as another mode...*
 
 /////
 
