@@ -13,6 +13,12 @@ Sprott
 - +12v 100mA
 - -12v 100mA
 
+** 12/7/2023
+
+*manual/basic description* 
+
+*Q of peaky re-test????*
+
 ** 3/7/2023
 
 PCB TODO:

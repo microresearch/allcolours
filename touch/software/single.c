@@ -1,3 +1,79 @@
+///new layout
+
+         case X: 
+	    /*
+	    */
+	  FREEZERS;
+          REALADC;
+	  // 4 states: play, rec, overlay, nada
+	  if (rec && play){
+	    if (ender[daccount]) overlaid=1;
+	    else {
+	      overlaid=0;
+	      play=0; // we have nothing to play
+	    }
+	  }
+	  else overlaid=0;
+
+	  if (lastmode==1 && play==0) {
+	    rec=0; // if we leave overlaid via. exit from play
+	    lastmode=0;
+	  }
+	  
+	  if ((!overlaid) && play && ender[daccount]){// only play if we have something in rec
+	    LASTPLAY;
+	    lastmode=0;
+	    if (overlap[daccount]) ender[daccount]=MAXREC;
+	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  } 
+	  
+	  ///// recordings
+	  if ((!overlaid) && rec){ // we are recording // on entry but not 2nd time
+	      LASTREC; // reset all only on entering
+	      lastmode=0;
+	      values[daccount]=(real[daccount]);
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      ender[daccount]=rec_cnt[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+		ender[daccount]=MAXREC;
+	      }
+	    } // if rec
+	    else lastrec=0;
+	    
+	    // overlay
+	    if (overlaid){
+	      LSTRECPLAY;
+	      lastmode=1;
+	      // playback and record overlap
+	      // TODO: different kinds of overlay
+	      speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  // see older cases 9/10 TODO!
+	      values[daccount]+=real[daccount]; // could depend on freeze
+	      if (values[daccount]>4095) values[daccount]=4095;
+	      // try different versions for minormodes? also see 9/10
+	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>ender[daccount]) {
+		rec_cnt[daccount]=0;
+	      }
+	    }
+	    else llrec=0;
+	    
+	    // nada
+	    if (rec==0 && play==0 && overlaid==0) {
+	      values[daccount]=(real[daccount]);
+	      lastmode=0;
+	    }
+	    break; ///// 
+
+
+
 // basic layout of case
           case X: 
 	  FREEZERS;
