@@ -995,7 +995,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	  FREEZERS;
           REALADC;
-	  // 4 states: play, rec, overlay, nada
+	  // manage 4 states: play, rec, overlay, nada
 	  if (rec && play){
 	    if (ender[daccount]) overlaid=1;
 	    else {
@@ -1004,12 +1004,13 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    }
 	  }
 	  else overlaid=0;
-
+	  // if we leave overlaid via. exit from play
 	  if (lastmode==1 && play==0) {
-	    rec=0; // if we leave overlaid via. exit from play
+	    rec=0; 
 	    lastmode=0;
 	  }
-	  
+
+	  // play
 	  if ((!overlaid) && play && ender[daccount]){// only play if we have something in rec
 	    LASTPLAY;
 	    lastmode=0;
@@ -1033,7 +1034,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 		overlap[daccount]=1;
 		ender[daccount]=MAXREC;
 	      }
-	    } // if rec
+	    } 
 	    else lastrec=0;
 	    
 	    // overlay
@@ -1127,8 +1128,9 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
 
 	      // other process - bit where this starts from - also reset
-	      // as we can;t go faster as this would move us ahead
-	      values[daccount]=speedsamplelop(1.0f, MAXREC, daccount, recordings[daccount]);  // see older cases 9/10 TODO!
+	      // this only makes sense once we are through it all once! TODO! otherwise values are as they are...
+	      // see first_round[daccount]==2 code!
+	      values[daccount]=speedsamplelop(speed, MAXREC, daccount, recordings[daccount]);  // we need to set play_cnt_lop[] to play_cnt[] also for this one!
 	      
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>MAXREC) {

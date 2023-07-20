@@ -1,0 +1,16 @@
+** pyro module for 4 triggers
+
+- 4 pulse inputs
+- 4 sets of terminals for triggers (from FETs)
+- switch on encoder arms the device
+- how to show is armed - some display/LED/nicer? but cutout to show this/surface mount - or like 4 bright leds with slit// to test?
+- UV light would be nice
+- different modes eg. single trigger sets off all, at interval x... next on x does x... enables/etc
+- power socket as in breath - but widen the pins for segor socket
+
+** started july 20
+
+- schematic started
+- tested encoder: PEC11R-4215F-S0024
+
+- sizes and selection for clamps?
