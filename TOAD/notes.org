@@ -1,4 +1,44 @@
-** towards manual
+** towards manual = booklet/fanzine
+
+language of vision of ripley
+
+*Which Venom kills, and saveth such as Venom chance to take*
+
+When busie at my Book I was upon a certain Night,
+This Vision here exprest appear’d unto my dimmed sight:
+A Toad full Ruddy I saw, did drink the juice of Grapes so fast,
+Till over-charged with the broth, his Bowels all to brast:
+And after that, from poyson’d Bulk he cast his Venom fell,
+For Grief and Pain whereof his Members all began to swell;
+With drops of Poysoned sweat approaching thus his secret Den,
+His Cave with blasts of fumous Air he all bewhited then:
+And from the which in space a Golden Humour did ensue,
+Whose falling drops from high did stain the soyl with ruddy hue.
+And when his Corps the force of vital breath began to lack,
+This dying Toad became forthwith like Coal for colour Black:
+Thus drowned in his proper veins of poysoned flood;
+For term of Eighty days and Four he rotting stood
+By Tryal then this Venom to expel I did desire;
+For which I did commit his Carkass to a gentle Fire:
+Which done, a Wonder to the sight, but more to be rehearst;
+The Toad with Colours rare through every side was pierc’d;
+And White appear’d when all the sundry hews were past:
+Which after being tincted Ruddy, for evermore did last.
+Then of the Venom handled thus a Medicine I did make;
+Which Venom kills, and saveth such as Venom chance to take:
+Glory be to him the granter of such secret ways,
+Dominion, and Honour both, with Worship, and with Praise.
+Amen.
+
+Which Venom kills, and saveth such as Venom chance to take
+
+ Sweet are the uses of adversity;
+         Which like the toad, ugly and venomous,
+         Wears yet a precious jewel in his head.
+
+see: https://www.alchemywebsite.com/toad.html
+
+
 
 - collect resources
 - what we need to show: normings, possible patches
@@ -7,17 +47,42 @@
 Mindlin
 Sprott
 
+the operators in the centre of the scroll - the 7+1 roundels joined... notes on this!
+
+*headings of sections like in: http://www.levity.com/alchemy/rpvision.html*
+
+- show norms
+
+- show patches: 
+
+- bare patch sheets
+
+- info: hot, general, norms, background
+
+** basic description
+
+hermaphrodite analogue computer driven by the times of pulses
 
 ** HW/desc notes
 
 - +12v 100mA
 - -12v 100mA
 
+is now 24HP=121.6mm. depth
+
 ** 12/7/2023
 
 *manual/basic description* 
 
 *Q of peaky re-test????*
+
+** 17/7/2023
+
+- think about doubling top mults so x2 total... R115, 116, 117 -> 660K =- just have 511K // or halve non multed inputs=20k on r69, r79 
+
+// trying but hard to see differences
+
+// *key is if we want 10v or 5v to be peak 1x - as we have 10v from offset!*
 
 ** 3/7/2023
 
@@ -179,7 +244,11 @@ TEST/TODO//change:
 
 //size of PCB: height of seg base pcb was 108mm
 
-//TRY width is 28HP=142.24mm
+
+is now 24HP=121.6mm
+
+
++TRY width is 28HP=142.24mm+
 
 DONE- check norms, check all schematic, see how looks as PCB/parts/size*
 
