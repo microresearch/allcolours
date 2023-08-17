@@ -1605,6 +1605,10 @@
     (effects (font (size 3 3)) (justify left bottom))
     (uuid 627f6c15-fb94-4580-ae6e-57300f5c09ef)
   )
+  (text "1k-1.2k 11/8/2023" (at 83.566 89.916 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 758e6fef-f942-4565-aea3-9a488e66f485)
+  )
   (text "IN1 and IN4 close on logic 1\nIN2 and IN3 open \n\nso can be used as SPDT"
     (at 236.347 101.346 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -2086,7 +2090,7 @@
     (in_bom yes) (on_board yes)
     (uuid 1e18fe22-54b1-4cd0-9554-c70f17628db9)
     (property "Reference" "R32" (id 0) (at 96.774 117.729 90))
-    (property "Value" "1K" (id 1) (at 94.107 117.729 90))
+    (property "Value" "1.2K" (id 1) (at 94.107 117.729 90))
     (property "Footprint" "Resistor_SMD:R_0805_2012Metric" (id 2) (at 95.885 117.729 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -2131,7 +2135,7 @@
     (in_bom yes) (on_board yes)
     (uuid 20e14aae-5c30-4f90-b9c0-9518b229d982)
     (property "Reference" "R26" (id 0) (at 88.011 26.289 90))
-    (property "Value" "1K" (id 1) (at 85.344 26.289 90))
+    (property "Value" "1.2K" (id 1) (at 85.344 26.289 90))
     (property "Footprint" "Resistor_SMD:R_0805_2012Metric" (id 2) (at 87.122 26.289 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -2810,7 +2814,7 @@
     (in_bom yes) (on_board yes)
     (uuid 72e809ee-f02e-4b57-90f7-54e6f7a5d2f7)
     (property "Reference" "R30" (id 0) (at 93.853 75.184 90))
-    (property "Value" "1K" (id 1) (at 91.186 75.184 90))
+    (property "Value" "1.2K" (id 1) (at 91.186 75.184 90))
     (property "Footprint" "Resistor_SMD:R_0805_2012Metric" (id 2) (at 92.964 75.184 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3095,7 +3099,7 @@
     (in_bom yes) (on_board yes)
     (uuid 8a9daac2-1196-43d5-8914-96c764bf02fb)
     (property "Reference" "R31" (id 0) (at 95.885 165.1 90))
-    (property "Value" "1K" (id 1) (at 93.218 165.1 90))
+    (property "Value" "1.2K" (id 1) (at 93.218 165.1 90))
     (property "Footprint" "Resistor_SMD:R_0805_2012Metric" (id 2) (at 94.996 165.1 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -4584,7 +4588,7 @@
       (reference "R25") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/20e14aae-5c30-4f90-b9c0-9518b229d982"
-      (reference "R26") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R26") (unit 1) (value "1.2K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/8d8e7f08-e0e5-4cab-a9b1-a84de0ae6e32"
       (reference "R27") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
@@ -4596,13 +4600,13 @@
       (reference "R29") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/72e809ee-f02e-4b57-90f7-54e6f7a5d2f7"
-      (reference "R30") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R30") (unit 1) (value "1.2K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/8a9daac2-1196-43d5-8914-96c764bf02fb"
-      (reference "R31") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R31") (unit 1) (value "1.2K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/1e18fe22-54b1-4cd0-9554-c70f17628db9"
-      (reference "R32") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R32") (unit 1) (value "1.2K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/2355a027-efea-4e93-b6f3-7b0909c2ec9e"
       (reference "R33") (unit 1) (value "100K") (footprint "Resistor_SMD:R_0805_2012Metric")

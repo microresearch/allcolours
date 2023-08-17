@@ -1,6 +1,8 @@
 ** pyro module for 4 triggers
 
-- 4 pulse inputs
+10HP 50.5mm
+
+- 4 pulse inputs DONE
 - 4 sets of terminals for triggers (from FETs)
 - switch on encoder arms the device
 - how to show is armed - some display/LED/nicer? but cutout to show this/surface mount - or like 4 bright leds with slit// to test?
@@ -8,9 +10,43 @@
 - different modes eg. single trigger sets off all, at interval x... next on x does x... enables/etc
 - power socket as in breath - but widen the pins for segor socket
 
+** specs panel/base:
+
+- Cliff FE6930 is socket/vertical
+
+** 16/10/2023
+
+- starting to test HW and work on software
+
+- test basics: programming (fuses) using pololu, makefile, basic code DONE
+
+code to test: flash LEDsDONE, read from inputs, trigger outs, read from encoder
+HEADER from top: reset, MOSI, MISO, SCK, GND
+
+black/reset, white, black, brown, orange (and connect own power/bus pololu)
+
 ** started july 20
 
 - schematic started
 - tested encoder: PEC11R-4215F-S0024
 
 - sizes and selection for clamps?
+
+** desc for pcbman
+
+I have a new design for you - it's for a eurorack pyrotechnical
+ignition module! Here are the details below, if there's anything I've
+missed let me know. Attaching kicad zip and a rough layout.
+
+Base PCB (106x50mm) and 10HP panel (128.5x50.5mm) with:
+
+- 4 jacks as usual
+- Cliff FE6930 clip thing with terminals in base PCB so it can be
+  mounted/soldered in place there and pokes through a cutout on the
+  panel pcb - check datasheet. On the schematic it is just an 8pin connector. I left it free in the footprint association/netlist.
+- 4 SMD LEDs (0805) across the width of the base which are viewed through a very narrow slit or unmasked area (1mm) in the top panel (marked in black)
+- Rotary encoder: PEC11R-4215F-S0024 footprint? I left it free in the footprint association/netlist.
+- PCB zone heatsink under each FET on the PCB!
+- All parts can be on the back of PCB
+
+If you can design a not-so-precise base PCB (without panel) so I can test this first without the top panel that would be great!

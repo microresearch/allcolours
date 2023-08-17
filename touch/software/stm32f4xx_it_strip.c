@@ -18,8 +18,8 @@
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
 #define BRKF 48 // for freezer. now 48 with divider of 8; was 8 when we have have divider in main as 32... too high causes issues for speed of freezes
-#define BRK 128 // for other toggles...
-#define DELB 20 // was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
+#define BRK 48 // was 128 - for other toggles...
+#define DELB 40 // 40 now with 8 divider - was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 #define DELA 32 // for clear DAC // was 64
 
 #define HELDER 4 // for holding of modechange
@@ -282,7 +282,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint32_t playb[8]={0,0,0,0, 0,0,0,0};
     static uint32_t recd[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastrec=0, secondrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0, overlaid=0, lastmode=0;
-    static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0, starter[8]={0,0,0,0,0,0,0,0}, freezetoggle[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, enderr[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0}, baseminor=0,recminor=0,playminor=0;
+    static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0, minormoderec=0, minormodeplay=0, starter[8]={0,0,0,0,0,0,0,0}, freezetoggle[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, enderr[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0}, baseminor=0,recminor=0,playminor=0;
     static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0}, lastlastrec=0, llrec=0,lastlastplay, lastlast;
     static int32_t endpoint, togrec=0, togplay=0, modeheld=0, modechanged=1, first=0, firsty[8]={0};
     static uint32_t testting=0;
@@ -302,7 +302,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=78; // testy - 78 is new primary // test!
+	mode=78; // testy - 78 is new primary // test! 777 is rec/play/modes test!
 	
 	switch(mode){
 	case 0: // 6/6/2023 - now with minor mode adjustments
@@ -1065,8 +1065,17 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    
 	    // nada
 	    if (rec==0 && play==0 && overlaid==0) {
-	      values[daccount]=(real[daccount]);
-	      lastmode=0;
+	      if (freezetoggle[daccount])
+	    {
+	      lastvalue[daccount]=real[daccount];
+	      freezetoggle[daccount]=0;
+	    }
+	  else { // ***we have just one type of overlap
+	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
+	  }
+	    values[daccount]=(real[daccount]); 
+
+	    lastmode=0;
 	    }
 	    break; ///// 
 
@@ -2530,7 +2539,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	case 777: // tests of all toggles! rec, play, mode and freeze
 	  FREEZERS;
-	  if (rec) {  // frozen[daccount] //modetoggle // rec is fine...
+	  if (modetoggle) {  // frozen[daccount] //modetoggle // rec is fine...
 	    values[4]=4095;
 	  }
 	  else values[4]=0;
@@ -2548,6 +2557,21 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  
 	  //	  values[4]=baseminor*10;
 	  break; /////
+
+	case 779:
+	  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; 
+	  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	  GPIO_Init(GPIOC, &GPIO_InitStructure);
+	  GPIOC->BSRRL=(1)<<6;
+	  delay();
+	  if (!(GPIOB->IDR & (1<<6))) {	       
+	    values[4]=4095;
+	}
+	else {
+	  values[4]=0;
+	}
+	break; ////
 	  
 	} // end of modes switch
 

@@ -70,11 +70,22 @@ hermaphrodite analogue computer driven by the times of pulses
 
 is now 24HP=121.6mm. depth
 
+** 10/8/2023
+
+- cell multipliers are designed for 5v as unity gain (as we don't divide on the multiplier) - should we change or not?
+- top ones are not the case - but they need to stay at 10v for internals 
+
+see below:
+
+NON//- think about doubling top mults so x2 total... R115, 116, 117 -> 680K // ordered 0805 
+
+can fix in UTIL/offset????
+
 ** 12/7/2023
 
-*manual/basic description* 
+manual/basic description* 
 
-*Q of peaky re-test????*
+Q of peaky re-test????*
 
 ** 17/7/2023
 
