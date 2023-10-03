@@ -70,6 +70,20 @@ hermaphrodite analogue computer driven by the times of pulses
 
 is now 24HP=121.6mm. depth
 
+** 21/9/2023
+
+- solved mismatch as XXX board is probably earlier with 1st and 2nd integrators in opposite formation to non-XXX
+
+latest is M20 2nd left as int1_out, M12 as int2_out
+
+R2 and R7 as 33k now ...
+
+** 20/9/2023
+
+- looking last time at voltages for 4051, 4024, change 330R we had back to 1k
+
++R2 and R7 on XX marked board now 33k which gives us +8/-8v (max for 4024/4051 is 18v)+
+
 ** 10/8/2023
 
 - cell multipliers are designed for 5v as unity gain (as we don't divide on the multiplier) - should we change or not?
@@ -191,7 +205,9 @@ CD and TOAD (and offset):
 
 *tests and changes to test on:*
 
-- **voltage from divider and also 330R there for current/any bleed??? - dividers now 22k seems very samey,,, R3 and R13 still 330R*
+- +voltage from divider and also 330R there for current/any bleed??? - dividers now 22k seems very samey,,, R3 and R13 still 330R+
+
+*NOOO!!*
 
 (we can change lower part of dividers for power supply to 22k to raise voltage there to 7.5v but... -> R2 and R7
 
