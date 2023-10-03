@@ -327,7 +327,7 @@ int main(void)
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBase_InitStructure.TIM_Period = 1024; // was 1024 divide by 4 should work TEST! = 256 doesn't run
   /// XXXXX
-  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // was 32... for 413 try 16/// was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 24; // was 32... for 413 try 16/// was 8 ///  what speed is this 18khz toggle = 36k  - how we can check - with one of our pins as out
   // for 413 which seems run 8x slower now we have 5 which matches our old speed with 446
   // 4 is orig
   // 48 is too slow...

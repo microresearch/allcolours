@@ -22,10 +22,10 @@
 #define DELB 40 // 40 now with 8 divider - was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK
 #define DELA 32 // for clear DAC // was 64
 
-#define HELDER 4 // for holding of modechange
-#define HOLDRESET 400 // time for full reset when hold the mode down - over 2 seconds
-#define SHORTMODE 4 // was 20ms could be shorter...
-#define LONGMODE 100 // 1sec
+#define HOLDRESET 800 // time for full reset when hold the mode down - over 4 seconds
+#define SHORTMODE 8 // was 20ms could be shorter...
+#define LONGMODE 140 // 1sec
+
 #define MAXMODES 4
 #define MAXMINOR 128 // 128 minor/modifiers - not all used...
 
@@ -272,7 +272,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     uint32_t prev[8]={1,2,3,4,5,6,7,0};
     uint32_t bits, recspeed, lengg, where;
-    uint32_t values[8];
+    uint32_t values[8]={0,0,0,0, 0,0,0,0}; // changed 2/10
     static int32_t real[8], reall[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static????
     static uint32_t lastvalue[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastspeed=0, lastspeedd=0;
@@ -281,10 +281,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     static uint32_t lastplayspot[8]={0,0,0,0, 0,0,0,0};
     static uint32_t playb[8]={0,0,0,0, 0,0,0,0};
     static uint32_t recd[8]={0,0,0,0, 0,0,0,0};
-    static uint32_t lastrec=0, secondrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0, overlaid=0, lastmode=0;
+    static uint32_t lastrec=0, secondrec=0, lastplay=0, added[8]={0}, modetoggle=0, newmode=0, counting=0, overlaid=0, lastmode=0;
     static uint32_t count=0, triggered[11]={0}, mode=0, minormode=0, minormoderec=0, minormodeplay=0, starter[8]={0,0,0,0,0,0,0,0}, freezetoggle[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, enderr[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0}, baseminor=0,recminor=0,playminor=0;
     static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0}, lastlastrec=0, llrec=0,lastlastplay, lastlast;
-    static int32_t endpoint, togrec=0, togplay=0, modeheld=0, modechanged=1, first=0, firsty[8]={0};
+    static int32_t endpoint, togrec=0, togplay=0, helder=0, modeheld=0, modechanged=1, first=0, firsty[8]={0};
     static uint32_t testting=0;
     
     uint32_t tmp, trigd;
@@ -302,7 +302,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=78; // testy - 78 is new primary // test! 777 is rec/play/modes test!
+	mode=778; // testy - 78 is new primary // test! 777 is rec/play/modes test!
 	
 	switch(mode){
 	case 0: // 6/6/2023 - now with minor mode adjustments
@@ -2520,23 +2520,39 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  //////////////////////
 
 	case 666: // speed test ONLY 166.7Hz // on 413 now we have 190+Hz with divider... 1.5Khz for each run through = 3kHz
-	  values[daccount]=val;
+	  //	  values[daccount]=val;
+	  /*
+	  daccount=4;
 	  GPIOC->BSRRH = 0b1110100000000000;		       
 	  DAC_SetChannel1Data(DAC_Align_12b_R, val);
 	  j = DAC_GetDataOutputValue (DAC_Channel_1);		
 	  GPIOC->BSRRL=(daccount)<<13; // multiplex
-	  //CLEARDAC; // why we remove this but is there on writedac - timing?
-	  //	  daccount=4;
-	  //	  daccount++;
-	  //	  if (daccount==8) { // 
-	  daccount=4; // now at end
-	  if (val==0) val=4095;
-	  else val=0;
+	  */
+	  //CLEARDAC; // why we remove this but is there on writedac - timing
+	  if (daccount==4){
+	  if (values[daccount]==0) values[daccount]=4095;
+	  else values[daccount]=0;
+	  }
+	  else values[daccount]=4095;
+	  //if (val==0) val=4095;
+	  //	  else val=0;
+
 	  //	  	  }
 	  //	  RESETT; // all resets... drops us to 15Hz so we lose 1/30th second... on full reset
 	  //	  RESET0; // one reset... drops to 142Hz so not so bad... 
 	  break;
 
+	case 667:
+	  if (daccount==4){
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		values[daccount]=4095;
+		rec_cnt[daccount]=0;
+	      }
+	      else values[daccount]=0;
+	  }		
+	  break;
+	  
 	case 777: // tests of all toggles! rec, play, mode and freeze
 	  FREEZERS;
 	  if (modetoggle) {  // frozen[daccount] //modetoggle // rec is fine...
@@ -2546,10 +2562,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  break; /////
 
 	case 778: // for hold timing tests below:
-	  if (baseminor==4) 	  {
-	    testting^=1; // testy
-	    baseminor=0;
-	  }
+	  //	  if (baseminor==4) 	  {
+	  //	    testting^=1; // testy
+	  //	    baseminor=0;
+	  //	  }
 	  if (testting) { 
 	    values[4]=4095;
 	  }
@@ -2572,7 +2588,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  values[4]=0;
 	}
 	break; ////
-	  
+
+
+	case 780: // test basic following 
+	  FREEZERS;
+          REALADC;
+	  values[daccount]=(real[daccount]); 
+	  break; ///// 
+
+	
 	} // end of modes switch
 
 	//////////////////////////////
@@ -2585,17 +2609,24 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
 	//	TOGGLES;      // only place where toggles - pulled out of ==8 section
 	  //       	TRIALTOGGLE;
-	WRITEDAC;
+	WRITEDAC2;
 	daccount++;
 	if (daccount==8) {
 	  daccount=0;
 	  count++;
 	  TOGGLES;      // only place where toggles
-	
-	  if (newmode){
-	  newmode=0;
+
+	  
 	// start to test for long or short mode hits
-	if (modeheld>HOLDRESET) { //reset all
+	  if (newmode){
+	    newmode=0;
+	    breaker[10]=0;
+	    /* if (modeheld>10) { // 1000 is around 4 seconds and works // 10 is short */
+	    /* modeheld=0; */
+	    /* testting^=1; // testy */
+	    /* } */
+
+	    if (modeheld>HOLDRESET) { //reset all
 	  modeheld=0;
 	  RESETT;
 	  //	  testting^=1; // testy
@@ -2605,16 +2636,15 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  MODECHANGED;
 	  //	  testting^=1; // testy
 	}	
-	else if (modeheld>SHORTMODE && modeheld<LONGMODE){ //inc minor mode matrix
+	else if (modeheld<LONGMODE){ //inc minor mode matrix
 	  modeheld=0; // ??? was commented just for testing
-	  //	  testting^=1; // testy triggers
+	  testting^=1; // testy triggers
 	  //	  baseminor++;
 	  if (rec==0 && play==0) baseminor++;
 	  else if (rec) recminor++;
 	  else if (play) playminor++;
 	  }
-	}
-	  
-	}
+	  }
+    }
     }
   }
