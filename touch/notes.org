@@ -7,9 +7,9 @@ Start to define major modes:
 // strip.c
 
 1- [78] - default with freeze as freeze
-2- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there, and expand overlay in top bits*
+2- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there, and expand overlay in top bits ???*
 3- [80] - islands?
-4- [81] - or it could also be the original and we make all overlays in top bits, freeze/unfreeze toggles between the two for each!!*
+4- [81] - or it could also be the original and we make all full overlays in top bits, freeze/unfreeze toggles between the two for each!!*
 
 // below....
 
@@ -19,7 +19,7 @@ Start to define major modes:
 
 8- chopping up gestures.... store distance in top bits
 
-that major modes define use of top bits:
+*that major modes define use of top bits:*
 
 - always as speed? as speed in one majormode
 - as our repeat or /other/ layer *like a ghost recording, a double, a mirror
@@ -104,6 +104,36 @@ speed as key in play/rec+play (what we have?):
 - logfast/logspeed(slow-add from below)
 - freeze on [6] freezes speed, freezes value
 - split [6] as rec speed/rec voltage (eg. rec speed only, *rec voltage only*, frees) - levels: freeze, rec, freerunning - rec speed is only in rec+play?
+
+** manual/description
+
+ERD/VIA is the Way, the new modular life, severing hands from knobs
+and tinkering, and establishing a new local skin regime of signals and
+gestures for dis-embodied prostheses. VIA is a new touch and
+finger-based controller for ERD and all modules, allowing voltage
+control to be freed from erudite wiggling, and surrendered to purely
+cut and segmented gestures. Voltages are placed on the surface of both
+skin and module to facilitate cross-spore-modulation and feedback.
+
+Four identical sections allow touch and gesture to govern a single VCA
+and a control voltage (CV) independently. Input, output and control
+voltages can also be mixed by skin and gesture. Gestural sections can
+be recorded and played back, chopped and cut, frozen, altered, sped
+up, slowed down, repeated, severed, overlaid, ghosted and finally
+dis-embodied and de-organised, all under touch and skin-feedback
+control. Signals can be routed on the skin to act globally and
+independently. 
+
+longer - what are the modes // how many modes?
+
+basic operations - where we touch, what is vca, routing of signals,
+freeze, micro/macro modes, rec/playback, lengths and timings!
+
+instructions etc...
+
+Image cards are cut out - disembodied hands, each of the 4 segments
+cracked apart and somehow labelled... some uncut cards maybe to show
+assembly/with text also on back for modes ... cut yourself out
 
 ** hardware
 
@@ -334,7 +364,65 @@ UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine...
 
 Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND works well (as a possible solution) // voltage 6v // toggles to test with new test boardDONEfine
 
-** 16/8
+** 2/10/2023
+
+After long break:
+
+TODO:
+
+- *trigger/timing tests with Kaffe again*
+
+- DONE: mode time tests:
+
+short: micromode inc
+1-3: majormode inc
+4+: full reset
+
+TESTED with bad finger and timings now seem good - but wait for Kaffe
+
+- define major and minor modes and code one example - what we have so far in terms of modes...
+
+8 major modes based around use of top bits
+
+x minor modes depend on major mode, freeze behaviours.
+
+- *divider of 24: all timing settled on (re-check filters and aliasing):*
+
+- fix complex relationship of divider, sample/hold cap, BRK, DELB and speed of whole - but now we run too fast - can slow down main loop but keep dac out faster...*
+
+main.c:  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // ??? 
+
+array size is: 9500 (div64=55secs/8=7seconds which seems quite short)
+
+// how do we measure speed and how long array takes?
+
+speed as mode 666: but why that doesn't work with writedac???
+
+speed is 5 KHz = 10x per second in main loop which has 8 DACs!
+
+now we have in mode 666 for each DAC: 675.7 Hz = *8= 5 Khz so figures - but we use new writedac2 which seems cleaner
+
+675 per second = 9500/675/2=7 seconds which was our calculation above...
+
+we measure now in case 667 as 7 seconds... 
+
+// divider 8 is sample at 1.5K per section... - for 440 Hz we have /3 = say 24 divider whiuch should give us 21/42 seconds
+
+*stay with 24 divider for the moment to match input filter etc*
+
+// what are resistances for filter and for divider and triggers:
+
+All triggers now: 3.3M on schematic // 4.7M on board
+VCA divider: 1M (4.7M on schematic)...
+CV divider: 1M
+Filter: 47 nF and 15K = // if we sample around 440 hz we want 220hz low pass=47nF and 15K // do we want 50Hz filter???
+ 
+*Sample hold on out is: 1nF // 440 Hz we have... 1/440=2.2ms /// try 4.7nF//10nF*
+
+0805 C0G ??? 
+
+- *fill in one major mode with micromodes*
+- *all modes defined and filled in*
 
 ** 15/8
 
@@ -352,7 +440,7 @@ Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND work
 
 ** 10/8
 
-- *new panel with 0.1mm gap and smallest circle, working well with my left-hand finger... to test with Meli*
+- *new panel with 0.1mm gap and smallest circle, working well with my left-hand finger... to test with Meli/DONE-working*
 
 // starting to define new modes, and minormodes, but question of *top bits:*
 

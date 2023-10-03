@@ -14,13 +14,39 @@
 
 - Cliff FE6930 is socket/vertical
 
-** 16/10/2023
+** 3/10/2023
+
+- DONEtested e-match trigger (we need ones with longer cables)
+- added bounce cap and pull downs for trigger ins to schematic and PCB (100K)
+- all tested just need to do logic, modes, check timing and heat
+
+Idea is to have 16 modes which can be displayed and then cycle these
+for longer ignition time (we could flash armed at different speeds to
+show this!
+ 
+- TODO: explain front panel: cutout for LED or blank area (test), cutout for socket thing, what graphics???
+
+** 2/10/2023
+
+- revisit:
+
+-DONEneed to test trigger outs - hookup LED
+-armed will always flash mode lights then flash triggered device when goes off
+
+DONE:
+- pulseins tested 
+- encoder ported (switch changed C10 to pulldown) - DONE:to update on PCB*
+- LEDs working
+- tested trigger outs with LED on all
+
+** 16/xx/2023
 
 - starting to test HW and work on software
 
 - test basics: programming (fuses) using pololu, makefile, basic code DONE
 
 code to test: flash LEDsDONE, read from inputs, trigger outs, read from encoder
+
 HEADER from top: reset, MOSI, MISO, SCK, GND
 
 black/reset, white, black, brown, orange (and connect own power/bus pololu)

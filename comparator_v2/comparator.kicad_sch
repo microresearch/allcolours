@@ -4420,10 +4420,10 @@
       (reference "C16") (unit 1) (value "100N") (footprint "Capacitor_SMD:C_0805_2012Metric")
     )
     (path "/8de2def3-92b8-4ddb-9d02-dd2828af8890/00000000-0000-0000-0000-00005c3aa4c8"
-      (reference "D1") (unit 1) (value "1N5158") (footprint "Diode_SMD:D_SOD-123")
+      (reference "D1") (unit 1) (value "1N5819") (footprint "Diode_SMD:D_SOD-123")
     )
     (path "/8de2def3-92b8-4ddb-9d02-dd2828af8890/00000000-0000-0000-0000-00005c3aa4bd"
-      (reference "D2") (unit 1) (value "1N5158") (footprint "Diode_SMD:D_SOD-123")
+      (reference "D2") (unit 1) (value "1N5819") (footprint "Diode_SMD:D_SOD-123")
     )
     (path "/637fac8a-3ba7-4d16-a4a0-a6a3e2551ab7"
       (reference "D3") (unit 1) (value "1N4148") (footprint "Diode_SMD:D_SOD-123")
