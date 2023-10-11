@@ -22,9 +22,9 @@
 
 Idea is to have 16 modes which can be displayed and then cycle these
 for longer ignition time (we could flash armed at different speeds to
-show this!
+show this!)
  
-- TODO: explain front panel: cutout for LED or blank area (test), cutout for socket thing, what graphics???
+- TODO: explain front panel to ilyas: cutout for LEDs (very thin slit), cutout for socket thing, what graphics???
 
 ** 2/10/2023
 
