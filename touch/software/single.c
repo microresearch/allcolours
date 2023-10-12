@@ -18,9 +18,14 @@
 	  if (lastmode==1 && play==0) {
 	    rec=0; // if we leave overlaid via. exit from play
 	    lastmode=0;
+	    overlaid=0;
 	  }
-	  
+          //////////////////////////////////////////////////////////////////////
+          // PLAY*
+          //////////////////////////////////////////////////////////////////////
+
 	  if ((!overlaid) && play && ender[daccount]){// only play if we have something in rec
+	    RESETFRP;
 	    LASTPLAY;
 	    lastmode=0;
 	    if (overlap[daccount]) ender[daccount]=MAXREC;
@@ -28,11 +33,16 @@
 	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
 	    values[daccount]+=real[daccount];
 	    if (values[daccount]>4095) values[daccount]=4095;
-	  } 
+	  }
+	  else {
+	    lastplay=0;
+	    entryp=0;
+	  }
 	  
 	  ///// recordings
 	  if ((!overlaid) && rec){ // we are recording // on entry but not 2nd time
 	      LASTREC; // reset all only on entering
+	      RESETFRR;
 	      lastmode=0;
 	      values[daccount]=(real[daccount]);
 	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
@@ -44,11 +54,15 @@
 		ender[daccount]=MAXREC;
 	      }
 	    } // if rec
-	    else lastrec=0;
+	  else {
+	    lastrec=0;
+	    entryr=0;
+	  }
 	    
 	    // overlay
 	    if (overlaid){
-	      LSTRECPLAY;
+	      LSTRECPLAYD;
+	      RESETFRO;
 	      lastmode=1;
 	      // playback and record overlap
 	      // TODO: different kinds of overlay
@@ -63,51 +77,30 @@
 		rec_cnt[daccount]=0;
 	      }
 	    }
-	    else llrec=0;
-	    
-	    // nada
-	    if (rec==0 && play==0 && overlaid==0) {
-	      values[daccount]=(real[daccount]);
-	      lastmode=0;
-	    }
-	    break; ///// 
-
-
-
-// basic layout of case
-          case X: 
-	  FREEZERS;
-          REALADC;
-	  // playback
-	  if (play && rec_cnt[daccount]){// only play if we have something in rec
-	    LASTPLAY;
-	    if (overlap[daccount]) rec_cnt[daccount]=MAXREC;
-	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	    values[daccount]=speedsample(logfast[speed], rec_cnt[daccount], daccount, recordings[daccount]);
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
-	  } // if play
-	  else {
-	    lastplay=0;
-	    play=0;
-	    values[daccount]=(real[daccount]);
-	  }
-    
-	  ///// recordings
-	    if (rec){ // we are recording
-	      LASTREC; // reset all
-	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>MAXREC) {
-		rec_cnt[daccount]=0;
-		overlap[daccount]=1;
-	      }
-	    } // if rec
 	    else {
-	      lastrec=0;
+	      llrec=0;
+	      entryo=0;
 	    }
-	  break; ///// 
 
+	    //////////////////////////////////////////////////////////////////////
+	    // NADA*
+	    //////////////////////////////////////////////////////////////////////
+	    if (rec==0 && play==0 && overlaid==0) {
+	      RESETFRN;
+	      if (freezetoggle[daccount])
+	    {
+	      lastvalue[daccount]=real[daccount];
+	      freezetoggle[daccount]=0;
+	    }
+	  else { // ***we have just one type of overlap on top of the freeze
+	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
+	  }
+	    values[daccount]=(real[daccount]);
+	    lastvaluer[daccount]=values[daccount];
+	    lastmode=0;
+	    }
+	    else entryn=0;
+	    break; 
 
 	  ///////////////////////////////////////////
 	case 666: // speed test ONLY

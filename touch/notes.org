@@ -2,6 +2,14 @@
 
 21/42 seconds recording length with divider of 24 (this also may change with modes - silence/gaps..., slower rec speeds/resolution)
 
+** Modes in progress:
+
+0: basic mode with overlay and speed control on [6]
+1: basic mode with overlay and no speed control
+testing//in progress: 2: mode with global speed recording
+
+3. local speeds - could be local triggering and all take [6] as voltage, or local voltage
+
 ** 10/8+ MODES
 
 Start to define major modes:
@@ -21,7 +29,7 @@ Start to define major modes:
 
 7- chopping up gestures.... store distance in top bits - silence is stored as length (so compressed) *but what happens in recorded overlay???*
 8- differing rec and playback speeds
-9++ record general speed, overlay and general speed (where did we store general speed before? in [6]???)
+9++ record general speed, overlay and general speed (where did we store general speed before? in [6]???) [11/12 ]
 10++ local and general gaps/distance
 
 *that major modes define use of top bits:*
@@ -352,17 +360,55 @@ Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND work
 
 ** 12/10/2023
 
+TETSING: TODO: mode 2: generic speed from [6] recorded where (for all of them - speed overlay?) // q below of overlay...
+
+- we need record in play on freeze as before - or always record in play
+
+Q if we should record in overlay or not as gets messy - NOT - so overlay stays same as 0 - *no as needs to read back speeds! or that is an option for major or minor*  !
+
+--> to port to 0 mode with all mods
+
+/////////////////////////
+
+// DONE: also good to have base major mode without mods - now in single.c // NADA is only one in this case with freeze
+
+/// DONE: new mode 1 with NO speeds but with rec and speedmatch.... after we test all 0/// now [6] voltage has its overlay of playback too
+
+Notes: 
+- *we always need to record overlay in modes (not enough fingers)*
+
+- basic NADA mode can be always the same. NOO:or we can use different resolutions (make these stay for rec mode)
+
+but steppiness doesn't go into rec so far...
+
+MAXBASE is synced minormodes across all...
+
+DONEmode 0 DONE/TESTED/TODO:
+- default is just freeze [6] as speed - lose one bit
+- just have freeze overlay or stop play - lose one bit
+- lose reset in overlay - minus one bit
+- lose overspeed as records over slower 0
+- lose overfreeze too
+
+NOOO!- we could have recording slowing in overlaid too - TODO: trial - but only works when we use rec pointer! // so in not all overrec modes
+
+///////////////////////////
+
+// but [6] needs overhaul - it is speed or overlay - NOT both... - or
+we have 2 major modes - one with resolution in speed/rec as we did
+have ... // and in other [0] speed can be overlaid...
+
+/// so in mode 0 we have NO overlay possible on [6]. freeze as speed, live "overlay" as speed
+
 ** 11/10/2023
 
-TODO:
-
-- test all of mode 0 minormodes: *but how to reduce number of these as there are too many for play/overlay?*
+DONE- test all of mode 0 minormodes: *but how to reduce number of these as there are too many for play/overlay?
 
 maybe start from what is most playable - which options make most sense - major modes as playable options which are chosen, not just all options...
 
 - start on new major modes - sketch out and then later fill in micromodes
 
-*TODO:// that freeze of speed/overlay in play/over makes more sense than detach - TRIAL new layout and transfer to overlay*
+DONETEST in overlay: TESTED:// that freeze of speed/overlay in play/over makes more sense than detach - TRIAL new layout and transfer to overlay DONE/TESTED
 
 ////////////////////
 
@@ -374,15 +420,11 @@ testing overlay - if we freeze overlay in regular approach then hits top after a
 
 // reset in overlay doesn't effect much as rec will be reset or not...
 
-*also question of max modes is dependent on mode (more or less)*
+DONE:also question of max modes is dependent on mode (more or less)*
 
 thus set say: maxplaymin[mode]=xxx;
 
 FIXEDstrange freeze behaviuors - reset across all... and rec needs its freezer TODO/testDONE I think - test further
-
-//////////////////
-
-- run through discarded code and notes here...
 
 ** 10/10/2023
 
