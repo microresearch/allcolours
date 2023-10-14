@@ -116,7 +116,7 @@ void main(void)
    pin[0]=(PINC&1);
    if (armed && pin[0] && (last[0]==0)) { // we just want leading edge...
      sbi(PORTB,1);
-     _delay_ms(10);
+     _delay_ms(100);
      cbi(PORTB,1);
    }
    last[0]=pin[0];

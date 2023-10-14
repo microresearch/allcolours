@@ -7,12 +7,63 @@
 - switch on encoder arms the device
 - how to show is armed - some display/LED/nicer? but cutout to show this/surface mount - or like 4 bright leds with slit// to test?
 - UV light would be nice
-- different modes eg. single trigger sets off all, at interval x... next on x does x... enables/etc
 - power socket as in breath - but widen the pins for segor socket
+
+specs now:
+
+ematch: 1/10th second ignition 2A = 100 ms
+talon (clip on igniter): 2 seconds
+
+question of any delay after trigger: none!
+
+also if we can fire in series??!?? and how many
+what of potential short at 2 seconds pulse???
+
+** modes
+
+- different modes eg. single trigger sets off all, at interval x... next on x does x... enables/etc, length of pulse out
+
+eg.
+
+1- trigger sets off each one
+2- trigger on first sets off all
+3- trigger on first sets off each at interval (how that is determined?)
+4- trigger on first primes rest to set off on their own trigger 
+5- pair arms or primes other - so one goes off after other 
+6- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
+7- trigger within time window on all sets off all 
+8- same for pairs in window
+
+what else?
 
 ** specs panel/base:
 
 - Cliff FE6930 is socket/vertical
+
+** 12/10/2023
+
+TODO:
+
+- test 4 triggers at same time - heat residue - how to measure?
+- define say 8 modes and 3 sets of timings - how many things on encoder?? 24 detents // checked
+
+or we just turn round and round for X modes ... multed by timings
+
+see below - 4 modes and 6 timings: collect timings???
+
+- flash mode on armed with time of ignition,  but mode is now 3 bits - extra bit as???
+
+note: that we can't flash ZERO so gives 15 modes in any case to indicate
+
+grey code //another encoding...
+
+24/4=6
+
+//DISPLAY we need to show:
+
+- that is armed - flash. length of trigger - flash and gap length
+- mode - 1-8 on 4 bits??? when is 4 bits but 1 extra bit
+- [show also state of incoming pulses... but confuses with flashing... could maybe invert them // and show when unarmed (but what of mode)]
 
 ** 3/10/2023
 
@@ -22,9 +73,9 @@
 
 Idea is to have 16 modes which can be displayed and then cycle these
 for longer ignition time (we could flash armed at different speeds to
-show this!)
+show this timing...)
  
-- TODO: explain front panel to ilyas: cutout for LEDs (very thin slit), cutout for socket thing, what graphics???
+- TODO: explain front panel to ilyas: cutout for LEDs (very thin slit - 0.8mm), cutout for socket thing, [own: what graphics if any]???
 
 ** 2/10/2023
 
