@@ -1,11 +1,7 @@
-///new layout
-
          case X: 
-	    /*
-	    */
 	  FREEZERS;
           REALADC;
-	  // 4 states: play, rec, overlay, nada
+
 	  if (rec && play){
 	    if (ender[daccount]) overlaid=1;
 	    else {
@@ -24,12 +20,12 @@
           // PLAY*
           //////////////////////////////////////////////////////////////////////
 
-	  if ((!overlaid) && play && ender[daccount]){// only play if we have something in rec
+	  if ((!overlaid) && play && ender[daccount]){
 	    RESETFRP;
 	    LASTPLAY;
 	    lastmode=0;
 	    if (overlap[daccount]) ender[daccount]=MAXREC;
-	    speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	    speed=real[6]>>2; 
 	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
 	    values[daccount]+=real[daccount];
 	    if (values[daccount]>4095) values[daccount]=4095;
@@ -39,9 +35,11 @@
 	    entryp=0;
 	  }
 	  
-	  ///// recordings
-	  if ((!overlaid) && rec){ // we are recording // on entry but not 2nd time
-	      LASTREC; // reset all only on entering
+          //////////////////////////////////////////////////////////////////////
+          // REC*
+          //////////////////////////////////////////////////////////////////////	  
+	  if ((!overlaid) && rec){ 
+	      LASTREC; 
 	      RESETFRR;
 	      lastmode=0;
 	      values[daccount]=(real[daccount]);
@@ -59,18 +57,17 @@
 	    entryr=0;
 	  }
 	    
-	    // overlay
+          //////////////////////////////////////////////////////////////////////
+          // OVERLAY*
+          //////////////////////////////////////////////////////////////////////
 	    if (overlaid){
 	      LSTRECPLAYD;
 	      RESETFRO;
 	      lastmode=1;
-	      // playback and record overlap
-	      // TODO: different kinds of overlay
-	      speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
+	      speed=real[6]>>2; 
 	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  // see older cases 9/10 TODO!
-	      values[daccount]+=real[daccount]; // could depend on freeze
+	      values[daccount]+=real[daccount]; 
 	      if (values[daccount]>4095) values[daccount]=4095;
-	      // try different versions for minormodes? also see 9/10
 	      recordings[daccount][rec_cnt[daccount]]=values[daccount];
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>ender[daccount]) {
@@ -92,7 +89,7 @@
 	      lastvalue[daccount]=real[daccount];
 	      freezetoggle[daccount]=0;
 	    }
-	  else { // ***we have just one type of overlap on top of the freeze
+	  else { 
 	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
 	  }
 	    values[daccount]=(real[daccount]);

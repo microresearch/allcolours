@@ -128,7 +128,7 @@ static float ownplay_cnt[8]={0.0f,0.0f,0.0f,0.0f, 0.0f,0.0f,0.0f,0.0f,};
 //static uint32_t tgr_cnt[10]={0};
 static uint32_t rec=0, play=0;
 
-static uint32_t SENSESHIFT=2, SENSEOFFSET=1800; // for lowest sensitivity, higher would be 2 and 1800
+static uint32_t SENSESHIFT=2, SENSEOFFSET=1800; // what were these for lower sensitivity
 
 //static uint32_t shifter[8]={2,2,2,2,2,2,2,2}; // shifter seperates vca from cv - VCA comes first
 //static uint32_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
@@ -224,6 +224,25 @@ inline static uint32_t speedsamplelop(float speedy, uint32_t lengthy, uint32_t d
       return (uint32_t)sample;
 }
 
+inline static uint32_t speedsampleloptop(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition;
+  
+  play_cnt_lop[dacc]=mod0(play_cnt_lop[dacc]+speedy, lengthy);
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)play_cnt_lop[dacc];
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+  
+  int32_t res=(play_cnt_lop[dacc] - (float)lowerPosition);
+    //  Return interpolated table value
+  float sample= ((samples[lowerPosition]>>16) + 
+		 (res *
+		  ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); // adapted for top bits
+
+      return (uint32_t)sample;
+}
+
+
 inline static uint32_t speedsamplecopy(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples, uint32_t *copyinto){
   uint32_t lowerPosition, upperPosition;
   
@@ -301,8 +320,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     // array to map freeze but exception is FR8 on PC4! 
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     uint32_t prev[8]={1,2,3,4,5,6,7,0};
-    uint32_t maxovermin[MAXMODES]={15,15,15,0, 0,0,0,0}; // to fill in as we go
-    uint32_t maxplaymin[MAXMODES]={31,15,63,0, 0,0,0,0};
+    uint32_t maxovermin[MAXMODES]={15,15,31,0, 0,0,0,0}; // to fill in as we go
+    uint32_t maxplaymin[MAXMODES]={31,15,31,0, 0,0,0,0};
     uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
       
     uint32_t bits, lengg, where;
@@ -332,7 +351,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 
     uint32_t playreset, playoverlay, playspeed, playspeedmod, playfreeze, playrun, playlast;
     uint32_t recreset, recspeed;
-    uint32_t overreset, overoverlay, overfreeze, overrun, overlast, overrec;
+    uint32_t overreset, overoverlay, overfreeze, overrun, overlast, overrec, overspeedmod;
     
     //    itoa(prev[0], buffx, 10);
     //  uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 };
@@ -342,7 +361,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=2; // TESTY - 0 was 78. now new default to work on
+	mode=5; // TESTY - 0 was 78. now new default to work on
 	
 	switch(mode){
 	  /// MODE 0! ///////////////////////
@@ -816,20 +835,21 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    playreset=playminor&1; // to reset or not XX
 	    playoverlay=((playminor>>1)&3); // 4 types of overlay
 	    playspeed=((playminor>>3)&1); // 2 types speed 
-	    playfreeze=((playminor>>4)&1); // 2 types freeze 
-	    playspeedmod=((playminor>>5)&1); // = total 5 bits= 63 total
+	    playspeedmod=((playminor>>4)&2);  //5 bits = 31
 	    lastmode=0; 
 	    //	    if (overlap[daccount]) ender[daccount]=DOUBLEMAXREC;
 
 	    // rework playback and freezings - now 12/10
 	    // TODO: re-work [6] so playback is VALUE and real is speed which can be frozen
-	    speed=real[6]>>2;
-	    speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	    // ??? if (daccount==6)
 	    if (!playspeedmod) {
-	      if (speed>1023) speed=1023; // or modulus OPTION TODO!
+	      speed=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	      if ((real[6]>>2)>speed) speed=real[6]>>2; // only if is more than
 	    }
 	    else {
-	      speed=speed%1024;
+	      speed=real[6]>>2;
+	      speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	      if (speed>1023) speed=1023; // other option is > : // test this now
 	    }
 	    if (frozen[6]==1){ // we record the speed
 	      where=(int)ownplay_cnt[6];
@@ -838,34 +858,19 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    ////////
 	    if (daccount==6) // we just playback
 	      {
+		speed=real[6]>>2; // no speedrec used ever
 	      if (playspeed) values[daccount]=speedsample(logspeed[speed], ender[daccount], daccount, recordings[daccount]);
 	      else values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
 		lastplayer[daccount]=values[daccount];
 	      }
 	    else // [6]
 	      {
-	    if (playfreeze==0){  	    // 0 just freeze overlay and keep playing, 1 stops 
+		if (frozen[daccount]) speed=real[6]>>2; // toggle recorded speed on/off
 	      if (playspeed) values[daccount]=speedsample(logspeed[speed], ender[daccount], daccount, recordings[daccount]);
 	      else values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
-		lastplayer[daccount]=values[daccount];
-		if (freezetoggle[daccount])
-	    {
-	      lastvalue[daccount]=real[daccount];
-	      freezetoggle[daccount]=0;
-	    }
-	  else { 
-	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
-	  }
-	      }
-	      else if (playfreeze==1){ // stop play above
-		if (frozen[daccount]) values[daccount]=lastplayer[daccount];
-		else {
-	      if (playspeed) values[daccount]=speedsample(logspeed[speed], ender[daccount], daccount, recordings[daccount]);
-	      else values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
-		lastplayer[daccount]=values[daccount];
-		}
-	      }
-		    /////////////////////		    
+	      lastplayer[daccount]=values[daccount];
+	      
+	      /////////////////////		    
 	    if (playoverlay==0){ //usual
 	      if (real[daccount]>values[daccount]) values[daccount]=real[daccount]; // only if is more than
 	    }
@@ -881,7 +886,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      subs=values[daccount]-real[daccount];
 	      values[daccount]=abs(subs);
 	    }
-	    }
+	      } // NOT 6
 	  } //play
 	  else {
 	    lastplay=0;
@@ -906,7 +911,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
 	  }
 	      values[daccount]=(real[daccount]);
-	      recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + real[daccount]; // keep top values...
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount]; // don;t keep top values to erase speed on new rec!
 	      ender[daccount]=rec_cnt[daccount];
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>MAXREC) {
@@ -926,29 +931,27 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      RESETFRO; // clear freezers
 	      overminor=0; // REDO
 	      overoverlay=(overminor&3); // 2 types of overlay
-	      overrec=((overminor>>2)&3); // type of recorded overlay - total 4 bits = 15
-	      
+	      overrec=((overminor>>2)&3); // type of recorded overlay 
+	      overspeedmod=((overminor>>4)&1);// - total 5 bits = 31
 	      LSTRECPLAYD; 
 	      lastmode=1;
-	      speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	      speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
-	      //	      if (speed>1023) speed=1023; // or modulus OPTION TODO!
-		speed=speed%1024;
 	      
-	    if (daccount==6){ // freeze speed // 		  speed=real[6]>>2; // 24/4 // 25/4 now 12 to 10 bits
-	      if (freezetoggle[6])
-	    {
-	      lastvalue[6]=real[6];
-	      freezetoggle[6]=0;
-	    }
-	  else { 
-	    if (real[6]<lastvalue[6]) speed=lastvalue[6]>>2;
-	    else speed=real[6]>>2;
-	  }
+	    if (daccount==6){ // we just playback - no speedrec ever used...
+	      speed=real[6]>>2; // no speedrec used ever
 	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
 	      lastplayer[daccount]=values[daccount];
 	    } // [6]
 	    else {
+	    if (!playspeedmod) {
+	      speed=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	      if ((real[6]>>2)>speed) speed=real[6]>>2; // only if is more than
+	    }
+	    else {
+	      speed=real[6]>>2;
+	      speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	      if (speed>1023) speed=1023; // other option is > : // test this now
+	    }
+	      if (frozen[daccount]) speed=real[6]>>2; // toggle recorded speed on/off
 	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
 		lastplayer[daccount]=values[daccount];
 		if (freezetoggle[daccount])
@@ -975,10 +978,10 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	      subs=values[daccount]-real[daccount];
 	      values[daccount]=abs(subs);
 	    }
-	    }	      
+	    } // NOT [6]	      
 	    // different overlays
 	    if (overrec==0){
-	      recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + values[daccount]; // keep top values...
+	      recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + values[daccount]; // keep top values...= speed
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>ender[daccount]) { // other micromodes here to extend maybe???
 		rec_cnt[daccount]=0;
@@ -1025,6 +1028,368 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    }
 	    else entryn=0;
 	    break; 
+	    //////////////////////
+
+	case 3: /// 3. record local speeds - could be local triggering and all take [6] as voltage - so no other use of freeze and [6] left alone
+	  // so can be as case 2 mods but no freeze/triggers ....
+	  FREEZERS;
+          REALADC;
+
+	  if (rec && play){
+	    if (ender[daccount]) overlaid=1;
+	    else {
+	      overlaid=0;
+	      play=0; // we have nothing to play
+	    }
+	  }
+	  else overlaid=0;
+
+	  if (lastmode==1 && play==0) {
+	    rec=0; // if we leave overlaid via. exit from play
+	    lastmode=0;
+	    overlaid=0;
+	  }
+          //////////////////////////////////////////////////////////////////////
+          // PLAY*
+          //////////////////////////////////////////////////////////////////////
+
+	  if ((!overlaid) && play && ender[daccount]){
+	    RESETFRP;
+	    LASTPLAY;
+	    lastmode=0;
+	    if (overlap[daccount]) ender[daccount]=MAXREC;
+
+	    speed=real[6]>>2;
+	    speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	    if (speed>1023) speed=1023; 
+
+	    if (frozen[daccount]==1){ // we record the speed with toggle on any daccount...
+	      where=(int)ownplay_cnt[6];
+	      recordings[daccount][where]=(recordings[daccount][where]&4095)+(speed<<18); // top 16 bits are speed <<18 as we shifted // ALT to above
+	    }
+	    
+	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  }
+	  else {
+	    lastplay=0;
+	    entryp=0;
+	  }
+	  
+          //////////////////////////////////////////////////////////////////////
+          // REC*
+          //////////////////////////////////////////////////////////////////////	  
+	  if ((!overlaid) && rec){ 
+	      LASTREC; 
+	      RESETFRR;
+	      lastmode=0;
+	      values[daccount]=(real[daccount]);
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      ender[daccount]=rec_cnt[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+		ender[daccount]=MAXREC;
+	      }
+	    } // if rec
+	  else {
+	    lastrec=0;
+	    entryr=0;
+	  }
+	    
+          //////////////////////////////////////////////////////////////////////
+          // OVERLAY*
+          //////////////////////////////////////////////////////////////////////
+	    if (overlaid){
+	      LSTRECPLAYD;
+	      RESETFRO;
+	      lastmode=1;
+	      //	      speed=real[6]>>2;
+	      speed=real[6]>>2;
+	      speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	      if (speed>1023) speed=1023;
+
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  
+	      values[daccount]+=real[daccount]; 
+	      if (values[daccount]>4095) values[daccount]=4095;
+	      recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + values[daccount]; // keep top values...= speed
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>ender[daccount]) {
+		rec_cnt[daccount]=0;
+	      }
+	    }
+	    else {
+	      llrec=0;
+	      entryo=0;
+	    }
+
+	    //////////////////////////////////////////////////////////////////////
+	    // NADA*
+	    //////////////////////////////////////////////////////////////////////
+	    if (rec==0 && play==0 && overlaid==0) {
+	      RESETFRN;
+	      if (freezetoggle[daccount])
+	    {
+	      lastvalue[daccount]=real[daccount];
+	      freezetoggle[daccount]=0;
+	    }
+	  else { 
+	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
+	  }
+	    values[daccount]=(real[daccount]);
+	    lastvaluer[daccount]=values[daccount];
+	    lastmode=0;
+	    }
+	    else entryn=0;
+	    break; 
+
+	    ////
+
+	case 4: /// 4. record local speeds using local voltage:
+	  // so use TOGGLE to initiate speed rec, use voltage as speed - in play only...
+	  // what is speed in overlay - always recorded speed - not added to [6] ?
+	  // and overlay in overlay = not except for VCAs
+	  
+	  // note from case 3 above: so can be as case 2 mods but no freeze/triggers ....
+	  FREEZERS;
+          REALADC;
+
+	  if (rec && play){
+	    if (ender[daccount]) overlaid=1;
+	    else {
+	      overlaid=0;
+	      play=0; // we have nothing to play
+	    }
+	  }
+	  else overlaid=0;
+
+	  if (lastmode==1 && play==0) {
+	    rec=0; // if we leave overlaid via. exit from play
+	    lastmode=0;
+	    overlaid=0;
+	  }
+          //////////////////////////////////////////////////////////////////////
+          // PLAY*
+          //////////////////////////////////////////////////////////////////////
+
+	  if ((!overlaid) && play && ender[daccount]){
+	    RESETFRP;
+	    LASTPLAY;
+	    lastmode=0;
+	    if (overlap[daccount]) ender[daccount]=MAXREC;
+
+	    speed=real[daccount]>>2;
+	    speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	    if (speed>1023) speed=1023; 
+
+	    if (frozen[daccount]==1){ // we record the speed with toggle on any daccount...
+	      where=(int)ownplay_cnt[daccount];
+	      recordings[daccount][where]=(recordings[daccount][where]&4095)+(speed<<18); // top 16 bits are speed <<18 as we shifted // ALT to above
+	    }
+	    
+	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    if (daccount<4){ // // not for voltages but for VCA or vice versa... so no overlap obviously for voltages
+	    values[daccount]+=real[daccount]; 
+	    if (values[daccount]>4095) values[daccount]=4095;
+	    }
+	  }
+	  else {
+	    lastplay=0;
+	    entryp=0;
+	  }
+	  
+          //////////////////////////////////////////////////////////////////////
+          // REC*
+          //////////////////////////////////////////////////////////////////////	  
+	  if ((!overlaid) && rec){ 
+	      LASTREC; 
+	      RESETFRR;
+	      lastmode=0;
+	      values[daccount]=(real[daccount]);
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      ender[daccount]=rec_cnt[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+		ender[daccount]=MAXREC;
+	      }
+	    } // if rec
+	  else {
+	    lastrec=0;
+	    entryr=0;
+	  }
+	    
+          //////////////////////////////////////////////////////////////////////
+          // OVERLAY*
+          //////////////////////////////////////////////////////////////////////
+	  if (overlaid){ // what does toggle/freeze do in this case?
+	      LSTRECPLAYD;
+	      RESETFRO;
+	      lastmode=1;
+	      //	      speed=real[6]>>2;
+	      speed=real[daccount]>>2;
+	      speed+=(ownspeedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]))>>2;
+	      if (speed>1023) speed=1023;
+
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  
+	      if (daccount<4) {
+		values[daccount]+=real[daccount];  // VCA only overlay
+	      if (values[daccount]>4095) values[daccount]=4095;
+	      recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + values[daccount]; // keep top values...= speed
+	      } // recordings overlay only for VCA or not???
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>ender[daccount]) {
+		rec_cnt[daccount]=0;
+	      }
+	    }
+	    else {
+	      llrec=0;
+	      entryo=0;
+	    }
+
+	    //////////////////////////////////////////////////////////////////////
+	    // NADA*
+	    //////////////////////////////////////////////////////////////////////
+	    if (rec==0 && play==0 && overlaid==0) {
+	      RESETFRN;
+	      if (freezetoggle[daccount])
+	    {
+	      lastvalue[daccount]=real[daccount];
+	      freezetoggle[daccount]=0;
+	    }
+	  else { 
+	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
+	  }
+	    values[daccount]=(real[daccount]);
+	    lastvaluer[daccount]=values[daccount];
+	    lastmode=0;
+	    }
+	    else entryn=0;
+	    break; 
+
+	    /////////////
+	case 5: // loopy overlay
+	  /*
+	    overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
+	    so we store loop in bottom (so rec stays same) and expanding overlay is up to max length. decide what to do with speed but attempt as basic speed
+	    rework play and overlay. rec will rewrite all... top and bottom
+	  */
+
+	  FREEZERS;
+          REALADC;
+
+	  if (rec && play){
+	    if (ender[daccount]) overlaid=1;
+	    else {
+	      overlaid=0;
+	      play=0; // we have nothing to play
+	    }
+	  }
+	  else overlaid=0;
+
+	  if (lastmode==1 && play==0) {
+	    rec=0; // if we leave overlaid via. exit from play
+	    lastmode=0;
+	    overlaid=0;
+	  }
+          //////////////////////////////////////////////////////////////////////
+          // PLAY*
+          //////////////////////////////////////////////////////////////////////
+
+	  if ((!overlaid) && play && ender[daccount]){
+	    RESETFRP;
+	    LASTPLAY;
+	    lastmode=0;
+	    if (overlap[daccount]) ender[daccount]=MAXREC;
+	    speed=0; // fixed speed for the moment 
+	    values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	    // add overlay from top bits // question of seperate length for this...  enderr using speedsampleloptop
+	    values[daccount]+=speedsampleloptop(logfast[speed], enderr[daccount], daccount, recordings[daccount]);
+	    values[daccount]+=real[daccount];
+	    if (values[daccount]>4095) values[daccount]=4095;
+	  }
+	  else {
+	    lastplay=0;
+	    entryp=0;
+	  }
+	  
+          //////////////////////////////////////////////////////////////////////
+          // REC*
+          //////////////////////////////////////////////////////////////////////	  
+	  if ((!overlaid) && rec){ 
+	      LASTREC; 
+	      RESETFRR;
+	      lastmode=0;
+	      values[daccount]=(real[daccount]);
+	      recordings[daccount][rec_cnt[daccount]]=real[daccount];
+	      ender[daccount]=rec_cnt[daccount];
+	      enderr[daccount]=rec_cnt[daccount];
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		overlap[daccount]=1;
+		ender[daccount]=MAXREC;
+		enderr[daccount]=MAXREC;
+	      }
+	    } // if rec
+	  else {
+	    lastrec=0;
+	    entryr=0;
+	  }
+	    
+          //////////////////////////////////////////////////////////////////////
+          // OVERLAY*
+          //////////////////////////////////////////////////////////////////////
+	    if (overlaid){
+	      // overlay 
+	      LSTRECPLAYD;
+	      RESETFRO;
+	      lastmode=1;
+	      speed=0; 
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  // see older cases 9/10 TODO!
+	      tmp=speedsampleloptop(logfast[speed], enderr[daccount], daccount, recordings[daccount]);
+	      values[daccount]+=tmp;
+	      values[daccount]+=real[daccount];
+	      tmp+=real[daccount];
+	      if (tmp>4095) tmp=4095;
+	      if (values[daccount]>4095) values[daccount]=4095;
+	      recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&4095)+(tmp<<16); // do we need another counter...??
+	      enderr[daccount]=MAXREC;
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>MAXREC) {
+		rec_cnt[daccount]=0;
+		//		enderr[daccount]=MAXREC;
+	      }
+	    }
+	    else {
+	      llrec=0;
+	      entryo=0;
+	    }
+
+	    //////////////////////////////////////////////////////////////////////
+	    // NADA*
+	    //////////////////////////////////////////////////////////////////////
+	    if (rec==0 && play==0 && overlaid==0) {
+	      RESETFRN;
+	      if (freezetoggle[daccount])
+	    {
+	      lastvalue[daccount]=real[daccount];
+	      freezetoggle[daccount]=0;
+	    }
+	  else { 
+	    if (real[daccount]<lastvalue[daccount]) real[daccount]=lastvalue[daccount];
+	  }
+	    values[daccount]=(real[daccount]);
+	    lastvaluer[daccount]=values[daccount];
+	    lastmode=0;
+	    }
+	    else entryn=0;
+	    break; 
+
+	    
 	    
 	    //////////////////////////////////////////////////////////////////////
 	    //TESTING modes:

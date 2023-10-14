@@ -2,13 +2,40 @@
 
 21/42 seconds recording length with divider of 24 (this also may change with modes - silence/gaps..., slower rec speeds/resolution)
 
-** Modes in progress:
+*question still of minormode for sensitivity, also no sensitivity of VCAs to test again*
 
-0: basic mode with overlay and speed control on [6]
-1: basic mode with overlay and no speed control
-testing//in progress: 2: mode with global speed recording
+** Modes in progress // to be filled out with minormodes and tested:
 
-3. local speeds - could be local triggering and all take [6] as voltage, or local voltage
+// what FREEZE (call it TOGGLE maybe) can do in overlaid in each case, rather than freeze??? or keep freeze in first 2 modes
+// we also need to test [6] voltage in all cases and other voltages all at once...
+
+
+0: basic mode with overlay and speed control on [6] // TESTED/minors
+1: basic mode with overlay and no speed control // TESTED/minors
+
+2: mode with global speed recording  //minors TO TEST in full
+
+IN progress with no minors, so just proof of concept:
+
+3. record local speeds - could be local triggering and all take [6] as voltage
+
+ - so no other use of freeze and [6] left alone // so can be as case 2 mods but no freeze/triggers ....
+
+4. as above with record local speed with local voltages...
+
+- we can have VCA as speed or voltage as speed...
+
+// recordings overlay just/only for VCA or not, also what toggle/freeze does in overlaid case - ignore speed overlay?
+
+see below:
+
+5- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
+
+so we store loop in bottom (so rec stays same) and expanding overlay is up to max length. decide what to do with speed but attempt as basic speed
+
+rework play and overlay. rec will rewrite all... top and bottom
+
+13/10 - DRAFTED - still to test... 14/10 - tested - fine but we need to be able to change length of that loop!
 
 ** 10/8+ MODES
 
@@ -16,20 +43,22 @@ Start to define major modes:
 
 // strip.c
 
-0- [78] - default with freeze as freeze // double up recording length
-1- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there, and expand overlay in top bits ???*
+DONE0- [78] - default with freeze as freeze // double up recording length
+1- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
 2- [80] - islands????
 3- [81] - or it could also be the original and we make all full overlays in top bits, freeze/unfreeze toggles between the two for each!!*
+3++ - as above with ongoing overlay in top bits, and TOGGLE clears that overlay - so we can do it again...
 
 // below....
 
-4+ local speed recording on voltages // local detach and others
+DONE4+ local speed recording on voltages 
+4++ local detach and others
 5- detach rec/play using freeze and rec/play counter behaviours
-6- mirrorings
+6- mirrorings ???
 
 7- chopping up gestures.... store distance in top bits - silence is stored as length (so compressed) *but what happens in recorded overlay???*
 8- differing rec and playback speeds
-9++ record general speed, overlay and general speed (where did we store general speed before? in [6]???) [11/12 ]
+DONE9++ record general speed, overlay and general speed (where did we store general speed before? in [6]???) [11/12 ]
 10++ local and general gaps/distance
 
 *that major modes define use of top bits:*
@@ -358,15 +387,40 @@ UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine...
 
 Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND works well (as a possible solution) // voltage 6v // toggles to test with new test boardDONEfine
 
+** 13/10/2023
+
+modes we fill in with notes at top here...
+
+- *that freeze and voltage are our LOCAL parameters...*
+
+- *freezing voltage in overlay mode in general is a bit odd - what that could do - as a toggle in each case but of what ??? to ignore speed overlay as in 2???...*
+
+- *also speed change in overlays make for chaos*
+
+TESTEDkindof???TODO: 2: mode with global speed recording  // TO TEST/minors - TODO:freeze can toggle use of speed rec// or not in both playTO_TEST and overlaid
+
+but we have no toggle on [6] voltage so that just reverts...// has no speed rec
+
+also extra option of > for speed recordings - added but instead of modulus!
+
+DONE with freeze... TO TEST - resolve mode 2 overlap:
+
+// not to record speed changes in overlay (or other changes) but if we play back is also messy... also freezing of speed questioon
+
+only as major mode makes sense: make it an option in play and in overlay to use that speed or not...*
+
+- implement all basic major modes without freezes (well only in NADA) nor mods - to test these...
+
+
 ** 12/10/2023
 
-TETSING: TODO: mode 2: generic speed from [6] recorded where (for all of them - speed overlay?) // q below of overlay...
+TESTING: TODO: mode 2: generic speed from [6] recorded where (for all of them - speed overlay?) // q below of overlay...
 
 - we need record in play on freeze as before - or always record in play
 
-Q if we should record in overlay or not as gets messy - NOT - so overlay stays same as 0 - *no as needs to read back speeds! or that is an option for major or minor*  !
+X//Q if we should record/playback in overlay or not as gets messy - NOT - so overlay stays same as 0 - *no as needs to read back speeds! or that is an option for major or minor*  !
 
---> to port to 0 mode with all mods
+DONE--> to port to 0 mode with all mods
 
 /////////////////////////
 
