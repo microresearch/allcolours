@@ -1277,7 +1277,6 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    so we store loop in bottom (so rec stays same) and expanding overlay is up to max length. decide what to do with speed but attempt as basic speed
 	    rework play and overlay. rec will rewrite all... top and bottom
 	  */
-
 	  FREEZERS;
           REALADC;
 
@@ -1344,20 +1343,25 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
           // OVERLAY*
           //////////////////////////////////////////////////////////////////////
 	    if (overlaid){
-	      // overlay 
+	      if (llrec==0)	      // when we enter we want to record from zero in top! but this can also be an option MINORMODE! alongside other reset...
+		{
+		  firsty[0]=1; // as we are all synced can be any firsty...
+		}
+	      else firsty[0]=0;
 	      LSTRECPLAYD;
 	      RESETFRO;
 	      lastmode=1;
 	      speed=0; 
-	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);  // see older cases 9/10 TODO!
-	      tmp=speedsampleloptop(logfast[speed], enderr[daccount], daccount, recordings[daccount]);
+	      values[daccount]=speedsample(logfast[speed], ender[daccount], daccount, recordings[daccount]);
+	      if (firsty) tmp=0;
+	      else tmp=speedsampleloptop(logfast[speed], MAXREC, daccount, recordings[daccount]);
 	      values[daccount]+=tmp;
 	      values[daccount]+=real[daccount];
 	      tmp+=real[daccount];
 	      if (tmp>4095) tmp=4095;
 	      if (values[daccount]>4095) values[daccount]=4095;
 	      recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&4095)+(tmp<<16); // do we need another counter...??
-	      enderr[daccount]=MAXREC;
+	      enderr[daccount]=rec_cnt[daccount];
 	      rec_cnt[daccount]++;
 	      if (rec_cnt[daccount]>MAXREC) {
 		rec_cnt[daccount]=0;
