@@ -6,7 +6,7 @@
 
 ** Modes in progress // to be filled out with minormodes and tested:
 
-// what FREEZE (call it TOGGLE maybe) can do in overlaid in each case, rather than freeze??? or keep freeze in first 2 modes
+// *what FREEZE (call it TOGGLE maybe) can do in overlaid in each case, rather than freeze??? or keep freeze in first 2 modes*
 // we also need to test [6] voltage in all cases and other voltages all at once...
 
 
@@ -15,7 +15,7 @@
 
 2: mode with global speed recording  //minors TO TEST in full
 
-IN progress with no minors, so just proof of concept:
+*IN progress below with no minors, so just proof of concept:*
 
 3. record local speeds - could be local triggering and all take [6] as voltage
 
@@ -35,7 +35,30 @@ so we store loop in bottom (so rec stays same) and expanding overlay is up to ma
 
 rework play and overlay. rec will rewrite all... top and bottom
 
-13/10 - DRAFTED - still to test... 14/10 - tested - fine but we need to be able to change length of that loop!
+DONE13/14/15-/-10 - TESTED: DRAFTED - still to test... 
+
+///
+
+6 and 7...
+
+TODO: 3- [81] - or it could also be the original and we make all full overlays in top bits, freeze/unfreeze toggles between the two for each!!*
+// so same as 5 but we keep length the same and do togglings
+
+**3++ - as both options above with ongoing overlay in top bits, and TOGGLE clears that overlay - so we can do it again...
+
+////
+
+and all options for *detachment* using freeze/toggle - so toggle stops
+current mode for that section and restarts it... so we can
+unsync... (reverts to nada for rec or play and to play for overlay???)
+
+so this leaves: 
+
+- change rec/play speeds - but in a volatile way...
+- mirrorings
+- islands???
+- chopping up gestures...// gaps/distance
+- also alternate outs on toggle - for example also in overlay whether we re-record our own playback at diff speeds or same speed (we have to) // toggle???
 
 ** 10/8+ MODES
 
@@ -44,22 +67,22 @@ Start to define major modes:
 // strip.c
 
 DONE0- [78] - default with freeze as freeze // double up recording length
-1- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
-2- [80] - islands????
+DONE1- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
+---->>>2- [80] - islands????
 3- [81] - or it could also be the original and we make all full overlays in top bits, freeze/unfreeze toggles between the two for each!!*
-3++ - as above with ongoing overlay in top bits, and TOGGLE clears that overlay - so we can do it again...
+**3++ - as both options above with ongoing overlay in top bits, and TOGGLE clears that overlay - so we can do it again...
 
 // below....
 
 DONE4+ local speed recording on voltages 
-4++ local detach and others
+4++ local detach and others for some of these modes already defined
 5- detach rec/play using freeze and rec/play counter behaviours
 6- mirrorings ???
-
 7- chopping up gestures.... store distance in top bits - silence is stored as length (so compressed) *but what happens in recorded overlay???*
+//local and general gaps/distance
+
 8- differing rec and playback speeds
 DONE9++ record general speed, overlay and general speed (where did we store general speed before? in [6]???) [11/12 ]
-10++ local and general gaps/distance
 
 *that major modes define use of top bits:*
 
@@ -386,6 +409,12 @@ Rich: 3M // touch/toggle: jumpy!! // toggles // voltage 4v, medium noise // togg
 UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine... 
 
 Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND works well (as a possible solution) // voltage 6v // toggles to test with new test boardDONEfine
+
+** 15/10/2023
+
+- also alternate outs on toggle - for example also in overlay whether we re-record our own playback at diff speeds or same speed (we have to) // toggle???
+
+or is this a micromode??? how would this work???
 
 ** 13/10/2023
 
