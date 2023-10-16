@@ -23,13 +23,13 @@
 
 4. as above with record local speed with local voltages...
 
-- we can have VCA as speed or voltage as speed...
+- TODO:we can have VCA as speed or voltage as speed...
 
 // recordings overlay just/only for VCA or not, also what toggle/freeze does in overlaid case - ignore speed overlay?
 
 see below:
 
-5- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
+DONE5- [79]? - overlay one repeating section with different overlays REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
 
 so we store loop in bottom (so rec stays same) and expanding overlay is up to max length. decide what to do with speed but attempt as basic speed
 
@@ -39,10 +39,23 @@ DONE13/14/15-/-10 - TESTED: DRAFTED - still to test...
 
 ///
 
-6 and 7...
+*16/10/2023:*
 
-TODO: 3- [81] - or it could also be the original and we make all full overlays in top bits, freeze/unfreeze toggles between the two for each!!*
-// so same as 5 but we keep length the same and do togglings
+DONE5- added toggle
+
+but this is how it is as they are not synced!
+- added but seems like playback 2 layers go out of sync TODO:this could also be exploited eg. freeze freezes/holds playback of overlay or we have 2 different speeds)*
+we already have stopping/restarting with toggle here,,, but not *the 2 different speeds/how???*
+
+
+DONE6- as 5 but we keep original length// both can have that toggle
+DONE7- as 5 but toggle clears overlay as we go along
+DONE8- ^^^^^ as 6
+
+*also various re-record options for these! // how to genericise these (so is not always same code we need to write???) cases are inside main body???*
+
+3- [81] - or it could also be the original and we make all full overlays in top bits, freeze/unfreeze toggles between the two for each!!*
+// so same as 5 but we keep length the same and do togglings .. 5 can also have togglings
 
 **3++ - as both options above with ongoing overlay in top bits, and TOGGLE clears that overlay - so we can do it again...
 
@@ -50,15 +63,52 @@ TODO: 3- [81] - or it could also be the original and we make all full overlays i
 
 and all options for *detachment* using freeze/toggle - so toggle stops
 current mode for that section and restarts it... so we can
-unsync... (reverts to nada for rec or play and to play for overlay???)
+unsync... (reverts to nada for rec or play and to play for overlay???) - only when we don't use toggle // or mod that
 
-so this leaves: 
+so this leaves TODO?DONE but needs testing and if these are all major modes...: 
 
-- change rec/play speeds - but in a volatile way...
-- mirrorings
-- islands???
+trial these options as 9,10 versions as 5= ext length and do for same length...
+
+islands??? was [80] but now is just toggle in overlay of recording or not... rec on freeze only - but do we have this...
+
+rethink what toggle can do in 5 and 6 top bit overlays // diff length/same length:
+
+so far we have:
+- output overlay or not // add overlay or not
+- clears overlay as we go
+
+does it make sense to:
+- stop/start overlay playback(also for other trad overlays) - if we stop playback there is no hold/frozen value...
+
+but then we can't hear overlay playback... so makes no sense to record...
+
+- stop/start overlay recordings (is more like an island then) but playback still runs...
+
+TEST11 and 12: or should these all be minormodes of what freeze does in overlay???
+
+TESTED/TEST 13:- freeze sets enderr in enderr case (5) so we loop at that point: 13 - thing is overlay can only ever get shorter...
+
+/////////////////////TODO 17/10
+
+- change rec/play speeds - but in a volatile way...??? how we realise that - as we can't sense it in rec and in overlay it all feedsback!
+
+*that we could have top bits as rec at different rec speeds - minor modes define range of speeds - but one is always regular...*
+
+- mirrorings - where we had that?
+
 - chopping up gestures...// gaps/distance
+
+7- chopping up gestures.... store distance in top bits - silence is stored as length (so compressed) *but what happens in recorded overlay???*
+//local and general gaps/distance
+
 - also alternate outs on toggle - for example also in overlay whether we re-record our own playback at diff speeds or same speed (we have to) // toggle???
+*top bits as alternate outs to be toggled...*
+
+- still could do thing where we start to repeat say first section (or a define island) and overlay this... 
+
+or we can move fragmented areas to overlays... islands in overlays
+
+*again how to make this more coherent... top bits abstracted out....*
 
 ** 10/8+ MODES
 
@@ -91,6 +141,7 @@ DONE9++ record general speed, overlay and general speed (where did we store gene
 - IN process: to double our recording length
 - to store short loop - local
 - to record (silent) distance between segments
+- alternate feedback outs in overlay modes
 
 *major modes also define use of freeze and voltage[6]*
 
@@ -410,6 +461,13 @@ UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine...
 
 Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND works well (as a possible solution) // voltage 6v // toggles to test with new test boardDONEfine
 
+** 16/10/2023
+
+- draft basic modes and see what mods can be made and then towards further dislocations...
+
+- how to genericise as at the moment lots of repeated code.. and more when we do minormodes: *trial this in another file...*
+- basic recordings and dislocations...
+
 ** 15/10/2023
 
 - also alternate outs on toggle - for example also in overlay whether we re-record our own playback at diff speeds or same speed (we have to) // toggle???
@@ -460,7 +518,7 @@ DONE--> to port to 0 mode with all mods
 Notes: 
 - *we always need to record overlay in modes (not enough fingers)*
 
-- basic NADA mode can be always the same. NOO:or we can use different resolutions (make these stay for rec mode)
+- basic NADA mode can be always the same. ////NOO:or we can use different resolutions (make these stay for rec mode)
 
 but steppiness doesn't go into rec so far...
 
@@ -511,7 +569,7 @@ FIXEDstrange freeze behaviuors - reset across all... and rec needs its freezer T
 
 ** 10/10/2023
 
-Notes for manual: that when we stop play in overlay then rec automatically stops!
+*Notes for manual: that when we stop play in overlay then rec automatically stops!*
 
 DONE: where is recorded already indicator - as we need to reset on new major: ender[daccount]
 
@@ -732,7 +790,7 @@ whereas detach is more stop and start
 - detach rec in overlay and re-attach...
 - detach play/rec=unsync
 
-*NON/REWORK NOW:TODO_TEST: MODE 79:local mode with different lengths but can repeat to full length with different overlays...*
+NON/REWORK NOW:TODO_TEST: MODE 79:local mode with different lengths but can repeat to full length with different overlays...*
 
 eg. we keep looping but re-record overlay as one long section of repeats and changing overlays
 
