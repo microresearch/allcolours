@@ -16,7 +16,7 @@ talon (clip on igniter): 2 seconds
 
 question of any delay after trigger: none!
 
-also if we can fire in series??!?? and how many
+also if we can fire in series/parallel??!?? and how many
 what of potential short at 2 seconds pulse???
 
 ** modes
