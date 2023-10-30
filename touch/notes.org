@@ -1,19 +1,29 @@
 * TODO:
 
-21/42 seconds recording length with divider of 24 (this also may change with modes - silence/gaps..., slower rec speeds/resolution)
+21/[42] seconds recording length with divider of 24 (this also may change with modes - silence/gaps..., slower rec speeds/resolution)
 
-*question still of minormode for sensitivity, also no sensitivity of VCAs to test again*
+** plan
 
-** Modes in progress // to be filled out with minormodes and tested:
+*** re-testing VCA
 
-// *what FREEZE (call it TOGGLE maybe) can do in overlaid in each case, rather than freeze??? or keep freeze in first 2 modes*
+- now VCAs are around 5v (why has this changed?)
+
+[first and third VCA out has 500mV noise on it from toggles and freezers: to resolve but we never hear it at its frequency... bit less now 240mV...
+last VCA is stuck full on: short! re-test FIXED (solder issue on panel connector)]
+
+*** how to unify modes somehow: across use of top bits and minormodes
+
+- question of freeze in overlay:
+
+// *what FREEZE (call it TOGGLE maybe) can do in overlaid in each case, rather than freeze values??? or keep freeze in first 2 modes*
 // we also need to test [6] voltage in all cases and other voltages all at once...
 
+** Modes in progress // to be filled out with minormodes and tested:
 
 0: basic mode with overlay and speed control on [6] // TESTED/minors
 1: basic mode with overlay and no speed control // TESTED/minors
 
-2: mode with global speed recording  //minors TO TEST in full
+2: mode with global speed recording  //minors TO TEST in full // speed in recorded in playback on top[6] freeze//
 
 *IN progress below with no minors, so just proof of concept:*
 
@@ -35,10 +45,6 @@ so we store loop in bottom (so rec stays same) and expanding overlay is up to ma
 
 rework play and overlay. rec will rewrite all... top and bottom
 
-DONE13/14/15-/-10 - TESTED: DRAFTED - still to test... 
-
-///
-
 *16/10/2023:*
 
 DONE5- added toggle
@@ -48,7 +54,8 @@ but this is how it is as they are not synced!
 we already have stopping/restarting with toggle here,,, but not *the 2 different speeds/how???*
 
 
-DONE6- as 5 but we keep original length// both can have that toggle
+DONE6- as 5 but we keep original length for overlay// both can have that toggle
+
 DONE7- as 5 but toggle clears overlay as we go along
 DONE8- ^^^^^ as 6
 
@@ -88,27 +95,40 @@ TEST11 and 12: or should these all be minormodes of what freeze does in overlay?
 
 TESTED/TEST 13:- freeze sets enderr in enderr case (5) so we loop at that point: 13 - thing is overlay can only ever get shorter...
 
-/////////////////////TODO 17/10
+14: new speed recording on freeze of top in playback only
 
-- change rec/play speeds - but in a volatile way...??? how we realise that - as we can't sense it in rec and in overlay it all feedsback!
+*/////////////////////TODO 18/10 ++*
 
-*that we could have top bits as rec at different rec speeds - minor modes define range of speeds - but one is always regular...*
+NO!- change rec/play speeds - but in a volatile way...??? how we realise that - as we can't sense it in rec and in overlay it is all feedsback!
+that we could have top bits as rec at different rec speeds - minor modes define range of speeds - but one is always regular...*
+
+- *modeX: record to both top and bottom and switch in play/overlay modes between - different lengths for each, merge, unmerge?*
 
 - mirrorings - where we had that?
+23testedTODOmore- overlay mirror: all follow say lowest/bottom voltage 0 but add own 	    //and variations on this eg. all voltages only, all VCA, all
 
 - chopping up gestures...// gaps/distance
 
-7- chopping up gestures.... store distance in top bits - silence is stored as length (so compressed) *but what happens in recorded overlay???*
+7- chopping up gestures.... store distance in top bits or in length - silence is stored as length (so compressed) *but what happens in recorded overlay???*
 //local and general gaps/distance
 
 - also alternate outs on toggle - for example also in overlay whether we re-record our own playback at diff speeds or same speed (we have to) // toggle???
 *top bits as alternate outs to be toggled...*
 
-- still could do thing where we start to repeat say first section (or a define island) and overlay this... 
+- *still could do thing where we start to repeat say first section (or a define island) and overlay this on same tape!*
 
-or we can move fragmented areas to overlays... islands in overlays
+or we can move fragmented areas to overlays... islands in overlays // again more about how as we just have voltage, freeze and minormodes
 
 *again how to make this more coherent... top bits abstracted out....*
+
+from older: reflections/islands:
+24: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
+25: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
+26: overlays the previous one on playback - so adds the 2 recs...
+
+*what we can do with a list of gestures*
+
+*//////////////////////////////////////////////////////////////////////*
 
 ** 10/8+ MODES
 
@@ -141,7 +161,8 @@ DONE9++ record general speed, overlay and general speed (where did we store gene
 - IN process: to double our recording length
 - to store short loop - local
 - to record (silent) distance between segments
-- alternate feedback outs in overlay modes
+- *TODO:alternate feedback outs in overlay modes*
+- as complete alternatives - rec is both but reced overlay and playback alternates
 
 *major modes also define use of freeze and voltage[6]*
 
@@ -167,7 +188,7 @@ for rec speed mode - split [6] as rec speed/rec voltage (eg. rec speed only, *re
 
 *[6] as parameter (eg. speed), as overlay/voltage, as both, as neither*
 
-*// where to place recording speed in top bits, general question of use of top bits? ???*
+// where to place recording speed in top bits, general question of use of top bits? ???*
 
 /////
 
@@ -189,32 +210,7 @@ notes:
 
 overlay: stop(loop/local end)/start(extend or insert)
 
-DONE- if we use top bits differently means that we need to reset *already recorded something flag* to 0 as we enter each new major mode... ender - this we do in MODECHANGED macro!
-
-////
-
-** 10/7+ MODES//older
-
-how to define - behaviours which are then modded by freeze behaviours...*
-
-major modes:
-
-- 78/now 0 - default overlay: freeze is freeze in all
-
-- speed/no speed/slower rec speeds... how we handle speed is major question
-
-- local speed on voltages: - where we get speed from (eg. speed for each voltage comes from VCA of that section) = local speed recordings? see which mode...?
-
-*TODO???: tap freeze top in rec+play/overlay: record speed seperate and leave voltage (q of speed overlays or not), same for freeze on locals in another mode...??*
-
-- thus add: global speed recorded seperately in overlay
-- fragmented/repeat overlay (segments we can call this)
-- +looping always - what do rec and play buttons do and freezers???+
-- mirrorings
-
-- *and are different freezer behaviour modes major: eg. detachment etc...???*
-
-// recording speed as different to voltage it is recorded on...
+DONE- if we use top bits differently means that we need to reset already recorded something flag* to 0 as we enter each new major mode... ender - this we do in MODECHANGED macro!
 
 ** manual/description
 
@@ -251,192 +247,6 @@ assembly/with text also on back for modes ... cut yourself out
 - +12v:75mA
 - -12v:50mA
 
-** recent july notes/playthrough:
-
-- *78/new 0 after 10/10 -  is new default with freezes and minormodes!*
-
-Now we have 4 states and all as global/local (as rec/play always global unless we think of local mods of these so they mean different things for different segments)
-
-freeze button is what makes it LOCAL: local stop start in each mode (but how that overrides...)
-
-play/rec detachment are more major modes, as is loop/rec // if these still make sense...
-
-** characteristics/parameters to work through:
-
-rec/play: speed, length//start-end, counter, mirrors, overlays, freezers do/behaviour, resets of params...
-
-local/global. sync
-
-ways of changing speed, start/end
-
-or from point of view of each section: speed, start, end, what freezer does...
-
-Simplify as conditions of:
-
-real[daccount]: adc input // modifiers // freezers // play/rec // speeds
-
-no play/no rec: NADA-freezer behaviour=type of freeze (just one)
-play: overlays, freezer behaviour, resets, start and end, mirrors, speeds, sync
-rec: speed/slew, live overlays, freezer behaviour, resets, type of overdubs, start and end, mirrors, speeds
-overlaid: 
-
-behaviours of speed control: freezers, recordings/overdubs 
-
-rec with play, play with rec [to record overlay we need to hear what we are overlaying on]
-
-link of rec and play...
-
-///
-
-- modes as they come, more about how to divide different areas now... can also be say top and bottom[???], left and right. 4 sections
-
-- check which modes we need to clear rec (if is not going to be overwritten anyways)...
-
-- *what needs to be set or reset when we change modes*
-- init and zeroing of key arrays if any...
-
-- *test with different PSU and hands/fingers*
-- +DONE//add protection, re-test PCB - also with new processor F413GTx,+
-- BOM and order
-- manual: layout and list of modes somehow... touchable, overlays//holes, cutouts...
-
-** OLDER:new major modes (and mods where we can)
-GLOBAL:
-1: basic/simple mode with all mods: 0 or *now 7*
-2: overlay on each rec: 1 // *or is that maybe as minor?*
-3: ????slower recording speeds - longer, steppy: 2 - test again // unsure as is behaviour change...
-4: no speed on [6] at all....???
-
-global/local4: detach play: 15
-
-5: looped rec/overlay: XX9/10->new case 5 but also with alt overlay options
-6: record speed seperately: 11/12
-7:
-8; mirror - all follow one voltage[lowest=4] and overlay own... 23?
-
-GLOBAL/LOCAL:
-1: length of start/end (global/local tho!) - 3
-2: freeze overdubs/new 13/14
-3: freeze detachs playback 15 - is above
-4: groups and reflections -mods could determine which group we use?
-
-LOCAL:
-
-*TODO: ADD: local speed recordings - can use [top voltage] or local section's VCA*
-
-** catalogue modes and modifiers
-
-// modes in code so far:
-
-GLOBALS:
-0: freezers, overlay=peak, speed=fast etc...
-
-XX8: fixed slower recording speed - all fixed speed - TRY change one speed...- added that change 
-
-9: looped rec and overlay. always rec. peak overlay, fast speed: recordings[daccount][rec_cnt[daccount]]=values[daccount]; [values also adds real but is different as speed dependent]
-10: looped rec and overlay- different rec scheme. slower speed: recordings[daccount][rec_cnt[daccount]]+=real[daccount];
-
-11: record ind speed on freeze top - always play back speed and re-record on freeze
-12: record ind speed: how differs from 11?CHECK? - this one is overlap - does it make more sense than 11? 
-
-13: freeze overdubs in playback // otherwise?
-14: freeze records new in playback - can be option?
-15: freeze detachs section from playback - play counter still runs... // could be otherwise - see below
-
-XX16: slew ???
-
-??17: freezer shifts start of each particular playback section towards the enda
-
-XX18: recorded top voltage as speed/fast - see 11???
-XX19: freeze holds voltage in playback... // not overlay  - as minor mode????
-XXX20: freeze holds voltage in playback... still moves on samples...
-
-XX21: as 0 but no reset of rec_cnt, so adds to end of buffer - now as minor setting
-
-XX22: slew which doesn't wait for target TODO:how to do rise and fall independent speeds??
-23: overlay/mirror???
-
-GLOBAL/LOCAL: groups and reflections
-24: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
-25: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
-26: overlays the previous one on playback - so adds the 2 recs...
-
-LOCAL: to be better defined... *TODO: more also as looping/overlay??*
-30: freeze: record, tap again: playback
-31: freeze: record, tap again: playback *difference 30???*
-32: reset rec_cnt
-33: as 30 but - *rec freezes all, play resets all counters*
-34: as 33 but rec holds playback
-35: alt hold as 34...
-
-LOCAL is more about how to use REC and PLAY buttons: as freezes, as resets
-
-*TO ADD: new modes: with modifiers TODO in most cases:*
-
-2-no speed but bits mod rec and playback speeds...
-
-//
-
-MODIFIERS for modes (where relevant):
-
-1.types of live [or recorded] overlay: modulo, peak
-2.speed: none, additive/peak, (subtractive), adds from below (which is what we had) 
---->in speed mode++++if [6] is subject to freeze etc. and thus effects global speed? *could be if we use rec speed or not...???*
-3.reset or not rec/play counter (2x modifiers) when we enter/leave those...
-
-= 2x overlay x 5x speeds: none, add, add from below, add/freeze, add from below/freeze x4  reset = none, rec, play, both
-= 2x5x4=40 modifiers = too many or is more like a journey
-
-now we have major/minor split of modes
-
-default bits in mode 0 // 9/6/2023: 8 bits
-
-*CHANGING/UPDATE*
-
-12-speeds: add=logfast, add from below=logspeed, speed as real or recorded // playback
-3--overlay:modulo/peak in playback and also see freeze behaviour below // playback
-45-resets: play, rec // rec and play
-6-freeze on [6] freezes speed, freezes value // can also be other seperators of speed/value - freeze dependent // playback
-7-freeze stops playback, freeze holds overlap //= playback
-// *TODO:freeze stops playback, freeze holds playback value, freeze holds overlap - how to do this?:*
-
-*in case 7 we have now for freeze behaviour:*
-
-- stop/start playback
-- toggle/hold playback voltage
-- hold/release playback voltage
-- TODO:hold overlay voltage - as toggle // but this excludes other bits... how to deal with that... last cases...
-
-now [case 7 to expand and 0 to lose] we have:
-
-no sensitivity and new default freeze in no play/rec so no minormodes
-
-minormodes for rec keep seperate to play...
- 
-*-extra bit could be: record overlay or not? or keep as major mode...*
-
-1 2 4 8 16 32 64 // 128
-1 2 3 4 5  6  7 // 8
-??? We use NONE speed as major mode option -> 5 bits=32
-
-///
-
-- global rec/and/play
-- local rec/and/play
-*[global rec with local play=detach15 above // global play with local rec (all sync/loop)]=13 or 14*
-
-- loop rec/add/overlay always
-
-// *parameters to combine and to use to define modes:*
-
-modifiers/resets, length of rec, length of play(same as length of rec in some cases), overlay on 2nd rec (with/without change of length), speed
-
-what can cross global/local: freezes, lengths, start/stop/sync, record of overlay or not, copies and groups
-
-// define as: each section (defined as local.global.groups) has: 
-
-what we record (eg. overlay), what we playback (eg. live overlay), start and end of rec/play, speed of rec/play, freeze button, reset or not of counters
-
 ** finger catalogue - testing with 10M triggers-.4.7Mnow, 1M dividers lowest vca/voltage, 47nF board, 32 divide, lowest sensitivity:
 
 other module toggles will change so have range: 1, 2.2, 4.7, 10 from SW4(bottom) to SW1(top)
@@ -460,6 +270,271 @@ Rich: 3M // touch/toggle: jumpy!! // toggles // voltage 4v, medium noise // togg
 UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine... 
 
 Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND works well (as a possible solution) // voltage 6v // toggles to test with new test boardDONEfine
+
+** 26/10/2023
+
+//why freeze speed doesn't work in mode0//FIXED!
+
+*To start to define new direction based on latest notes*
+
+notebook notes:
+
+- Q of new speed rec, all is overlay, or *speed global as [6] voltage and local voltages*... no doublings 
+- so we can maintain, modify or erase overlay as we progress
+- and use overlay as speed or not...
+- additive switch/swop across 2 tapes (2 tapes, 2 speeds - how?)
+- algo as pulse in to freezers/toggles, minimode
+- *translate modes we have into ongoing series of transformations*
+
+- what we can do with a list of gestures, list of modes: earlier idea of push/pop/ *stack* button... 
+
+earlier idea was: Notes: frozen levels are saved to a stack and can be popped off the stack, various over-rides...????
+
+circular stack of gestures - how to add, remove???
+
+** 25/10/2023
+
+- trying to re-think towards more fluidity// notebook notes:
+
+1. We could pull out REC and NADA as these have no modes (but in REC we have double and other rec options, also if we reset)
+
+as in REC we have no feedback on what we do. so it must be simple... but how we could signify a RESET there in further modes, to start again and not to add to!?
+
+First mode (after full RESETT) is just record, no speed, and is always reset REC in this mode - but then we can leave it...
+
+Then we change after that...
+
+Question of no double record, no speed rec? and top bits are always ghost/overlay with voltage 6 as speed (and seperate its playback speed)
+
+*So modes overlay and change what we have already recorded gesturally - but how can we move back or forwards through modes?? or is just fwd*
+
+And do we keep micromodes (yes)... but these do not include reset on REC...
+
+3. top [6]voltage is always control - so no freeze on that. but is also output so we can use it for sync...
+
+4. *Options for algorithmic control*
+
+So we can use external voltage input via fingers to trigger freeze/toggles! Write this up in manual...
+
+What does this enable - 
+
+5. Global gestures - eg. as offsets from lowest VCA or voltage - have those as groups, or we slide sync across them all
+
+6. List of gestures, actions on gestures to list? overlay, repeat, move in the list, detach, slide, attach
+
+7. How we control - with local voltage, with [6] and freeze/toggle[6], with local toggles, with timings of presses, with gestures??? with modeswitch
+
+8. Maybe 2 resets - one full to mode 0/basic REC, other just resets counters and sequence... we had idea below...
+
+To consider new scheme... so more like an instrument
+
+** 24/10/2023
+
+- *test modes below: 0(voltage [6] overlay, 5overlay, 14speeds*
+
+DONE0 -overlay - toggle below would be a bit odd unless we record speed...
+
+options: speed and overlay, speed, overlay (minimodes?) - freeze holds speed
+
+0: changed so voltage [6] is speed and overlay
+
+5: seems to work fine with new changes...
+
+14: - fix end of newer speed playback [mode14] so we dont go past it - can we/do we? also  if it also matches recend or just loops on own length???*
+ - working now - loops on recend - could also be its own length (trial)
+
+** 23/10/2023
+
+- NO!see above:TOGGLE in play for 0 and further - local voltage as speed (recorded or otherwise) // local voltage as overlay so we have both options
+
+*we always need to be able to overlay and record overlayXXX*
+
+- how to imagine list operators/operations ...?
+
+how we signal operations just with toggle - or instead of modes we have use of mode switch to change behaviours (globally?)
+
+TODO:
+- DONE:check overlay bits counter in mode 5+ - is speedsample so has local counter
+
+but does it go past end of ... - some other bits to fix in 5// test and then pass on to rest of modes
+
+TEST - lots to fix in mode 5
+
+*lots of questions for what needs to be reset...*
+
+added over_cnt
+
+** 22/10/2023
+
+TODO:
+- fix end of newer speed playback [mode14] so we dont go past it - can we/do we? also  if it also matches recend or just loops on own length???*
+
+** 20/10/2023:
+
+TODO:
+
+- DONEredo speed recording with new counter like rec_cnt. resets when we reset others... 2 counters: rec and play
+- *????speed playback can also loop, stop, pause etc...*
+
+// as new versions of 2, 3 and 4: speedrec global and local TODO!
+
+2->14 now in progress TO TEST!
+
+// question if we loop speed to own ender or rec_ender??? - can be as an option but now works in principle and fixes added to 2,3,4 
+
+- also global time ... counter DONE but unused
+
+// keep other mixed up speed options...
+
+// prev speed rec issues: TODO: check how we record speed - that one option should not depend on playback but consistent rec speed...*
+
+well we record in  playback so ... we just have play position which varies with speed... or we set a new counter to 0 when we enter...
+
+// questions/problems with speed recordings:
+
+- if we only partly record speed overlay we have issue... (could be overcome with section storage or some marker)
+
+so for 2 nd 3 speed rec modes - we need to record where we keep speed to... // so last count and where we start
+
+depends on scheme - but count needs to start from where in terms of rec_cnt
+
+
+** 19/10/2023:
+
+- for below... what list gives us and how we can operate with it... draft list stuff
+
+- DONE: removed reset as option/minimode in all *we reset on new modes?* *TODO: take care of resets...*
+
+*short reset - set rec/play back to 0*
+*long reset - reset all and mode to 0*
+
+*Q of new mode reset???*
+
+Notebook notes:
+
+- some kind of meta level to eg. loop repeated play/stop/play segments in a loop... how?
+
+how do we know where to stop loop...
+
+in overlay - play/stop/play into top section. we have this but is it with silence inside? we freeze but does rec keep running? check...
+
+what are options there in overlay:
+
+- pause play - keep rec running so we record the pause
+- pause play - stop rec, so becomes next one
+
+- what can we do with our list of gestures - does it include modes??????
+- model of tapes, model of list and tapes/pointers....
+
+*Rethinking:*
+
+VIA as more of a *journey* from the first gesture:
+
+- that we modify and re-record gestures which operate on (already recorded) gestures...
+
+- is the use of top bits for different ends a problem for continuity across modes - or is journey INSIDE each mode...
+
+what makes sense:
+
+//- record gesture (rec mode)
+-> append new one (no reset in rec mode) (changes length), insert new one, insert gaps??? append at end, in new point (
+
+-> modify it - overlay it, change it, change its length - what other chanfes?
+-> rework it as a loop. stop and starts as above. in play?
+-> change speed
+
+** 18/10/2023:
+
+- added lowest bit as sensitivity, TO TEST!
+
+q of latest modes as minormodes: 5,6,7,8.9,10,11,12,13 variations on loopy 5 and 6
+
+notebook notes:
+
+- DONE/TODO - sensitivity micromode; SENSESHIFT, SENSEOFFSET and re-test VCA
+
+- more double-length modes: eg. overlay from earlier section (which becomes an island we can choose to change or not)
+- view as a tape with 2 layers (of information), or as continuous (double length)
+
+- *list of segments* (how many and how to control?)
+
+for 40 seconds we can have max 120 segments - q of memory...
+
+segment: startplace (in array), length, speed, gap to next (or from previous)
+
+but main question is how to work with segments:
+
+ie. they can be swopped, they can repeat/be copied in the list, removed, remove gap, reverse list etc...
+
+top would still be overlay or more segments itself... (if we don't have double length)
+
+*also to test what 0 looks like - like what is silence we record as a gap...* // test code for 0 as full V
+
+- *modeX: record to both top and bottom and switch in play/overlay modes between*
+
+** 17/10/2023
+
+notebook notes:
+
+- how to genericise again: as top data use, freeze use, type of overlay/re-record
+
+*define rec and play completely...*
+
+nada: always same
+play: different///double is different, with speed rec is a different kind of play or??? check! but has different minormodes
+rec: double up makes it different, also enderr
+replay: all different...
+
+- *top bits:*
+-as mirror also
+-as incremental copying of lower bits
+-as incremented swop - change over...
+
+- how we can view the recording as 2 tapes which can play across each other: also if we re-record from top into bottom and erase top as we go... try to classify these...
+
+- *chop up:* list of gestures with pointers (length too???)
+
+- *list minor modes* in each case (0,1, and 2 have these so far - hints for other modes);
+
+nada: none
+rec: reset only
+play: 
+
+0:
+playreset=playminor&1; // to reset or not XX
+playoverlay=((playminor>>1)&3); // 4 types of overlay
+playspeed=((playminor>>3)&1); // 2 types speed 
+playfreeze=((playminor>>4)&1); // 2 types freeze = total 5 bits= 31 total
+
+1: // no speed
+playreset=playminor&1; // to reset or not XX
+playoverlay=((playminor>>1)&3); // 4 types of overlay
+playfreeze=((playminor>>3)&1); // 2 types freeze = total 4 bits=15
+
+2: // record speeds
+playreset=playminor&1; // to reset or not XX
+playoverlay=((playminor>>1)&3); // 4 types of overlay
+playspeed=((playminor>>3)&1); // 2 types speed 
+playspeedmod=((playminor>>4)&2);  //5 bits = 31 // for playback of speed
+
+overlay:
+
+0: 
+overoverlay=(overminor&3); // 2 types of overlay
+overrec=((overminor>>2)&3); // type of recorded overlay - total 4 bits = 15
+
+1:
+overoverlay=(overminor&3); // 2 types of overlay
+overrec=((overminor>>2)&3); // type of recorded overlay - total 4 bits = 15
+
+2:
+overoverlay=(overminor&3); // 2 types of overlay
+overrec=((overminor>>2)&3); // type of recorded overlay 
+overspeedmod=((overminor>>4)&1);// - total 5 bits = 31
+
+suggested for: play and overlaid - extra types of reset and types of freeze
+any rec NO!
+
 
 ** 16/10/2023
 
