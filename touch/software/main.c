@@ -158,7 +158,7 @@ int main(void)
 	  PA0->PA3 4
 	  PA5->PA7 3
 	  PC0->PC2 3
-	  PB0(ADC4), PB1(ADC8) 2
+	  PB0(ADC4), PB1(ADC8) ???
 	*/
 
 
@@ -348,7 +348,8 @@ int main(void)
 
   //    uint8_t firstByte, secondByte, configBits;
       uint32_t daccount=0;    
-    while(1) {
+
+      while(1) {
 
       
       // all now placed in interrupt so is well timed

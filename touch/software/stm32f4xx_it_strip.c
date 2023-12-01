@@ -328,7 +328,7 @@ static uint32_t howmanyfingers[8]={0,0,0,0, 0,0,0,0};
 // STARTY
 void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
   {
-    static uint32_t global_time=0;
+    static uint32_t global_time=0; // also in resett
     static uint32_t daccount=0, entryp=0, entryn=0, entryr=0, entryo=0;
     static uint32_t speed=0, overlap[8]={0};
     static float speedy, alpha[8]={0,0,0,0, 0,0,0,0};
@@ -376,9 +376,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=0; // TESTY - 0 was 78. now new default to work on
+	mode=778; // TESTY - 0 was 78. now new default to work on
 
+	// so baseminor==0! just simple shift...
 	//place all mods here even if we don't use them..
+	baseminor=0;
 	if (baseminor&1){
 	  SENSESHIFT=2, SENSEOFFSET=1800; 
 	}
@@ -1355,6 +1357,8 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    
           //////////////////////////////////////////////////////////////////////
           // OVERLAY*
+	  // records to layer2(overlay) speed changes from layer1 and we hear those changes (we are in 1)
+	  // what toggle can do!?
           //////////////////////////////////////////////////////////////////////
 	  if (overlaid){ 
 	      LSTRECPLAYD; // if we reset or not????
@@ -1376,7 +1380,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 		enderr[daccount]=MAXREC;
 		firsty[0]=0; // first time round...
 	      }
-	    }
+	  } // not overlaid//leaving
 	    else {
 	      enderr[daccount]=over_cnt[daccount];
 	      llrec=0;
@@ -2613,7 +2617,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	    
 	case 777: // tests of all toggles! rec, play, mode and freeze
 	  FREEZERS;
-	  if (frozen[6]) {  // frozen[daccount] //modetoggle // rec is fine...
+	  if (modetoggle) {  // frozen[daccount] //modetoggle // rec is fine...
 	    values[4]=4095;
 	  }
 	  else values[4]=0;
@@ -2662,11 +2666,11 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	  MODECHANGED;
 	  mode++;
 	  if (mode>MAXMODES) mode=0;
-	  //testting^=1; // testy
+	  testting^=1; // testy
 	}	
 	else if (modeheld<LONGMODE){ //inc minor mode matrix
 	  modeheld=0; // ??? was commented just for testing
-	  testting^=1; // testy triggers
+	  //	  testting^=1; // testy triggers
 	  baseminor++;
 	  if (baseminor>MAXBASE) baseminor=0;
 	  //  if (rec==0 && play==0) baseminor++; // we dont use so far

@@ -1,0 +1,17 @@
+* start to define new approach
+
+** 2 tapes
+
+- list of playbacks
+
+*** operations
+
+** list of gestures 
+
+*** operations
+
+** genericise/rules
+
+- no recording of speed just of the effects of speed
+- [6] is speed and control - do we toggle control
+- minormodes?
