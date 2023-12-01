@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "panels")(type "KiCad")(uri "/root/projects/ERD_MODULES/all_colours/touch/panels_from_imac/panels")(options "")(descr ""))
+)

@@ -1,6 +1,8 @@
 * TODO:
 
-21/[42] seconds recording length with divider of 24 (this also may change with modes - silence/gaps..., slower rec speeds/resolution)
+21 seconds recording length with divider of 24 (this also may change with modes - silence/gaps..., slower rec speeds/resolution)
+
+CHANGE now with 50Hz filter=100Hz sampling=100seconds maybe...
 
 ** plan
 
@@ -12,11 +14,6 @@
 last VCA is stuck full on: short! re-test FIXED (solder issue on panel connector)]
 
 *** how to unify modes somehow: across use of top bits and minormodes
-
-- question of freeze in overlay:
-
-// *what FREEZE (call it TOGGLE maybe) can do in overlaid in each case, rather than freeze values??? or keep freeze in first 2 modes*
-// we also need to test [6] voltage in all cases and other voltages all at once...
 
 ** Modes in progress // to be filled out with minormodes and tested:
 
@@ -45,7 +42,7 @@ so we store loop in bottom (so rec stays same) and expanding overlay is up to ma
 
 rework play and overlay. rec will rewrite all... top and bottom
 
-*16/10/2023:*
+//16/10/2023:
 
 DONE5- added toggle
 
@@ -97,7 +94,7 @@ TESTED/TEST 13:- freeze sets enderr in enderr case (5) so we loop at that point:
 
 14: new speed recording on freeze of top in playback only
 
-*/////////////////////TODO 18/10 ++*
+*/////////////////////TODO ++*
 
 NO!- change rec/play speeds - but in a volatile way...??? how we realise that - as we can't sense it in rec and in overlay it is all feedsback!
 that we could have top bits as rec at different rec speeds - minor modes define range of speeds - but one is always regular...*
@@ -271,6 +268,271 @@ UNK: 0.6M // toggle fine all // voltage 6v  // toggle fine...
 
 Meli: 18M //touch toggle a bit jumpy - 4.7M maybe better, also touching GND works well (as a possible solution) // voltage 6v // toggles to test with new test boardDONEfine
 
+DAN: 4M // voltage all fine on both, wobbles a bit // toggle fine //  timing fine...
+
+with baseminor=0 below/// low sensitivity
+
+yawning: 7v CV, 1M finger, touch mode fine... frozen fine...
+cammack: 2M, frozen fine, modetoggle fine..., 7v peak - wobbly
+
+
+** 1/12/2023
+
+NEW board// copy across to new folder:
+
+- limit 12v current to pads! (say 10k)DONE
+- test 12v divider on scope... with our finger we get around 4v with lower 470K
+
+- no IN signal on pad but OUT and it is amped (as is B signal)
+- pad which was mix is now ADC - if we have spare...
+
+
+
+** 30/11/2023
+
+killed board/order JLPCB proto with new changes in any case...
+
+*NEW HW notes:*
+
+- higher voltage on pads (say 5v, ideally more) could fix noise as we don't need to amplify.... - would a divider work
+
+ideally 7V or so... and if was 12v
+
+ADCs already have protection!
+
+revert filter to 220Hz values we had
+
+try different values 470k
+
+VCA section: lose decouple cap... DONE
+
+** 29/11/2023
+
+*fix 50Hz on all* 
+
+// third/top VCA also has intermittent HF noise - solder???
+
+incoming filter as 32K and 100NF for 53Hz low pass // was 47nF and 15K
+(testing now 33k)
+
+remember is low pass - say we sample at 80Hz and have low pass at 40Hz=39k // 79k=20Hz = 79mV of 50Hz
+
+- if we slow down sampling we have aliasing still from 50Hz - low pass in software before we slow sampling...
+
+// *note for our tests we modified macro for voltage [4]*
+
+/////////////////////
+
+more notes/ again towards defining behaviours...
+
+- *2 lists: play and rec per. layer:*
+
+*rec list:* - just adds and overlaps and is. a tape
+
+*play list:* eg. [0-10][0-10][20-160]
+
+how we manage this list in play mode... 
+
+is it cumulative (add in and out to the list) but we need then 2 modes in play mode (and to toggle between and to toggle layer (or that is just in NADA)
+
+2 play modes: select = play tape and select//add to list, play list only (what we toggle there - remove from list?)
+
+//
+
+headless
+fingerless
+handless
+
+** 28/11/2023
+
+- 2 layers // 2 code streams
+
+- freeze in NADA freezes any mode change for that section - so modes
+  can be per section (how could be also per current layer that we freeze on)
+
+- freeze in NADA toggles layer??? how do we know which?
+
+- NADA always records (to one or to both layers) and play sets START and END (do we have code for that): speedsamplestart
+Q. of how we add to this in the case of an overlap - see above
+
+- *long and short taps on freezer for different behaviours* [could also be on rec and play]
+
+*how can VIA be informed by concepts of AION and CHRONOS - divisibility of time/no present and all present/all depth*
+
+*that there can be the tape itself and a list of (playback) references
+into that tape* // for example we can have list of repeated segments
+or long looping part (how many times it loops) - how to implement
+this, and also how on the record side...
+
+record list, play list... how we handle these... and this is for each layer?
+
+record list is additive
+
+play list is determined by modes in play and touches...
+
+** 27/11/2023
+
+2 sides // 2 sides each of the 4 // hermaphrodite 2 layers
+
+- major modes can differ across functions (rec, play etc)
+
+*does it make sense if there are also different mode for each layer?*
+
+demonic/good hermaphrodite...
+
+- detach could be in minor modes...
+
+- review and define from all notes... review minormodes
+
+*we mention slowing a gesture - slow speed to other side... TODO* or we slow recording on one side?
+
+// notebooks:
+
+- layer operations:
+
+1: [][][]
+2: [    ]
+
+whichever is longer// *we can reset length of one/both layer*, hold/slide/desync one layer...
+
+define properties of layers: 
+
+add/subtract/merge etc.
+
+these are all modes which operate on same enlarging set of
+gestures... [Q also if we can say remove last recorded bit - we just
+need to record its start and end, but what if it is an overlap - makes it tricky? - still q of list of gestures]
+
+one layer is a ghost and we can swap that designation...
+
+ops: remove silence for voltages...???
+
+*cycling through alternate ways of reading recorded gestures*
+
+*algorithmic easter egg*
+
+add or subtract gestures in play mode
+
+detachment
+
+*still todo modes above esp. - *still could do thing where we start to repeat say first section (or a define island) and overlay this on same tape!*
+
+
+** 24/11/2023
+
+- 2 layers //4 sides // each of 2 layers each
+
+That VCA and voltage are not/should they be/ fixed to one side 
+
+eg. they can reflect - so say we can add VCA and voltage and output on both // does that make sense...
+
+swop them around... but they have quite different functions... so maybe doesn't make sense... 
+
+** 22/11/2023
+
+- if we sync counters across 2 layers then we have issue as one might go past end of other! // speedsampleL DEP!
+
+** 21/11/2023
+
+- struct for each layer DONE - what does it enable us to do, or what are issues/questions:
+
+ending of each, sync of swopped playback as each speedplay has its own
+counters (or these become one - for each layer: speedsampleL),
+question of overlap for each layer, which layer on entry into play
+etc, if layer is not there what we do in playback?, can have more
+function pointers for different options also...
+
+/////
+- question still of list (as it should also indicate the layer) - we need list to be able to remove! *DISCARDED for NOW*
+
+- 2 layers/tapes: speeds, slide across
+
+- re-test timings/hold of minormode
+
+** 20/11/2023
+
+*TODO: tests, trials of possible modes and approaches*
+
+list of gestures is more complex as we overrun, overwrite previous gestures... DRAFTED in new file // how to test?*
+
+- *how to simplify genericise as now we have too many notes/options: new model to compile from notebook and notes here* 
+
+[6] as control gesture...???
+
+*basic model is 2 tapes/layers... check case 5/6 as model with variations after that // no speed recs*
+
+- that we only ever record the *effects* of speed changes on a gesture...
+
+new mode 0 in 1123 file:
+
+*speed re-record -> questions: but when we re-enter we re-record and lose speed... need somehow to swop over...*
+
+how to swop: variable to indicate current layer...
+
+/////
+
+*what cases we need to code for // eg.*
+
+-record playback speed change on layer 1-> layer 2
+
+but how do we get feedback for this...
+
+*now in new file but not toggle// always NO USE OF TOGGLE:
+toggle starts to record to layer2(overlay) speed changes from layer1 and we hear those changes (we are in 1). toggle stops and stays with 2... so no overlay recorded. local and global speeds*
+
+- rec toggles 1 or 2 to record to (but no feedback so how we know which?)
+- play toggles which one but one maybe blank?
+
+twinned layer operations: swop, merge/add/subtract/mix, bounce to/record from one to other with speeds, slide across, different speeds
+
+list ops: add (new rec), remove, swop, copy/double, collapse=join, chop?as in cut silence and render as new lists, hide/unhide, detach
+
+-islands and notes above and below...
+-list of gestures
+
+
+** 19/11/2023
+
+questions/thoughts:
+
+- do we extend overlay? was marked as TODO minormode option in [0]
+- what minormodes we have so far? in [0]?
+
+in all: sensitivity (code is fine as we >>1 all)
+
+	//rec -nada
+	
+	//overlay
+	overoverlay=((overminor>>1)&3); // 2 types of overlay
+	overrec=((overminor>>3)&3); // type of recorded overlay 
+	overspeedmod=((overminor>>5)&1);// 
+
+	//play
+	playoverlay=((playminor>>1)&3); // 4 types of overlay
+	playspeed=((playminor>>3)&1); // 2 types speed 
+	playfreeze=((playminor>>4)&1); // 2 types freeze
+	playspeedmod=((playminor>>5)&2);  //
+
+*which of these we retain?* run through them
+
+- how play and rec can be generic? what are the exceptions so far?
+
+- how we could record slowing down of a gesture - needs a place to record into (layer or new entry in list)?
+
+- if we have list and add to it what happens if we run out of space - last entry stops... (is not like a tape loop)
+
+typedef struct listy_ { 
+  uint32_t start[120];  
+  uint32_t gap[120];
+  uint32_t length[120];
+  float speed[120];
+} hands;
+
+static hands fingers[8];
+static uint32_t howmanyfingers[8]={0,0,0,0, 0,0,0,0};
+
+// *notebook notes to fill in... new divination/layer/list plans...*
+
 ** 26/10/2023
 
 //why freeze speed doesn't work in mode0//FIXED!
@@ -283,16 +545,16 @@ notebook notes:
 - so we can maintain, modify or erase overlay as we progress
 - and use overlay as speed or not...
 - additive switch/swop across 2 tapes (2 tapes, 2 speeds - how?)
-- algo as pulse in to freezers/toggles, minimode
+- algorithmic control as pulse in to freezers/toggles, minimode
 - *translate modes we have into ongoing series of transformations*
 
 - what we can do with a list of gestures, list of modes: earlier idea of push/pop/ *stack* button... 
 
 earlier idea was: Notes: frozen levels are saved to a stack and can be popped off the stack, various over-rides...????
 
-circular stack of gestures - how to add, remove???
+circular stack of gestures - how to add, remove and what happens when we run out of room??? 
 
-** 25/10/2023
+** 25/10/2023 *KEY*
 
 - trying to re-think towards more fluidity// notebook notes:
 
@@ -327,6 +589,9 @@ What does this enable -
 8. Maybe 2 resets - one full to mode 0/basic REC, other just resets counters and sequence... we had idea below...
 
 To consider new scheme... so more like an instrument
+
+*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*
+*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*
 
 ** 24/10/2023
 
@@ -733,9 +998,9 @@ we measure now in case 667 as 7 seconds...
 All triggers now: 3.3M on schematic // 4.7M on board
 VCA divider: 1M (4.7M on schematic)...
 CV divider: 1M
-Filter: 47 nF and 15K = // if we sample around 440 hz we want 220hz low pass=47nF and 15K // do we want 50Hz filter???
+Filter: 47 nF and 15K = // if we sample around 440 hz we want 220hz low pass=47nF and 15K // do we want 50Hz filter = high pass...???
  
-Sample hold on out is: 1nF // 440 Hz we have... 1/440=2.2ms /// try 4.7nF//10nF*
+Sample hold on out is: 1nF // 440 Hz we have... 1/440=2.2ms /// try 4.7nF//10nF* no!
 
 0805 C0G ??? 
 
@@ -746,7 +1011,7 @@ Sample hold on out is: 1nF // 440 Hz we have... 1/440=2.2ms /// try 4.7nF//10nF*
 
 - chopping up gestures eg. *can use top bits to record a silent distance between gestures*
 
-- how to fragment, chop, re-organise, space out touch gestures in overlay
+- *how to fragment, chop, re-organise, space out touch gestures in overlay*
 
 1.freeze as seperator - space out
 2.freeze as cut/chop remove segments
