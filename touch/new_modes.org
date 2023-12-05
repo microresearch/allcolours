@@ -1,0 +1,216 @@
+* minor modes
+
+** for major 0 we have:
+
+*play*: overlay type, resets, if we detach voltage? ie. if [6] is overlay or speed, or both
+
+NO-use in speed rec modes/we did also have: if speed is real[6] or recorded[6] - does that make sense? makes sense for overlay and post-overlay...
+
+if freeze stops play counter/or leaves it running and just saves last value
+freeze as: holding of playback voltage, holding of overlay voltage etc. - see below
+
+freeze and [6]?
+
+*rec*: resets, rec speed only?means what?
+
+*overlay* =rec+play: type of recorded overlay(see cases 9/10), speed dealings as with play above, if we overlay or re-record/insert (or is that major mode?)
+
+*playback speed settings ref:*
+
+[- no speed setting]
+- logfast/logspeed(slow-add from below)
+- freeze on [6] freezes speed, freezes value, freezes both
+
+/////
+
+*** bits in each case: or is not really bitwise... but a list of minor modes
+
+// but eg. if we have no speed then we lose lots of bits... how we deal with this
+
+we need bits as these present options..
+
+**** *play:*
+
+//overlay type: where we just overlap if is >, where we add -> clip at limit, modulus...
+
+reset: on entry, no reset so we don't start from beginning: 1
+
+[6] as what: 2 bits // and deal with freeze
+as speed: 
+as overlay/no speed: 
+as both: freeze freezes speed/freezes overlay/freezes both
+
+freeze on [6]: ??? depends on above
+
+freeze holds playback value=freeze stops counter/leaves running, holds overlay only, holds both=freeze stops counter/leaves running: 
+
+as in freeze holds last value, last overlay only, last full, counter runs/doesn't
+
+speed:
+- no speed (above) - no [6] - as major mode??? as we had
+- logfast/logspeed
+- freezes from [6]
+
+*trying to resolve thus bits:*
+
+**** play
+
+uint32_t playreset, playoverlay, playspeed, playdetsix, playrun, playlast;
+
+playreset=playminor&1;
+playoverlay=((playminor>>1)&3);
+playspeed=((playminor>>3)&1);
+playdetsix=((playminor>>4)&1);
+playrun=((playminor>>5)&1);
+playlast=((playminor>>6)&1);
+
+
+type of overlay>(as freeze)//add/clip//add/mod // replace - 2 bits // 4 options
+
+1. if (real[daccount]>values[daccount]) values[daccount]=real[daccount];
+2/3 values[daccount]+=real[daccount];
+2 values[daccount]=values[daccount]%4096;
+3 if (values[daccount]>4095) values[daccount]=4095;
+4 subtract and abs
+
+- as 4 options so 2 bits but as options...
+
+speed: logfast/logspeed(slow-add from below): 1 bit // 
+[6] detached from overlay // attached... 1 bit and freeze just follows this: 0=attached overlay 1=detached - always freezes speed
+
+//////re-worked
+# check this - freeze on [6] freezes speed, freezes value, freezes both - as detached kinds of works but...
+
+# freeze is: stops play/runs // 
+# last value/last overlay // 2 bits??? - what about [6] though as we don't rec speed leave aside
+
+# reset/no reset: 1 bit lowest: LASTPLAY
+playfreeze=((playminor>>4)&3)// now reworked as 4 types of freeze: overlay only, stop play, keep play-hold value, hold speed
+
+// now we have 6 bits as reworking freeze /// = 7 bits total... -> 128 
+
+
+
++ Q of // [6] freeze just freezes speed and not real - or is covered by the detach
++ Q of freeze just holds overlap or do we have that...
+
+**** rec
+
+- reset: 1 bit LASTREC
+- or toggle through different rec speed/dividers/resolutions 2 bits: need to match with speed divisors in playback or not...
+
+3 bits? or continuous division - more bits
+
+**** overlay
+
+- all as in play = 7 bits LSTREC=reset
+- type of recorded overlay - we have 4 options so 2 bits 
+
+total: 9 bits = 512
+
+recorded overlays:
+
+/*
+1: looped rec and overlay. always rec. peak overlay, fast speed: recordings[daccount][rec_cnt[daccount]]=values[daccount]; [values also adds real but is different as speed dependent]
+2: looped rec and overlay- different rec scheme. slower speed: recordings[daccount][rec_cnt[daccount]]+=real[daccount]; // we just add overlay, not add it to played back!
+*/
+// this version is odd if we increase speed as only adds to where we are in play_cnt
+3://	      recordings[daccount][(int)play_cnt[daccount]]=values[daccount];
+4: test as: recordings[daccount][(int)play_cnt[daccount]]+=real[daccount];
+
+//DONEand we will need to mod these for doublings...
+
+* major modes
+
+// strip.c
+
+0- [78] - default with freeze as freeze // double up recording length
+
++ 0.5 no speed but resolution/slow rec sync across all modes rec/play etc...
+
+1- [79]? - overlay one repeating section with different overlays *REWORK mode 79, we can store original loop there, and expand overlay in top bits ???*
+
+eg. *TODO* *REWORK mode 79, we can store original loop there, and expand overlay in top bits*
+
+*like a ghost recording, a double, a mirror*
+
+*MODE81-TEST!: or it could also be the original and we make all overlays in top bits, freeze/unfreeze toggles between the two for each!!*
+
+2- [80] - islands????
+
+- *TESTED_OK_MODE80overlay: we want to be able to overlay only one section of playback (and this section is fixed? how?) for each section?*
+
+[start------------end] - according to rec...
+[------][xxxxx][-----]
+no play  play   no play
+[   [freeze/freeze]  ]       
+
+and same for rec - so ISLANDS of rec/play - and how this works for overlap?=just detach play/and/rec or just rec so we overlay only island
+
+
+*eg. in REC: detachment of rec process/ stops/starts - so not all are synced...*
+
+*to try islands again in REC to see if it makes sense // or is it too confusing to remember if we are in rec if is not recording // makes sense if we are past MAXREC*
+
+
+3- [81] - or it could also be the original and we make all full overlays in top bits, freeze/unfreeze toggles between the two for each!!*
+
+// below....
+
+4+ local speed recording on voltages // local detach and others
+5- detach rec/play using freeze and rec/play counter behaviours
+6- mirrorings
+
+7- chopping up gestures.... store distance in top bits - silence is stored as length (so compressed) *but what happens in recorded overlay???*
+
+- how to fragment, chop, re-organise, space out touch gestures in overlay
+
+1.freeze as seperator - space out
+2.freeze as cut/chop remove segments
+3.freeze as swop segments
+
+8- differing rec and playback speeds
+9++ record general speed, overlay and general speed (where did we store general speed before? in [6]???) - *but we need to rec speed only in overlay*
+
+for rec speed mode - split [6] as rec speed/rec voltage (eg. rec speed only, *rec voltage only*, frees) - levels: freeze, rec, freerunning - rec speed is only in rec+play?
+= also freeze leaves voltage alone on local speed recordings/detach  ??? if rec speed is in 6 or just in all/single overlay!
+
+10++ local and general gaps/distance
+
+11 different approaches to overlay: eg. - in overlay freeze can stop and start overlay - see below - stop is no rec not reset below
+- in overlay freeze can reset that section to 0 - so no overlay just re-record that section once then overlay (how?)
+
+overlay: stop(loop/local end)/start(extend or insert)
+
+
+*that major modes define use of top bits:*
+
+- always as speed? as speed in one majormode - local/global
+- as our repeat or /other/ layer *like a ghost recording, a double, a mirror - local
+- IN process: to double our recording length
+- to store short loop - local // as ghost above - but that is done with list of access into tape...
+- to record (silent) distance between segments
+
+*major modes also define use of freeze and voltage[6]*
+
+////////////////////////////////////////////////////////////////////////
+
+state/mode  | freezer
+
+NADA        - freeze (default type is overlay/peak as in case 7)
+REC         - stop(loop/local end)/start(extend) 
+PLAY        - stop/start (unsync) - (and options to freeze play or keep counting but no playback)
+              or start/end - loop/extend
+              or as above if that differs from detach
+            - use of rec voltage as speed or not (see above) 
+OVERLAY     - overlay/simple rec
+              overlay/no change ??? and as above/detachments      
+	      stop.start (unsync) - but we have rec and play syncs/starts...
+
+notes:
+- in overlay freeze can stop and start overlay - see below - stop is no rec not reset below
+- in overlay freeze can reset that section to 0 - so no overlay just re-record that section once then overlay (how?)
+
+////////////////////////////////////////////////////////////////////////
+
+*jekyll/hyde for top speed modifier - it has 2/several personalities* 
