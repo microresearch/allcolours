@@ -294,21 +294,23 @@ killed board/order JLPCB proto with new changes in any case...
 
 *NEW HW notes:*
 
-- higher voltage on pads (say 5v, ideally more) could fix noise as we don't need to amplify.... - would a divider work
+- higher voltage on pads (say 5v, ideally more) could fix noise as we don't need to amplify. now is 12V. Note: ADCs already have protection!
 
-ideally 7V or so... and if was 12v
+- reverted filter to 220Hz values we had
 
-ADCs already have protection!
+[- try different values for the 470k]?
 
-revert filter to 220Hz values we had
+- VCA section: lose decouple cap... DONE
 
-try different values 470k
+- IN makes no sense on pads so now we have OUT. OUT and Cx (ext signal to pad) are now amplified x2
 
-VCA section: lose decouple cap... DONE
+- added 4x new control ADC for each section: PC1, PC2, PB0, PB1
+
+*TODO: add filter in panel for these on PCB only, also enlarge graphic arc and rework mask*
 
 ** 29/11/2023
 
-*fix 50Hz on all* 
+*fix 50Hz on all*
 
 // third/top VCA also has intermittent HF noise - solder???
 
