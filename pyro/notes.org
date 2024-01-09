@@ -7,7 +7,7 @@
 - switch on encoder arms the device
 - how to show is armed - some display/LED/nicer? but cutout to show this/surface mount - or like 4 bright leds with slit// to test?
 - UV light would be nice
-- power socket as in breath - but widen the pins for segor socket
+- power socket as in breath - but widen the pins for segor socketDONE
 
 specs now:
 
@@ -31,38 +31,42 @@ eg.
 4- trigger on first primes rest to set off on their own trigger 
 5- pair arms or primes other - so one goes off after other 
 6- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
-7- trigger within time window on all sets off all 
-8- same for pairs in window
+X- trigger within time window on all sets off all  // different size of windows below
+X- same for pairs in window // different size of windows below
 
-what else?
+TODO more modes ->15
 
 ** specs panel/base:
 
 - Cliff FE6930 is socket/vertical
+
+** 4/1/2024
+
+- question of resistor (30W 6 ohm for short protection - but what is 65W and 3ohm of FET. FET is: IRLB8721PBF 
+- maybe have just 15 modes we rotate through and press defines length:
+
+short or long press: 1/10th / 2 secs
 
 ** 12/10/2023
 
 TODO:
 
 - test 4 triggers at same time - heat residue - how to measure?
-- define say 8 modes and 3 sets of timings - how many things on encoder?? 24 detents // checked
+- test 2 second short?
+- +NONdefine say 8 modes and 3 sets of timings+ - how many things on encoder?? 24 detents // checked
 
-or we just turn round and round for X modes ... multed by timings
+YES!or *we just turn round and round for X modes ... multed by timings*
 
-see below - 4 modes and 6 timings: collect timings???
+- so say we have 15 modes: note: that we can't flash ZERO so gives 15 modes in any case to indicate
 
-- flash mode on armed with time of ignition,  but mode is now 3 bits - extra bit as???
+- flash mode on armed with times of ignition 
 
-note: that we can't flash ZERO so gives 15 modes in any case to indicate
-
-grey code //another encoding...
-
-24/4=6
+grey code //another encoding...?
 
 //DISPLAY we need to show:
 
 - that is armed - flash. length of trigger - flash and gap length
-- mode - 1-8 on 4 bits??? when is 4 bits but 1 extra bit
+- mode - 1-15 on 4 bits
 - [show also state of incoming pulses... but confuses with flashing... could maybe invert them // and show when unarmed (but what of mode)]
 
 ** 3/10/2023
@@ -71,7 +75,7 @@ grey code //another encoding...
 - added bounce cap and pull downs for trigger ins to schematic and PCB (100K)
 - all tested just need to do logic, modes, check timing and heat
 
-Idea is to have 16 modes which can be displayed and then cycle these
+Idea is to have 15 modes which can be displayed and then cycle these
 for longer ignition time (we could flash armed at different speeds to
 show this timing...)
  

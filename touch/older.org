@@ -1,0 +1,210 @@
+////
+
+** 10/7+ MODES//older
+
+how to define - behaviours which are then modded by freeze behaviours...*
+
+major modes:
+
+- 78/now 0 - default overlay: freeze is freeze in all
+
+- speed/no speed/slower rec speeds... how we handle speed is major question
+
+- local speed on voltages: - where we get speed from (eg. speed for each voltage comes from VCA of that section) = local speed recordings? see which mode...?
+
+*TODO???: tap freeze top in rec+play/overlay: record speed seperate and leave voltage (q of speed overlays or not), same for freeze on locals in another mode...??*
+
+- thus add: global speed recorded seperately in overlay
+- fragmented/repeat overlay (segments we can call this)
+- +looping always - what do rec and play buttons do and freezers???+
+- mirrorings
+
+- *and are different freezer behaviour modes major: eg. detachment etc...???*
+
+// recording speed as different to voltage it is recorded on...
+
+** recent july notes/playthrough:
+
+- *78/new 0 after 10/10 -  is new default with freezes and minormodes!*
+
+Now we have 4 states and all as global/local (as rec/play always global unless we think of local mods of these so they mean different things for different segments)
+
+freeze button is what makes it LOCAL: local stop start in each mode (but how that overrides...)
+
+play/rec detachment are more major modes, as is loop/rec // if these still make sense...
+
+** characteristics/parameters to work through:
+
+rec/play: speed, length//start-end, counter, mirrors, overlays, freezers do/behaviour, resets of params...
+
+local/global. sync
+
+ways of changing speed, start/end
+
+or from point of view of each section: speed, start, end, what freezer does...
+
+Simplify as conditions of:
+
+real[daccount]: adc input // modifiers // freezers // play/rec // speeds
+
+no play/no rec: NADA-freezer behaviour=type of freeze (just one)
+play: overlays, freezer behaviour, resets, start and end, mirrors, speeds, sync
+rec: speed/slew, live overlays, freezer behaviour, resets, type of overdubs, start and end, mirrors, speeds
+overlaid: 
+
+behaviours of speed control: freezers, recordings/overdubs 
+
+rec with play, play with rec [to record overlay we need to hear what we are overlaying on]
+
+link of rec and play...
+
+///
+
+- modes as they come, more about how to divide different areas now... can also be say top and bottom[???], left and right. 4 sections
+
+- check which modes we need to clear rec (if is not going to be overwritten anyways)...
+
+- *what needs to be set or reset when we change modes*
+- init and zeroing of key arrays if any...
+
+- *test with different PSU and hands/fingers*
+- +DONE//add protection, re-test PCB - also with new processor F413GTx,+
+- BOM and order
+- manual: layout and list of modes somehow... touchable, overlays//holes, cutouts...
+
+** OLDER:new major modes (and mods where we can)
+GLOBAL:
+1: basic/simple mode with all mods: 0 or *now 7*
+2: overlay on each rec: 1 // *or is that maybe as minor?*
+3: ????slower recording speeds - longer, steppy: 2 - test again // unsure as is behaviour change...
+4: no speed on [6] at all....???
+
+global/local4: detach play: 15
+
+5: looped rec/overlay: XX9/10->new case 5 but also with alt overlay options
+6: record speed seperately: 11/12
+7:
+8; mirror - all follow one voltage[lowest=4] and overlay own... 23?
+
+GLOBAL/LOCAL:
+1: length of start/end (global/local tho!) - 3
+2: freeze overdubs/new 13/14
+3: freeze detachs playback 15 - is above
+4: groups and reflections -mods could determine which group we use?
+
+LOCAL:
+
+*TODO: ADD: local speed recordings - can use [top voltage] or local section's VCA*
+
+** catalogue modes and modifiers
+
+// modes in code so far:
+
+GLOBALS:
+0: freezers, overlay=peak, speed=fast etc...
+
+XX8: fixed slower recording speed - all fixed speed - TRY change one speed...- added that change 
+
+9: looped rec and overlay. always rec. peak overlay, fast speed: recordings[daccount][rec_cnt[daccount]]=values[daccount]; [values also adds real but is different as speed dependent]
+10: looped rec and overlay- different rec scheme. slower speed: recordings[daccount][rec_cnt[daccount]]+=real[daccount];
+
+11: record ind speed on freeze top - always play back speed and re-record on freeze
+12: record ind speed: how differs from 11?CHECK? - this one is overlap - does it make more sense than 11? 
+
+13: freeze overdubs in playback // otherwise?
+14: freeze records new in playback - can be option?
+15: freeze detachs section from playback - play counter still runs... // could be otherwise - see below
+
+XX16: slew ???
+
+??17: freezer shifts start of each particular playback section towards the enda
+
+XX18: recorded top voltage as speed/fast - see 11???
+XX19: freeze holds voltage in playback... // not overlay  - as minor mode????
+XXX20: freeze holds voltage in playback... still moves on samples...
+
+XX21: as 0 but no reset of rec_cnt, so adds to end of buffer - now as minor setting
+
+XX22: slew which doesn't wait for target TODO:how to do rise and fall independent speeds??
+23: overlay/mirror???
+
+GLOBAL/LOCAL: groups and reflections
+24: freeze just plays back with own overlay the previous section ADC (does not copy), unfreeze reverts to own record...
+25: freeze copies previous section ADC - copy as we play back into rec buffer, unfreeze just stops this process
+26: overlays the previous one on playback - so adds the 2 recs...
+
+LOCAL: to be better defined... *TODO: more also as looping/overlay??*
+30: freeze: record, tap again: playback
+31: freeze: record, tap again: playback *difference 30???*
+32: reset rec_cnt
+33: as 30 but - *rec freezes all, play resets all counters*
+34: as 33 but rec holds playback
+35: alt hold as 34...
+
+LOCAL is more about how to use REC and PLAY buttons: as freezes, as resets
+
+*TO ADD: new modes: with modifiers TODO in most cases:*
+
+2-no speed but bits mod rec and playback speeds...
+
+//
+
+MODIFIERS for modes (where relevant):
+
+1.types of live [or recorded] overlay: modulo, peak
+2.speed: none, additive/peak, (subtractive), adds from below (which is what we had) 
+--->in speed mode++++if [6] is subject to freeze etc. and thus effects global speed? *could be if we use rec speed or not...???*
+3.reset or not rec/play counter (2x modifiers) when we enter/leave those...
+
+= 2x overlay x 5x speeds: none, add, add from below, add/freeze, add from below/freeze x4  reset = none, rec, play, both
+= 2x5x4=40 modifiers = too many or is more like a journey
+
+now we have major/minor split of modes
+
+default bits in mode 0 // 9/6/2023: 8 bits
+
+*CHANGING/UPDATE*
+
+12-speeds: add=logfast, add from below=logspeed, speed as real or recorded // playback
+3--overlay:modulo/peak in playback and also see freeze behaviour below // playback
+45-resets: play, rec // rec and play
+6-freeze on [6] freezes speed, freezes value // can also be other seperators of speed/value - freeze dependent // playback
+7-freeze stops playback, freeze holds overlap //= playback
+// *TODO:freeze stops playback, freeze holds playback value, freeze holds overlap - how to do this?:*
+
+*in case 7 we have now for freeze behaviour:*
+
+- stop/start playback
+- toggle/hold playback voltage
+- hold/release playback voltage
+- TODO:hold overlay voltage - as toggle // but this excludes other bits... how to deal with that... last cases...
+
+now [case 7 to expand and 0 to lose] we have:
+
+no sensitivity and new default freeze in no play/rec so no minormodes
+
+minormodes for rec keep seperate to play...
+ 
+*-extra bit could be: record overlay or not? or keep as major mode...*
+
+1 2 4 8 16 32 64 // 128
+1 2 3 4 5  6  7 // 8
+??? We use NONE speed as major mode option -> 5 bits=32
+
+///
+
+- global rec/and/play
+- local rec/and/play
+*[global rec with local play=detach15 above // global play with local rec (all sync/loop)]=13 or 14*
+
+- loop rec/add/overlay always
+
+// *parameters to combine and to use to define modes:*
+
+modifiers/resets, length of rec, length of play(same as length of rec in some cases), overlay on 2nd rec (with/without change of length), speed
+
+what can cross global/local: freezes, lengths, start/stop/sync, record of overlay or not, copies and groups
+
+// define as: each section (defined as local.global.groups) has: 
+
+what we record (eg. overlay), what we playback (eg. live overlay), start and end of rec/play, speed of rec/play, freeze button, reset or not of counters

@@ -119,6 +119,9 @@ int main(void)
 #endif
     // 8 channels
 	    //	    ADC1_Init((uint16_t *)adc_buffer);
+    
+  io_config2 ();
+
 
 	    
 	    // testing
@@ -165,17 +168,22 @@ int main(void)
 
 
     //   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_84Cycles);
-
+	// adding new ADCs
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 |GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;// as pin 4 is DAC
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
     //    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // changes nothing
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     
-	    	// adc8 is adc1_10 =pc0
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;// | GPIO_Pin_1; PC10
+    // adc8 is adc1_10 =pc0
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;// | GPIO_Pin_1; PC10  and 11 12
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;// | GPIO_Pin_2;// | GPIO_Pin_1; PC10  and 11 12
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
     
     //- rec on PB2, play on PB4 - swopped with FR3, push on PB6 
@@ -196,6 +204,7 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
+ 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -311,9 +320,6 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
-    
-  io_config2 ();
-
   
   // TIMER2 with clock settings and period=1024, prescale of 32 gives toggle of: 1 KHz exactly (so is double at 2 KHZ and this seems to work well)
   // which translates to 65 MHZ clock from APB1 - but above APB1 is 45 MHZ ???

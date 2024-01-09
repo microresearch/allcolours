@@ -1,7 +1,7 @@
 {
   "board": {
-    "active_layer": 33,
-    "active_layer_preset": "All Layers",
+    "active_layer": 38,
+    "active_layer_preset": "",
     "auto_track_width": false,
     "hidden_nets": [
       "+12V"
@@ -64,8 +64,8 @@
       35,
       36
     ],
-    "visible_layers": "fffffff_ffffffff",
-    "zone_display_mode": 1
+    "visible_layers": "ffffff0_7ffffffe",
+    "zone_display_mode": 0
   },
   "meta": {
     "filename": "comparator.kicad_prl",

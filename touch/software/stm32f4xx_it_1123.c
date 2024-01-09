@@ -137,8 +137,9 @@ static float ownplay_cnt[8]={0.0f,0.0f,0.0f,0.0f, 0.0f,0.0f,0.0f,0.0f,};
 //static uint32_t tgr_cnt[10]={0};
 static uint32_t rec=0, play=0;
 
-static uint32_t SENSESHIFT=2, SENSEOFFSET=1800; // offset is minus!
+//static uint32_t SENSESHIFT=2, SENSEOFFSET=1800; // offset is minus!
 //static uint32_t SENSESHIFT=1, SENSEOFFSET=560; // lower sensitivity
+static uint32_t SENSESHIFT=0, SENSEOFFSET=0; // no shift now
 
 //static uint32_t shifter[8]={2,2,2,2,2,2,2,2}; // shifter seperates vca from cv - VCA comes first
 //static uint32_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
@@ -377,6 +378,7 @@ void TIM2_IRQHandler(void)
     uint32_t bits, lengg, where;
     static uint32_t values[8]={0,0,0,0, 0,0,0,0}; // changed 2/10 NOW STATIC!
     static int32_t real[8], reall[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static????
+    static int32_t control[4];
     static uint32_t lastvalue[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastvaluer[8]={0,0,0,0, 0,0,0,0};
     static uint32_t lastplayer[8]={0,0,0,0, 0,0,0,0};
@@ -470,10 +472,11 @@ void TIM2_IRQHandler(void)
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	mode=0; // TESTY - 0 was 78. now new default to work on
+	mode=0; // TESTY 
 
 	// so baseminor==0! just simple shift...
 	//place all mods here even if we don't use them..
+	/*
 	baseminor=0;
 	if (baseminor&1){
 	  SENSESHIFT=2, SENSEOFFSET=1800; 
@@ -482,7 +485,9 @@ void TIM2_IRQHandler(void)
 	  {
 	    SENSESHIFT=1, SENSEOFFSET=560;
 	  }
-
+	*/
+	SENSESHIFT=0, SENSEOFFSET=64; // TESTY fixed
+		
 	switch(mode){
 	case 0: // 20/11/23 - testing bounce layer 1 at speed to overlay - as [mode5] previously
 	  FREEZERS;
@@ -604,11 +609,16 @@ void TIM2_IRQHandler(void)
 	    }
 	    else entryn=0;
 	  }
-	    break; 	  
+	  
+	  break;
+	case 666: // test new ADCs:
+	  CTRL;
+	  values[4]=control[0];
+	  break;
 	}
 	  
 	//	TOGGLES;      // only place where toggles - pulled out of ==8 section
-	
+	//	values[daccount]=0;
 	WRITEDAC2;
 	daccount++;
 	if (daccount==8) {
