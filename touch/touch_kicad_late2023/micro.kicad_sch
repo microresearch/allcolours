@@ -2278,7 +2278,7 @@
     (in_bom yes) (on_board yes)
     (uuid 00000000-0000-0000-0000-000060a4b109)
     (property "Reference" "R71" (id 0) (at 161.163 161.163 90))
-    (property "Value" "10k" (id 1) (at 161.2392 156.6672 90))
+    (property "Value" "1k" (id 1) (at 161.2392 156.6672 90))
     (property "Footprint" "Resistor_SMD:R_0805_2012Metric" (id 2) (at 161.544 159.004 0)
       (effects (font (size 1.27 1.27)) hide)
     )

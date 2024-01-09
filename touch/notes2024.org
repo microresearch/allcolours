@@ -1,0 +1,510 @@
+#+OPTIONS: num:nil
+#+OPTIONS: toc:nil
+
+* notes 
+
+    O
+    |
+(---+---)
+    |
+    0
+
+sync and divination: 4 layers // binary figure
+
+moon/crescents - new moon - half - full - half 
+
+MODE: X | ADC | FREEZE | NOTES
+-------------------------------
+NADA: 
+REC:
+PLAY:
+R+P: 
+
+////
+
+Basic mode to implement: (each mode is defined by ADC and freeze behaviour)
+
+NADA: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - invert is take value from top, but what is "fake swop"?
+REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds to main tape...
+PLAY: ADC->speed // freeze is swop
+REC+PLAY: ADC->speed/bounc/rec to other // freeze is swop
+
+Q of global speed... *new top ADC is global control. also we have sync functions*
+
+NADA = no tape
+
+- ghost hands
+- detached hand swop//cut off hand
+- inversion - up is down // down is up
+
+- ways of adding to play list, operations on play list (and how is it doubled or not?)
+- operations on tape and across 2 tapes
+- sync/detach etc...
+- chop/silence/insert etc... or is that operation on play list
+
+* divination ideas
+
+The geomantic figure Via, or “Way”. This figure has all elements
+active, revealing its dynamic nature; its linear form resembles a
+road, at the changes afoot due to time and circumstance. It takes and
+transforms every other figure and force into its opposite. It is a
+figure of complete change, upheaval, and reversal; it is good with bad
+figures and bad with good figures, though it is considerably more
+favorable in matters requiring total reassessment and journeys of any
+kind. It often shows a solitary time and path, between homes, cities,
+and worlds.
+
+- moons from the top
+- which of four ADC has hardest press, how we could interpret 4 presses as binary/geomantic figure!?
+
+*how can VIA be informed by concepts of AION and CHRONOS - divisibility of time/no present and all present/all depth*
+
+- divination methods, concepts of time: Franz and synchronicity-divination /Deleuze - aion and chronos
+
+* HW/timing
+
+- HW Connectors upper and lower:
+SL 2X40G SMD2,54
+BL 2X50G7 2,54	
+
+- divider: 470K // another value now we have 12V
+
+- filter: 15K and 47nF = 220 Hz (did we decide against 50Hz filter?)
+
+- software: main divider of 24: 21 seconds recording length
+
+- Latest all working but make sure we fix to MMBT3906 in BOM/assembly!
+
+* TODO:
+
+UPDATE all notes for HW, speeds and basic mode, plan of action!
+
+- re-test all VCA, noise and voltages
+- new finger tests - Kaffe: triggers, length of trigger, new voltage?
+
+- new speed mode to test
+
+- condense and print older/newer notes/here
+
+- define basic HW and timing, filters below
+- define minor modes 
+- define and test basic mode and add/catalogue all modes
+
+** start to define new approach
+
+- 2 tapes
+- list of playbacks/gestures 
+- rec just adds to end of tape/wrapping round until full reset
+- no recording of speed just of the effects of speed
+- all minormodes
+- do we record new ADC gestures  
+
+
+* diary notes
+
+** 8/1/2024
+
+- removed senseshift but still needed offset reductionDONE
+
+TODO:
+
+- HW tests:
+
+- test voltages...
+
+- FIXED with move of init code: +offset of 1.1V? on voltages (but not after programming???) offset is in DAC writing... (not in ADC)!+
++if we use DAC_OutputBuffer_Enable then we have 100mV offset... but we did not have this before...+
+
+- noise seems ok on voltages...
+
+- test VCAs (ADC is filled crescent)
+
+no noise
+
+- test new ADC:
+
+all fine
+
+toggles:
+
+- none really working well, sticky and jittery. why? cold/dry weather but how to adjust... 
+
+// we have 3.3M pulldown but what was it in the previous board? *4.7M - we just now replaced the one on MODE - changed on schematic*
+
+and we extended delay and BRK -- but extending delay causes jump when we touch 
+
+// 256 operates ok,,, but 300mV offset
+// 24 gives 200mV
+8 seems the limit but no toggle
+
+*r71 is now 1K: changed on schematic* and we test removal of diode but we should leave it...
+
+*now we have DELB as 42 and is fine... but still odd offset - negative at top and positive at bottom??? leave for now as is not terrible... and is worse with changes to GPIO*
+
+// now in TEST_TOGGLES we have all of them in one so does not repeat delay
+
+timer of toggle now:
+
+- resett seems to work and we will only use short tap or reset...
+
+- SW tests:
+
+- mode 0 in 1123 not working now...??? as probably due to toggles!
+
+- fix up test modes for next week: stm32f4xx_it_test.c
+
+* recent notes
+
+- new ADC as accelerating through modes (so is not ADC value=mode) as a *journey* // length of press and speed-> position
+- *TRAIL* - this is also a new model for speed - no press=no advance/hold voltage/record voltage
+- we can also use this to mark sections - fwdwind and mark
+
+** 21/12/2023
+
+latest notebook notes:
+
+PLAY
+- one tap: loop selection. next tap /next tap: add now marked section to playlist
+
+- eg. to cut up gestures we just keep what is there as long as we hold freeze or as long as new ADC is > level
+
+is cut up into play list or as re-record to tape 1 or 2
+
+- playlist is single but has 2 strands? tape 1 or 2 - and indications to mix, add etc...
+
+or we have 2 playlists or *just one and all depends on current tape?*
+
+control gesture->>>[--------------] tape 1
+                   [--------------] tape 2
+
+parallel gestures which can repeat/mirror/combine/bump one to other. swop
+
+parallel worlds/gestures - rise, dip, slope etc...
+
+** 13/12/2023
+
+more on gestures:
+
+eg. to cut up a gesture we just keep what is there as long as we hold freeze/cut out the other // or as long as new ADC > x
+
+in play list...??? but is more a question of tape and of re-recording
+
+- is a single playlist or we have 2? single with 2 strands/refs to tape 1 or 2 and indications to merge/add etc???
+
+** 11/12/2023 - *that VIA must be divinatory*
+
+that divination is also a form of compression
+
+from 4 cards each of 4 bits (total 16 bits, 2 bytes) to a future or a past...
+
+that VIA/module offers possible algorithmic futures for the gestures // 2 layers, 2 futures
+
+// how we understand and interpret a gesture?
+
+as a set of values, individual values are meaningful, or as a relation between values over time - the last peak, rising, falling etc.
+
+in dark interpreter they become values/codes within software but this approach is not working as ...
+
+record and devise gesture maps / mapping journeys
+
+** 10/12/2023
+
+- how we can use new gesture from ADC pad as controlling option 
+- to summarise what we are controlling -> - - *Play list and rec tape per layer*
+
+so control is over the play list (single?)
+modes describe interaction between layers eg. bounce etc...
+
+*or we go full geomantic with new ADC gesture across all 4 parts in diamond shape*...
+
+more notes/ again towards defining behaviours...
+
+- *Play and list and rec tape per layer*
+
+*rec:* - just adds and overlaps and is as a tape would be
+
+*play list:* eg. [0-10][0-10][20-160]
+
+how we manage this list in play mode... 
+
+is it cumulative (add in and out to the list) but we need then 2 modes in play mode (and to toggle between and to toggle layer (or that is just in NADA)
+
+2 play modes: select = play tape and select//add to list, play list only (what we toggle there - remove from list?)
+
+//
+
+headless
+fingerless
+handless
+
+** 28/11/2023
+
+- 2 layers // 2 code streams
+
+- freeze in NADA freezes any mode change for that section - so modes
+  can be per section (how could be also per current layer that we freeze on)
+
+- freeze in NADA toggles layer??? how do we know which?
+
+- NADA always records (to one or to both layers) and play sets START and END (do we have code for that): speedsamplestart
+Q. of how we add to this in the case of an overlap - see above
+
+- *long and short taps on freezer for different behaviours* [could also be on rec and play]
+
+*that there can be the tape itself and a list of (playback) references
+into that tape* // for example we can have list of repeated segments
+or long looping part (how many times it loops) - how to implement
+this, and also how on the record side...
+
+record list, play list... how we handle these... and this is for each layer?
+
+record list is additive
+
+play list is determined by modes in play and touches...
+
+** 27/11/2023
+
+2 sides // 2 sides each of the 4 // hermaphrodite 2 layers
+
+- major modes can differ across functions (rec, play etc)
+
+*does it make sense if there are also different mode for each layer?*
+
+demonic/good hermaphrodite...
+
+- detach could be in minor modes...
+
+- review and define from all notes... review minormodes
+
+*we mention slowing a gesture - slow speed to other side... TODO* or we slow recording on one side?
+
+// notebooks:
+
+- layer operations:
+
+1: [][][]
+2: [    ]
+
+whichever is longer// *we can reset length of one/both layer*, hold/slide/desync one layer...
+
+define properties of layers: 
+
+add/subtract/merge etc.
+
+these are all modes which operate on same enlarging set of
+gestures... [Q also if we can say remove last recorded bit - we just
+need to record its start and end, but what if it is an overlap - makes it tricky? - still q of list of gestures]
+
+one layer is a ghost and we can swap that designation...
+
+ops: remove silence for voltages...???
+
+*cycling through alternate ways of reading recorded gestures*
+
+*algorithmic easter egg*
+
+add or subtract gestures in play mode
+
+detachment
+
+*still todo modes above esp. - *still could do thing where we start to repeat say first section (or a define island) and overlay this on same tape!*
+
+
+** 24/11/2023
+
+- 2 layers //4 sides // each of 2 layers each
+
+That VCA and voltage are not/should they be/ fixed to one side 
+
+eg. they can reflect - so say we can add VCA and voltage and output on both // does that make sense...
+
+swop them around... but they have quite different functions... so maybe doesn't make sense... 
+
+** 22/11/2023
+
+- if we sync counters across 2 layers then we have issue as one might go past end of other! // speedsampleL DEP!
+
+** 21/11/2023
+
+- struct for each layer DONE - what does it enable us to do, or what are issues/questions:
+
+ending of each, sync of swopped playback as each speedplay has its own
+counters (or these become one - for each layer: speedsampleL),
+question of overlap for each layer, which layer on entry into play
+etc, if layer is not there what we do in playback?, can have more
+function pointers for different options also...
+
+/////
+- question still of list (as it should also indicate the layer) - we need list to be able to remove! *DISCARDED for NOW*
+
+- 2 layers/tapes: speeds, slide across
+
+*what cases we need to code for // eg.*
+
+-record playback speed change on layer 1-> layer 2
+
+but how do we get feedback for this...
+
+*now in new file but not toggle// always NO USE OF TOGGLE:
+toggle starts to record to layer2(overlay) speed changes from layer1 and we hear those changes (we are in 1). toggle stops and stays with 2... so no overlay recorded. local and global speeds*
+
+- rec toggles 1 or 2 to record to (but no feedback so how we know which?)
+- play toggles which one but one maybe blank?
+
+twinned layer operations: swop, merge/add/subtract/mix, bounce to/record from one to other with speeds, slide across, different speeds
+
+list ops: add (new rec), remove, swop, copy/double, collapse=join, chop?as in cut silence and render as new lists, hide/unhide, detach
+
+-islands and notes above and below...
+
+** 19/11/2023
+
+questions/thoughts:
+
+- do we extend overlay? was marked as TODO minormode option in [0]
+- what minormodes we have so far? in [0]?
+
+	//rec -nada
+	
+	//overlay
+	overoverlay=((overminor>>1)&3); // 2 types of overlay
+	overrec=((overminor>>3)&3); // type of recorded overlay 
+	overspeedmod=((overminor>>5)&1);// 
+
+	//play
+	playoverlay=((playminor>>1)&3); // 4 types of overlay
+	playspeed=((playminor>>3)&1); // 2 types speed 
+	playfreeze=((playminor>>4)&1); // 2 types freeze
+	playspeedmod=((playminor>>5)&2);  //
+
+*which of these we retain?* run through them
+
+- how play and rec can be generic? what are the exceptions so far?
+
+- how we could record slowing down of a gesture - needs a place to record into (layer or new entry in list)?
+
+- if we have list and add to it what happens if we run out of space - last entry stops... (is not like a tape loop)
+
+typedef struct listy_ { 
+  uint32_t start[120];  
+  uint32_t gap[120];
+  uint32_t length[120];
+  float speed[120];
+} hands;
+
+static hands fingers[8];
+static uint32_t howmanyfingers[8]={0,0,0,0, 0,0,0,0};
+
+** 26/10/2023
+
+*To start to define new direction based on latest notes*
+
+notebook notes:
+
+- Q of new speed rec, all is overlay, or *speed global as [6] voltage and local voltages*... no doublings 
+- so we can maintain, modify or erase overlay as we progress
+- and use overlay as speed or not...
+- additive switch/swop across 2 tapes (2 tapes, 2 speeds - how?)
+- algorithmic control as pulse in to freezers/toggles, minimode
+- *translate modes we have into ongoing series of transformations*
+
+- what we can do with a list of gestures, list of modes: earlier idea of push/pop/ *stack* button... 
+
+earlier idea was: Notes: frozen levels are saved to a stack and can be popped off the stack, various over-rides...????
+
+circular stack of gestures - how to add, remove and what happens when we run out of room??? 
+
+** 25/10/2023 *KEY*
+
+- trying to re-think towards more fluidity// notebook notes:
+
+1. We could pull out REC and NADA as these have no modes (but in REC we have double and other rec options, also if we reset)
+
+as in REC we have no feedback on what we do. so it must be simple... but how we could signify a RESET there in further modes, to start again and not to add to!?
+
+First mode (after full RESETT) is just record, no speed, and is always reset REC in this mode - but then we can leave it...
+
+Then we change after that...
+
+Question of no double record, no speed rec? and top bits are always ghost/overlay with voltage 6 as speed (and seperate its playback speed)
+
+*So modes overlay and change what we have already recorded gesturally - but how can we move back or forwards through modes?? or is just fwd*
+
+And do we keep micromodes (yes)... but these do not include reset on REC...
+
+3. top [6]voltage is always control - so no freeze on that. but is also output so we can use it for sync...
+
+4. *Options for algorithmic control*
+
+So we can use external voltage input via fingers to trigger freeze/toggles! Write this up in manual...
+
+What does this enable - 
+
+5. Global gestures - eg. as offsets from lowest VCA or voltage - have those as groups, or we slide sync across them all
+
+6. List of gestures, actions on gestures to list? overlay, repeat, move in the list, detach, slide, attach
+
+7. How we control - with local voltage, with [6] and freeze/toggle[6], with local toggles, with timings of presses, with gestures??? with modeswitch
+
+8. Maybe 2 resets - one full to mode 0/basic REC, other just resets counters and sequence... we had idea below...
+
+To consider new scheme... so more like an instrument
+
+
+* manual
+
+** manual/description
+
+ERD/VIA is the Way, the new modular life, severing hands from knobs
+and tinkering, and establishing a new local skin regime of signals and
+gestures for dis-embodied prostheses. VIA is a new touch and
+finger-based un-controller for ERD and all modules, allowing voltage
+control to be freed from erudite wiggling, and surrendered to purely
+cut and segmented gestures. Voltages are placed on the surface of both
+skin and module to facilitate cross-skin-s/pore-modulation and feedback.
+
+Four identical sections allow touch and gesture to govern a single VCA
+and a control voltage (CV) independently. Input, output and control
+voltages can also be mixed by skin and gesture. Gestural sections can
+be recorded and played back, chopped and cut, frozen, altered, sped
+up, slowed down, repeated, severed, overlaid, ghosted and finally
+dis-embodied and de-organised, all under touch and skin-feedback
+control. Signals can be routed on the skin to act globally and
+independently. 
+
+//
+
+The geomantic figure Via, or “Way”. This figure has all elements
+active, revealing its dynamic nature; its linear form resembles a
+road, at the changes afoot due to time and circumstance. It takes and
+transforms every other figure and force into its opposite. It is a
+figure of complete change, upheaval, and reversal; it is good with bad
+figures and bad with good figures, though it is considerably more
+favorable in matters requiring total reassessment and journeys of any
+kind. It often shows a solitary time and path, between homes, cities,
+and worlds.
+
+Via has connections with the waning Moon and the element of
+Water. Agrippa assigns it to the astrological sign of Cancer, although
+Gerard of Cremona assigns it to Leo. It is an even, mobile, and
+liminal figure. 
+
+*Its inverse and converse figure is Populus, the People, while its reverse figure is itself.*
+
+//
+
+longer - what are the modes // how many modes?
+
+basic operations - where we touch, what is vca, routing of signals,
+freeze, micro/macro modes, rec/playback, lengths and timings!
+
+instructions etc...
+
+Image cards are cut out - disembodied hands, each of the 4 segments
+cracked apart and somehow labelled... some uncut cards maybe to show
+assembly/with text also on back for modes ... cut yourself out
+
+** hardware
+
+- +12v:75mA
+- -12v:50mA
