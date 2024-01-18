@@ -29,8 +29,8 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
 #define BRKF 8 // for freezer. 8 with 24 divider ////now 48 with divider of 8; was 8 when we have have divider in main as 32... too high causes issues for speed of freezes
-#define BRK 8 // was 128 - for other toggles...
-#define DELB 64 // 40 now with 8 divider - was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK -- is delay we hold the the freeze/toggle
+#define BRK 64 // was 128 - for other toggles...
+#define DELB 42 // 40 now with 8 divider - was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK -- is delay we hold the the freeze/toggle
 #define DELA 32 // for clear DAC // was 64
 
 #define HOLDRESET 800 // time for full reset when hold the mode down - over 4 seconds
@@ -517,7 +517,8 @@ void TIM2_IRQHandler(void)
 	    lastmode=0;
 	    speed=real[6]>>2; 
 	    // if no other layer we play nada ???
-	    if (lay[daccount][layerr[daccount]].end) values[daccount]=lay[daccount][layerr[daccount]].speedsamp(logfast[speed], lay[daccount][layerr[daccount]].end, daccount, recordings[daccount]); // speedsamp has its own cnt so there is a jump // see new speedsampleL - for MINORMODES
+	    // TESTING logfast_stop and logspeed_stop
+	    if (lay[daccount][layerr[daccount]].end) values[daccount]=lay[daccount][layerr[daccount]].speedsamp(logspeed_stop[speed], lay[daccount][layerr[daccount]].end, daccount, recordings[daccount]); // speedsamp has its own cnt so there is a jump // see new speedsampleL - for MINORMODES
 	    values[daccount]+=real[daccount];
 	    if (values[daccount]>4095) values[daccount]=4095;
 	  }

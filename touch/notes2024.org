@@ -13,6 +13,10 @@ sync and divination: 4 layers // binary figure
 
 moon/crescents - new moon - half - full - half 
 
+  M
+
+R   P
+
 MODE: X | ADC | FREEZE | NOTES
 -------------------------------
 NADA: 
@@ -22,12 +26,12 @@ R+P:
 
 ////
 
-Basic mode to implement: (each mode is defined by ADC and freeze behaviour)
+Basic mode to implement: (each mode is defined by ADCs and freeze behaviour)
 
-NADA: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - invert is take value from top, but what is "fake swop"?
-REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds to main tape...
+NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - invert is take value from top, but what is "fake swop"?
+REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...
 PLAY: ADC->speed // freeze is swop
-REC+PLAY: ADC->speed/bounc/rec to other // freeze is swop
+REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape if >// minormodes here)
 
 Q of global speed... *new top ADC is global control. also we have sync functions*
 
@@ -55,7 +59,7 @@ kind. It often shows a solitary time and path, between homes, cities,
 and worlds.
 
 - moons from the top
-- which of four ADC has hardest press, how we could interpret 4 presses as binary/geomantic figure!?
+- which of four ADC has hardest press, how we could interpret 4 presses as binary/geomantic figure!? - through geomantic modes
 
 *how can VIA be informed by concepts of AION and CHRONOS - divisibility of time/no present and all present/all depth*
 
@@ -79,18 +83,76 @@ BL 2X50G7 2,54
 
 UPDATE all notes for HW, speeds and basic mode, plan of action!
 
-- re-test all VCA, noise and voltages
+- DONEre-test all VCA, noise and voltages
 - new finger tests - Kaffe: triggers, length of trigger, new voltage?
 
-- new speed mode to test
+- DONEnew speed mode to test
 
-- condense and print older/newer notes/here
+- DONEcondense and print older/newer notes/here
 
-- define basic HW and timing, filters below
+- DONEdefine basic HW and timing, filters below
 - define minor modes 
 - define and test basic mode and add/catalogue all modes
+- test suggested new modes without minor modes
+- wrap together
 
-** start to define new approach
+** minor modes in each state //these are not bits or bits as say options not binary
+
+So minor modes define use of toggle, speed, newADC for major modes...
+
+Nada: add global from top, invert voltage, ghosts and mirrors
+Rec:
+Play:
+R+P:
+
+new: ghosts and mirrors for all
+
+*** Speeds:
+
+- sync speeds to top newADC or not
+- new logfast_stop and logspeed_stop
+- 2 types speed: logspeed and logfast  
+
+*** etc?
+
+- to reset or not
+- sensitivity?
+- extend overlay past end of recording
+- detach/unsync (how that happens - as it needs to unsync to a time - so ie. re-sync to say Freeze) - options for what freeze toggle does in certain modes
+
+detach would be to stop/start play/rec head... with freeze/toggle...
+
+see: strip for overlay options there - and how those change with 2 tapes?
+
+also as minormodes modify the major mode so they depend on this!
+
+*** older and expanding
+
+- what minormodes we have so far? in [0]?
+
+	//Rec - 
+	
+	//R+P: overlay
+	overoverlay=((overminor>>1)&3); // types of overlay
+	overrec=((overminor>>3)&3); // types of recorded overlay 
+	+overspeedmod=((overminor>>5)&1);// as playspeedmod+
+	+ now it would have speeds also as play: 2 types speed: logspeed and logfast  
+
+	//Play
+	playoverlay=((playminor>>1)&3); // 4 types of overlay
+	playspeed=((playminor>>3)&1); // 2 types speed: logspeed and logfast  
+	+playfreeze=((playminor>>4)&1); // 2 types freeze+
+	+playspeedmod=((playminor>>5)&2);  // 2 types:  add recorded speed to real, of if real> // but this was for recorded speed only+
+
+
+** suggested test major modes
+
+- new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these???
+- basic mode above
+- use newADC as a kind of filter of the tape: doesn't let playback value through below newDC threshold (silence or stops tape)...
+- see 21/12/2023 below..
+
+** start to define new approach// see latest notebook and diary notes below
 
 - 2 tapes
 - list of playbacks/gestures 
@@ -98,9 +160,88 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 - no recording of speed just of the effects of speed
 - all minormodes
 - do we record new ADC gestures  
-
+- activation/press per section of sections so maybe R,P, RP and M(mode sel) are not global!
 
 * diary notes
+
+** 17/1/2024
+
+- Activate section: long freeze press (to test) - so we have 8 sections activated
+- Geomantic code select with newADC only in NADA: so we have 4 sections for that...
+- Activated groups have R, and P. Do we have Mode on X or X is SEL, and where do we put modes? 
+
+- ORDERED: aisler /// moon figures for panel!
+
+** 16/1/2024 ++
+
+- tested new speed arrays: logfast_stop and logspeed_stop which can now be added to the list of minormodes
+
+- //decide on: modeXbutton[M] as mode or as extra action eg. SEL and then mode is on ADC
+
+- notion of activation of a section (so next RMP is undertaken for those sections):
+eg.
+.press freeze and R,M,P (no freeze in that case): hold RMP->freeze->release - TRIAL: that seems to work in test code!
+.press freeze for a longer time renders section active? // could be>>>???
+
+- *is question of whether we activate section or not*
+
+/////
+
+NON:press newADC and R,M,P ->
+
+DONE/18/1/TRIAL: ! press M/P/R ! new ADC goes up/down ! release button // enters that mode (and ADC is ignored) // we can't ignore as it just drops...
+
+*either we activate a section (how to do multiple sections) and then press R,M,P for activated section... or we just have RMP for that section... which is more versatile*
+
+is activation/local RMP across 4 or 8 sections - if we use ADC then is only 4!
+
+** 13/1/2024 +notebook notes
+
+- new top ADC as global control, added to by local values
+- sync: sync speed as a minor mode? ie. all speeds add from top (what was [6] is now new ADC at top)
+- divination
+
+operations on list
+operations on tapes - see latest notebook
+
+eg. newADC runs through/scrolls through list of segments as index into
+
+- NADA - micromodes sets use of touch/voltage (eg. add global from top, inversiosn, ghosts and mirrors) which stays through all...
+
+BUT... *Q is that micromodes is global and major modes are local if they are determined by newADC*
+
+solutions/questions:
+- way of activating mode button locally? idea of active regions?
+
+XXXthat modes are only selected by MODE button when that region is active (is being touched?)
+
+- newADC for all modes/minor modes but then we lose newADC?
+ or use mode X button as RESETT and as a new action (like REC, PLAY but could be SELECT/DIVINE)
+
+Q of independent mode for each section? are modes global and where do we have them?
+
+- that VIA needs to be more driven by impulses...
+
+- *new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these???*
+
+// what is function of MODE button
+// what is function on newADC
+
+- we need major and minor modes to be selected, we need some kind of selection/divining mechanism
+- major/minor should be local to voltage/or section (no to global modes)
+- but would be nice to have extra mode (but how do we select to enter that)...
+- changing major mode resets most things... minor modes not... so is it odd if only happens when we are active?
+
+other possibles: simultaneous presses, gestures on newADC
+
+- *touch based divination - what as simple mechanism can be (an unknown, non-causal mechanism for synchronicity)*
+
+/ that there is a series of 4 anti-clockwise sections, make more of sections (that they can also mirror each, contribute to each other in the section)...
+
+TODO:
+- test major mode above: list of experimental modes
+- trials for active section/voltage mode selects: IN PROGRESS
+- TESTED/DONE:test new speed scheme // array
 
 ** 8/1/2024
 
@@ -155,8 +296,8 @@ timer of toggle now:
 
 * recent notes
 
-- new ADC as accelerating through modes (so is not ADC value=mode) as a *journey* // length of press and speed-> position
-- *TRAIL* - this is also a new model for speed - no press=no advance/hold voltage/record voltage
+- *this is for NADA: new ADC as accelerating through modes (so is not ADC value=mode) as a *journey* // length of press and speed-> position
+- DONE/TRAIL* - this is also a new model for speed - no press=no advance/hold voltage/record voltage
 - we can also use this to mark sections - fwdwind and mark
 
 ** 21/12/2023
