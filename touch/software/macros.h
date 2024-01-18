@@ -1,0 +1,747 @@
+// MACROS 
+
+#define RESETT {					\
+    mode=0; rec=0; play=0;				\
+    global_time=0;					\
+    frozen[0]=0;					\
+    frozen[1]=0;					\
+    frozen[2]=0;					\
+    frozen[3]=0;					\
+    frozen[4]=0;					\
+    frozen[5]=0;					\
+    frozen[6]=0;					\
+    frozen[7]=0;					\
+    for (x=0;x<8;x++){					\
+      for (y=0;y<MAXREC;y++){				\
+	recordings[x][y]=0;				\
+      }							\
+    }							\
+  }
+
+#define RESETFRP {				\
+  if (entryp==0){						\
+    frozen[0]=0;					\
+    frozen[1]=0;					\
+    frozen[2]=0;					\
+    frozen[3]=0;					\
+    frozen[4]=0;					\
+    frozen[5]=0;					\
+    frozen[6]=0;					\
+    frozen[7]=0;					\
+    lastvalue[0]=0;					\
+    lastvalue[1]=0;					\
+    lastvalue[2]=0;					\
+    lastvalue[3]=0;					\
+    lastvalue[4]=0;					\
+    lastvalue[5]=0;					\
+    lastvalue[6]=0;					\
+    lastvalue[7]=0;					\
+    freezetoggle[0]=0;					\
+    freezetoggle[1]=0;					\
+    freezetoggle[2]=0;					\
+    freezetoggle[3]=0;					\
+    freezetoggle[4]=0;					\
+    freezetoggle[5]=0;					\
+    freezetoggle[6]=0;					\
+    freezetoggle[7]=0;					\
+    entryp=1;						\
+  }							\
+  }
+
+#define RESETFRN {				\
+  if (entryn==0){						\
+    frozen[0]=0;					\
+    frozen[1]=0;					\
+    frozen[2]=0;					\
+    frozen[3]=0;					\
+    frozen[4]=0;					\
+    frozen[5]=0;					\
+    frozen[6]=0;					\
+    frozen[7]=0;					\
+    lastvalue[0]=0;					\
+    lastvalue[1]=0;					\
+    lastvalue[2]=0;					\
+    lastvalue[3]=0;					\
+    lastvalue[4]=0;					\
+    lastvalue[5]=0;					\
+    lastvalue[6]=0;					\
+    lastvalue[7]=0;					\
+    freezetoggle[0]=0;					\
+    freezetoggle[1]=0;					\
+    freezetoggle[2]=0;					\
+    freezetoggle[3]=0;					\
+    freezetoggle[4]=0;					\
+    freezetoggle[5]=0;					\
+    freezetoggle[6]=0;					\
+    freezetoggle[7]=0;					\
+    entryn=1;						\
+  }							\
+  }
+
+#define RESETFRR {				\
+  if (entryr==0){						\
+    frozen[0]=0;					\
+    frozen[1]=0;					\
+    frozen[2]=0;					\
+    frozen[3]=0;					\
+    frozen[4]=0;					\
+    frozen[5]=0;					\
+    frozen[6]=0;					\
+    frozen[7]=0;					\
+    lastvalue[0]=0;					\
+    lastvalue[1]=0;					\
+    lastvalue[2]=0;					\
+    lastvalue[3]=0;					\
+    lastvalue[4]=0;					\
+    lastvalue[5]=0;					\
+    lastvalue[6]=0;					\
+    lastvalue[7]=0;					\
+    freezetoggle[0]=0;					\
+    freezetoggle[1]=0;					\
+    freezetoggle[2]=0;					\
+    freezetoggle[3]=0;					\
+    freezetoggle[4]=0;					\
+    freezetoggle[5]=0;					\
+    freezetoggle[6]=0;					\
+    freezetoggle[7]=0;					\
+    entryr=1;						\
+  }							\
+  }
+
+#define RESETFRO {				\
+  if (entryo==0){						\
+    frozen[0]=0;					\
+    frozen[1]=0;					\
+    frozen[2]=0;					\
+    frozen[3]=0;					\
+    frozen[4]=0;					\
+    frozen[5]=0;					\
+    frozen[6]=0;					\
+    frozen[7]=0;					\
+    lastvalue[0]=0;					\
+    lastvalue[1]=0;					\
+    lastvalue[2]=0;					\
+    lastvalue[3]=0;					\
+    lastvalue[4]=0;					\
+    lastvalue[5]=0;					\
+    lastvalue[6]=0;					\
+    lastvalue[7]=0;					\
+    freezetoggle[0]=0;					\
+    freezetoggle[1]=0;					\
+    freezetoggle[2]=0;					\
+    freezetoggle[3]=0;					\
+    freezetoggle[4]=0;					\
+    freezetoggle[5]=0;					\
+    freezetoggle[6]=0;					\
+    freezetoggle[7]=0;					\
+    entryo=1;						\
+  }							\
+  }
+
+
+#define RESET0 {					\
+  for (y=0;y<MAXREC;y++){			\
+    recordings[0][y]=0;				\
+  }						\
+}
+
+// TODO: RESET CNT and ENDs in layers...
+#define MODECHANGED {				\
+    modechanged=1;				\
+    frozen[0]=0;				\
+    frozen[1]=0;				\
+    frozen[2]=0;				\
+    frozen[3]=0;				\
+    frozen[4]=0;				\
+    frozen[5]=0;				\
+    frozen[6]=0;				\
+    frozen[7]=0;				\
+    freezetoggle[0]=0;					\
+    freezetoggle[1]=0;					\
+    freezetoggle[2]=0;					\
+    freezetoggle[3]=0;					\
+    freezetoggle[4]=0;					\
+    freezetoggle[5]=0;					\
+    freezetoggle[6]=0;					\
+    freezetoggle[7]=0;					\
+    rec=0;					\
+    play=0;					\
+    mode+=1;						\
+    if (mode>=MAXMODES) mode=0;				\
+}
+
+#define MODECHANGEDD {				\
+    newmode=1;					\
+    modetoggle^=1;				\
+}
+
+
+#define RECFREEZE {				\
+  if (daccount==7){							\
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+    GPIOC->BSRRL=(1)<<6;						\
+    delay();								\
+    GPIOC->BSRRH=(1)<<6;						\
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+  }									\
+  else									\
+    {									\
+      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+      GPIOC->BSRRL=(1)<<6;						\
+      delay();								\
+      GPIOC->BSRRH=(1)<<6;						\
+      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+    }									\
+}
+
+#define RECLONG {				\
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+        GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	GPIOC->BSRRL=(1)<<6; \
+	delay(); \
+	if (!(GPIOB->IDR & (1<<10))) {		\
+	lastlastrec++;				\
+	}					\
+	GPIOC->BSRRH=(1)<<6;			  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+}
+
+#define RECPLAY {				\
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+        GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	GPIOC->BSRRL=(1)<<6; \
+	delay(); \
+	if (!(GPIOB->IDR & (1<<2))) {		\
+	lastlastplay++;					\
+	}					\
+	GPIOC->BSRRH=(1)<<6;			  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+}
+
+// to redo so all is done in one go and does not repeat - also with freezers
+#define TEST_TOGGLES {				  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+        GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	GPIOC->BSRRL=(1)<<6; \
+	delay(); \
+	if (!(GPIOB->IDR & (1<<6))) {		\
+	lasttriggered[10]=breaker[10];		\
+	breaker[10]=0;				\
+	if (heldon) helder++;			\
+	}					\
+	else {					  \
+	breaker[10]++;				  \
+	if (breaker[10]>1024) breaker[10]=1024;	  \
+	if (helder>8 && breaker[10]>48) {helldone=0; heldon=0; newmode=1; modeheld=helder; helder=0;} \
+	}					  \
+	if (!(GPIOB->IDR & (1<<2))) {		\
+	lasttriggered[9]=breaker[9];		\
+	breaker[9]=0;				\
+	}					\
+	else {					  \
+	breaker[9]++;				  \
+	if (breaker[9]>1024) breaker[9]=1024;	  \
+	}					  \
+	if (!(GPIOB->IDR & (1<<10))) {		\
+	lasttriggered[8]=breaker[8];		\
+	breaker[8]=0;				\
+	}					\
+	else {					  \
+	breaker[8]++;				  \
+	if (breaker[8]>1024) breaker[8]=1024;	  \
+	}					  \
+	GPIOC->BSRRH=(1)<<6;			  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
+	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	if (lasttriggered[10]>BRK) {	\
+	  lasttriggered[10]=0;				\
+	  modetoggle^=1; \
+	  heldon=1;	 \
+	  helldone=1;	 \
+	} \
+	if (lasttriggered[9]>BRK) {	\
+	  lasttriggered[9]=0;				\
+	  play^=1;					\
+	  togplay=1;					\
+	}						\
+	if (lasttriggered[8]>BRK) {	\
+	  lasttriggered[8]=0;				\
+	  rec^=1; \
+	  togrec=1;		   \
+	} \
+}
+
+
+#define TOGGLES {				  \
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;  \
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+        GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	GPIOC->BSRRL=(1)<<6; \
+	delay(); \
+	if (!(GPIOB->IDR & (1<<2))) {		\
+	lasttriggered[9]=breaker[9];		\
+	breaker[9]=0;				\
+	}					\
+	else {					  \
+	breaker[9]++;				  \
+	if (breaker[9]>1024) breaker[9]=1024;	  \
+	}					  \
+	GPIOC->BSRRH=(1)<<6;			  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	if (lasttriggered[9]>BRK) {	\
+	  lasttriggered[9]=0;				\
+	  play^=1;					\
+	  togplay=1;					\
+	}						\
+	else togplay=0;					\
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+        GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	GPIOC->BSRRL=(1)<<6; \
+	delay(); \
+	if (!(GPIOB->IDR & (1<<10))) {		\
+	lasttriggered[8]=breaker[8];		\
+	breaker[8]=0;				\
+	}					\
+	else {					  \
+	breaker[8]++;				  \
+	if (breaker[8]>1024) breaker[8]=1024;	  \
+	}					  \
+	GPIOC->BSRRH=(1)<<6;			  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	if (lasttriggered[8]>BRK) {	\
+	  lasttriggered[8]=0;				\
+	  rec^=1; \
+	  togrec=1;		   \
+	} \
+	else togrec=0;				      \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+        GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	GPIOC->BSRRL=(1)<<6; \
+	delay(); \
+	if (!(GPIOB->IDR & (1<<6))) {		\
+	lasttriggered[10]=breaker[10];		\
+	breaker[10]=0;				\
+	if (heldon) helder++;			\
+	}					\
+	else {					  \
+	breaker[10]++;				  \
+	if (breaker[10]>1024) breaker[10]=1024;	  \
+	if (helder>8 && breaker[10]>48) {heldon=0; newmode=1; modeheld=helder; helder=0;} \
+	}					  \
+	GPIOC->BSRRH=(1)<<6;			  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	if (lasttriggered[10]>BRK) {	\
+	  lasttriggered[10]=0;				\
+	  modetoggle^=1;				\
+	  heldon=1;					\
+	} \
+	}
+
+#define FREEZERS {					\
+  if (daccount==7){							\
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+    GPIOC->BSRRL=(1)<<6;						\
+    delay();								\
+    if (!(GPIOC->IDR & (freezer[7]))) {					\
+      lasttriggered[7]=breaker[7];					\
+      breaker[7]=0;							\
+    }									\
+    else {								\
+      breaker[7]++;							\
+      if (breaker[7]>1024) breaker[7]=1024;				\
+    }									\
+    GPIOC->BSRRH=(1)<<6;						\
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+    if (lasttriggered[7]>BRKF) {						\
+      frozen[7]^=1;							\
+      freezetoggle[7]=1;						\
+      lasttriggered[7]=0;						\
+    }									\
+  }									\
+  else									\
+    {									\
+      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+      GPIOC->BSRRL=(1)<<6;						\
+      delay();								\
+      if (!(GPIOB->IDR & (freezer[daccount]))) {			\
+	lasttriggered[daccount]=breaker[daccount];			\
+	breaker[daccount]=0;						\
+      }									\
+      else {								\
+	breaker[daccount]++;						\
+	if (breaker[daccount]>1024) breaker[daccount]=1024;		\
+      }									\
+      GPIOC->BSRRH=(1)<<6;						\
+      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
+      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+      if (lasttriggered[daccount]>BRKF) {				\
+	frozen[daccount]^=1;						\
+	freezetoggle[daccount]=1;						\
+	lasttriggered[daccount]=0;					\
+      }									\
+    }									\
+  }
+
+#define CTRL {					\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 1, ADC_SampleTime_480Cycles); \
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  control[0]=ADC_GetConversionValue(ADC1);				\
+  control[0]=control[0]<<SENSESHIFT;					\
+  control[0]-=SENSEOFFSET;						\
+  if (control[0]<0) control[0]=0;						\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_480Cycles); \
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  control[1]=ADC_GetConversionValue(ADC1);				\
+  control[1]=control[1]<<SENSESHIFT;					\
+  control[1]-=SENSEOFFSET;						\
+  if (control[1]<0) control[1]=0;					\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_480Cycles); \
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  control[2]=ADC_GetConversionValue(ADC1);				\
+  control[2]=control[2]<<SENSESHIFT;					\
+  control[2]-=SENSEOFFSET;						\
+  if (control[2]<0) control[2]=0;					\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_480Cycles); \
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  control[3]=ADC_GetConversionValue(ADC1);				\
+  control[3]=control[3]<<SENSESHIFT;					\
+  control[3]-=SENSEOFFSET;						\
+  if (control[3]<0) control[3]=0;					\
+}
+
+#define REALADC {						\
+switch(daccount){						\
+  case 0:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  real[0]=ADC_GetConversionValue(ADC1);					\
+  if (real[0]>1023) real[0]=1023;					\
+  reall[0]=real[0];							\
+  real[0]=logval[(real[0])];						\
+  break;								\
+  case 1:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  real[1]=ADC_GetConversionValue(ADC1);				\
+  if (real[1]>1023) real[1]=1023;					\
+  reall[1]=real[1];							\
+  real[1]=logval[(real[1])];						\
+  break;								\
+  case 2:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[2]=ADC_GetConversionValue(ADC1);					\
+  if (real[2]>1023) real[2]=1023;					\
+  reall[2]=real[2];							\
+  real[2]=logval[(real[2])];						\
+  break;								\
+  case 3:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[3]=ADC_GetConversionValue(ADC1);				\
+  if (real[3]>1023) real[3]=1023;					\
+  reall[3]=real[3];							\
+  real[3]=logval[(real[3])];						\
+  break;								\
+  case 4:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[4]=ADC_GetConversionValue(ADC1);				\
+  real[4]=real[4]<<SENSESHIFT;						\
+  real[4]-=SENSEOFFSET;							\
+  if (real[4]<0) real[4]=0;					\
+  if (real[4]>4095) real[4]=4095;					\
+  break;							\
+  case 5:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
+  real[5]=ADC_GetConversionValue(ADC1);				\
+  real[5]=real[5]<<SENSESHIFT;						\
+  real[5]-=SENSEOFFSET;							\
+  if (real[5]<0) real[5]=0;					\
+  if (real[5]>4095) real[5]=4095;					\
+  break;								\
+  case 6:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[6]=ADC_GetConversionValue(ADC1);					\
+  real[6]=real[6]<<SENSESHIFT;							\
+  real[6]-=SENSEOFFSET;								\
+  if (real[6]<0) real[6]=0;						\
+  if (real[6]>4095) real[6]=4095;					\
+  reall[6]=real[6];							\
+  break;								\
+  case 7:							\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_480Cycles);\
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  real[7]=ADC_GetConversionValue(ADC1);				\
+  real[7]=real[7]<<SENSESHIFT;							\
+  real[7]-=SENSEOFFSET;								\
+  if (real[7]<0) real[7]=0;						\
+  if (real[7]>4095) real[7]=4095;					\
+  break;								\
+   }									\
+}
+
+
+#define DOSPEED {				\
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles); \
+  ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
+  ADC_SoftwareStartConv(ADC1);						\
+  while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
+  speed=ADC_GetConversionValue(ADC1);					\
+  if (speed>1023) speed=1023;			\
+  }
+
+#define LASTPLAY {					\
+    if (lastplay==0) {					\
+      lastplay=1;					\
+      play_cnt[0]=0.0f;					\
+      play_cnt[1]=0.0f;					\
+      play_cnt[2]=0.0f;					\
+      play_cnt[3]=0.0f;					\
+      play_cnt[4]=0.0f;					\
+      play_cnt[5]=0.0f;					\
+      play_cnt[6]=0.0f;					\
+      play_cnt[7]=0.0f;					\
+      playminor=0;					\
+    }							\
+  }
+
+#define LASTPLAYFR {					\
+    if (lastplay==0) {					\
+      lastplay=1;					\
+      play_cnt[0]=0.0f;					\
+      play_cnt[1]=0.0f;					\
+      play_cnt[2]=0.0f;					\
+      play_cnt[3]=0.0f;					\
+      play_cnt[4]=0.0f;					\
+      play_cnt[5]=0.0f;					\
+      play_cnt[6]=0.0f;					\
+      play_cnt[7]=0.0f;					\
+    frozen[0]=0;					\
+    frozen[1]=0;					\
+    frozen[2]=0;					\
+    frozen[3]=0;					\
+    frozen[4]=0;					\
+    frozen[5]=0;					\
+    frozen[6]=0;					\
+    frozen[7]=0;					\
+    }							\
+  }
+
+#define LASTPLAYCNT {					\
+    if (lastplay==0) {					\
+      lastplay=1;					\
+      play_cnt[0]=0.0f;					\
+      play_cnt[1]=0.0f;					\
+      play_cnt[2]=0.0f;					\
+      play_cnt[3]=0.0f;					\
+      play_cnt[4]=0.0f;					\
+      play_cnt[5]=0.0f;					\
+      play_cnt[6]=0.0f;					\
+      play_cnt[7]=0.0f;					\
+      ownplay_cnt[0]=0.0f;					\
+      ownplay_cnt[1]=0.0f;					\
+      ownplay_cnt[2]=0.0f;					\
+      ownplay_cnt[3]=0.0f;					\
+      ownplay_cnt[4]=0.0f;					\
+      ownplay_cnt[5]=0.0f;					\
+      ownplay_cnt[6]=0.0f;					\
+      ownplay_cnt[7]=0.0f;					\
+    }							\
+  }
+
+
+#define LASTREC {					\
+    if (lastrec==0) {					\
+      lastrec=1;					\
+      rec_cnt[0]=0;					\
+      rec_cnt[1]=0;					\
+      rec_cnt[2]=0;					\
+      rec_cnt[3]=0;					\
+      rec_cnt[4]=0;					\
+      rec_cnt[5]=0;					\
+      rec_cnt[6]=0;					\
+      rec_cnt[7]=0;					\
+      recminor=0;					\
+    }							\
+  }
+
+
+// closest we get - bleed from one to next is minimal
+// BSRRH is low, L is high
+#define CLEARDAC {						\
+      DAC_SetChannel1Data(DAC_Align_12b_R, 0);			\
+      j = DAC_GetDataOutputValue (DAC_Channel_1);		\
+  }
+
+#define WRITEDAC {						\
+  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]);	\
+  j = DAC_GetDataOutputValue (DAC_Channel_1);			\
+  GPIOC->BSRRH = 1<<11;						\
+  GPIOC->BSRRH |= 0b1110000000000000;				\
+  GPIOC->BSRRL=(daccount)<<13;					\
+  delay2();							\
+  GPIOC->BSRRL = 1<<11;						\
+  CLEARDAC;							\
+}
+
+#define WRITEDAC2 {						\
+  GPIOC->BSRRL = 1<<11;						\
+  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]);	\
+  j = DAC_GetDataOutputValue (DAC_Channel_1);			\
+  GPIOC->BSRRH = 0b1110100000000000;				\
+  GPIOC->BSRRL=(daccount)<<13;					\
+}
+
+
+#define TRIALTOGGLEX {				\
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+        GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	GPIOC->BSRRL=(1)<<6; \
+	delay(); \
+	if (!(GPIOB->IDR & (1<<10))) {		\
+	  rec=1;				  \
+	}					  \
+	else rec=0;				  \
+	GPIOC->BSRRH=(1)<<6;			  \
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
+	GPIO_Init(GPIOC, &GPIO_InitStructure); \
+	}  
+
+#define LSTREC {					\
+    if (llrec==0) {					\
+      llrec=1;						\
+      rec_cnt[0]=0;					\
+      rec_cnt[1]=0;					\
+      rec_cnt[2]=0;					\
+      rec_cnt[3]=0;					\
+      rec_cnt[4]=0;					\
+      rec_cnt[5]=0;					\
+      rec_cnt[6]=0;					\
+      rec_cnt[7]=0;					\
+    }							\
+  }
+
+#define LSTRECPLAYD {					\
+    if (llrec==0) {					\
+      llrec=1;						\
+      over_cnt[0]=0;					\
+      over_cnt[1]=0;					\
+      over_cnt[2]=0;					\
+      over_cnt[3]=0;					\
+      over_cnt[4]=0;					\
+      over_cnt[5]=0;					\
+      over_cnt[6]=0;					\
+      over_cnt[7]=0;					\
+      rec_cnt[0]=0;				\
+      rec_cnt[1]=0;				\
+      rec_cnt[2]=0;				\
+      rec_cnt[3]=0;					\
+      rec_cnt[4]=0;				\
+      rec_cnt[5]=0;					\
+      rec_cnt[6]=0;					\
+      rec_cnt[7]=0;				\
+      overminor=0;							\
+    }							\
+  }
+
