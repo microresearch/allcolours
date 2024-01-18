@@ -81,11 +81,15 @@ void main(void)
     */
     
     /* TODO:
+    - we just want 15 modes + timing of these (15 as no flash for 0) - 15 short, 15 long
+    - or we have different length of push... for length of trigger and priming
+    - flashing short or long when armed
+    - modes to sketch and test
+
     - DONEport encoder: pins PD2, PD3 and switch is PB0 - A is ENC1, B is ENC0 // test switch also
     - DONEtriggers tested with LED
-    - test triggering of igniter: 0-3 is PD0, PD1, PB1, PB2
+    - DONEtest triggering of igniter: 0-3 is PD0, PD1, PB1, PB2
     - DONEtest input trigger signals: PC0-PC3 - tested!
-    - modes to sketch and test
      */
 
     aState=(PIND&(1<<3))>>3;
@@ -100,7 +104,7 @@ void main(void)
      }
    aLastState = aState; 
    // show bottom bits on LEDs
-   if (PINB&1 && former==0) {
+   if (PINB&1 && former==0) { // test counting after this - no press/press/release
      armed^=1;
    }
    former=PINB&1;
@@ -110,13 +114,16 @@ void main(void)
      PORTD=counter<<4; // test switch
    }
    else PORTD=0;
-
    
-   //  DONE  - test triggering of igniter: 0-3 is PD0, PD1, PB1, PB2
+   //  DONE  - test triggering of igniter: 
+   // pulses out: PD0, PD1, PB1, PB2
+   // pulses in: PC0,PC1, PC2, PC3
+   
    pin[0]=(PINC&1);
    if (armed && pin[0] && (last[0]==0)) { // we just want leading edge...
      sbi(PORTB,1);
      _delay_ms(100);
+     //     _delay_ms(2000); // test short
      cbi(PORTB,1);
    }
    last[0]=pin[0];
