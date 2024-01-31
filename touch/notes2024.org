@@ -26,7 +26,7 @@ R+P:
 
 ////
 
-Basic mode to implement: (each mode is defined by ADCs and freeze behaviour)
+*Basic mode to implement:* (each mode is defined by ADCs and freeze behaviour)
 
 NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - invert is take value from top, but what is "fake swop"?
 REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...
@@ -63,6 +63,8 @@ and worlds.
 
 *how can VIA be informed by concepts of AION and CHRONOS - divisibility of time/no present and all present/all depth*
 
+all present is NADA mode... endless presence
+
 - divination methods, concepts of time: Franz and synchronicity-divination /Deleuze - aion and chronos
 
 * HW/timing
@@ -87,12 +89,11 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 - new finger tests - Kaffe: triggers, length of trigger, new voltage?
 
 - DONEnew speed mode to test
-
 - DONEcondense and print older/newer notes/here
-
 - DONEdefine basic HW and timing, filters below
+
 - define minor modes 
-- define and test basic mode and add/catalogue all modes
+- define and test basic mode and add/catalogue all modes - translate previous major modes into new scheme
 - test suggested new modes without minor modes
 - wrap together
 
@@ -100,27 +101,29 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 
 So minor modes define use of toggle, speed, newADC for major modes...
 
-Nada: add global from top, invert voltage, ghosts and mirrors
+Nada: add global from top, invert voltage, ghosts and mirrors - but does these stick around?
 Rec:
 Play:
-R+P:
+RP:
 
-new: ghosts and mirrors for all
+new: ghosts and mirrors for all:define these/how they operate
 
-*** Speeds:
+So each section can set a minormode which could also stick around - eg. NADA minors handle how we deal with voltages...
+
+*** Speeds = P, RP
 
 - sync speeds to top newADC or not
 - new logfast_stop and logspeed_stop
 - 2 types speed: logspeed and logfast  
 
-*** etc?
+*** etc? 
 
-- to reset or not
-- sensitivity?
-- extend overlay past end of recording
-- detach/unsync (how that happens - as it needs to unsync to a time - so ie. re-sync to say Freeze) - options for what freeze toggle does in certain modes
+- R,P,RP: to reset or not
+- ALL@ sensitivity?
+- RP: overlay: extend overlay past end of recording
+- R,P,RP: detach/unsync (how that happens - as it needs to unsync to a time - so ie. re-sync to say Freeze) - options for what freeze toggle does in certain modes
 
-detach would be to stop/start play/rec head... with freeze/toggle...
+detach would be to stop/start/move play/rec head... with freeze/toggle or with newADC
 
 see: strip for overlay options there - and how those change with 2 tapes?
 
@@ -139,7 +142,7 @@ also as minormodes modify the major mode so they depend on this!
 	+ now it would have speeds also as play: 2 types speed: logspeed and logfast  
 
 	//Play
-	playoverlay=((playminor>>1)&3); // 4 types of overlay
+	playoverlay=((playminor>>1)&3); // 4 types of live overlay
 	playspeed=((playminor>>3)&1); // 2 types speed: logspeed and logfast  
 	+playfreeze=((playminor>>4)&1); // 2 types freeze+
 	+playspeedmod=((playminor>>5)&2);  // 2 types:  add recorded speed to real, of if real> // but this was for recorded speed only+
@@ -149,7 +152,7 @@ also as minormodes modify the major mode so they depend on this!
 
 - new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these???
 - basic mode above
-- use newADC as a kind of filter of the tape: doesn't let playback value through below newDC threshold (silence or stops tape)...
+- use newADC as a kind of filter of the tape: doesn't let playback value through below newADC threshold (silence or stops tape/speed thresholding)...
 - see 21/12/2023 below..
 
 ** start to define new approach// see latest notebook and diary notes below
@@ -164,13 +167,43 @@ also as minormodes modify the major mode so they depend on this!
 
 * diary notes
 
+** 31/1/2024
+
+- tested new moon panel fine...
+- how to code more clearly latest modes/layers and micromodes - structure?
+
+TODO: somehow we lost pointer/speedref code: TO TEST: DONE	    // minormode speed as a pointer now
+
+** 25/1/2024
+
+mode: R/P/RP?: (both layers play/record or swop layers): offsets/slide or detach:
+
+- newADC offsets layer in time: offset as offset (newADC adds). offset as speed
+- notion of alternate realities implies modes which record same gesture to both layers and then merge, manipulate, offset these. What ops?
+
+** 24/1/2024
+
+- list minormodes for basic set ups - in progress
+
+- playback or overlay mix of tape/s at 2 different speeds (where we get these from?)
+
+- detachment using newADC - we can unsync - shift play head to a new
+  position instantly. delay rec for as long as we hold newADC or
+  accelerate recording (speed again but not recorded)
+
+how that last would work as it would leave blanks - or these are interpolated? -> *new major mode to try*
+
+//
+TO TEST: DONE	    // minormode speed as a pointer now
+
 ** 17/1/2024
 
+Trial/decide on:
 - Activate section: long freeze press (to test) - so we have 8 sections activated
-- Geomantic code select with newADC only in NADA: so we have 4 sections for that...
-- Activated groups have R, and P. Do we have Mode on X or X is SEL, and where do we put modes? 
+- Geomantic code = mode select with newADC only in NADA: so we have 4 sections for that...
+- Activated groups have R, and P. Do we have Mode on X or X is SEL, and where do we put modes?  mode is on X.
 
-- ORDERED: aisler /// moon figures for panel!
+- +ORDERED: aisler /// moon figures for panel!TESTED+
 
 ** 16/1/2024 ++
 
@@ -204,9 +237,9 @@ is activation/local RMP across 4 or 8 sections - if we use ADC then is only 4!
 operations on list
 operations on tapes - see latest notebook
 
-eg. newADC runs through/scrolls through list of segments as index into
+eg. newADC runs through/scrolls through list of segments as index into tape
 
-- NADA - micromodes sets use of touch/voltage (eg. add global from top, inversiosn, ghosts and mirrors) which stays through all...
+- NADA - micromodes sets use of touch/voltage (eg. add global from top, inversion, ghosts and mirrors) which stays through all...
 
 BUT... *Q is that micromodes is global and major modes are local if they are determined by newADC*
 
@@ -536,6 +569,12 @@ typedef struct listy_ {
 static hands fingers[8];
 static uint32_t howmanyfingers[8]={0,0,0,0, 0,0,0,0};
 
+** 19/10/2023 notebook notes
+
+- operations on a list of gestures
+- that each mode entails a set of operations on that list
+- how can we have successive changes in repeated segments
+
 ** 26/10/2023
 
 *To start to define new direction based on latest notes*
@@ -633,6 +672,12 @@ liminal figure.
 *Its inverse and converse figure is Populus, the People, while its reverse figure is itself.*
 
 //
+
+For manual: modes define operations on layers
+
+one is always the ghost hand. a double of _____
+
+switch ghost hands - 2nd layer
 
 longer - what are the modes // how many modes?
 
