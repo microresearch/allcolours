@@ -460,11 +460,14 @@ void TIM2_IRQHandler(void)
     lay[7][0].reclayer=reclayerlower;
     lay[7][1].reclayer=reclayerupper;
     }
-    
-    uint32_t playoverlay, playspeed, playspeedmod, playfreeze, playrun, playlast;
-    uint32_t recspeed;
-    uint32_t overoverlay, overfreeze, overlast, overrec, overspeedmod;
-    
+
+    // minormodes to rework
+    //    uint32_t playoverlay, playspeed, playspeedmod, playfreeze, playrun, playlast;
+    //    uint32_t recspeed;
+    //    uint32_t overoverlay, overfreeze, overlast, overrec, overspeedmod;
+    uint32_t playspeed[8]={0,0,0,0, 0,0,0,0}; // minor modes into playspeed = 2 bits
+    const float *playreff[4]={logspeed, logfast, logspeed_stop, logfast_stop}; 
+
     //    itoa(prev[0], buffx, 10);
     //  uint32_t m[] = { 2/*stderr*/, (uint32_t)buffx, sizeof(buffx)/sizeof(char) - 1 };
     //  send_command(0x05/* some interrupt ID */, m);
@@ -492,7 +495,8 @@ void TIM2_IRQHandler(void)
 	case 0: // 20/11/23 - testing bounce layer 1 at speed to overlay - as [mode5] previously
 	  FREEZERS;
           REALADC;
-
+	  CTRL;
+	  
 	  if (rec && play){
 	    if (lay[daccount][layerr[daccount]].end) overlaid=1; // TODO: should we enter overlaid with nothing??? in this case NO!
 	    else {
@@ -515,18 +519,15 @@ void TIM2_IRQHandler(void)
 	    RESETFRP;
 	    LASTPLAY;
 	    lastmode=0;
-	    speed=real[6]>>2; 
+	    speed=control[2]>>2;  // top speed now - GLOBAL NOW TESTY
 	    // if no other layer we play nada ???
-	    // TESTING logfast_stop and logspeed_stop
-	    if (lay[daccount][layerr[daccount]].end) values[daccount]=lay[daccount][layerr[daccount]].speedsamp(logspeed_stop[speed], lay[daccount][layerr[daccount]].end, daccount, recordings[daccount]); // speedsamp has its own cnt so there is a jump // see new speedsampleL - for MINORMODES
-	    values[daccount]+=real[daccount];
-	    if (values[daccount]>4095) values[daccount]=4095;
-	  }
+	    // minormode speed as a pointer now
+	    if (lay[daccount][layerr[daccount]].end) values[daccount]=lay[daccount][layerr[daccount]].speedsamp(playreff[playspeed[daccount]][speed], lay[daccount][layerr[daccount]].end, daccount, recordings[daccount]); // speedsamp has its own cnt so there is a jump // see new speedsampleL - for MINORMODES
 	  else {
 	    lastplay=0;
 	    entryp=0;
 	  }
-	  
+	  }
           //////////////////////////////////////////////////////////////////////
           // REC*
           //////////////////////////////////////////////////////////////////////	  

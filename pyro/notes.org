@@ -1,5 +1,7 @@
 ** pyro module for 4 triggers
 
+prog: HEADER from top: reset, MOSI, MISO, SCK, GND = BLACK at top now!
+
 10HP 50.5mm
 
 - 4 pulse inputs DONE
@@ -34,15 +36,27 @@ eg.
 X- trigger within time window on all sets off all  // different size of windows below
 X- same for pairs in window // different size of windows below
 
+set a delay of x Ms from now
+
 TODO more modes ->15
 
 ** specs panel/base:
 
 - Cliff FE6930 is socket/vertical
 
+- size of pluggy cutout approx 28x50mm, for LEDs: 0.8mm x 40mm
+
+** 22/1/2024
+
+- remember that      sbi(PORTD,0); is pin 0
+- +unresponsive with 2s delay and primed - need to workaround that...+DONE///
+- +shorting test: fine... try longer/ fine...+
+- +fine with cable extension+
+- +trial 4 all connected in parallel to one port+
+
 ** 4/1/2024
 
-- question of resistor (30W 6 ohm for short protection - but what is 65W and 3ohm of FET. FET is: IRLB8721PBF 
+- +question of resistor (30W 6 ohm for short protection - but what is 65W and 3ohm of FET.+ FET is: IRLB8721PBF
 - maybe have just 15 modes we rotate through and press defines length:
 
 short or long press: 1/10th / 2 secs
@@ -52,7 +66,7 @@ short or long press: 1/10th / 2 secs
 TODO:
 
 - test 4 triggers at same time - heat residue - how to measure?
-- test 2 second short?
+- +test 2 second short?+
 - +NONdefine say 8 modes and 3 sets of timings+ - how many things on encoder?? 24 detents // checked
 
 YES!or *we just turn round and round for X modes ... multed by timings*
@@ -71,7 +85,7 @@ grey code //another encoding...?
 
 ** 3/10/2023
 
-- DONEtested e-match trigger (we need ones with longer cables)
+- DONEtested e-match trigger (extend cables)
 - added bounce cap and pull downs for trigger ins to schematic and PCB (100K)
 - all tested just need to do logic, modes, check timing and heat
 
@@ -80,6 +94,8 @@ for longer ignition time (we could flash armed at different speeds to
 show this timing...)
  
 - TODO: explain front panel to ilyas: cutout for LEDs (very thin slit - 0.8mm), cutout for socket thing, [own: what graphics if any]???
+
+size of power jack: 8.1mm thru hole, 8.6mm pad
 
 ** 2/10/2023
 
