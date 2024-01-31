@@ -58,7 +58,8 @@ void main(void)
   int aState;
   static int aLastState=0;
   static u8 mode;
-  static u8 last[4]={0,0,0,0}, pin[4]={0,0,0,0};
+  static u8 last[4]={0,0,0,0}, pin[4]={0,0,0,0}, state[4]={0,0,0,0};
+  static uint32_t counterr[4]={0,0,0,0};
   // LEDs: PD4,5,6,7
   // encoder: PD2, PD3
   // encoder switch: PB0
@@ -108,7 +109,7 @@ void main(void)
      armed^=1;
    }
    former=PINB&1;
-   _delay_ms(1);
+   //   _delay_ms(1);
    
    if (armed)  {
      PORTD=counter<<4; // test switch
@@ -118,14 +119,24 @@ void main(void)
    //  DONE  - test triggering of igniter: 
    // pulses out: PD0, PD1, PB1, PB2
    // pulses in: PC0,PC1, PC2, PC3
-   
+   //   sbi(PORTB,1);
    pin[0]=(PINC&1);
    if (armed && pin[0] && (last[0]==0)) { // we just want leading edge...
-     sbi(PORTB,1);
-     _delay_ms(100);
-     //     _delay_ms(2000); // test short
-     cbi(PORTB,1);
+     state[0]=1; // fired
+     counterr[0]=0;
+     //     sbi(PORTD,0);
+     //     _delay_ms(100);
+     //     _delay_ms(2000); // test shorting at 2 secs
+     //     cbi(PORTD,0);
    }
    last[0]=pin[0];
+
+   if (state[0]==1 && armed) { // fired
+     counterr[0]++;
+     sbi(PORTD,0);
+     if (counterr[0]>10)       state[0]=0; // how to calibrate - say this is 10 is 100mS and 180 is 200 roughly
+   }
+     else      cbi(PORTD,0);
+   _delay_ms(10);
   } // while
 }    
