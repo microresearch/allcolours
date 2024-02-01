@@ -1,4 +1,4 @@
-// MACROS 
+#// MACROS 
 
 #define RESETT {					\
     mode=0; rec=0; play=0;				\
@@ -139,115 +139,6 @@
   }
 
 
-#define RESET0 {					\
-  for (y=0;y<MAXREC;y++){			\
-    recordings[0][y]=0;				\
-  }						\
-}
-
-// TODO: RESET CNT and ENDs in layers...
-#define MODECHANGED {				\
-    modechanged=1;				\
-    frozen[0]=0;				\
-    frozen[1]=0;				\
-    frozen[2]=0;				\
-    frozen[3]=0;				\
-    frozen[4]=0;				\
-    frozen[5]=0;				\
-    frozen[6]=0;				\
-    frozen[7]=0;				\
-    freezetoggle[0]=0;					\
-    freezetoggle[1]=0;					\
-    freezetoggle[2]=0;					\
-    freezetoggle[3]=0;					\
-    freezetoggle[4]=0;					\
-    freezetoggle[5]=0;					\
-    freezetoggle[6]=0;					\
-    freezetoggle[7]=0;					\
-    rec=0;					\
-    play=0;					\
-    mode+=1;						\
-    if (mode>=MAXMODES) mode=0;				\
-}
-
-#define MODECHANGEDD {				\
-    newmode=1;					\
-    modetoggle^=1;				\
-}
-
-
-#define RECFREEZE {				\
-  if (daccount==7){							\
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-    GPIOC->BSRRL=(1)<<6;						\
-    delay();								\
-    GPIOC->BSRRH=(1)<<6;						\
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-    GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-  }									\
-  else									\
-    {									\
-      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
-      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-      GPIOC->BSRRL=(1)<<6;						\
-      delay();								\
-      GPIOC->BSRRH=(1)<<6;						\
-      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
-      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
-      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
-      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-    }									\
-}
-
-#define RECLONG {				\
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-        GPIO_Init(GPIOC, &GPIO_InitStructure); \
-	GPIOC->BSRRL=(1)<<6; \
-	delay(); \
-	if (!(GPIOB->IDR & (1<<10))) {		\
-	lastlastrec++;				\
-	}					\
-	GPIOC->BSRRH=(1)<<6;			  \
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-	GPIO_Init(GPIOC, &GPIO_InitStructure); \
-}
-
-#define RECPLAY {				\
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-        GPIO_Init(GPIOC, &GPIO_InitStructure); \
-	GPIOC->BSRRL=(1)<<6; \
-	delay(); \
-	if (!(GPIOB->IDR & (1<<2))) {		\
-	lastlastplay++;					\
-	}					\
-	GPIOC->BSRRH=(1)<<6;			  \
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; \
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; \
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; \
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; \
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-	GPIO_Init(GPIOC, &GPIO_InitStructure); \
-}
-
 // to redo so all is done in one go and does not repeat - also with freezers
 #define TEST_TOGGLES {				  \
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
@@ -294,12 +185,10 @@
 	} \
 	if (lasttriggered[9]>BRK) {	\
 	  lasttriggered[9]=0;				\
-	  play^=1;					\
 	  togplay=1;					\
 	}						\
 	if (lasttriggered[8]>BRK) {	\
 	  lasttriggered[8]=0;				\
-	  rec^=1; \
 	  togrec=1;		   \
 	} \
 }
@@ -329,7 +218,6 @@
 	GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	if (lasttriggered[9]>BRK) {	\
 	  lasttriggered[9]=0;				\
-	  play^=1;					\
 	  togplay=1;					\
 	}						\
 	else togplay=0;					\
@@ -356,7 +244,6 @@
 	GPIO_Init(GPIOC, &GPIO_InitStructure); \
 	if (lasttriggered[8]>BRK) {	\
 	  lasttriggered[8]=0;				\
-	  rec^=1; \
 	  togrec=1;		   \
 	} \
 	else togrec=0;				      \
@@ -414,8 +301,8 @@
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
     GPIO_Init(GPIOC, &GPIO_InitStructure);				\
     if (lasttriggered[7]>BRKF) {						\
-      frozen[7]^=1;							\
-      freezetoggle[7]=1;						\
+      fingers[7].toggle^=1;							\
+      fingers[7].ttoggle=1;						\
       lasttriggered[7]=0;						\
     }									\
   }									\
@@ -443,8 +330,8 @@
       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
       GPIO_Init(GPIOC, &GPIO_InitStructure);				\
       if (lasttriggered[daccount]>BRKF) {				\
-	frozen[daccount]^=1;						\
-	freezetoggle[daccount]=1;						\
+	fingers[daccount].toggle^=1;						\
+	fingers[daccount].ttoggle=1;						\
 	lasttriggered[daccount]=0;					\
       }									\
     }									\
@@ -574,7 +461,6 @@ switch(daccount){						\
   break;								\
    }									\
 }
-
 
 #define DOSPEED {				\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_480Cycles); \

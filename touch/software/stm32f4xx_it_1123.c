@@ -564,6 +564,7 @@ void TIM2_IRQHandler(void)
 	      speed=real[6]>>2;
 	      // swop of layers -
 	      otherlayer=layerr[daccount]^1; // opposite...
+	      // deal with logfast
 	      values[daccount]=lay[daccount][layerr[daccount]].speedsamp(logfast[speed], lay[daccount][layerr[daccount]].end, daccount, recordings[daccount]); // current layer
 	      if (daccount!=6) values[daccount]+=real[daccount]; // except [6]
 	      if (values[daccount]>4095) values[daccount]=4095;
@@ -608,7 +609,7 @@ void TIM2_IRQHandler(void)
 	    lastvalue[daccount]=values[daccount];
 	    lastmode=0;
 	    //	    values[0]=4095;
-	    }
+	  }
 	    else entryn=0;
 	  }
 	  
