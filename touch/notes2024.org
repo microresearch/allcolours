@@ -19,9 +19,9 @@ R   P
 
 MODE: X | ADC | FREEZE | NOTES
 -------------------------------
-NADA: 
-REC:
-PLAY:
+N: 
+R:
+P:
 R+P: 
 
 ////
@@ -30,7 +30,7 @@ R+P:
 
 NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - invert is take value from top, but what is "fake swop"?
 REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...
-PLAY: ADC->speed // freeze is swop
+PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play?
 REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape if >// minormodes here)
 
 Q of global speed... *new top ADC is global control. also we have sync functions*
@@ -101,7 +101,7 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 
 So minor modes define use of toggle, speed, newADC for major modes...
 
-Nada: add global from top, invert voltage, ghosts and mirrors - but does these stick around?
+Nada: add global from top, invert voltage, ghosts and mirrors - but does these stick around? yes
 Rec:
 Play:
 RP:
@@ -113,8 +113,7 @@ So each section can set a minormode which could also stick around - eg. NADA min
 *** Speeds = P, RP
 
 - sync speeds to top newADC or not
-- new logfast_stop and logspeed_stop
-- 2 types speed: logspeed and logfast  
+- 4 types speed: logspeed and logfast, + new logfast_stop and logspeed_stop
 
 *** etc? 
 
@@ -122,7 +121,7 @@ So each section can set a minormode which could also stick around - eg. NADA min
 - ALL@ sensitivity?
 - RP: overlay: extend overlay past end of recording
 - R,P,RP: detach/unsync (how that happens - as it needs to unsync to a time - so ie. re-sync to say Freeze) - options for what freeze toggle does in certain modes
-
+// detach is not really minormode...
 detach would be to stop/start/move play/rec head... with freeze/toggle or with newADC
 
 see: strip for overlay options there - and how those change with 2 tapes?
@@ -157,22 +156,61 @@ also as minormodes modify the major mode so they depend on this!
 
 ** start to define new approach// see latest notebook and diary notes below
 
+States are: N, R, P, RP (enum)
+Active position/voltage can change state and minor/major modes and undergo full reset. Inactive position stays in its mode (eg. plays) until active/changes
+There are two tapes (0 and 1) for each position 
+There is a list of playbacks for each position which reference start and end on a tape, and which tape (0 or 1)
+Rec just adds to end of tape/wrapping round until full reset
+Major modes are ported in and allow for recursive/fractal dismemberments and dislocations...
+Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
+
+Minor modes // and they stay// are changed in all state... so each state adds its own options...
+
+N: how we handle voltages: add global from top, invert voltage, ghosts and mirrors(?), sensitivity?
+R: only reset R or not on entry into R + N options // or leave that reset...
+P, RP: 4 types of live overlay, speedsync, speedarrays
+RP: 4 types of recorded overlay 
+
+//older summary
 - 2 tapes
-- list of playbacks/gestures 
+- list of playbacks/gestures: list references layer (0 or 1): how do we manipulate list? 
 - rec just adds to end of tape/wrapping round until full reset
 - no recording of speed just of the effects of speed
-- all minormodes
-- do we record new ADC gestures  
+- all minormodes: which ones stay across each state
+- do we record newADC gestures?  
 - activation/press per section of sections so maybe R,P, RP and M(mode sel) are not global!
 
 * diary notes
 
+** 1/2/2024
+
+- embarked on new test code with all basics to test
+- TODO: implement and test activation by way of extended TOGGLE/FREEZE
+- port in basic rec/play/overlay from 1123 and test!
+- lots to do/test eg. reset on entry into states
+- where to put switch - inside functions
+
+//
+
+stm32f4xx_it_2024.c
+
+new code base with:
+- structure for each position/voltage inc. state of each (N, P, R, RP), all lists, and minor modes
+- rework major and minors
+
+- what is kept across states in minormodes? (eg, speedlog, type etc) - see below
+- if we de-activate a position/voltage it stays in its mode. eg. R, P etc
+- logic of minormodes as much as possible outside main switches/modes
+- playlist: when do we play full list if P just adds to that list on each new entry
+- does playlist reference layer?
+
 ** 31/1/2024
 
-- tested new moon panel fine...
+- +tested new moon panel fine...+
 - how to code more clearly latest modes/layers and micromodes - structure?
+- how much of micromodes stays across states - eg, speedlog across P and R+P is the same choice?
 
-TODO: somehow we lost pointer/speedref code: TO TEST: DONE	    // minormode speed as a pointer now
+done but need to test//TODO: somehow we lost pointer/speedref code: TO TEST: DONE	    // minormode speed as a pointer now
 
 ** 25/1/2024
 
