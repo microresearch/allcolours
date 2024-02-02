@@ -38,9 +38,56 @@
 // with F413 we have 9000 which is how long - 21 seconds now on 24 divider
 
 #define MAXMODES 8
-#define MINORMAX 1024
 
 GPIO_InitTypeDef GPIO_InitStructure;
+extern __IO uint32_t adc_buffer[8];
+
+static uint32_t recordings[8][MAXREC+1]={0}; // 
+
+typedef struct layers_ {
+  uint32_t rec_cnt;
+  uint32_t rec_end;
+  uint32_t play_cnt;
+  uint32_t play_len;
+  uint32_t (*speedsamp)(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);
+  void (*reclayer)(uint32_t value, uint32_t dacccount); // to add these
+} layers;
+
+static layers lay[8][2];
+
+    typedef struct listy_ { 
+      uint32_t start[120];  
+      uint32_t length[120];
+      uint8_t layer;
+    } playl;
+
+    enum STATE {
+      N,
+      R,
+      P,
+      RP
+    };
+
+    typedef struct xx_ {
+      enum STATE state; 
+      uint32_t active;
+      uint32_t masterL; // current layer
+      uint32_t majormode;
+      uint32_t minormode[2];
+      uint32_t playspeed; // index into playreff
+      uint32_t toggle, ttoggle;
+      layers layer[2]; // rec layers count and functions for access
+      playl playlist;// list of playbacks
+      uint32_t playcnt; // 
+      uint32_t playfull; // how many elements in the playlist
+      uint32_t overlaid; /// how we enter RP
+      uint32_t lastmode;
+      uint32_t play,rec;
+      uint32_t sensi;
+      uint32_t entryp, entryr, entryrp; // for resets
+    } hands;
+
+static hands fingers[8];
 
 void send_command(int command, void *message)
 {
@@ -98,7 +145,6 @@ void PendSV_Handler(void)
 {
 }
 
-
 #define delay()						 do {	\
     register unsigned int ix;					\
     for (ix = 0; ix < DELB; ++ix)				\
@@ -118,13 +164,6 @@ void PendSV_Handler(void)
       __asm__ __volatile__ ("nop\n\t":::"memory");		\
   } while (0)
 
-
-extern __IO uint32_t adc_buffer[8];
-
-//static uint32_t SENSESHIFT=2, SENSEOFFSET=1800; // offset is minus!
-//static uint32_t SENSESHIFT=1, SENSEOFFSET=560; // lower sensitivity
-static uint32_t SENSESHIFT=0, SENSEOFFSET=0; // no shift now
-
 inline static float mod0(float value, float length)
 {
   while (value > (length-1))
@@ -132,52 +171,6 @@ inline static float mod0(float value, float length)
     return value;
 }
 
-
-static uint32_t recordings[8][MAXREC+1]={0}; // 
-
-typedef struct layers_ {
-  uint32_t rec_cnt;
-  uint32_t rec_end;
-  uint32_t play_cnt;
-  uint32_t play_len;
-  uint32_t (*speedsamp)(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);
-  void (*reclayer)(uint32_t value, uint32_t dacccount); // to add these
-} layers;
-
-static layers lay[8][2];
-
-    typedef struct listy_ { 
-      uint32_t start[120];  
-      uint32_t length[120];
-      uint8_t layer;
-    } playl;
-
-    enum STATE {
-      N,
-      R,
-      P,
-      RP
-    };
-
-    typedef struct xx_ {
-      enum STATE state; 
-      uint32_t active;
-      uint32_t masterL; // current layer
-      uint32_t majormode;
-      uint32_t minormode;
-      uint32_t playspeed; // index into playreff
-      uint32_t toggle, ttoggle;
-      layers layer[2]; // rec layers count and functions for access
-      playl playlist;// list of playbacks
-      uint32_t playcnt; // 
-      uint32_t playfull; // how many elements in the playlist
-      uint32_t overlaid; /// how we enter RP
-      uint32_t lastmode;
-      uint32_t play,rec;
-      uint32_t entryp, entryr, entryrp; // for resets
-    } hands;
-
-static hands fingers[8];
 
 
 inline static void resetx(uint32_t which){
@@ -196,7 +189,7 @@ void reclayerlower(uint32_t value, uint32_t daccount){
 
 inline static void changemode(uint32_t dacc){
   fingers[dacc].majormode++;
-  if (fingers[dacc].minormode>MAXMODES) fingers[dacc].minormode=0;
+  if (fingers[dacc].majormode>MAXMODES) fingers[dacc].majormode=0;
   fingers[dacc].toggle=0;					
   fingers[dacc].ttoggle=0;
   fingers[dacc].play=0;					
@@ -207,7 +200,8 @@ inline static void changemode(uint32_t dacc){
 
 inline static void resett(uint32_t dacc){
   fingers[dacc].majormode=0;
-  fingers[dacc].minormode=0;
+  fingers[dacc].minormode[0]=0;
+  fingers[dacc].minormode[1]=0;
   fingers[dacc].toggle=0;					
   fingers[dacc].ttoggle=0;
   fingers[dacc].state=N; // NADA
@@ -266,7 +260,16 @@ void TIM2_IRQHandler(void)
     static uint32_t modetoggle=0, newmode=0, count=0;
     static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0};
     static int32_t togrec=0, togplay=0, helder=0, heldon=0, helldone=0, modeheld=0, modechanged=1, first=0;
+    static uint32_t Thelldone[8]={0,0,0,0, 0,0,0,0};     // helldone=0; heldon=0; modeheld=helder; helder=0;}  but for toggle
+    static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t Theld[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t Thelder[8]={0,0,0,0, 0,0,0,0};      
     static uint32_t oncey=0;
+    uint32_t V_options, P_options, RP_options;
+    const float *playreff[4]={logspeed, logfast, logspeed_stop, logfast_stop}; 
+    const uint32_t SENSESHIFTS[3]={0,1,2}; // just use first 2 for now
+    const uint32_t SENSEOFFSETS[3]={64,560,1800};
+    uint32_t remode[4]={0,0,1,1}; // 2 arrays N/R and P/RP
     
     if (oncey==0){// can we put this init elsewhere?
       oncey=1;
@@ -281,37 +284,28 @@ void TIM2_IRQHandler(void)
 	fingers[x].layer[1].speedsamp=speedsampleupper;
 	fingers[x].layer[0].reclayer=reclayerlower;
 	fingers[x].layer[1].reclayer=reclayerupper;
+	fingers[x].active=1;
     }
     }
     
-    const float *playreff[4]={logspeed, logfast, logspeed_stop, logfast_stop}; 
 
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	// SENSESHIFT=2, SENSEOFFSET=1800; 
-	// SENSESHIFT=1, SENSEOFFSET=560;
-	SENSESHIFT=0, SENSEOFFSET=64; // TESTY fixed
 
 	// micromode logic outside mode switches
-	// eg. mask
-	/*	so we could have as masks for each section bit groups:
+	V_options=fingers[daccount].minormode[0]&3; // V: sens, global, invert  // 3 bits 
+	P_options=fingers[daccount].minormode[1]&31; // P,RP: 11 live overlay, 11 speedarray, 1sync // 5 bits
+	RP_options=(fingers[daccount].minormode[1]&127); // RP: 11 recorded overlay if any // 2 bits
 
-		N: sens, global, invert  // 3 bits
-		111
-		R as above
-		P,RP: 11 live overlay, 11 speedarray, 1sync // 5 bits
-		RP: 11 recorded overlay if any // 2 bits
-		111 11111 11 = 10 bits // or do we want to say only set voltage settings in N and R so is not so long... but we would go back for that...
-		we can just shift so stay with 10 bits
-	*/
-
+	fingers[daccount].sensi=V_options&1; // first bit
+	
 	// functions outside switch
-	  FREEZERS;
-          REALADC;
-	  CTRL;
+	FREEZERS;
+	REALADC;
+	CTRL;
 
-	// TODO: is the finger active = long freeze - we need to implement this
+	// TODO: is the finger active = long freeze - we need to implement this - in macros as Theld[x] - trial in test.c 
 	
 	// togplay and togrec
 	if (fingers[daccount].active && togplay) fingers[daccount].play^=1;
@@ -369,38 +363,8 @@ void TIM2_IRQHandler(void)
 	else if (modeheld<LONGMODE){ //inc minor mode 
 	  modeheld=0; 
 	  if (fingers[0].active) {
-	    fingers[0].minormode++;
-	    if (fingers[0].minormode>MINORMAX) fingers[0].minormode=0;
+	    fingers[0].minormode[remode[fingers[0].state]]++;
 	  }
-	  if (fingers[1].active) {
-	    fingers[1].minormode++;
-	    if (fingers[1].minormode>MINORMAX) fingers[1].minormode=0;
-	  }
-	  if (fingers[2].active) {
-	    fingers[2].minormode++;
-	    if (fingers[2].minormode>MINORMAX) fingers[2].minormode=0;
-	  }
-	  if (fingers[3].active) {
-	    fingers[3].minormode++;
-	    if (fingers[3].minormode>MINORMAX) fingers[3].minormode=0;
-	  }
-	  if (fingers[4].active) {
-	    fingers[4].minormode++;
-	    if (fingers[4].minormode>MINORMAX) fingers[4].minormode=0;
-	  }
-	  if (fingers[5].active) {
-	    fingers[5].minormode++;
-	    if (fingers[5].minormode>MINORMAX) fingers[5].minormode=0;
-	  }
-	  if (fingers[6].active) {
-	    fingers[6].minormode++;
-	    if (fingers[6].minormode>MINORMAX) fingers[6].minormode=0;
-	  }
-	  if (fingers[7].active) {
-	    fingers[7].minormode++;
-	    if (fingers[7].minormode>MINORMAX) fingers[7].minormode=0;
-	  }
-	  
 	}
 	} // newmode
 

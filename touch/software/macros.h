@@ -288,10 +288,12 @@
     if (!(GPIOC->IDR & (freezer[7]))) {					\
       lasttriggered[7]=breaker[7];					\
       breaker[7]=0;							\
+      if (Theldon[7]) Thelder[7]++;					\
     }									\
     else {								\
       breaker[7]++;							\
       if (breaker[7]>1024) breaker[7]=1024;				\
+      if (Thelder[7]>8 && breaker[7]>48) {Thelldone[7]=0; Theldon[7]=0; Theld[7]=helder; Thelder[7]=0;} \
     }									\
     GPIOC->BSRRH=(1)<<6;						\
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
@@ -304,6 +306,8 @@
       fingers[7].toggle^=1;							\
       fingers[7].ttoggle=1;						\
       lasttriggered[7]=0;						\
+      Theldon[7]=1;							\
+      Thelldone[7]=1;							\
     }									\
   }									\
   else									\
@@ -317,25 +321,29 @@
       if (!(GPIOB->IDR & (freezer[daccount]))) {			\
 	lasttriggered[daccount]=breaker[daccount];			\
 	breaker[daccount]=0;						\
+	if (Theldon[daccount]) Thelder[daccount]++;			\
       }									\
       else {								\
 	breaker[daccount]++;						\
 	if (breaker[daccount]>1024) breaker[daccount]=1024;		\
-      }									\
-      GPIOC->BSRRH=(1)<<6;						\
-      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
-      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
-      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
-      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;			\
-      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
-      GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-      if (lasttriggered[daccount]>BRKF) {				\
-	fingers[daccount].toggle^=1;						\
-	fingers[daccount].ttoggle=1;						\
+	if (Thelder[daccount]>8 && breaker[daccount]>48) {Thelldone[daccount]=0; Theldon[daccount]=0; Theld[daccount]=helder; Thelder[daccount]=0;} \
+	}					  \
+	GPIOC->BSRRH=(1)<<6;						\
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;			\
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;			\
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;			\
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;		\
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		\
+	GPIO_Init(GPIOC, &GPIO_InitStructure);				\
+	if (lasttriggered[daccount]>BRKF) {				\
+	fingers[daccount].toggle^=1;					\
+	fingers[daccount].ttoggle=1;					\
 	lasttriggered[daccount]=0;					\
+	Theldon[daccount]=1;						\
+	Thelldone[daccount]=1;						\
+	}								\
       }									\
-    }									\
-  }
+    }
 
 #define CTRL {					\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 1, ADC_SampleTime_480Cycles); \
@@ -343,32 +351,32 @@
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[0]=ADC_GetConversionValue(ADC1);				\
-  control[0]=control[0]<<SENSESHIFT;					\
-  control[0]-=SENSEOFFSET;						\
+  control[0]=control[0]<<SENSESHIFTS[fingers[0].sensi];					\
+  control[0]-=SENSEOFFSETS[fingers[0].sensi];						\
   if (control[0]<0) control[0]=0;						\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_480Cycles); \
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[1]=ADC_GetConversionValue(ADC1);				\
-  control[1]=control[1]<<SENSESHIFT;					\
-  control[1]-=SENSEOFFSET;						\
+  control[1]=control[1]<<SENSESHIFTS[fingers[1].sensi];					\
+  control[1]-=SENSEOFFSETS[fingers[1].sensi];						\
   if (control[1]<0) control[1]=0;					\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_480Cycles); \
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[2]=ADC_GetConversionValue(ADC1);				\
-  control[2]=control[2]<<SENSESHIFT;					\
-  control[2]-=SENSEOFFSET;						\
+  control[2]=control[2]<<SENSESHIFTS[fingers[2].sensi];					\
+  control[2]-=SENSEOFFSETS[fingers[2].sensi];						\
   if (control[2]<0) control[2]=0;					\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_480Cycles); \
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[3]=ADC_GetConversionValue(ADC1);				\
-  control[3]=control[3]<<SENSESHIFT;					\
-  control[3]-=SENSEOFFSET;						\
+  control[3]=control[3]<<SENSESHIFTS[fingers[3].sensi];					\
+  control[3]-=SENSEOFFSETS[fingers[3].sensi];						\
   if (control[3]<0) control[3]=0;					\
 }
 
@@ -420,8 +428,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[4]=ADC_GetConversionValue(ADC1);				\
-  real[4]=real[4]<<SENSESHIFT;						\
-  real[4]-=SENSEOFFSET;							\
+  real[4]=real[4]<<SENSESHIFTS[fingers[4].sensi];						\
+  real[4]-=SENSEOFFSETS[fingers[4].sensi];							\
   if (real[4]<0) real[4]=0;					\
   if (real[4]>4095) real[4]=4095;					\
   break;							\
@@ -431,8 +439,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   real[5]=ADC_GetConversionValue(ADC1);				\
-  real[5]=real[5]<<SENSESHIFT;						\
-  real[5]-=SENSEOFFSET;							\
+  real[5]=real[5]<<SENSESHIFTS[fingers[5].sensi];						\
+  real[5]-=SENSEOFFSETS[fingers[5].sensi];							\
   if (real[5]<0) real[5]=0;					\
   if (real[5]>4095) real[5]=4095;					\
   break;								\
@@ -442,8 +450,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[6]=ADC_GetConversionValue(ADC1);					\
-  real[6]=real[6]<<SENSESHIFT;							\
-  real[6]-=SENSEOFFSET;								\
+  real[6]=real[6]<<SENSESHIFTS[fingers[6].sensi];							\
+  real[6]-=SENSEOFFSETS[fingers[6].sensi];								\
   if (real[6]<0) real[6]=0;						\
   if (real[6]>4095) real[6]=4095;					\
   reall[6]=real[6];							\
@@ -454,8 +462,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[7]=ADC_GetConversionValue(ADC1);				\
-  real[7]=real[7]<<SENSESHIFT;							\
-  real[7]-=SENSEOFFSET;								\
+  real[7]=real[7]<<SENSESHIFTS[fingers[7].sensi];							\
+  real[7]-=SENSEOFFSETS[fingers[7].sensi];								\
   if (real[7]<0) real[7]=0;						\
   if (real[7]>4095) real[7]=4095;					\
   break;								\
