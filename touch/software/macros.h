@@ -155,7 +155,7 @@
 	else {					  \
 	breaker[10]++;				  \
 	if (breaker[10]>1024) breaker[10]=1024;	  \
-	if (helder>8 && breaker[10]>48) {helldone=0; heldon=0; newmode=1; modeheld=helder; helder=0;} \
+	if (helder>8 && breaker[10]>48) {heldon=0; newmode=1; modeheld=helder; helder=0;} \
 	}					  \
 	if (!(GPIOB->IDR & (1<<2))) {		\
 	lasttriggered[9]=breaker[9];		\
@@ -181,7 +181,6 @@
 	  lasttriggered[10]=0;				\
 	  modetoggle^=1; \
 	  heldon=1;	 \
-	  helldone=1;	 \
 	} \
 	if (lasttriggered[9]>BRK) {	\
 	  lasttriggered[9]=0;				\
@@ -293,7 +292,7 @@
     else {								\
       breaker[7]++;							\
       if (breaker[7]>1024) breaker[7]=1024;				\
-      if (Thelder[7]>8 && breaker[7]>48) {Thelldone[7]=0; Theldon[7]=0; Theld[7]=helder; Thelder[7]=0;} \
+      if (Thelder[7]>8 && breaker[7]>48) {Theldon[7]=0; Newtog[7]=1; Theld[7]=Thelder[7]; Thelder[7]=0;} \
     }									\
     GPIOC->BSRRH=(1)<<6;						\
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
@@ -326,7 +325,7 @@
       else {								\
 	breaker[daccount]++;						\
 	if (breaker[daccount]>1024) breaker[daccount]=1024;		\
-	if (Thelder[daccount]>8 && breaker[daccount]>48) {Thelldone[daccount]=0; Theldon[daccount]=0; Theld[daccount]=helder; Thelder[daccount]=0;} \
+	if (Thelder[daccount]>8 && breaker[daccount]>8) {Theldon[daccount]=0; Newtog[daccount]=1; Theld[daccount]=Thelder[daccount]; Thelder[daccount]=0;} \
 	}					  \
 	GPIOC->BSRRH=(1)<<6;						\
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;			\
