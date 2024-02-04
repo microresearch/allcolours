@@ -27,6 +27,7 @@
 #define HOLDRESET 800 // time for full reset when hold the mode down - over 4 seconds
 #define SHORTMODE 8 // was 20ms could be shorter...
 #define LONGMODE 140 // 1sec
+#define LONGTOG 300 // 1-2 secs long press for TOGGLE->activate
 
 #ifdef fouronethree
 #define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
@@ -195,13 +196,16 @@ inline static void changemode(uint32_t dacc){
   fingers[dacc].play=0;					
   fingers[dacc].rec=0;
   fingers[dacc].state=N; // NADA  
-  // TODO: what else we reset here
+  // TODO: what else we need to reset here
 }
 
 inline static void resett(uint32_t dacc){
+  fingers[dacc].active=1;
+  fingers[dacc].masterL=0;
   fingers[dacc].majormode=0;
   fingers[dacc].minormode[0]=0;
   fingers[dacc].minormode[1]=0;
+  fingers[dacc].playspeed=0;
   fingers[dacc].toggle=0;					
   fingers[dacc].ttoggle=0;
   fingers[dacc].state=N; // NADA
@@ -215,7 +219,12 @@ inline static void resett(uint32_t dacc){
   fingers[dacc].layer[1].play_cnt=0;
   fingers[dacc].layer[0].rec_end=0;
   fingers[dacc].layer[1].rec_end=0;
-
+  fingers[dacc].overlaid=0;
+  fingers[dacc].lastmode=0;
+  fingers[dacc].sensi=0;
+  fingers[dacc].entryp=0;
+  fingers[dacc].entryr=0;
+  fingers[dacc].entryrp=0;
 }
 
 inline static uint32_t speedsamplelower(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples){
@@ -263,7 +272,8 @@ void TIM2_IRQHandler(void)
     static uint32_t Thelldone[8]={0,0,0,0, 0,0,0,0};     // helldone=0; heldon=0; modeheld=helder; helder=0;}  but for toggle
     static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Theld[8]={0,0,0,0, 0,0,0,0};
-    static uint32_t Thelder[8]={0,0,0,0, 0,0,0,0};      
+    static uint32_t Thelder[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t Newtog[8]={0,0,0,0, 0,0,0,0};      
     static uint32_t oncey=0;
     uint32_t V_options, P_options, RP_options;
     const float *playreff[4]={logspeed, logfast, logspeed_stop, logfast_stop}; 
@@ -274,17 +284,12 @@ void TIM2_IRQHandler(void)
     if (oncey==0){// can we put this init elsewhere?
       oncey=1;
       for (x=0;x<8;x++){
-	fingers[x].layer[0].rec_cnt=0;
-	fingers[x].layer[1].rec_cnt=0;
-	fingers[x].layer[0].play_cnt=0;
-	fingers[x].layer[1].play_cnt=0;
-	fingers[x].layer[0].rec_end=0;
-	fingers[x].layer[1].rec_end=0;
+	resett(x);
 	fingers[x].layer[0].speedsamp=speedsamplelower; // where to init these...
 	fingers[x].layer[1].speedsamp=speedsampleupper;
 	fingers[x].layer[0].reclayer=reclayerlower;
 	fingers[x].layer[1].reclayer=reclayerupper;
-	fingers[x].active=1;
+
     }
     }
     
@@ -296,21 +301,36 @@ void TIM2_IRQHandler(void)
 	// micromode logic outside mode switches
 	V_options=fingers[daccount].minormode[0]&3; // V: sens, global, invert  // 3 bits 
 	P_options=fingers[daccount].minormode[1]&31; // P,RP: 11 live overlay, 11 speedarray, 1sync // 5 bits
-	RP_options=(fingers[daccount].minormode[1]&127); // RP: 11 recorded overlay if any // 2 bits
+	RP_options=(fingers[daccount].minormode[1]&127); // RP: 11 recorded overlay if any // +2 bits
 
-	fingers[daccount].sensi=V_options&1; // first bit
+	fingers[daccount].sensi=V_options&1; // first bit - sensitivity is in macros
+	// more of minormodes?
+	/* 
+	   - TODO: pull out as much as possible from mode/switches// also use of function pointers for minormode options..
+	   - functions for global and invert ->live
+	   - speedarray we have
+	   - see where we place live overlay and sync=global//sync speeds to top newADC or not=speedfunction
+	*/
 	
 	// functions outside switch
 	FREEZERS;
 	REALADC;
 	CTRL;
 
-	// TODO: is the finger active = long freeze - we need to implement this - in macros as Theld[x] - trial in test.c 
+	// TODO - to test: is the finger active = long freeze
+	   if (Newtog[daccount]){
+	     Newtog[daccount]=0;
+	     if (Theld[daccount]>LONGTOG) {
+	       Theld[daccount]=0;
+	       fingers[daccount].active^=1; // t0ggle
+	     }
+	   }
 	
 	// togplay and togrec
-	if (fingers[daccount].active && togplay) fingers[daccount].play^=1;
-	if (fingers[daccount].active && togrec) fingers[daccount].rec^=1;
-	togplay=0; togrec=0;
+	if (fingers[daccount].active){
+	if (togplay) fingers[daccount].play^=1;
+	if (togrec) fingers[daccount].rec^=1;
+
 	// logic of states now
 	  if (fingers[daccount].rec && fingers[daccount].play){
 	    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end){
@@ -326,8 +346,9 @@ void TIM2_IRQHandler(void)
 	  else if (fingers[daccount].rec)	fingers[daccount].state=R;
 	  else if (fingers[daccount].play && (fingers[daccount].layer[fingers[daccount].masterL].rec_end)) fingers[daccount].state=P;
 	  else fingers[daccount].state=N;
-	  
-	  // do main mode/state work maybe with switches within this 
+	}
+	
+	  // do main mode/state work with switches within this 
 	
 	// end of modes 
 	
@@ -336,6 +357,7 @@ void TIM2_IRQHandler(void)
 	if (daccount==8) {
 	  daccount=0;
 	  count++;
+	  togplay=0; togrec=0; // here as then we set them for one round
 	  TEST_TOGGLES;      // only place where toggles - TESTY - newer toggles
 	  // handle micromodes, resett, and  
 	  // how - depends on active positions // states we deal with later - go up to 10 bits
@@ -365,10 +387,29 @@ void TIM2_IRQHandler(void)
 	  if (fingers[0].active) {
 	    fingers[0].minormode[remode[fingers[0].state]]++;
 	  }
+	  if (fingers[1].active) {
+	    fingers[1].minormode[remode[fingers[1].state]]++;
+	  }
+	  if (fingers[2].active) {
+	    fingers[2].minormode[remode[fingers[2].state]]++;
+	  }
+	  if (fingers[3].active) {
+	    fingers[3].minormode[remode[fingers[3].state]]++;
+	  }
+	  if (fingers[4].active) {
+	    fingers[4].minormode[remode[fingers[4].state]]++;
+	  }
+	  if (fingers[5].active) {
+	    fingers[5].minormode[remode[fingers[5].state]]++;
+	  }
+	  if (fingers[6].active) {
+	    fingers[6].minormode[remode[fingers[6].state]]++;
+	  }
+	  if (fingers[7].active) {
+	    fingers[7].minormode[remode[fingers[7].state]]++;
+	  }
 	}
 	} // newmode
-
-	  
 	}
     }
   }
