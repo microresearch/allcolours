@@ -182,20 +182,25 @@ RP: 4 types of recorded overlay
 
 * diary notes
 
+** 4/4/2024
+
+- added ACTIVE/toggle into latest code/to test there.
+
 ** 2/2/2024 
+
+*note what we need to reset for new mode/mode change and for resett*
 
 - TODO: pull out as much as possible from mode/switches// also use of function pointers for minormode options..
 //
 - DONE-all positions set as active at the start
 - DONE-arrays for minor modes and states:       uint32_t minormode[4]; // N, R, P, RP // and use mask for each - say lowest x bits
 - DONESENSESHIFT etc. is now no longer global so goes into STRUCT - but what is sensitivity for CTRL = 0,1,2,3 as these are VCA which don't have sensitivty
-*so now sensitivity if for newADC and for Voltage -> manual*
-
+*so now sensitivity is for newADC and for Voltage -> manual*
 
 ** 1/2/2024
 
 - embarked on new test code with all basics to test
-- TODO: *implement and test activation by way of extended TOGGLE/FREEZE*
+- DONE - in test.c code: TODO: DONEimplement and test activation by way of extended TOGGLE/FREEZE - maybe a bit longer-adjusted to 300!
 - port in basic rec/play/overlay from 1123 and test!
 - lots to do/test eg. reset on entry into states
 - where to put switch - inside functions

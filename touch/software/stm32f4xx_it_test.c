@@ -23,6 +23,51 @@ uint32_t maxovermin[MAXMODES]={15,15,31,0, 0,0,0,0}; // to fill in as we go
 uint32_t maxplaymin[MAXMODES]={31,15,31,0, 0,0,0,0};
 uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 
+typedef struct layers_ {
+  uint32_t rec_cnt;
+  uint32_t rec_end;
+  uint32_t play_cnt;
+  uint32_t play_len;
+  uint32_t (*speedsamp)(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);
+  void (*reclayer)(uint32_t value, uint32_t dacccount); // to add these
+} layers;
+
+static layers lay[8][2];
+
+    typedef struct listy_ { 
+      uint32_t start[120];  
+      uint32_t length[120];
+      uint8_t layer;
+    } playl;
+
+    enum STATE {
+      N,
+      R,
+      P,
+      RP
+    };
+
+    typedef struct xx_ {
+      enum STATE state; 
+      uint32_t active;
+      uint32_t masterL; // current layer
+      uint32_t majormode;
+      uint32_t minormode[2];
+      uint32_t playspeed; // index into playreff
+      uint32_t toggle, ttoggle;
+      layers layer[2]; // rec layers count and functions for access
+      playl playlist;// list of playbacks
+      uint32_t playcnt; // 
+      uint32_t playfull; // how many elements in the playlist
+      uint32_t overlaid; /// how we enter RP
+      uint32_t lastmode;
+      uint32_t play,rec;
+      uint32_t sensi;
+      uint32_t entryp, entryr, entryrp; // for resets
+    } hands;
+
+static hands fingers[8];
+
 
 #define TOPS 0b11111111111111110000000000000000
 
@@ -36,6 +81,8 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
    #define HOLDRESET 4000 // time for full reset when hold the mode down - over 4 seconds
    #define SHORTMODE 8 // was 20ms could be shorter...
    #define LONGMODE 140 // 1sec
+
+#define LONGTOG 300
 
    #ifdef fouronethree
    #define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
@@ -139,6 +186,10 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 
    static uint32_t SENSESHIFT=0, SENSEOFFSET=0;//1800; // offset is minus!
    //static uint32_t SENSESHIFT=1, SENSEOFFSET=560; // lower sensitivity
+
+    const uint32_t SENSESHIFTS[3]={0,1,2}; // just use first 2 for now
+    const uint32_t SENSEOFFSETS[3]={64,560,1800};
+
 
    //static uint32_t shifter[8]={2,2,2,2,2,2,2,2}; // shifter seperates vca from cv - VCA comes first
    //static uint32_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
@@ -315,15 +366,6 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
      }
    }
 
-   typedef struct listy_ { 
-     uint32_t start[120];  
-     uint32_t gap[120];
-     uint32_t length[120];
-     float speed[120];
-   } hands;
-
-   static hands fingers[8];
-   static uint32_t howmanyfingers[8]={0,0,0,0, 0,0,0,0};
 
    // STARTY
    void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
@@ -363,6 +405,12 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
        static int32_t endpoint, togrec=0, togplay=0, helder=0, heldon=0, helldone=0, modeheld=0, modechanged=1, first=0, firsty[8]={0}, breaker[11]={0};
        static uint32_t testting=0;
 
+    static uint32_t Thelldone[8]={0,0,0,0, 0,0,0,0};     // helldone=0; heldon=0; modeheld=helder; helder=0;}  but for toggle
+    static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t Theld[8]={0,0,0,0, 0,0,0,0};
+    static uint32_t Thelder[8]={0,0,0,0, 0,0,0,0};      
+    static uint32_t Newtog[8]={0,0,0,0, 0,0,0,0};      
+       
        uint32_t tmp, trigd;
        int32_t midder, subs;
 
@@ -380,7 +428,7 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
        if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
        {
 	   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	   mode=667; // TESTY 777
+	   mode=778; // TESTY 777 // 778 is timing tests...
 
 	   // SHIFTS
 	   // SENSESHIFT=2, SENSEOFFSET=1800; 
@@ -421,7 +469,7 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 	     //	     if (!heldon) values[4]=control[0];
 	     */
 	     // working
-	     if (helldone){ // press
+	     /*	     if (helldone){ // press
 	       if (firsty[0]){
 		   freezetoggle[4]=0;
 		   firsty[0]=0;
@@ -433,7 +481,7 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 		     }
 	     }
 	     else firsty[0]=1;
-
+	     */
 	     testting=frozen[4];
 	     
 	     if (testting) { 
@@ -493,7 +541,16 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 	}
 
 	   FREEZERS;
-       	TEST_TOGGLES;      // only place where toggles - pulled out of ==8 section
+
+	   if (Newtog[4]){
+	     Newtog[4]=0;
+	     if (Theld[4]>LONGTOG) {
+	       Theld[4]=0;
+	     testting^=1; // testy
+	     }
+	   }
+	   
+	   TEST_TOGGLES;      // only place where toggles - pulled out of ==8 section
 	// see if works best there?
 	
 	WRITEDAC2;
@@ -519,7 +576,7 @@ uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 	}
 	else if (modeheld>LONGMODE && modeheld<HOLDRESET) { // increment major mode
 	  modeheld=0;
-	  MODECHANGED;
+	  //	  MODECHANGED;
 	  mode++;
 	  if (mode>MAXMODES) mode=0;
 	  //	  testting^=1; // testy
