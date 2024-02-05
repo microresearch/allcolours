@@ -28,9 +28,9 @@ R+P:
 
 *Basic mode to implement:* (each mode is defined by ADCs and freeze behaviour)
 
-NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - invert is take value from top, but what is "fake swop"?
-REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...
-PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play?
+NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - NONinvert is take value from top, but what is "fake swop"?
+REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...// what we hear is voltage+overlay
+PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that
 REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape if >// minormodes here)
 
 Q of global speed... *new top ADC is global control. also we have sync functions*
@@ -101,7 +101,7 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 
 So minor modes define use of toggle, speed, newADC for major modes...
 
-Nada: add global from top, invert voltage, ghosts and mirrors - but does these stick around? yes
+Nada: add global from top, +invert voltage+, ghosts and mirrors - but does these stick around? yes - as livevalue function now
 Rec:
 Play:
 RP:
@@ -128,6 +128,25 @@ see: strip for overlay options there - and how those change with 2 tapes?
 
 also as minormodes modify the major mode so they depend on this!
 
+*** types of overlay
+
+	    if (overoverlay==0){ //usual - now swopped for >
+	      if (real[daccount]>values[daccount]) values[daccount]=real[daccount]; // only if is more than
+	    }
+	    else if (overoverlay==1){ // mod
+	      values[daccount]+=real[daccount];
+	      if (values[daccount]>4095) values[daccount]=4095;
+	    }
+	    else if (overoverlay==2){
+	      values[daccount]+=real[daccount];
+	      values[daccount]=values[daccount]%4096;
+	    }
+	    else if (overoverlay==3){
+	      subs=values[daccount]-real[daccount];
+	      values[daccount]=abs(subs);
+	    }
+
+
 *** older and expanding
 
 - what minormodes we have so far? in [0]?
@@ -135,7 +154,7 @@ also as minormodes modify the major mode so they depend on this!
 	//Rec - 
 	
 	//R+P: overlay
-	overoverlay=((overminor>>1)&3); // types of overlay
+	overoverlay=((overminor>>1)&3); // 4 types of overlay
 	overrec=((overminor>>3)&3); // types of recorded overlay 
 	+overspeedmod=((overminor>>5)&1);// as playspeedmod+
 	+ now it would have speeds also as play: 2 types speed: logspeed and logfast  
@@ -167,7 +186,7 @@ Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
 Minor modes // and they stay// are changed in all state... so each state adds its own options...
 
 N: how we handle voltages: add global from top, invert voltage, ghosts and mirrors(?), sensitivity?
-R: only reset R or not on entry into R + N options // or leave that reset...
+R: only reset R or not on entry into R + N options // or leave that reset... // for newADc also type of overlay
 P, RP: 4 types of live overlay, speedsync, speedarrays
 RP: 4 types of recorded overlay 
 
@@ -182,9 +201,28 @@ RP: 4 types of recorded overlay
 
 * diary notes
 
+** 5/4/2024
+
+Filling in basic modes: 
+
+notebook notes:
+
+- DONE: different modes for R,P,N, RP for each section and state [4] - check minors - yes these are the same: fingers[dacc].majormode[fingers[dacc].state]
+- DONE: NADA basis - to test options there... also global sync is now to the final voltage at [6] TESTED
+
+*double bounce - see diagram in notebook*
+
+- simple operations across tapes and list which lead to recursive (writes over/to itself) or dislocated/dismembered results...
+- for bounces key is speed and start/ends of bounce// also playlist
+- did we write down slippage mode in R, maybe in RP where we slide across
+- *for newADC in base mode above we need type of overlay in R!*
+- what was self/island mode where we write to same tape in some part which repeats and how to adapt to 2 tapes // translate all prveioud major modes and new ideas here
+
+TODO: implement our basic first mode with all opts... and test all mode changes etc IN PROGRESS
+
 ** 4/4/2024
 
-- added ACTIVE/toggle into latest code/to test there.
+- added ACTIVE/toggle into latest code/to test there. Seems to work so far!
 
 ** 2/2/2024 
 

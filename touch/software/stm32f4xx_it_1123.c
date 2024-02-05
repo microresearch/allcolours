@@ -515,10 +515,11 @@ void TIM2_IRQHandler(void)
           // PLAY*
           //////////////////////////////////////////////////////////////////////
 	  if ((!overlaid) && play){ // do we always enter on base layer
-	  layerr[daccount]=frozen[daccount]; // 1 or 0 - does chosen layerr stay or is it reset
 	    RESETFRP;
 	    LASTPLAY;
 	    lastmode=0;
+
+	    layerr[daccount]=frozen[daccount]; // 1 or 0 - does chosen layerr stay or is it reset
 	    speed=control[2]>>2;  // top speed now - GLOBAL NOW TESTY
 	    // if no other layer we play nada ???
 	    // minormode speed as a pointer now
