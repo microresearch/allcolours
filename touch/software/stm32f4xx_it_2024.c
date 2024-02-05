@@ -44,51 +44,11 @@ GPIO_InitTypeDef GPIO_InitStructure;
 extern __IO uint32_t adc_buffer[8];
 
 static uint32_t recordings[8][MAXREC+1]={0}; // 
+static int32_t real[8], reall[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static????
+static int32_t control[4];
+static uint32_t values[8]={0,0,0,0, 0,0,0,0}; // changed 2/10 NOW STATIC!
 
-typedef struct layers_ {
-  uint32_t rec_cnt;
-  uint32_t rec_end;
-  uint32_t play_cnt;
-  uint32_t play_len;
-  uint32_t (*speedsamp)(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);
-  void (*reclayer)(uint32_t value, uint32_t dacccount); // to add these
-} layers;
-
-static layers lay[8][2];
-
-    typedef struct listy_ { 
-      uint32_t start[120];  
-      uint32_t length[120];
-      uint8_t layer;
-    } playl;
-
-    enum STATE {
-      N,
-      R,
-      P,
-      RP
-    };
-
-    typedef struct xx_ {
-      enum STATE state; 
-      uint32_t active;
-      uint32_t masterL; // current layer
-      uint32_t majormode;
-      uint32_t minormode[2];
-      uint32_t playspeed; // index into playreff
-      uint32_t toggle, ttoggle;
-      layers layer[2]; // rec layers count and functions for access
-      playl playlist;// list of playbacks
-      uint32_t playcnt; // 
-      uint32_t playfull; // how many elements in the playlist
-      uint32_t overlaid; /// how we enter RP
-      uint32_t lastmode;
-      uint32_t play,rec;
-      uint32_t sensi;
-      uint32_t entryp, entryr, entryrp; // for resets
-    } hands;
-
-static hands fingers[8];
+#include "fingers.h"
 
 void send_command(int command, void *message)
 {
@@ -172,7 +132,54 @@ inline static float mod0(float value, float length)
     return value;
 }
 
+inline static uint32_t overlay(uint32_t value, uint32_t value2, uint32_t over){ // 4 bits - value is real, value2 is added
+  uint32_t tmpp, subs;
+ 	    if (over==0){ //usual - now swopped for >
+	      if (value>value2) tmpp=value; // only if is more than
+	    }
+	    else if (over==1){ // mod
+	      tmpp=value2+=value;
+	      if (tmpp>4095) tmpp=4095;
+	    }
+	    else if (over==2){
+	      tmpp=value2+=value;
+	      tmpp=tmpp%4096;
+	    }
+	    else if (over==3){
+	      subs=value2-value;
+	      tmpp=abs(subs);
+	    }
+	    return tmpp;
+}
 
+inline static uint32_t livevalue(uint32_t which, uint32_t opt){
+  uint32_t tmpp, subs, overoverlay;
+  // options for live value - eg. add global from top (and type of overlays), (sensitivity is already in macros)
+  if (which!=6) tmpp=values[6]; // top voltage - value at the end
+  else { // no options on 6 or?
+    tmpp=real[6];
+    return tmpp;
+  }
+  /* options
+  no overlay, 0,1,2,3 below = 5 options and we want ideally 4 or 7
+  maybe lose 3
+   */
+
+  overoverlay=opt&3;
+  if (overoverlay==0) tmpp=real[which];
+  else if (overoverlay==1){ //usual - now swopped for >
+    if (real[which]>tmpp) tmpp=real[which]; // only if is more than
+  }
+  else if (overoverlay==2){ // mod
+    tmpp+=real[which];
+    if (tmpp>4095) tmpp=4095;
+  }
+  else if (overoverlay==3){
+    tmpp+=real[which];
+    tmpp=tmpp%4096;
+  }
+  return tmpp;
+}
 
 inline static void resetx(uint32_t which){
   for (uint32_t y=0;y<MAXREC;y++){ 
@@ -181,16 +188,15 @@ inline static void resetx(uint32_t which){
 }
 
 void reclayerupper(uint32_t value, uint32_t daccount){
-  recordings[daccount][lay[daccount][1].rec_cnt]=(recordings[daccount][lay[daccount][1].rec_cnt]&4095)+(value<<16);
+  recordings[daccount][fingers[daccount].layer[1].rec_cnt]=(recordings[daccount][fingers[daccount].layer[1].rec_cnt]&4095)+(value<<16);
 }
 
 void reclayerlower(uint32_t value, uint32_t daccount){
-  recordings[daccount][lay[daccount][0].rec_cnt]=(recordings[daccount][lay[daccount][0].rec_cnt]&TOPS)+(value);
+  recordings[daccount][fingers[daccount].layer[0].rec_cnt]=(recordings[daccount][fingers[daccount].layer[0].rec_cnt]&TOPS)+(value);
 }
 
 inline static void changemode(uint32_t dacc){
-  fingers[dacc].majormode++;
-  if (fingers[dacc].majormode>MAXMODES) fingers[dacc].majormode=0;
+  fingers[dacc].majormode[fingers[dacc].state]++;
   fingers[dacc].toggle=0;					
   fingers[dacc].ttoggle=0;
   fingers[dacc].play=0;					
@@ -202,7 +208,10 @@ inline static void changemode(uint32_t dacc){
 inline static void resett(uint32_t dacc){
   fingers[dacc].active=1;
   fingers[dacc].masterL=0;
-  fingers[dacc].majormode=0;
+  fingers[dacc].majormode[0]=0;
+  fingers[dacc].majormode[1]=0;
+  fingers[dacc].majormode[2]=0;
+  fingers[dacc].majormode[3]=0;  
   fingers[dacc].minormode[0]=0;
   fingers[dacc].minormode[1]=0;
   fingers[dacc].playspeed=0;
@@ -239,7 +248,7 @@ inline static uint32_t speedsamplelower(float speedy, uint32_t lengthy, uint32_t
 		 (res *
 		  ((samples[upperPosition+start]&4095) - (samples[lowerPosition+start]&4095))));
 
-      return (uint32_t)sample;
+  return (uint32_t)sample;
 }
 
 inline static uint32_t speedsampleupper(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples){
@@ -260,27 +269,27 @@ inline static uint32_t speedsampleupper(float speedy, uint32_t lengthy, uint32_t
 // STARTY
 void TIM2_IRQHandler(void) 
   {
+    uint32_t speed=0;
     static uint32_t daccount=0;
-    uint32_t j,x,y;
+    uint32_t j,x,y, tmp, autre;
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
-    static uint32_t values[8]={0,0,0,0, 0,0,0,0}; // changed 2/10 NOW STATIC!
-    static int32_t real[8], reall[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static????
-    static int32_t control[4];
     static uint32_t modetoggle=0, newmode=0, count=0;
     static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0};
     static int32_t togrec=0, togplay=0, helder=0, heldon=0, helldone=0, modeheld=0, modechanged=1, first=0;
+    static uint32_t lastvalue[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Thelldone[8]={0,0,0,0, 0,0,0,0};     // helldone=0; heldon=0; modeheld=helder; helder=0;}  but for toggle
     static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Theld[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Thelder[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Newtog[8]={0,0,0,0, 0,0,0,0};      
     static uint32_t oncey=0;
-    uint32_t V_options, P_options, RP_options;
-    const float *playreff[4]={logspeed, logfast, logspeed_stop, logfast_stop}; 
+    uint32_t V_options, R_options, P_options, RP_options;
+    const float *playreff[4]={logfast, logspeed, logfast_stop, logspeed_stop}; 
     const uint32_t SENSESHIFTS[3]={0,1,2}; // just use first 2 for now
     const uint32_t SENSEOFFSETS[3]={64,560,1800};
-    uint32_t remode[4]={0,0,1,1}; // 2 arrays N/R and P/RP
-    
+    const uint32_t remode[4]={0,1,2,2}; // 2 arrays N, R and P/RP
+    const uint32_t whichctrl[8]={0,1,2,3,0,1,2,3}; // ref for newADC speeds
+	  
     if (oncey==0){// can we put this init elsewhere?
       oncey=1;
       for (x=0;x<8;x++){
@@ -298,20 +307,16 @@ void TIM2_IRQHandler(void)
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
-	// micromode logic outside mode switches
-	V_options=fingers[daccount].minormode[0]&3; // V: sens, global, invert  // 3 bits 
-	P_options=fingers[daccount].minormode[1]&31; // P,RP: 11 live overlay, 11 speedarray, 1sync // 5 bits
-	RP_options=(fingers[daccount].minormode[1]&127); // RP: 11 recorded overlay if any // +2 bits
+	// micromode logic outside mode switches - but what if these depend on mode!?
+	if (daccount==6) V_options=fingers[daccount].minormode[0]&1; // V: sens only as we can't sync to itself
+	else V_options=fingers[daccount].minormode[0]&7; // V: sens, sync/global-overlay= 2 bits = 3 bits - except top [6] has no sync opts
+	R_options=fingers[daccount].minormode[1]&3; //  2 bits for 2nd tape overlay options//other options
+	P_options=fingers[daccount].minormode[2]&31; // P,RP: 11 speedarray, 1sync, 11 live overlay, // 5 bits
+	RP_options=(fingers[daccount].minormode[2]&127); // RP: 11 recorded overlay if any // +2 bits
 
 	fingers[daccount].sensi=V_options&1; // first bit - sensitivity is in macros
-	// more of minormodes?
-	/* 
-	   - TODO: pull out as much as possible from mode/switches// also use of function pointers for minormode options..
-	   - functions for global and invert ->live
-	   - speedarray we have
-	   - see where we place live overlay and sync=global//sync speeds to top newADC or not=speedfunction
-	*/
-	
+	fingers[daccount].playspeed=P_options&2; // speedarray
+
 	// functions outside switch
 	FREEZERS;
 	REALADC;
@@ -348,7 +353,45 @@ void TIM2_IRQHandler(void)
 	  else fingers[daccount].state=N;
 	}
 	
-	  // do main mode/state work with switches within this 
+	  // do main mode/state work with switches within this
+	
+	// NADA: TODO: geomantic mode thing - could be only for all modes which are active
+	if (fingers[daccount].state==N){ 
+	  RESETFRN; 
+	  fingers[daccount].lastmode=0;
+	  tmp=livevalue(daccount, V_options);
+	  DOFREEZE;
+	  values[daccount]=tmp;
+	} // end NADA
+	else fingers[daccount].entryn=0;
+
+	// PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that TODO: add to list and play from list
+	if (fingers[daccount].state==P){ 
+	  RESETFRP; // reset what we must
+	  fingers[daccount].lastmode=0;
+	  fingers[daccount].masterL=fingers[daccount].toggle;
+	  speed=control[whichctrl[daccount]]>>2;  // TODO: add speed sync/top
+	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]);  // start is 0 TESTY
+	  tmp=livevalue(daccount, V_options); 
+	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay
+	} // end PLAY
+	else fingers[daccount].entryp=0;
+
+	// REC: ADC->overlay to other tape
+	// freeze as swop main tape... // further REC adds sections to main tape...// what we hear is voltage+newADCoverlay? - ADD to rec means just don't reset end counter // we don't
+	if (fingers[daccount].state==R){ 
+	  RESETFRR; 
+	  fingers[daccount].lastmode=0;
+	  fingers[daccount].masterL=fingers[daccount].toggle;
+	  tmp=livevalue(daccount, V_options); 
+	  autre=fingers[daccount].masterL;
+	  RECLAYER; // autre is our layer for the macro  
+	  autre=fingers[daccount].masterL^1;
+	  tmp=overlay(tmp, control[whichctrl[daccount]], R_options&3);
+	  values[daccount]=tmp;
+	  RECLAYER;
+	} // end REC
+	else fingers[daccount].entryr=0;
 	
 	// end of modes 
 	

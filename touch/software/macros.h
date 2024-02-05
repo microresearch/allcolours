@@ -1,4 +1,25 @@
-#// MACROS 
+// MACROS 
+
+#define RECLAYER {				\
+ fingers[daccount].layer[autre].reclayer(tmp, daccount);		\
+ fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt;	\
+ fingers[daccount].layer[autre].rec_cnt++;				\
+ if (fingers[daccount].layer[autre].rec_cnt>MAXREC) {			\
+ fingers[daccount].layer[autre].rec_cnt=0;				\
+  fingers[daccount].layer[autre].rec_end=MAXREC;\
+ }						\
+}
+
+#define DOFREEZE {				\
+ if (fingers[daccount].ttoggle)			\
+   {						\
+ lastvalue[daccount]=tmp;			\
+ fingers[daccount].ttoggle=0;			\
+   }						\
+ else {									\
+   if (tmp<lastvalue[daccount]) tmp=lastvalue[daccount];		\
+ }									\
+ }
 
 #define RESETT {					\
     mode=0; rec=0; play=0;				\
@@ -18,93 +39,27 @@
     }							\
   }
 
-#define RESETFRP {				\
-  if (entryp==0){						\
-    frozen[0]=0;					\
-    frozen[1]=0;					\
-    frozen[2]=0;					\
-    frozen[3]=0;					\
-    frozen[4]=0;					\
-    frozen[5]=0;					\
-    frozen[6]=0;					\
-    frozen[7]=0;					\
-    lastvalue[0]=0;					\
-    lastvalue[1]=0;					\
-    lastvalue[2]=0;					\
-    lastvalue[3]=0;					\
-    lastvalue[4]=0;					\
-    lastvalue[5]=0;					\
-    lastvalue[6]=0;					\
-    lastvalue[7]=0;					\
-    freezetoggle[0]=0;					\
-    freezetoggle[1]=0;					\
-    freezetoggle[2]=0;					\
-    freezetoggle[3]=0;					\
-    freezetoggle[4]=0;					\
-    freezetoggle[5]=0;					\
-    freezetoggle[6]=0;					\
-    freezetoggle[7]=0;					\
-    entryp=1;						\
-  }							\
+#define RESETFRP {							\
+  if (fingers[daccount].entryp==0){					\
+    lastvalue[daccount]=0;						\
+    fingers[daccount].entryp=1;						\
+    fingers[daccount].toggle=0;						\
+    fingers[daccount].layer[0].play_cnt=0;				\
+    fingers[daccount].layer[1].play_cnt=0;				\
+  }									\
   }
 
 #define RESETFRN {				\
-  if (entryn==0){						\
-    frozen[0]=0;					\
-    frozen[1]=0;					\
-    frozen[2]=0;					\
-    frozen[3]=0;					\
-    frozen[4]=0;					\
-    frozen[5]=0;					\
-    frozen[6]=0;					\
-    frozen[7]=0;					\
-    lastvalue[0]=0;					\
-    lastvalue[1]=0;					\
-    lastvalue[2]=0;					\
-    lastvalue[3]=0;					\
-    lastvalue[4]=0;					\
-    lastvalue[5]=0;					\
-    lastvalue[6]=0;					\
-    lastvalue[7]=0;					\
-    freezetoggle[0]=0;					\
-    freezetoggle[1]=0;					\
-    freezetoggle[2]=0;					\
-    freezetoggle[3]=0;					\
-    freezetoggle[4]=0;					\
-    freezetoggle[5]=0;					\
-    freezetoggle[6]=0;					\
-    freezetoggle[7]=0;					\
-    entryn=1;						\
+  if (fingers[daccount].entryn==0){						\
+    lastvalue[daccount]=0;					\
+    fingers[daccount].entryn=1;						\
   }							\
   }
 
 #define RESETFRR {				\
-  if (entryr==0){						\
-    frozen[0]=0;					\
-    frozen[1]=0;					\
-    frozen[2]=0;					\
-    frozen[3]=0;					\
-    frozen[4]=0;					\
-    frozen[5]=0;					\
-    frozen[6]=0;					\
-    frozen[7]=0;					\
-    lastvalue[0]=0;					\
-    lastvalue[1]=0;					\
-    lastvalue[2]=0;					\
-    lastvalue[3]=0;					\
-    lastvalue[4]=0;					\
-    lastvalue[5]=0;					\
-    lastvalue[6]=0;					\
-    lastvalue[7]=0;					\
-    freezetoggle[0]=0;					\
-    freezetoggle[1]=0;					\
-    freezetoggle[2]=0;					\
-    freezetoggle[3]=0;					\
-    freezetoggle[4]=0;					\
-    freezetoggle[5]=0;					\
-    freezetoggle[6]=0;					\
-    freezetoggle[7]=0;					\
-    entryr=1;						\
+  if (fingers[daccount].entryr==0){						\
+    lastvalue[daccount]=0;					\
+    fingers[daccount].entryr=1;						\
   }							\
   }
 
@@ -476,21 +431,6 @@ switch(daccount){						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   speed=ADC_GetConversionValue(ADC1);					\
   if (speed>1023) speed=1023;			\
-  }
-
-#define LASTPLAY {					\
-    if (lastplay==0) {					\
-      lastplay=1;					\
-      play_cnt[0]=0.0f;					\
-      play_cnt[1]=0.0f;					\
-      play_cnt[2]=0.0f;					\
-      play_cnt[3]=0.0f;					\
-      play_cnt[4]=0.0f;					\
-      play_cnt[5]=0.0f;					\
-      play_cnt[6]=0.0f;					\
-      play_cnt[7]=0.0f;					\
-      playminor=0;					\
-    }							\
   }
 
 #define LASTPLAYFR {					\

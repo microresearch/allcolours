@@ -392,7 +392,7 @@ void TIM2_IRQHandler(void) // running with period=1024, prescale=32 at 2KHz
 	//rec -nada
 	
 	//overlay
-	overoverlay=((overminor>>1)&3); // 2 types of overlay
+	overoverlay=((overminor>>1)&3); // 4 types of overlay
 	overrec=((overminor>>3)&3); // type of recorded overlay 
 	overspeedmod=((overminor>>5)&1);// 
 
