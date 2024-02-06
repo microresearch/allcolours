@@ -31,7 +31,7 @@ R+P:
 NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - NONinvert is take value from top, but what is "fake swop"?
 REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...// what we hear is voltage+overlay
 PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that
-REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape if >// minormodes here)
+REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape minormodes here)
 
 Q of global speed... *new top ADC is global control. also we have sync functions*
 
@@ -201,9 +201,82 @@ RP: 4 types of recorded overlay
 
 * diary notes
 
+** 6/4.2024
+
+*Maybe first mode has no playlist - is really the most simple possible IMPLEMENT/test*
+
+- *In RP: types of recorded overlays, and length of overlay to fix*
+
+from strip.c
+
+	    // different overlays
+	    if (overrec==0){
+	      if (rec_cnt[daccount]<MAXREC) recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + values[daccount]; // keep top values...
+	      else recordings[daccount][rec_cnt[daccount]-MAXREC]=(recordings[daccount][rec_cnt[daccount]-MAXREC]&4095)+(values[daccount]<<16); // top bits
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>ender[daccount]) { // other micromodes here to extend maybe???
+		rec_cnt[daccount]=0;
+	    }
+	    }
+	    else if (overrec==1){
+	      tmp=(recordings[daccount][rec_cnt[daccount]]&4095) + real[daccount];
+	      if (tmp>4095) tmp=4095;
+	      if (rec_cnt[daccount]<MAXREC) recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + tmp; 
+	      else recordings[daccount][rec_cnt[daccount]-MAXREC]=(recordings[daccount][rec_cnt[daccount]-MAXREC]&4095)+(tmp<<16); // top bits
+	      rec_cnt[daccount]++;
+	      if (rec_cnt[daccount]>ender[daccount]) { // other micromodes here to extend maybe???
+		rec_cnt[daccount]=0;
+	    }
+	    }
+	    else if (overrec==2){
+	      if ((int)play_cnt[daccount]<MAXREC) recordings[daccount][(int)play_cnt[daccount]]=(recordings[daccount][(int)play_cnt[daccount]]&TOPS) + values[daccount];
+	      else recordings[daccount][(int)play_cnt[daccount]-MAXREC]=(recordings[daccount][(int)play_cnt[daccount]-MAXREC]&4095)+(values[daccount]<<16); // top bits	      
+	    }
+	    else if (overrec==3){
+	      tmp=(recordings[daccount][(int)play_cnt[daccount]]&4095) + real[daccount];
+	      if (tmp>4095) tmp=4095;
+	      if ((int)play_cnt[daccount]<MAXREC) recordings[daccount][(int)play_cnt[daccount]]=(recordings[daccount][(int)play_cnt[daccount]]&TOPS) + tmp;
+	      else recordings[daccount][(int)play_cnt[daccount]-MAXREC]=(recordings[daccount][(int)play_cnt[daccount]-MAXREC]&4095)+(tmp<<16); // top bits	      
+	    }
+
+
+- latest notebook notes for playlist:
+
+problem with playlist is how we accommodate additions to rec... as we only add what we have from beginning in playlist...
+
+options:
+- new rec adds to playlist?
+- we reboot playlist every time we have new rec
+
+- playlist more as a journey -> R.P. so can be reset by R (or not, depends on mode)
+- perhaps have now soft and hard resets - eg. soft resets rec and play tapes but doesn't change other mode stuff...
+
+/////
+
+- test2.c in progress: walking through a playlist seems to work...
+
+-> port into 2024.c DONE: to test - *we need to have playlist[0] established as reclength somewhere?*
+
+how we deal with layer changes... should be easy...
+
+port code... need to watch start and length
+
+offset/start is issue or not in the test code?
+
+DONE: BUT now we need to add in: add/rec to play list... eg. section x is added when it is played to the end or as we leave...
+
+TESTED in test2.c adding as we go along but not sure how we deal with leaving... (as +1 is the next one in list)... watch we don't go over 118
+last when we leave will be added next turn round...
+
 ** 5/4/2024
 
-Filling in basic modes: 
+TODO: implement our basic first mode with all opts... and test all mode changes etc IN PROGRESS
+
+= implement playlist in P, sketch out RP when we have that list: needs to be in speedsample... as can be overlaps...
+
+maybe test first on lap///
+
+// so playlist is: playlist which has start, length, layer, playfull which is number of elements and playcnt which is our counter into these
 
 notebook notes:
 
@@ -217,8 +290,6 @@ notebook notes:
 - did we write down slippage mode in R, maybe in RP where we slide across
 - *for newADC in base mode above we need type of overlay in R!*
 - what was self/island mode where we write to same tape in some part which repeats and how to adapt to 2 tapes // translate all prveioud major modes and new ideas here
-
-TODO: implement our basic first mode with all opts... and test all mode changes etc IN PROGRESS
 
 ** 4/4/2024
 

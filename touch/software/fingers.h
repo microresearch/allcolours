@@ -8,8 +8,8 @@ typedef struct layers_ {
 } layers;
 
     typedef struct listy_ { 
-      uint32_t start[120];  
-      uint32_t length[120];
+      uint32_t start;  
+      uint32_t length;
       uint8_t layer;
     } playl;
 
@@ -29,8 +29,9 @@ typedef struct layers_ {
       uint32_t playspeed; // index into playreff
       uint32_t toggle, ttoggle;
       layers layer[2]; // rec layers count and functions for access
-      playl playlist;// list of playbacks
-      uint32_t playcnt; // 
+      playl playlist[120];// list of playbacks
+      uint32_t playcnt; // for play of playlist
+      uint32_t playcntr; // for rec of playlist
       uint32_t playfull; // how many elements in the playlist
       uint32_t overlaid; /// how we enter RP
       uint32_t lastmode;
@@ -40,3 +41,5 @@ typedef struct layers_ {
     } hands;
 
 static hands fingers[8];
+
+// so playlist is: playlist which has start, length, layer, playfull which is number of elements and playcnt which is our counter into these

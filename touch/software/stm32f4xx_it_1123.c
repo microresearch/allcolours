@@ -582,7 +582,7 @@ void TIM2_IRQHandler(void)
 	      }
 	  } // not overlaid//leaving ////
 	    else {
-	      lay[daccount][otherlayer].end=lay[daccount][otherlayer].cnt;
+	      lay[daccount][otherlayer].end=lay[daccount][otherlayer].cnt; // hold this somewhere or above
 	      llrec=0;
 	      entryo=0;
 	    }

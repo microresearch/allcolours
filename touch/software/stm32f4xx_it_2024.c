@@ -47,6 +47,7 @@ static uint32_t recordings[8][MAXREC+1]={0}; //
 static int32_t real[8], reall[8];//, realfr[8]={0,0,0,0, 0,0,0,0}; // not static????
 static int32_t control[4];
 static uint32_t values[8]={0,0,0,0, 0,0,0,0}; // changed 2/10 NOW STATIC!
+const uint32_t whichctrl[8]={0,1,2,3,0,1,2,3}; // ref for newADC speeds
 
 #include "fingers.h"
 
@@ -130,6 +131,83 @@ inline static float mod0(float value, float length)
   while (value > (length-1))
         value -= length;
     return value;
+}
+
+float mod0X(float value, float length, uint32_t dacc)
+{
+  while (value > (length-1)){ // we are ahead
+    value -= length; //0
+    // get next in list
+    fingers[dacc].playcnt+=1;
+    if (fingers[dacc].playcnt>fingers[dacc].playfull) fingers[dacc].playcnt=0;
+    fingers[dacc].playcntr+=1;
+    if (fingers[dacc].playcntr>118) fingers[dacc].playcntr=0;
+    //    printf("//playcnt %d playcntr %d len %d //",playcnt, playcntr, playlist[playcntr].length);
+    length=fingers[dacc].playlist[fingers[dacc].playcnt].length;
+  }
+    return value;
+}
+
+float mod0XX(float value, float length, uint32_t dacc)
+{
+  uint32_t tmp;
+  tmp=fingers[dacc].playcnt;
+
+  while (value > (length-1)){ // we are ahead
+    value -= length; //0
+    // get next in list
+    tmp+=1;
+    if (tmp>fingers[dacc].playfull) tmp=0;
+    length=fingers[dacc].playlist[tmp].length;
+  }
+    return value;
+}
+
+// TODO: we need to resolve layers and also start...
+inline static uint32_t speedsample_playlist(float speedy, uint32_t dacc, uint32_t *samples, uint32_t start, uint32_t layerr){ // for both lower and upper? TODO!
+  uint32_t lowerPosition, upperPosition;
+  float sample;
+  uint32_t lengthy=fingers[dacc].playlist[fingers[dacc].playcnt].length;
+
+  
+  fingers[dacc].layer[layerr].play_cnt=mod0X(  fingers[dacc].layer[layerr].play_cnt+speedy, lengthy, dacc);
+  lengthy=fingers[dacc].playlist[fingers[dacc].playcnt].length;
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)  fingers[dacc].layer[layerr].play_cnt;
+  upperPosition = mod0XX(lowerPosition + 1, lengthy, dacc);
+
+  // test addings
+  fingers[dacc].playlist[fingers[dacc].playcntr+1].length=(int)fingers[dacc].layer[layerr].play_cnt+1;
+  fingers[dacc].playlist[fingers[dacc].playcntr+1].start=start; // ????
+  fingers[dacc].playlist[fingers[dacc].playcntr+1].layer=layerr;
+  fingers[dacc].playfull=fingers[dacc].playcntr;
+
+  start=fingers[dacc].playlist[fingers[dacc].playcnt].start;
+  layerr=fingers[dacc].playlist[fingers[dacc].playcnt].layer;
+  int32_t res=(fingers[dacc].layer[layerr].play_cnt - (float)lowerPosition);
+  if (layerr==0) {
+  sample= ((samples[lowerPosition+start]&4095) + 
+		 (res *
+		  ((samples[upperPosition+start]&4095) - (samples[lowerPosition+start]&4095))));
+  }
+  else
+    {
+  sample= ((samples[lowerPosition+start]>>16) + 
+		 (res *
+		  ((samples[upperPosition+start]>>16) - (samples[lowerPosition+start]>>16)))); 
+    }
+  return (uint32_t)sample;
+}
+
+inline static uint32_t speedop(uint32_t dacc, uint32_t opt){
+  uint32_t tmpp;
+  tmpp=control[whichctrl[dacc]]>>2;
+  if (opt&1){
+    tmpp+=control[2]; // top
+    if (tmpp>1023) tmpp=1023;
+  }
+  return tmpp;
 }
 
 inline static uint32_t overlay(uint32_t value, uint32_t value2, uint32_t over){ // 4 bits - value is real, value2 is added
@@ -236,12 +314,15 @@ inline static void resett(uint32_t dacc){
   fingers[dacc].entryrp=0;
 }
 
+// draft new speedsample for list:
+
+
 inline static uint32_t speedsamplelower(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition;
   
   fingers[dacc].layer[0].play_cnt=mod0(fingers[dacc].layer[0].play_cnt+speedy, lengthy);
   lowerPosition = (int)fingers[dacc].layer[0].play_cnt;
-  upperPosition = mod0(lowerPosition + 1, lengthy);
+  upperPosition = mod0(lowerPosition + 1, lengthy); // wrap... or entry into next in list?
   
   int32_t res=(fingers[dacc].layer[0].play_cnt - (float)lowerPosition);
   float sample= ((samples[lowerPosition+start]&4095) + 
@@ -271,7 +352,7 @@ void TIM2_IRQHandler(void)
   {
     uint32_t speed=0;
     static uint32_t daccount=0;
-    uint32_t j,x,y, tmp, autre;
+    uint32_t j,x,y, tmp, tmpy, autre;
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     static uint32_t modetoggle=0, newmode=0, count=0;
     static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0};
@@ -288,7 +369,6 @@ void TIM2_IRQHandler(void)
     const uint32_t SENSESHIFTS[3]={0,1,2}; // just use first 2 for now
     const uint32_t SENSEOFFSETS[3]={64,560,1800};
     const uint32_t remode[4]={0,1,2,2}; // 2 arrays N, R and P/RP
-    const uint32_t whichctrl[8]={0,1,2,3,0,1,2,3}; // ref for newADC speeds
 	  
     if (oncey==0){// can we put this init elsewhere?
       oncey=1;
@@ -302,8 +382,7 @@ void TIM2_IRQHandler(void)
     }
     }
     
-
-    if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
+    if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) 
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
@@ -365,20 +444,22 @@ void TIM2_IRQHandler(void)
 	} // end NADA
 	else fingers[daccount].entryn=0;
 
-	// PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that TODO: add to list and play from list
+	// PLAY: ADC->speed // toggle is swop
 	if (fingers[daccount].state==P){ 
-	  RESETFRP; // reset what we must
+	  RESETFRP; // DONEdeal with playfull if is 0
 	  fingers[daccount].lastmode=0;
-	  fingers[daccount].masterL=fingers[daccount].toggle;
-	  speed=control[whichctrl[daccount]]>>2;  // TODO: add speed sync/top
-	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]);  // start is 0 TESTY
+	  fingers[daccount].masterL=fingers[daccount].toggle; // add to playlist if we change
+	  speed=speedop(daccount, (P_options>>2)&1); // TEST: added speed sync/top
+
+	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]);  // start is always 0 TESTY??? RECEND is our length
+	  
 	  tmp=livevalue(daccount, V_options); 
 	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay
 	} // end PLAY
 	else fingers[daccount].entryp=0;
 
 	// REC: ADC->overlay to other tape
-	// freeze as swop main tape... // further REC adds sections to main tape...// what we hear is voltage+newADCoverlay? - ADD to rec means just don't reset end counter // we don't
+	// freeze as swop main tape... // further REC adds sections to main tape...// we hear is voltage+newADCoverlay - ADD to rec means just don't reset end counter // we don't
 	if (fingers[daccount].state==R){ 
 	  RESETFRR; 
 	  fingers[daccount].lastmode=0;
@@ -387,12 +468,30 @@ void TIM2_IRQHandler(void)
 	  autre=fingers[daccount].masterL;
 	  RECLAYER; // autre is our layer for the macro  
 	  autre=fingers[daccount].masterL^1;
-	  tmp=overlay(tmp, control[whichctrl[daccount]], R_options&3);
+	  tmp=overlay(tmp, control[whichctrl[daccount]], R_options&3); // overlay of CTRL
 	  values[daccount]=tmp;
 	  RECLAYER;
 	} // end REC
 	else fingers[daccount].entryr=0;
-	
+
+	// REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape minormodes here)
+	if (fingers[daccount].state==RP){ 
+	  RESETFRRP; 
+	  fingers[daccount].lastmode=1; // in this case!
+	  fingers[daccount].masterL=fingers[daccount].toggle;
+	  tmp=livevalue(daccount, V_options); 
+	  speed=speedop(daccount, (P_options>>2)&1); // TEST: added speed sync/top
+	  autre=fingers[daccount].masterL^1; // opposite...
+	  
+	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]); // as per play above ** would be playlist in playlist modes
+	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay
+
+	  tmp=values[daccount]; // replace with reclayer options... eg. if we add to what is there??? if we extend past the end...
+	  RECLAYER; // TODO: this does extend past the end... 
+	  fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; // this was outside RP below before...
+	} //end RP
+	else fingers[daccount].entryrp=0;
+
 	// end of modes 
 	
 	WRITEDAC2;

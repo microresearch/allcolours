@@ -39,62 +39,38 @@
     }							\
   }
 
+// deal with playfull as a 0
 #define RESETFRP {							\
   if (fingers[daccount].entryp==0){					\
     lastvalue[daccount]=0;						\
-    fingers[daccount].entryp=1;						\
-    fingers[daccount].toggle=0;						\
     fingers[daccount].layer[0].play_cnt=0;				\
     fingers[daccount].layer[1].play_cnt=0;				\
+    fingers[daccount].entryp=1;						\
   }									\
   }
 
-#define RESETFRN {				\
-  if (fingers[daccount].entryn==0){						\
-    lastvalue[daccount]=0;					\
-    fingers[daccount].entryn=1;						\
-  }							\
+#define RESETFRN {							\
+    if (fingers[daccount].entryn==0){					\
+      lastvalue[daccount]=0;						\
+      fingers[daccount].entryn=1;					\
+    }									\
   }
 
-#define RESETFRR {				\
-  if (fingers[daccount].entryr==0){						\
-    lastvalue[daccount]=0;					\
-    fingers[daccount].entryr=1;						\
-  }							\
+#define RESETFRR {							\
+    if (fingers[daccount].entryr==0){					\
+      lastvalue[daccount]=0;						\
+      fingers[daccount].layer[0].play_cnt=0;				\
+      fingers[daccount].layer[1].play_cnt=0;				\
+      fingers[daccount].entryr=1;					\
+    }									\
   }
 
-#define RESETFRO {				\
-  if (entryo==0){						\
-    frozen[0]=0;					\
-    frozen[1]=0;					\
-    frozen[2]=0;					\
-    frozen[3]=0;					\
-    frozen[4]=0;					\
-    frozen[5]=0;					\
-    frozen[6]=0;					\
-    frozen[7]=0;					\
-    lastvalue[0]=0;					\
-    lastvalue[1]=0;					\
-    lastvalue[2]=0;					\
-    lastvalue[3]=0;					\
-    lastvalue[4]=0;					\
-    lastvalue[5]=0;					\
-    lastvalue[6]=0;					\
-    lastvalue[7]=0;					\
-    freezetoggle[0]=0;					\
-    freezetoggle[1]=0;					\
-    freezetoggle[2]=0;					\
-    freezetoggle[3]=0;					\
-    freezetoggle[4]=0;					\
-    freezetoggle[5]=0;					\
-    freezetoggle[6]=0;					\
-    freezetoggle[7]=0;					\
-    entryo=1;						\
-  }							\
+#define RESETFRRP {						\
+    if (fingers[daccount].entryrp==0){				\
+      fingers[daccount].entryrp=1;				\
+    }								\
   }
 
-
-// to redo so all is done in one go and does not repeat - also with freezers
 #define TEST_TOGGLES {				  \
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
