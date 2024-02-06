@@ -1,4 +1,18 @@
-	case 32:
+    if (fingers[daccount].playfull==0) {				\
+    fingers[daccount].playlist.start[0]=0;				\
+    fingers[daccount].playlist.length[0]=fingers[daccount].layer[fingers[daccount].masterL].rec_end; \
+    fingers[daccount].playlist.layer[0]=fingers[daccount].masterL;	\
+    fingers[daccount].playcnt=0;					\
+    }									\
+    else {								\
+    fingers[daccount].playfull+=1;					\
+    if (fingers[daccount].playfull>119) fingers[daccount].playfull=1;	\
+    fingers[daccount].playcnt=1;					\
+    };									\
+    if (fingers[daccount].playfull>119) fingers[daccount].playfull=1;	\
+
+
+case 32:
 	  // as mode 30?XX but we reset rec_cnt once...
 	  // basic mode with NO freezers, record and play and overlay with freeze/unfreeze of all, no speed changes at all...
 	  // alt logic - rec and play just reset counters as soon as hit
