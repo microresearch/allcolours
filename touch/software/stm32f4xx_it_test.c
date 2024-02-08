@@ -195,176 +195,6 @@ static hands fingers[8];
    //static uint32_t shifter[8]={1,1,1,1,1,1,1,1}; // shifter seperates vca from cv - no shift here
    uint32_t previousone[8]={3,0,1,2, 7,4,5,6}; // lowest voltage=4?, then VCAs from bottom order=0,1,2,3, 4,5,6,7
 
-   //static uint32_t order[8]={7,6,5,4,3,2,1,0}; // 03 is VCA from bottom
-   //static uint32_t order[8]={5,5,5,5,5,5,5,5}; // 0-3 is VCA from bottom
-
-   inline static float mod0(float value, float length)
-   {
-     while (value > (length-1))
-	   value -= length;
-       return value;
-   }
-
-   inline static uint32_t speedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
-     uint32_t lowerPosition, upperPosition;
-
-     play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)play_cnt[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(play_cnt[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     float sample= ((samples[lowerPosition]&4095) + 
-		    (res *
-		     ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); // adapted for top bits
-
-	 return (uint32_t)sample;
-   }
-
-   inline static uint32_t speedsampleD(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){ // double length
-     uint32_t lowerPosition, upperPosition;
-     uint32_t samplelower, sampleupper;
-
-     play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)play_cnt[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(play_cnt[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     if (lowerPosition<MAXREC) samplelower=(samples[lowerPosition]&4095);
-     else samplelower=(samples[lowerPosition-MAXREC]>>16);
-
-     if (upperPosition<MAXREC) sampleupper=(samples[upperPosition]&4095);
-     else sampleupper=(samples[upperPosition-MAXREC]>>16);
-
-
-     float sample= ((samplelower) + 
-		    (res *
-		     ((sampleupper) - (samplelower))));
-
-	 return (uint32_t)sample;
-   }
-
-   inline static uint32_t speedsampletop(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
-     uint32_t lowerPosition, upperPosition;
-
-     play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)play_cnt[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(play_cnt[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     float sample= ((samples[lowerPosition]>>16) + 
-		    (res *
-		     ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); // adapted for top bits
-
-	 return (uint32_t)sample;
-   }
-
-   inline static uint32_t speedsamplelop(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
-     uint32_t lowerPosition, upperPosition;
-
-     play_cnt_lop[dacc]=mod0(play_cnt_lop[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)play_cnt_lop[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(play_cnt_lop[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     float sample= ((samples[lowerPosition]&4095) + 
-		    (res *
-		     ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); // adapted for top bits
-
-	 return (uint32_t)sample;
-   }
-
-   inline static uint32_t speedsampleloptop(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){
-     uint32_t lowerPosition, upperPosition;
-
-     play_cnt_lop[dacc]=mod0(play_cnt_lop[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)play_cnt_lop[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(play_cnt_lop[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     float sample= ((samples[lowerPosition]>>16) + 
-		    (res *
-		     ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); // adapted for top bits
-
-	 return (uint32_t)sample;
-   }
-
-
-   inline static uint32_t speedsamplecopy(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples, uint32_t *copyinto){
-     uint32_t lowerPosition, upperPosition;
-
-     play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)play_cnt[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(play_cnt[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     float sample= ((samples[lowerPosition]&4095) + 
-		    (res *
-		     ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); // adapted for top bits
-
-     copyinto[lowerPosition]=samples[lowerPosition];
-
-     return (uint32_t)sample;
-   }
-
-   inline static uint32_t ownspeedsample(float speedy, uint32_t lengthy, uint32_t dacc, uint32_t *samples){ // for upper speed bits // returns these
-     uint32_t lowerPosition, upperPosition;
-
-     ownplay_cnt[dacc]=mod0(ownplay_cnt[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)ownplay_cnt[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(ownplay_cnt[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     float sample= ((samples[lowerPosition]>>16) + 
-		    (res *
-		     ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); // adapted for top bits
-
-	 return (uint32_t)sample;
-   }
-
-   inline static uint32_t speedsamplestart(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples){
-     uint32_t lowerPosition, upperPosition;
-
-     play_cnt[dacc]=mod0(play_cnt[dacc]+speedy, lengthy);
-
-       //  Find surrounding integer table positions
-     lowerPosition = (int)play_cnt[dacc];
-     upperPosition = mod0(lowerPosition + 1, lengthy);
-
-     int32_t res=(play_cnt[dacc] - (float)lowerPosition);
-       //  Return interpolated table value
-     float sample= ((samples[lowerPosition+start]&4095) + 
-		    (res *
-		     ((samples[upperPosition+start]&4095) - (samples[lowerPosition+start]&4095)))); // adapted for top bits
-
-	 return (uint32_t)sample;
-   }
-
-   inline static void resetx(uint32_t which){
-     for (uint32_t y=0;y<MAXREC;y++){ 
-       recordings[which][y]=0;
-     }
-   }
 
 
    // STARTY
@@ -403,7 +233,7 @@ static hands fingers[8];
        static uint32_t count=0, triggered[11]={0}, mode=0, starter[8]={0,0,0,0,0,0,0,0}, freezetoggle[8]={0,0,0,0,0,0,0,0}, ender[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, enderr[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, enderspd[8]={MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC, MAXREC}, recsp[8]={0}, baseminor=0,recminor=0,playminor=0,overminor=0,nadaminor=0;
        static uint32_t lasttriggered[11]={0}, mbreaker=0, lastlastrec=0, llrec=0,lastlastplay, lastlast;
        static int32_t endpoint, togrec=0, togplay=0, helder=0, heldon=0, helldone=0, modeheld=0, modechanged=1, first=0, firsty[8]={0}, breaker[11]={0};
-       static uint32_t testting=0;
+       static uint32_t testingl=0, testingt=0;
 
     static uint32_t Thelldone[8]={0,0,0,0, 0,0,0,0};     // helldone=0; heldon=0; modeheld=helder; helder=0;}  but for toggle
     static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
@@ -428,12 +258,16 @@ static hands fingers[8];
        if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) // this was missing ???
        {
 	   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	   mode=778; // TESTY 777 // 778 is timing tests...
-
+	   
+	   mode=779; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
+	   
 	   // SHIFTS
 	   // SENSESHIFT=2, SENSEOFFSET=1800; 
 	   //SENSESHIFT=1, SENSEOFFSET=560;
-	   SENSESHIFT=0, SENSEOFFSET=64; 
+	   //	   SENSESHIFT=0, SENSEOFFSET=64;
+
+	   fingers[4].sensi=1;
+	   fingers[0].sensi=1;
 	   switch(mode){
 
 	   case 0: // test realadc and dacs...
@@ -458,39 +292,12 @@ static hands fingers[8];
 	     break;
 
 	   case 667:
-	     // testing new modes with modetoggle and new ADC
-	     /*	     CTRL;
-	     if (helldone) {// there is a mode press
-	       if (control[0]>16) {
-	       helldone=0;
-	       testting^=1;
-	       }
-	     }
-	     //	     if (!heldon) values[4]=control[0];
-	     */
-	     // working
-	     /*	     if (helldone){ // press
-	       if (firsty[0]){
-		   freezetoggle[4]=0;
-		   firsty[0]=0;
-		 }
-	     if (freezetoggle[4]) {
-	       //	       testting^=1;
-	       helldone=0;
-	       frozen[4]^=1;
-		     }
-	     }
-	     else firsty[0]=1;
-	     */
-	     testting=frozen[4];
-	     
-	     if (testting) { 
+	     testingl=fingers[4].toggle;
+	     if (testingl) { 
 	    values[4]=4095;
 	  }
 	  else values[4]=0;
-	     
 	     break;
-	       
 	     
 	   case 777: // tests of all toggles! rec, play, mode and freeze
 	     //	  FREEZERS;
@@ -527,32 +334,32 @@ static hands fingers[8];
 	  break; /////
 
 	case 778: // for hold timing tests below:
-	  //	  if (baseminor==4) 	  {
-	  //	    testting^=1; // testy
-	  //	    baseminor=0;
-	  //	  }
-	  if (testting) { 
+	  if (testingl) { 
 	    values[4]=4095;
 	  }
 	  else values[4]=0;
-	  
-	  //	  values[4]=baseminor*10;
 	  break; /////	    
-	}
 
+       case 779: // for toggle longer 
+
+	  if (testingt) { 
+	    values[4]=4095;
+	  }
+	  else values[4]=0;
+	   break;
+	   } // switch
+	   
+	   TEST_TOGGLES;      // only place where toggles - pulled out of ==8 section
+	// see if works best there?
 	   FREEZERS;
-
 	   if (Newtog[4]){
 	     Newtog[4]=0;
 	     if (Theld[4]>LONGTOG) {
 	       Theld[4]=0;
-	     testting^=1; // testy
+	     testingt^=1; // testy
 	     }
 	   }
 	   
-	   TEST_TOGGLES;      // only place where toggles - pulled out of ==8 section
-	// see if works best there?
-	
 	WRITEDAC2;
 	daccount++;
 	if (daccount==8) {
@@ -572,7 +379,7 @@ static hands fingers[8];
 	    if (modeheld>HOLDRESET) { //reset all
 	  modeheld=0;
 	  RESETT;
-	  //	  testting^=1; // testy
+	  testingl^=1; // testy
 	}
 	else if (modeheld>LONGMODE && modeheld<HOLDRESET) { // increment major mode
 	  modeheld=0;
