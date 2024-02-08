@@ -1,0 +1,270 @@
+(kicad_sch (version 20211123) (generator eeschema)
+
+  (uuid d1a2e0ee-e820-45a5-8d88-1c30af839ba4)
+
+  (paper "A4")
+
+  (lib_symbols
+  )
+
+
+  (sheet (at 22.479 31.75) (size 50.546 12.446) (fields_autoplaced)
+    (stroke (width 0) (type solid) (color 0 0 0 0))
+    (fill (color 0 0 0 0.0000))
+    (uuid 00000000-0000-0000-0000-00005f998324)
+    (property "Sheet name" "panel_touch" (id 0) (at 22.479 31.0384 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheet file" "panel_touch.kicad_sch" (id 1) (at 22.479 44.7806 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+    (path "/00000000-0000-0000-0000-00005f998324" (page "2"))
+  )
+
+  (symbol_instances
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285286"
+      (reference "#PWR01") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28525d"
+      (reference "#PWR02") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2623e4"
+      (reference "#PWR03") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f25fe64"
+      (reference "#PWR04") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285278"
+      (reference "#PWR05") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28524f"
+      (reference "#PWR06") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2623d6"
+      (reference "#PWR07") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f25fd4b"
+      (reference "#PWR08") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285328"
+      (reference "#PWR013") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852ff"
+      (reference "#PWR014") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f60"
+      (reference "#PWR015") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f37"
+      (reference "#PWR016") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28531a"
+      (reference "#PWR017") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852f1"
+      (reference "#PWR018") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f52"
+      (reference "#PWR019") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f29"
+      (reference "#PWR020") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f99a0a0"
+      (reference "#PWR027") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f9a15f1"
+      (reference "#PWR028") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f99c13b"
+      (reference "#PWR029") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f99a34b"
+      (reference "#PWR030") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f99b4a6"
+      (reference "#PWR031") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f9a14a4"
+      (reference "#PWR032") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f99e200"
+      (reference "#PWR033") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f99dc43"
+      (reference "#PWR034") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28521e"
+      (reference "J1") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285228"
+      (reference "J2") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285232"
+      (reference "J3") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f230f3e"
+      (reference "J4") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f231056"
+      (reference "J5") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f233418"
+      (reference "J6") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f274aa1"
+      (reference "J7") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f274d93"
+      (reference "J8") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f27451b"
+      (reference "J9") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28527f"
+      (reference "J10") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285256"
+      (reference "J11") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2623dd"
+      (reference "J12") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f25fda7"
+      (reference "J13") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285265"
+      (reference "J14") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28523c"
+      (reference "J15") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2623c3"
+      (reference "J16") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f233537"
+      (reference "J17") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28529d"
+      (reference "J18") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852b6"
+      (reference "J19") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f263c78"
+      (reference "J20") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f272f6b"
+      (reference "J21") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28528e"
+      (reference "J22") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852a7"
+      (reference "J23") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f263c71"
+      (reference "J24") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f272f5c"
+      (reference "J25") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852c0"
+      (reference "J26") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852ca"
+      (reference "J27") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852d4"
+      (reference "J28") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283ef8"
+      (reference "J29") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f02"
+      (reference "J30") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f0c"
+      (reference "J31") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285321"
+      (reference "J32") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852f8"
+      (reference "J33") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f59"
+      (reference "J34") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f30"
+      (reference "J35") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285307"
+      (reference "J36") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852de"
+      (reference "J37") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f3f"
+      (reference "J38") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f16"
+      (reference "J39") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28533f"
+      (reference "J40") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285358"
+      (reference "J41") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f77"
+      (reference "J42") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f90"
+      (reference "J43") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285330"
+      (reference "J44") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285349"
+      (reference "J45") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f68"
+      (reference "J46") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f81"
+      (reference "J47") (unit 1) (value "Conn_01x01") (footprint "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f99e64e"
+      (reference "J48") (unit 1) (value "Conn_02x20_Counter_Clockwise") (footprint "Pin_Headers:Pin_Header_Straight_2x20_Pitch2.54mm_SMD")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f28526f"
+      (reference "R1") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285246"
+      (reference "R2") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2623cd"
+      (reference "R3") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f25fc69"
+      (reference "R4") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f285311"
+      (reference "R5") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f2852e8"
+      (reference "R6") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f49"
+      (reference "R7") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+    (path "/00000000-0000-0000-0000-00005f998324/00000000-0000-0000-0000-00005f283f20"
+      (reference "R8") (unit 1) (value "470K") (footprint "Resistors_SMD:R_0805")
+    )
+  )
+)
