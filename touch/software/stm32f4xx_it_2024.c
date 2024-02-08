@@ -214,6 +214,7 @@ inline static uint32_t overlay(uint32_t value, uint32_t value2, uint32_t over){ 
   uint32_t tmpp, subs;
  	    if (over==0){ //usual - now swopped for >
 	      if (value>value2) tmpp=value; // only if is more than
+	      else tmpp=value2;
 	    }
 	    else if (over==1){ // mod
 	      tmpp=value2+=value;
@@ -430,7 +431,7 @@ void TIM2_IRQHandler(void)
 	  else if (fingers[daccount].rec)	fingers[daccount].state=R;
 	  else if (fingers[daccount].play && (fingers[daccount].layer[fingers[daccount].masterL].rec_end)) fingers[daccount].state=P;
 	  else fingers[daccount].state=N;
-	}
+	} // end of active
 	
 	  // do main mode/state work with switches within this
 	
@@ -450,10 +451,9 @@ void TIM2_IRQHandler(void)
 	  fingers[daccount].lastmode=0;
 	  fingers[daccount].masterL=fingers[daccount].toggle; // add to playlist if we change
 	  speed=speedop(daccount, (P_options>>2)&1); // TEST: added speed sync/top
-
 	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]);  // start is always 0 TESTY??? RECEND is our length
 	  
-	  tmp=livevalue(daccount, V_options); 
+	  //  tmp=livevalue(daccount, V_options); 
 	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay
 	} // end PLAY
 	else fingers[daccount].entryp=0;
@@ -483,9 +483,12 @@ void TIM2_IRQHandler(void)
 	  speed=speedop(daccount, (P_options>>2)&1); // TEST: added speed sync/top
 	  autre=fingers[daccount].masterL^1; // opposite...
 	  
-	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]); // as per play above ** would be playlist in playlist modes
-	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay
+	  values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]); // as per play above ** would be playlist in playlist modes
 
+	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay - is also recorded
+	  // overlay_end=till own rec_end (1), other rec_end(2) - if exists, extend until limit (3)
+	  // types of overlay: 
+	  
 	  tmp=values[daccount]; // replace with reclayer options... eg. if we add to what is there??? if we extend past the end...
 	  RECLAYER; // TODO: this does extend past the end... 
 	  fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; // this was outside RP below before...

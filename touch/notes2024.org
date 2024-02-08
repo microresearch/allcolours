@@ -201,44 +201,106 @@ RP: 4 types of recorded overlay
 
 * diary notes
 
-** 6/4.2024
+** 8/2/2024
 
-*Maybe first mode has no playlist - is really the most simple possible IMPLEMENT/test*
+- +Thinking of redo pcb with outs at top/row, ins in row beneath at top+
+
+other opts - enlarge base and move jacks closer and far as possible out...
+
+base width: 100mm
+height as: 109mm 
+
+swop V and C jacks and move to extremes...
+
+or... enlarge base, extremes and have 8 top row, 4 in square on edges and shift... 
+
+offsets of jacks->panel 
+
+panel jack is: x:145.45 y:70.45
+pcb jack is:   x:145.5  y:64 
+
+offset of main 40 pin connector:
+panel: x102.0 y104.2
+
+-24.1, -1.3
+
+former PCB:x126.1 y105.5
+
+new PCB: 134, 130.57
+
+new panel pos should be-> 109.9, 129.97
+
+also idea to have odd star voltages scattered around...
+
+//////
+
+NOTE: if in mode 1 option to keep same play point/overlay point for
+both layers (also note REC_END will be the same so option to use
+either doesn't make sense)
+
+** 7/2/2024
+
+Kaffe: test.c
+
+- voltage and newADCs - with differing sensitivity
+
+main voltages: 3 or 4v sense0 // 6v sens1 // 
+lower on crescents etc...
+cables issue!
+
+2v max newADC // 3v on sens1
+
+- basic toggles of mode/toggle:
+
+freeze fine...
+modetoggle - sometimes... but not great....
+
+- longer press on mode and on toggles...
+
+longer press on mode fine
+longer press on toggle fine
+
+
+///
+
+- first major mode can just be rec and playback if we don't want extra options
+- test activation/de-activation of modes as way of detach/de-sync
+- TODO: major/minor reset
+- full test of first basic mode and all options
+
+///
+
+- *RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run:
+
+- check overlay options below and refine:
+
+// overwrite it with playback+real/overlay
+// add real only to recordings
+// add playback+real at playback place???
+// add real only at playback place
+
+*TODO: check these options eg writing at playback spot...*
+
+also type of that overlap as we have for live
+
+-loop/play till rec_end (only option we have) overlay=till own rec_end
+(1), other rec_end(2) - if exists, extend until stops (3)
++ more options with other mode eg. marking points with toggle
+
+-check we have rec_cnt in active layerYES - we write/extend other layer to check too
+
+** 6/2/2024
+
+*First mode has no playlist - is really the most simple possible IMPLEMENT/test*
 
 - *In RP: types of recorded overlays, and length of overlay to fix*
 
 from strip.c
 
-	    // different overlays
-	    if (overrec==0){
-	      if (rec_cnt[daccount]<MAXREC) recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + values[daccount]; // keep top values...
-	      else recordings[daccount][rec_cnt[daccount]-MAXREC]=(recordings[daccount][rec_cnt[daccount]-MAXREC]&4095)+(values[daccount]<<16); // top bits
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>ender[daccount]) { // other micromodes here to extend maybe???
-		rec_cnt[daccount]=0;
-	    }
-	    }
-	    else if (overrec==1){
-	      tmp=(recordings[daccount][rec_cnt[daccount]]&4095) + real[daccount];
-	      if (tmp>4095) tmp=4095;
-	      if (rec_cnt[daccount]<MAXREC) recordings[daccount][rec_cnt[daccount]]=(recordings[daccount][rec_cnt[daccount]]&TOPS) + tmp; 
-	      else recordings[daccount][rec_cnt[daccount]-MAXREC]=(recordings[daccount][rec_cnt[daccount]-MAXREC]&4095)+(tmp<<16); // top bits
-	      rec_cnt[daccount]++;
-	      if (rec_cnt[daccount]>ender[daccount]) { // other micromodes here to extend maybe???
-		rec_cnt[daccount]=0;
-	    }
-	    }
-	    else if (overrec==2){
-	      if ((int)play_cnt[daccount]<MAXREC) recordings[daccount][(int)play_cnt[daccount]]=(recordings[daccount][(int)play_cnt[daccount]]&TOPS) + values[daccount];
-	      else recordings[daccount][(int)play_cnt[daccount]-MAXREC]=(recordings[daccount][(int)play_cnt[daccount]-MAXREC]&4095)+(values[daccount]<<16); // top bits	      
-	    }
-	    else if (overrec==3){
-	      tmp=(recordings[daccount][(int)play_cnt[daccount]]&4095) + real[daccount];
-	      if (tmp>4095) tmp=4095;
-	      if ((int)play_cnt[daccount]<MAXREC) recordings[daccount][(int)play_cnt[daccount]]=(recordings[daccount][(int)play_cnt[daccount]]&TOPS) + tmp;
-	      else recordings[daccount][(int)play_cnt[daccount]-MAXREC]=(recordings[daccount][(int)play_cnt[daccount]-MAXREC]&4095)+(tmp<<16); // top bits	      
-	    }
-
+// overwrite it with playback+real/overlay
+// add real only to recordings
+// add playback+real at playback place???
+// add real only at playback place
 
 - latest notebook notes for playlist:
 
@@ -835,6 +897,11 @@ liminal figure.
 
 //
 
+fixed pattern, mobile pattern in geomancy/divination - rotation of one mandala against the other
+
+2 kinds time
+synchronicity
+
 For manual: modes define operations on layers
 
 one is always the ghost hand. a double of _____
@@ -851,6 +918,11 @@ instructions etc...
 Image cards are cut out - disembodied hands, each of the 4 segments
 cracked apart and somehow labelled... some uncut cards maybe to show
 assembly/with text also on back for modes ... cut yourself out
+
+Reader/reading list:
+
+geomancy
+von franz
 
 ** hardware
 
