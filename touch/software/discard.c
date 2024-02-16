@@ -1,4 +1,81 @@
-    if (fingers[daccount].playfull==0) {				\
+float mod0X(float value, float length, uint32_t dacc)
+{
+  while (value > (length-1)){ // we are ahead
+    value -= length; //0
+    // get next in list
+    fingers[dacc].playcnt+=1;
+    if (fingers[dacc].playcnt>fingers[dacc].playfull) fingers[dacc].playcnt=0;
+    fingers[dacc].playcntr+=1;
+    if (fingers[dacc].playcntr>118) fingers[dacc].playcntr=0;
+    //    printf("//playcnt %d playcntr %d len %d //",playcnt, playcntr, playlist[playcntr].length);
+    length=fingers[dacc].playlist[fingers[dacc].playcnt].length;
+  }
+    return value;
+}
+
+float mod0XX(float value, float length, uint32_t dacc)
+{
+  uint32_t tmp;
+  tmp=fingers[dacc].playcnt;
+
+  while (value > (length-1)){ // we are ahead
+    value -= length; //0
+    // get next in list
+    tmp+=1;
+    if (tmp>fingers[dacc].playfull) tmp=0;
+    length=fingers[dacc].playlist[tmp].length;
+  }
+    return value;
+}
+
+
+// TODO: we need to resolve layers and also start... also to resolve adding when we swop layers
+// TODO: completely change!
+inline static uint32_t speedsample_playlist(float speedy, uint32_t dacc, uint32_t *samples, uint32_t start, uint32_t layerr){ // for both lower and upper? TODO!
+  uint32_t lowerPosition, upperPosition;
+  float sample;
+  uint32_t lengthy=fingers[dacc].playlist[fingers[dacc].playcnt].length;
+
+  
+  fingers[dacc].layer[layerr].play_cnt=mod0X(fingers[dacc].layer[layerr].play_cnt+speedy, lengthy, dacc);
+  lengthy=fingers[dacc].playlist[fingers[dacc].playcnt].length;
+
+    //  Find surrounding integer table positions
+  lowerPosition = (int)  fingers[dacc].layer[layerr].play_cnt;
+  upperPosition = mod0XX(lowerPosition + 1, lengthy, dacc);
+
+  // test addings
+  fingers[dacc].playlist[fingers[dacc].playcntr+1].length=(int)fingers[dacc].layer[layerr].play_cnt+1;
+  fingers[dacc].playlist[fingers[dacc].playcntr+1].start=start; // ????
+  fingers[dacc].playlist[fingers[dacc].playcntr+1].layer=layerr;
+  fingers[dacc].playfull=fingers[dacc].playcntr;
+
+  start=fingers[dacc].playlist[fingers[dacc].playcnt].start;
+  layerr=fingers[dacc].playlist[fingers[dacc].playcnt].layer;
+  int32_t res=(fingers[dacc].layer[layerr].play_cnt - (float)lowerPosition);
+
+  lowerPosition+=start;
+  upperPosition+=start;
+  if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+  if (upperPosition>=MAXREC) upperPosition=0;
+
+  if (layerr==0) {
+  sample= ((samples[lowerPosition]&4095) + 
+		 (res *
+		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095))));
+  }
+  else
+    {
+  sample= ((samples[lowerPosition]>>16) + 
+		 (res *
+		  ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); 
+    }
+  return (uint32_t)sample;
+}
+
+
+
+if (fingers[daccount].playfull==0) {					\
     fingers[daccount].playlist.start[0]=0;				\
     fingers[daccount].playlist.length[0]=fingers[daccount].layer[fingers[daccount].masterL].rec_end; \
     fingers[daccount].playlist.layer[0]=fingers[daccount].masterL;	\

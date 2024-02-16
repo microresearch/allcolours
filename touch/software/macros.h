@@ -1,5 +1,30 @@
 // MACROS 
 
+#define ADDPLAYLIST {							\
+if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
+ fingers[daccount].playlist[fingers[daccount].playcntr].length=fingers[daccount].layer[fingers[daccount].masterL].othercnt-fingers[daccount].playlist[fingers[daccount].playcntr].start; \
+ fingers[daccount].playcntr++;						\
+ fingers[daccount].playfull++;						\
+ if (fingers[daccount].playcntr>PLAYFULLY) fingers[daccount].playcntr=0; \
+ if (fingers[daccount].playfull>PLAYFULLY) fingers[daccount].playfull=PLAYFULLY; \
+ fingers[daccount].playlist[fingers[daccount].playcntr].start=fingers[daccount].layer[fingers[daccount].masterL].othercnt; \
+ fingers[daccount].playlist[fingers[daccount].playcntr].layer=fingers[daccount].masterL; \
+ }									\
+ }
+
+#define ADDPLAYLISTRST {							\
+if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
+ fingers[daccount].playlist[fingers[daccount].playcntr].length=fingers[daccount].layer[fingers[daccount].masterL].othercnt-fingers[daccount].playlist[fingers[daccount].playcntr].start; \
+ fingers[daccount].playcntr++;						\
+ fingers[daccount].playfull++;						\
+ if (fingers[daccount].playcntr>PLAYFULLY) fingers[daccount].playcntr=0; \
+ if (fingers[daccount].playfull>PLAYFULLY) fingers[daccount].playfull=PLAYFULLY; \
+ fingers[daccount].playlist[fingers[daccount].playcntr].start=0; \
+ fingers[daccount].playlist[fingers[daccount].playcntr].layer=fingers[daccount].masterL; \
+ }									\
+ }
+
+
 #define RECLAYER {				\
  fingers[daccount].layer[autre].reclayer(tmp, daccount);		\
  fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt;	\

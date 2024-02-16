@@ -74,11 +74,11 @@ static hands fingers[8];
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
 #define BRKF 8 // for freezer. 8 with 24 divider ////now 48 with divider of 8; was 8 when we have have divider in main as 32... too high causes issues for speed of freezes
-#define BRK 64 // was 128 - for other toggles...
+#define BRK 8 // was 64 // was 128 - for other toggles...
 #define DELB 42 // 40 now with 8 divider - was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK -- is delay we hold the the freeze/toggle
    #define DELA 32 // for clear DAC // was 64
 
-   #define HOLDRESET 4000 // time for full reset when hold the mode down - over 4 seconds
+   #define HOLDRESET 500 //  was - divide by 8 if we have test_toggle slowr // was 4000 time for full reset when hold the mode down - over 4 seconds
    #define SHORTMODE 8 // was 20ms could be shorter...
    #define LONGMODE 140 // 1sec
 
@@ -259,7 +259,7 @@ static hands fingers[8];
        {
 	   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	   
-	   mode=779; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
+	   mode=778; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
 	   
 	   // SHIFTS
 	   // SENSESHIFT=2, SENSEOFFSET=1800; 
@@ -349,7 +349,6 @@ static hands fingers[8];
 	   break;
 	   } // switch
 	   
-	   TEST_TOGGLES;      // only place where toggles - pulled out of ==8 section
 	// see if works best there?
 	   FREEZERS;
 	   if (Newtog[4]){
@@ -363,6 +362,7 @@ static hands fingers[8];
 	WRITEDAC2;
 	daccount++;
 	if (daccount==8) {
+	   TEST_TOGGLES;      // only place where toggles - pulled out of ==8 section
 	  global_time++;
 	  daccount=0;
 	  count++;
