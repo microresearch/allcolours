@@ -15,7 +15,7 @@ LD      = $(PRG_PREFIX)gcc
 
 OBJECTS = 	startup_stm32f4xx.o main.o \
 				stm32f4xx_tim.o stm32f4xx_pwr.o\
-				stm32f4xx_gpio.o stm32f4xx_it_test.o stm32f4xx_rcc.o stm32f4xx_dac.o \
+				stm32f4xx_gpio.o stm32f4xx_it_2024.o stm32f4xx_rcc.o stm32f4xx_dac.o \
 				stm32f4xx_spi.o stm32f4xx_dma.o stm32f4xx_adc.o misc.o \
 				system413_2.o	
 #				system_stm32f4xx.o	

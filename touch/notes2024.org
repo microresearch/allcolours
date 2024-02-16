@@ -46,7 +46,7 @@ NADA = no tape
 - sync/detach etc...
 - chop/silence/insert etc... or is that operation on play list
 
-* divination ideas
+* speculative/divination ideas
 
 The geomantic figure Via, or “Way”. This figure has all elements
 active, revealing its dynamic nature; its linear form resembles a
@@ -66,6 +66,7 @@ and worlds.
 all present is NADA mode... endless presence
 
 - divination methods, concepts of time: Franz and synchronicity-divination /Deleuze - aion and chronos
+- how to implement scattering across space and time?
 
 * HW/timing
 
@@ -173,7 +174,7 @@ also as minormodes modify the major mode so they depend on this!
 - use newADC as a kind of filter of the tape: doesn't let playback value through below newADC threshold (silence or stops tape/speed thresholding)...
 - see 21/12/2023 below..
 
-** start to define new approach// see latest notebook and diary notes below
+** start to define new approach// see latest notebook and diary notes below // also for manual
 
 States are: N, R, P, RP (enum)
 Active position/voltage can change state and minor/major modes and undergo full reset. Inactive position stays in its mode (eg. plays) until active/changes
@@ -183,8 +184,19 @@ Rec just adds to end of tape/wrapping round until full reset
 Major modes are ported in and allow for recursive/fractal dismemberments and dislocations...
 Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
 
-Minor modes // and they stay// are changed in all state... so each state adds its own options...
+Major and minor modes as changed for all active layers with the MODE button.
+Shortest press increments minor, longer is for major.
 
+Long and very long presses on mode are for soft and hard resets, again only for active positions.
+
+Toggle for each position: operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+
+newADC: mode dependent, eg in nada: geomantic mode journey, in P, R, RP: overlays...
+
+////older
+
+Minor modes // and they stay// are changed in all state... so each state adds its own options...
+//NON!
 N: how we handle voltages: add global from top, invert voltage, ghosts and mirrors(?), sensitivity?
 R: only reset R or not on entry into R + N options // or leave that reset... // for newADc also type of overlay
 P, RP: 4 types of live overlay, speedsync, speedarrays
@@ -201,8 +213,93 @@ RP: 4 types of recorded overlay
 
 * diary notes
 
-** 8/2/2024
+** 16/2
 
+DONE:- to port latest playlist into 2024.c and trial there -> playing of playlist // recording of playlist
+TO TEST!
+
+
+** 15/2/204
+
+*Playlist:*
+- Simple adding of plays in test2.c works but we haven't tried simultaneous playback/recursions
+- settings and operations on the playlist... eg. where the playlist itself is looping/loop points in the list...
+- start and stop of play/rec of playlist (means it just loops)
+- when do we advance playcnt? when we hit length?
+
+///
+
+Properties of each layer/position and relation to others... relational interface
+
+** 14/2/2024
+
+*Playlist issues:*
+
+// to resolve start and end still - new counter
+
+- we need to re=think playlist as is somehow recursive now... and doesn't work in test.c, nor in 2024.c ...
+
+each play adds to the list, but when do we play that list and does playing the list add to the list...
+and how do we start the list
+
+also start and ends in each case
+
+-when we enter play we need to record our start which is play_cnt, when we exit record play_cnt which is our end (except in case of loop or swop)
+-when we loop what happens?
+[-when we swop sides - each has its own play_cnt]
+
+////
+
+- +DONEremoved +1 from playlist inside - does that make sense ????+NON
+- fix playlist addings and test in test.c
+
+adding to playlist happens: when we hit end of one cycleDONE, when we leave play, when we swop layers...
+
+///////////////
+
+- option to reset play counter
+- start is where we loop back to - always adds to play counter so is offset,,,
+- somehow to genericise ops again so is easier to read and make options...
+
+TESTING: test active/inactive, finish minor and major modes
+
++ plan scheme to finish
+
+notes: 
+-inverted voltage does make sense
+-address what makes sense for VCA eg. additives to peak not so important as is more about open/close 
+-newADC can be fine addition to voltages...
+
+** 13/2/2024
+
+*Basic mode we have:*
+- test basic operations and options so far
+- *TODO:* add to playlist on play, add RP options for end of overlay and overlay, option to sync/not sync play_cnt and rec_cnt in P, RP when we swop sides, 
+
+adding to playlist happens: when we hit end of one cycle, when we leave play, when we swop layers...
+
+- basic mode overlays to other layer // never changes own layer - could be live overlay own layer and playback overlay with opts to other...
+
+** 12/2/2024
+
+- hand comparator??? eg. compare against newADC
+- *first mode - can add to playlist for later modes. next mode just plays that, doesn't add*
+// but if we enter second with no playlist then just play rec...
+
+** 9-10/2/2024
+
+- *option to sync/not sync play_cnt and rec_cnt in P, RP when we swop sides*
+
+// new panel and assembled PCB ordered 12/2/2024
+
+moving all now as below but how to align panel...
+
+//done as moons- Q of star voltages around!?
+
+- *re. kaffe - why is freeze working better than mode toggle? - need to test kaffe again with slower toggle*
+
+** 8/2/2024
+DONE//
 - +Thinking of redo pcb with outs at top/row, ins in row beneath at top+
 
 other opts - enlarge base and move jacks closer and far as possible out...
@@ -218,6 +315,8 @@ offsets of jacks->panel
 
 panel jack is: x:145.45 y:70.45
 pcb jack is:   x:145.5  y:64 
+
+x same, y=+6.45 - but they are now inverted...
 
 offset of main 40 pin connector:
 panel: x102.0 y104.2
@@ -236,7 +335,7 @@ also idea to have odd star voltages scattered around...
 
 NOTE: if in mode 1 option to keep same play point/overlay point for
 both layers (also note REC_END will be the same so option to use
-either doesn't make sense)
+either doesn't make sense) ???? ???
 
 ** 7/2/2024
 
@@ -260,22 +359,21 @@ modetoggle - sometimes... but not great....
 longer press on mode fine
 longer press on toggle fine
 
-
 ///
 
 - first major mode can just be rec and playback if we don't want extra options
 - test activation/de-activation of modes as way of detach/de-sync
-- TODO: major/minor reset
+- *TODO: major/minor reset:  perhaps have now soft and hard resets - eg. soft resets rec and play tapes but doesn't change other mode stuff...*
 - full test of first basic mode and all options
 
 ///
 
-- *RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run:
+- *RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run till MAX_REC
 
 - check overlay options below and refine:
 
-// overwrite it with playback+real/overlay
-// add real only to recordings
+// overwrite it with playback+real
+// add real only to recordings // add real+playback // types of add/overlay
 // add playback+real at playback place???
 // add real only at playback place
 
@@ -295,12 +393,12 @@ also type of that overlap as we have for live
 
 - *In RP: types of recorded overlays, and length of overlay to fix*
 
-from strip.c
+from strip.c // recheck
 
 // overwrite it with playback+real/overlay
-// add real only to recordings
+// add real only to recordings // just >4095
 // add playback+real at playback place???
-// add real only at playback place
+// add real only at playback place // just >4095
 
 - latest notebook notes for playlist:
 
@@ -311,7 +409,7 @@ options:
 - we reboot playlist every time we have new rec
 
 - playlist more as a journey -> R.P. so can be reset by R (or not, depends on mode)
-- perhaps have now soft and hard resets - eg. soft resets rec and play tapes but doesn't change other mode stuff...
+
 
 /////
 
