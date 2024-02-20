@@ -24,7 +24,8 @@
 #define DELB 42 // 40 now with 8 divider - was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK -- is delay we hold the the freeze/toggle
 #define DELA 32 // for clear DAC // was 64
 
-#define HOLDRESET 800 // time for full reset when hold the mode down - over 4 seconds
+#define FULLRESET 1200 // say 6 seconds
+#define SOFTRESET 800 // time for full reset when hold the mode down - over 4 seconds
 #define SHORTMODE 8 // was 20ms could be shorter...
 #define LONGMODE 140 // 1sec
 #define LONGTOG 300 // 1-2 secs long press for TOGGLE->activate
@@ -160,17 +161,37 @@ inline static uint32_t overlay(uint32_t value, uint32_t value2, uint32_t over){ 
 	      if (value>value2) tmpp=value; // only if is more than
 	      else tmpp=value2;
 	    }
-	    else if (over==1){ // mod
+	    else if (over==1){ 
 	      tmpp=value2+=value;
 	      if (tmpp>4095) tmpp=4095;
 	    }
-	    else if (over==2){
-	      tmpp=value2+=value;
+	    else if (over==2){ // mod
+	      tmpp=value2+value;
 	      tmpp=tmpp%4096;
 	    }
 	    else if (over==3){
 	      subs=value2-value;
 	      tmpp=abs(subs);
+	    }
+	    return tmpp;
+}
+
+inline static uint32_t overlayx(uint32_t value, uint32_t value2, uint32_t over){ // 4 bits - value is new value
+  uint32_t tmpp, subs;
+ 	    if (over==0){
+	      tmpp=value;
+	    }
+	    else if (over==1){
+   	      if (value>value2) tmpp=value; // only if is more than
+	      else tmpp=value2;
+	    }
+	    else if (over==2){ 
+	      tmpp=value2+=value;
+	      if (tmpp>4095) tmpp=4095;
+	    }
+	    else if (over==3){ // mod
+	      tmpp=value2+value;
+	      tmpp=tmpp%4096;
 	    }
 	    return tmpp;
 }
@@ -183,17 +204,13 @@ inline static uint32_t livevalue(uint32_t which, uint32_t opt){
     tmpp=real[6];
     return tmpp;
   }
-  /* options
-  no overlay, 0,1,2,3 below = 5 options and we want ideally 4 or 7
-  maybe lose 3
-   */
 
   overoverlay=opt&3;
   if (overoverlay==0) tmpp=real[which];
   else if (overoverlay==1){ //usual - now swopped for >
     if (real[which]>tmpp) tmpp=real[which]; // only if is more than
   }
-  else if (overoverlay==2){ // mod
+  else if (overoverlay==2){ 
     tmpp+=real[which];
     if (tmpp>4095) tmpp=4095;
   }
@@ -209,6 +226,29 @@ inline static void resetx(uint32_t which){
     recordings[which][y]=0;
   }
 }
+
+uint32_t accessplaylayerupper(uint32_t daccount){
+  uint32_t value=(recordings[daccount][(int)fingers[daccount].layer[1].play_cnt])>>16; 
+  return value;
+}
+
+uint32_t accessplaylayerlower(uint32_t daccount){
+  uint32_t value=(recordings[daccount][(int)fingers[daccount].layer[0].play_cnt])&4095; 
+  return value;
+}
+
+uint32_t accessreclayerupper(uint32_t daccount){
+  uint32_t value=(recordings[daccount][fingers[daccount].layer[1].rec_cnt])>>16; 
+  return value;
+}
+
+uint32_t accessreclayerlower(uint32_t daccount){
+  uint32_t value=(recordings[daccount][fingers[daccount].layer[0].rec_cnt])&4095; 
+  return value;
+}
+
+//(recordings[daccount][fingers[daccount].layer[1].rec_cnt]&4095); // lower
+//
 
 void reclayerupper(uint32_t value, uint32_t daccount){
   recordings[daccount][fingers[daccount].layer[1].rec_cnt]=(recordings[daccount][fingers[daccount].layer[1].rec_cnt]&4095)+(value<<16);
@@ -262,8 +302,31 @@ inline static void resett(uint32_t dacc){
   fingers[dacc].leavep=0;
 }
 
-// draft new speedsample for list:
-
+inline static void resets(uint32_t dacc){ // soft reset of both layers
+  fingers[dacc].active=1;
+  fingers[dacc].masterL=0;
+  fingers[dacc].toggle=0;					
+  fingers[dacc].ttoggle=0;
+  fingers[dacc].state=N; // NADA
+  fingers[dacc].playcnt=0;
+  fingers[dacc].playfull=0;
+  fingers[dacc].play=0;					
+  fingers[dacc].rec=0;
+  fingers[dacc].layer[0].rec_cnt=0;
+  fingers[dacc].layer[1].rec_cnt=0;
+  fingers[dacc].layer[0].play_cnt=0;
+  fingers[dacc].layer[1].play_cnt=0;
+  fingers[dacc].layer[0].rec_end=0;
+  fingers[dacc].layer[1].rec_end=0;
+  fingers[dacc].layer[0].othercnt=0;
+  fingers[dacc].layer[1].othercnt=0;
+  fingers[dacc].overlaid=0;
+  fingers[dacc].lastmode=0;
+  fingers[dacc].entryp=0;
+  fingers[dacc].entryr=0;
+  fingers[dacc].entryrp=0;
+  fingers[dacc].leavep=0;
+}
 
 inline static uint32_t speedsamplelower(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition;
@@ -308,13 +371,12 @@ void TIM2_IRQHandler(void)
   {
     uint32_t speed=0;
     static uint32_t daccount=0;
-    uint32_t j,x,y, tmp, tmpy, autre;
+    uint32_t j,x,y, tmp, tmpp, tmpy, autre;
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     static uint32_t modetoggle=0, newmode=0, count=0;
     static uint32_t lasttriggered[11]={0}, mbreaker=0, breaker[11]={0};
-    static int32_t togrec=0, togplay=0, helder=0, heldon=0, helldone=0, modeheld=0, modechanged=1, first=0;
+    static int32_t togrec=0, togplay=0, helder=0, heldon=0, modeheld=0, modechanged=1, first=0;
     static uint32_t lastvalue[8]={0,0,0,0, 0,0,0,0};
-    static uint32_t Thelldone[8]={0,0,0,0, 0,0,0,0};     // helldone=0; heldon=0; modeheld=helder; helder=0;}  but for toggle
     static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Theld[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Thelder[8]={0,0,0,0, 0,0,0,0};
@@ -323,7 +385,7 @@ void TIM2_IRQHandler(void)
     uint32_t V_options, R_options, P_options, RP_options;
     const float *playreff[4]={logfast, logspeed, logfast_stop, logspeed_stop}; 
     const uint32_t SENSESHIFTS[3]={0,1,2}; // just use first 2 for now
-    const uint32_t SENSEOFFSETS[3]={64,560,1800};
+    const uint32_t SENSEOFFSETS[3]={82,560,1800}; // TODO - adjust maybe
     const uint32_t remode[4]={0,1,2,2}; // 2 arrays N, R and P/RP
 	  
     if (oncey==0){// can we put this init elsewhere?
@@ -334,8 +396,12 @@ void TIM2_IRQHandler(void)
 	fingers[x].layer[1].speedsamp=speedsampleupper;
 	fingers[x].layer[0].reclayer=reclayerlower;
 	fingers[x].layer[1].reclayer=reclayerupper;
+	fingers[x].layer[0].accessreclayer=accessreclayerlower;
+	fingers[x].layer[1].accessreclayer=accessreclayerupper;
+	fingers[x].layer[0].accessplaylayer=accessplaylayerlower;
+	fingers[x].layer[1].accessplaylayer=accessplaylayerupper;
 
-    }
+      }
     }
     
     if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) 
@@ -347,11 +413,10 @@ void TIM2_IRQHandler(void)
 	else V_options=fingers[daccount].minormode[0]&7; // V: sens, sync/global-overlay= 2 bits = 3 bits - except top [6] has no sync opts
 	R_options=fingers[daccount].minormode[1]&3; //  2 bits for 2nd tape overlay options//other options
 	P_options=fingers[daccount].minormode[2]&31; // P,RP: 11 speedarray, 1sync, 11 live overlay, // 5 bits
-	RP_options=(fingers[daccount].minormode[2]&127); // RP: 11 recorded overlay if any // +2 bits
+	RP_options=(fingers[daccount].minormode[2]&255); // RP: 1bit recend + say 2 bits overlay
 
 	fingers[daccount].sensi=V_options&1; // first bit - sensitivity is in macros
-	fingers[daccount].playspeed=P_options&2; // speedarray
-
+	fingers[daccount].playspeed=P_options&3; // speedarray = 2 bits
 	// functions outside switch
 	FREEZERS;
 	REALADC;
@@ -363,9 +428,10 @@ void TIM2_IRQHandler(void)
 	     if (Theld[daccount]>LONGTOG) {
 	       Theld[daccount]=0;
 	       fingers[daccount].active^=1; // t0ggle
+	       fingers[daccount].ttoggle=0;
 	     }
 	   }
-	
+	   
 	// togplay and togrec
 	if (fingers[daccount].active){
 	if (togplay) fingers[daccount].play^=1;
@@ -405,10 +471,11 @@ void TIM2_IRQHandler(void)
 	  RESETFRP; // DONEdeal with playfull if is 0
 	  fingers[daccount].lastmode=0;
 	  fingers[daccount].leavep=1;
-	  if (fingers[daccount].ttoggle){
-	  fingers[daccount].masterL=fingers[daccount].toggle; // add to playlist if we change
-	  fingers[daccount].ttoggle=0;
-	  ADDPLAYLIST;
+	  if (fingers[daccount].ttoggle && Theldon[daccount]==0){
+	    fingers[daccount].toggle^=1;
+	    fingers[daccount].masterL=fingers[daccount].toggle; // add to playlist if we change
+	    fingers[daccount].ttoggle=0;
+	    ADDPLAYLISTSWOP;
 	  }
 	  speed=speedop(daccount, (P_options>>2)&1); // TEST: added speed sync/top
 	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]);  // start is always 0 TESTY??? RECEND is our length
@@ -429,8 +496,8 @@ void TIM2_IRQHandler(void)
 	if (fingers[daccount].state==R){ 
 	  RESETFRR; 
 	  fingers[daccount].lastmode=0;
-	  fingers[daccount].masterL=fingers[daccount].toggle;
-	  tmp=livevalue(daccount, V_options); 
+	  tmp=livevalue(daccount, V_options);
+	  LAYERSWOP;
 	  autre=fingers[daccount].masterL;
 	  RECLAYER; // autre is our layer for the macro  
 	  autre=fingers[daccount].masterL^1;
@@ -444,18 +511,16 @@ void TIM2_IRQHandler(void)
 	if (fingers[daccount].state==RP){ 
 	  RESETFRRP; 
 	  fingers[daccount].lastmode=1; // in this case!
-	  fingers[daccount].masterL=fingers[daccount].toggle;
+	  LAYERSWOP;
 	  tmp=livevalue(daccount, V_options); 
 	  speed=speedop(daccount, (P_options>>2)&1); // TEST: added speed sync/top
 	  autre=fingers[daccount].masterL^1; // opposite...
 	  ///
-	  values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]); // as per play above ** would be playlist in playlist modes
-
+	  values[daccount]=fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]); // as per play above ** would be playlist in playlist modes
 	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay - is also recorded
-	  // overlay_end=till own rec_end (1 if exists it should), other rec_end(2 if exists), extend until limit (3)
-	  // overlay types to test out 	  
-	  tmp=values[daccount]; // replace with reclayer options... eg. if we add to what is there??? if we extend past the end...
-	  RECLAYER; // TODO: this does extend to MACREC - options??? so we need different reclayer
+	  //	  tmp=values[daccount];
+	  tmp=overlayx(values[daccount], fingers[daccount].layer[autre].accessreclayer(daccount), (RP_options>>6)&3);
+	  RECLAYERP; // now with RP_options [32] as toggling rec_end 
 	  fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; // this was outside RP below before...
 	} //end RP
 	else fingers[daccount].entryrp=0;
@@ -476,11 +541,28 @@ void TIM2_IRQHandler(void)
 	    newmode=0;
 	    breaker[10]=0;
 
-	    if (modeheld>HOLDRESET) { //reset all
+	    if (modeheld>FULLRESET) { //reset all
 	      modeheld=0;
-	      if (fingers[0].active) resett(0); 	      //	      if active reset that one;
+	      if (fingers[0].active) resett(0);
+	      if (fingers[1].active) resett(1);
+	      if (fingers[2].active) resett(2);
+	      if (fingers[3].active) resett(3);
+	      if (fingers[4].active) resett(4);
+	      if (fingers[5].active) resett(5);
+	      if (fingers[6].active) resett(6);
+	      if (fingers[7].active) resett(7);
 	    }
-	else if (modeheld>LONGMODE && modeheld<HOLDRESET) { // increment major mode if active
+	    else if (modeheld>SOFTRESET && modeheld<FULLRESET){
+	      if (fingers[0].active) resets(0);
+	      if (fingers[1].active) resets(1);
+	      if (fingers[2].active) resets(2);
+	      if (fingers[3].active) resets(3);
+	      if (fingers[4].active) resets(4);
+	      if (fingers[5].active) resets(5);
+	      if (fingers[6].active) resets(6);
+	      if (fingers[7].active) resets(7);
+	    }
+	else if (modeheld>LONGMODE && modeheld<SOFTRESET) { // increment major mode if active
 	  modeheld=0;
 	  if (fingers[0].active) changemode(0);
 	  if (fingers[1].active) changemode(1);

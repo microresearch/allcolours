@@ -93,8 +93,12 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 - DONEcondense and print older/newer notes/here
 - DONEdefine basic HW and timing, filters below
 
-- define minor modes 
-- define and test basic mode and add/catalogue all modes - translate previous major modes into new scheme
+- DONEdefine minor modes 
+////PLAN
+- define and test basic mode: 20/2 
+
+21/2+and add/catalogue all modes - translate previous major modes into new scheme
+
 - test suggested new modes without minor modes
 - wrap together
 
@@ -167,20 +171,27 @@ also as minormodes modify the major mode so they depend on this!
 	+playspeedmod=((playminor>>5)&2);  // 2 types:  add recorded speed to real, of if real> // but this was for recorded speed only+
 
 
-** suggested test major modes
+** suggested major modes to implement and test
 
+- IN PROGRESS:basic mode above
 - new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these???
-- basic mode above
-- use newADC as a kind of filter of the tape: doesn't let playback value through below newADC threshold (silence or stops tape/speed thresholding)...
+- use newADC as a kind of filter of the tape: doesn't let playback
+  value through below newADC threshold (silence or stops tape/speed
+  thresholding = could either be playback value as 0/threshold or
+  freeze tape/speed)
+- mode which removes silence...
 - see 21/12/2023 below..
+- port all previous mode ideas to new layer approach
+- manipulations from notebook notes of layers and playlists
+- properties of each position, layer and playlist and how these can be changed towards displacement and slippage eg. how we slip one tape across the other in RP mode
 
 ** start to define new approach// see latest notebook and diary notes below // also for manual
 
 States are: N, R, P, RP (enum)
-Active position/voltage can change state and minor/major modes and undergo full reset. Inactive position stays in its mode (eg. plays) until active/changes
+Active position/voltage can change state and minor/major modes and undergo full and soft resets. Inactive position stays in its mode (eg. plays) until active/changes
 There are two tapes (0 and 1) for each position 
 There is a list of playbacks for each position which reference start and end on a tape, and which tape (0 or 1)
-Rec just adds to end of tape/wrapping round until full reset
+Rec just adds to end of tape/wrapping round until soft reset
 Major modes are ported in and allow for recursive/fractal dismemberments and dislocations...
 Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
 
@@ -189,7 +200,11 @@ Shortest press increments minor, longer is for major.
 
 Long and very long presses on mode are for soft and hard resets, again only for active positions.
 
-Toggle for each position: operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+Hard resets everything: check what that is - all modes, all counters, all states.
+
+Soft reset: resets rec counter to 0, playlist. We have to return to NADA mode as we can't say play on 0...
+
+Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
 
 newADC: mode dependent, eg in nada: geomantic mode journey, in P, R, RP: overlays...
 
@@ -213,11 +228,67 @@ RP: 4 types of recorded overlay
 
 * diary notes
 
+** 20/2
+
+*TODO:*
+
+DONE - Define presses:
+
+Major and minor modes as changed for all active layers with the MODE button. Shortest press increments minor, longer is for major.
+
+Long and very long presses on mode are for soft and hard resets, again only for active positions.
+
+Soft reset: resets rec counter to 0, playlist...
+
+Timings: minor: <1, major: 1<4, soft reset: 4<6, hard reset: >6 approx checked
+
+DONE:check again  with test_toggles in daccount>8*
+
+Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+
+- All RP options to implement: REC_END option as 1 bit done
+
+- Define/port major modes across...
+
+*TESTS*
+- DONEactive/inactive toggle:
+
+// fixed toggle in play now (as would toggle on longer press too) - keep this for other toggles (in R and RP)...
+
+- DONETEST/DONEimplement and test all presses lengths
+
+- DONETEST recording over 21 seconds
+
+DONEwhy pressing rec changes voltage - as we overlay newADC/// fixed in offsets
+
+DONE- TEST playlist// test end of playlist so far...
+
+///////
+TEST base mode below: test all options once we have these implemented
+
+TEST: test option to use rec_end of other tape, or MAX_REC as end in RP
+
+// what were the overlay options:
+
+- *RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run till MAX_REC
+
+- DONE: check overlay options below and refine:
+
+1bit
+overwrite at rec
+overlay rec at rec
+
+DONEand adding/overlay options= no overlay, peak >4095, onlyifmorethan, modulus
+
+- *test all options these hardcoded and then with presses*
+
+- how to implement test: playback ONLY of playlist // play and new add of playlist
+
 ** 16/2
 
-DONE:- to port latest playlist into 2024.c and trial there -> playing of playlist // recording of playlist
-TO TEST!
+TO TEST!//DONE:- to port latest playlist into 2024.c and trial there -> playing of playlist // recording of playlist
 
+*idea of daemons and hands/VIA*
 
 ** 15/2/204
 
@@ -283,7 +354,7 @@ adding to playlist happens: when we hit end of one cycle, when we leave play, wh
 ** 12/2/2024
 
 - hand comparator??? eg. compare against newADC
-- *first mode - can add to playlist for later modes. next mode just plays that, doesn't add*
+- DONEfirst mode - can add to playlist for later modes. *next mode just plays that, doesn't add*
 // but if we enter second with no playlist then just play rec...
 
 ** 9-10/2/2024
@@ -296,7 +367,7 @@ moving all now as below but how to align panel...
 
 //done as moons- Q of star voltages around!?
 
-- *re. kaffe - why is freeze working better than mode toggle? - need to test kaffe again with slower toggle*
+- *re. kaffe - why is freeze working better than mode toggle? - need to test kaffe again with slower toggle option every 8*
 
 ** 8/2/2024
 DONE//
@@ -363,7 +434,7 @@ longer press on toggle fine
 
 - first major mode can just be rec and playback if we don't want extra options
 - test activation/de-activation of modes as way of detach/de-sync
-- *TODO: major/minor reset:  perhaps have now soft and hard resets - eg. soft resets rec and play tapes but doesn't change other mode stuff...*
+- DONE: major/minor reset:  perhaps have now soft and hard resets - eg. soft resets rec and play tapes but doesn't change other mode stuff...*
 - full test of first basic mode and all options
 
 ///
@@ -389,9 +460,9 @@ also type of that overlap as we have for live
 
 ** 6/2/2024
 
-*First mode has no playlist - is really the most simple possible IMPLEMENT/test*
+First mode has no playlist - is really the most simple possible IMPLEMENT/test*
 
-- *In RP: types of recorded overlays, and length of overlay to fix*
+-In RP: types of recorded overlays, and length of overlay to fix*
 
 from strip.c // recheck
 

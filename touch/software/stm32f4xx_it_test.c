@@ -77,10 +77,10 @@ static hands fingers[8];
 #define BRK 8 // was 64 // was 128 - for other toggles...
 #define DELB 42 // 40 now with 8 divider - was 20 reduced was 200 delay for pin changes in new trigger code - was 10000 but this slows down all playback so we have to reduce and rely on BRK -- is delay we hold the the freeze/toggle
    #define DELA 32 // for clear DAC // was 64
-
-   #define HOLDRESET 500 //  was - divide by 8 if we have test_toggle slowr // was 4000 time for full reset when hold the mode down - over 4 seconds
-   #define SHORTMODE 8 // was 20ms could be shorter...
-   #define LONGMODE 140 // 1sec
+#define FULLRESET 1200
+#define SOFTRESET 800 //  was - divide by 8 if we have test_toggle slowr // was 4000 time for full reset when hold the mode down - over 4 seconds
+#define SHORTMODE 8 // was 20ms could be shorter...
+#define LONGMODE 140 // 1sec
 
 #define LONGTOG 300
 
@@ -376,16 +376,20 @@ static hands fingers[8];
 	    /* testting^=1; // testy */
 	    /* } */
 
-	    if (modeheld>HOLDRESET) { //reset all
+	    if (modeheld>FULLRESET) { //reset all
 	  modeheld=0;
 	  RESETT;
-	  testingl^=1; // testy
+	  //	  testingl^=1; // testy
 	}
-	else if (modeheld>LONGMODE && modeheld<HOLDRESET) { // increment major mode
+	    else if (modeheld>SOFTRESET && modeheld<FULLRESET){
+	      //	      testingl^=1; // testy
+	    }
+	else if (modeheld>LONGMODE && modeheld<SOFTRESET) { // increment major mode
 	  modeheld=0;
 	  //	  MODECHANGED;
 	  mode++;
 	  if (mode>MAXMODES) mode=0;
+	  	      testingl^=1; // testy
 	  //	  testting^=1; // testy
 	}	
 	else if (modeheld<LONGMODE){ //inc minor mode matrix
