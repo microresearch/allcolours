@@ -1,5 +1,13 @@
 // MACROS 
 
+#define LAYERSWOP {				\
+  if (fingers[daccount].ttoggle && Theldon[daccount]==0){	\
+  fingers[daccount].toggle^=1;					\
+  fingers[daccount].masterL=fingers[daccount].toggle;		\
+  fingers[daccount].ttoggle=0;					\
+  }								\
+  }
+
 #define ADDPLAYLIST {							\
 if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
  fingers[daccount].playlist[fingers[daccount].playcntr].length=fingers[daccount].layer[fingers[daccount].masterL].othercnt-fingers[daccount].playlist[fingers[daccount].playcntr].start; \
@@ -11,6 +19,20 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
  fingers[daccount].playlist[fingers[daccount].playcntr].layer=fingers[daccount].masterL; \
  }									\
  }
+
+#define ADDPLAYLISTSWOP {							\
+    tmpp=fingers[daccount].masterL^1;					\
+    if (fingers[daccount].layer[tmp].othercnt>0) {			\
+      fingers[daccount].playlist[fingers[daccount].playcntr].length=fingers[daccount].layer[tmp].othercnt-fingers[daccount].playlist[fingers[daccount].playcntr].start; \
+      fingers[daccount].playcntr++;					\
+      fingers[daccount].playfull++;					\
+      if (fingers[daccount].playcntr>PLAYFULLY) fingers[daccount].playcntr=0; \
+      if (fingers[daccount].playfull>PLAYFULLY) fingers[daccount].playfull=PLAYFULLY; \
+      fingers[daccount].playlist[fingers[daccount].playcntr].start=fingers[daccount].layer[fingers[daccount].masterL].othercnt; \
+      fingers[daccount].playlist[fingers[daccount].playcntr].layer=fingers[daccount].masterL; \
+    }									\
+  }
+
 
 #define ADDPLAYLISTRST {							\
 if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
@@ -34,6 +56,19 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
   fingers[daccount].layer[autre].rec_end=MAXREC;\
  }						\
 }
+
+#define RECLAYERP {				\
+    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end && ((RP_options>>5)&1)) tmpp=fingers[daccount].layer[tmpy].rec_end; \
+    else tmpp=MAXREC;							\
+    fingers[daccount].layer[autre].reclayer(tmp, daccount);		\
+    fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; \
+    fingers[daccount].layer[autre].rec_cnt++;				\
+    if (fingers[daccount].layer[autre].rec_cnt>tmpp) {			\
+      fingers[daccount].layer[autre].rec_cnt=0;				\
+      fingers[daccount].layer[autre].rec_end=tmpp;			\
+    }									\
+  }
+
 
 #define DOFREEZE {				\
  if (fingers[daccount].ttoggle)			\
@@ -258,11 +293,9 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
     GPIO_Init(GPIOC, &GPIO_InitStructure);				\
     if (lasttriggered[7]>BRKF) {						\
-      fingers[7].toggle^=1;							\
       fingers[7].ttoggle=1;						\
       lasttriggered[7]=0;						\
       Theldon[7]=1;							\
-      Thelldone[7]=1;							\
     }									\
   }									\
   else									\
@@ -291,11 +324,9 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		\
 	GPIO_Init(GPIOC, &GPIO_InitStructure);				\
 	if (lasttriggered[daccount]>BRKF) {				\
-	fingers[daccount].toggle^=1;					\
 	fingers[daccount].ttoggle=1;					\
 	lasttriggered[daccount]=0;					\
 	Theldon[daccount]=1;						\
-	Thelldone[daccount]=1;						\
 	}								\
       }									\
     }
