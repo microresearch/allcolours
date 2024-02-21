@@ -31,7 +31,7 @@ R+P:
 NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - NONinvert is take value from top, but what is "fake swop"?
 REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...// what we hear is voltage+overlay
 PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that
-REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape minormodes here)
+REC+PLAY: ADC->speed/bounce/rec with overlay to other tape // freeze is swop // what does voltage do (overlay same tape minormodes here)
 
 Q of global speed... *new top ADC is global control. also we have sync functions*
 
@@ -97,7 +97,7 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 ////PLAN
 - define and test basic mode: 20/2 
 
-21/2+and add/catalogue all modes - translate previous major modes into new scheme
+*21/2+and add/catalogue all modes - translate previous major modes into new scheme*
 
 - test suggested new modes without minor modes
 - wrap together
@@ -106,7 +106,7 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 
 So minor modes define use of toggle, speed, newADC for major modes...
 
-Nada: add global from top, +invert voltage+, ghosts and mirrors - but does these stick around? yes - as livevalue function now
+Nada: add global from top, invert voltage, ghosts and mirrors - but does these stick around? yes - as livevalue function now
 Rec:
 Play:
 RP:
@@ -228,6 +228,37 @@ RP: 4 types of recorded overlay
 
 * diary notes
 
+
+** 21/2
+
+- *test all options in first mode now: these hardcoded and then with presses*
+
+minormode options short press on mode...
+
+// for manual to record all options now
+N/V options: 3 bits // TESTED
+- sensitivity
+- overlay of sync to top voltage... invert voltage added // top syncs to lowest
+
+P options: 5 bits // TESTED and fixed
+- which speedarray: lowest 2 bits: {logfast, logspeed, logfast_stop, logspeed_stop}; 
+- speedsync to top: next 1 bit (and top now syncs to bottom)
+- types of live overlay: next 2 bits
+
+R options: 2 bits // TESTED
+- type of overlay of newADC onto other tape...
+
+RP options: 8 bits //TESTED and with bugfixes
+- first 5 bits as Play above
+- 1 bit recend // 0MAXREC, 1rec_end of opposing...
+- 2 bits overlay type
+
+// note: in R and RP reclayers we added overend which is when we reach end, so rec_end is always held at max!
+
+- *catalogue all modes - translate previous major modes into new scheme*
+
+- *how to lower sensitivity???*
+
 ** 20/2
 
 *TODO:*
@@ -279,8 +310,6 @@ overwrite at rec
 overlay rec at rec
 
 DONEand adding/overlay options= no overlay, peak >4095, onlyifmorethan, modulus
-
-- *test all options these hardcoded and then with presses*
 
 - how to implement test: playback ONLY of playlist // play and new add of playlist
 
@@ -1044,6 +1073,8 @@ up, slowed down, repeated, severed, overlaid, ghosted and finally
 dis-embodied and de-organised, all under touch and skin-feedback
 control. Signals can be routed on the skin to act globally and
 independently. 
+
+How it can be used as a live, gestural controller in its most simple configuration (mode 0)... further dislocations...
 
 //
 
