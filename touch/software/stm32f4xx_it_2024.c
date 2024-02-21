@@ -148,28 +148,33 @@ inline static float mod0X(float value, float length, uint32_t daccount) // adds 
 inline static uint32_t speedop(uint32_t dacc, uint32_t opt){
   uint32_t tmpp;
   tmpp=control[whichctrl[dacc]]>>2;
-  if (opt&1){
+  if (opt&1 && whichctrl[dacc]!=2){ // not for the top
     tmpp+=control[2]; // top
+    if (tmpp>1023) tmpp=1023;
+  }
+  else {
+    tmpp+=control[0]; // bottom
     if (tmpp>1023) tmpp=1023;
   }
   return tmpp;
 }
 
 inline static uint32_t overlay(uint32_t value, uint32_t value2, uint32_t over){ // 4 bits - value is real, value2 is added
-  uint32_t tmpp, subs;
+  uint32_t tmpp;
+  int32_t subs;
  	    if (over==0){ //usual - now swopped for >
 	      if (value>value2) tmpp=value; // only if is more than
 	      else tmpp=value2;
 	    }
 	    else if (over==1){ 
-	      tmpp=value2+=value;
+	      tmpp=value2+value;
 	      if (tmpp>4095) tmpp=4095;
 	    }
 	    else if (over==2){ // mod
 	      tmpp=value2+value;
 	      tmpp=tmpp%4096;
 	    }
-	    else if (over==3){
+	    else if (over==3){ // subtract live and do abs...
 	      subs=value2-value;
 	      tmpp=abs(subs);
 	    }
@@ -186,7 +191,7 @@ inline static uint32_t overlayx(uint32_t value, uint32_t value2, uint32_t over){
 	      else tmpp=value2;
 	    }
 	    else if (over==2){ 
-	      tmpp=value2+=value;
+	      tmpp=value2+value;
 	      if (tmpp>4095) tmpp=4095;
 	    }
 	    else if (over==3){ // mod
@@ -199,13 +204,11 @@ inline static uint32_t overlayx(uint32_t value, uint32_t value2, uint32_t over){
 inline static uint32_t livevalue(uint32_t which, uint32_t opt){
   uint32_t tmpp, subs, overoverlay;
   // options for live value - eg. add global from top (and type of overlays), (sensitivity is already in macros)
-  if (which!=6) tmpp=values[6]; // top voltage - value at the end
-  else { // no options on 6 or?
-    tmpp=real[6];
-    return tmpp;
-  }
-
-  overoverlay=opt&3;
+  if (which!=6) tmpp=real[6]; // top voltage - value at the end
+  // 6 syncs to 4 lowest
+  else tmpp=real[4];
+  
+  overoverlay=(opt>>1)&3;
   if (overoverlay==0) tmpp=real[which];
   else if (overoverlay==1){ //usual - now swopped for >
     if (real[which]>tmpp) tmpp=real[which]; // only if is more than
@@ -214,10 +217,9 @@ inline static uint32_t livevalue(uint32_t which, uint32_t opt){
     tmpp+=real[which];
     if (tmpp>4095) tmpp=4095;
   }
-  else if (overoverlay==3){
-    tmpp+=real[which];
-    tmpp=tmpp%4096;
-  }
+  else if (overoverlay==3){ // invert 
+    tmpp=4095-real[which];
+    }
   return tmpp;
 }
 
@@ -285,8 +287,12 @@ inline static void resett(uint32_t dacc){
   fingers[dacc].playfull=0;
   fingers[dacc].play=0;					
   fingers[dacc].rec=0;
-  fingers[dacc].layer[0].rec_cnt=0;
+  fingers[dacc].layer[0].rec_cnt=0;  
   fingers[dacc].layer[1].rec_cnt=0;
+  fingers[dacc].layer[0].overend=0;  
+  fingers[dacc].layer[1].overend=0;
+  fingers[dacc].layer[0].overendd=0;  
+  fingers[dacc].layer[1].overendd=0;
   fingers[dacc].layer[0].play_cnt=0;
   fingers[dacc].layer[1].play_cnt=0;
   fingers[dacc].layer[0].rec_end=0;
@@ -383,7 +389,7 @@ void TIM2_IRQHandler(void)
     static uint32_t Newtog[8]={0,0,0,0, 0,0,0,0};      
     static uint32_t oncey=0;
     uint32_t V_options, R_options, P_options, RP_options;
-    const float *playreff[4]={logfast, logspeed, logfast_stop, logspeed_stop}; 
+    const float *playreff[4]={logfast, logslow, logfast_stop, logspeed_stop}; 
     const uint32_t SENSESHIFTS[3]={0,1,2}; // just use first 2 for now
     const uint32_t SENSEOFFSETS[3]={82,560,1800}; // TODO - adjust maybe
     const uint32_t remode[4]={0,1,2,2}; // 2 arrays N, R and P/RP
@@ -409,12 +415,14 @@ void TIM2_IRQHandler(void)
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
 	// micromode logic outside mode switches - but what if these depend on mode!?
-	if (daccount==6) V_options=fingers[daccount].minormode[0]&1; // V: sens only as we can't sync to itself
-	else V_options=fingers[daccount].minormode[0]&7; // V: sens, sync/global-overlay= 2 bits = 3 bits - except top [6] has no sync opts
-	R_options=fingers[daccount].minormode[1]&3; //  2 bits for 2nd tape overlay options//other options
-	P_options=fingers[daccount].minormode[2]&31; // P,RP: 11 speedarray, 1sync, 11 live overlay, // 5 bits
+	V_options=fingers[daccount].minormode[0]&7; // V: sens, sync/global-overlay= 3 bits - top [6] syncs to [4] to test
+	R_options=fingers[daccount].minormode[1]&3; //  2 bits for 2nd tape overlay options//other options?
+	P_options=fingers[daccount].minormode[2]&31; // P,RP: 11 speedarray, 1sync, 11 live overlay, // 5 bits total
 	RP_options=(fingers[daccount].minormode[2]&255); // RP: 1bit recend + say 2 bits overlay
 
+	// TESTY
+	//	RP_options=3<<6; 
+	
 	fingers[daccount].sensi=V_options&1; // first bit - sensitivity is in macros
 	fingers[daccount].playspeed=P_options&3; // speedarray = 2 bits
 	// functions outside switch
@@ -432,11 +440,15 @@ void TIM2_IRQHandler(void)
 	     }
 	   }
 	   
-	// togplay and togrec
+	// togplay and togrec	   
 	if (fingers[daccount].active){
-	if (togplay) fingers[daccount].play^=1;
-	if (togrec) fingers[daccount].rec^=1;
-
+	  if (togplay) fingers[daccount].play^=1;
+	  if (togrec) fingers[daccount].rec^=1;
+	if (fingers[daccount].lastmode==1 && fingers[daccount].play==0) { // if we leave overlaid via. exit from play
+	  fingers[daccount].state=N;
+	  fingers[daccount].rec=0; // added
+	}
+	else {
 	// logic of states now
 	  if (fingers[daccount].rec && fingers[daccount].play){
 	    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end){
@@ -446,12 +458,11 @@ void TIM2_IRQHandler(void)
 	      fingers[daccount].state=R; // nothing to play
 	    }
 	  }
-	  else if (fingers[daccount].lastmode==1 && fingers[daccount].play==0) { // if we leave overlaid via. exit from play
-	    fingers[daccount].state=N;
-	  }
 	  else if (fingers[daccount].rec)	fingers[daccount].state=R;
 	  else if (fingers[daccount].play && (fingers[daccount].layer[fingers[daccount].masterL].rec_end)) fingers[daccount].state=P;
 	  else fingers[daccount].state=N;
+	}
+	fingers[daccount].lastmode=0;
 	} // end of active
 	
 	  // do main mode/state work with switches within this
@@ -459,7 +470,6 @@ void TIM2_IRQHandler(void)
 	// NADA: TODO: geomantic mode thing - could be only for all modes which are active
 	if (fingers[daccount].state==N){ 
 	  RESETFRN; 
-	  fingers[daccount].lastmode=0;
 	  tmp=livevalue(daccount, V_options);
 	  DOFREEZE;
 	  values[daccount]=tmp;
@@ -469,7 +479,6 @@ void TIM2_IRQHandler(void)
 	// PLAY: ADC->speed // toggle is swop
 	if (fingers[daccount].state==P){ 
 	  RESETFRP; // DONEdeal with playfull if is 0
-	  fingers[daccount].lastmode=0;
 	  fingers[daccount].leavep=1;
 	  if (fingers[daccount].ttoggle && Theldon[daccount]==0){
 	    fingers[daccount].toggle^=1;
@@ -495,13 +504,12 @@ void TIM2_IRQHandler(void)
 	// freeze as swop main tape... // further REC adds sections to main tape...// we hear is voltage+newADCoverlay - ADD to rec means just don't reset end counter // we don't
 	if (fingers[daccount].state==R){ 
 	  RESETFRR; 
-	  fingers[daccount].lastmode=0;
 	  tmp=livevalue(daccount, V_options);
 	  LAYERSWOP;
 	  autre=fingers[daccount].masterL;
 	  RECLAYER; // autre is our layer for the macro  
 	  autre=fingers[daccount].masterL^1;
-	  tmp=overlay(tmp, control[whichctrl[daccount]], R_options&3); // overlay of CTRL
+	  tmp=overlay(control[whichctrl[daccount]], tmp, R_options&3); // overlay of CTRL
 	  values[daccount]=tmp;
 	  RECLAYER;
 	} // end REC
@@ -509,19 +517,16 @@ void TIM2_IRQHandler(void)
 
 	// REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape minormodes here)
 	if (fingers[daccount].state==RP){ 
-	  RESETFRRP; 
+	  //	  RESETFRRP; 
 	  fingers[daccount].lastmode=1; // in this case!
 	  LAYERSWOP;
 	  tmp=livevalue(daccount, V_options); 
 	  speed=speedop(daccount, (P_options>>2)&1); // TEST: added speed sync/top
 	  autre=fingers[daccount].masterL^1; // opposite...
-	  ///
 	  values[daccount]=fingers[daccount].layer[fingers[daccount].masterL].speedsamp(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]); // as per play above ** would be playlist in playlist modes
 	  values[daccount]=overlay(tmp, values[daccount], (P_options>>3)&3); // testy: types of live overlay - is also recorded
-	  //	  tmp=values[daccount];
 	  tmp=overlayx(values[daccount], fingers[daccount].layer[autre].accessreclayer(daccount), (RP_options>>6)&3);
-	  RECLAYERP; // now with RP_options [32] as toggling rec_end 
-	  fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; // this was outside RP below before...
+	  RECLAYERP; // now with RP_options >>5[32] as toggling rec_end 
 	} //end RP
 	else fingers[daccount].entryrp=0;
 	///////////////////////////////////////////////////////	

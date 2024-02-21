@@ -1,7 +1,9 @@
 typedef struct layers_ {
   uint32_t rec_cnt;
   uint32_t rec_end;
-  uint32_t play_cnt;
+  uint32_t overend;
+  uint32_t overendd;
+  float play_cnt;
   uint32_t play_len;
   uint32_t othercnt; // running playlists
   uint32_t (*speedsamp)(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);

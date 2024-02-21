@@ -6,6 +6,14 @@
 
 //gcc test2.c -otest -lm -std=gnu99
 
+    enum STATE {
+      N,
+      R,
+      P,
+      RP
+    };
+
+
 typedef struct listy_ { 
   uint32_t start;  
   uint32_t length;
@@ -179,5 +187,7 @@ int main(void)
   for (x=0;x<24;x++){
         printf("x: %d start %d len: %d\n", x, playlist[x].start, playlist[x].length);
   }
-  
+
+  const float *playreff[4]={logfast, logslow, logfast_stop, logspeed_stop}; 
+  printf("HERE: %f RP: %d\n", playreff[0][0], RP);
 }
