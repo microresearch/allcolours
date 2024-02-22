@@ -59,14 +59,27 @@ kind. It often shows a solitary time and path, between homes, cities,
 and worlds.
 
 - moons from the top
-- which of four ADC has hardest press, how we could interpret 4 presses as binary/geomantic figure!? - through geomantic modes
 
 *how can VIA be informed by concepts of AION and CHRONOS - divisibility of time/no present and all present/all depth*
 
 all present is NADA mode... endless presence
 
-- divination methods, concepts of time: Franz and synchronicity-divination /Deleuze - aion and chronos
+- divination methods, concepts of time: Franz(VF) and synchronicity-divination /Deleuze - aion and chronos
 - how to implement scattering across space and time?
+
+and from VF: 
+
+So all these symbolic references to the meeting of those two worlds
+seem to show that the world of time and the world of acausal
+orderedness outside time, are two incompatible systems that cannot be
+put together but are complementary. They are, that is, more than
+complementary they are incompatible and we cannot imagine how they are
+linked to each other, which is probably also the reason why we cannot
+establish any law of synchronicity, for then the wheels would have to
+be coordinated in a certain way.
+
+The only place where the two systems link is at the hole in the centre, which means that they link in a nowhere, or in a hole.
+This mysterious hole between the two worlds is in a one-sided way also represented in the Chinese incense clock.
 
 * HW/timing
 
@@ -96,10 +109,10 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 - DONEdefine minor modes 
 ////PLAN
 - define and test basic mode: 20/2 
+- 21/2+ and add/catalogue all modes - translate previous major modes into new scheme*
+- full tests of basic first mode 21/2+
 
-*21/2+and add/catalogue all modes - translate previous major modes into new scheme*
-
-- test suggested new modes without minor modes
+- test suggested new modes with/without minor modes
 - wrap together
 
 ** minor modes in each state //these are not bits or bits as say options not binary
@@ -171,10 +184,14 @@ also as minormodes modify the major mode so they depend on this!
 	+playspeedmod=((playminor>>5)&2);  // 2 types:  add recorded speed to real, of if real> // but this was for recorded speed only+
 
 
-** suggested major modes to implement and test
+** CATALOGUE suggested major modes to implement and test
 
-- IN PROGRESS:basic mode above
-- new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these???
+- +Mode0:basic mode above+DONE - in testing
+- *new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these???*
+
+most important is to have ability to rework what we just did live...
+selection is key question
+
 - use newADC as a kind of filter of the tape: doesn't let playback
   value through below newADC threshold (silence or stops tape/speed
   thresholding = could either be playback value as 0/threshold or
@@ -184,6 +201,9 @@ also as minormodes modify the major mode so they depend on this!
 - port all previous mode ideas to new layer approach
 - manipulations from notebook notes of layers and playlists
 - properties of each position, layer and playlist and how these can be changed towards displacement and slippage eg. how we slip one tape across the other in RP mode
+- like rehearsal anbd becomes active on press - hear what would happen if?
+- writing over its own tape in specific areas - see islands - also overlay on itself and onto the other playback of itself
+- ghosts and mirrors
 
 ** start to define new approach// see latest notebook and diary notes below // also for manual
 
@@ -200,7 +220,7 @@ Shortest press increments minor, longer is for major.
 
 Long and very long presses on mode are for soft and hard resets, again only for active positions.
 
-Hard resets everything: check what that is - all modes, all counters, all states.
+Hard resets everything: check what that is - all modes, all counters, all states. All are now active....
 
 Soft reset: resets rec counter to 0, playlist. We have to return to NADA mode as we can't say play on 0...
 
@@ -223,15 +243,51 @@ RP: 4 types of recorded overlay
 - rec just adds to end of tape/wrapping round until full reset
 - no recording of speed just of the effects of speed
 - all minormodes: which ones stay across each state
-- do we record newADC gestures?  
+- do we record newADC gestures?   
 - activation/press per section of sections so maybe R,P, RP and M(mode sel) are not global!
+
+** playing notes/ideas 22/2+
+
+- hard to remember which is active or inactive ... would be nice to find a way to just be able to record one section on its own...
+
+local recording??? without active/inactive... in loop/rec mode where always records...
+
+- full reset should work regardless of active or not and resets to active...
+
+- how to say keep an offset overlay... (would be like freeze but...)
+
+- to be able to kill one section - erase/reset only one part (i guess through not de-activating all - shortcut to deactivate all?)
+
+- minormodes seem to work - test again
 
 * diary notes
 
+** 22/2
+
+- *Thinking about a more dislocated/shattered panel ???*
+
+- DONEwe need to remove so many minormodes in R and RP as these are live so we don't have time to press
+- Q of sync/reset of play/NOTrec counters:
+
+TODO: option to sync/not sync play_cnt in P when we swop sidesDONE - TO TEST on lowest bit- tested but bit same length...
+
+- *USAGE: tests by hand of minormodes*
+
+eg in RP: - 1 bit recend // 0MAXREC, 1rec_end of opposing... // DONE:TODO: test live switching between these opts...
+
+- Q of sensitivity - less sensitive - but then we don't hit top  - linear it is? *should speed be log or linear?
+
+DONEadjust speeds so not so extreme*
+
+- test next major mode - playback of playlist and how we add TESTING - seems fine so far
+
+*Added new speedsample functions: still to finish and also to add play from playlist AND add to playlist*
+
+- *catalogue all modes here - and notate/translate previous major modes into new scheme*
 
 ** 21/2
 
-- *test all options in first mode now: these hardcoded and then with presses*
+- test all options in first mode now: these hardcoded and then with presses
 
 minormode options short press on mode...
 
@@ -248,20 +304,16 @@ P options: 5 bits // TESTED and fixed
 R options: 2 bits // TESTED
 - type of overlay of newADC onto other tape...
 
-RP options: 8 bits //TESTED and with bugfixes
-- first 5 bits as Play above
-- 1 bit recend // 0MAXREC, 1rec_end of opposing...
+RP options: 3 bits //TESTED and with bugfixes // TODO: remove 5 bits play so becomes 3 bits DONE
+- first 5 bits as Play above NON!
+- 1 bit recend // 0MAXREC, 1rec_end of opposing... // *TODO: test live switching between these opts...*
 - 2 bits overlay type
 
 // note: in R and RP reclayers we added overend which is when we reach end, so rec_end is always held at max!
 
-- *catalogue all modes - translate previous major modes into new scheme*
-
-- *how to lower sensitivity???*
-
 ** 20/2
 
-*TODO:*
+TODO:DONE
 
 DONE - Define presses:
 
@@ -281,7 +333,7 @@ Toggle for each position: short press = operation on position according to mode,
 
 - Define/port major modes across...
 
-*TESTS*
+TESTS
 - DONEactive/inactive toggle:
 
 // fixed toggle in play now (as would toggle on longer press too) - keep this for other toggles (in R and RP)...
@@ -301,7 +353,7 @@ TEST: test option to use rec_end of other tape, or MAX_REC as end in RP
 
 // what were the overlay options:
 
-- *RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run till MAX_REC
+- RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run till MAX_REC
 
 - DONE: check overlay options below and refine:
 
@@ -331,9 +383,19 @@ TO TEST!//DONE:- to port latest playlist into 2024.c and trial there -> playing 
 
 Properties of each layer/position and relation to others... relational interface
 
+Properties of each layer/position:
+
+2 tapes with play/rec counters and speeds
+playlist
+
+Relation to others:
+
+4 groups each with newADC
+top global voltage
+
 ** 14/2/2024
 
-*Playlist issues:*
+Playlist issues:
 
 // to resolve start and end still - new counter
 
@@ -374,7 +436,7 @@ notes:
 
 *Basic mode we have:*
 - test basic operations and options so far
-- *TODO:* add to playlist on play, add RP options for end of overlay and overlay, option to sync/not sync play_cnt and rec_cnt in P, RP when we swop sides, 
+- *DONETODO: add to playlist on playDONE, DONEadd RP options for end of overlay and overlay
 
 adding to playlist happens: when we hit end of one cycle, when we leave play, when we swop layers...
 
@@ -388,7 +450,7 @@ adding to playlist happens: when we hit end of one cycle, when we leave play, wh
 
 ** 9-10/2/2024
 
-- *option to sync/not sync play_cnt and rec_cnt in P, RP when we swop sides*
+- option to sync/not sync play_cnt and rec_cnt in P, RP when we swop sides*
 
 // new panel and assembled PCB ordered 12/2/2024
 
@@ -468,7 +530,7 @@ longer press on toggle fine
 
 ///
 
-- *RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run till MAX_REC
+- RP options*: overwrite/add playback/bounce onto tape x until we hit rec_end (of which tape) or we over_run till MAX_REC
 
 - check overlay options below and refine:
 
@@ -477,7 +539,7 @@ longer press on toggle fine
 // add playback+real at playback place???
 // add real only at playback place
 
-*TODO: check these options eg writing at playback spot...*
+TODO: check these options eg writing at playback spot...*
 
 also type of that overlap as we have for live
 
@@ -760,15 +822,15 @@ timer of toggle now:
 latest notebook notes:
 
 PLAY
-- one tap: loop selection. next tap /next tap: add now marked section to playlist
+- one tap: loop selection. next tap /next tap: add now marked section to playlist // how do we make selection? 3 taps?
 
 - eg. to cut up gestures we just keep what is there as long as we hold freeze or as long as new ADC is > level
 
 is cut up into play list or as re-record to tape 1 or 2
 
-- playlist is single but has 2 strands? tape 1 or 2 - and indications to mix, add etc...
+- NO!playlist is single but has 2 strands? tape 1 or 2 - and indications to mix, add etc...
 
-or we have 2 playlists or *just one and all depends on current tape?*
+or we have 2 playlists or just one and all depends on current tape?
 
 control gesture->>>[--------------] tape 1
                    [--------------] tape 2
