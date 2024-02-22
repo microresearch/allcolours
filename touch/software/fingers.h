@@ -6,7 +6,7 @@ typedef struct layers_ {
   float play_cnt;
   uint32_t play_len;
   uint32_t othercnt; // running playlists
-  uint32_t (*speedsamp)(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);
+  uint32_t (*speedsamp[3])(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);
   void (*reclayer)(uint32_t value, uint32_t dacccount); // to add these
   uint32_t (*accessreclayer)(uint32_t daccount);
   uint32_t (*accessplaylayer)(uint32_t daccount);

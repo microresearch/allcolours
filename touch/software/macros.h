@@ -1,11 +1,49 @@
 // MACROS 
 
+#define PSWOP {								\
+  if (fingers[daccount].ttoggle && Theldon[daccount]==0){		\
+  fingers[daccount].toggle^=1;						\
+  fingers[daccount].masterL=fingers[daccount].toggle;			\
+  fingers[daccount].ttoggle=0;						\
+  ADDPLAYLISTSWOP;							\
+  if ((P_options>>5)&1){						\
+  tmpp=fingers[daccount].masterL^1;					\
+  fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
+  }									\
+  }									\
+  }
+
+// no adding to layer
+#define PSWOPP {								\
+  if (fingers[daccount].ttoggle && Theldon[daccount]==0){		\
+  fingers[daccount].toggle^=1;						\
+  fingers[daccount].masterL=fingers[daccount].toggle;			\
+  fingers[daccount].ttoggle=0;						\
+  if ((P_options>>5)&1){						\
+  tmpp=fingers[daccount].masterL^1;					\
+  fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
+  }									\
+  }									\
+  }
+
 #define LAYERSWOP {				\
   if (fingers[daccount].ttoggle && Theldon[daccount]==0){	\
   fingers[daccount].toggle^=1;					\
   fingers[daccount].masterL=fingers[daccount].toggle;		\
   fingers[daccount].ttoggle=0;					\
   }								\
+  }
+
+#define LAYERSWOPRP {				\
+  if (fingers[daccount].ttoggle && Theldon[daccount]==0){	\
+  fingers[daccount].toggle^=1;					\
+  fingers[daccount].masterL=fingers[daccount].toggle;		\
+  fingers[daccount].ttoggle=0;					\
+  if ((P_options>>5)&1){						\
+  tmpp=fingers[daccount].masterL^1;					\
+  fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
+  }									\
+  }									\
   }
 
 #define ADDPLAYLIST {							\
@@ -49,7 +87,7 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
 
 #define RECLAYER {				\
  fingers[daccount].layer[autre].reclayer(tmp, daccount);		\
- fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt;	\
+ if (fingers[daccount].layer[autre].overend==0) fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt;	\
  fingers[daccount].layer[autre].rec_cnt++;				\
  if (fingers[daccount].layer[autre].rec_cnt>MAXREC) {			\
  fingers[daccount].layer[autre].rec_cnt=0;				\
@@ -58,13 +96,15 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
 }
 
 #define RECLAYERP {				\
-    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end && ((RP_options>>5)&1)) tmpp=fingers[daccount].layer[tmpy].rec_end; \
+    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end && (RP_options&1)) tmpp=fingers[daccount].layer[fingers[daccount].masterL].rec_end; \
     else tmpp=MAXREC;							\
     fingers[daccount].layer[autre].reclayer(tmp, daccount);		\
-    fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; \
+    if (fingers[daccount].layer[autre].overend==0 && fingers[daccount].layer[autre].overendd==0) fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; \
     fingers[daccount].layer[autre].rec_cnt++;				\
-    if (fingers[daccount].layer[autre].rec_cnt>tmpp) {			\
+    if (fingers[daccount].layer[autre].rec_cnt>=tmpp) {			\
       fingers[daccount].layer[autre].rec_cnt=0;				\
+      if (tmpp==MAXREC) fingers[daccount].layer[autre].overend=1;	\
+      else fingers[daccount].layer[autre].overendd=1;			\
       fingers[daccount].layer[autre].rec_end=tmpp;			\
     }									\
   }
