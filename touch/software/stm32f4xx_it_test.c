@@ -389,12 +389,13 @@ static hands fingers[8];
 	  //	  MODECHANGED;
 	  mode++;
 	  if (mode>MAXMODES) mode=0;
-	  	      testingl^=1; // testy
+	  //  	      testingl^=1; // testy
 	  //	  testting^=1; // testy
 	}	
 	else if (modeheld<LONGMODE){ //inc minor mode matrix
 	  modeheld=0; // ??? was commented just for testing
 	  //	  testting^=1; // testy triggers
+	  testingl^=1; // testy
 	  baseminor++;
 	  if (baseminor>MAXBASE) baseminor=0;
 	  //  if (rec==0 && play==0) baseminor++; // we dont use so far
