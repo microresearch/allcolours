@@ -204,6 +204,8 @@ selection is key question
 - like rehearsal anbd becomes active on press - hear what would happen if?
 - writing over its own tape in specific areas - see islands - also overlay on itself and onto the other playback of itself
 - ghosts and mirrors
+- cutting and slicing
+- toggle recursive actions on the playlist...
 
 ** start to define new approach// see latest notebook and diary notes below // also for manual
 
@@ -214,6 +216,8 @@ There is a list of playbacks for each position which reference start and end on 
 Rec just adds to end of tape/wrapping round until soft reset
 Major modes are ported in and allow for recursive/fractal dismemberments and dislocations...
 Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
+
+Each state has its own minormode but majormodes apply to all states for each position...
 
 Major and minor modes as changed for all active layers with the MODE button.
 Shortest press increments minor, longer is for major.
@@ -248,13 +252,15 @@ RP: 4 types of recorded overlay
 
 ** playing notes/ideas 22/2+
 
-- hard to remember which is active or inactive ... would be nice to find a way to just be able to record one section on its own...
+- hard to remember which is active or inactive ... would be nice to find a way to just be able to record one section on its own like instantly and not add to
 
 local recording??? without active/inactive... in loop/rec mode where always records...
 
-- full reset should work regardless of active or not and resets to active...
+like mode is REC and local toggle starts and stops that (instead of active/inactive) but what of minormode and mode changes which depend on active/inactive
 
-- how to say keep an offset overlay... (would be like freeze but...)
+- DONEfull reset should work regardless of active or not and resets to active...
+
+- how to say keep a steady  offset overlay... (would be like freeze but...)
 
 - to be able to kill one section - erase/reset only one part (i guess through not de-activating all - shortcut to deactivate all?)
 
@@ -262,9 +268,78 @@ local recording??? without active/inactive... in loop/rec mode where always reco
 
 * diary notes
 
+** 27/2
+
+- trying to think how could be more algorithmic, steering processes and less about recording/controlling...
+
+a la SIR/skin/Dark interpreter... multiple processes
+
+What we have: 
+
+- 8 voltages across 8 positions each with voltage control and with toggle // length of press
+- 4 groups of 2 positions with one voltage controller (newADC)
+- 3 buttons, length of press.
+
+*TODO:*
+
+TESTING- fix othercnt in speedsampleFIXEDTOTESTXS and improve speedsample for wrap//
+
+DONE:in progress: to test *TODO: matching P and RP, Q of playlist?*
+
+- attempt to code majormode below...:
+
+N: always recording in a loop (to both layers?)
+
+R/RP: trigger swops layers
+ADC: zooms through start and end (at each press start, next press start) zoom/stop
+
+and playback is bounced to other layer...
+
+RP and P: Q of how this works for P ... see below
+
+** 26/2
+
+FIXED: +Does it make sense that majormodes are for each state? do they need to match up?+
+
+eg. if in NADA we are always recording then we need other modes to take advantage of this!!
+
+THUS: each position has a major mode across all states...
+
+New majormode from notebook:
+
+N: always recording in a loop
+R/RP: trigger swops layers
+ADC: zooms through start and end (at each press start, next press start) zoom/stop
+P: Q of how this works for P ... 
+
+RP: how that works as R is already over-recording, but we can base on playlist below...
+
+P: adds to playlist and selection is within that - as in we zoom through
+each element of playlist for start and end, can be recursive? adding
+to itself and overwriting... how that works as it might span several
+elements... and then these are all added?
+
+** 23/2
+
+BUG where we don't rec or play// stays in NADA - or could just be that we record NADA!
+
+*TODO: test minormodes again esp in RP with overlaysDONE_but do ongoing tests, test sensitivity esp. speed, could be ok... still think on more fragmented, decayed
+
+// minormodes tested in P, R, RP
+
+- that it is too sensitive - explore this, question of panel... particularly when it comes to speed
+- no speed or other sync options as this can be done by hand, so reduce minormodesDONE
+- reduce types of overlay to those which work best...
+
+//overlay can hit top in RP so we have unusable loop - can just be modulus as only overlay??? but we can overdub/blank in next rec if we go over
+
+- NON///tested///removed//speed is like acceleration - eg. additive, each press is an increment (but we also need to reduce // fixed inertia)...a
+
+// DONEfixed minormode BRK toggle time to 8
+
 ** 22/2
 
-- *Thinking about a more dislocated/shattered panel ???*
+- *Thinking about a more dislocated/shattered panel - also some way to have different areas of sensitivity ???*
 
 - DONEwe need to remove so many minormodes in R and RP as these are live so we don't have time to press
 - Q of sync/reset of play/NOTrec counters:
@@ -315,7 +390,7 @@ RP options: 3 bits //TESTED and with bugfixes // TODO: remove 5 bits play so bec
 
 TODO:DONE
 
-DONE - Define presses:
+DONE - Define presses also for *MANUAL* but double check these:
 
 Major and minor modes as changed for all active layers with the MODE button. Shortest press increments minor, longer is for major.
 
@@ -323,7 +398,7 @@ Long and very long presses on mode are for soft and hard resets, again only for 
 
 Soft reset: resets rec counter to 0, playlist...
 
-Timings: minor: <1, major: 1<4, soft reset: 4<6, hard reset: >6 approx checked
+Timings: minor: <2, major: 2<4, soft reset: 4<6, hard reset: >6 approx checked
 
 DONE:check again  with test_toggles in daccount>8*
 

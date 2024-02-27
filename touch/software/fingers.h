@@ -1,12 +1,16 @@
 typedef struct layers_ {
   uint32_t rec_cnt;
   uint32_t rec_end;
+  uint32_t rec_start;
+  uint32_t rec_otherend;
   uint32_t overend;
   uint32_t overendd;
+  float spdd;
   float play_cnt;
   uint32_t play_len;
   uint32_t othercnt; // running playlists
-  uint32_t (*speedsamp[3])(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples);
+  float cnt; // for new speedsample
+  uint32_t (*speedsamp[4])(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples);
   void (*reclayer)(uint32_t value, uint32_t dacccount); // to add these
   uint32_t (*accessreclayer)(uint32_t daccount);
   uint32_t (*accessplaylayer)(uint32_t daccount);
@@ -15,7 +19,7 @@ typedef struct layers_ {
     typedef struct listy_ { 
       uint32_t start;  
       uint32_t length;
-      uint8_t layer;
+      uint32_t layer;
     } playl;
 
     enum STATE {
@@ -29,8 +33,8 @@ typedef struct layers_ {
       enum STATE state; 
       uint32_t active;
       uint32_t masterL; // current layer
-      uint32_t majormode[4]; // these are for each state!
-      uint32_t minormode[4];
+      uint32_t majormode; 
+      uint32_t minormode[4]; // these are for each state!
       uint32_t playspeed; // index into playreff
       uint32_t toggle, ttoggle;
       layers layer[2]; // rec layers count and functions for access
@@ -44,6 +48,7 @@ typedef struct layers_ {
       uint32_t sensi;
       uint32_t entryn, entryp, entryr, entryrp; // for resets
       uint32_t leavep; // for adding to playlist when we leave P
+      uint32_t rpp; // for state in always rec mode
     } hands;
 
 static hands fingers[8];

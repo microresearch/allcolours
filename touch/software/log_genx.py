@@ -1,6 +1,7 @@
 import numpy
-
-xx=numpy.logspace(0, 4, num=1024, endpoint=True, base=2.0)
+import matplotlib.pyplot as plt 
+x=[]
+xx=numpy.logspace(0, 3, num=1024, endpoint=True, base=2.0)
 #file = open('/root/testfile', 'w')
 #for xyz in reversed(xx):
 #for xyz in xx:
@@ -11,11 +12,17 @@ for xyz in xx:
 #    file.write("%s, " % int(xyz))
 #    print("%s," % int(1+(((starter*xyz)-312)/32))),
 #    print("%s," % int(xyz)),
-#    zz=((float(xyz))/(8)) # reversed
+    #    zz=((float(xyz))/(8)) # reversed
 #    zz=(1.0-((float(xyz))/(64))) # reversed
 #    zz=start + (float(xyz))/(129.90476) # reversed
     zz=((float(xyz))) # reversed
     #    print(zz),
     print("%f," % zz),
+    x.append(zz)
 #for xyz in xx:
  #    print("%s," % int(xyz)),
+nparr=numpy.array(x)
+
+#print nparr
+#plt.plot(nparr)
+#plt.show()

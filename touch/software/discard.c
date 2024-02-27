@@ -1,3 +1,84 @@
+void speedsample(float speedy, uint32_t layer){
+  uint32_t lowerPosition, upperPosition;
+  uint32_t lengthy=playlist[playcnt].length;
+  uint32_t start=playlist[playcnt].start;
+  //printf("p:%d",playcnt);
+  //  printf(" %d ,", start+(int)play_cnt_[layer]);
+  othercnt[layer]++;
+  //  if (othercnt[layer]>REC_END) othercnt[layer]=0;
+  //  play_cnt_[layer]=mod0X(play_cnt_[layer]+speedy, lengthy, start);
+  lengthy=playlist[playcnt].length;//???
+  
+    //  Find surrounding integer table positions
+  lowerPosition = (int)play_cnt_[layer];
+  //  upperPosition = mod0XX(lowerPosition + 1, lengthy);
+
+  //  return (int)play_cnt;// + playlist[playcnt].start;
+  return;
+}
+
+
+float mod0X(float value, float length, uint32_t start)
+{
+  uint32_t tmp, tmplen, tmpval;
+  modded=0;
+  while (value > (length-1)){ // we are ahead - get next in list
+  value -= length; //0
+
+    if (othercnt[0]>0) {
+    playlist[playcntr].length=othercnt[0]-playlist[playcntr].start;
+    //    printf("pp: %d xx:%d\n",playcntr, playlist[playcntr].length );
+    playcntr++; // ignore zero length
+    playfull++;
+    playlist[playcntr].start=0;
+    //    playlist[playcntr].length=REC_END-othercnt[0];
+    }
+
+  
+    // get next in list
+    playcnt+=1; 
+    if (playcnt>=playfull) playcnt=0;
+      length=playlist[playcnt].length;
+    // add to list
+  //  if (othercnt[0]>0) {
+    //    playcntr++; 
+    //    playfull++;
+    //    if (playfull>=120) playfull=119;
+    //    if (playcntr>=120) playcntr=119;
+    //    playlist[playcntr].length=othercnt[0];
+    //    playlist[playcntr].start=start; 
+  //  }
+  othercnt[0]=0;
+   //   printf("playcnt: %d\n", playcnt);
+  }
+    return value;
+}
+
+float mod0XX(float value, float length)
+{
+  uint32_t tmp, tmplen, tmpval;
+  tmp=playcnt;
+
+  while (value > (length-1)){ // we are ahead
+    value -= length; //0
+    // get next in list
+    //    tmp+=1;
+    //    if (tmp>playfull) tmp=0;
+    //    length=playlist[tmp].length;
+  }
+    return value;
+}
+
+
+
+spd=(float)control[whichctrl[daccount]]/10240.0;
+	  fingers[daccount].layer[fingers[daccount].masterL].spdd+=spd;
+	  fingers[daccount].layer[fingers[daccount].masterL].spdd-=0.02f; // inertia
+	  if (fingers[daccount].layer[fingers[daccount].masterL].spdd<0.0) fingers[daccount].layer[fingers[daccount].masterL].spdd=0.0;
+	  if (fingers[daccount].layer[fingers[daccount].masterL].spdd>8.0) fingers[daccount].layer[fingers[daccount].masterL].spdd=8.0;
+	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp[0](fingers[daccount].layer[fingers[daccount].masterL].spdd, fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]);  // start is always 0 TESTY??? RECEND is our length
+
+
 float mod0X(float value, float length, uint32_t dacc)
 {
   while (value > (length-1)){ // we are ahead

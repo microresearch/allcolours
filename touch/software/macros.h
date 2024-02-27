@@ -1,12 +1,16 @@
 // MACROS 
 
+#define UPPER {								\
+    sample= ((samples[lowerPosition]>>16) + (res * ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); \
+    }
+
 #define PSWOP {								\
   if (fingers[daccount].ttoggle && Theldon[daccount]==0){		\
   fingers[daccount].toggle^=1;						\
   fingers[daccount].masterL=fingers[daccount].toggle;			\
   fingers[daccount].ttoggle=0;						\
   ADDPLAYLISTSWOP;							\
-  if ((P_options>>5)&1){						\
+  if ((P_options>>4)&1){						\
   tmpp=fingers[daccount].masterL^1;					\
   fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
   }									\
@@ -19,7 +23,7 @@
   fingers[daccount].toggle^=1;						\
   fingers[daccount].masterL=fingers[daccount].toggle;			\
   fingers[daccount].ttoggle=0;						\
-  if ((P_options>>5)&1){						\
+  if ((P_options>>4)&1){						\
   tmpp=fingers[daccount].masterL^1;					\
   fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
   }									\
@@ -39,7 +43,7 @@
   fingers[daccount].toggle^=1;					\
   fingers[daccount].masterL=fingers[daccount].toggle;		\
   fingers[daccount].ttoggle=0;					\
-  if ((P_options>>5)&1){						\
+  if ((P_options>>4)&1){						\
   tmpp=fingers[daccount].masterL^1;					\
   fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
   }									\
@@ -159,8 +163,13 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
 #define RESETFRR {							\
     if (fingers[daccount].entryr==0){					\
       lastvalue[daccount]=0;						\
+      fingers[daccount].rpp==0;						\
       fingers[daccount].layer[0].play_cnt=0;				\
       fingers[daccount].layer[1].play_cnt=0;				\
+      fingers[daccount].layer[0].rec_otherend=fingers[daccount].layer[0].rec_end; \
+      fingers[daccount].layer[1].rec_otherend=fingers[daccount].layer[0].rec_end; \
+      fingers[daccount].layer[0].rec_start=0;				\
+      fingers[daccount].layer[1].rec_start=0;				\
       fingers[daccount].entryr=1;					\
     }									\
   }
