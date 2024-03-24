@@ -46,6 +46,11 @@ TODO more modes ->15
 
 - size of pluggy cutout approx 28x50mm, for LEDs: 0.8mm x 40mm
 
+** 29/2/2024
+
+- panels arrived - use washers for jacks, and FINE:testing now gluing of panel to socket thing else pcb bends horribly (other option is screw into plastic!)
+- TODO: reverse display count (check again) and eliminate the 0
+
 ** 22/1/2024
 
 - remember that      sbi(PORTD,0); is pin 0

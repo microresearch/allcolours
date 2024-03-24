@@ -1,127 +1,145 @@
 // MACROS 
 
+#define LOWER {					\
+  sample= ((samples[lowerPosition]&4095) + (res * ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095)))); \
+  }
+
+
 #define UPPER {								\
     sample= ((samples[lowerPosition]>>16) + (res * ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); \
     }
 
 #define PSWOP {								\
-  if (fingers[daccount].ttoggle && Theldon[daccount]==0){		\
-  fingers[daccount].toggle^=1;						\
-  fingers[daccount].masterL=fingers[daccount].toggle;			\
-  fingers[daccount].ttoggle=0;						\
+  if (f[d].ttoggle && Theldon[d]==0){		\
+  f[d].toggle^=1;						\
+  f[d].masterL=f[d].toggle;			\
+  f[d].ttoggle=0;						\
   ADDPLAYLISTSWOP;							\
   if ((P_options>>4)&1){						\
-  tmpp=fingers[daccount].masterL^1;					\
-  fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
+  tmpp=f[d].masterL^1;					\
+  f[d].l[f[d].masterL].play_cnt=f[d].l[tmpp].play_cnt; \
   }									\
   }									\
   }
 
 // no adding to layer
 #define PSWOPP {								\
-  if (fingers[daccount].ttoggle && Theldon[daccount]==0){		\
-  fingers[daccount].toggle^=1;						\
-  fingers[daccount].masterL=fingers[daccount].toggle;			\
-  fingers[daccount].ttoggle=0;						\
+  if (f[d].ttoggle && Theldon[d]==0){		\
+  f[d].toggle^=1;						\
+  f[d].masterL=f[d].toggle;			\
+  f[d].ttoggle=0;						\
   if ((P_options>>4)&1){						\
-  tmpp=fingers[daccount].masterL^1;					\
-  fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
+  tmpp=f[d].masterL^1;					\
+  f[d].l[f[d].masterL].play_cnt=f[d].l[tmpp].play_cnt; \
   }									\
   }									\
   }
 
 #define LAYERSWOP {				\
-  if (fingers[daccount].ttoggle && Theldon[daccount]==0){	\
-  fingers[daccount].toggle^=1;					\
-  fingers[daccount].masterL=fingers[daccount].toggle;		\
-  fingers[daccount].ttoggle=0;					\
+  if (f[d].ttoggle && Theldon[d]==0){	\
+  f[d].toggle^=1;					\
+  f[d].masterL=f[d].toggle;		\
+  f[d].ttoggle=0;					\
   }								\
   }
 
 #define LAYERSWOPRP {				\
-  if (fingers[daccount].ttoggle && Theldon[daccount]==0){	\
-  fingers[daccount].toggle^=1;					\
-  fingers[daccount].masterL=fingers[daccount].toggle;		\
-  fingers[daccount].ttoggle=0;					\
+  if (f[d].ttoggle && Theldon[d]==0){	\
+  f[d].toggle^=1;					\
+  f[d].masterL=f[d].toggle;		\
+  f[d].ttoggle=0;					\
   if ((P_options>>4)&1){						\
-  tmpp=fingers[daccount].masterL^1;					\
-  fingers[daccount].layer[fingers[daccount].masterL].play_cnt=fingers[daccount].layer[tmpp].play_cnt; \
+  tmpp=f[d].masterL^1;					\
+  f[d].l[f[d].masterL].play_cnt=f[d].l[tmpp].play_cnt; \
   }									\
   }									\
   }
 
 #define ADDPLAYLIST {							\
-if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
- fingers[daccount].playlist[fingers[daccount].playcntr].length=fingers[daccount].layer[fingers[daccount].masterL].othercnt-fingers[daccount].playlist[fingers[daccount].playcntr].start; \
- fingers[daccount].playcntr++;						\
- fingers[daccount].playfull++;						\
- if (fingers[daccount].playcntr>PLAYFULLY) fingers[daccount].playcntr=0; \
- if (fingers[daccount].playfull>PLAYFULLY) fingers[daccount].playfull=PLAYFULLY; \
- fingers[daccount].playlist[fingers[daccount].playcntr].start=fingers[daccount].layer[fingers[daccount].masterL].othercnt; \
- fingers[daccount].playlist[fingers[daccount].playcntr].layer=fingers[daccount].masterL; \
+if (f[d].l[f[d].masterL].othercnt>0) {	\
+ f[d].playlist[f[d].playcntr].length=f[d].l[f[d].masterL].othercnt-f[d].playlist[f[d].playcntr].start; \
+ f[d].playcntr++;						\
+ f[d].playfull++;						\
+ if (f[d].playcntr>PLAYFULLY) f[d].playcntr=0; \
+ if (f[d].playfull>PLAYFULLY) f[d].playfull=PLAYFULLY; \
+ f[d].playlist[f[d].playcntr].start=f[d].l[f[d].masterL].othercnt; \
+ f[d].playlist[f[d].playcntr].l=f[d].masterL; \
  }									\
  }
 
 #define ADDPLAYLISTSWOP {							\
-    tmpp=fingers[daccount].masterL^1;					\
-    if (fingers[daccount].layer[tmp].othercnt>0) {			\
-      fingers[daccount].playlist[fingers[daccount].playcntr].length=fingers[daccount].layer[tmp].othercnt-fingers[daccount].playlist[fingers[daccount].playcntr].start; \
-      fingers[daccount].playcntr++;					\
-      fingers[daccount].playfull++;					\
-      if (fingers[daccount].playcntr>PLAYFULLY) fingers[daccount].playcntr=0; \
-      if (fingers[daccount].playfull>PLAYFULLY) fingers[daccount].playfull=PLAYFULLY; \
-      fingers[daccount].playlist[fingers[daccount].playcntr].start=fingers[daccount].layer[fingers[daccount].masterL].othercnt; \
-      fingers[daccount].playlist[fingers[daccount].playcntr].layer=fingers[daccount].masterL; \
+    tmpp=f[d].masterL^1;					\
+    if (f[d].l[tmp].othercnt>0) {			\
+      f[d].playlist[f[d].playcntr].length=f[d].l[tmp].othercnt-f[d].playlist[f[d].playcntr].start; \
+      f[d].playcntr++;					\
+      f[d].playfull++;					\
+      if (f[d].playcntr>PLAYFULLY) f[d].playcntr=0; \
+      if (f[d].playfull>PLAYFULLY) f[d].playfull=PLAYFULLY; \
+      f[d].playlist[f[d].playcntr].start=f[d].l[f[d].masterL].othercnt; \
+      f[d].playlist[f[d].playcntr].l=f[d].masterL; \
     }									\
   }
 
 
 #define ADDPLAYLISTRST {							\
-if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
- fingers[daccount].playlist[fingers[daccount].playcntr].length=fingers[daccount].layer[fingers[daccount].masterL].othercnt-fingers[daccount].playlist[fingers[daccount].playcntr].start; \
- fingers[daccount].playcntr++;						\
- fingers[daccount].playfull++;						\
- if (fingers[daccount].playcntr>PLAYFULLY) fingers[daccount].playcntr=0; \
- if (fingers[daccount].playfull>PLAYFULLY) fingers[daccount].playfull=PLAYFULLY; \
- fingers[daccount].playlist[fingers[daccount].playcntr].start=0; \
- fingers[daccount].playlist[fingers[daccount].playcntr].layer=fingers[daccount].masterL; \
+if (f[d].l[f[d].masterL].othercnt>0) {	\
+ f[d].playlist[f[d].playcntr].length=f[d].l[f[d].masterL].othercnt-f[d].playlist[f[d].playcntr].start; \
+ f[d].playcntr++;						\
+ f[d].playfull++;						\
+ if (f[d].playcntr>PLAYFULLY) f[d].playcntr=0; \
+ if (f[d].playfull>PLAYFULLY) f[d].playfull=PLAYFULLY; \
+ f[d].playlist[f[d].playcntr].start=0; \
+ f[d].playlist[f[d].playcntr].l=f[d].masterL; \
  }									\
  }
 
 
 #define RECLAYER {				\
- fingers[daccount].layer[autre].reclayer(tmp, daccount);		\
- if (fingers[daccount].layer[autre].overend==0) fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt;	\
- fingers[daccount].layer[autre].rec_cnt++;				\
- if (fingers[daccount].layer[autre].rec_cnt>MAXREC) {			\
- fingers[daccount].layer[autre].rec_cnt=0;				\
-  fingers[daccount].layer[autre].rec_end=MAXREC;\
+ f[d].l[autre].reclayer(tmp, d);		\
+ if (f[d].l[autre].overend==0) f[d].l[autre].rec_end=f[d].l[autre].rec_cnt;	\
+ f[d].l[autre].rec_cnt++;				\
+ if (f[d].l[autre].rec_cnt>MAXREC) {			\
+ f[d].l[autre].rec_cnt=0;				\
+  f[d].l[autre].rec_end=MAXREC;\
  }						\
 }
 
 #define RECLAYERP {				\
-    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end && (RP_options&1)) tmpp=fingers[daccount].layer[fingers[daccount].masterL].rec_end; \
+    if (f[d].l[f[d].masterL].rec_end && (RP_options&1)) tmpp=f[d].l[f[d].masterL].rec_end; \
     else tmpp=MAXREC;							\
-    fingers[daccount].layer[autre].reclayer(tmp, daccount);		\
-    if (fingers[daccount].layer[autre].overend==0 && fingers[daccount].layer[autre].overendd==0) fingers[daccount].layer[autre].rec_end=fingers[daccount].layer[autre].rec_cnt; \
-    fingers[daccount].layer[autre].rec_cnt++;				\
-    if (fingers[daccount].layer[autre].rec_cnt>=tmpp) {			\
-      fingers[daccount].layer[autre].rec_cnt=0;				\
-      if (tmpp==MAXREC) fingers[daccount].layer[autre].overend=1;	\
-      else fingers[daccount].layer[autre].overendd=1;			\
-      fingers[daccount].layer[autre].rec_end=tmpp;			\
+    f[d].l[autre].reclayer(tmp, d);		\
+    if (f[d].l[autre].overend==0 && f[d].l[autre].overendd==0) f[d].l[autre].rec_end=f[d].l[autre].rec_cnt; \
+    f[d].l[autre].rec_cnt++;				\
+    if (f[d].l[autre].rec_cnt>=tmpp) {			\
+      f[d].l[autre].rec_cnt=0;				\
+      if (tmpp==MAXREC) f[d].l[autre].overend=1;	\
+      else f[d].l[autre].overendd=1;			\
+      f[d].l[autre].rec_end=tmpp;			\
     }									\
   }
 
+#define RECLAYERPX {				\
+    if (f[d].l[f[d].masterL].rec_end && (R_options&4)) tmpp=f[d].l[f[d].masterL].rec_end; \
+    else tmpp=MAXREC;							\
+    f[d].l[autre].reclayer(tmp, d);		\
+    if (f[d].l[autre].overend==0 && f[d].l[autre].overendd==0) f[d].l[autre].rec_end=f[d].l[autre].rec_cnt; \
+    f[d].l[autre].rec_cnt++;				\
+    if (f[d].l[autre].rec_cnt>=tmpp) {			\
+      f[d].l[autre].rec_cnt=0;				\
+      if (tmpp==MAXREC) f[d].l[autre].overend=1;	\
+      else f[d].l[autre].overendd=1;			\
+      f[d].l[autre].rec_end=tmpp;			\
+    }									\
+  }
 
 #define DOFREEZE {				\
- if (fingers[daccount].ttoggle)			\
+ if (f[d].ttoggle)			\
    {						\
- lastvalue[daccount]=tmp;			\
- fingers[daccount].ttoggle=0;			\
+ lastvalue[d]=tmp;			\
+ f[d].ttoggle=0;			\
    }						\
  else {									\
-   if (tmp<lastvalue[daccount]) tmp=lastvalue[daccount];		\
+   if (tmp<lastvalue[d]) tmp=lastvalue[d];		\
  }									\
  }
 
@@ -145,38 +163,38 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
 
 // deal with playfull as a 0
 #define RESETFRP {							\
-  if (fingers[daccount].entryp==0){					\
-    lastvalue[daccount]=0;						\
-    fingers[daccount].layer[0].play_cnt=0;				\
-    fingers[daccount].layer[1].play_cnt=0;				\
-    fingers[daccount].entryp=1;						\
+  if (f[d].entryp==0){					\
+    lastvalue[d]=0;						\
+    f[d].l[0].play_cnt=0;				\
+    f[d].l[1].play_cnt=0;				\
+    f[d].entryp=1;						\
   }									\
   }
 
 #define RESETFRN {							\
-    if (fingers[daccount].entryn==0){					\
-      lastvalue[daccount]=0;						\
-      fingers[daccount].entryn=1;					\
+    if (f[d].entryn==0){					\
+      lastvalue[d]=0;						\
+      f[d].entryn=1;					\
     }									\
   }
 
 #define RESETFRR {							\
-    if (fingers[daccount].entryr==0){					\
-      lastvalue[daccount]=0;						\
-      fingers[daccount].rpp==0;						\
-      fingers[daccount].layer[0].play_cnt=0;				\
-      fingers[daccount].layer[1].play_cnt=0;				\
-      fingers[daccount].layer[0].rec_otherend=fingers[daccount].layer[0].rec_end; \
-      fingers[daccount].layer[1].rec_otherend=fingers[daccount].layer[0].rec_end; \
-      fingers[daccount].layer[0].rec_start=0;				\
-      fingers[daccount].layer[1].rec_start=0;				\
-      fingers[daccount].entryr=1;					\
+    if (f[d].entryr==0){					\
+      lastvalue[d]=0;						\
+      f[d].rpp==0;						\
+      f[d].l[0].play_cnt=0;				\
+      f[d].l[1].play_cnt=0;				\
+      f[d].l[0].rec_length=f[d].l[0].rec_end; \
+      f[d].l[1].rec_length=f[d].l[1].rec_end; \
+      f[d].l[0].rec_start=0;				\
+      f[d].l[1].rec_start=0;				\
+      f[d].entryr=1;					\
     }									\
   }
 
 #define RESETFRRP {						\
-    if (fingers[daccount].entryrp==0){				\
-      fingers[daccount].entryrp=1;				\
+    if (f[d].entryrp==0){				\
+      f[d].entryrp=1;				\
     }								\
   }
 
@@ -317,7 +335,7 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
 	}
 
 #define FREEZERS {					\
-  if (daccount==7){							\
+  if (d==7){							\
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;				\
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			\
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
@@ -342,7 +360,7 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;			\
     GPIO_Init(GPIOC, &GPIO_InitStructure);				\
     if (lasttriggered[7]>BRKF) {						\
-      fingers[7].ttoggle=1;						\
+      f[7].ttoggle=1;						\
       lasttriggered[7]=0;						\
       Theldon[7]=1;							\
     }									\
@@ -355,15 +373,15 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
       GPIO_Init(GPIOC, &GPIO_InitStructure);				\
       GPIOC->BSRRL=(1)<<6;						\
       delay();								\
-      if (!(GPIOB->IDR & (freezer[daccount]))) {			\
-	lasttriggered[daccount]=breaker[daccount];			\
-	breaker[daccount]=0;						\
-	if (Theldon[daccount]) Thelder[daccount]++;			\
+      if (!(GPIOB->IDR & (freezer[d]))) {			\
+	lasttriggered[d]=breaker[d];			\
+	breaker[d]=0;						\
+	if (Theldon[d]) Thelder[d]++;			\
       }									\
       else {								\
-	breaker[daccount]++;						\
-	if (breaker[daccount]>1024) breaker[daccount]=1024;		\
-	if (Thelder[daccount]>8 && breaker[daccount]>8) {Theldon[daccount]=0; Newtog[daccount]=1; Theld[daccount]=Thelder[daccount]; Thelder[daccount]=0;} \
+	breaker[d]++;						\
+	if (breaker[d]>1024) breaker[d]=1024;		\
+	if (Thelder[d]>8 && breaker[d]>8) {Theldon[d]=0; Newtog[d]=1; Theld[d]=Thelder[d]; Thelder[d]=0;} \
 	}					  \
 	GPIOC->BSRRH=(1)<<6;						\
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;			\
@@ -372,10 +390,10 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;		\
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		\
 	GPIO_Init(GPIOC, &GPIO_InitStructure);				\
-	if (lasttriggered[daccount]>BRKF) {				\
-	fingers[daccount].ttoggle=1;					\
-	lasttriggered[daccount]=0;					\
-	Theldon[daccount]=1;						\
+	if (lasttriggered[d]>BRKF) {				\
+	f[d].ttoggle=1;					\
+	lasttriggered[d]=0;					\
+	Theldon[d]=1;						\
 	}								\
       }									\
     }
@@ -386,37 +404,37 @@ if (fingers[daccount].layer[fingers[daccount].masterL].othercnt>0) {	\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[0]=ADC_GetConversionValue(ADC1);				\
-  control[0]=control[0]<<SENSESHIFTS[fingers[0].sensi];					\
-  control[0]-=SENSEOFFSETS[fingers[0].sensi];						\
+  control[0]=control[0]<<SENSESHIFTS[f[0].sensi];					\
+  control[0]-=SENSEOFFSETS[f[0].sensi];						\
   if (control[0]<0) control[0]=0;						\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_480Cycles); \
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[1]=ADC_GetConversionValue(ADC1);				\
-  control[1]=control[1]<<SENSESHIFTS[fingers[1].sensi];					\
-  control[1]-=SENSEOFFSETS[fingers[1].sensi];						\
+  control[1]=control[1]<<SENSESHIFTS[f[1].sensi];					\
+  control[1]-=SENSEOFFSETS[f[1].sensi];						\
   if (control[1]<0) control[1]=0;					\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_480Cycles); \
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[2]=ADC_GetConversionValue(ADC1);				\
-  control[2]=control[2]<<SENSESHIFTS[fingers[2].sensi];					\
-  control[2]-=SENSEOFFSETS[fingers[2].sensi];						\
+  control[2]=control[2]<<SENSESHIFTS[f[2].sensi];					\
+  control[2]-=SENSEOFFSETS[f[2].sensi];						\
   if (control[2]<0) control[2]=0;					\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_480Cycles); \
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   control[3]=ADC_GetConversionValue(ADC1);				\
-  control[3]=control[3]<<SENSESHIFTS[fingers[3].sensi];					\
-  control[3]-=SENSEOFFSETS[fingers[3].sensi];						\
+  control[3]=control[3]<<SENSESHIFTS[f[3].sensi];					\
+  control[3]-=SENSEOFFSETS[f[3].sensi];						\
   if (control[3]<0) control[3]=0;					\
 }
 
 #define REALADC {						\
-switch(daccount){						\
+switch(d){						\
   case 0:							\
   ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_480Cycles);\
   ADC_ClearFlag (ADC1, ADC_FLAG_EOC);					\
@@ -463,8 +481,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[4]=ADC_GetConversionValue(ADC1);				\
-  real[4]=real[4]<<SENSESHIFTS[fingers[4].sensi];						\
-  real[4]-=SENSEOFFSETS[fingers[4].sensi];							\
+  real[4]=real[4]<<SENSESHIFTS[f[4].sensi];						\
+  real[4]-=SENSEOFFSETS[f[4].sensi];							\
   if (real[4]<0) real[4]=0;					\
   if (real[4]>4095) real[4]=4095;					\
   break;							\
@@ -474,8 +492,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));			\
   real[5]=ADC_GetConversionValue(ADC1);				\
-  real[5]=real[5]<<SENSESHIFTS[fingers[5].sensi];						\
-  real[5]-=SENSEOFFSETS[fingers[5].sensi];							\
+  real[5]=real[5]<<SENSESHIFTS[f[5].sensi];						\
+  real[5]-=SENSEOFFSETS[f[5].sensi];							\
   if (real[5]<0) real[5]=0;					\
   if (real[5]>4095) real[5]=4095;					\
   break;								\
@@ -485,8 +503,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[6]=ADC_GetConversionValue(ADC1);					\
-  real[6]=real[6]<<SENSESHIFTS[fingers[6].sensi];							\
-  real[6]-=SENSEOFFSETS[fingers[6].sensi];								\
+  real[6]=real[6]<<SENSESHIFTS[f[6].sensi];							\
+  real[6]-=SENSEOFFSETS[f[6].sensi];								\
   if (real[6]<0) real[6]=0;						\
   if (real[6]>4095) real[6]=4095;					\
   reall[6]=real[6];							\
@@ -497,8 +515,8 @@ switch(daccount){						\
   ADC_SoftwareStartConv(ADC1);						\
   while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);		\
   real[7]=ADC_GetConversionValue(ADC1);				\
-  real[7]=real[7]<<SENSESHIFTS[fingers[7].sensi];							\
-  real[7]-=SENSEOFFSETS[fingers[7].sensi];								\
+  real[7]=real[7]<<SENSESHIFTS[f[7].sensi];							\
+  real[7]-=SENSEOFFSETS[f[7].sensi];								\
   if (real[7]<0) real[7]=0;						\
   if (real[7]>4095) real[7]=4095;					\
   break;								\
@@ -583,11 +601,11 @@ switch(daccount){						\
   }
 
 #define WRITEDAC {						\
-  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]);	\
+  DAC_SetChannel1Data(DAC_Align_12b_R, values[d]);	\
   j = DAC_GetDataOutputValue (DAC_Channel_1);			\
   GPIOC->BSRRH = 1<<11;						\
   GPIOC->BSRRH |= 0b1110000000000000;				\
-  GPIOC->BSRRL=(daccount)<<13;					\
+  GPIOC->BSRRL=(d)<<13;					\
   delay2();							\
   GPIOC->BSRRL = 1<<11;						\
   CLEARDAC;							\
@@ -595,10 +613,10 @@ switch(daccount){						\
 
 #define WRITEDAC2 {						\
   GPIOC->BSRRL = 1<<11;						\
-  DAC_SetChannel1Data(DAC_Align_12b_R, values[daccount]);	\
+  DAC_SetChannel1Data(DAC_Align_12b_R, values[d]);	\
   j = DAC_GetDataOutputValue (DAC_Channel_1);			\
   GPIOC->BSRRH = 0b1110100000000000;				\
-  GPIOC->BSRRL=(daccount)<<13;					\
+  GPIOC->BSRRL=(d)<<13;					\
 }
 
 

@@ -66,7 +66,7 @@ static layers lay[8][2];
       uint32_t entryp, entryr, entryrp; // for resets
     } hands;
 
-static hands fingers[8];
+static hands f[8];
 
 
 #define TOPS 0b11111111111111110000000000000000
@@ -204,7 +204,7 @@ static hands fingers[8];
        static uint32_t silence=0;
 
        static uint32_t global_time=0; // also in resett
-       static uint32_t daccount=0, entryp=0, entryn=0, entryr=0, entryo=0;
+       static uint32_t d=0, entryp=0, entryn=0, entryr=0, entryo=0;
        static uint32_t speed=0, overlap[8]={0};
        static float speedy, alpha[8]={0,0,0,0, 0,0,0,0};
        static uint32_t starty[8]={0,0,0,0, 0,0,0,0}, target[8]={0,0,0,0, 0,0,0,0};
@@ -259,31 +259,31 @@ static hands fingers[8];
        {
 	   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	   
-	   mode=778; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
+	   mode=777; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
 	   
 	   // SHIFTS
 	   // SENSESHIFT=2, SENSEOFFSET=1800; 
 	   //SENSESHIFT=1, SENSEOFFSET=560;
 	   //	   SENSESHIFT=0, SENSEOFFSET=64;
 
-	   fingers[4].sensi=1;
-	   fingers[0].sensi=1;
+	   f[4].sensi=1;
+	   f[0].sensi=1;
 	   switch(mode){
 
 	   case 0: // test realadc and dacs...
 	     REALADC;
 	     //  TEST_TOGGLES;
-	     values[daccount]=(real[daccount]);
+	     values[d]=(real[d]);
 	     break; 
 
 	   case 111: // test noise/glitch
-	     values[daccount]=4095;
+	     values[d]=4095;
 	     break;
 
 	   case 112: // test if we have 0 for silence modes
 	     REALADC;
-	     if (real[daccount]==0) values[daccount]=0;
-	     else values[daccount]=4095;
+	     if (real[d]==0) values[d]=0;
+	     else values[d]=4095;
 	     break;
 
 	   case 666: // test new ADCs:
@@ -292,7 +292,7 @@ static hands fingers[8];
 	     break;
 
 	   case 667:
-	     testingl=fingers[4].toggle;
+	     testingl=f[4].toggle;
 	     if (testingl) { 
 	    values[4]=4095;
 	  }
@@ -300,10 +300,10 @@ static hands fingers[8];
 	     break;
 	     
 	   case 777: // tests of all toggles! rec, play, mode and freeze
-	     //	  FREEZERS;
-	     //	     TEST_TOGGLES;
+	     //	     	  FREEZERS;
+	     ///TEST_TOGGLES;
 	     
-	  if (modetoggle) {  // frozen[daccount]  // play // rec // modetoggle
+	  if (modetoggle) {  // frozen[d]  // play // rec // modetoggle
 	    values[4]=4095;
 	  }
 	  else values[4]=0;
@@ -360,11 +360,11 @@ static hands fingers[8];
 	   }
 	   
 	WRITEDAC2;
-	daccount++;
-	if (daccount==8) {
+	d++;
+	if (d==8) {
 	   TEST_TOGGLES;      // only place where toggles - pulled out of ==8 section
 	  global_time++;
-	  daccount=0;
+	  d=0;
 	  count++;
 	  //	  TEST_TOGGLES;      // only place where toggles TESTY!
 	// start to test for long or short mode hits

@@ -1,3 +1,323 @@
+	  switch(f[d].majormode[R]){
+	  case 0:
+	  case 1:
+	    tmp=livevalue(d, V_options);
+	    LAYERSWOP;
+	    autre=f[d].masterL;
+	    RECLAYER; // autre is our layer for the macro  
+	    autre=f[d].masterL^1;
+	    tmp=overlay(control[whichctrl[d]], tmp, R_options&3); // overlay of CTRL
+	    values[d]=tmp;
+	    RECLAYER;
+	    break;
+	  case 2: //ADC: zooms through start and end (at each press start, next press start) zoom/stop and playback is bounced to other layer... trigger swops layers
+	    tmp=livevalue(d, V_options);
+	    LAYERSWOPRP; 
+	    if (control[whichctrl[d]]>32){ 
+	      speed=control[whichctrl[d]]>>2;
+	      if (f[d].rpp==0) f[d].rpp=1; // set start
+	      if (f[d].rpp==2) f[d].rpp=3;
+	      //	      values[d]=f[d].l[f[d].masterL].speedsamp(playreff[f[d].playspeed][speed], f[d].l[f[d].masterL].rec_end, 0, f[d].l[f[d].masterL].rec_end, d, recordings[d]);
+	      if (f[d].rpp==1) { // set the start
+		f[d].l[f[d].masterL].rec_start=f[d].l[f[d].masterL].play_cnt;
+	      }
+	      else { // set the end
+		if (f[d].l[f[d].masterL].play_cnt>f[d].l[f[d].masterL].rec_start) f[d].l[f[d].masterL].rec_length=f[d].l[f[d].masterL].play_cnt-f[d].l[f[d].masterL].rec_start;
+		else f[d].l[f[d].masterL].rec_length=(f[d].l[f[d].masterL].rec_end-f[d].l[f[d].masterL].play_cnt)+f[d].l[f[d].masterL].rec_start;
+	      }
+	      values[d]=overlay(tmp, values[d], (P_options>>2)&3); 
+	    }
+	    else { // released...
+	      //		values[d]=f[d].l[f[d].masterL].speedsamp(1.0f, f[d].l[f[d].masterL].rec_length, f[d].l[f[d].masterL].rec_start, f[d].l[f[d].masterL].rec_end, d, recordings[d]);
+		values[d]=overlay(tmp, values[d], (P_options>>2)&3); // and write this to other layer
+		tmp=values[d];
+		autre=f[d].masterL^1;
+		RECLAYERPX; //DONE/to test//TODO: what is limit for that one!? we keep on adding // how else? overlayx opts, RECEND opts as per RP below!
+	      if (f[d].rpp==3) f[d].rpp=0;
+     	      else if (f[d].rpp==1) f[d].rpp=2; // set end // when do we set to 0
+	    }
+	    break;
+	  } // end switch
+
+	  switch(f[d].majormode[RP]){
+	  case 0:
+	  case 1:
+	  f[d].lastmode=1; // in this case!
+	  LAYERSWOPRP;
+	  tmp=livevalue(d, V_options); 
+	  speed=control[whichctrl[d]]>>2;
+	  autre=f[d].masterL^1; // opposite...
+	  //	  values[d]=f[d].l[f[d].masterL].speedsamp(playreff[f[d].playspeed][speed], f[d].l[f[d].masterL].rec_end, 0, f[d].l[f[d].masterL].rec_end, d, recordings[d]); // as per play above for mode 0** would be playlist in playlist modes
+	  values[d]=overlay(tmp, values[d], (P_options>>2)&3); // types of live overlay - is also recorded
+	  tmp=overlayx(values[d], f[d].l[autre].accessreclayer(d), (RP_options>>1)&3);
+	  //RECLAYERP; // now with RP_options bit 1 as toggling rec_end - test live toggling // ???TODO: also we could reset rec_cnt to 0 - when??????
+	  if (RP_options&8){ // option to stop rec on not playing...
+	    RECLAYERP;
+	  }
+	  else 	  if (speed!=0.0f) RECLAYERP; // default is to stop
+	  break;
+	  case 2: // matching R://ADC: zooms through start and end (at each press start, next press start) zoom/stop and playback is bounced to other layer... trigger swops layers
+	    // but what happens here
+	  break;
+	  }
+
+
+//(recordings[d][f[d].layer[1].rec_cnt]&4095); // lower
+//
+
+void reclayerupper(uint32_t value, uint32_t d){
+  recordings[d][f[d].l[1].rec_cnt]=(recordings[d][f[d].l[1].rec_cnt]&4095)+(value<<16);
+}
+
+void reclayerlower(uint32_t value, uint32_t d){
+  recordings[d][f[d].l[0].rec_cnt]=(recordings[d][f[d].l[0].rec_cnt]&TOPS)+(value);
+}
+
+
+//(recordings[d][f[d].layer[1].rec_cnt]&4095); // lower
+//
+
+void reclayerupper(uint32_t value, uint32_t d){
+  recordings[d][f[d].l[1].rec_cnt]=(recordings[d][f[d].l[1].rec_cnt]&4095)+(value<<16);
+}
+
+void reclayerlower(uint32_t value, uint32_t d){
+  recordings[d][f[d].l[0].rec_cnt]=(recordings[d][f[d].l[0].rec_cnt]&TOPS)+(value);
+}
+
+inline static uint32_t accessplaylayerupper(uint32_t d){
+  uint32_t value=(recordings[d][(int)f[d].l[1].play_cnt])>>16; 
+  return value;
+}
+
+inline static uint32_t accessplaylayerlower(uint32_t d){
+  uint32_t value=(recordings[d][(int)f[d].l[0].play_cnt])&4095; 
+  return value;
+}
+
+inline static uint32_t accessreclayerupper(uint32_t d){
+  uint32_t value=(recordings[d][f[d].l[1].rec_cnt])>>16; 
+  return value;
+}
+
+
+
+inline static uint32_t accessreclayerlower(uint32_t d){
+  uint32_t value=(recordings[d][f[d].l[0].rec_cnt])&4095; 
+  return value;
+}
+
+
+// 000
+
+// adding to playlist
+inline static float mod0N(float value, float start, float ending, float length, uint32_t d, uint32_t layer) // new one with start and ending/loop point
+{
+  static uint32_t lengthed;
+  lengthed=0;
+  while (value > (ending-1)){ // wrapping
+    value -= ending;
+  }
+  while (f[d].l[layer].cnt>(length-1)){
+    f[d].l[layer].cnt-=length;
+    ADDPLAYLIST;
+    lengthed=1;
+    }
+  if (lengthed) {
+    value=f[d].l[layer].cnt+start;
+  }
+  return value;
+}
+
+inline static float mod0NN(float value, float start, float ending, float length, uint32_t d, uint32_t layer) // new one with start and ending/loop point
+{
+  static uint32_t lengthed;
+  uint32_t tmpp;
+  lengthed=0;
+  while (value > (ending-1)){
+    value -= ending;
+    }
+    tmpp=f[d].l[layer].cnt;
+    if ((tmpp+1)>(length-1)){
+    tmpp-=length;
+    //    value=start+tmpp;
+  if (lengthed) {
+    value=tmpp+start;
+  }
+    }
+  return value;
+}
+
+inline static float mod0(float value, float length) // basic one
+{
+  while (value > (length-1))
+        value -= length;
+    return value;
+}
+
+inline static float mod0XX(float value, float length, uint32_t d)
+{
+  while (value > (length-1)){
+        value -= length;
+    // get next in list
+  f[d].playcnt+=1; 
+  if (f[d].playcnt>=f[d].playfull) f[d].playcnt=0;
+  length=f[d].playlist[f[d].playcnt].length;
+  }
+    return value;
+}
+
+inline static float mod00(float value, float length, uint32_t d)
+{
+  uint32_t tmp=f[d].playcnt;
+  while (value > (length-1)) {
+        value -= length;
+	tmp+=1;
+	if (tmp>f[d].playfull) tmp=0;
+	length=f[d].playlist[tmp].length;
+  }
+  return value;
+}
+
+inline static float mod0X(float value, float length, uint32_t d) // adds to playlist 
+{
+  while (value > (length-1)){
+    value -= length;
+    ADDPLAYLISTRST;
+    f[d].l[f[d].masterL].cnt=0;
+  }
+  return value;
+}
+
+inline static uint32_t speedsampleplay(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition, layer=0;
+  float sample;
+  lengthy=f[dacc].playlist[f[dacc].playcnt].length;
+  end=f[dacc].playlist[f[dacc].playcnt].end;
+  start=f[dacc].playlist[f[dacc].playcnt].start;
+  layer=f[dacc].playlist[f[dacc].playcnt].l;
+
+  f[dacc].l[layer].play_cnt=mod0(f[dacc].l[layer].play_cnt+speedy, start, end, lengthy, dacc);
+  lowerPosition = (int)f[dacc].l[layer].play_cnt;
+  upperPosition = mod00(lowerPosition + 1, lengthy, dacc); // wrap... or entry into next in list?
+  int32_t res=(f[dacc].l[layer].play_cnt - (float)lowerPosition);
+  lowerPosition+=start;
+  upperPosition+=start;
+  if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+  if (upperPosition>=MAXREC) upperPosition=0;
+  if (layer==0){  
+    LOWER;
+  }
+  else {
+    UPPER;
+  }
+  return (uint32_t)sample;
+}
+
+
+
+
+// new one for wrap - no playlist yet
+// inline static float mod0n(float value, float start, float ending, float length, uint32_t dacc) // new one with start and ending/loop point
+// wrapping version - end is topmost(rec_end), length is how long, start is start - so can wrap round end...
+inline static uint32_t speedsamplelowerW(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
+    uint32_t lowerPosition, upperPosition;
+    float sample;
+    f[dacc].l[0].cnt+=speedy;
+    f[dacc].l[0].play_cnt=mod0N(f[dacc].l[0].play_cnt+speedy, start, end, lengthy, dacc, 0);
+    lowerPosition = (int)f[dacc].l[0].play_cnt;
+    upperPosition = mod0NN(lowerPosition + 1, start, end, lengthy, dacc, 0);
+   int32_t res=(f[dacc].l[0].play_cnt - (float)lowerPosition);
+   if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+   if (upperPosition>=MAXREC) upperPosition=0;
+    LOWER;
+  return (uint32_t)sample;
+}
+
+inline static uint32_t speedsampleupperW(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
+    uint32_t lowerPosition, upperPosition;
+    float sample;
+    f[dacc].l[1].cnt+=speedy;
+    f[dacc].l[1].play_cnt=mod0N(f[dacc].l[1].play_cnt+speedy, start, end, lengthy, dacc, 1);
+    lowerPosition = (int)f[dacc].l[1].play_cnt;
+    upperPosition = mod0NN(lowerPosition + 1, start, end, lengthy, dacc, 1);
+    int32_t res=(f[dacc].l[1].play_cnt - (float)lowerPosition);
+    if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+    if (upperPosition>=MAXREC) upperPosition=0;
+    UPPER;
+    return (uint32_t)sample;
+}
+
+// no add but do read from playlist - no layers as layer is in the list // TODO: deal with wrap on end
+
+// nada to do with playlist
+inline static uint32_t speedsamplelowerN(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition;
+  float sample;
+  f[dacc].l[0].play_cnt=mod0(f[dacc].l[0].play_cnt+speedy, lengthy);
+  lowerPosition = (int)f[dacc].l[0].play_cnt;
+  upperPosition = mod0(lowerPosition + 1, lengthy); // wrap... or entry into next in list?
+  int32_t res=(f[dacc].l[0].play_cnt - (float)lowerPosition);
+  lowerPosition+=start;
+  upperPosition+=start;
+  if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+  if (upperPosition>=MAXREC) upperPosition=0;
+  LOWER;
+  return (uint32_t)sample;
+}
+
+inline static uint32_t speedsampleupperN(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition;
+  float sample;
+  f[dacc].l[1].play_cnt=mod0(f[dacc].l[1].play_cnt+speedy, lengthy);
+  lowerPosition = (int)f[dacc].l[1].play_cnt;
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+  int32_t res=(f[dacc].l[1].play_cnt - (float)lowerPosition);
+  lowerPosition+=start;
+  upperPosition+=start;
+  if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+  if (upperPosition>=MAXREC) upperPosition=0;
+  UPPER;
+  return (uint32_t)sample;
+}
+
+
+
+// 3 sets of speedsamplelower/upper: add to playlist, read from playlist, no add/no read from
+
+// this one here is add to playlist
+inline static uint32_t speedsamplelower(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition;
+  float sample;
+  f[dacc].l[0].othercnt+=speedy; // fixed - to test!
+  f[dacc].l[0].play_cnt=mod0X(f[dacc].l[0].play_cnt+speedy, lengthy, dacc);
+  lowerPosition = (int)f[dacc].l[0].play_cnt;
+  upperPosition = mod0(lowerPosition + 1, lengthy); // wrap... or entry into next in list?
+  int32_t res=(f[dacc].l[0].play_cnt - (float)lowerPosition);
+  lowerPosition+=start;
+  upperPosition+=start;
+  if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+  if (upperPosition>=MAXREC) upperPosition=0;
+  LOWER;
+  return (uint32_t)sample;
+}
+
+inline static uint32_t speedsampleupper(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
+  uint32_t lowerPosition, upperPosition;
+  float sample;
+  f[dacc].l[1].othercnt+=speedy;
+  f[dacc].l[1].play_cnt=mod0X(f[dacc].l[1].play_cnt+speedy, lengthy, dacc);
+  lowerPosition = (int)f[dacc].l[1].play_cnt;
+  upperPosition = mod0(lowerPosition + 1, lengthy);
+  int32_t res=(f[dacc].l[1].play_cnt - (float)lowerPosition);
+  lowerPosition+=start;
+  upperPosition+=start;
+  if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
+  if (upperPosition>=MAXREC) upperPosition=0;
+  UPPER;
+  return (uint32_t)sample;
+}
+
 void speedsample(float speedy, uint32_t layer){
   uint32_t lowerPosition, upperPosition;
   uint32_t lengthy=playlist[playcnt].length;

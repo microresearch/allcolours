@@ -124,19 +124,21 @@ void main(void)
    if (armed && pin[0] && (last[0]==0)) { // we just want leading edge...
      state[0]=1; // fired
      counterr[0]=0;
-     //     sbi(PORTD,0);
-     //     _delay_ms(100);
+     sbi(PORTD,0);
+     _delay_ms(100);
      //     _delay_ms(2000); // test shorting at 2 secs
-     //     cbi(PORTD,0);
+     cbi(PORTD,0);
    }
    last[0]=pin[0];
 
+   /* // longer one 2 secs???
    if (state[0]==1 && armed) { // fired
      counterr[0]++;
      sbi(PORTD,0);
      if (counterr[0]>10)       state[0]=0; // how to calibrate - say this is 10 is 100mS and 180 is 200 roughly
    }
      else      cbi(PORTD,0);
+   */
    _delay_ms(10);
   } // while
 }    
