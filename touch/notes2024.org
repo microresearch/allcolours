@@ -11,6 +11,8 @@
 
 sync and divination: 4 layers // binary figure
 
+8 voltage areas/ 4 groups by newADC
+
 moon/crescents - new moon - half - full - half 
 
   M
@@ -26,13 +28,6 @@ R+P:
 
 ////
 
-*Basic mode to implement:* (each mode is defined by ADCs and freeze behaviour)
-
-NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - NONinvert is take value from top, but what is "fake swop"?
-REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...// what we hear is voltage+overlay
-PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that
-REC+PLAY: ADC->speed/bounce/rec with overlay to other tape // freeze is swop // what does voltage do (overlay same tape minormodes here)
-
 Q of global speed... *new top ADC is global control. also we have sync functions*
 
 NADA = no tape
@@ -45,6 +40,50 @@ NADA = no tape
 - operations on tape and across 2 tapes
 - sync/detach etc...
 - chop/silence/insert etc... or is that operation on play list
+
+* Modes so far:
+
+Note: major modes are per state now (changed back 14/3)
+
+So they need to be listed per state:
+
+NADA:
+0-
+1-
+2-
+
+R:
+0-
+1-
+2-
+
+P:
+0-
+1-
+2-
+
+RP:
+0-
+1-
+2-
+
+*0- basic mode and add to playlist: DONE*
+NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - NONinvert is take value from top, but what is "fake swop"?
+REC: ADC->overlay to other tape // freeze as swop main tape... // further REC adds sections to main tape...// what we hear is voltage+overlay
+PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that
+REC+PLAY: ADC->speed/bounce/rec with overlay to other tape // freeze is swop // what does voltage do (overlay same tape minormodes here)
+
+*1- basic mode plays back playlist without add to playlist:*
+
+IN progress: new major mode: we are always recording in NADA, and in
+REC we select what to add to the tape, and in PLAY we play these, and
+in RP?
+
+** micromodes
+
+- do these include speed sync? no!
+
+*TO FILL IN*
 
 * speculative/divination ideas
 
@@ -97,10 +136,9 @@ BL 2X50G7 2,54
 
 * TODO:
 
-UPDATE all notes for HW, speeds and basic mode, plan of action!
-
+- DONEUPDATE all notes for HW, speeds and basic mode, plan of action!
 - DONEre-test all VCA, noise and voltages
-- new finger tests - Kaffe: triggers, length of trigger, new voltage?
+- DONEnew finger tests - Kaffe: triggers, length of trigger, new voltage?
 
 - DONEnew speed mode to test
 - DONEcondense and print older/newer notes/here
@@ -108,10 +146,9 @@ UPDATE all notes for HW, speeds and basic mode, plan of action!
 
 - DONEdefine minor modes 
 ////PLAN
-- define and test basic mode: 20/2 
-- 21/2+ and add/catalogue all modes - translate previous major modes into new scheme*
-- full tests of basic first mode 21/2+
 
+DONE- define and test basic mode: 20/2 
+- *add/catalogue all modes - translate previous major modes into new scheme*
 - test suggested new modes with/without minor modes
 - wrap together
 
@@ -186,25 +223,29 @@ also as minormodes modify the major mode so they depend on this!
 
 ** CATALOGUE suggested major modes to implement and test
 
-- +Mode0:basic mode above+DONE - in testing
-- *new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these???*
+- DONE:xMode0:basic mode above+DONE - in testing
+- *IN progress: new major mode: we are always recording in NADA, and in REC we select what to add to the tape, and in PLAY we play these, and in RP?*
 
 most important is to have ability to rework what we just did live...
 selection is key question
 
-- use newADC as a kind of filter of the tape: doesn't let playback
-  value through below newADC threshold (silence or stops tape/speed
+- use newADC as a kind of filter of the tape: doesn't let playback/record/re-record 
+  value through below newADC threshold = silence or stops tape/speed
   thresholding = could either be playback value as 0/threshold or
-  freeze tape/speed)
+  freeze tape/speed! for play we already have this in speed_stop arrays...
+
+*eg.newADC sets a zone which can be defined (how?)*
+
+- removal when not pressed newADC - again if is in R, P or RP...
 - mode which removes silence...
-- see 21/12/2023 below..
-- port all previous mode ideas to new layer approach
+- see 21/12/2023 below: - one tap: loop selection. next tap /next tap: add now marked section to playlist // how do we make selection? 3 taps?
+----- port all previous mode ideas to new layer approach
 - manipulations from notebook notes of layers and playlists
 - properties of each position, layer and playlist and how these can be changed towards displacement and slippage eg. how we slip one tape across the other in RP mode
 - like rehearsal anbd becomes active on press - hear what would happen if?
 - writing over its own tape in specific areas - see islands - also overlay on itself and onto the other playback of itself
 - ghosts and mirrors
-- cutting and slicing
+- cutting and slicing/bouncing how?
 - toggle recursive actions on the playlist...
 
 ** start to define new approach// see latest notebook and diary notes below // also for manual
@@ -217,7 +258,7 @@ Rec just adds to end of tape/wrapping round until soft reset
 Major modes are ported in and allow for recursive/fractal dismemberments and dislocations...
 Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
 
-Each state has its own minormode but majormodes apply to all states for each position...
+Each state has its own minormode +but+ and so do majormodes +apply to all states for each position+
 
 Major and minor modes as changed for all active layers with the MODE button.
 Shortest press increments minor, longer is for major.
@@ -238,7 +279,7 @@ Minor modes // and they stay// are changed in all state... so each state adds it
 //NON!
 N: how we handle voltages: add global from top, invert voltage, ghosts and mirrors(?), sensitivity?
 R: only reset R or not on entry into R + N options // or leave that reset... // for newADc also type of overlay
-P, RP: 4 types of live overlay, speedsync, speedarrays
+P, RP: 4 types of live overlay, speedarrays
 RP: 4 types of recorded overlay 
 
 //older summary
@@ -262,11 +303,248 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 - how to say keep a steady  offset overlay... (would be like freeze but...)
 
-- to be able to kill one section - erase/reset only one part (i guess through not de-activating all - shortcut to deactivate all?)
+- to be able to kill one section - erase/reset only one part (i guess through not de-activating all - shortcut to deactivate all???)
 
 - minormodes seem to work - test again
 
 * diary notes
+
+** 24/3
+
+- draft of basic rec and play to test - but some lose ends eg. playlist and swopping of layers is a bit odd/// RP TODO
+
+** 20/3 +++
+
+- new codebase now 001: 
+
+*generic playback: DONE/to test* 
+
+//how we deal with playlist: play from playlist (there is none), add or not to playlist: when??? only on swop or on leaving only:
+
+- if nothing in playlist rec will create the first one... so we always play from playlist
+- testing in test3.c - should we loop back to start in playback or??? - depends on length 
+
+play options: not to play playlist = playfull=1 (but keep old playfull - how that works when we need to inc it)
+
+f[d].playlistm=1;// adding to playlist
+f[d].playlistp=1;// play back from playlist
+
+TODO:
+DONE- we should add to playlist when we hit the length but there should be an option to add or not..???
+DONE - option to loop playlist at a certain point (eg. change playfull - permanently?) - pass full to speedsampleplay
+
+*TODO://add recording (zone list): trial*
+
+- starting to replace layers with zone list
+
+*ZONES/lunar lodges:*
+
+- zones/ghost zones/limits/loops for layers eg. redirecting to multiple zones (how to tag these)... always rec to a zone...
+
+*new idea of zones (also lists of zones?) crossing a way across/through a zone. that in mode 2 we also define a certain kind of zone*
+
+// so zones allow things to become more generic...
+
+define generic operations like set a zone, play at point and overlay, record to a zone (on layer x), operations on zones, expand zone
+
+- assign function to a zone, temporary zones
+- stacks of operations????
+
+*recording to a list of zones = simultaneous* (we record the same to
+each zone).. function. record_to_zone - but fits with different notions
+of time as the playlist is successive and this is immediate but is in
+the future - the to-be-played-back
+
+- +does the zone list thus replace the two layers and their properties...?+ - but keep layers for playback
+
++each zone needs its counters, length, starts - wrap is always on end:+
+
+- *we have to do overlay in rec...
+
+// lodges[0].start/length/l=layer 
+
+swop would now be more like add zone on layer X
+
+add to list of zones, extend zone, operation on a zone
+
+*how basic rec/play is implemented in zones: that there is a maximum of one zone
+
+each section has: tape 1- each tape has -> list of zones // -> pointer to operations on list of zones...???
+                       2-
+
+how this differs from what we have now. what is on top of list-> the most recent zone (circular list?)
+
+
+/////
+
+function lists for each state rather than switch (in progress as example)
+
+check latest notebook notes...
+
+** 15/3
+
+// *TODO: fix speedsamples for wraps and mod0s - also so it has ending/wrap - and test this before going further*
+
+// define - so start and length are clear but end is where we wrap! and ending in playlist
+
+- new generic version with zones and also assign of speedsample - see play example
+- how we genericise eg. add playlist on swop?
+
+** 14/3
+
+*Modes are/should be independent - and for N, P, R, RP*
+
+- so we need to resolve mode 2: 
+
+what R does in this mode exactly?  //ADC: zooms through start and end
+  (at each press start, next press start) zoom/stop and playback is
+  bounced to other layer... trigger swops layers
+
+N major mode can be to always record (to one layer only?) 
+
+N as always recording to one layer in loop of x seconds (see below) so
+is last x seconds// how that works for empty other layer and what if
+we have rec already - do we just add on
+
+- NewADC/V is consistent as a kind of zooming eg. to set N as always recording last x seconds to one layer (but we have no feedback on that)
+
+
+- at the moment we have just:
+
+typedef struct layers_ {
+  uint32_t rec_cnt;
+  uint32_t rec_end;
+  uint32_t rec_start;
+  uint32_t rec_length;
+  uint32_t rec_fraglength;
+  float play_cnt;
+  uint32_t othercnt; // running playlists
+  float cnt; // for new speedsample
+  uint32_t (*speedsamp[4])(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples);
+  void (*reclayer)(uint32_t value, uint32_t dacccount); // to add these
+  uint32_t (*accessreclayer)(uint32_t daccount);
+  uint32_t (*accessplaylayer)(uint32_t daccount);
+} layers;
+
+- cnt now is othercnt is: used to set playlist points...
+- play_cnt is: count as we play
+
+and for each finger we have:
+
+      playl playlist[PLAYFULLY+1];// list of playbacks
+      uint32_t playcnt; // for index into playlist as we play
+      uint32_t playcntr; // for index into playlist as we record
+      uint32_t playfull; // how many elements in the playlist
+
+- playcnt index is playback index for playlist, playcntr is recording index into playlist
+
+/////
+
+VIA is a journey, a way - that starts with the simplest options and becomes more complex
+
+to look for patterns also in the code: eg. from R, mode2 eg. in sketch.c (so have format now)
+
+** 13/3 refresh
+
+Latest note: That rec-start in mode 2 is more like rec_fragment start and end...
+
+- TODO etc from below...
+
+*DONE/to test: Option in RP to stop rec/bounce on speedstop - as default or as option?*
+
+*DONE/to testTODO: check end-point in mode2*
+
+*TO ADD: what happens in mode 2 P and RP?*
+
+P: adds to playlist and selection is within that - as in we zoom through
+each element of playlist for start and end, can be recursive? adding
+to itself and overwriting... how that works as it might span several
+elements... and then these are all added?
+
+each tapstart/end adds to playlist -> length and start... how we do that!?
+
+recall what is on playlist: start, length and layer...
+
+RP: how that works as R is already over-recording, now with bounce of playlist above
+
+////
+
+- *TODO: re-work all playlist and speedsamples with end and length now - adding playlist*
+
+///////////////////////
+
+- Where we are up to and planning? finish mode 2 and full tests there: checking sanity of playlist
+- Notebook notes on manipulations of playlist and of twin tapes:
+
+//misc notes
+
+- ghosted areas by newADC - that we can cut across this, in playback
+  and in bounce (also in rec, that we either jump across these like
+  holes on a tape, or we don't write to that area)
+
+- bounce to other region in the same tape. also bounce offset - how this works with swop of layers in RP or not in this case.. taps or newadc define region
+// *or flip between bounce to same/other*
+
+- newADC selects when we bounce to other - threshold - other counter is running (sans overlay) or not
+
+** 2/3
+
+permutation of manipulations/to get past special modes/generic fingers in manipulation of parameters
+
+** 1/3
+
+*What can be disembodied///dismembered macros? // how - generation of dismembered code for dismembered hands and control*
+
+-2 layers against each other
+-->each with rec_end/start/length, play_cnt
+-playlist with list of end/start/length and layer
+-params for each position: each position has layer, playlist: note we can also manipulate length of playlist and count into playlist...
+
+*finger cuts finger* finger eg. newADC into these parameters, eg length/loop set,..., 
+ 
+//
+
+*Testing latest prototype:*
+- for some reason R71 on trigger was 10k and not 1k as on schematic - fixed...
+- DONE-all fine! TODO: test all other functions:
+
+voltages: all fine
+VCAs and Cs: 1, 2, 3, 4 - 3 seemed have issues but now is fine...
+mode/play/rec: all functional
+freezers: V:X, VCA: 
+check output -> circle: 1, 2, 3, 4 
+
+** 29/2
+
+- how to simplify abstraction of entry and exit from a state!?
+- how much of operations on playlist really make sense - as most are quite directed/not divinatory and as we can't really "point" to a section...
+- DONE:cutting down length of typing fingers->f, layer->l, daccount->d
+
+DONE I think/TO TEST! TODO: we need to fix overlap/wrap: overend for playlist adding for new mod0 scheme*
+
+// notes: if start+end==length / add playlist or in next length/points????
+
+** 28/2
+
+2024_000 and new macros - strip back: deal with case 0
+
+Q if we should reset playlist in new majormodes // - we don't and should not!
+
+//fixed:now we have crash in new mod0 with new changes...
+
+- again more abstraction - to maybe sketch from 2024.c a new one with just singular mode of playlist and new mod0N
+
+// trial mode 0 with new speedsample...
+
+*can there be a generic speedsample -> opts like: add/don't add to playlist, play from playlist only?*
+
+/////
+
+NON- playlist[0]=0->rec-end ->add this one in init! where?
+
+//
+
+CHECKED:check sanity of start, end etc...so otherend is lengthy/RENAME, start is start and rec_end is end
 
 ** 27/2
 
@@ -284,7 +562,7 @@ What we have:
 
 TESTING- fix othercnt in speedsampleFIXEDTOTESTXS and improve speedsample for wrap//
 
-DONE:in progress: to test *TODO: matching P and RP, Q of playlist?*
+DONE:in progress: to test TODO: matching P and RP, Q of playlist?*
 
 - attempt to code majormode below...:
 
@@ -301,7 +579,7 @@ RP and P: Q of how this works for P ... see below
 
 FIXED: +Does it make sense that majormodes are for each state? do they need to match up?+
 
-eg. if in NADA we are always recording then we need other modes to take advantage of this!!
++eg. if in NADA we are always recording then we need other modes to take advantage of this!!+
 
 THUS: each position has a major mode across all states...
 
@@ -321,7 +599,7 @@ elements... and then these are all added?
 
 ** 23/2
 
-BUG where we don't rec or play// stays in NADA - or could just be that we record NADA!
+FIXED?BUG where we don't rec or play// stays in NADA - or could just be that we record NADA!
 
 *TODO: test minormodes again esp in RP with overlaysDONE_but do ongoing tests, test sensitivity esp. speed, could be ok... still think on more fragmented, decayed
 
@@ -339,14 +617,14 @@ BUG where we don't rec or play// stays in NADA - or could just be that we record
 
 ** 22/2
 
-- *Thinking about a more dislocated/shattered panel - also some way to have different areas of sensitivity ???*
+- Thinking about a more dislocated/shattered panel - also some way to have different areas of sensitivity ???*
 
 - DONEwe need to remove so many minormodes in R and RP as these are live so we don't have time to press
 - Q of sync/reset of play/NOTrec counters:
 
 TODO: option to sync/not sync play_cnt in P when we swop sidesDONE - TO TEST on lowest bit- tested but bit same length...
 
-- *USAGE: tests by hand of minormodes*
+- USAGE: tests by hand of minormodes*
 
 eg in RP: - 1 bit recend // 0MAXREC, 1rec_end of opposing... // DONE:TODO: test live switching between these opts...
 
@@ -356,7 +634,7 @@ DONEadjust speeds so not so extreme*
 
 - test next major mode - playback of playlist and how we add TESTING - seems fine so far
 
-*Added new speedsample functions: still to finish and also to add play from playlist AND add to playlist*
+???? Added new speedsample functions: still to finish and also to add play from playlist AND add to playlist*
 
 - *catalogue all modes here - and notate/translate previous major modes into new scheme*
 
@@ -373,7 +651,7 @@ N/V options: 3 bits // TESTED
 
 P options: 5 bits // TESTED and fixed
 - which speedarray: lowest 2 bits: {logfast, logspeed, logfast_stop, logspeed_stop}; 
-- speedsync to top: next 1 bit (and top now syncs to bottom)
+//NON- speedsync to top: next 1 bit (and top now syncs to bottom)
 - types of live overlay: next 2 bits
 
 R options: 2 bits // TESTED
@@ -381,7 +659,7 @@ R options: 2 bits // TESTED
 
 RP options: 3 bits //TESTED and with bugfixes // TODO: remove 5 bits play so becomes 3 bits DONE
 - first 5 bits as Play above NON!
-- 1 bit recend // 0MAXREC, 1rec_end of opposing... // *TODO: test live switching between these opts...*
+- 1 bit recend // 0MAXREC, 1rec_end of opposing... // TODO: test live switching between these opts...*
 - 2 bits overlay type
 
 // note: in R and RP reclayers we added overend which is when we reach end, so rec_end is always held at max!
@@ -1256,10 +1534,11 @@ Image cards are cut out - disembodied hands, each of the 4 segments
 cracked apart and somehow labelled... some uncut cards maybe to show
 assembly/with text also on back for modes ... cut yourself out
 
-Reader/reading list:
+Extended manual/Reader/reading list:
 
-geomancy
+excerpts on geomancy
 von franz
+all chinese divination wheels, pipes and diagrams
 
 ** hardware
 

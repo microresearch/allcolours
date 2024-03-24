@@ -32,13 +32,11 @@
 #define PLAYFULLY 119 // length of playlist in fingers.h
 
 #ifdef fouronethree
-#define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
-#define DOUBLEMAXREC 19000
+#define MAXREC 9200 // was 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
 #else
 #define MAXREC 3800 // for older STM
-#define DOUBLEMAXREC 7600
 #endif
-// with F413 we have 9000 which is how long - 21 seconds now on 24 divider
+// with F413 we have 9200 which is how long - around 20 seconds now on 24 divider
 
 #define MAXMODES 8
 
@@ -128,7 +126,7 @@ void PendSV_Handler(void)
       __asm__ __volatile__ ("nop\n\t":::"memory");		\
   } while (0)
 
-inline static float mod0(float value, float length)
+inline static float mod0(float value, float length) // basic one
 {
   while (value > (length-1))
         value -= length;
@@ -137,61 +135,64 @@ inline static float mod0(float value, float length)
 
 inline static float mod0N(float value, float start, float ending, float length, uint32_t dacc) // new one with start and ending/loop point
 {
+  // in what case would we add to playlist - when we go over length?  // and now playlist needs end and length
   while (value > (ending-1)){
     value -= ending;
   }
-  
-  if (fingers[dacc].layer[fingers[dacc].masterL].cnt>length){
-    fingers[dacc].layer[fingers[dacc].masterL].cnt=0;
-    value=start;
-  }
+    while (f[dacc].l[f[dacc].masterL].cnt>length){
+    f[dacc].l[f[dacc].masterL].cnt-=length;
+    value=start+f[dacc].l[f[dacc].masterL].cnt;
+    f[dacc].l[f[dacc].masterL].cnt=0;
+    // add to playlist: start, ending, length
+    }
   return value;
 }
 
 inline static float mod0NN(float value, float start, float ending, float length, uint32_t dacc) // new one with start and ending/loop point
-{
+{ 
+  uint32_t tmpp;
   while (value > (ending-1)){
     value -= ending;
-  }
-  
-  if ((fingers[dacc].layer[fingers[dacc].masterL].cnt+1)>length){
-    //    fingers[dacc].layer[fingers[dacc].masterL].cnt=0;
-    value=start;
-  }
+    }
+  tmpp=f[dacc].l[f[dacc].masterL].cnt;
+  if ((f[dacc].l[f[dacc].masterL].cnt+1)>length){
+    tmpp-=length;
+    value=start+tmpp;
+    }
   return value;
 }
 
 
-inline static float mod0XX(float value, float length, uint32_t daccount)
+inline static float mod0XX(float value, float length, uint32_t d)
 {
   while (value > (length-1)){
         value -= length;
     // get next in list
-  fingers[daccount].playcnt+=1; 
-  if (fingers[daccount].playcnt>=fingers[daccount].playfull) fingers[daccount].playcnt=0;
-  length=fingers[daccount].playlist[fingers[daccount].playcnt].length;
+  f[d].playcnt+=1; 
+  if (f[d].playcnt>=f[d].playfull) f[d].playcnt=0;
+  length=f[d].playlist[f[d].playcnt].length;
   }
     return value;
 }
 
-inline static float mod00(float value, float length, uint32_t daccount)
+inline static float mod00(float value, float length, uint32_t d)
 {
-  uint32_t tmp=fingers[daccount].playcnt;
+  uint32_t tmp=f[d].playcnt;
   while (value > (length-1)) {
         value -= length;
 	tmp+=1;
-	if (tmp>fingers[daccount].playfull) tmp=0;
-	length=fingers[daccount].playlist[tmp].length;
+	if (tmp>f[d].playfull) tmp=0;
+	length=f[d].playlist[tmp].length;
   }
   return value;
 }
 
-inline static float mod0X(float value, float length, uint32_t daccount) // adds to playlist 
+inline static float mod0X(float value, float length, uint32_t d) // adds to playlist 
 {
   while (value > (length-1)){
     value -= length;
     ADDPLAYLISTRST;
-    fingers[daccount].layer[fingers[daccount].masterL].othercnt=0;
+    f[d].l[f[d].masterL].othercnt=0;
   }
   return value;
 }
@@ -269,113 +270,113 @@ inline static void resetx(uint32_t which){
   }
 }
 
-uint32_t accessplaylayerupper(uint32_t daccount){
-  uint32_t value=(recordings[daccount][(int)fingers[daccount].layer[1].play_cnt])>>16; 
+uint32_t accessplaylayerupper(uint32_t d){
+  uint32_t value=(recordings[d][(int)f[d].l[1].play_cnt])>>16; 
   return value;
 }
 
-uint32_t accessplaylayerlower(uint32_t daccount){
-  uint32_t value=(recordings[daccount][(int)fingers[daccount].layer[0].play_cnt])&4095; 
+uint32_t accessplaylayerlower(uint32_t d){
+  uint32_t value=(recordings[d][(int)f[d].l[0].play_cnt])&4095; 
   return value;
 }
 
-uint32_t accessreclayerupper(uint32_t daccount){
-  uint32_t value=(recordings[daccount][fingers[daccount].layer[1].rec_cnt])>>16; 
+uint32_t accessreclayerupper(uint32_t d){
+  uint32_t value=(recordings[d][f[d].l[1].rec_cnt])>>16; 
   return value;
 }
 
-uint32_t accessreclayerlower(uint32_t daccount){
-  uint32_t value=(recordings[daccount][fingers[daccount].layer[0].rec_cnt])&4095; 
+uint32_t accessreclayerlower(uint32_t d){
+  uint32_t value=(recordings[d][f[d].l[0].rec_cnt])&4095; 
   return value;
 }
 
-//(recordings[daccount][fingers[daccount].layer[1].rec_cnt]&4095); // lower
+//(recordings[d][f[d].layer[1].rec_cnt]&4095); // lower
 //
 
-void reclayerupper(uint32_t value, uint32_t daccount){
-  recordings[daccount][fingers[daccount].layer[1].rec_cnt]=(recordings[daccount][fingers[daccount].layer[1].rec_cnt]&4095)+(value<<16);
+void reclayerupper(uint32_t value, uint32_t d){
+  recordings[d][f[d].l[1].rec_cnt]=(recordings[d][f[d].l[1].rec_cnt]&4095)+(value<<16);
 }
 
-void reclayerlower(uint32_t value, uint32_t daccount){
-  recordings[daccount][fingers[daccount].layer[0].rec_cnt]=(recordings[daccount][fingers[daccount].layer[0].rec_cnt]&TOPS)+(value);
+void reclayerlower(uint32_t value, uint32_t d){
+  recordings[d][f[d].l[0].rec_cnt]=(recordings[d][f[d].l[0].rec_cnt]&TOPS)+(value);
 }
 
 inline static void changemode(uint32_t dacc){
-  fingers[dacc].majormode++;
-  if (fingers[dacc].majormode>MAXMODES) fingers[dacc].majormode=0;
-  fingers[dacc].toggle=0;					
-  fingers[dacc].ttoggle=0;
-  fingers[dacc].play=0;					
-  fingers[dacc].rec=0;
-  fingers[dacc].state=N; // NADA  
+  f[dacc].majormode++;
+  if (f[dacc].majormode>MAXMODES) f[dacc].majormode=0;
+  f[dacc].toggle=0;					
+  f[dacc].ttoggle=0;
+  f[dacc].play=0;					
+  f[dacc].rec=0;
+  f[dacc].state=N; // NADA  
   // TODO: what else we need to reset here
 }
 
 inline static void resett(uint32_t dacc){
-  fingers[dacc].rpp=0;
-  fingers[dacc].active=1;
-  fingers[dacc].masterL=0;
-  fingers[dacc].majormode=0;
-  fingers[dacc].minormode[0]=0;
-  fingers[dacc].minormode[1]=0;
-  fingers[dacc].minormode[2]=0;
-  fingers[dacc].minormode[3]=0;  
-  fingers[dacc].playspeed=0;
-  fingers[dacc].toggle=0;					
-  fingers[dacc].ttoggle=0;
-  fingers[dacc].state=N; // NADA
-  fingers[dacc].playcnt=0;
-  fingers[dacc].playfull=0;
-  fingers[dacc].play=0;					
-  fingers[dacc].rec=0;
-  fingers[dacc].layer[0].rec_cnt=0;  
-  fingers[dacc].layer[1].rec_cnt=0;
-  fingers[dacc].layer[0].overend=0;  
-  fingers[dacc].layer[1].overend=0;
-  fingers[dacc].layer[0].rec_otherend=0;  
-  fingers[dacc].layer[1].rec_otherend=0;
-  fingers[dacc].layer[0].rec_start=0;  
-  fingers[dacc].layer[1].rec_start=0;
-  fingers[dacc].layer[0].overendd=0;  
-  fingers[dacc].layer[1].overendd=0;
-  fingers[dacc].layer[0].play_cnt=0;
-  fingers[dacc].layer[1].play_cnt=0;
-  fingers[dacc].layer[0].rec_end=0;
-  fingers[dacc].layer[1].rec_end=0;
-  fingers[dacc].layer[0].othercnt=0;
-  fingers[dacc].layer[1].othercnt=0;
-  fingers[dacc].overlaid=0;
-  fingers[dacc].lastmode=0;
-  fingers[dacc].sensi=0;
-  fingers[dacc].entryp=0;
-  fingers[dacc].entryr=0;
-  fingers[dacc].entryrp=0;
-  fingers[dacc].leavep=0;
+  f[dacc].rpp=0;
+  f[dacc].active=1;
+  f[dacc].masterL=0;
+  f[dacc].majormode=0;
+  f[dacc].minormode[0]=0;
+  f[dacc].minormode[1]=0;
+  f[dacc].minormode[2]=0;
+  f[dacc].minormode[3]=0;  
+  f[dacc].playspeed=0;
+  f[dacc].toggle=0;					
+  f[dacc].ttoggle=0;
+  f[dacc].state=N; // NADA
+  f[dacc].playcnt=0;
+  f[dacc].playfull=0;
+  f[dacc].play=0;					
+  f[dacc].rec=0;
+  f[dacc].l[0].rec_cnt=0;  
+  f[dacc].l[1].rec_cnt=0;
+  f[dacc].l[0].overend=0;  
+  f[dacc].l[1].overend=0;
+  f[dacc].l[0].rec_length=0;  
+  f[dacc].l[1].rec_length=0;
+  f[dacc].l[0].rec_start=0;  
+  f[dacc].l[1].rec_start=0;
+  f[dacc].l[0].overendd=0;  
+  f[dacc].l[1].overendd=0;
+  f[dacc].l[0].play_cnt=0;
+  f[dacc].l[1].play_cnt=0;
+  f[dacc].l[0].rec_end=0;
+  f[dacc].l[1].rec_end=0;
+  f[dacc].l[0].othercnt=0;
+  f[dacc].l[1].othercnt=0;
+  f[dacc].overlaid=0;
+  f[dacc].lastmode=0;
+  f[dacc].sensi=0;
+  f[dacc].entryp=0;
+  f[dacc].entryr=0;
+  f[dacc].entryrp=0;
+  f[dacc].leavep=0;
 }
 
 inline static void resets(uint32_t dacc){ // soft reset of both layers
-  fingers[dacc].masterL=0;
-  fingers[dacc].toggle=0;					
-  fingers[dacc].ttoggle=0;
-  fingers[dacc].state=N; // NADA
-  fingers[dacc].playcnt=0;
-  fingers[dacc].playfull=0;
-  fingers[dacc].play=0;					
-  fingers[dacc].rec=0;
-  fingers[dacc].layer[0].rec_cnt=0;
-  fingers[dacc].layer[1].rec_cnt=0;
-  fingers[dacc].layer[0].play_cnt=0;
-  fingers[dacc].layer[1].play_cnt=0;
-  fingers[dacc].layer[0].rec_end=0;
-  fingers[dacc].layer[1].rec_end=0;
-  fingers[dacc].layer[0].othercnt=0;
-  fingers[dacc].layer[1].othercnt=0;
-  fingers[dacc].overlaid=0;
-  fingers[dacc].lastmode=0;
-  fingers[dacc].entryp=0;
-  fingers[dacc].entryr=0;
-  fingers[dacc].entryrp=0;
-  fingers[dacc].leavep=0;
+  f[dacc].masterL=0;
+  f[dacc].toggle=0;					
+  f[dacc].ttoggle=0;
+  f[dacc].state=N; // NADA
+  f[dacc].playcnt=0;
+  f[dacc].playfull=0;
+  f[dacc].play=0;					
+  f[dacc].rec=0;
+  f[dacc].l[0].rec_cnt=0;
+  f[dacc].l[1].rec_cnt=0;
+  f[dacc].l[0].play_cnt=0;
+  f[dacc].l[1].play_cnt=0;
+  f[dacc].l[0].rec_end=0;
+  f[dacc].l[1].rec_end=0;
+  f[dacc].l[0].othercnt=0;
+  f[dacc].l[1].othercnt=0;
+  f[dacc].overlaid=0;
+  f[dacc].lastmode=0;
+  f[dacc].entryp=0;
+  f[dacc].entryr=0;
+  f[dacc].entryrp=0;
+  f[dacc].leavep=0;
 }
 
 // new one for warp - no playlist yet
@@ -385,29 +386,26 @@ inline static void resets(uint32_t dacc){ // soft reset of both layers
 // wrapping version - end is topmost(rec_end), length is how long, start is start - so can wrap round end...
 inline static uint32_t speedsamplelowerW(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
     uint32_t lowerPosition, upperPosition;
-    fingers[dacc].layer[0].play_cnt=mod0N(fingers[dacc].layer[0].play_cnt+speedy, start, end, lengthy, dacc);
-    lowerPosition = (int)fingers[dacc].layer[0].play_cnt;
+    float sample;
+    f[dacc].l[0].play_cnt=mod0N(f[dacc].l[0].play_cnt+speedy, start, end, lengthy, dacc);
+    lowerPosition = (int)f[dacc].l[0].play_cnt;
     upperPosition = mod0NN(lowerPosition + 1, start, end, lengthy, dacc);
-    fingers[dacc].layer[fingers[dacc].masterL].cnt+=speedy;
-    int32_t res=(fingers[dacc].layer[0].play_cnt - (float)lowerPosition);
+    f[dacc].l[f[dacc].masterL].cnt+=speedy;
+    int32_t res=(f[dacc].l[0].play_cnt - (float)lowerPosition);
     if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
     if (upperPosition>=MAXREC) upperPosition=0;
-    
-    float sample= ((samples[lowerPosition]&4095) + 
-		 (res *
-		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095))));
-
+    LOWER;
   return (uint32_t)sample;
 }
 
 inline static uint32_t speedsampleupperW(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
     uint32_t lowerPosition, upperPosition;
     float sample;
-    fingers[dacc].layer[0].play_cnt=mod0N(fingers[dacc].layer[0].play_cnt+speedy, start, end, lengthy, dacc);
-    lowerPosition = (int)fingers[dacc].layer[0].play_cnt;
+    f[dacc].l[0].play_cnt=mod0N(f[dacc].l[0].play_cnt+speedy, start, end, lengthy, dacc);
+    lowerPosition = (int)f[dacc].l[0].play_cnt;
     upperPosition = mod0NN(lowerPosition + 1, start, end, lengthy, dacc);
-    fingers[dacc].layer[fingers[dacc].masterL].cnt+=speedy;
-    int32_t res=(fingers[dacc].layer[0].play_cnt - (float)lowerPosition);
+    f[dacc].l[f[dacc].masterL].cnt+=speedy;
+    int32_t res=(f[dacc].l[0].play_cnt - (float)lowerPosition);
     if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
     if (upperPosition>=MAXREC) upperPosition=0;
     UPPER;
@@ -418,69 +416,59 @@ inline static uint32_t speedsampleupperW(float speedy, uint32_t lengthy, uint32_
 // here is add to playlist
 inline static uint32_t speedsamplelower(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition;
-  fingers[dacc].layer[0].othercnt+=speedy; // fixed - to test!
-  fingers[dacc].layer[0].play_cnt=mod0X(fingers[dacc].layer[0].play_cnt+speedy, lengthy, dacc);
-  lowerPosition = (int)fingers[dacc].layer[0].play_cnt;
+  float sample;
+  f[dacc].l[0].othercnt+=speedy; // fixed - to test!
+  f[dacc].l[0].play_cnt=mod0X(f[dacc].l[0].play_cnt+speedy, lengthy, dacc);
+  lowerPosition = (int)f[dacc].l[0].play_cnt;
   upperPosition = mod0(lowerPosition + 1, lengthy); // wrap... or entry into next in list?
-  int32_t res=(fingers[dacc].layer[0].play_cnt - (float)lowerPosition);
+  int32_t res=(f[dacc].l[0].play_cnt - (float)lowerPosition);
   lowerPosition+=start;
   upperPosition+=start;
   if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
   if (upperPosition>=MAXREC) upperPosition=0;
-    
-  float sample= ((samples[lowerPosition]&4095) + 
-		 (res *
-		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095))));
-
+  LOWER;
   return (uint32_t)sample;
 }
 
 inline static uint32_t speedsampleupper(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition;
-  fingers[dacc].layer[1].othercnt+=speedy;
-  fingers[dacc].layer[1].play_cnt=mod0X(fingers[dacc].layer[1].play_cnt+speedy, lengthy, dacc);
-  lowerPosition = (int)fingers[dacc].layer[1].play_cnt;
+  float sample;
+  f[dacc].l[1].othercnt+=speedy;
+  f[dacc].l[1].play_cnt=mod0X(f[dacc].l[1].play_cnt+speedy, lengthy, dacc);
+  lowerPosition = (int)f[dacc].l[1].play_cnt;
   upperPosition = mod0(lowerPosition + 1, lengthy);
-  int32_t res=(fingers[dacc].layer[1].play_cnt - (float)lowerPosition);
+  int32_t res=(f[dacc].l[1].play_cnt - (float)lowerPosition);
   lowerPosition+=start;
   upperPosition+=start;
   if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
   if (upperPosition>=MAXREC) upperPosition=0;
-
-  float sample= ((samples[lowerPosition]>>16) + 
-		 (res *
-		  ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); 
-
-      return (uint32_t)sample;
+  UPPER;
+  return (uint32_t)sample;
 }
 
-// no add but do read from playlist - no layers
+// no add but do read from playlist - no layers as layer is in the list
 inline static uint32_t speedsampleplayl(float speedy, uint32_t lengthy, uint32_t start, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition, layer=0;
   float sample;
-  if (fingers[dacc].playfull>0){ // if we have anything in the list
-  lengthy=fingers[dacc].playlist[fingers[dacc].playcnt].length;
-  start=fingers[dacc].playlist[fingers[dacc].playcnt].start;
-  layer=fingers[dacc].playlist[fingers[dacc].playcnt].layer;
+  if (f[dacc].playfull>0){ // if we have anything in the list
+  lengthy=f[dacc].playlist[f[dacc].playcnt].length;
+  start=f[dacc].playlist[f[dacc].playcnt].start;
+  layer=f[dacc].playlist[f[dacc].playcnt].l;
   }
-  fingers[dacc].layer[layer].othercnt+=speedy;
-  fingers[dacc].layer[layer].play_cnt=mod0XX(fingers[dacc].layer[layer].play_cnt+speedy, lengthy, dacc);
-  lowerPosition = (int)fingers[dacc].layer[layer].play_cnt;
+  f[dacc].l[layer].othercnt+=speedy;
+  f[dacc].l[layer].play_cnt=mod0XX(f[dacc].l[layer].play_cnt+speedy, lengthy, dacc);
+  lowerPosition = (int)f[dacc].l[layer].play_cnt;
   upperPosition = mod00(lowerPosition + 1, lengthy, dacc); // wrap... or entry into next in list?
-  int32_t res=(fingers[dacc].layer[layer].play_cnt - (float)lowerPosition);
+  int32_t res=(f[dacc].l[layer].play_cnt - (float)lowerPosition);
   lowerPosition+=start;
   upperPosition+=start;
   if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
   if (upperPosition>=MAXREC) upperPosition=0;
   if (layer==0){  
-  sample= ((samples[lowerPosition]&4095) + 
-		 (res *
-		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095))));
+    LOWER;
   }
   else {
-    sample= ((samples[lowerPosition]>>16) + 
-	     (res *
-	      ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); 
+    UPPER;
   }
   return (uint32_t)sample;
 }
@@ -488,40 +476,34 @@ inline static uint32_t speedsampleplayl(float speedy, uint32_t lengthy, uint32_t
 // nada to do with playlist
 inline static uint32_t speedsamplelowerN(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition;
-  fingers[dacc].layer[0].othercnt+=speedy;
-  fingers[dacc].layer[0].play_cnt=mod0(fingers[dacc].layer[0].play_cnt+speedy, lengthy);
-  lowerPosition = (int)fingers[dacc].layer[0].play_cnt;
+  float sample;
+  f[dacc].l[0].othercnt+=speedy;
+  f[dacc].l[0].play_cnt=mod0(f[dacc].l[0].play_cnt+speedy, lengthy);
+  lowerPosition = (int)f[dacc].l[0].play_cnt;
   upperPosition = mod0(lowerPosition + 1, lengthy); // wrap... or entry into next in list?
-  int32_t res=(fingers[dacc].layer[0].play_cnt - (float)lowerPosition);
+  int32_t res=(f[dacc].l[0].play_cnt - (float)lowerPosition);
   lowerPosition+=start;
   upperPosition+=start;
   if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
   if (upperPosition>=MAXREC) upperPosition=0;
-    
-  float sample= ((samples[lowerPosition]&4095) + 
-		 (res *
-		  ((samples[upperPosition]&4095) - (samples[lowerPosition]&4095))));
-
+  LOWER;
   return (uint32_t)sample;
 }
 
 inline static uint32_t speedsampleupperN(float speedy, uint32_t lengthy, uint32_t start, uint32_t end, uint32_t dacc, uint32_t *samples){
   uint32_t lowerPosition, upperPosition;
-  fingers[dacc].layer[1].othercnt+=speedy;
-  fingers[dacc].layer[1].play_cnt=mod0(fingers[dacc].layer[1].play_cnt+speedy, lengthy);
-  lowerPosition = (int)fingers[dacc].layer[1].play_cnt;
+  float sample;
+  f[dacc].l[1].othercnt+=speedy;
+  f[dacc].l[1].play_cnt=mod0(f[dacc].l[1].play_cnt+speedy, lengthy);
+  lowerPosition = (int)f[dacc].l[1].play_cnt;
   upperPosition = mod0(lowerPosition + 1, lengthy);
-  int32_t res=(fingers[dacc].layer[1].play_cnt - (float)lowerPosition);
+  int32_t res=(f[dacc].l[1].play_cnt - (float)lowerPosition);
   lowerPosition+=start;
   upperPosition+=start;
   if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
   if (upperPosition>=MAXREC) upperPosition=0;
-
-  float sample= ((samples[lowerPosition]>>16) + 
-		 (res *
-		  ((samples[upperPosition]>>16) - (samples[lowerPosition]>>16)))); 
-
-      return (uint32_t)sample;
+  UPPER;
+  return (uint32_t)sample;
 }
 
 // STARTY
@@ -529,7 +511,7 @@ void TIM2_IRQHandler(void)
   {
     uint32_t speed=0;
     float spd=0.0; // for new accel tests
-    static uint32_t daccount=0;
+    static uint32_t d=0;
     uint32_t j,x,y, tmp, tmpp, tmpy, autre;
     uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
     static uint32_t modetoggle=0, newmode=0, count=0;
@@ -551,18 +533,18 @@ void TIM2_IRQHandler(void)
       oncey=1;
       for (x=0;x<8;x++){
 	resett(x);
-	fingers[x].layer[0].speedsamp[0]=speedsamplelower; // where to init these...
-	fingers[x].layer[1].speedsamp[0]=speedsampleupper;
-	fingers[x].layer[0].speedsamp[1]=speedsamplelowerN; 
-	fingers[x].layer[1].speedsamp[1]=speedsampleupperN;
-	fingers[x].layer[0].speedsamp[2]=speedsamplelowerW; 
-	fingers[x].layer[1].speedsamp[2]=speedsampleupperW;
-	fingers[x].layer[0].reclayer=reclayerlower;
-	fingers[x].layer[1].reclayer=reclayerupper;
-	fingers[x].layer[0].accessreclayer=accessreclayerlower;
-	fingers[x].layer[1].accessreclayer=accessreclayerupper;
-	fingers[x].layer[0].accessplaylayer=accessplaylayerlower;
-	fingers[x].layer[1].accessplaylayer=accessplaylayerupper;
+	f[x].l[0].speedsamp[0]=speedsamplelower; // where to init these...
+	f[x].l[1].speedsamp[0]=speedsampleupper;
+	f[x].l[0].speedsamp[1]=speedsamplelowerN; 
+	f[x].l[1].speedsamp[1]=speedsampleupperN;
+	f[x].l[0].speedsamp[2]=speedsamplelowerW; 
+	f[x].l[1].speedsamp[2]=speedsampleupperW;
+	f[x].l[0].reclayer=reclayerlower;
+	f[x].l[1].reclayer=reclayerupper;
+	f[x].l[0].accessreclayer=accessreclayerlower;
+	f[x].l[1].accessreclayer=accessreclayerupper;
+	f[x].l[0].accessplaylayer=accessplaylayerlower;
+	f[x].l[1].accessplaylayer=accessplaylayerupper;
 
       }
     }
@@ -572,185 +554,184 @@ void TIM2_IRQHandler(void)
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 
 	// micromode logic outside mode switches - but what if these depend on mode!?
-	V_options=fingers[daccount].minormode[0]&7; // V: sens, sync/global-overlay= 3 bits - top [6] syncs to [4] to test
-	R_options=fingers[daccount].minormode[1]&3; //  2 bits for 2nd tape overlay options//other options?
-	P_options=fingers[daccount].minormode[2]&31; // P,RP: 11 speedarray, LOSE1sync, 11 live overlay, // 6 bits total + sync/no syncTODODONE
-	RP_options=(fingers[daccount].minormode[3]&7); // RP: 1bit recend + say 2 bits overlay = 3 bits now
+	V_options=f[d].minormode[0]&7; // V: sens, sync/global-overlay= 3 bits - top [6] syncs to [4] to test
+	R_options=f[d].minormode[1]&3; //  2 bits for 2nd tape overlay options//other options?
+	P_options=f[d].minormode[2]&31; // P,RP: 11 speedarray, LOSE1sync, 11 live overlay, // 6 bits total + sync/no syncTODODONE
+	RP_options=(f[d].minormode[3]&7); // RP: 1bit recend + say 2 bits overlay = 3 bits now
 
 	// TESTY
 	//	RP_options=3<<6; 
 	
-	fingers[daccount].sensi=V_options&1; // first bit - sensitivity is in macros
-	fingers[daccount].playspeed=P_options&3; // speedarray = 2 bits
+	f[d].sensi=V_options&1; // first bit - sensitivity is in macros
+	f[d].playspeed=P_options&3; // speedarray = 2 bits
 	// functions outside switch
 	FREEZERS;
 	REALADC;
 	CTRL;
 
 	// TODO - to test: is the finger active = long freeze
-	   if (Newtog[daccount]){
-	     Newtog[daccount]=0;
-	     if (Theld[daccount]>LONGTOG) {
-	       Theld[daccount]=0;
-	       fingers[daccount].active^=1; // t0ggle
-	       fingers[daccount].ttoggle=0;
+	   if (Newtog[d]){
+	     Newtog[d]=0;
+	     if (Theld[d]>LONGTOG) {
+	       Theld[d]=0;
+	       f[d].active^=1; // t0ggle
+	       f[d].ttoggle=0;
 	     }
 	   }
 	   
 	// togplay and togrec	   
-	if (fingers[daccount].active){
-	  if (togplay) fingers[daccount].play^=1;
-	  if (togrec) fingers[daccount].rec^=1;
+	if (f[d].active){
+	  if (togplay) f[d].play^=1;
+	  if (togrec) f[d].rec^=1;
 
-	  if (fingers[daccount].lastmode==1 && fingers[daccount].play==0) { // if we leave overlaid via. exit from play
-	    fingers[daccount].state=N;
-	    fingers[daccount].rec=0; // added
+	  if (f[d].lastmode==1 && f[d].play==0) { // if we leave overlaid via. exit from play
+	    f[d].state=N;
+	    f[d].rec=0; // added
 	}
 	else {
 	// logic of states now
-	  if (fingers[daccount].rec && fingers[daccount].play){
-	    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end){
-	    fingers[daccount].state=RP;
+	  if (f[d].rec && f[d].play){
+	    if (f[d].l[f[d].masterL].rec_end){
+	    f[d].state=RP;
 	  }
 	    else {
-	      fingers[daccount].state=R; // nothing to play
+	      f[d].state=R; // nothing to play
 	    }
 	  }
-	  else if (fingers[daccount].rec)	fingers[daccount].state=R;
-	  else if (fingers[daccount].play && (fingers[daccount].layer[fingers[daccount].masterL].rec_end)) fingers[daccount].state=P;
-	  else fingers[daccount].state=N;
+	  else if (f[d].rec)	f[d].state=R;
+	  else if (f[d].play && (f[d].l[f[d].masterL].rec_end)) f[d].state=P;
+	  else f[d].state=N;
 	}
-	fingers[daccount].lastmode=0;
+	f[d].lastmode=0;
 	} // end of active
 	
 	  // do main mode/state work with switches within this
 	////// TESTY
 
-	fingers[daccount].majormode=2;
+	f[d].majormode=2;
 	///////////////////////////////////////////////////////	
 	// NADA: TODO: geomantic mode thing - could be only for all modes which are active
-	if (fingers[daccount].state==N){ 
+	if (f[d].state==N){ 
 	  RESETFRN;
-	  switch(fingers[daccount].majormode){
+	  switch(f[d].majormode){
 	  case 0:
 	  case 1:
-	    tmp=livevalue(daccount, V_options);
+	    tmp=livevalue(d, V_options);
 	    DOFREEZE;
-	    values[daccount]=tmp;
+	    values[d]=tmp;
 	    break;
 	  case 2: // N: always recording in a loop (to both layers?)
-	  tmp=livevalue(daccount, V_options);
+	  tmp=livevalue(d, V_options);
 	  LAYERSWOP;
-	  autre=fingers[daccount].masterL;
+	  autre=f[d].masterL;
 	  RECLAYER; // autre is our layer for the macro  
-	  autre=fingers[daccount].masterL^1;
+	  autre=f[d].masterL^1;
 	  RECLAYER;
-	  values[daccount]=tmp;
+	  values[d]=tmp;
 	  break;
 	  } // end switch	    
 	} // end NADA
-	else fingers[daccount].entryn=0;
+	else f[d].entryn=0;
 
 	// PLAY: ADC->speed // toggle is swop
-	if (fingers[daccount].state==P){ 
+	if (f[d].state==P){ 
 	  RESETFRP; // DONEdeal with playfull if is 0
-	  fingers[daccount].leavep=1;
-	  speed=control[whichctrl[daccount]]>>2; // TESTY - new spd accel
+	  f[d].leavep=1;
+	  speed=control[whichctrl[d]]>>2; // TESTY - new spd accel
 	  
-	  switch(fingers[daccount].majormode){
+	  switch(f[d].majormode){
 	  case 0:
 	  PSWOP; // includes add to playlist PSWOPP is without that adding
-	  if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  fingers[daccount].layer[fingers[daccount].masterL].speedsamp[0](playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, 0, daccount, recordings[daccount]);  // start is always 0 TESTY??? RECEND is our length
-	  tmp=livevalue(daccount, V_options); 
-	  values[daccount]=overlay(tmp, values[daccount], (P_options>>2)&3); // testy: types of live overlay
+	  //length, start, end
+	  if (f[d].l[f[d].masterL].rec_end) values[d]=  f[d].l[f[d].masterL].speedsamp[0](playreff[f[d].playspeed][speed], f[d].l[f[d].masterL].rec_end, 0, f[d].l[f[d].masterL].rec_end, d, recordings[d]); 
+	  tmp=livevalue(d, V_options); 
+	  values[d]=overlay(tmp, values[d], (P_options>>2)&3); // testy: types of live overlay
 	  break;
 	  case 1: // mode 1 playback of playlist
 	    PSWOPP; // no adding to playlist
-	    if (fingers[daccount].layer[fingers[daccount].masterL].rec_end) values[daccount]=  speedsampleplayl(playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, daccount, recordings[daccount]);  // start is always 0 TESTY??? RECEND is our length
-	  tmp=livevalue(daccount, V_options); 
-	  values[daccount]=overlay(tmp, values[daccount], (P_options>>2)&3); // testy: types of live overlay
+	    if (f[d].l[f[d].masterL].rec_end) values[d]=  speedsampleplayl(playreff[f[d].playspeed][speed], f[d].l[f[d].masterL].rec_end, 0, d, recordings[d]);  // start is always 0 TESTY??? RECEND is our length
+	  tmp=livevalue(d, V_options); 
+	  values[d]=overlay(tmp, values[d], (P_options>>2)&3); // testy: types of live overlay
 	    break;
 	    } // end SWITCH
 	} // end PLAY
 	else {
-	  if (fingers[daccount].leavep && fingers[daccount].majormode==0){ // we left P so add to our playlist - TODO: if any others add to playlist
-	    fingers[daccount].leavep=0;
+	  if (f[d].leavep && f[d].majormode==0){ // we left P so add to our playlist - TODO: if any others add to playlist
+	    f[d].leavep=0;
 	    ADDPLAYLIST;
 	  }
-	  fingers[daccount].entryp=0;
+	  f[d].entryp=0;
 	}
 
 	// REC: ADC->overlay to other tape
 	// freeze as swop main tape... // further REC adds sections to main tape...// we hear is voltage+newADCoverlay - ADD to rec means just don't reset end counter // we don't
-	if (fingers[daccount].state==R){ 
+	if (f[d].state==R){ 
 	  RESETFRR; 
-	  switch(fingers[daccount].majormode){
+	  switch(f[d].majormode){
 	  case 0:
 	  case 1:
-	    tmp=livevalue(daccount, V_options);
+	    tmp=livevalue(d, V_options);
 	    LAYERSWOP;
-	    autre=fingers[daccount].masterL;
+	    autre=f[d].masterL;
 	    RECLAYER; // autre is our layer for the macro  
-	    autre=fingers[daccount].masterL^1;
-	    tmp=overlay(control[whichctrl[daccount]], tmp, R_options&3); // overlay of CTRL
-	    values[daccount]=tmp;
+	    autre=f[d].masterL^1;
+	    tmp=overlay(control[whichctrl[d]], tmp, R_options&3); // overlay of CTRL
+	    values[d]=tmp;
 	    RECLAYER;
 	    break;
 	  case 2: //ADC: zooms through start and end (at each press start, next press start) zoom/stop and playback is bounced to other layer... trigger swops layers
-	    tmp=livevalue(daccount, V_options);
-	    LAYERSWOP; // LAYERSWOPxRP?
-	    if (control[whichctrl[daccount]]>32){ // pressed...
-	      speed=control[whichctrl[daccount]]>>2;
-	      //	      fastfwd through to select point start or end
-	      if (fingers[daccount].rpp==0) fingers[daccount].rpp=1; // set start
-	      if (fingers[daccount].rpp==2) fingers[daccount].rpp=3;
-	      values[daccount]=fingers[daccount].layer[fingers[daccount].masterL].speedsamp[2](playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, fingers[daccount].layer[fingers[daccount].masterL].rec_end, daccount, recordings[daccount]);
-	      if (fingers[daccount].rpp==1) { // set the start
-		fingers[daccount].layer[fingers[daccount].masterL].rec_start=fingers[daccount].layer[fingers[daccount].masterL].play_cnt;
+	    tmp=livevalue(d, V_options);
+	    LAYERSWOP;//RP; 
+	    if (control[whichctrl[d]]>32){ 
+	      speed=control[whichctrl[d]]>>2;
+	      if (f[d].rpp==0) f[d].rpp=1; // set start
+	      if (f[d].rpp==2) f[d].rpp=3;
+	      values[d]=f[d].l[f[d].masterL].speedsamp[2](playreff[f[d].playspeed][speed], f[d].l[f[d].masterL].rec_end, 0, f[d].l[f[d].masterL].rec_end, d, recordings[d]);
+	      if (f[d].rpp==1) { // set the start
+		f[d].l[f[d].masterL].rec_start=f[d].l[f[d].masterL].play_cnt;
 	      }
-	      else { // set the end but that is our length...
-		// and circle round if end is before start....
-		if (fingers[daccount].layer[fingers[daccount].masterL].play_cnt>fingers[daccount].layer[fingers[daccount].masterL].rec_start) fingers[daccount].layer[fingers[daccount].masterL].rec_otherend=fingers[daccount].layer[fingers[daccount].masterL].play_cnt-fingers[daccount].layer[fingers[daccount].masterL].rec_start;
-		else fingers[daccount].layer[fingers[daccount].masterL].rec_otherend=(fingers[daccount].layer[fingers[daccount].masterL].rec_end-fingers[daccount].layer[fingers[daccount].masterL].play_cnt)+fingers[daccount].layer[fingers[daccount].masterL].rec_start;
+	      else { 
+		if (f[d].l[f[d].masterL].play_cnt>f[d].l[f[d].masterL].rec_start) f[d].l[f[d].masterL].rec_fraglength=f[d].l[f[d].masterL].play_cnt-f[d].l[f[d].masterL].rec_start;
+		else f[d].l[f[d].masterL].rec_fraglength=(f[d].l[f[d].masterL].rec_end-f[d].l[f[d].masterL].play_cnt)+f[d].l[f[d].masterL].rec_start;
 	      }
-	      values[daccount]=overlay(tmp, values[daccount], (P_options>>2)&3); 
+	      values[d]=overlay(tmp, values[d], (P_options>>2)&3); 
 	    }
 	    else { // released...
-		values[daccount]=fingers[daccount].layer[fingers[daccount].masterL].speedsamp[2](1.0f, fingers[daccount].layer[fingers[daccount].masterL].rec_otherend, fingers[daccount].layer[fingers[daccount].masterL].rec_start, fingers[daccount].layer[fingers[daccount].masterL].rec_end, daccount, recordings[daccount]);
-		values[daccount]=overlay(tmp, values[daccount], (P_options>>2)&3); // and write this to other layer
-		tmp=values[daccount];
-		autre=fingers[daccount].masterL^1;
+		values[d]=f[d].l[f[d].masterL].speedsamp[2](1.0f, f[d].l[f[d].masterL].rec_fraglength, f[d].l[f[d].masterL].rec_start, f[d].l[f[d].masterL].rec_end, d, recordings[d]);
+		values[d]=overlay(tmp, values[d], (P_options>>2)&3); // and write this to other l
+		tmp=values[d];
+		autre=f[d].masterL^1;
 		RECLAYER;
 		//	      }
-	      if (fingers[daccount].rpp==3) fingers[daccount].rpp=0;
-     	      else if (fingers[daccount].rpp==1) fingers[daccount].rpp=2; // set end // when do we set to 0
+	      if (f[d].rpp==3) f[d].rpp=0;
+     	      else if (f[d].rpp==1) f[d].rpp=2; // set end // when do we set to 0
 	    }
 	    break;
 	  } // end switch
 	} // end REC
-	else fingers[daccount].entryr=0;
+	else f[d].entryr=0;
 
 	// REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape minormodes here)
-	if (fingers[daccount].state==RP){ 
+	if (f[d].state==RP){ 
 	  //	  RESETFRRP; 
-	  fingers[daccount].lastmode=1; // in this case!
+	  f[d].lastmode=1; // in this case!
 	  LAYERSWOPRP;
-	  tmp=livevalue(daccount, V_options); 
-	  speed=control[whichctrl[daccount]]>>2;
-	  autre=fingers[daccount].masterL^1; // opposite...
-	  values[daccount]=fingers[daccount].layer[fingers[daccount].masterL].speedsamp[0](playreff[fingers[daccount].playspeed][speed], fingers[daccount].layer[fingers[daccount].masterL].rec_end, 0, 0, daccount, recordings[daccount]); // as per play above for mode 0** would be playlist in playlist modes
-	  values[daccount]=overlay(tmp, values[daccount], (P_options>>2)&3); // types of live overlay - is also recorded
-	  tmp=overlayx(values[daccount], fingers[daccount].layer[autre].accessreclayer(daccount), (RP_options>>1)&3);
+	  tmp=livevalue(d, V_options); 
+	  speed=control[whichctrl[d]]>>2;
+	  autre=f[d].masterL^1; // opposite...
+	  values[d]=f[d].l[f[d].masterL].speedsamp[0](playreff[f[d].playspeed][speed], f[d].l[f[d].masterL].rec_end, 0, f[d].l[f[d].masterL].rec_end, d, recordings[d]); // as per play above for mode 0** would be playlist in playlist modes
+	  values[d]=overlay(tmp, values[d], (P_options>>2)&3); // types of live overlay - is also recorded
+	  tmp=overlayx(values[d], f[d].l[autre].accessreclayer(d), (RP_options>>1)&3);
 	  RECLAYERP; // now with RP_options bit 1 as toggling rec_end - test live toggling
 	} //end RP
-	else fingers[daccount].entryrp=0;
+	else f[d].entryrp=0;
 	///////////////////////////////////////////////////////	
 	// end of modes 
 	
 	WRITEDAC2;
-	daccount++;
-	if (daccount==8) {
-	  daccount=0;
+	d++;
+	if (d==8) {
+	  d=0;
 	  count++;
 	  togplay=0; togrec=0; // here as then we set them for one round
 	  TEST_TOGGLES;      // only place where toggles - TESTY - newer toggles
@@ -773,52 +754,52 @@ void TIM2_IRQHandler(void)
 	      resett(7);
 	    }
 	    else if (modeheld>SOFTRESET && modeheld<FULLRESET){
-	      if (fingers[0].active) resets(0);
-	      if (fingers[1].active) resets(1);
-	      if (fingers[2].active) resets(2);
-	      if (fingers[3].active) resets(3);
-	      if (fingers[4].active) resets(4);
-	      if (fingers[5].active) resets(5);
-	      if (fingers[6].active) resets(6);
-	      if (fingers[7].active) resets(7);
+	      if (f[0].active) resets(0);
+	      if (f[1].active) resets(1);
+	      if (f[2].active) resets(2);
+	      if (f[3].active) resets(3);
+	      if (f[4].active) resets(4);
+	      if (f[5].active) resets(5);
+	      if (f[6].active) resets(6);
+	      if (f[7].active) resets(7);
 	    }
 	else if (modeheld>LONGMODE && modeheld<SOFTRESET) { // increment major mode if active
 	  modeheld=0;
-	  if (fingers[0].active) changemode(0);
-	  if (fingers[1].active) changemode(1);
-	  if (fingers[2].active) changemode(2);
-	  if (fingers[3].active) changemode(3);
-	  if (fingers[4].active) changemode(4);
-	  if (fingers[5].active) changemode(5);
-	  if (fingers[6].active) changemode(6);
-	  if (fingers[7].active) changemode(7);
+	  if (f[0].active) changemode(0);
+	  if (f[1].active) changemode(1);
+	  if (f[2].active) changemode(2);
+	  if (f[3].active) changemode(3);
+	  if (f[4].active) changemode(4);
+	  if (f[5].active) changemode(5);
+	  if (f[6].active) changemode(6);
+	  if (f[7].active) changemode(7);
 	  
 	}	
 	else if (modeheld<LONGMODE){ //inc minor mode 
 	  modeheld=0; 
-	  if (fingers[0].active) {
-	    fingers[0].minormode[fingers[0].state]++;
+	  if (f[0].active) {
+	    f[0].minormode[f[0].state]++;
 	  }
-	  if (fingers[1].active) {
-	    fingers[1].minormode[fingers[1].state]++;
+	  if (f[1].active) {
+	    f[1].minormode[f[1].state]++;
 	  }
-	  if (fingers[2].active) {
-	    fingers[2].minormode[fingers[2].state]++;
+	  if (f[2].active) {
+	    f[2].minormode[f[2].state]++;
 	  }
-	  if (fingers[3].active) {
-	    fingers[3].minormode[fingers[3].state]++;
+	  if (f[3].active) {
+	    f[3].minormode[f[3].state]++;
 	  }
-	  if (fingers[4].active) {
-	    fingers[4].minormode[fingers[4].state]++;
+	  if (f[4].active) {
+	    f[4].minormode[f[4].state]++;
 	  }
-	  if (fingers[5].active) {
-	    fingers[5].minormode[fingers[5].state]++;
+	  if (f[5].active) {
+	    f[5].minormode[f[5].state]++;
 	  }
-	  if (fingers[6].active) {
-	    fingers[6].minormode[fingers[6].state]++;
+	  if (f[6].active) {
+	    f[6].minormode[f[6].state]++;
 	  }
-	  if (fingers[7].active) {
-	    fingers[7].minormode[fingers[7].state]++;
+	  if (f[7].active) {
+	    f[7].minormode[f[7].state]++;
 	  }
 	}
 	} // newmode
