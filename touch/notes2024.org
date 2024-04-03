@@ -309,7 +309,33 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
-** 24/3
+** 3/4
+
+- +on repeated starts sometimes fails start - was this always the case??? tried with delays in main and moved main reset but doesn't fix it...+
+- This seems resolved now...
+
+- max 5 lodges now
+
+*clear up R_options and all as is confusing with overlays, still RP_opts TODO*
+
+- messy abstraction as just farmed all out to functions now... needs to be more generic zone handling...
+- RP implemented but needs more tests and all options
+
+** 29/3
+
+- DONEbasic rec and play seems to work - test rec adds to..
+- reclodge now has 2 values for each possible layer...
+
+DONE +TEST: added swop now, and rec of ctrl overlay to other layer...+
+
+- TEST adding to playlist with option: f[d].playlistm - still need to finish add to playlist on swop and leaving
+- TODO: basic RP mode: define it from before:
+
+// REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what
+does voltage do (overlay same tape minormodes here) - see options for
+end of other layer...// and for stopping
+
+** 24/3 
 
 - draft of basic rec and play to test - but some lose ends eg. playlist and swopping of layers is a bit odd/// RP TODO
 
