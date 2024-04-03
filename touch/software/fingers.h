@@ -9,7 +9,7 @@ typedef struct zonel_ {
 typedef struct layers_ {
   float play_cnt;
   float cnt; // for new speedsample
-  zonel lodges[28]; // each layer has list of zones/lodges to record to
+  zonel lodges[5]; // each layer has list of zones/lodges to record to
   uint32_t num_lodges;
 } layers;
 
