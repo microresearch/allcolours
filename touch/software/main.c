@@ -14,6 +14,8 @@
 #include "misc.h"
 #include "stm32f4xx_conf.h"
 
+extern void resett(uint32_t dacc);
+
 /*
 
 PROG: from top: 3.3v, SWCLK, SWDIO, GND (lower 2 swopped)
@@ -122,7 +124,9 @@ int main(void)
     
   io_config2 ();
 
-
+      for (uint32_t x=0;x<8;x++){
+	resett(x);
+      }
 	    
 	    // testing
 
@@ -328,6 +332,10 @@ int main(void)
 
   // 16/12 stay with 1024/8 for 1.5 KHz I think - check this
 
+  delayy();
+  delayy();
+  delayy();
+  
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -355,6 +363,8 @@ int main(void)
   //    uint8_t firstByte, secondByte, configBits;
       uint32_t daccount=0;    
 
+
+      
       while(1) {
 
       
