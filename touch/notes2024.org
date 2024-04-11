@@ -309,6 +309,70 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
+** 11/4 ++
+
+- now lodge just has start and end, no length... so just loops around start and end - *TEST/DONE:TODO: fixit*
+- second set of options in R_options for 2nd layer overlay: DONE but makes for 6 bits on R_options *TO_TEST*
+
+DEFINE overlays:
+
+N: livevalue opts
+P: livevalue and overlay
+R: overlay of CTRL and overlay on what is on tape (for each layer so x2) 
+RP: as P_opts and R_options above - but no CTRL overlay (as CTRL is used for speed) - added RP_options
+
+- *TODO: all addings to playlist // eg. on swop*
+
+** 10/4 ++
+
+recent notebook notes...
+
+RP/R: stations/zones
+P: playlist
+
+orphans and voids
+
+*ghosts:*
+- copies of other regions
+- change to/insert in other regions playlists
+- record to other tapes
+- merge with others
+- bounce/overlay 
+
+*all is lists for play and record - and operations on lists*  
+- what it means to mark as a ghost
+
+*voids/orphans:*
+- safe regions to be skipped over (but only makes sense if they are already recorded to)...
+- swop zones between layers (now each layer has its own list of zones)
+- offsets of rec zones across layers - so they are shifted, playlist can also have this?
+- blanked areas - areas which are returned to 0 so we can write anew to them - new conception...
+
+- *does playlist per layer make sense or?*
+
+8 sides, each has state, each state has minor and major modes and active/unactive state
+CV/VCA share CTRL_CV
+
+TODO:
+- recheck startup again and again... sometimes on very fast reset...
+- clear up questions/TODO below
+
++ do we really want overlay in live value with top/lowest anymore? possibly not but leave as is*
+
+- helper functions to code: eg. making marker points, access to other regions/recordings/sections
+
+---> playlist is independent of a section... free!
+
+*how to make more of a connection between zones and playlist - also if/how rec zones overlap*
+
+eg. if we record to 2 overlapping zones what happens - depends on overlap??
+
+rec->play as a circle/cycle...
+
+- decide on majormodes: notate previous and planned modes for TODO, how to get there...
+- crash and basic tests of functions so far
+- fix on micromodes - we have sensitivity still...
+
 ** 3/4
 
 - +on repeated starts sometimes fails start - was this always the case??? tried with delays in main and moved main reset but doesn't fix it...+
@@ -316,7 +380,7 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 - max 5 lodges now
 
-*clear up R_options and all as is confusing with overlays, still RP_opts TODO*
+DONEclear up R_options and all as is confusing with overlays, *TO_TEST: DONEstill RP_opts TODO*
 
 - messy abstraction as just farmed all out to functions now... needs to be more generic zone handling...
 - RP implemented but needs more tests and all options
@@ -476,9 +540,9 @@ Latest note: That rec-start in mode 2 is more like rec_fragment start and end...
 
 - TODO etc from below...
 
-*DONE/to test: Option in RP to stop rec/bounce on speedstop - as default or as option?*
+DONE/to test: Option in RP to stop rec/bounce on speedstop - as default or as option?*
 
-*DONE/to testTODO: check end-point in mode2*
+DONE/to testTODO: check end-point in mode2*
 
 *TO ADD: what happens in mode 2 P and RP?*
 

@@ -121,26 +121,17 @@ int main(void)
 #endif
     // 8 channels
 	    //	    ADC1_Init((uint16_t *)adc_buffer);
-    
-  io_config2 ();
 
       for (uint32_t x=0;x<8;x++){
 	resett(x);
       }
 	    
-	    // testing
-
-
-    // Enable clock for ADC1
-       //          RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC, ENABLE);
-       //    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-    
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
     ADC_InitTypeDef ADC_InitStructure;
 
     /* enable clocks for DMA2, ADC1, GPIOA ----------------------------------*/
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC, ENABLE);
-	//	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC, ENABLE);
+    //RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
 	/* ADC Common Init ------------------------------------------------------*/
@@ -168,6 +159,8 @@ int main(void)
 	  PB0(ADC4), PB1(ADC8) ???
 	*/
 
+    
+  io_config2 ();
 
 
 
@@ -347,7 +340,7 @@ int main(void)
   // 48 is too slow...
   // 30/9/3021: changed prescaler to 16 and then 32 to get rid of bleed
   // 6/10/2021: still tiny bleed but can live with it!
- TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
+  TIM_TimeBaseInit(TIM2, &TIM_TimeBase_InitStructure);
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -357,6 +350,7 @@ int main(void)
   TIM_Cmd(TIM2, ENABLE);
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 
+  
   // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
   //    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
 
