@@ -1,8 +1,9 @@
 typedef struct zonel_ { 
   uint32_t start;
-  uint32_t length;
   uint32_t end; // loop point
+  uint32_t realend; // where we ended - if overlap than is end
   uint32_t cnt;
+  uint32_t over; // overrun - need to reset this at some point
   uint32_t rcnt;
 } zonel;
 
