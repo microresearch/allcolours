@@ -16,6 +16,7 @@
 #include "macros000.h"
 
 #define TOPS 0b11111111111111110000000000000000
+#define BOTS 0b00000000000000001111111111111111
 
 // timing is critical
 // and maybe we need different BRK value for: mode, freezer, rec and play - 64 and 10 are close...
@@ -140,7 +141,7 @@ inline static uint32_t overlay(uint32_t value, uint32_t value2, uint32_t over){ 
 	    }
 	    else if (over==1){ 
 	      tmpp=value2+value;
-	      if (tmpp>4095) tmpp=4095;
+	      if (tmpp>BOTS) tmpp=BOTS; // as we store full value...
 	    }
 	    else if (over==2){ // mod
 	      tmpp=value2+value;
@@ -164,7 +165,7 @@ inline static uint32_t overlayx(uint32_t value, uint32_t value2, uint32_t over){
 	    }
 	    else if (over==2){ 
 	      tmpp=value2+value;
-	      if (tmpp>4095) tmpp=4095;
+	      if (tmpp>BOTS) tmpp=BOTS;
 	    }
 	    else if (over==3){ // mod
 	      tmpp=value2+value;
@@ -187,7 +188,7 @@ inline static uint32_t livevalue(uint32_t which, uint32_t opt){
   }
   else if (overoverlay==3){ 
     tmpp+=real[which];
-    if (tmpp>4095) tmpp=4095;
+    if (tmpp>4095) tmpp=4095; // ??
   }
   else if (overoverlay==1){ // invert 
     tmpp=4095-real[which];
@@ -234,12 +235,8 @@ void resett(uint32_t dacc){
   f[dacc].playfull=0;
   f[dacc].play=0;					
   f[dacc].rec=0;
-  f[dacc].l[0].play_cnt=0;
-  f[dacc].l[1].play_cnt=0;
   f[dacc].l[0].num_lodges=0;
   f[dacc].l[1].num_lodges=0;
-  f[dacc].l[0].cnt=0;
-  f[dacc].l[1].cnt=0;
   f[dacc].lastmode=0;
   f[dacc].sensi=0;
   f[dacc].entryp=0;
@@ -248,6 +245,12 @@ void resett(uint32_t dacc){
   f[dacc].leavep=0;
   f[dacc].playlistm=0;
   f[dacc].playlistp=0;
+  for (uint32_t x=0;x<8;x++){ 
+  f[dacc].l[0].cnt[x]=0;
+  f[dacc].l[1].cnt[x]=0;
+  f[dacc].l[0].play_cnt[x]=0;
+  f[dacc].l[1].play_cnt[x]=0;
+  }
   // zero all lodges TODO: etc
   for (uint32_t y=0;y<5;y++){ 
     f[dacc].l[0].lodges[y].over=0;
@@ -264,27 +267,29 @@ inline static void resets(uint32_t dacc){ // soft reset of both layers
   f[dacc].playfull=0;
   f[dacc].play=0;					
   f[dacc].rec=0;
-  f[dacc].l[0].play_cnt=0;
-  f[dacc].l[1].play_cnt=0;
-  f[dacc].l[0].cnt=0;
-  f[dacc].l[1].cnt=0;
   f[dacc].lastmode=0;
   f[dacc].entryp=0;
   f[dacc].entryr=0;
   f[dacc].entryrp=0;
   f[dacc].leavep=0;
+  for (uint32_t x=0;x<8;x++){ 
+  f[dacc].l[0].cnt[x]=0;
+  f[dacc].l[1].cnt[x]=0;
+  f[dacc].l[0].play_cnt[x]=0;
+  f[dacc].l[1].play_cnt[x]=0;
+  }
   // zero all lodges TODO: etc
 }
 
-inline static float mod0(float value, float start, float ending, float length, uint32_t d, uint32_t layer, uint32_t full) 
+inline static float mod0(float value, float start, float ending, float length, uint32_t d, uint32_t which, uint32_t layer, uint32_t full) 
 {
   static uint32_t lengthed;
   lengthed=0;
   while (value > (ending-1)){ // wrapping
     value -= ending;
   }
-  while (f[d].l[layer].cnt>(length-1)){ // get next in list
-    f[d].l[layer].cnt-=length;
+  while (f[d].l[layer].cnt[which]>(length-1)){ // get next in list
+    f[d].l[layer].cnt[which]-=length;
     f[d].playcnt+=1; 
     if (f[d].playcnt>=full) f[d].playcnt=0;
     length=f[d].playlist[f[d].playcnt].length;
@@ -293,7 +298,7 @@ inline static float mod0(float value, float start, float ending, float length, u
   }
 
   if (lengthed) {
-    value=f[d].l[layer].cnt+start;
+    value=f[d].l[layer].cnt[which]+start;
     if (f[d].playlistm==1){
       ADDPLAYLISTL;
     };
@@ -301,7 +306,7 @@ inline static float mod0(float value, float start, float ending, float length, u
   return value;
 }
 
-inline static float mod00(float value, float start, float ending, float length, uint32_t d, uint32_t layer, uint32_t full) 
+inline static float mod00(float value, float start, float ending, float length, uint32_t d, uint32_t which, uint32_t layer, uint32_t full) 
 {
   static uint32_t lengthed;
   uint32_t tmpcnt;
@@ -311,7 +316,7 @@ inline static float mod00(float value, float start, float ending, float length, 
   while (value > (ending-1)){
     value -= ending;
     }
-    tmpp=f[d].l[layer].cnt+1;
+    tmpp=f[d].l[layer].cnt[which]+1;
     if ((tmpp)>(length-1)){
     tmpp-=length;
     lengthed=1;
@@ -330,7 +335,7 @@ inline static float mod00(float value, float start, float ending, float length, 
 }
 
 // full is 0 for no playlist=one item, or loop or playfull
-inline static uint32_t speedsampleplay(float speedy, uint32_t dacc, uint32_t full, uint32_t *samples){
+inline static uint32_t speedsampleplay(float speedy, uint32_t dacc, uint32_t full, uint32_t which, uint32_t *samples){
   uint32_t lowerPosition, upperPosition, layer, lengthy, end, start;
   float sample;
   lengthy=f[dacc].playlist[f[dacc].playcnt].length;
@@ -338,12 +343,12 @@ inline static uint32_t speedsampleplay(float speedy, uint32_t dacc, uint32_t ful
   start=f[dacc].playlist[f[dacc].playcnt].start;
   layer=f[dacc].playlist[f[dacc].playcnt].l;
 
-  f[dacc].l[layer].cnt+=speedy;
+  f[dacc].l[layer].cnt[which]+=speedy;
   
-  f[dacc].l[layer].play_cnt=mod0(f[dacc].l[layer].play_cnt+speedy, start, end, lengthy, dacc, layer, full);
-  lowerPosition = (int)f[dacc].l[layer].play_cnt;
-  upperPosition = mod00(lowerPosition + 1, start, end, lengthy, dacc, layer, full);
-  int32_t res=(f[dacc].l[layer].play_cnt - (float)lowerPosition);
+  f[dacc].l[layer].play_cnt[which]=mod0(f[dacc].l[layer].play_cnt[which]+speedy, start, end, lengthy, dacc, which, layer, full);
+  lowerPosition = (int)f[dacc].l[layer].play_cnt[which];
+  upperPosition = mod00(lowerPosition + 1, start, end, lengthy, dacc, which, layer, full);
+  int32_t res=(f[dacc].l[layer].play_cnt[which] - (float)lowerPosition);
   if (lowerPosition>=MAXREC) lowerPosition=0; // just in case
   if (upperPosition>=MAXREC) upperPosition=0;
   if (layer==0){  
@@ -358,7 +363,7 @@ inline static uint32_t speedsampleplay(float speedy, uint32_t dacc, uint32_t ful
 static uint32_t lastvalue[8]={0,0,0,0, 0,0,0,0};
 
 void reclayerupper(uint32_t value, uint32_t place, uint32_t d){
-  recordings[d][place]=(recordings[d][place]&4095)+(value<<16);
+  recordings[d][place]=(recordings[d][place]&BOTS)+(value<<16);
 }
 
 void reclayerlower(uint32_t value, uint32_t place, uint32_t d){
@@ -377,7 +382,7 @@ void reclodge(uint32_t d, uint32_t value, uint32_t layerval, uint32_t R_options)
       f[d].l[0].lodges[x].cnt=0;
       f[d].l[0].lodges[x].over=1;
     }
-    tmpxx=overlayx(value, (recordings[d][tmpx]&4095), (R_options>>2)&3); 
+    tmpxx=overlayx(value, (recordings[d][tmpx]&BOTS), (R_options>>2)&3); 
     reclayerlower(tmpxx, tmpx, d);
     f[d].l[0].lodges[x].cnt++;
     f[d].l[0].lodges[x].rcnt++;
@@ -399,7 +404,7 @@ void reclodge(uint32_t d, uint32_t value, uint32_t layerval, uint32_t R_options)
   }
 }
 
-void reclodgex(uint32_t d, uint32_t value, uint32_t whichl, uint32_t R_options){ // record value to all zones with overlay TODO
+void reclodgex(uint32_t d, uint32_t value, uint32_t whichl, uint32_t R_options){  // for RP???
   uint32_t x, y, tmpx, tmpxx;
   // tape 0 lower
   if (whichl==0){
@@ -412,7 +417,7 @@ void reclodgex(uint32_t d, uint32_t value, uint32_t whichl, uint32_t R_options){
       f[d].l[0].lodges[x].cnt=0;
       f[d].l[0].lodges[x].over=1;
     }
-    tmpxx=overlayx(value, (recordings[d][tmpx]&4095), (R_options>>2)&3); 
+    tmpxx=overlayx(value, (recordings[d][tmpx]&BOTS), (R_options>>2)&3); 
     reclayerlower(tmpxx, tmpx, d);
     f[d].l[0].lodges[x].cnt++;
     f[d].l[0].lodges[x].rcnt++;
@@ -454,7 +459,7 @@ uint32_t R_basic(uint32_t d, uint32_t V_options, uint32_t R_options){
   f[d].l[other].num_lodges=1;
   f[d].l[other].lodges[0].start=0; 
   f[d].l[other].lodges[0].end=MAXREC; 
-  tmpp=overlay(control[whichctrl[d]], tmp, R_options&3); // overlay of CTRL
+  tmpp=overlay(control[whichctrl[d]], tmp, R_options&3); // overlay of CTRL - could be just CTRL signal
   reclodge(d, tmp, tmpp, R_options);
   return tmpp;
 }
@@ -475,7 +480,7 @@ uint32_t RP_basic(uint32_t d, uint32_t V_options, uint32_t P_options, uint32_t R
 
   float speedy=playreff[f[d].playspeed][(control[whichctrl[d]]>>2)]; 
   tmp=livevalue(d, V_options);
-  pp=speedsampleplay(speedy, d, 0, recordings[d]);
+  pp=speedsampleplay(speedy, d, 0, d, recordings[d]); // last two d can be access to others...
   tmp=overlay(tmp, pp, (P_options>>2)&3); // live overlay on playback 
   other=f[d].masterL^1; // swoppage
 
@@ -506,7 +511,7 @@ uint32_t P_basic(uint32_t d, uint32_t V_options, uint32_t P_options){ // swop is
 
   float speedy=playreff[f[d].playspeed][(control[whichctrl[d]]>>2)]; 
   uint32_t tmp=livevalue(d, V_options);
-  pp=speedsampleplay(speedy, d, 0, recordings[d]);
+  pp=speedsampleplay(speedy, d, 0, d, recordings[d]);
   tmp=overlay(tmp, pp, (P_options>>2)&3);
   return tmp;
 }

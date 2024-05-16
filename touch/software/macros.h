@@ -161,43 +161,6 @@ if (f[d].l[f[d].masterL].othercnt>0) {	\
     }							\
   }
 
-// deal with playfull as a 0
-#define RESETFRP {							\
-  if (f[d].entryp==0){					\
-    lastvalue[d]=0;						\
-    f[d].l[0].play_cnt=0;				\
-    f[d].l[1].play_cnt=0;				\
-    f[d].entryp=1;						\
-  }									\
-  }
-
-#define RESETFRN {							\
-    if (f[d].entryn==0){					\
-      lastvalue[d]=0;						\
-      f[d].entryn=1;					\
-    }									\
-  }
-
-#define RESETFRR {							\
-    if (f[d].entryr==0){					\
-      lastvalue[d]=0;						\
-      f[d].rpp==0;						\
-      f[d].l[0].play_cnt=0;				\
-      f[d].l[1].play_cnt=0;				\
-      f[d].l[0].rec_length=f[d].l[0].rec_end; \
-      f[d].l[1].rec_length=f[d].l[1].rec_end; \
-      f[d].l[0].rec_start=0;				\
-      f[d].l[1].rec_start=0;				\
-      f[d].entryr=1;					\
-    }									\
-  }
-
-#define RESETFRRP {						\
-    if (f[d].entryrp==0){				\
-      f[d].entryrp=1;				\
-    }								\
-  }
-
 #define TEST_TOGGLES {				  \
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	\
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; \
