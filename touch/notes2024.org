@@ -309,6 +309,127 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
+*How to implement new scheme below: sequences of manipulations, other layer as XXX, overlap playlists, access other sections, groupings and sync*
+
+** 16/5
+
+*Notebook notes:*
+
+prev:
+- how to have different speeds for each zone (but zones are rec anyway?)
+- multiple zones across layers
+- how we can record to multiple sections/groups?
+- how play can overlap? 
+
+new:
+- how zones and layers work? linkage. eg. we want this zone on layer 2 to be the speed for this zone on the same or another layer...
+*linked zones* - but that is more about playback... Q of playlist and zones
+- rec can also be sequential, play can also be overlapping
+
+?list of: real time eg. 00. in, out, length if any, layer/section, linkage
+
+TODO: simplest op for rec is to write value to: section/layer/array=location using whose_dacc_counter
+
+how to deal with any linkage if we swop layers... (link is both ways?)
+
+Q if we go for timing (global) or just have say number in sequence like in playlist, and same number for simultaneous...
+
+- mobile gesture is about VCA/volume but also about *attaching* voltage or gesture from one section to another - *mobile gestures cut up*
+
+-> gesture/voltage <- control (also a gesture so recursive) - eg. VCA of a voltage, movement across sections...
+
+- attach one section to another - press first then second within x seconds... or near-simultaneous press...
+
+*Field of events and coincidences - synchronicity:*
+
+- a programming scheme to mark these
+- to link sections (microcosm) as zones. -> relations over time...
+
+** 1/5
+
+- what is other layer in basic rec that we have??? overlay CTRL on voltage ---> when should just be CTRL???
+
+** 30/4
+
+- added individual counters so speedsampleplay accesses any of the sections and keeps count... also added to some of playlist code
+- *other layer can be: speed, overlay/add-subtract, swop, volume/VCA... depends on micromode?*
+
+** 29/4 
+
+- minormodes and sync
+- groupings
+- add safety
+- // *DONE: to test* //abstract out access across all sections: but then we need individual counters - array of counters for each section
+- major modes defined
+- Q of simulation!
+
+*past notebook notes:*
+
+Key - to throw down a figure, a gesture across the board
+- to throw down a set of rules
+- a figure or set of figures which follows a set of rules
+
+*mobile gesture:* gesture is mobile...
+
+eg. gesture which is a "series of voltages over time" can move (dependent on voltage ???ctrl?)
+
+*CTRL voltage determines amount of recorded voltage there* - manipulation of properties of *"series of voltages over time"*
+
+*how to set parameter eg. speed of playback and jump to next mode? new scheme*
+
+- parameter of how much we play back (like volume or VCA of the gesture) rather trhan speed/as well as speed, both!
+
++ logical ops, start/stop playback etc...
+
+*micromode = +add/-subtract / for gate/VCA/thing also*
+
+- operations on sets of recorded voltage/playback/ by CTRL/by TOGGLE:
+
+by CTRL:
+- speed of playback
+- gating on/off with threshold (also/or stop/start playback)
+- how much we let through (volume of signal - see above) - also inversion of this amount
+- *TODO:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
+- logical operations to list
+
+[ops which change the value, ops which change the sequence of values]
+
+by TOGGLE:
+- swop operational layer
+- gate/hold but keep playing (how to record that stop/start/gating and be able to speed it up/slow it?)
+
+*a framework which allows for these sequences of manipulations!*
+
+- how to have different speeds for each zone (but zones are in rec, not in playback...) *can playlist have overlaps, multiples and how???*
+
+*Q. also of zone and its double/other layer which might be speed - say: differing zones for each param*
+
+rec: zones
+play: playlist and operations
+
+** 18/4
+
+Notebook notes:
+
+TODO:
+- minormodes and sync
+- *groupings* (use active/inactive as grouping, also VCA and voltage sync maybe as minormode - more about subtracting one from the other)
+
+that certain modes can operate on active voltages/areas/sections as a 'group'
+
+- add safety to all array accesses
+
+- abstract out access/play to any section - so then we need array of counters for each section - counters to other sections...
+
+each section needs array of counters etc. into others... TODO: maybe refactor layers and playlist, lodges in layers - they are???
+
+- majormodes defines - past modes also
+- Q of simulation... how, eg. test adding to playlist, play of playlist...
+
+- shih diviners board - rotation of one wheel across another for example...
+- crystalline fragmentation/cutup/disembodies/throw of figures across the board/ throw of gestures
+
+
 ** 11/4 ++
 
 - now lodge just has start and end, no length... so just loops around start and end - *TEST/DONE:TODO: fixit*
@@ -348,7 +469,7 @@ orphans and voids
 - offsets of rec zones across layers - so they are shifted, playlist can also have this?
 - blanked areas - areas which are returned to 0 so we can write anew to them - new conception...
 
-- *does playlist per layer make sense or?*
+- *does playlist per layer make sense or - then we need another lost to indicate time of swopping - also q of overlay of 2 layers in playback?*
 
 8 sides, each has state, each state has minor and major modes and active/unactive state
 CV/VCA share CTRL_CV
