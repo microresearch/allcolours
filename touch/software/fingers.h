@@ -8,9 +8,9 @@ typedef struct zonel_ {
 } zonel;
 
 typedef struct layers_ {
-  float play_cnt;
-  float cnt; // for new speedsample
-  zonel lodges[5]; // each layer has list of zones/lodges to record to
+  float play_cnt[8];
+  float cnt[8]; // for new speedsample // 
+  zonel lodges[5]; // each layer has list of zones/lodges to record to // maybe seperate lodges from playback... why???
   uint32_t num_lodges;
 } layers;
 
@@ -19,6 +19,7 @@ typedef struct layers_ {
       uint32_t length;
       uint32_t end;
       uint32_t l; // layer
+      uint32_t which; // which section we play - but then we need counters
     } playl;
 
     enum STATE {
