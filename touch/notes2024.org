@@ -15,6 +15,10 @@ sync and divination: 4 layers // binary figure
 
 moon/crescents - new moon - half - full - half 
 
+note that lower crescents have voltage ...
+
+*rework below?*
+
   M
 
 R   P
@@ -28,7 +32,7 @@ R+P:
 
 ////
 
-Q of global speed... *new top ADC is global control. also we have sync functions*
+Q of global speed... *new top ADC is global control. also we have sync functions ???*
 
 NADA = no tape
 
@@ -41,31 +45,33 @@ NADA = no tape
 - sync/detach etc...
 - chop/silence/insert etc... or is that operation on play list
 
+
+* 2024.002
+
+*CTRL:*
+- speed of playback
+- gating on/off with threshold (also/or stop/start playback)
+- how much we let through (volume of signal - see above) - also inversion of this amount
+- *TODO:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
+- logical operations to list
+
+[ops which change the value, ops which change the sequence of values]
+
+*LAYER as ____ for the other:*
+
+- speed, overlay/add-subtract, swop/why/how?, volume/VCA... depends on micromode?
+
+so layer can be same as CTRL also above... and layer/ctrl can also be a gesture which determines operations...
+
+layers can be swopped...
+
+*TOGGLES:*
+
+Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+
 * Modes so far:
 
 Note: major modes are per state now (changed back 14/3)
-
-So they need to be listed per state:
-
-NADA:
-0-
-1-
-2-
-
-R:
-0-
-1-
-2-
-
-P:
-0-
-1-
-2-
-
-RP:
-0-
-1-
-2-
 
 *0- basic mode and add to playlist: DONE*
 NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - NONinvert is take value from top, but what is "fake swop"?
@@ -303,11 +309,27 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 - how to say keep a steady  offset overlay... (would be like freeze but...)
 
-- to be able to kill one section - erase/reset only one part (i guess through not de-activating all - shortcut to deactivate all???)
+- to be able to kill one section - erase/reset only one part (i guess through not de-activating all - *shortcut to deactivate all???*)
 
 - minormodes seem to work - test again
 
 * diary notes
+
+*5/6 - new scheme to remove R,P,RP and N - to use active and inactive!*
+
+- DONEtesting test4.c and new 002.c - added delay code for zones/lodges and fixed overlap code TODO: reset
+each layer has its own zone list - added linkage in code... but linkage defaults to zero= *fix*
+
+
+TODO:
+- redo all timings and main loop for simultaneousness (main = 24*8=192)
+- simulate and test adding to playlist
+- remove R, P, N, RP from code
+- replace buttons as mode, micromode and reset... (also recheck active/inactive code) - mode is per each active channel so all can have different mpdes
+- record and stop on zero/silence to implement and test
+- how playlist can also have overlaps?
+
+** 3/6 + to try to finish// notes overview...
 
 *How to implement new scheme below: sequences of manipulations, other layer as XXX, overlap playlists, access other sections, groupings and sync*
 
@@ -316,7 +338,6 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 *Notebook notes:*
 
 prev:
-- how to have different speeds for each zone (but zones are rec anyway?)
 - multiple zones across layers
 - how we can record to multiple sections/groups?
 - how play can overlap? 
@@ -326,9 +347,9 @@ new:
 *linked zones* - but that is more about playback... Q of playlist and zones
 - rec can also be sequential, play can also be overlapping
 
-?list of: real time eg. 00. in, out, length if any, layer/section, linkage
+?list of: real time eg. 00. in, out -> now becomes delay, length if any, layer/section, linkage
 
-TODO: simplest op for rec is to write value to: section/layer/array=location using whose_dacc_counter
+//Q-TODO: simplest op for rec is to write value to: section/layer/array=location using whose_dacc_counter//
 
 how to deal with any linkage if we swop layers... (link is both ways?)
 
@@ -345,14 +366,14 @@ Q if we go for timing (global) or just have say number in sequence like in playl
 - a programming scheme to mark these
 - to link sections (microcosm) as zones. -> relations over time...
 
-** 1/5
+** 1/5 - last code was here
 
 - what is other layer in basic rec that we have??? overlay CTRL on voltage ---> when should just be CTRL???
 
 ** 30/4
 
 - added individual counters so speedsampleplay accesses any of the sections and keeps count... also added to some of playlist code
-- *other layer can be: speed, overlay/add-subtract, swop, volume/VCA... depends on micromode?*
+- *other layer can be: speed, overlay/add-subtract, swop?, volume/VCA... depends on micromode?*
 
 ** 29/4 
 

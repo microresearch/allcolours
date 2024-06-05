@@ -5,12 +5,15 @@ typedef struct zonel_ {
   uint32_t cnt;
   uint32_t over; // overrun - need to reset this at some point
   uint32_t rcnt;
+  uint32_t delay;
+  uint32_t delcnt;
+  uint32_t linkage; // linking to other layer
 } zonel;
 
 typedef struct layers_ {
   float play_cnt[8];
   float cnt[8]; // for new speedsample // 
-  zonel lodges[5]; // each layer has list of zones/lodges to record to // maybe seperate lodges from playback... why???
+  zonel lodges[12]; // each layer has list of zones/lodges to record to // maybe seperate lodges from playback... why??? // 12 lodges
   uint32_t num_lodges;
 } layers;
 
