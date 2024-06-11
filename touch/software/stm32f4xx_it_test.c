@@ -23,6 +23,10 @@ uint32_t maxovermin[MAXMODES]={15,15,31,0, 0,0,0,0}; // to fill in as we go
 uint32_t maxplaymin[MAXMODES]={31,15,31,0, 0,0,0,0};
 uint32_t maxrecmin[MAXMODES]={1,1,1,0, 0,0,0,0};
 
+void resett(void){
+  
+};
+
 typedef struct layers_ {
   uint32_t rec_cnt;
   uint32_t rec_end;
@@ -80,18 +84,17 @@ static hands f[8];
 #define FULLRESET 1200
 #define SOFTRESET 800 //  was - divide by 8 if we have test_toggle slowr // was 4000 time for full reset when hold the mode down - over 4 seconds
 #define SHORTMODE 8 // was 20ms could be shorter...
-#define LONGMODE 140 // 1sec
-
+#define LONGMODE 140 // 1sec was 280=2 secs
 #define LONGTOG 300
 
-   #ifdef fouronethree
-   #define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
-   #define DOUBLEMAXREC 19000
-   #else
-   #define MAXREC 3800 // for older STM
-   #define DOUBLEMAXREC 7600
-   #endif
-   // with F413 we have 9000 which is how long - 21 seconds now on 24 divider
+#ifdef fouronethree
+#define MAXREC 9500 // F413===depends on RAM! // for uint32_t we have this for 128Kb -> 320k around 10k samples which is how long??? // was 7000 like 30 seconds at 32 divider...
+#define DOUBLEMAXREC 19000
+#else
+#define MAXREC 3800 // for older STM
+#define DOUBLEMAXREC 7600
+#endif
+// with F413 we have 9000 which is how long - 21 seconds now on 24 divider
 
    GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -259,21 +262,24 @@ static hands f[8];
        {
 	   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	   
-	   mode=777; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
+	   mode=111; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
 	   
 	   // SHIFTS
 	   // SENSESHIFT=2, SENSEOFFSET=1800; 
 	   //SENSESHIFT=1, SENSEOFFSET=560;
 	   //	   SENSESHIFT=0, SENSEOFFSET=64;
 
-	   f[4].sensi=1;
-	   f[0].sensi=1;
+	   f[4].sensi=2;
+	   f[0].sensi=0;
 	   switch(mode){
 
-	   case 0: // test realadc and dacs...
+	   case 0: // test realadc and dacs... // test zero level...
 	     REALADC;
 	     //  TEST_TOGGLES;
-	     values[d]=(real[d]);
+	     //	     values[d]=(real[d]);
+	     if (real[d]>40) values[d]=4095;//real[d]; // this value does not seem to depend on sensi...???
+	     else values[d]=0;
+	     //	     values[d]=40;
 	     break; 
 
 	   case 111: // test noise/glitch
@@ -292,11 +298,16 @@ static hands f[8];
 	     break;
 
 	   case 667:
-	     testingl=f[4].toggle;
+	     FREEZERS;
+	     if (f[4].ttoggle) {
+	       testingl^=1;
+	       f[4].ttoggle=0;
+	     }
+	     
 	     if (testingl) { 
-	    values[4]=4095;
+	       values[4]=4095;
 	  }
-	  else values[4]=0;
+	     else values[4]=0;
 	     break;
 	     
 	   case 777: // tests of all toggles! rec, play, mode and freeze
@@ -340,7 +351,7 @@ static hands f[8];
 	  else values[4]=0;
 	  break; /////	    
 
-       case 779: // for toggle longer 
+       case 779: // for toggle longer as in attach/detach
 
 	  if (testingt) { 
 	    values[4]=4095;
@@ -379,7 +390,7 @@ static hands f[8];
 	    if (modeheld>FULLRESET) { //reset all
 	  modeheld=0;
 	  RESETT;
-	  //	  testingl^=1; // testy
+	  //	  	  testingl^=1; // testy
 	}
 	    else if (modeheld>SOFTRESET && modeheld<FULLRESET){
 	      //	      testingl^=1; // testy
@@ -389,13 +400,13 @@ static hands f[8];
 	  //	  MODECHANGED;
 	  mode++;
 	  if (mode>MAXMODES) mode=0;
-	  //  	      testingl^=1; // testy
+	  //	  	  testingl^=1; // testy
 	  //	  testting^=1; // testy
 	}	
 	else if (modeheld<LONGMODE){ //inc minor mode matrix
 	  modeheld=0; // ??? was commented just for testing
 	  //	  testting^=1; // testy triggers
-	  testingl^=1; // testy
+	  //	  	  testingl^=1; // testy
 	  baseminor++;
 	  if (baseminor>MAXBASE) baseminor=0;
 	  //  if (rec==0 && play==0) baseminor++; // we dont use so far

@@ -18,8 +18,14 @@ talon (clip on igniter): 2 seconds
 
 question of any delay after trigger: none!
 
-also if we can fire in series/parallel??!?? and how many
-what of potential short at 2 seconds pulse???
++also if we can fire in series/parallel??!?? and how many+
++what of potential short at 2 seconds pulse???+
+
+//DISPLAY we need to show:
+
+- that is armed - flash. length of trigger - flash and gap length
+- mode - 1-15 on 4 bits
+- [show also state of incoming pulses... but confuses with flashing... could maybe invert them // and show when unarmed (but what of mode)]
 
 ** modes
 
@@ -46,10 +52,18 @@ TODO more modes ->15
 
 - size of pluggy cutout approx 28x50mm, for LEDs: 0.8mm x 40mm
 
+** TODO:
+
+- reverse display count (check again) and eliminate the 0
+- flash display mode + length etc.
+- implement and test all modes and timings
+- video/manual (burnt manual card?)
+- prototype order jlcpcb (did we do by hand before?)
+
+
 ** 29/2/2024
 
 - panels arrived - use washers for jacks, and FINE:testing now gluing of panel to socket thing else pcb bends horribly (other option is screw into plastic!)
-- TODO: reverse display count (check again) and eliminate the 0
 
 ** 22/1/2024
 
