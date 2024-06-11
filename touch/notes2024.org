@@ -15,45 +15,35 @@ sync and divination: 4 layers // binary figure
 
 moon/crescents - new moon - half - full - half 
 
-note that lower crescents have voltage ...
+note that lower crescents have voltage on them
 
-*rework below?*
+note that OUTx is on pads (so after VCA) for feedback use...
 
-  M
-
-R   P
-
-MODE: X | ADC | FREEZE | NOTES
--------------------------------
-N: 
-R:
-P:
-R+P: 
+livevalue/overlay of globals??? - do we want that as can always hand sync
 
 ////
 
-Q of global speed... *new top ADC is global control. also we have sync functions ???*
-
-NADA = no tape
+Q of global speed... *??? new top ADC is global control. also we have sync functions ????*
 
 - ghost hands
 - detached hand swop//cut off hand
 - inversion - up is down // down is up
 
-- ways of adding to play list, operations on play list (and how is it doubled or not?)
+- ways of adding to play list/play zone, operations on play list/zone (and how is it doubled or not?)
 - operations on tape and across 2 tapes
 - sync/detach etc...
 - chop/silence/insert etc... or is that operation on play list
-
+- ghosts and orphans/blanks/silences
 
 * 2024.002
 
 *CTRL:*
-- speed of playback
-- gating on/off with threshold (also/or stop/start playback)
-- how much we let through (volume of signal - see above) - also inversion of this amount
+- speed of playback, speed of selector
+- gating on/off with threshold =  *stop/start playback*
+- +how much we let through (volume of signal - see above) - also inversion of this amount+
 - *TODO:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
-- logical operations to list
+- marking of zones
+- logical operations to list/zones, start and end, flow, attachments
 
 [ops which change the value, ops which change the sequence of values]
 
@@ -61,13 +51,44 @@ NADA = no tape
 
 - speed, overlay/add-subtract, swop/why/how?, volume/VCA... depends on micromode?
 
-so layer can be same as CTRL also above... and layer/ctrl can also be a gesture which determines operations...
+so layer can be same as CTRL also above... and layer/ctrl can also be a gesture which determines operations... how we use both...
+
+- feedback/recursion as layer can determine zones now...??? *how zones and zone parameters are determined*
 
 layers can be swopped...
+
+linked layers - so one layer is X for the other// *attachment* - swop and mark!
+
+- layer as the sole playback value...???
 
 *TOGGLES:*
 
 Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+
+*GROUPS:*
+
+- rec to groups as overlay
+- that we want a gesture (CTRL or layer) to be able to move across sections
+
+*ETC:*
+
+- question of global time - time in a loop which we reference, extend that loop... time that x happens (now we just have delay which is cyclical also)
+- roaming zones, ghosts, orphans, blanks/voids, spawnings
+
+*PRESSES:*
+
+Major and minor modes as changed for all active layers with the MODE button.
+Shortest press increments minor, longer is for major.
+
+Long and very long presses on mode are for soft and hard resets, again only for active positions.
+
+Hard resets everything: check what that is - all modes, all counters, all states. All are now active....
+
+Soft reset: resets rec counter to 0, playlist. We have to return to NADA mode as we can't say play on 0...
+
+Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+
+newADC: mode dependent, eg. in nada: geomantic mode journey???, in P, R, RP: overlays...
 
 * Modes so far:
 
@@ -107,7 +128,7 @@ and worlds.
 
 *how can VIA be informed by concepts of AION and CHRONOS - divisibility of time/no present and all present/all depth*
 
-all present is NADA mode... endless presence
+- that now we have simultaneity of zones, sequential time and time of zone delay, ghost times
 
 - divination methods, concepts of time: Franz(VF) and synchronicity-divination /Deleuze - aion and chronos
 - how to implement scattering across space and time?
@@ -125,6 +146,8 @@ be coordinated in a certain way.
 
 The only place where the two systems link is at the hole in the centre, which means that they link in a nowhere, or in a hole.
 This mysterious hole between the two worlds is in a one-sided way also represented in the Chinese incense clock.
+
+These are the ghosts and orphans, the zones.
 
 * HW/timing
 
@@ -180,7 +203,7 @@ So each section can set a minormode which could also stick around - eg. NADA min
 
 - R,P,RP: to reset or not
 - ALL@ sensitivity?
-- RP: overlay: extend overlay past end of recording
+- RP: *overlay: extend overlay past end of recording = extend zone*
 - R,P,RP: detach/unsync (how that happens - as it needs to unsync to a time - so ie. re-sync to say Freeze) - options for what freeze toggle does in certain modes
 // detach is not really minormode...
 detach would be to stop/start/move play/rec head... with freeze/toggle or with newADC
@@ -206,7 +229,6 @@ also as minormodes modify the major mode so they depend on this!
 	      subs=values[daccount]-real[daccount];
 	      values[daccount]=abs(subs);
 	    }
-
 
 *** older and expanding
 
@@ -307,7 +329,7 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 - DONEfull reset should work regardless of active or not and resets to active...
 
-- how to say keep a steady  offset overlay... (would be like freeze but...)
+- how to say keep a steady offset overlay... (would be like freeze but...)
 
 - to be able to kill one section - erase/reset only one part (i guess through not de-activating all - *shortcut to deactivate all???*)
 
@@ -315,23 +337,188 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
-*5/6 - new scheme to remove R,P,RP and N - to use active and inactive!*
+** 11/6
 
-- DONEtesting test4.c and new 002.c - added delay code for zones/lodges and fixed overlap code TODO: reset
-each layer has its own zone list - added linkage in code... but linkage defaults to zero= *fix*
+- *question of passivity/brainstrom approaches eg. in NADA, CTRL triggers recording of a zone,,, still Q of modes!???*
 
+/////
+- still odd on fast reset but how to resolve (strip down) - resolved a bit with priority
+///
+
+- *one set of values can shift/slide the other set of zones*
+
+- if we have: *offset and delay* (delay as time of main looping) then
+  for a sequential list if we add a zone then we add (length+offset)
+  to each entry before that (as length of main loop increased)
+
+*TODO/DONE/notes:*
+
+- DONEtested zero point (>40) which doesn't seem to be effected by sensi setting (0,1,2)
+- DONEtested all timings and seems fine...
+- DONE: trial no interpolation in slow playback 002.c - we can work with this
+- DONEtry zone list at static speed + solutions from notebook for no/interpolation - *now we have no interpolation*
+- DONEfix new rec zone list with offset and delay - default is we just extend the first zone...
+- DONEremove playlist and implement play zone list (start with basic single zone from rec) - *needs second CTRL layer still - is that a function, attachment?*
+- DONEadd new overlays and test all micromodes:
+- new overlay micromodes for:
+-- gate/threshholding which stops play (of a zone?) - *so is more a function than overlay- how we can integrate that? overlays as functions*
+-- DONE: 1.0f float VCA - TESTED - need more overlays there for 3 bits =8 (we have 5)
+
+///////
+
+*TODO: add fractional increment... will need floats*
+
+- where are overlays happening???
+
+-> livevalue: what it says...
+-> overlayx: in reclodge to overlay onto tape (what was there?), option to erase value 
+-> overlay: overlay of CTRL for other layer in Recbasic, overlay in playback for livevalue...
+
+*so we need overlay as functions for playback - test linked layers... CTRL as global speed or overlay function???*
+
+///
+
+- new RP mode to work on
+- adding new zones in rec to trial: is that R mode - when we have a
+  press we add that zone until we release.. add succesively with no
+  delay, and add offset/delay to prev entries
+
+Questions:
+
+- how we do speed per zone... is there speed from CTRL or from layer, and do we have a global stop of playback???
+- how top have CTRL layer as a set of functions, and how overlay can be a function which can stop a zone playing???
+- zone has values and a functionality...
+- add linkages
+
+- *how we have speed as layer - speed within playzones? again another function of a zone - attachment?*
+
+** 10/6
+
+- *major layer is voltage, other is ctrl/overlay! but when we have multiple overlapping zones: we add that overlap then take action*
+
++_trial list of play zones and abstract out layer access (eg. pass layer list to play):+
+- +but we need to take care of speed and wrap around - how we advance in that case//fractionally+
++- pass list of zones to play function (so can also be rec list)+
++- also for rec zones is not really sequential as it loops (looping zone vs. once through/sequential zone)+
+
+new notebook notes:
+
+*global/local speeds, speeds as layer, as CTRL???*
+
+- how much layer voltage can feedback onto layer selection itself - recursion...
+- abstract out layer access to help with swoppings (so is not fixed which one is lower and which upper)
+- each mode is a kind of game or method of divination
+
+- Q. of modes per state (NRPRP)? or not // given question of mismatch mode 0 (one zone) -> slidings etc in other modes
+- tape time/delay time/real time
+
+- do we need all those counters when we have counters in each zone?
+- slidings of zones can be: change start point on tape, change delay (when we play that part)?
+
+time on tape// recorded time vs. real time
+
+- possible new model with a single zone list for all sections (zone has section etc), all simultaneous and abstracted out completely (so just values)
+
+- CTRL, VOLTAGE-V, RECV, REC CTRL: CTRL is control and/or records to other layer (CTRL or overlay layer), voltage is overlay
+
+*can control be just a kind of overlay?*
+
+- auto cutups?
+- global time scales or fake global????
+- one layer on CTRL layer can mask the other
+- bounce one section to multiple others - 
+- spawn zones (like in corewars? how much we go in that direction?)
+- *key question is control of zone parameters*
+- *soft reset removes all zones*
+
+CTRL as _____ eg speed
+minor layer as eg. mask
+
+how we select this and what if both are used?
+
+*CTRL is a gesture which governs zones depending on mode - sliding of zones, attachment of zones*
+
+how do we (not) control it?
+what are the functions and parameters that need to be (not) controlled
+
+if we say: zone x on layer1 is played back with speed controlled by
+zone y on layer 2... (or layer1 is always playback and 2 is ctrl but
+can be swopped)
+
+Q of attachments - is this same as linkage? as a modus. eg. each zone has a function, a ghost, a multiplier, a spawner...
 
 TODO:
-- redo all timings and main loop for simultaneousness (main = 24*8=192)
-- simulate and test adding to playlist
-- remove R, P, N, RP from code
-- replace buttons as mode, micromode and reset... (also recheck active/inactive code) - mode is per each active channel so all can have different mpdes
+
+- +draw/print new layout+ and work on this towards manual layouts
+- list all overlays//- list of what CTRL can do? and CTRL/layer functionality - how much feedback we can have here?
+
+do we define one layer as always CTRL/overlay? is control just a  kind of overlay?
+
+- timing full tests with cammack/myself...
+- trial new overlays above
+
+- list what we want to achieve with modes - eg. repeating islands, feedback and recursion
+- test zero ADC + increase max number of zones - where is set? 
+- trial list of play zones and abstract out layer access (eg. pass layer list to play)
+- consider new simultaneous model above...
+- list overlays and CTRL/layer functions and test/play these
+- draft second mode with zones - start rec on touch - or this as first mode: plain rec vs. zone list?
+- list major mode and resolve zones and questions
+- implement and test major modes
+- HW ordered/jlcpcb
+- manual -> set of cutup riso prints for hand colouring
+
+
+** 7/6
+
+- no gating but just start/stop gate - but we can maybe implement gating we talked of as a kind of generic overlay
+
+- attachments of functions to zones... and links between zones, eg. this zone is the speed function for that zone...
+
+- sliding of zones... tap and slide, tap and do something (how to tap? on newADC - define gestures but how do we recognise or genericise these?)
+
+USE CTRL to slide, link, attach - but need kind of tap thing...
+
+or just slide with ctrl as we play through it?
+
+- what CTRL does in NADA?
+
+- each mode has another concept of time... time as the constrained time of the loop length, repeating...
+
+- copy zone list from say rec to play, copy a portion of the list, the time of the list...
+
+- recursive actions in RP
+
+- swop between zones (that is now about zones and not layers) can be live and sequential writing form one to the other or...
+[question now of one list of zones which refs a layer or list of zones per layer?]
+
+** 5/6 6/6 - +new scheme to remove R,P,RP and N - to use active and inactive+
+
+6/6 revert to old R, P, RP, N scheme //and also keep timings and layout *RE_TEST*
+
+- as we want to be able to deal with zones in R and in P
+
+zones can be marked with CTRL
+
+////
+
+- DONEtesting test4.c and new 002.c - added delay code for zones/lodges and fixed overlap code
+
+each layer has its own zone list - added linkage in code... but linkage defaults to zero= *fix - to indicate no linkage*
+
+Note that *delay in zones for length of prev zone means we can have sequences*
+
+TODO:
+- simulate and test adding to playlist//now we have new play zones to test
 - record and stop on zero/silence to implement and test
-- how playlist can also have overlaps?
+
+- *zones* how playlist can also have overlaps? so that it is not sequential: same as zones with delays too? playlist become play zones (same format)
+
+now we have same zone scheme for playlist - but is 2 sets per layer... one of them is the parameter!
 
 ** 3/6 + to try to finish// notes overview...
 
-*How to implement new scheme below: sequences of manipulations, other layer as XXX, overlap playlists, access other sections, groupings and sync*
+*How to implement new scheme below: sequences of manipulations, other layer (and CTRL) as parameter, overlap playlists, access other sections, groupings and sync*
 
 ** 16/5
 
@@ -340,7 +527,7 @@ TODO:
 prev:
 - multiple zones across layers
 - how we can record to multiple sections/groups?
-- how play can overlap? 
+- how play can overlap? as zones also with delays
 
 new:
 - how zones and layers work? linkage. eg. we want this zone on layer 2 to be the speed for this zone on the same or another layer...
@@ -366,7 +553,11 @@ Q if we go for timing (global) or just have say number in sequence like in playl
 - a programming scheme to mark these
 - to link sections (microcosm) as zones. -> relations over time...
 
-** 1/5 - last code was here
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+** 1/5 - last code was here _001.c
 
 - what is other layer in basic rec that we have??? overlay CTRL on voltage ---> when should just be CTRL???
 
@@ -379,7 +570,7 @@ Q if we go for timing (global) or just have say number in sequence like in playl
 
 - minormodes and sync
 - groupings
-- add safety
+- DONE:TODO: add safety to all reads and writes
 - // *DONE: to test* //abstract out access across all sections: but then we need individual counters - array of counters for each section
 - major modes defined
 - Q of simulation!

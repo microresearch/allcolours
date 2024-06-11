@@ -16,6 +16,15 @@
 
 extern void resett(uint32_t dacc);
 
+#define WRITEDACX {						\
+  GPIOC->BSRRL = 1<<11;						\
+  DAC_SetChannel1Data(DAC_Align_12b_R, 4095);	\
+  j = DAC_GetDataOutputValue (DAC_Channel_1);			\
+  GPIOC->BSRRH = 0b1110100000000000;				\
+  GPIOC->BSRRL=(4)<<13;					\
+}
+
+
 /*
 
 PROG: from top: 3.3v, SWCLK, SWDIO, GND (lower 2 swopped)
@@ -123,7 +132,7 @@ int main(void)
 	    //	    ADC1_Init((uint16_t *)adc_buffer);
 
       for (uint32_t x=0;x<8;x++){
-	resett(x);
+	resett(x); 
       }
 	    
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
@@ -324,10 +333,6 @@ int main(void)
   // 1024/4 is 8x 862Hz (toggle speed so 2x that which is fine for us but we need to lower the sample/hold cap...
 
   // 16/12 stay with 1024/8 for 1.5 KHz I think - check this
-
-  delayy();
-  delayy();
-  delayy();
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -344,12 +349,12 @@ int main(void)
   
   NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; // was 1
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01; // was 1
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; // was 1
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00; // was 1
   NVIC_Init(&NVIC_InitStructure);
   TIM_Cmd(TIM2, ENABLE);
   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-
+  
   
   // set enable=say 13 and 14 pin (active LOW) and pins for 4051: PB8,9,10
   //    GPIOC->BSRRH = 0b1110100000000000;  // clear PC11 - clear pc11 and top bits -> low
@@ -361,7 +366,7 @@ int main(void)
       
       while(1) {
 
-      
+	//	WRITEDACX;       /// TESTY
       // all now placed in interrupt so is well timed
       // TODO - test freeze and all buttons
       //  daccount=1;

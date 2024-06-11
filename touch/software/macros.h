@@ -26,11 +26,11 @@
 #define PSWOPP {								\
   if (f[d].ttoggle && Theldon[d]==0){		\
   f[d].toggle^=1;						\
-  f[d].masterL=f[d].toggle;			\
+  f[d].masterLP=f[d].toggle;			\
   f[d].ttoggle=0;						\
   if ((P_options>>4)&1){						\
-  tmpp=f[d].masterL^1;					\
-  f[d].l[f[d].masterL].play_cnt=f[d].l[tmpp].play_cnt; \
+  tmpp=f[d].masterLP^1;					\
+  f[d].l[f[d].masterLP].play_cnt=f[d].l[tmpp].play_cnt; \
   }									\
   }									\
   }
@@ -38,7 +38,15 @@
 #define LAYERSWOP {				\
   if (f[d].ttoggle && Theldon[d]==0){	\
   f[d].toggle^=1;					\
-  f[d].masterL=f[d].toggle;		\
+  f[d].masterLP=f[d].toggle;		\
+  f[d].ttoggle=0;					\
+  }								\
+  }
+
+#define LAYERSWOPR {				\
+  if (f[d].ttoggle && Theldon[d]==0){	\
+  f[d].toggle^=1;					\
+  f[d].masterLR=f[d].toggle;		\
   f[d].ttoggle=0;					\
   }								\
   }
@@ -46,50 +54,50 @@
 #define LAYERSWOPRP {				\
   if (f[d].ttoggle && Theldon[d]==0){	\
   f[d].toggle^=1;					\
-  f[d].masterL=f[d].toggle;		\
+  f[d].masterLP=f[d].toggle;		\
   f[d].ttoggle=0;					\
   if ((P_options>>4)&1){						\
-  tmpp=f[d].masterL^1;					\
-  f[d].l[f[d].masterL].play_cnt=f[d].l[tmpp].play_cnt; \
+  tmpp=f[d].masterLP^1;					\
+  f[d].l[f[d].masterLP].play_cnt=f[d].l[tmpp].play_cnt; \
   }									\
   }									\
   }
 
 #define ADDPLAYLIST {							\
-if (f[d].l[f[d].masterL].othercnt>0) {	\
- f[d].playlist[f[d].playcntr].length=f[d].l[f[d].masterL].othercnt-f[d].playlist[f[d].playcntr].start; \
+if (f[d].l[f[d].masterLP].othercnt>0) {	\
+ f[d].playlist[f[d].playcntr].length=f[d].l[f[d].masterLP].othercnt-f[d].playlist[f[d].playcntr].start; \
  f[d].playcntr++;						\
  f[d].playfull++;						\
  if (f[d].playcntr>PLAYFULLY) f[d].playcntr=0; \
  if (f[d].playfull>PLAYFULLY) f[d].playfull=PLAYFULLY; \
- f[d].playlist[f[d].playcntr].start=f[d].l[f[d].masterL].othercnt; \
- f[d].playlist[f[d].playcntr].l=f[d].masterL; \
+ f[d].playlist[f[d].playcntr].start=f[d].l[f[d].masterLP].othercnt; \
+ f[d].playlist[f[d].playcntr].l=f[d].masterLP; \
  }									\
  }
 
 #define ADDPLAYLISTSWOP {							\
-    tmpp=f[d].masterL^1;					\
+    tmpp=f[d].masterLP^1;					\
     if (f[d].l[tmp].othercnt>0) {			\
       f[d].playlist[f[d].playcntr].length=f[d].l[tmp].othercnt-f[d].playlist[f[d].playcntr].start; \
       f[d].playcntr++;					\
       f[d].playfull++;					\
       if (f[d].playcntr>PLAYFULLY) f[d].playcntr=0; \
       if (f[d].playfull>PLAYFULLY) f[d].playfull=PLAYFULLY; \
-      f[d].playlist[f[d].playcntr].start=f[d].l[f[d].masterL].othercnt; \
-      f[d].playlist[f[d].playcntr].l=f[d].masterL; \
+      f[d].playlist[f[d].playcntr].start=f[d].l[f[d].masterLP].othercnt; \
+      f[d].playlist[f[d].playcntr].l=f[d].masterLP; \
     }									\
   }
 
 
 #define ADDPLAYLISTRST {							\
-if (f[d].l[f[d].masterL].othercnt>0) {	\
- f[d].playlist[f[d].playcntr].length=f[d].l[f[d].masterL].othercnt-f[d].playlist[f[d].playcntr].start; \
+if (f[d].l[f[d].masterLP].othercnt>0) {	\
+ f[d].playlist[f[d].playcntr].length=f[d].l[f[d].masterLP].othercnt-f[d].playlist[f[d].playcntr].start; \
  f[d].playcntr++;						\
  f[d].playfull++;						\
  if (f[d].playcntr>PLAYFULLY) f[d].playcntr=0; \
  if (f[d].playfull>PLAYFULLY) f[d].playfull=PLAYFULLY; \
  f[d].playlist[f[d].playcntr].start=0; \
- f[d].playlist[f[d].playcntr].l=f[d].masterL; \
+ f[d].playlist[f[d].playcntr].l=f[d].masterLP; \
  }									\
  }
 
