@@ -4,6 +4,8 @@ typedef struct zonel_ {
   uint32_t start;
   uint32_t end; // loop point
   uint32_t realend; // where we ended - if overlap then is end???
+  //  uint32_t reallen;
+  uint32_t flag;
   uint32_t cnt;
   uint32_t over; // overrun - need to reset this at some point
   uint32_t offset;
@@ -11,6 +13,7 @@ typedef struct zonel_ {
   uint32_t delcnt;
   float cntt; // for playback fractions
   float delcntt;
+  float speed;
   uint32_t linkage; // linking to other layer
 } zonel;
 
@@ -41,7 +44,10 @@ typedef struct layers_ {
       uint32_t play,rec;
       uint32_t sensi;
       uint32_t entryn, entryp, entryr, entryrp; // for resets
-      uint32_t leavep; // for adding to playlist when we leave P
+      uint32_t leavep; // for function for leaving P mode
+      uint32_t leaver; // leaving R mode
+      uint32_t ind; // in it! for recordings
+      uint32_t entryd;
     } hands;
 
 static hands f[8];
