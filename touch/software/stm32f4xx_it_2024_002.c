@@ -40,6 +40,8 @@
 #endif
 // with F413 we have 9200 which is how long - around 20 seconds now on 24 divider
 
+#define LOWVAL 40 // lowest value to trigger recordings
+
 //#define MAXMODES 8
 
 uint32_t MAXMODE[4]={8,8,8,8};
@@ -53,6 +55,7 @@ static int32_t control[4];
 static uint32_t values[8]={0,0,0,0, 0,0,0,0}; // changed 2/10 NOW STATIC!
 const uint32_t whichctrl[8]={0,1,2,3,0,1,2,3}; // ref for newADC speeds
 const float *playreff[4]={logfast, logslow, logfast_stop, logslow_stop}; 
+static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
 
 #include "fingers.h"
 
@@ -199,7 +202,8 @@ inline static uint32_t livevalue(uint32_t which, uint32_t opt){ // ???? or keep 
   }
   else if (overoverlay==3){ 
     tmpp+=real[which];
-    if (tmpp>4095) tmpp=4095; // ??
+    //    if (tmpp>4095) tmpp=4095; // ??
+    if (tmpp>BOTS) tmpp=BOTS; // as we store full value...	    
   }
   else if (overoverlay==1){ // invert 
     tmpp=4095-real[which];
@@ -225,6 +229,7 @@ inline static void changemode(uint32_t dacc){
 }
 
 void resett(uint32_t dacc){
+  f[dacc].ind=0;					
   f[dacc].toggle=0;					
   f[dacc].ttoggle=0;
   f[dacc].state=N;
@@ -249,6 +254,7 @@ void resett(uint32_t dacc){
   f[dacc].lastmode=0;
   f[dacc].sensi=0;
   f[dacc].entryp=0;
+  f[dacc].entryd=0;
   f[dacc].entryr=0;
   f[dacc].entryrp=0;
   f[dacc].leavep=0;
@@ -276,8 +282,12 @@ void resett(uint32_t dacc){
     f[dacc].rl[1].lodges[y].start=0;
     f[dacc].rl[0].lodges[y].delcnt=0;
     f[dacc].rl[1].lodges[y].delcnt=0;
+    f[dacc].rl[0].lodges[y].delcntt=0.0;
+    f[dacc].rl[1].lodges[y].delcntt=0.0;
     f[dacc].rl[0].lodges[y].delay=0;
     f[dacc].rl[1].lodges[y].delay=0;
+    f[dacc].rl[0].lodges[y].flag=0;
+    f[dacc].rl[1].lodges[y].flag=0;
 
     f[dacc].pl[0].lodges[y].over=0;
     f[dacc].pl[1].lodges[y].over=0;
@@ -331,29 +341,28 @@ inline static float mod0(float value, float start, float ending, float length, u
 }
 
 // now for zones and we use realend as the end always...
-// TODO: add fractional increment... will need floats
-uint32_t playlodge(layers *play, layers *tousel, float speedy, uint32_t d, uint32_t P_options){ // pass in the p/layers
+uint32_t playlodge(layers *play, layers *tousel, float speed1, float speed2, uint32_t d, uint32_t P_options){ // pass in the p/layers
   uint32_t x, y, tmpx, tmpxx, lay;
   uint32_t sample;
   // tape 0 lower
   for (x=0;x<tousel[f[d].masterLP].num_lodges;x++){
-    play[f[d].masterLP].lodges[x].delcnt++;
-    if (play[f[d].masterLP].lodges[x].delcnt>=tousel[f[d].masterLP].lodges[x].offset && (play[f[d].masterLP].lodges[x].delcnt<=(tousel[f[d].masterLP].lodges[x].offset+tousel[f[d].masterLP].lodges[x].realend-tousel[f[d].masterLP].lodges[x].start))) {     
-      tmpx=play[f[d].masterLP].lodges[x].cnt+tousel[f[d].masterLP].lodges[x].start;
+    if (play[f[d].masterLP].lodges[x].delcntt>=tousel[f[d].masterLP].lodges[x].offset && (play[f[d].masterLP].lodges[x].delcntt<=(tousel[f[d].masterLP].lodges[x].offset+tousel[f[d].masterLP].lodges[x].realend-tousel[f[d].masterLP].lodges[x].start))) {     
+      tmpx=play[f[d].masterLP].lodges[x].cntt+tousel[f[d].masterLP].lodges[x].start;
+      play[f[d].masterLP].lodges[x].cntt+=speed1;
 
-      if (tmpx>tousel[f[d].masterLP].lodges[x].realend) { // now we want final delay before we start again
+      if (tmpx>(tousel[f[d].masterLP].lodges[x].realend)) { // now we want final delay before we start again
+	tmpxx=tmpx-tousel[f[d].masterLP].lodges[x].realend;
 	tmpx=tousel[f[d].masterLP].lodges[x].start;
-	play[f[d].masterLP].lodges[x].cnt=0;
+	play[f[d].masterLP].lodges[x].cntt=tmpxx;
     }
-      if (tmpx>MAXREC) tmpx=MAXREC-1;
+      if (tmpx>=MAXREC) tmpx=MAXREC-1;
       sample=recordings[d][tmpx]&BOTS;
-      play[f[d].masterLP].lodges[x].cnt++;
     }
-    if (play[f[d].masterLP].lodges[x].delcnt>=(tousel[f[d].masterLP].lodges[x].offset+tousel[f[d].masterLP].lodges[x].realend+tousel[f[d].masterLP].lodges[x].delay-tousel[f[d].masterLP].lodges[x].start)) play[f[d].masterLP].lodges[x].delcnt=0;
+    if (play[f[d].masterLP].lodges[x].delcntt>=(tousel[f[d].masterLP].lodges[x].offset+tousel[f[d].masterLP].lodges[x].realend+tousel[f[d].masterLP].lodges[x].delay-tousel[f[d].masterLP].lodges[x].start)) play[f[d].masterLP].lodges[x].delcntt=0;
+    else play[f[d].masterLP].lodges[x].delcntt+=speed1;
   }
   return sample;  
 }
-
 
 static uint32_t lastvalue[8]={0,0,0,0, 0,0,0,0};
 
@@ -372,7 +381,8 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
   uint32_t x, y, tmpx, tmpxx, lay;
   // tape 0 lower
   for (x=0;x<rec[f[d].masterLR].num_lodges;x++){
-    rec[f[d].masterLR].lodges[x].delcnt++;
+  if (rec[f[d].masterLR].lodges[x].flag==0){
+    rec[f[d].masterLR].lodges[x].delcnt++; 
     if (rec[f[d].masterLR].lodges[x].delcnt>=rec[f[d].masterLR].lodges[x].offset && (rec[f[d].masterLR].lodges[x].delcnt<=(rec[f[d].masterLR].lodges[x].offset+rec[f[d].masterLR].lodges[x].end-rec[f[d].masterLR].lodges[x].start))) {     
       tmpx=rec[f[d].masterLR].lodges[x].cnt+rec[f[d].masterLR].lodges[x].start;
       if (rec[f[d].masterLR].lodges[x].over==0) rec[f[d].masterLR].lodges[x].realend=tmpx; 
@@ -385,11 +395,14 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
       tmpxx=overlayx(value, (recordings[d][tmpx]&BOTS), (R_options>>2)&3); 
       reclayerlower(tmpxx, tmpx, d);
       rec[f[d].masterLR].lodges[x].cnt++;
+      //      rec[f[d].masterLR].lodges[x].reallen++;
     }
+  }
     if (rec[f[d].masterLR].lodges[x].delcnt>=(rec[f[d].masterLR].lodges[x].offset+rec[f[d].masterLR].lodges[x].end+rec[f[d].masterLR].lodges[x].delay-rec[f[d].masterLR].lodges[x].start)) rec[f[d].masterLR].lodges[x].delcnt=0;
   }
   lay=f[d].masterLR^1; // opposite layer...
   for (x=0;x<f[d].rl[lay].num_lodges;x++){
+  if (rec[lay].lodges[x].flag==0){
     rec[lay].lodges[x].delcnt++;
     if (rec[lay].lodges[x].delcnt>=rec[lay].lodges[x].offset && (rec[lay].lodges[x].delcnt<=(rec[lay].lodges[x].offset+rec[lay].lodges[x].end-rec[lay].lodges[x].start))) {     
       tmpx=rec[lay].lodges[x].cnt+rec[lay].lodges[x].start;
@@ -404,36 +417,129 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
       reclayerlower(tmpxx, tmpx, d);
       rec[lay].lodges[x].cnt++;
     }
+  }
     if (rec[lay].lodges[x].delcnt>=(rec[lay].lodges[x].offset+rec[lay].lodges[x].end+rec[lay].lodges[x].delay-rec[lay].lodges[x].start)) rec[lay].lodges[x].delcnt=0;
   }
 }
-  
-// genericise? 
+
+// if there are no lodges we just have one, otherwise we extend the last lodge
 uint32_t R_basic(uint32_t d, uint32_t V_options, uint32_t R_options){
-  uint32_t tmp, tmpp, other;  
+  uint32_t tmp, tmpp, other, tt;  
   if (f[d].entryr==0){ // includes reset now
     // what to reset?    
     lastvalue[d]=0;
     f[d].entryr=1;
+    f[d].leaver=1;
   }
-
- f[d].rl[f[d].masterLR].num_lodges=1;
+  LAYERSWOPR;
+  if (f[d].rl[f[d].masterLR].num_lodges==0){
+  f[d].rl[f[d].masterLR].num_lodges=1;
   f[d].rl[f[d].masterLR].lodges[0].start=0;
   f[d].rl[f[d].masterLR].lodges[0].offset=0;
   f[d].rl[f[d].masterLR].lodges[0].delay=0; // looping???
-  f[d].rl[f[d].masterLR].lodges[0].end=MAXREC; 
+  f[d].rl[f[d].masterLR].lodges[0].end=MAXREC;
+  }
+  else {
+    tt=f[d].rl[f[d].masterLR].num_lodges-1;
+      f[d].rl[f[d].masterLR].lodges[tt].end=MAXREC;
+  }
   tmp=livevalue(d, V_options);
   other=f[d].masterLR^1;
+  if (f[d].rl[other].num_lodges==0){
   f[d].rl[other].num_lodges=1;
   f[d].rl[other].lodges[0].start=0;
   f[d].rl[other].lodges[0].offset=0;
   f[d].rl[other].lodges[0].delay=0; 
-  f[d].rl[other].lodges[0].end=MAXREC; 
+  f[d].rl[other].lodges[0].end=MAXREC;
+  }
+  else {
+    tt=f[d].rl[other].num_lodges-1;
+    f[d].rl[other].lodges[tt].end=MAXREC;
+  }
+
   tmpp=overlay(control[whichctrl[d]], tmp, R_options&3); // overlay of CTRL - could be just CTRL signal
   //  tmpp=control[whichctrl[d]]
-  reclodge(f[d].rl, d, tmp, tmpp, R_options);
+  reclodge(f[d].rl, d, tmp, tmpp, R_options); // so we just extend the last lodge
   return tmpp;
 }
+
+// TODO: R_addlodges version but offset is silence between - first zone starts right away...
+/*
+// run counter on entry into function
+// that becomes offset but we need to update delcnt too
+ */
+
+// TODO:and needs two layers???
+uint32_t R_addlodges(uint32_t d, uint32_t V_options, uint32_t R_options){ // add zones on press 
+  uint32_t tmp, tmpp, other, tmpx;
+  if (f[d].entryr==0){ // includes reset now
+    // what to reset?    
+    lastvalue[d]=0;
+    f[d].entryr=1;
+    f[d].leaver=1;
+    f[d].entryd=0;
+    f[d].ind=0;
+  }
+  LAYERSWOPR;
+  tmp=livevalue(d, V_options);
+  // CTRL is second value
+  
+  if (tmp>LOWVAL) { // start recording
+    f[d].ind=1;
+    if (f[d].entryd==0){
+    f[d].rl[f[d].masterLR].num_lodges+=1;
+    if (f[d].rl[f[d].masterLR].num_lodges>MAXLODGE) f[d].rl[f[d].masterLR].num_lodges=1;
+    if (f[d].rl[f[d].masterLR].num_lodges==1){ // first lodge
+      f[d].rl[f[d].masterLR].lodges[0].cnt=0;
+      f[d].rl[f[d].masterLR].lodges[0].delcnt=0;
+      f[d].rl[f[d].masterLR].lodges[0].start=0;
+      f[d].rl[f[d].masterLR].lodges[0].offset=0;
+      f[d].rl[f[d].masterLR].lodges[0].delay=0; // looping???
+      f[d].rl[f[d].masterLR].lodges[0].end=MAXREC; 
+    } // first lodge
+    else {
+      tmpx=f[d].rl[f[d].masterLR].num_lodges-1;
+      f[d].rl[f[d].masterLR].lodges[tmpx].cnt=0;
+      f[d].rl[f[d].masterLR].lodges[tmpx].delcnt=(f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+1;
+      f[d].rl[f[d].masterLR].lodges[tmpx].start=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend+1; 
+      f[d].rl[f[d].masterLR].lodges[tmpx].offset=(f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+1; // start right away
+      f[d].rl[f[d].masterLR].lodges[tmpx].delay=0; // to come later
+      f[d].rl[f[d].masterLR].lodges[tmpx].end=MAXREC; // to come later
+      f[d].rl[f[d].masterLR].lodges[tmpx-1].flag=1; // stop the last one TODO: remember to reset
+    }
+    f[d].entryd=1;
+    } // entry
+    reclodge(f[d].rl, d, tmp, tmpp, R_options);
+  } // above val
+  else { // also if we leave rec we need to do this... TODO! HOW?
+      // low value but did we leave recording
+      if (f[d].ind==1){ // we were recording so set end point of last one and add all delays
+	tmpx=f[d].rl[f[d].masterLR].num_lodges-1; // lodge we just left
+	f[d].rl[f[d].masterLR].lodges[tmpx].end=f[d].rl[f[d].masterLR].lodges[tmpx].realend;
+	//	if (tmpx!=0) f[d].rl[f[d].masterLR].lodges[tmpx].offset=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend;  // previous end
+	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
+	  f[d].rl[f[d].masterLR].lodges[x].delay+=(f[d].rl[f[d].masterLR].lodges[tmpx].realend-f[d].rl[f[d].masterLR].lodges[tmpx].start+1); // FIX!
+	}
+	f[d].ind=0; f[d].entryd=0;
+      }
+    }  
+  return tmp;
+}
+
+void R_addlodges_leave(uint32_t d, uint32_t V_options, uint32_t R_options){
+  uint32_t tmpx;
+  // if we were recording then close it...
+      if (f[d].ind==1){ // we were recording so set end point of last one and add all delays
+	tmpx=f[d].rl[f[d].masterLR].num_lodges-1; // lodge we just left
+	f[d].rl[f[d].masterLR].lodges[tmpx].end=f[d].rl[f[d].masterLR].lodges[tmpx].realend;
+	//	if (tmpx!=0) f[d].rl[f[d].masterLR].lodges[tmpx].offset=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend;  // previous end
+	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
+	  f[d].rl[f[d].masterLR].lodges[x].delay+=(f[d].rl[f[d].masterLR].lodges[tmpx].realend-f[d].rl[f[d].masterLR].lodges[tmpx].start+1); // FIX!
+	}
+	f[d].ind=0;
+      }  
+}
+
 
 // TO REDO!
 uint32_t RP_basic(uint32_t d, uint32_t V_options, uint32_t P_options, uint32_t R_options, uint32_t RP_options){
@@ -471,13 +577,14 @@ uint32_t P_basic(uint32_t d, uint32_t V_options, uint32_t P_options){ // swop is
     f[d].entryp=1;
     f[d].leavep=1;
   }
+  LAYERSWOP;
   
-  float speedy=playreff[f[d].playspeed][(control[whichctrl[d]]>>2)]; 
+  float speedy=playreff[f[d].playspeed][(control[whichctrl[d]]>>2)];
+  //  float speedy=playreff[1][(control[whichctrl[d]]>>2)];; // testy
   uint32_t tmp=livevalue(d, V_options);
-  //pp=speedsampleplaynoI(speedy, d, 0, d, recordings[d]);
-  pp=playlodge(f[d].pl, f[d].rl, 1.0f, d, 0);
-  //  tmp=overlay(tmp, pp, (P_options>>2)&3);
-  tmp=overlay(tmp, pp, 5); // TESTY
+  pp=playlodge(f[d].pl, f[d].rl, speedy, speedy, d, 0);
+  tmp=overlay(tmp, pp, (P_options>>2)&3);
+  //  tmp=overlay(tmp, pp, 5); // TESTY
   
   return tmp;
 }
@@ -499,9 +606,14 @@ uint32_t N_alwaysrec(uint32_t d, uint32_t V_options){
 }
 
 uint32_t (*Nfunc[2])(uint32_t d, uint32_t V_options)={N_basic, N_alwaysrec};
-uint32_t (*Rfunc[2])(uint32_t d, uint32_t V_options, uint32_t R_options)={R_basic};
+uint32_t (*Rfunc[2])(uint32_t d, uint32_t V_options, uint32_t R_options)={R_addlodges};
 uint32_t (*RPfunc[2])(uint32_t d, uint32_t V_options, uint32_t P_options, uint32_t R_options, uint32_t RP_options)={RP_basic};
 uint32_t (*Pfunc[2])(uint32_t d, uint32_t V_options, uint32_t P_options)={P_basic};
+
+void (*Rfunc_leave[2])(uint32_t d, uint32_t V_options, uint32_t R_options)={R_addlodges_leave};
+void (*RPfunc_leave[2])(uint32_t d, uint32_t V_options, uint32_t P_options, uint32_t R_options, uint32_t RP_options)={};
+void (*Pfunc_leave[2])(uint32_t d, uint32_t V_options, uint32_t P_options)={};
+
 
 // STARTY
 void TIM2_IRQHandler(void) 
@@ -514,7 +626,6 @@ void TIM2_IRQHandler(void)
     static uint32_t modetoggle=0, newmode=0, count=0;
     static uint32_t lasttriggered[11]={0,0,0,0, 0,0,0,0, 0,0,0}, mbreaker=0, breaker[11]={0,0,0,0, 0,0,0,0, 0,0,0};
     static int32_t togrec=0, togplay=0, helder=0, heldon=0, modeheld=0, modechanged=1, first=0;
-    static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Theld[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Thelder[8]={0,0,0,0, 0,0,0,0};
     static uint32_t Newtog[8]={0,0,0,0, 0,0,0,0};      
@@ -599,7 +710,8 @@ void TIM2_IRQHandler(void)
 	  values[d]=(*Pfunc[f[d].majormode[P]])(d, V_options, P_options);
 	} // end PLAY
 	else {
-	  if (f[d].leavep && f[d].majormode[P]==0){ // we left P so add to our playlist - TODO: if any other majormodes add to playlist we need to add these in 
+	  if (f[d].leavep && f[d].majormode[P]==0){ // we left P so add to our playlist - TODO: if any other majormodes add to playlist we need to add these in
+	    (*Pfunc_leave[f[d].majormode[P]])(d, V_options, P_options);
 	    f[d].leavep=0;
 	  }
 	  f[d].entryp=0;
@@ -610,8 +722,14 @@ void TIM2_IRQHandler(void)
 	  LAYERSWOPR;
 	  values[d]=(*Rfunc[f[d].majormode[R]])(d, V_options, R_options);
 	} // end REC
-	else f[d].entryr=0;
-
+	else {
+	  if (f[d].leaver && f[d].majormode[R]==0){ // we left P so add to our playlist - TODO: if any other majormodes add to playlist we need to add these in
+	    (*Rfunc_leave[f[d].majormode[R]])(d, V_options, R_options);
+	    f[d].leaver=0;
+	  }
+	  f[d].entryr=0;
+	}
+	
 	// REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape minormodes here)
 	if (f[d].state==RP){ 
 	  //	  RESETFRRP;  /// ????
