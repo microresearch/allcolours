@@ -41,7 +41,7 @@ Q of global speed... *??? new top ADC is global control. also we have sync funct
 - speed of playback, speed of selector
 - gating on/off with threshold =  *stop/start playback*
 - +how much we let through (volume of signal - see above) - also inversion of this amount+
-- *TODO:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
+- *TODO for CTRL:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
 - marking of zones
 - logical operations to list/zones, start and end, flow, attachments
 
@@ -90,9 +90,25 @@ Toggle for each position: short press = operation on position according to mode,
 
 newADC: mode dependent, eg. in nada: geomantic mode journey???, in P, R, RP: overlays...
 
+*QUESTIONS/etc:*
+
+- what were previous bounces (and where did they wrote to) eg.
+
+REC+PLAY: ADC->speed/bounce/rec with overlay to other tape // freeze is swop // what does voltage do (overlay same tape minormodes here)
+
+and bounce with extension past end/or looping bounce?
+
 * Modes so far:
 
-Note: major modes are per state now (changed back 14/3)
+** micromodes
+
+- do these include speed sync? no!
+
+*TO FILL IN*
+
+14/6 and brainstrom notes/modes:
+
+Catalogue old and new modes and what we want to achieve/ how these fit with new zone model:
 
 *0- basic mode and add to playlist: DONE*
 NADA: GEOMANTIC: ADC->mode // freeze as freeze (in other modes as fake swop? invert etc) - NONinvert is take value from top, but what is "fake swop"?
@@ -100,17 +116,129 @@ REC: ADC->overlay to other tape // freeze as swop main tape... // further REC ad
 PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that
 REC+PLAY: ADC->speed/bounce/rec with overlay to other tape // freeze is swop // what does voltage do (overlay same tape minormodes here)
 
+// single play zone, option for bounce to extend the single zone // extend any zone with a rec!
+
 *1- basic mode plays back playlist without add to playlist:*
 
 IN progress: new major mode: we are always recording in NADA, and in
 REC we select what to add to the tape, and in PLAY we play these, and
 in RP?
 
-** micromodes
+//
 
-- do these include speed sync? no!
+Nada: add global from top, invert voltage, ghosts and mirrors - but does these stick around? yes - as livevalue function now
 
-*TO FILL IN*
+//
+
+- use newADC as a kind of filter of the tape: doesn't let playback/record/re-record 
+  value through below newADC threshold = silence or stops tape/speed
+  thresholding = could either be playback value as 0/threshold or
+  freeze tape/speed! for play we already have this in speed_stop arrays...
+
+especially for bouncings!
+
+//
+
+resursive actions/dismemberments - how we can shift a whole range of zones - master zones which have functions and overlay others?
+
+//
+
+sync of sections - but also timing of sections - eg. with latest no_silence??
+
+//
+
+CTRL triggers recording of a zone in NADA
+
+//
+
+how to slide zones - ctrl can do this, but other layer how?
+
+//
+
+how much layer voltage can feedback onto layer selection and movements itself - recursion... layer and CTRL work together... threshold=layer...
+
+//
+
+*functions: overlay=add/subtract/VCA, invert, mask, bounce, speed, stop=gate/threshold=hold, zone itself params, spawn/multiple, mirror, ghost, blank-gap it, swop itself* - what else?
+
+spawn blanks or copies or inverted mirrors
+
+also write same data to both layers...
+
+deal with other sections - *mobile gestures*
+
+// *flip between bounce to same/other - that ops can be one zone on itself - how??? link to own zone layer???*
+
+binary actions can work with a set threshold, threshold also from CTRL!
+
+corewars: move, add, subtract, jump, conditionals
+
+//
+
+Q. of access to other sections and their counters??? groups...
+
+//
+
+*ghosts:*
+- copies of other regions
+- change to/insert in other regions playlists
+- record to other tapes
+- merge with others
+- bounce/overlay 
+
+*all is lists for play and record - and operations on lists*  
+- what it means to mark as a ghost
+
+*voids/orphans:*
+- safe regions to be skipped over (but only makes sense if they are already recorded to)...
+- swop zones between layers (now each layer has its own list of zones)
+- offsets of rec zones across layers - so they are shifted, playlist can also have this?
+- blanked areas - areas which are returned to 0 so we can write anew to them - new conception...
+
+//
+
+each section has: tape 1- each tape has -> list of zones // -> pointer to operations on list of zones...???
+                       2-
+//
+
+from old playlist modes to rework for zones: P: adds to playlist and selection is within that - as in we zoom through
+each element of playlist for start and end, can be recursive? adding
+to itself and overwriting... how that works as it might span several
+elements... and then these are all added?
+
+//
+
+CTRL selects when we bounce to other - threshold - other counter is running (sans overlay) or not
+
+//
+
+parallels rec and play zones - each play adds a zone (but where?)
+
+//
+
+We could pull out REC and NADA as these have no modes (but in REC we have double and other rec options, also if we reset)
+
+as in REC we have no feedback on what we do. so it must be simple... but how we could signify a RESET there in further modes, to start again and not to add to!?
+
+First mode (after full RESETT) is just record, no speed, and is always reset REC in this mode - but then we can leave it...
+
+Then we change after that...
+
+*So modes overlay and change what we have already recorded gesturally - but how can we move back or forwards through modes?? or is just fwd*
+
+//older modes - also how we rework idea of sync of rec and overlay, live slidings and holds:
+
+DONE5- [79]? - overlay one repeating section with different overlays REWORK mode 79, we can store original loop there(where?), and expand overlay in top bits ???*
+so we store loop in bottom (so rec stays same) and expanding overlay is up to max length. decide what to do with speed but attempt as basic speed
+
+- added but seems like playback 2 layers go out of sync TODO:this could also be exploited eg. freeze freezes/holds playback of overlay or we have 2 different speeds)*
+we already have stopping/restarting with toggle here,,, but not *the 2 different speeds/how???*
+
+- *modeX: record to both top and bottom and switch in play/overlay modes between - different lengths for each, merge, unmerge?*
+
+- *we start to repeat say first section (or a defined island) and repeated overlay this on same tape! - overlay zone or parts of zone onto same layer*
+
+- overlays: long and repeating overlay into one fixed section of playback (zone), loop overlay into fixed section of different lengths
 
 * speculative/divination ideas
 
@@ -270,7 +398,7 @@ selection is key question
 ----- port all previous mode ideas to new layer approach
 - manipulations from notebook notes of layers and playlists
 - properties of each position, layer and playlist and how these can be changed towards displacement and slippage eg. how we slip one tape across the other in RP mode
-- like rehearsal anbd becomes active on press - hear what would happen if?
+- like rehearsal and becomes active on press - hear what would happen if?
 - writing over its own tape in specific areas - see islands - also overlay on itself and onto the other playback of itself
 - ghosts and mirrors
 - cutting and slicing/bouncing how?
@@ -281,10 +409,10 @@ selection is key question
 States are: N, R, P, RP (enum)
 Active position/voltage can change state and minor/major modes and undergo full and soft resets. Inactive position stays in its mode (eg. plays) until active/changes
 There are two tapes (0 and 1) for each position 
-There is a list of playbacks for each position which reference start and end on a tape, and which tape (0 or 1)
-Rec just adds to end of tape/wrapping round until soft reset
+x[[[There is a list of playbacks for each position which reference start and end on a tape, and which tape (0 or 1)
+x[[[Rec just adds to end of tape/wrapping round until soft reset
 Major modes are ported in and allow for recursive/fractal dismemberments and dislocations...
-Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
+x[[[Pressing newADC in NADA zooms us into a new major mode (geomantic operation)
 
 Each state has its own minormode +but+ and so do majormodes +apply to all states for each position+
 
@@ -337,9 +465,115 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
-** 11/6
+** 14/6
 
-- *question of passivity/brainstrom approaches eg. in NADA, CTRL triggers recording of a zone,,, still Q of modes!???*
+TODO:
+- DONE;added-leaving functions// *to test - also re-test R_addlodges*
+- *record silence gap as offset*
+- *each succesive rec mode adds one zone*
+- new RP mode to work on
+- add second layer in playzone
+- trial attach function to zones
+
+NOTES:
+
+*2 definitetasks: define zones, play from/record to those zones (can be seperate or at same time)*
+
+- CTRL defines a zone, recorded CTRL defines a zone // function=define a zone
+
+- function attachment: function attached to zone X , zone X does function on zone Y, but a zone is a set of values...
+[is this like a macro? scheme macros...]
+
+- ways of defining rec zones. play zones using CTRL
+
+! of how much "feedback" to our actions we have:
+eg. RP: 
+1) just rec to zones and playt zones (no overlay - so just write fresh which was micromode of overlay/erase)
+2) overlay (add/subtract etc. according to micromode)
+3) bounce playback one zone to another - is that a function?
+// *that there are 3 different kinds of RP: overlay on top of looping R // bounce playback onto layers (feedback)* - are these defined as major modes now?
+
+*what are modes now: N?, R has no feedback...???*
+
+** 13/6
+
+TODO: 
+
+- First mode should add one zone (but every time we enter it) - or extend the very last zone...?? or just the one zone...
+// DONE-to test! we need to resolve this... if number of zones is zero do first one, otherwise we extend the last zone??? trial
+
+- DONE/fixed and code ported to 002.c  -> simulate latest rec zones code
+
+but only plays last zone or one only - and with playlodge in simulation is scrambled - as rec mismatches play with delays*
+maybe we need to write a playlist at same time - or we use flag in reclist*
+
+FIXED in test4 -> TODOportDONE - DONETESTIT-wierd and also TODO:fix on exit from rec we close the last rec*
+DONME-to test-how to register leaving the rec function - did we have this before... but will need to add leaving functions*
+
+
+////
+
+linkages/functions: speed/stops, block/mask, overlay, mirror, set a new zone, set itself or opposing zone, spawn a new zone, kill a zone
+
+corewars...
+
+notes:
+
+- RP possibles: no bounce, add to rec zone list only, overlay on zones, overlay and extend
+- N: rec one: add to it, rec on no-silence - what CTRL does in N?
+- R: add to reclist
+- P?
+
+Mode on top, micromode right, N>R>P>RP on left - and all have speeding through --->
+
+*reclist:* 
+- live adding to rec list of zones + rec in progress - in sequence so we don't overlap. last delay is always in future
+- rec to fixed list of rec zones
+- changing rec zone list as we rec to it
+
+*zones:*
+- defining list of zones
+- zone parameters and linkages - real time and fake time of the tape
+- layer 1 and 2 - also ctrl defines new type of rec zones - CTRL defines 2nd layer as in 1st new mode
+- what kind of things we want to do with zones: use them as CTRL, as overlay, extend zone in RP
+
+*how can zones and code become dislocated/dismembered code [by] hands - macro dismemberment*
+
+layer 0: value
+layer 1: CTRL/overlay - and can swop
+
+** 12/6
+
+Describe methods so far!
+
+List of what we wanted to achieve with modes!
+
+TODO: 
+- DONEadd fractional increment in play... will need floats // where do we get speed from? can override...
+
+- DONEabove-adding new zones in rec to trial: is that R mode - when we have a
+  press we add that zone until we release.. add succesively with no
+  delay, and add offset/delay to prev entries
+
+//notes:
+
+- *question of passivity/brainstorm approaches eg. in NADA, CTRL triggers recording of a zone,,, still Q of modes!???*
+
+That N/R and P/RP are somehow divided - as the first two have no playback or feedback in a way
+
+maybe rework RPmode knobs - major, minor, state and held length on all speeds through each
+
+- what was earlier feedback/RP schemes? how do we achieve earlier modes with our new scheme?
+
+- overlay or add to end of rec
+
+- how we add to list of play zones?
+
+- what we need to change when we add to rec zones (offset, delay?)
+
+- add open-ended rec zone as in first one to check out
+
+** 11/6
 
 /////
 - still odd on fast reset but how to resolve (strip down) - resolved a bit with priority
@@ -347,7 +581,7 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 - *one set of values can shift/slide the other set of zones*
 
-- if we have: *offset and delay* (delay as time of main looping) then
+- if we have: offset and delay (delay as time of main looping) then
   for a sequential list if we add a zone then we add (length+offset)
   to each entry before that (as length of main loop increased)
 
@@ -362,11 +596,12 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 - DONEadd new overlays and test all micromodes:
 - new overlay micromodes for:
 -- gate/threshholding which stops play (of a zone?) - *so is more a function than overlay- how we can integrate that? overlays as functions*
+
+or overlay function contains the playback... *or we just stop play with speed as 0.0*
+
 -- DONE: 1.0f float VCA - TESTED - need more overlays there for 3 bits =8 (we have 5)
 
 ///////
-
-*TODO: add fractional increment... will need floats*
 
 - where are overlays happening???
 
@@ -377,11 +612,6 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 *so we need overlay as functions for playback - test linked layers... CTRL as global speed or overlay function???*
 
 ///
-
-- new RP mode to work on
-- adding new zones in rec to trial: is that R mode - when we have a
-  press we add that zone until we release.. add succesively with no
-  delay, and add offset/delay to prev entries
 
 Questions:
 
@@ -405,7 +635,7 @@ new notebook notes:
 
 *global/local speeds, speeds as layer, as CTRL???*
 
-- how much layer voltage can feedback onto layer selection itself - recursion...
+- how much layer voltage can feedback onto layer selection and movements itself - recursion...
 - abstract out layer access to help with swoppings (so is not fixed which one is lower and which upper)
 - each mode is a kind of game or method of divination
 
@@ -417,7 +647,7 @@ new notebook notes:
 
 time on tape// recorded time vs. real time
 
-- possible new model with a single zone list for all sections (zone has section etc), all simultaneous and abstracted out completely (so just values)
+- *possible new model with a single zone list for all sections (zone has section etc), all simultaneous and abstracted out completely (so just values)*
 
 - CTRL, VOLTAGE-V, RECV, REC CTRL: CTRL is control and/or records to other layer (CTRL or overlay layer), voltage is overlay
 
@@ -454,15 +684,12 @@ TODO:
 
 do we define one layer as always CTRL/overlay? is control just a  kind of overlay?
 
-- timing full tests with cammack/myself...
-- trial new overlays above
-
 - list what we want to achieve with modes - eg. repeating islands, feedback and recursion
-- test zero ADC + increase max number of zones - where is set? 
-- trial list of play zones and abstract out layer access (eg. pass layer list to play)
+- DONEtest zero ADC + increase max number of zones - where is set? 
+- DONEtrial list of play zones and abstract out layer access (eg. pass layer list to play)
+- DONEdraft second mode with zones - start rec on touch - or this as first mode: plain rec vs. zone list?
 - consider new simultaneous model above...
 - list overlays and CTRL/layer functions and test/play these
-- draft second mode with zones - start rec on touch - or this as first mode: plain rec vs. zone list?
 - list major mode and resolve zones and questions
 - implement and test major modes
 - HW ordered/jlcpcb
@@ -507,10 +734,6 @@ zones can be marked with CTRL
 each layer has its own zone list - added linkage in code... but linkage defaults to zero= *fix - to indicate no linkage*
 
 Note that *delay in zones for length of prev zone means we can have sequences*
-
-TODO:
-- simulate and test adding to playlist//now we have new play zones to test
-- record and stop on zero/silence to implement and test
 
 - *zones* how playlist can also have overlaps? so that it is not sequential: same as zones with delays too? playlist become play zones (same format)
 
@@ -644,7 +867,7 @@ each section needs array of counters etc. into others... TODO: maybe refactor la
 
 ** 11/4 ++
 
-- now lodge just has start and end, no length... so just loops around start and end - *TEST/DONE:TODO: fixit*
+- now lodge just has start and end, no length... so just loops around start and end - TEST/DONE:TODO: fixit
 - second set of options in R_options for 2nd layer overlay: DONE but makes for 6 bits on R_options *TO_TEST*
 
 DEFINE overlays:
@@ -653,8 +876,6 @@ N: livevalue opts
 P: livevalue and overlay
 R: overlay of CTRL and overlay on what is on tape (for each layer so x2) 
 RP: as P_opts and R_options above - but no CTRL overlay (as CTRL is used for speed) - added RP_options
-
-- *TODO: all addings to playlist // eg. on swop*
 
 ** 10/4 ++
 
@@ -681,8 +902,6 @@ orphans and voids
 - offsets of rec zones across layers - so they are shifted, playlist can also have this?
 - blanked areas - areas which are returned to 0 so we can write anew to them - new conception...
 
-- *does playlist per layer make sense or - then we need another lost to indicate time of swopping - also q of overlay of 2 layers in playback?*
-
 8 sides, each has state, each state has minor and major modes and active/unactive state
 CV/VCA share CTRL_CV
 
@@ -690,30 +909,26 @@ TODO:
 - recheck startup again and again... sometimes on very fast reset...
 - clear up questions/TODO below
 
-+ do we really want overlay in live value with top/lowest anymore? possibly not but leave as is*
++ *do we really want overlay in live value with top/lowest anymore? possibly not but leave as is*
 
 - helper functions to code: eg. making marker points, access to other regions/recordings/sections
 
 ---> playlist is independent of a section... free!
 
-*how to make more of a connection between zones and playlist - also if/how rec zones overlap*
+//how to make more of a connection between zones and playlist - also if/how rec zones overlap
 
 eg. if we record to 2 overlapping zones what happens - depends on overlap??
 
 rec->play as a circle/cycle...
 
 - decide on majormodes: notate previous and planned modes for TODO, how to get there...
-- crash and basic tests of functions so far
 - fix on micromodes - we have sensitivity still...
 
 ** 3/4
 
 - +on repeated starts sometimes fails start - was this always the case??? tried with delays in main and moved main reset but doesn't fix it...+
-- This seems resolved now...
 
-- max 5 lodges now
-
-DONEclear up R_options and all as is confusing with overlays, *TO_TEST: DONEstill RP_opts TODO*
+DONEclear up R_options and all as is confusing with overlays, *TO_TEST: DONEstill RP_opts TODO
 
 - messy abstraction as just farmed all out to functions now... needs to be more generic zone handling...
 - RP implemented but needs more tests and all options
@@ -756,15 +971,15 @@ TODO:
 DONE- we should add to playlist when we hit the length but there should be an option to add or not..???
 DONE - option to loop playlist at a certain point (eg. change playfull - permanently?) - pass full to speedsampleplay
 
-*TODO://add recording (zone list): trial*
+*TODO://add recording (zone list): trial
 
 - starting to replace layers with zone list
 
-*ZONES/lunar lodges:*
+*ZONES/lunar lodges:
 
 - zones/ghost zones/limits/loops for layers eg. redirecting to multiple zones (how to tag these)... always rec to a zone...
 
-*new idea of zones (also lists of zones?) crossing a way across/through a zone. that in mode 2 we also define a certain kind of zone*
+new idea of zones (also lists of zones?) crossing a way across/through a zone. that in mode 2 we also define a certain kind of zone*
 
 // so zones allow things to become more generic...
 
@@ -773,7 +988,7 @@ define generic operations like set a zone, play at point and overlay, record to 
 - assign function to a zone, temporary zones
 - stacks of operations????
 
-*recording to a list of zones = simultaneous* (we record the same to
+recording to a list of zones = simultaneous* (we record the same to
 each zone).. function. record_to_zone - but fits with different notions
 of time as the playlist is successive and this is immediate but is in
 the future - the to-be-played-back
@@ -806,7 +1021,7 @@ check latest notebook notes...
 
 ** 15/3
 
-// *TODO: fix speedsamples for wraps and mod0s - also so it has ending/wrap - and test this before going further*
+// ODO: fix speedsamples for wraps and mod0s - also so it has ending/wrap - and test this before going further
 
 // define - so start and length are clear but end is where we wrap! and ending in playlist
 
@@ -892,7 +1107,7 @@ RP: how that works as R is already over-recording, now with bounce of playlist a
 
 ////
 
-- *TODO: re-work all playlist and speedsamples with end and length now - adding playlist*
+- TODO: re-work all playlist and speedsamples with end and length now - adding playlist
 
 ///////////////////////
 
