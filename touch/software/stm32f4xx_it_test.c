@@ -13,7 +13,7 @@
 #include <sys/times.h>
 #include "misc.h"
 #include "resources.h"
-#include "macros.h"
+#include "macros000.h"
 
 // TODO: fix at the end
 #define MAXMODES 8
@@ -262,23 +262,23 @@ static hands f[8];
        {
 	   TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	   
-	   mode=111; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
+	   mode=0; 	   /// 0:ADC all, 666: newADC, 667: toggle/freeze, 777: modetoggle, 778:longer mode, 779:longer freeze/toggle
 	   
 	   // SHIFTS
 	   // SENSESHIFT=2, SENSEOFFSET=1800; 
 	   //SENSESHIFT=1, SENSEOFFSET=560;
 	   //	   SENSESHIFT=0, SENSEOFFSET=64;
 
-	   f[4].sensi=2;
+	   f[4].sensi=0;
 	   f[0].sensi=0;
 	   switch(mode){
 
 	   case 0: // test realadc and dacs... // test zero level...
 	     REALADC;
 	     //  TEST_TOGGLES;
-	     //	     values[d]=(real[d]);
-	     if (real[d]>40) values[d]=4095;//real[d]; // this value does not seem to depend on sensi...???
-	     else values[d]=0;
+	     	     values[d]=(real[d]);
+	     //	     if (real[d]>40) values[d]=4095;//real[d]; // this value does not seem to depend on sensi...???
+		     //	     else values[d]=0;
 	     //	     values[d]=40;
 	     break; 
 
@@ -313,12 +313,12 @@ static hands f[8];
 	   case 777: // tests of all toggles! rec, play, mode and freeze
 	     //	     	  FREEZERS;
 	     ///TEST_TOGGLES;
-	     
+	  if (togplay) f[4].play^=1;	     
 	  if (modetoggle) {  // frozen[d]  // play // rec // modetoggle
 	    values[4]=4095;
 	  }
 	  else values[4]=0;
-	  
+	  togplay=0;	  
 	  /*
 	  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	  \
 	  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;	  \

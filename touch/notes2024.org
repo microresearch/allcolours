@@ -465,19 +465,56 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
-** 14/6
+** 18/6
+
+-DONE! *TO TEST* FIXED in test4. but need to to implement: We need to reset cnt and delcntt in play - so play always starts from beginning... why/how to fix ???*
+- do we want to abstract out rec and play zone lists or keep as is??? question is adding of new zones... or use rl's delcntt
+// and get rid of list passings
+- DONE:option to reset all playing list counters as we do now in 002.c
+
+TODO: 
+- *test all new R modes which should now be fixed...*
+- rec mode which doesn't just add zones or extend zone: looping rec
+  (but either need to have rec set already or set rec zones and loop with CTRL) -> list of x looping zones to set one after another...
+- modes for manipulations of rec and play zones
+
+** 17/6
 
 TODO:
-- DONE;added-leaving functions// *to test - also re-test R_addlodges*
-- *record silence gap as offset*
-- *each succesive rec mode adds one zone*
-- new RP mode to work on
+
+- DONE:mode: each succesive rec mode adds one zone
+FIX: NOTE for all:   f[d].ind=1; // recording TODO: this will need always to be per layer and also for leaving functions*
+
+- DONE;added-leaving functions// *to test - also re-test R_addlodges_nosilence*
+- DONE:record silence gap as offset - *to test R_addlodges_silence*
+- DONE:as overlayx = how we playback overlapping zones (nature of overlap?)*
+
+
+///
+- new RP mode to work on - and define possibles here for RP: skew of timeframes of R and P
 - add second layer in playzone
 - trial attach function to zones
 
+////
+
+- keep NRPRP scheme
+- which layer we bounce to (from which) if overlap?
+- what we record to each layer eg. if we have /one/ playback value what do we write to both layers... [or is per layer? spcify bounce as linkage?)
+- copy R->P zones
+- all as operations on zones
+
+- DONEnull end function to implement...
+- DONEnumlodges is now 24!
+
+** 15/6
+
+- *bounce cannot bounce to 2 overlapping zones* - so we need to specify or just catch this...
+
+** 14/6
+
 NOTES:
 
-*2 definitetasks: define zones, play from/record to those zones (can be seperate or at same time)*
+*Two definite tasks: define zones, play from/record to those zones (can be seperate or at same time?)*
 
 - CTRL defines a zone, recorded CTRL defines a zone // function=define a zone
 
@@ -486,18 +523,18 @@ NOTES:
 
 - ways of defining rec zones. play zones using CTRL
 
-! of how much "feedback" to our actions we have:
+Q. of how much "feedback" to our actions we have:
 eg. RP: 
 1) just rec to zones and playt zones (no overlay - so just write fresh which was micromode of overlay/erase)
 2) overlay (add/subtract etc. according to micromode)
 3) bounce playback one zone to another - is that a function?
-// *that there are 3 different kinds of RP: overlay on top of looping R // bounce playback onto layers (feedback)* - are these defined as major modes now?
-
-*what are modes now: N?, R has no feedback...???*
+// - are these defined as major modes now?
 
 ** 13/6
 
 TODO: 
+
+////
 
 - First mode should add one zone (but every time we enter it) - or extend the very last zone...?? or just the one zone...
 // DONE-to test! we need to resolve this... if number of zones is zero do first one, otherwise we extend the last zone??? trial
@@ -509,7 +546,6 @@ maybe we need to write a playlist at same time - or we use flag in reclist*
 
 FIXED in test4 -> TODOportDONE - DONETESTIT-wierd and also TODO:fix on exit from rec we close the last rec*
 DONME-to test-how to register leaving the rec function - did we have this before... but will need to add leaving functions*
-
 
 ////
 
@@ -835,7 +871,7 @@ by TOGGLE:
 
 *a framework which allows for these sequences of manipulations!*
 
-- how to have different speeds for each zone (but zones are in rec, not in playback...) *can playlist have overlaps, multiples and how???*
+- how to have different speeds for each zone (but zones are in rec, not in playback...) can playlist have overlaps, multiples and how???
 
 *Q. also of zone and its double/other layer which might be speed - say: differing zones for each param*
 
