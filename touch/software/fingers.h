@@ -1,4 +1,4 @@
-#define MAXLODGE 12
+#define MAXLODGE 24
 
 typedef struct zonel_ { 
   uint32_t start;
@@ -10,7 +10,7 @@ typedef struct zonel_ {
   uint32_t over; // overrun - need to reset this at some point
   uint32_t offset;
   uint32_t delay;
-  uint32_t delcnt;
+   uint32_t delcnt;
   float cntt; // for playback fractions
   float delcntt;
   float speed;
@@ -20,6 +20,8 @@ typedef struct zonel_ {
 typedef struct layers_ {
   zonel lodges[MAXLODGE]; // each layer has list of zones/lodges to record to // maybe sepera1te lodges from playback... why??? // 12 lodges - we need more
   uint32_t num_lodges;
+  uint32_t rcnt;
+  uint32_t ind; // in the layer
 } layers;
 
     enum STATE {
@@ -46,7 +48,7 @@ typedef struct layers_ {
       uint32_t entryn, entryp, entryr, entryrp; // for resets
       uint32_t leavep; // for function for leaving P mode
       uint32_t leaver; // leaving R mode
-      uint32_t ind; // in it! for recordings
+      uint32_t leaverp;
       uint32_t entryd;
     } hands;
 
