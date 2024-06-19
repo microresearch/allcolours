@@ -268,7 +268,9 @@ void resett(uint32_t dacc){
   //  f[dacc].l[1].play_cnt[x]=0;
   }
   // zero all lodges
-  for (uint32_t y=0;y<MAXLODGE;y++){ 
+  for (uint32_t y=0;y<MAXLODGE;y++){
+    f[dacc].rl[0].lodges[y].sil=0;
+    f[dacc].rl[1].lodges[y].sil=0;
     f[dacc].rl[0].lodges[y].over=0;
     f[dacc].rl[1].lodges[y].over=0;
     f[dacc].rl[0].lodges[y].cnt=0;
@@ -440,6 +442,8 @@ uint32_t R_basic(uint32_t d, uint32_t V_options, uint32_t R_options){
   f[d].rl[f[d].masterLR].num_lodges=1;
   f[d].rl[f[d].masterLR].lodges[0].start=0;
   f[d].rl[f[d].masterLR].lodges[0].offset=0;
+  f[d].rl[f[d].masterLR].lodges[0].delcnt=0;
+  f[d].rl[f[d].masterLR].lodges[0].delcntt=0; // this is for when we copy to playzones
   f[d].rl[f[d].masterLR].lodges[0].delay=0; // looping???
   f[d].rl[f[d].masterLR].lodges[0].end=MAXREC;
   }
@@ -498,14 +502,14 @@ uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options)
     f[d].rl[f[d].masterLR].num_lodges+=1;
     if (f[d].rl[f[d].masterLR].num_lodges>MAXLODGE) f[d].rl[f[d].masterLR].num_lodges=1;
     if (f[d].rl[f[d].masterLR].num_lodges==1){ // first lodge
-      f[d].rl[f[d].masterLR].rcnt=0;
       f[d].rl[f[d].masterLR].lodges[0].cnt=0;
       f[d].rl[f[d].masterLR].lodges[0].delcnt=0;
       f[d].rl[f[d].masterLR].lodges[0].delcntt=0; // this is for when we copy to playzones
       f[d].rl[f[d].masterLR].lodges[0].start=0;
       f[d].rl[f[d].masterLR].lodges[0].offset=0;
       f[d].rl[f[d].masterLR].lodges[0].delay=0; // looping???
-      f[d].rl[f[d].masterLR].lodges[0].flag=0; 
+      f[d].rl[f[d].masterLR].lodges[0].flag=0;
+      f[d].rl[f[d].masterLR].lodges[tmpx].sil=0;
       f[d].rl[f[d].masterLR].lodges[0].end=MAXREC; 
     } // first lodge
     else {
@@ -514,9 +518,9 @@ uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options)
       f[d].rl[f[d].masterLR].lodges[tmpx].flag=0; 
       f[d].rl[f[d].masterLR].lodges[tmpx].delcnt=(f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+1;
       f[d].rl[f[d].masterLR].lodges[tmpx].delcntt=f[d].rl[f[d].masterLR].lodges[tmpx-1].delcntt;
-      f[d].rl[f[d].masterLR].lodges[tmpx].start=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend+1; 
-      f[d].rl[f[d].masterLR].lodges[tmpx].offset=(f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+f[d].rl[f[d].masterLR].rcnt; // add silence if any...
-      f[d].rl[f[d].masterLR].rcnt=0;
+      f[d].rl[f[d].masterLR].lodges[tmpx].start=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend+1;
+      f[d].rl[f[d].masterLR].lodges[tmpx].sil=f[d].rl[f[d].masterLR].rcnt;
+      f[d].rl[f[d].masterLR].lodges[tmpx].offset=(f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+1;
       f[d].rl[f[d].masterLR].lodges[tmpx].delay=0; // to come later
       f[d].rl[f[d].masterLR].lodges[tmpx].end=MAXREC; // to come later
       f[d].rl[f[d].masterLR].lodges[tmpx-1].flag=1; // stop the last one TODO: remember to reset
@@ -527,13 +531,15 @@ uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options)
   } // above val
   else { 
       // low value but did we leave recording
-      if (f[d].rl[f[d].masterLR].ind==1){ // we were recording so set end point of last one and add all delays
-	tmpx=f[d].rl[f[d].masterLR].num_lodges-1; // lodge we just left
-	f[d].rl[f[d].masterLR].lodges[tmpx].end=f[d].rl[f[d].masterLR].lodges[tmpx].realend;
+    if (f[d].rl[f[d].masterLR].ind==1){ // we were recording so set end point of last one and add all delays
+      f[d].rl[f[d].masterLR].rcnt=0;
+      tmpx=f[d].rl[f[d].masterLR].num_lodges-1; // lodge we just left
+      f[d].rl[f[d].masterLR].lodges[tmpx].end=f[d].rl[f[d].masterLR].lodges[tmpx].realend;
 	//	if (tmpx!=0) f[d].rl[f[d].masterLR].lodges[tmpx].offset=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend;  // previous end
 	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
-	  f[d].rl[f[d].masterLR].lodges[x].delay+=(f[d].rl[f[d].masterLR].lodges[tmpx].realend-f[d].rl[f[d].masterLR].lodges[tmpx].start+1); // FIX!
+	  f[d].rl[f[d].masterLR].lodges[x].delay+=(f[d].rl[f[d].masterLR].lodges[tmpx].realend-f[d].rl[f[d].masterLR].lodges[tmpx].start+1)+f[d].rl[f[d].masterLR].lodges[tmpx].sil;
 	}
+	if (tmpx!=0) f[d].rl[f[d].masterLR].lodges[tmpx].offset=((f[d].rl[f[d].masterLR].lodges[tmpx-1].offset)+f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+f[d].rl[f[d].masterLR].lodges[tmpx].sil-(f[d].rl[f[d].masterLR].lodges[tmpx-1].start); 
 	f[d].rl[f[d].masterLR].ind=0; f[d].entryd=0;
       }
     }  
@@ -568,13 +574,15 @@ uint32_t R_addlodges_nosilence(uint32_t d, uint32_t V_options, uint32_t R_option
       f[d].rl[f[d].masterLR].lodges[0].start=0;
       f[d].rl[f[d].masterLR].lodges[0].offset=0;
       f[d].rl[f[d].masterLR].lodges[0].delay=0; // looping???
+      f[d].rl[f[d].masterLR].lodges[tmpx].sil=0;
       f[d].rl[f[d].masterLR].lodges[0].end=MAXREC;
       f[d].rl[f[d].masterLR].lodges[0].flag=0; 
     } // first lodge
     else {
       tmpx=f[d].rl[f[d].masterLR].num_lodges-1;
       f[d].rl[f[d].masterLR].lodges[tmpx].cnt=0;
-      f[d].rl[f[d].masterLR].lodges[tmpx].flag=0; 
+      f[d].rl[f[d].masterLR].lodges[tmpx].flag=0;
+      f[d].rl[f[d].masterLR].lodges[tmpx].sil=0;
       f[d].rl[f[d].masterLR].lodges[tmpx].delcnt=(f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+1;
       f[d].rl[f[d].masterLR].lodges[tmpx].delcntt=f[d].rl[f[d].masterLR].lodges[tmpx-1].delcntt;
       f[d].rl[f[d].masterLR].lodges[tmpx].start=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend+1; 
@@ -627,12 +635,14 @@ uint32_t R_addlodges(uint32_t d, uint32_t V_options, uint32_t R_options){ // eac
       f[d].rl[f[d].masterLR].lodges[0].delcntt=0;
       f[d].rl[f[d].masterLR].lodges[0].start=0;
       f[d].rl[f[d].masterLR].lodges[0].offset=0;
+      f[d].rl[f[d].masterLR].lodges[tmpx].sil=0;
       f[d].rl[f[d].masterLR].lodges[0].delay=0; // looping???
       f[d].rl[f[d].masterLR].lodges[0].end=MAXREC;
       f[d].rl[f[d].masterLR].lodges[0].flag=0; 
     } // first lodge
     else {
       tmpx=f[d].rl[f[d].masterLR].num_lodges-1;
+      f[d].rl[f[d].masterLR].lodges[tmpx].sil=0;
       f[d].rl[f[d].masterLR].lodges[tmpx].cnt=0;
       f[d].rl[f[d].masterLR].lodges[tmpx].flag=0;
       f[d].rl[f[d].masterLR].lodges[tmpx].delcnt=(f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+1;
@@ -664,6 +674,23 @@ void R_addlodges_leave(uint32_t d){
       }
       f[d].leaver=0;
 }
+
+void R_addlodges_leave_silence(uint32_t d){
+  uint32_t tmpx;
+  // if we were recording then close it...
+      if (f[d].rl[f[d].masterLR].ind==1){ // we were recording so set end point of last one and add all delays
+	tmpx=f[d].rl[f[d].masterLR].num_lodges-1; // lodge we just left
+	f[d].rl[f[d].masterLR].lodges[tmpx].end=f[d].rl[f[d].masterLR].lodges[tmpx].realend;
+	//	if (tmpx!=0) f[d].rl[f[d].masterLR].lodges[tmpx].offset=f[d].rl[f[d].masterLR].lodges[tmpx-1].realend;  // previous end
+	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
+	  f[d].rl[f[d].masterLR].lodges[x].delay+=(f[d].rl[f[d].masterLR].lodges[tmpx].realend-f[d].rl[f[d].masterLR].lodges[tmpx].start+1); // FIXed!
+	}
+	if (tmpx!=0) f[d].rl[f[d].masterLR].lodges[tmpx].offset=((f[d].rl[f[d].masterLR].lodges[tmpx-1].offset)+f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+f[d].rl[f[d].masterLR].lodges[tmpx].sil-(f[d].rl[f[d].masterLR].lodges[tmpx-1].start); 
+	f[d].rl[f[d].masterLR].ind=0;
+      }
+      f[d].leaver=0;
+}
+
 
 void R_nothing_leave(uint32_t d){
   f[d].leaver=0;
@@ -716,16 +743,16 @@ uint32_t P_basic(uint32_t d, uint32_t V_options, uint32_t P_options){
     f[d].entryp=1;
     f[d].leavep=1;
     // copy in rec zones to play zones
+    f[d].pl[f[d].masterLP].num_lodges=f[d].rl[f[d].masterLP].num_lodges;
     for (x=0;x<f[d].rl[f[d].masterLP].num_lodges;x++){
-      f[d].pl[f[d].masterLR].lodges[0].delcntt=f[d].rl[f[d].masterLR].lodges[0].delcntt;
-      f[d].pl[f[d].masterLR].lodges[0].offset=f[d].rl[f[d].masterLR].lodges[0].offset;
-      f[d].pl[f[d].masterLR].lodges[0].delay=f[d].rl[f[d].masterLR].lodges[0].delay;
-      f[d].pl[f[d].masterLR].lodges[0].start=f[d].rl[f[d].masterLR].lodges[0].start;
-      f[d].pl[f[d].masterLR].lodges[0].realend=f[d].rl[f[d].masterLR].lodges[0].realend;
-
+      f[d].pl[f[d].masterLR].lodges[x].delcntt=f[d].rl[f[d].masterLR].lodges[x].delcntt;
+      f[d].pl[f[d].masterLR].lodges[x].offset=f[d].rl[f[d].masterLR].lodges[x].offset;
+      f[d].pl[f[d].masterLR].lodges[x].delay=f[d].rl[f[d].masterLR].lodges[x].delay;
+      f[d].pl[f[d].masterLR].lodges[x].start=f[d].rl[f[d].masterLR].lodges[x].start;
+      f[d].pl[f[d].masterLR].lodges[x].realend=f[d].rl[f[d].masterLR].lodges[x].realend;
       if (P_options&1){
-      f[d].pl[f[d].masterLP].lodges[x].delcntt=0;
-      f[d].pl[f[d].masterLP].lodges[x].cntt=0;
+      f[d].pl[f[d].masterLR].lodges[x].delcntt=0.0;
+      f[d].pl[f[d].masterLR].lodges[x].cntt=0;
     }
     }    
   }
@@ -762,7 +789,7 @@ uint32_t (*Rfunc[4])(uint32_t d, uint32_t V_options, uint32_t R_options)={R_basi
 uint32_t (*RPfunc[2])(uint32_t d, uint32_t V_options, uint32_t P_options, uint32_t R_options, uint32_t RP_options)={RP_basic};
 uint32_t (*Pfunc[2])(uint32_t d, uint32_t V_options, uint32_t P_options)={P_basic};
 
-void (*Rfunc_leave[4])(uint32_t d)={R_nothing_leave, R_addlodges_leave, R_addlodges_leave, R_addlodges_leave};
+void (*Rfunc_leave[4])(uint32_t d)={R_nothing_leave, R_addlodges_leave, R_addlodges_leave, R_addlodges_leave_silence};
 void (*RPfunc_leave[2])(uint32_t d);
 void (*Pfunc_leave[2])(uint32_t d)={P_nothing_leave};
 
@@ -842,11 +869,11 @@ void TIM2_IRQHandler(void)
 	} // end of active
 	
 	  // do main mode/state work with switches within this
-	////// TESTY
+	////// TESTY - SET MODES for testing!
 
 	f[d].majormode[N]=0;
 	f[d].majormode[P]=0;
-	f[d].majormode[R]=1; // R_basic, R_addlodges, R_addlodges_nosilence, R_addlodges_silence
+	f[d].majormode[R]=3; // R_basic, R_addlodges, R_addlodges_nosilence, R_addlodges_silence
 	f[d].majormode[RP]=0;
 	///////////////////////////////////////////////////////	
 	// NADA: TODO: geomantic mode thing - could be only for all modes which are active
