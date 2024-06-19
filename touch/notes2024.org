@@ -465,15 +465,46 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
+** 19/6
+
+For NADA we can have add rec zones on no_silence and CTRL...
+
+TODO:
+- DONE:record silence gap as offset - to test R_addlodges_silence FIXED + TODO: add leaving function thereDONE
+
+- *check speeds with playlodge thoroughly*
+- *re-test all new R modes and also leavings* 
+
+NOTES:
+
+- realtime recording with CTRL and threshold - with/without silence=offset - use CTRL playback also to define these zones
+
+split to resolve between: define zones, record/playback zones // in R, P and RP!
+
+- define precisely the timeline of each zone: offset, delay, lenth=end-start
+
+eg. if (f[d].pl[f[d].masterLP].lodges[x].delcntt>=
+
+(f[d].pl[f[d].masterLP].lodges[x].offset+f[d].pl[f[d].masterLP].lodges[x].realend+f[d].pl[f[d].masterLP].lodges[x].delay-f[d].pl[f[d].masterLP].lodges[x].start))
+f[d].pl[f[d].masterLP].lodges[x].delcntt=0;
+
+offset
+delay (offset+end-start+delay)
+length= end=start (= its ref into the recordings)
+
+Remember to add offset if we wish for silence in leaving func:
+
+if (tmpx!=0) f[d].rl[f[d].masterLR].lodges[tmpx].offset=((f[d].rl[f[d].masterLR].lodges[tmpx-1].offset)+f[d].rl[f[d].masterLR].lodges[tmpx-1].realend)+f[d].rl[f[d].masterLR].lodges[tmpx].sil-(f[d].rl[f[d].masterLR].lodges[tmpx-1].start); // this is for playback
+
 ** 18/6
 
--DONE! *TO TEST* FIXED in test4. but need to to implement: We need to reset cnt and delcntt in play - so play always starts from beginning... why/how to fix ???*
+-DONE! TO TEST* FIXED in test4. but need to to implement: We need to reset cnt and delcntt in play - so play always starts from beginning... why/how to fix ???*
 - do we want to abstract out rec and play zone lists or keep as is??? question is adding of new zones... or use rl's delcntt
 // and get rid of list passings
 - DONE:option to reset all playing list counters as we do now in 002.c
 
 TODO: 
-- *test all new R modes which should now be fixed...*
+- test all new R modes which should now be fixed...
 - rec mode which doesn't just add zones or extend zone: looping rec
   (but either need to have rec set already or set rec zones and loop with CTRL) -> list of x looping zones to set one after another...
 - modes for manipulations of rec and play zones
@@ -485,8 +516,8 @@ TODO:
 - DONE:mode: each succesive rec mode adds one zone
 FIX: NOTE for all:   f[d].ind=1; // recording TODO: this will need always to be per layer and also for leaving functions*
 
-- DONE;added-leaving functions// *to test - also re-test R_addlodges_nosilence*
-- DONE:record silence gap as offset - *to test R_addlodges_silence*
+- DONE;added-leaving functions// DONEto test - also re-test R_addlodges_nosilence*
+- DONE:record silence gap as offset - *to test R_addlodges_silence
 - DONE:as overlayx = how we playback overlapping zones (nature of overlap?)*
 
 
@@ -510,7 +541,7 @@ FIX: NOTE for all:   f[d].ind=1; // recording TODO: this will need always to be 
 
 - *bounce cannot bounce to 2 overlapping zones* - so we need to specify or just catch this...
 
-** 14/6
+** 14/6 ***
 
 NOTES:
 
@@ -525,9 +556,15 @@ NOTES:
 
 Q. of how much "feedback" to our actions we have:
 eg. RP: 
-1) just rec to zones and playt zones (no overlay - so just write fresh which was micromode of overlay/erase)
+1) just rec to zones and play zones (no overlay - so just write fresh which was micromode of overlay/erase)
 2) overlay (add/subtract etc. according to micromode)
 3) bounce playback one zone to another - is that a function?
+4) manipulations of zone parameters
+
+but we have R and P lists of zones - each with 2 layers...
+
+In R and P we can also have zone manipulating parameters of another... what are parameters of a zone?
+
 // - are these defined as major modes now?
 
 ** 13/6

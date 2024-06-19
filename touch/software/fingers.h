@@ -10,7 +10,8 @@ typedef struct zonel_ {
   uint32_t over; // overrun - need to reset this at some point
   uint32_t offset;
   uint32_t delay;
-   uint32_t delcnt;
+  uint32_t sil;
+  uint32_t delcnt;
   float cntt; // for playback fractions
   float delcntt;
   float speed;
