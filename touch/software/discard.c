@@ -1,4 +1,54 @@
-	  switch(f[d].majormode[R]){
+uint32_t RP_basic(uint32_t d, uint32_t V_options, uint32_t P_options, uint32_t R_options, uint32_t RP_options){
+  uint32_t pp, other, tmpp, tmp;
+  if (f[d].entryrp==0){
+    f[d].leaverp=1;
+    f[d].entryrp=1;
+    }
+  // handle play
+  float speedy=playreff[f[d].playspeed[f[d].masterL[1]]][(control[whichctrl[d]]>>2)]; 
+  tmp=real[d];
+  //  pp=speedsampleplay(speedy, d, 0, d, recordings[d]); // last two d can be access to others...
+  tmp=overlay(tmp, pp, (P_options>>3)&3); // live overlay on playback 
+  other=f[d].masterL[1]^1; // swoppage
+
+  f[d].rl[other].num_lodges=1;
+  f[d].rl[f[d].masterL[1]].num_lodges=1;
+  if (f[d].rl[other].lodges[0].realend && (RP_options&2)) f[d].rl[other].lodges[0].end=f[d].rl[other].lodges[0].realend;
+  else f[d].rl[other].lodges[0].end=MAXREC; // option of rec_end
+
+  if (RP_options&1){ // option to stop rec on not playing...
+    //  reclodgex(d, tmp, other, R_options);
+  }
+  //  else 	if (speedy!=0.0f) reclodgex(d, tmp, other, R_options); // default is to stop
+  return tmp;  
+}
+
+
+inline static uint32_t livevalue(uint32_t which, uint32_t opt){ // ???? or keep inversion...
+  uint32_t tmpp, subs, overoverlay;
+  // options for live value - eg. add global from top (and type of overlays), (sensitivity is already in macros)
+  if (which!=6) tmpp=real[6]; // top voltage - value at the end
+  // 6 syncs to 4 lowest
+  else tmpp=real[4];
+  
+  overoverlay=(opt>>1)&3;
+  if (overoverlay==0) tmpp=real[which];
+  else if (overoverlay==2){ //usual - now swopped for >
+    if (real[which]>tmpp) tmpp=real[which]; // only if is more than
+  }
+  else if (overoverlay==3){ 
+    tmpp+=real[which];
+    //    if (tmpp>4095) tmpp=4095; // ??
+    if (tmpp>BOTS) tmpp=BOTS; // as we store full value...	    
+  }
+  else if (overoverlay==1){ // invert 
+    tmpp=4095-real[which];
+    }
+  return tmpp;
+}
+
+
+switch(f[d].majormode[R]){
 	  case 0:
 	  case 1:
 	    tmp=livevalue(d, V_options);

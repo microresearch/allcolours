@@ -19,7 +19,7 @@ note that lower crescents have voltage on them
 
 note that OUTx is on pads (so after VCA) for feedback use...
 
-livevalue/overlay of globals??? - do we want that as can always hand sync
+NO!livevalue/overlay of globals??? - do we want that as can always hand sync
 
 ////
 
@@ -465,15 +465,34 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
-** 19/6
+** 20/6
 
-For NADA we can have add rec zones on no_silence and CTRL...
+All infrastructure to test and catalogue...
 
 TODO:
-- DONE:record silence gap as offset - to test R_addlodges_silence FIXED + TODO: add leaving function thereDONE
 
+DONE/TEST - implement micromodes per layer (and per state - but states have different main layers:
+DONE/TEST - implement basic RP mode: just write new values to existing lodges, playback existing lodges (do we check that there are)...*
+
+//and sensi has no layer -get rid of livevalue...DONE
+
+- *FIXING layerswop but need to test*
+- Note that R and P are only ones which have micromodes per layer (N and RP don't have as there are no layers there)...
 - *check speeds with playlodge thoroughly*
-- *re-test all new R modes and also leavings* 
+- *re-test all new R modes and also leavings, overlap etc. test incoming voltages and modulations* 
+- *test all micromodes in basic modes*
+
+Notes:
+
+P and R: rec/play zones // define and manipulate zones
+
+RP: no overlay, overwrite/extend // overlay/extend // bounce // define zones or parameters of zones (play/rec zones)
+
+** 19/6
+
+NON: //For NADA we can have add rec zones on no_silence and CTRL...
+
+- DONE:record silence gap as offset - to test R_addlodges_silence FIXED + TODO: add leaving function thereDONE
 
 NOTES:
 
