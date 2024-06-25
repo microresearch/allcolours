@@ -147,7 +147,7 @@ sync of sections - but also timing of sections - eg. with latest no_silence??
 
 //
 
-CTRL triggers recording of a zone in NADA
+??//CTRL triggers recording of a zone in NADA
 
 //
 
@@ -465,14 +465,197 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
+** 25/6
+
+/// *playlodge is a mess with everything and speeds too*
+
+- resolved a bit in test4.c for 1.0f but still speed issue - must be in playlodge - see how it sounds
+- DONETODO: port in new bits//test speeds faster with extra zones
+
+///
+
+DONE:test//Fix swop layers as messy: implemented fullswop (was already in RP but have micromode for RP:
+
+*TODO: swop P, swop R, swop both...*
+
+we have: which layerzone list, which value, which upper/lower
+
+permutations:
+
+zone value lower/upper
+0    live  lower 
+0    ctrl  lower
+0    live  upper
+0    ctrl  upper
+
+1    live  lower 
+1    ctrl  lower
+1    live  upper
+1    ctrl  upper
+
+8(3 bits)
+
+At the moment we have:
+
+R: f[d].masterL[0]
+
+0: we use layer0 zones to write live to lower
+1: we use layer1 zones to write CTRL to upper
+
+layer0 is lower, live
+layer1 is upper, CTRL
+
+/* // swopps
+layer1 is lower, live
+layer0 is upper, CTRL
+*/
+
+then swop:
+1: we use layer1 zones to write live to lower
+0: we use layer0 zones to write CTRL to upper
+
+layer1 is lower, live
+
+so live is always lower
+
+//altswop
+1:use layer0 zones to write CTRL to lower
+0:use layer1 zones to write live to upper
+*so we just swop what is written to which - TODO as REC option*
+
+//fullswop
+1: we use layer1 zones to write live to upper
+0: we use layer0 zones to write CTRL to lower
+
+
+/////
+
+P:
+
+0: we use layer0 zones to read live from lower
+1: we use layer1 zones to read CTRL from upper
+
+then swop // different swop from rec one!
+1: we use layer1 zones to read live from upper 
+0: we use layer0 zones to read CTRL from lower
+
+// altswop
+use layer1 zones to read CTRL from lower
+use layer0 zones to read live from upper
+
+// fullswop we have I guess
+
+NOTEbook notes:
+- could be interesting to copy or overlap list of zones across each other eg. copy list of zones from one region to another 
+- function to find which zones are within a region // other helper functions
+- define blocks which are not overlaid
+- mobile blocks
+
+** 24/6
+
+DONE:Fix peak thing with BOTS as means that overlay can reduce things...
+DONE:Re-organised overlays, some fixes...
+
+overlayl: overlay of live value
+overlay: for CTRL and CTRL layer no solo
+overlayx: solo for reclodge and playlodge layerings
+overlayRP: for RP live recorded overlaid onto rec
+
+TODO:
+- *Test all below and basic states, micromodes, speeds etc.*
+
+Tests:
+- DONEXXlayerswop/in NADA we have freeze: fixed
+- DONEXXRP mode - should overlay? NOT! we need there new RP_options and reclodgex
+
+
+- micromodes... (<2sec press)... for each state and micromodes are now per layer and mode
+- active/inactive and micromodes
+- overlay and overlayx micromodes
+- test new R modes - leave and come back in, overlap length
+- modulations of incoming voltages with REC
+
+- speeds in playback and micromodes there...
+
+*fix: clicks at high speeds in playback??? - in test4.c playlodge has speed issues with more than one lodge TO FIX!*
+
+- *finish layers where necessary -*
+
+//
+*now we have overlayl which is for CTRL layer overlay - test with finished layers*
+//
+
+- *list overlays for each state!*
+
+P: overlay of livevalue on playback, possible overlay of layer 2 on 1=overlayx //types of overlay/block/mask?
+R: overlay value on what is there -> overlayx in reclodges
+RP: as above. Q of what overlay is recorded/bounced// from/to
+
+*overlayx has solo and is used in reclodge (overlay on rec) and playlodge (layers overlap)*
+
+- questions of attachment and functions to resolve... also *how attachment works with swoppage...*
+
+attachment of a function or by kind of slots? eg. speed slot: zone x on layer y... but don't have to fill all slots
+
+also things like bounce as function. bounce to all current recording layers or assign layers (if we want to bounce to own layer)
+
+*Some functions are in overlay. some more complex eg.threshold=stop-play*
+
+Notebook notes:
+
+- DONEas default in reclodges:RP default as overlay - but this needs to be done in reclodges* // types of overlay
+- CTRL and CTRL layer can also be used for threshold=swop_layers and thus recursive
+- list all such operations.
+
+*Manipulations of zone parameters:*
+
+as functions: ghost, spawn, mirror, gap, sliding and absolute/relative adjustments (relative to what?)
+
+vs. *Manipulations of layers:*
+
+speed, overlay (add, subtract, invert, VCA), swop itself, bounce to/from, stop/start
+
+functions:
+
+- spawn or mirror a (new) zone...
+- use this parameter to change the start point of a zone (and if end is before?)
+- as the speed of this zone...
+
+Q. is zone y does this for zone x - how that attachment and designation works???
+
+*real relative time // tape time*
+- offset          //  start
+- delay          //   end
+
+*Trial functions or just parameter attachment*
+
+eg. how do we trigger a function - at a threshold for a zone???
+- we pass through at CTRL speed as a depth of the sequence of zones ...
+
+CTRL (zone possibly) as a zoom through params and stop - speed through, absolute value, relative...
+
 ** 20/6
 
-All infrastructure to test and catalogue...
+*Define/all infrastructure to test and catalogue... and move on to next stages...*
+
+- CTRL and layers can manipulate:
+- layer parameters such as speed etc. - or is that not playback params
+- zone parameters such as start and end. ->recursion
+
+Modes
+Micromodes
+Active/inactive
+States/modes of operation: N, R, P, RP
+Resets for active - soft and hard (do we ever reset all values?) - now in resett! *to test*
+Zones and layers: parameters of each... each layer has a list of zones...
+Groupings (TODO)... /of/ Sections..
+CTRL and voltage - how to express those?
+Second layer as control or overlay layer... (define the masking)...
 
 TODO:
 
 DONE/TEST - implement micromodes per layer (and per state - but states have different main layers:
-DONE/TEST - implement basic RP mode: just write new values to existing lodges, playback existing lodges (do we check that there are)...*
+DONE/TEST - implement basic RP mode: just write/add new values to existing lodges, playback existing lodges (do we check that there are)...*
 
 //and sensi has no layer -get rid of livevalue...DONE
 
@@ -916,7 +1099,7 @@ by CTRL:
 - speed of playback
 - gating on/off with threshold (also/or stop/start playback)
 - how much we let through (volume of signal - see above) - also inversion of this amount
-- *TODO:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
+- DEP:TODO:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
 - logical operations to list
 
 [ops which change the value, ops which change the sequence of values]

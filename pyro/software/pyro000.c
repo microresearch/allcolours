@@ -51,15 +51,21 @@ void adc_init(void)
 
 void main(void)
 {
-  unsigned char tmp=0, armed=0, former=0;
+  u8 tmp=0, armed=0;
+  static uint32_t former=0;
   //  adc_init();
 
   static int counter = 0; 
-  int aState;
-  static int aLastState=0;
-  static u8 mode;
+  u8 aState, fom=0;
+  uint32_t howlong=0;
+  static uint32_t flashcount=0, presscnt;
+  static u8 flasher=0, shortpress;
+  static u8 aLastState=0;
+  static u8 mode, released, pressed;
   static u8 last[4]={0,0,0,0}, pin[4]={0,0,0,0}, state[4]={0,0,0,0};
   static uint32_t counterr[4]={0,0,0,0};
+  static u8 armmed[4]={0,0,0,0};
+  const uint32_t remap[15]={8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
   // LEDs: PD4,5,6,7
   // encoder: PD2, PD3
   // encoder switch: PB0
@@ -82,9 +88,12 @@ void main(void)
     */
     
     /* TODO:
-    - we just want 15 modes + timing of these (15 as no flash for 0) - 15 short, 15 long
-    - or we have different length of push... for length of trigger and priming
-    - flashing short or long when armed
+
+       Timings for: press long, flashings, trigger-FUSE//100ms/2s
+
+    - DONEwe just want 15 modes + timing of these (15 as no flash for 0) - length is length of push
+    - DONEwe have different length of push... for length of trigger and priming
+    - DONEflashing short or long when armed
     - modes to sketch and test
 
     - DONEport encoder: pins PD2, PD3 and switch is PB0 - A is ENC1, B is ENC0 // test switch also
@@ -92,7 +101,8 @@ void main(void)
     - DONEtest triggering of igniter: 0-3 is PD0, PD1, PB1, PB2
     - DONEtest input trigger signals: PC0-PC3 - tested!
      */
-
+    // set modes
+    if (!armed){ // change mode if we are not armed
     aState=(PIND&(1<<3))>>3;
      if ((aLastState == 1) && (aState == 0)) {       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
        if (((PIND&(1<<2))>>2) != aState) { 
@@ -100,37 +110,99 @@ void main(void)
      } else {
        counter --;
      }
-       if (counter<0) counter=15;
-       if (counter>15) counter=0;
+       if (counter<0) counter=14;
+       if (counter>14) counter=0;
      }
    aLastState = aState; 
-   // show bottom bits on LEDs
-   if (PINB&1 && former==0) { // test counting after this - no press/press/release
-     armed^=1;
-   }
-   former=PINB&1;
-   //   _delay_ms(1);
+    }
    
-   if (armed)  {
-     PORTD=counter<<4; // test switch
+    // armed or not and length of...
+    if (PINB&1 && former>100) {  // pressed so start to count...
+      pressed=1;
+      former=0;
    }
-   else PORTD=0;
+   if (pressed) presscnt++;
+   if (pressed && former>100) { // released
+     former=0;
+     pressed=0;
+     armed^=1;
+     if (armed) {
+       armmed[0]=1;
+       armmed[1]=1;
+       armmed[2]=1;
+       armmed[3]=1;
+       if (presscnt>48000) shortpress=0; // long - say 2 second press
+       else shortpress=1;
+     }
+     presscnt=0;
+   }
+   fom=PINB&1;
+   if (fom==0) former++;
+   
+   //   shortpress=0;
+   if (shortpress) howlong=2000;
+   else howlong=20000; // longer
+
+   // display
+   if (armed)  { // flash
+     flashcount++;
+     if (flashcount>howlong){ //10000 is fast
+	 flasher^=1;
+	 flashcount=0;
+       }
+     if (flasher) PORTD=(remap[counter])<<4; // display - but do flashing on armed with length
+     else PORTD&=0b00001111; // mask
+   }
+   else PORTD=(remap[counter])<<4; // display - but do flashing on armed with length
+     
+     //   else PORTD=0;
    
    //  DONE  - test triggering of igniter: 
    // pulses out: PD0, PD1, PB1, PB2
    // pulses in: PC0,PC1, PC2, PC3
    //   sbi(PORTB,1);
+  // DO MODES here mode is counter... 0-14
+
+   counter=0;
+   switch(counter){
+   case 0: // 1- trigger sets off each one whenever
+     for (u8 x=0;x<4;x++){
+       pin[x]=(PINC&(1<<x));
+
+       if (armmed[x] && pin[x] && (last[x]==0)) { // we just want leading edge... TRIGGER
+	 state[x]=1; // fired
+	 counterr[x]=0;
+	 if (x==0) sbi(PORTD,0);
+	 else if (x==1) sbi(PORTD,1);
+	 else if (x==2) sbi(PORTB,1);
+	 else sbi(PORTB,2);
+   }
+       if (state[x]==1 && armmed[x]) { // fired
+	 counterr[x]++;
+	 if (counterr[x]>1000) state[x]=0; // how to calibrate ??? TODO: do long and short
+	 if (x==0) cbi(PORTD,0);
+	 else if (x==1) cbi(PORTD,1);
+	 else if (x==2) cbi(PORTB,1);
+	 else cbi(PORTB,2);
+	 armmed[x]=0;
+	 if (armmed[0]==0 && armmed[1]==0 && armmed[2]==0 && armmed[3]==0) armed=0;
+       }
+       last[x]=pin[x];
+     }
+     break;
+   }
+   /*
    pin[0]=(PINC&1);
    if (armed && pin[0] && (last[0]==0)) { // we just want leading edge...
      state[0]=1; // fired
      counterr[0]=0;
-     sbi(PORTD,0);
-     _delay_ms(100);
+     //     sbi(PORTD,0);
+     //     _delay_ms(100);
      //     _delay_ms(2000); // test shorting at 2 secs
      cbi(PORTD,0);
    }
    last[0]=pin[0];
-
+   */
    /* // longer one 2 secs???
    if (state[0]==1 && armed) { // fired
      counterr[0]++;
@@ -139,6 +211,6 @@ void main(void)
    }
      else      cbi(PORTD,0);
    */
-   _delay_ms(10);
+   //   _delay_ms(10);
   } // while
 }    

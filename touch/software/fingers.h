@@ -22,7 +22,7 @@ typedef struct layers_ {
   zonel lodges[MAXLODGE]; // each layer has list of zones/lodges to record to // maybe sepera1te lodges from playback... why??? // 12 lodges - we need more
   uint32_t num_lodges;
   uint32_t rcnt;
-  uint32_t ind; // in the layer
+  uint32_t ind; // we are in the layer
 } layers;
 
     enum STATE {

@@ -16,6 +16,8 @@ specs now:
 ematch: 1/10th second ignition 2A = 100 ms
 talon (clip on igniter): 2 seconds
 
+*what is voltage for input? 12V*
+
 question of any delay after trigger: none!
 
 +also if we can fire in series/parallel??!?? and how many+
@@ -33,13 +35,13 @@ question of any delay after trigger: none!
 
 eg.
 
-1- trigger sets off each one
+1- trigger sets off each oneXX
 2- trigger on first sets off all
-3- trigger on first sets off each at interval (how that is determined?)
-4- trigger on first primes rest to set off on their own trigger 
+3- trigger on first sets off each in series at interval (how that is determined?)
+4- trigger on first sets off first and then primes rest to set off on their own trigger 
 5- pair arms or primes other - so one goes off after other 
 6- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
-X- trigger within time window on all sets off all  // different size of windows below
+X- trigger within time window on all sets off all???  // different size of windows below
 X- same for pairs in window // different size of windows below
 
 set a delay of x Ms from now
@@ -54,11 +56,15 @@ TODO more modes ->15
 
 ** TODO:
 
-- reverse display count (check again) and eliminate the 0
-- flash display mode + length etc.
+- DONEreverse display count (check again) and eliminate the 0
+- DONElength as length of press
+- DONEflash display mode + length etc.
 - implement and test all modes and timings
+
+*on first mode but we need to pin down approx all timings and if they vary much???*
+
 - video/manual (burnt manual card?)
-- prototype order jlcpcb (did we do by hand before?)
+- prototype order jlcpcb - waiting for XTAL!
 
 
 ** 29/2/2024
@@ -84,7 +90,7 @@ short or long press: 1/10th / 2 secs
 
 TODO:
 
-- test 4 triggers at same time - heat residue - how to measure?
+- +test 4 triggers at same time - heat residue - how to measure?+
 - +test 2 second short?+
 - +NONdefine say 8 modes and 3 sets of timings+ - how many things on encoder?? 24 detents // checked
 
