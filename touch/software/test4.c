@@ -1,4 +1,5 @@
 #include "stdio.h"
+#include <time.h>
 #include <stdint.h>
 #include "math.h"
 #include "stdlib.h"
@@ -25,7 +26,7 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
       rec[f[d].masterL[0]].lodges[x].delcnt++;
     if (rec[f[d].masterL[0]].lodges[x].delcnt>=rec[f[d].masterL[0]].lodges[x].offset && (rec[f[d].masterL[0]].lodges[x].delcnt<=(rec[f[d].masterL[0]].lodges[x].offset+rec[f[d].masterL[0]].lodges[x].end-rec[f[d].masterL[0]].lodges[x].start))) {     
       tmpx=rec[f[d].masterL[0]].lodges[x].cnt+rec[f[d].masterL[0]].lodges[x].start;
-      if (rec[f[d].masterL[0]].lodges[x].over==0) rec[f[d].masterL[0]].lodges[x].realend=tmpx+1; //**
+      if (rec[f[d].masterL[0]].lodges[x].over==0) rec[f[d].masterL[0]].lodges[x].realend=tmpx; //**
       
       if (tmpx>rec[f[d].masterL[0]].lodges[x].end) { // now we want final delay before we start again
 	rec[f[d].masterL[0]].lodges[x].realend=rec[f[d].masterL[0]].lodges[x].end;
@@ -131,7 +132,7 @@ uint32_t R_addlodgesx(uint32_t d, uint32_t V_options, uint32_t R_options){ // ea
       f[d].rl[f[d].masterL[0]].lodges[0].cnt=0;
       f[d].rl[f[d].masterL[0]].lodges[0].delcnt=0;
       f[d].pl[f[d].masterL[0]].lodges[0].delcntt=0;
-      //      f[d].rl[f[d].masterL[0]].lodges[0].start=0;
+      f[d].rl[f[d].masterL[0]].lodges[0].start=0;
       f[d].rl[f[d].masterL[0]].lodges[0].offset=0;
       f[d].rl[f[d].masterL[0]].lodges[0].delay=0; // looping???
       f[d].rl[f[d].masterL[0]].lodges[0].end=MAXREC; 
@@ -139,11 +140,11 @@ uint32_t R_addlodgesx(uint32_t d, uint32_t V_options, uint32_t R_options){ // ea
     else {
       tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1;
       f[d].rl[f[d].masterL[0]].lodges[tmpx].cnt=0;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcnt=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+1; // doesn't matter
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcnt=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend); // doesn't matter
       f[d].pl[f[d].masterL[0]].lodges[tmpx].delcntt=f[d].pl[f[d].masterL[0]].lodges[tmpx-1].delcntt;
       printf("here x %d delcntt %f \n", tmpx, f[d].pl[f[d].masterL[0]].lodges[tmpx].delcntt);
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].start=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend+1; 
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+1; // start right away
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].start=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend; //**
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend); //** start right away
       f[d].rl[f[d].masterL[0]].lodges[tmpx].delay=0; // to come later
       f[d].rl[f[d].masterL[0]].lodges[tmpx].end=MAXREC; // to come later
       f[d].rl[f[d].masterL[0]].lodges[tmpx-1].flag=1; // stop the last one TODO: remember to reset
@@ -159,43 +160,53 @@ void R_addlodges_leave(uint32_t d){
   // if we were recording then close it...
       if (    f[d].rl[f[d].masterL[0]].ind==1){ // we were recording so set end point of last one and add all delays
 	tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1; // lodge we just left
-	f[d].rl[f[d].masterL[0]].lodges[tmpx].end=f[d].rl[f[d].masterL[0]].lodges[tmpx].realend;
+	//	f[d].rl[f[d].masterL[0]].lodges[tmpx].end=f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-1;
 	//	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend;  // previous end
 	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
-	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start+1); // FIX!
+	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start); // FIX!
 	}
 	//	f[d].ind=0;
 	f[d].rl[f[d].masterL[0]].ind=0;
       }
       f[d].leaver=0;
+      f[d].entryr=0;
 }
+
+inline static float mod0(float value, uint32_t length)
+{
+  while ((int)value > (length-1)){
+        value -= length;
+	//	printf("val %f length %d\n", value, length);
+  }
+    return value;
+}
+
 
 uint32_t playlodge(float speed1, float speed2, uint32_t d, uint32_t P_options){ // pass in the p/layers
   uint32_t x, y, tmpx, tmpxx, lay;
   uint32_t sample=0;
+  static uint32_t firsty=0;
   // tape 0 lowerP
-  for (x=0;x<f[d].pl[f[d].masterL[1]].num_lodges;x++){
-    //    printf("here\n");
-    if (f[d].pl[f[d].masterL[1]].lodges[x].delcntt>=f[d].pl[f[d].masterL[1]].lodges[x].offset && (f[d].pl[f[d].masterL[1]].lodges[x].delcntt<=(f[d].pl[f[d].masterL[1]].lodges[x].offset+f[d].pl[f[d].masterL[1]].lodges[x].realend-f[d].pl[f[d].masterL[1]].lodges[x].start)-1)) {     
-      tmpx=f[d].pl[f[d].masterL[1]].lodges[x].cntt+f[d].pl[f[d].masterL[1]].lodges[x].start;
-      f[d].pl[f[d].masterL[1]].lodges[x].cntt+=speed1;
-
-      if (tmpx>((f[d].pl[f[d].masterL[1]].lodges[x].realend-1))) { // now we want final delay before we start again
-	tmpx=tmpx-f[d].pl[f[d].masterL[1]].lodges[x].realend;
-	//	tmpx=f[d].pl[f[d].masterL[1]].lodges[x].start;
-	f[d].pl[f[d].masterL[1]].lodges[x].cntt=tmpx+speed1;
-	tmpx=tmpx+f[d].pl[f[d].masterL[1]].lodges[x].start;
-
-      }
-      if (tmpx>=MAXREC) tmpx=MAXREC-1;
-      //      sample=overlayx(recordings[d][tmpx]&BOTS, sample, (P_options>>5)&3); // deal with overlap
-      printf("play: x %d tmpx %d tmpxx %d cntt %f delcntt %f del0 %f start %d end %d delay %d\n", x, tmpx, tmpxx, f[d].pl[f[d].masterL[1]].lodges[x].cntt, f[d].pl[f[d].masterL[1]].lodges[x].delcntt, f[d].pl[f[d].masterL[1]].lodges[0].delcntt, f[d].pl[f[d].masterL[1]].lodges[x].start, f[d].pl[f[d].masterL[1]].lodges[x].realend, f[d].pl[f[d].masterL[1]].lodges[x].delay);
-	    
-    } //XX
-    //    else printf("xxx delcnt0 %f \n", f[d].pl[f[d].masterL[1]].lodges[0].delcntt);
-    if (f[d].pl[f[d].masterL[1]].lodges[x].delcntt>=(f[d].pl[f[d].masterL[1]].lodges[x].offset+f[d].pl[f[d].masterL[1]].lodges[x].realend+f[d].pl[f[d].masterL[1]].lodges[x].delay-f[d].pl[f[d].masterL[1]].lodges[x].start)-1) f[d].pl[f[d].masterL[1]].lodges[x].delcntt-=(f[d].pl[f[d].masterL[1]].lodges[x].offset+f[d].pl[f[d].masterL[1]].lodges[x].realend+f[d].pl[f[d].masterL[1]].lodges[x].delay-f[d].pl[f[d].masterL[1]].lodges[x].start);
-    else f[d].pl[f[d].masterL[1]].lodges[x].delcntt+=speed1;
+    printf("\ncall\n");
+    for (x=0;x<f[d].pl[f[d].masterL[1]].num_lodges;x++){
+    f[d].pl[f[d].masterL[1]].lodges[x].delcntt=mod0(f[d].pl[f[d].masterL[1]].lodges[x].delcntt+speed1, (f[d].pl[f[d].masterL[1]].lodges[x].offset+f[d].pl[f[d].masterL[1]].lodges[x].realend+f[d].pl[f[d].masterL[1]].lodges[x].delay-f[d].pl[f[d].masterL[1]].lodges[x].start));
   }
+  
+    for (x=0;x<f[d].pl[f[d].masterL[1]].num_lodges;x++){
+  
+      if (f[d].pl[f[d].masterL[1]].lodges[x].delcntt>=f[d].pl[f[d].masterL[1]].lodges[x].offset && (f[d].pl[f[d].masterL[1]].lodges[x].delcntt<(f[d].pl[f[d].masterL[1]].lodges[x].offset+f[d].pl[f[d].masterL[1]].lodges[x].realend-f[d].pl[f[d].masterL[1]].lodges[x].start))) {     // ***
+
+	tmpx=f[d].pl[f[d].masterL[1]].lodges[x].cntt+f[d].pl[f[d].masterL[1]].lodges[x].start;
+	//	tmpx=f[d].pl[f[d].masterL[1]].lodges[x].delcntt; // start and offset calcs???
+	
+	    if (tmpx>=MAXREC) tmpx=MAXREC-1;
+      //      sample=overlayx(recordings[d][tmpx]&BOTS, sample, (P_options>>5)&3); // deal with overlap
+      printf("play: x %d tmpx %d cntt %f delcntt %f del0 %f del1 %f start %d end %d delay %d\n", x, tmpx, f[d].pl[f[d].masterL[1]].lodges[x].cntt, f[d].pl[f[d].masterL[1]].lodges[x].delcntt, f[d].pl[f[d].masterL[1]].lodges[0].delcntt, f[d].pl[f[d].masterL[1]].lodges[1].delcntt, f[d].pl[f[d].masterL[1]].lodges[x].start, f[d].pl[f[d].masterL[1]].lodges[x].realend, f[d].pl[f[d].masterL[1]].lodges[x].delay);
+      f[d].pl[f[d].masterL[1]].lodges[x].cntt=mod0(f[d].pl[f[d].masterL[1]].lodges[x].cntt+speed1, f[d].pl[f[d].masterL[1]].lodges[x].realend-f[d].pl[f[d].masterL[1]].lodges[x].start);
+    } //XX
+  
+      //      else  printf("x %d delxxx delcnt0 %f delcnt 1 %f\n", x, f[d].pl[f[d].masterL[1]].lodges[0].delcntt, f[d].pl[f[d].masterL[1]].lodges[1].delcntt);
+    }
   return sample;  
 }
 
@@ -239,7 +250,7 @@ uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options,
       tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1;
       f[d].rl[f[d].masterL[0]].lodges[tmpx].cnt=0;
       f[d].rl[f[d].masterL[0]].lodges[tmpx].flag=0; 
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcnt=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+1;
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcnt=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend);
       f[d].rl[f[d].masterL[0]].lodges[tmpx].delcntt=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].delcntt;
       f[d].rl[f[d].masterL[0]].lodges[tmpx].start=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend; 
       f[d].rl[f[d].masterL[0]].lodges[tmpx].sil=f[d].rl[f[d].masterL[0]].rcnt;
@@ -298,10 +309,19 @@ void main(void){
   }
 
   for (x=0;x<16;x++){
-    R_addlodges_silence(0, 0, 0, x);
+    R_addlodgesx(0, 0, 0);
   }
-  R_addlodges_silence(0, 0, 0, 0);
+  
+  //  f[0].entryr=0;
+  //  R_addlodges_silence(0, 0, 0, 0);
+  printf("leave");
+  R_addlodges_leave(0);
 
+  /*  for (x=0;x<16;x++){
+    R_addlodgesx(0, 0, 0);
+  }
+  R_addlodges_leave(0);
+  */
   /*
   for (x=6;x<19;x++){
     R_addlodges_silence(0, 0, 0, x);
@@ -338,7 +358,7 @@ void main(void){
   */
   
     for (x=0;x<f[0].rl[f[0].masterL[0]].num_lodges;x++){
-      printf("no: %d offset: %d start: %d end: %d delay: %d flag %d fulldel %d \n", x, f[0].rl[f[0].masterL[0]].lodges[x].offset, f[0].rl[f[0].masterL[0]].lodges[x].start, f[0].rl[f[0].masterL[0]].lodges[x].end, f[0].rl[f[0].masterL[0]].lodges[x].delay,   f[0].rl[0].lodges[x].flag, (f[0].rl[f[0].masterL[0]].lodges[x].offset+f[0].rl[f[0].masterL[0]].lodges[x].realend+f[0].rl[f[0].masterL[0]].lodges[x].delay-f[0].rl[f[0].masterL[0]].lodges[x].start));
+      printf("no: %d offset: %d start: %d end: %d delay: %d flag %d fulldel %d \n", x, f[0].rl[f[0].masterL[0]].lodges[x].offset, f[0].rl[f[0].masterL[0]].lodges[x].start, f[0].rl[f[0].masterL[0]].lodges[x].realend, f[0].rl[f[0].masterL[0]].lodges[x].delay,   f[0].rl[0].lodges[x].flag, (f[0].rl[f[0].masterL[0]].lodges[x].offset+f[0].rl[f[0].masterL[0]].lodges[x].realend+f[0].rl[f[0].masterL[0]].lodges[x].delay-f[0].rl[f[0].masterL[0]].lodges[x].start));
   }
   
   
@@ -362,17 +382,25 @@ void main(void){
         f[0].pl[f[0].masterL[1]].num_lodges=f[0].rl[f[0].masterL[1]].num_lodges;
     for (x=0;x<f[0].rl[f[0].masterL[1]].num_lodges;x++){
       f[0].pl[f[0].masterL[1]].lodges[x].delcntt=f[0].rl[f[0].masterL[0]].lodges[x].delcntt;
+      printf("x %d xx delcntt %f", x, f[0].pl[f[0].masterL[1]].lodges[x].delcntt);
       f[0].pl[f[0].masterL[1]].lodges[x].offset=f[0].rl[f[0].masterL[0]].lodges[x].offset;
       f[0].pl[f[0].masterL[1]].lodges[x].delay=f[0].rl[f[0].masterL[0]].lodges[x].delay;
       f[0].pl[f[0].masterL[1]].lodges[x].start=f[0].rl[f[0].masterL[0]].lodges[x].start;
       f[0].pl[f[0].masterL[1]].lodges[x].realend=f[0].rl[f[0].masterL[0]].lodges[x].realend;
     }
+    printf("COPYIN\n");
+
+    srand(time(NULL));   // Initialization, should only be called once.
+
     
-    for (x=0;x<20;x++){
-      playlodge(1.0f, 1.0f, 0, 0);      
+    for (x=0;x<10024;x++){
+      uint32_t rr=rand()%1024;
+      float speedy=logfast[rr];
+      printf("speedy %f\n",speedy);
+      playlodge(speedy, speedy, 0, 0);      
   }
 
-
+    /*    
       for (x=0;x<32;x++){
     R_addlodges_silence(0, 0, 0, x);
   }
@@ -382,9 +410,9 @@ void main(void){
     R_addlodges_silence(0, 0, 0, x);
   }
   R_addlodges_silence(0, 0, 0, 0);
-
+    */
     // copy in and play...
-
+    
         f[0].pl[f[0].masterL[1]].num_lodges=f[0].rl[f[0].masterL[1]].num_lodges;
     for (x=0;x<f[0].rl[f[0].masterL[1]].num_lodges;x++){
       f[0].pl[f[0].masterL[0]].lodges[x].delcntt=f[0].rl[f[0].masterL[0]].lodges[x].delcntt;
@@ -393,16 +421,13 @@ void main(void){
       f[0].pl[f[0].masterL[0]].lodges[x].start=f[0].rl[f[0].masterL[0]].lodges[x].start;
       f[0].pl[f[0].masterL[0]].lodges[x].realend=f[0].rl[f[0].masterL[0]].lodges[x].realend;
     }
-
-    for (x=0;x<f[0].rl[f[0].masterL[0]].num_lodges;x++){
-      printf("no: %d offset: %d start: %d end: %d delay: %d flag %d fulldel %d \n", x, f[0].rl[f[0].masterL[0]].lodges[x].offset, f[0].rl[f[0].masterL[0]].lodges[x].start, f[0].rl[f[0].masterL[0]].lodges[x].end, f[0].rl[f[0].masterL[0]].lodges[x].delay,   f[0].rl[0].lodges[x].flag,  (f[0].rl[f[0].masterL[0]].lodges[x].offset+f[0].rl[f[0].masterL[0]].lodges[x].realend+f[0].rl[f[0].masterL[0]].lodges[x].delay-f[0].rl[f[0].masterL[0]].lodges[x].start));
-  }
+    
 
     
 
-    for (x=0;x<400;x++){
-      playlodge(2.0f, 1.0f, 0, 0);      
-  }
+    //    for (x=0;x<20;x++){
+    //      playlodge(1.0f, 1.0f, 0, 0);      
+    //  }
 
      
 }
