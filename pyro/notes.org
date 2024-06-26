@@ -34,9 +34,9 @@ question of any delay after trigger: none!
 - different modes eg. single trigger sets off all, at interval x... next on x does x... enables/etc, length of pulse out
 
 eg.
-
+TO TEST!
 1- trigger sets off each oneXX
-2- trigger on first sets off all
+2- trigger on first sets off allXX
 3- trigger on first sets off each in series at interval (how that is determined?)
 4- trigger on first sets off first and then primes rest to set off on their own trigger 
 5- pair arms or primes other - so one goes off after other 
@@ -66,6 +66,9 @@ TODO more modes ->15
 - video/manual (burnt manual card?)
 - prototype order jlcpcb - waiting for XTAL!
 
+** 25/6/2024
+- basic infrastructure implemented, tested though timing still to check... and TESTS of first 2 modes
+- remaining modes TODO
 
 ** 29/2/2024
 

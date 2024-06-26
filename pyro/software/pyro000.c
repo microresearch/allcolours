@@ -58,7 +58,7 @@ void main(void)
   static int counter = 0; 
   u8 aState, fom=0;
   uint32_t howlong=0;
-  static uint32_t flashcount=0, presscnt;
+  static uint32_t flashcount=0, presscnt, pulslength;
   static u8 flasher=0, shortpress;
   static u8 aLastState=0;
   static u8 mode, released, pressed;
@@ -140,9 +140,14 @@ void main(void)
    if (fom==0) former++;
    
    //   shortpress=0;
-   if (shortpress) howlong=2000;
-   else howlong=20000; // longer
-
+   if (shortpress) {
+     howlong=2000;
+     pulslength=200; // TODO: calibrate
+   }
+   else {
+     howlong=20000; // longer
+     pulslength=100000; // TODO: calibrate
+   }
    // display
    if (armed)  { // flash
      flashcount++;
@@ -179,7 +184,7 @@ void main(void)
    }
        if (state[x]==1 && armmed[x]) { // fired
 	 counterr[x]++;
-	 if (counterr[x]>1000) state[x]=0; // how to calibrate ??? TODO: do long and short
+	 if (counterr[x]>pulslength) state[x]=0; // how to calibrate ??? TODO: do long and short
 	 if (x==0) cbi(PORTD,0);
 	 else if (x==1) cbi(PORTD,1);
 	 else if (x==2) cbi(PORTB,1);
@@ -190,7 +195,28 @@ void main(void)
        last[x]=pin[x];
      }
      break;
+   case 1: // 2- trigger on first sets off all at once...
+     pin[0]=(PINC&1);
+       if (armed && pin[0] && (last[0]==0)) { // we just want leading edge... TRIGGER
+	 state[0]=1; // fired
+	 counterr[0]=0;
+	 sbi(PORTD,0);
+	 sbi(PORTD,1);
+	 sbi(PORTB,1);
+	 sbi(PORTB,2);
    }
+       if (state[0]==1 && armed) { // fired
+	 counterr[0]++;
+	 if (counterr[0]>pulslength) state[0]=0; // how to calibrate ??? TODO: do long and short
+	 cbi(PORTD,0);
+	 cbi(PORTD,1);
+	 cbi(PORTB,1);
+	 cbi(PORTB,2);
+	 armed=0;
+       }
+       last[0]=pin[0];
+     break;
+   } // end switch
    /*
    pin[0]=(PINC&1);
    if (armed && pin[0] && (last[0]==0)) { // we just want leading edge...
