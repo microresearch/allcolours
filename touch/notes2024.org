@@ -465,9 +465,32 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 * diary notes
 
+** 26/6
+
+- fixes and fine in simulation but still clicks in all speeds
+- also value still rising in overlay - to adjust senitivities
+
 ** 25/6
 
-/// *playlodge is a mess with everything and speeds too*
+*fix: clicks at 1.0f and high speeds in playback??? - in test4.c playlodge has speed issues with more than one lodge TO FIX!*
+
+- now clicks with basic speed...
+
+To test:
+- speeds with playlodge and multiple zones
+- swopping again and options for RP
+
+- micromodes... (<2sec press)... for each state and micromodes are now per layer and mode
+- active/inactive and micromodes
+- overlay and overlayx micromodes
+- test new R modes - leave and come back in, overlap length
+- modulations of incoming voltages with REC
+
+- speeds in playback and micromodes there...
+
+- *finish layers where necessary -*
+
+/////// *playlodge is a mess with everything and speeds too*
 
 - resolved a bit in test4.c for 1.0f but still speed issue - must be in playlodge - see how it sounds
 - DONETODO: port in new bits//test speeds faster with extra zones
@@ -550,6 +573,7 @@ NOTEbook notes:
 - function to find which zones are within a region // other helper functions
 - define blocks which are not overlaid
 - mobile blocks
+- split of layers so eg. one layer has say 3 zones defined by CTRL threshold and other has 1 zone which is continuous CTRL we used ...
 
 ** 24/6
 
@@ -567,19 +591,6 @@ TODO:
 Tests:
 - DONEXXlayerswop/in NADA we have freeze: fixed
 - DONEXXRP mode - should overlay? NOT! we need there new RP_options and reclodgex
-
-
-- micromodes... (<2sec press)... for each state and micromodes are now per layer and mode
-- active/inactive and micromodes
-- overlay and overlayx micromodes
-- test new R modes - leave and come back in, overlap length
-- modulations of incoming voltages with REC
-
-- speeds in playback and micromodes there...
-
-*fix: clicks at high speeds in playback??? - in test4.c playlodge has speed issues with more than one lodge TO FIX!*
-
-- *finish layers where necessary -*
 
 //
 *now we have overlayl which is for CTRL layer overlay - test with finished layers*
@@ -1013,6 +1024,8 @@ Note that *delay in zones for length of prev zone means we can have sequences*
 - *zones* how playlist can also have overlaps? so that it is not sequential: same as zones with delays too? playlist become play zones (same format)
 
 now we have same zone scheme for playlist - but is 2 sets per layer... one of them is the parameter!
+
+*XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX*
 
 ** 3/6 + to try to finish// notes overview...
 
