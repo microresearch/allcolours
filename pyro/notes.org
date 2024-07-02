@@ -1,3 +1,9 @@
+** description/manual
+
+- video/manual (burnt manual card?)
+
+
+
 ** pyro module for 4 triggers
 
 prog: HEADER from top: reset, MOSI, MISO, SCK, GND = BLACK at top now!
@@ -64,7 +70,7 @@ TODO more modes ->15
 *on first mode but we need to pin down approx all timings and if they vary much???*
 
 - video/manual (burnt manual card?)
-- prototype order jlcpcb - waiting for XTAL!
+- DONE: 28/6/2024 +prototype order jlcpcb - waiting for XTAL!+ but now needs amp part ordered from mouser...
 
 ** 25/6/2024
 - basic infrastructure implemented, tested though timing still to check... and TESTS of first 2 modes
