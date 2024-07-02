@@ -1,3 +1,149 @@
+//TODO: linkage and attachment, does each lodge/zone have a function attached?
+void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t R_options){ // pass in the p/layers
+  uint32_t x, y, tmpx, tmpxx, lay;
+  float speed1=1.0f;
+  // tape 0 lower
+  for (x=0;x<rec[f[d].masterL[0]].num_lodges;x++){
+  if (rec[f[d].masterL[0]].lodges[x].flag==0)
+    {
+    f[d].rl[f[d].masterL[0]].lodges[x].delcnt=mod0(f[d].rl[f[d].masterL[0]].lodges[x].delcnt+speed1, (f[d].rl[f[d].masterL[0]].lodges[x].offset+f[d].rl[f[d].masterL[0]].lodges[x].realend+f[d].rl[f[d].masterL[0]].lodges[x].delay-f[d].rl[f[d].masterL[0]].lodges[x].start));
+  }
+  }
+  
+  for (x=0;x<rec[f[d].masterL[0]].num_lodges;x++){
+      if (rec[f[d].masterL[0]].lodges[x].flag==0)
+    if (rec[f[d].masterL[0]].lodges[x].delcnt>=rec[f[d].masterL[0]].lodges[x].offset && (rec[f[d].masterL[0]].lodges[x].delcnt<=(rec[f[d].masterL[0]].lodges[x].offset+rec[f[d].masterL[0]].lodges[x].end-rec[f[d].masterL[0]].lodges[x].start))) {
+
+	if (f[d].rl[f[d].masterL[0]].lodges[x].offset>=(f[d].rl[f[d].masterL[0]].lodges[x].offset-f[d].rl[f[d].masterL[0]].lodges[x].start)){
+	    tmpx=((f[d].rl[f[d].masterL[0]].lodges[x].delcntt)-(f[d].rl[f[d].masterL[0]].lodges[x].offset-f[d].rl[f[d].masterL[0]].lodges[x].start));
+	  }
+	  else {
+	    tmpx=((f[d].rl[f[d].masterL[0]].lodges[x].delcntt)+(f[d].rl[f[d].masterL[0]].lodges[x].start-f[d].rl[f[d].masterL[0]].lodges[x].offset));
+	  }
+	if (tmpx>=MAXREC) tmpx=MAXREC-1;
+      
+      if (rec[f[d].masterL[0]].lodges[x].over==0) rec[f[d].masterL[0]].lodges[x].realend=tmpx; //**
+
+      if (f[d].masterL[0]==0) {
+	tmpxx=overlayx(value, (recordings[d][tmpx]&TOP), (R_options>>2)&3);
+	reclayerlower(tmpxx, tmpx, d);
+      }
+	      else {
+		tmpxx=overlayx(value, (recordings[d][tmpx]>>16), (R_options>>2)&3); // fixed
+		reclayerupper(tmpxx, tmpx, d); 
+	      }	
+    }
+  }
+}
+
+  //// -> reclodge
+
+  //  uint32_t playlodge(float speed1, float speed2, uint32_t d, uint32_t P_options){ // pass in the p/layers
+  uint32_t x, y, tmpx, tmpxx, lay;
+  for (x=0;x<f[d].pl[f[d].masterL[1]].num_lodges;x++){
+    f[d].pl[f[d].masterL[1]].lodges[x].delcntt=mod0(f[d].pl[f[d].masterL[1]].lodges[x].delcntt+speed1, (f[d].pl[f[d].masterL[1]].lodges[x].offset+f[d].pl[f[d].masterL[1]].lodges[x].realend+f[d].pl[f[d].masterL[1]].lodges[x].delay-f[d].pl[f[d].masterL[1]].lodges[x].start));
+  }
+  
+    for (x=0;x<f[d].pl[f[d].masterL[1]].num_lodges;x++){
+  
+      if (f[d].pl[f[d].masterL[1]].lodges[x].delcntt>=f[d].pl[f[d].masterL[1]].lodges[x].offset && (f[d].pl[f[d].masterL[1]].lodges[x].delcntt<=(f[d].pl[f[d].masterL[1]].lodges[x].offset+f[d].pl[f[d].masterL[1]].lodges[x].realend-f[d].pl[f[d].masterL[1]].lodges[x].start))) {     // ***
+
+	//		tmpx=f[d].pl[f[d].masterL[1]].lodges[x].cntt+f[d].pl[f[d].masterL[1]].lodges[x].start;
+	if (f[d].pl[f[d].masterL[1]].lodges[x].offset>=(f[d].pl[f[d].masterL[1]].lodges[x].offset-f[d].pl[f[d].masterL[1]].lodges[x].start)){
+	    tmpx=((f[d].pl[f[d].masterL[1]].lodges[x].delcntt)-(f[d].pl[f[d].masterL[1]].lodges[x].offset-f[d].pl[f[d].masterL[1]].lodges[x].start));
+	  }
+	  else {
+	    tmpx=((f[d].pl[f[d].masterL[1]].lodges[x].delcntt)+(f[d].pl[f[d].masterL[1]].lodges[x].start-f[d].pl[f[d].masterL[1]].lodges[x].offset));
+	  }
+	
+	if (tmpx>=MAXREC) tmpx=MAXREC-1;
+	if (f[d].masterL[1]==0) sample=overlayx(recordings[d][tmpx]&TOP, sample, (P_options>>5)&3); // deal with overlap of zones in one layer DONE
+	else sample=overlayx(recordings[d][tmpx]>>16, sample, (P_options>>5)&3); // top layer
+      
+    } 
+    }
+}
+
+  
+  // opposite layer...
+  lay=f[d].masterL[0]^1; 
+  for (x=0;x<f[d].rl[lay].num_lodges;x++){
+  if (rec[lay].lodges[x].flag==0){
+    rec[lay].lodges[x].delcnt++;
+    if (rec[lay].lodges[x].delcnt>=rec[lay].lodges[x].offset && (rec[lay].lodges[x].delcnt<=(rec[lay].lodges[x].offset+rec[lay].lodges[x].end-rec[lay].lodges[x].start))) {     
+      tmpx=rec[lay].lodges[x].cnt+rec[lay].lodges[x].start;
+      if (rec[lay].lodges[x].over==0) rec[lay].lodges[x].realend=tmpx; // fixed
+      if (tmpx>rec[lay].lodges[x].end) { // now we want final delay before we start again
+	rec[lay].lodges[x].realend=rec[lay].lodges[x].end;
+	tmpx=rec[lay].lodges[x].start;
+	rec[lay].lodges[x].cnt=0;
+	rec[lay].lodges[x].over=1;
+    }
+      if (lay==0) {
+      tmpxx=overlayx(layerval, (recordings[d][tmpx]&TOP), (R_options>>2)&3); 
+      reclayerlower(tmpxx, tmpx, d);
+      }
+      else {
+      tmpxx=overlayx(layerval, (recordings[d][tmpx]>>16), (R_options>>2)&3); // fixed
+      reclayerupper(tmpxx, tmpx, d); 
+      }	
+      rec[lay].lodges[x].cnt++;
+    }
+  }
+    if (rec[lay].lodges[x].delcnt>=(rec[lay].lodges[x].offset+rec[lay].lodges[x].end+rec[lay].lodges[x].delay-rec[lay].lodges[x].start)) rec[lay].lodges[x].delcnt=0;
+  }
+}
+
+//TODO: linkage and attachment, does each lodge/zone have a function attached?
+// this one uses 
+void reclodgeRP(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t RP_options){ // pass in the p/layers
+  uint32_t x, y, tmpx, tmpxx, lay;
+  // tape 0 lower
+  for (x=0;x<rec[f[d].masterL[0]].num_lodges;x++){
+  if (rec[f[d].masterL[0]].lodges[x].flag==0)
+    {
+    rec[f[d].masterL[0]].lodges[x].delcnt++; 
+    if (rec[f[d].masterL[0]].lodges[x].delcnt>=rec[f[d].masterL[0]].lodges[x].offset && (rec[f[d].masterL[0]].lodges[x].delcnt<=(rec[f[d].masterL[0]].lodges[x].offset+rec[f[d].masterL[0]].lodges[x].end-rec[f[d].masterL[0]].lodges[x].start))) {     
+      tmpx=rec[f[d].masterL[0]].lodges[x].cnt+rec[f[d].masterL[0]].lodges[x].start;
+      if (rec[f[d].masterL[0]].lodges[x].over==0) rec[f[d].masterL[0]].lodges[x].realend=tmpx+1; 
+      if (tmpx>rec[f[d].masterL[0]].lodges[x].end) { // now we want final delay before we start again
+	rec[f[d].masterL[0]].lodges[x].realend=rec[f[d].masterL[0]].lodges[x].end;
+	tmpx=rec[f[d].masterL[0]].lodges[x].start;
+	rec[f[d].masterL[0]].lodges[x].cnt=0;
+	rec[f[d].masterL[0]].lodges[x].over=1;
+    }
+      tmpxx=overlayRP(value, (recordings[d][tmpx]&TOP), (RP_options)&7); // OVERLAY
+      reclayerlower(tmpxx, tmpx, d);
+      rec[f[d].masterL[0]].lodges[x].cnt++;
+    }
+  }
+    if (rec[f[d].masterL[0]].lodges[x].delcnt>=(rec[f[d].masterL[0]].lodges[x].offset+rec[f[d].masterL[0]].lodges[x].end+rec[f[d].masterL[0]].lodges[x].delay-rec[f[d].masterL[0]].lodges[x].start)) rec[f[d].masterL[0]].lodges[x].delcnt=0;
+  }
+  // opposite layer...
+  lay=f[d].masterL[0]^1; 
+  for (x=0;x<f[d].rl[lay].num_lodges;x++){
+  if (rec[lay].lodges[x].flag==0){
+    rec[lay].lodges[x].delcnt++;
+    if (rec[lay].lodges[x].delcnt>=rec[lay].lodges[x].offset && (rec[lay].lodges[x].delcnt<=(rec[lay].lodges[x].offset+rec[lay].lodges[x].end-rec[lay].lodges[x].start))) {     
+      tmpx=rec[lay].lodges[x].cnt+rec[lay].lodges[x].start;
+      if (rec[lay].lodges[x].over==0) rec[lay].lodges[x].realend=tmpx; // fixed
+      if (tmpx>rec[lay].lodges[x].end) { // now we want final delay before we start again
+	rec[lay].lodges[x].realend=rec[lay].lodges[x].end;
+	tmpx=rec[lay].lodges[x].start;
+	rec[lay].lodges[x].cnt=0;
+	rec[lay].lodges[x].over=1;
+    }
+      tmpxx=overlay(layerval, (recordings[d][tmpx]>>16), (RP_options)&7); // OVERLAY
+      reclayerupper(tmpxx, tmpx, d); // fixed! as was lower by mistake
+      rec[lay].lodges[x].cnt++;
+    }
+  }
+    if (rec[lay].lodges[x].delcnt>=(rec[lay].lodges[x].offset+rec[lay].lodges[x].end+rec[lay].lodges[x].delay-rec[lay].lodges[x].start)) rec[lay].lodges[x].delcnt=0;
+  }
+}
+
+////
+
 uint32_t RP_basic(uint32_t d, uint32_t V_options, uint32_t P_options, uint32_t R_options, uint32_t RP_options){
   uint32_t pp, other, tmpp, tmp;
   if (f[d].entryrp==0){
