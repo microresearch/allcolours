@@ -23,8 +23,6 @@ NO!livevalue/overlay of globals??? - do we want that as can always hand sync
 
 ////
 
-Q of global speed... *??? new top ADC is global control. also we have sync functions ????*
-
 - ghost hands
 - detached hand swop//cut off hand
 - inversion - up is down // down is up
@@ -41,7 +39,7 @@ Q of global speed... *??? new top ADC is global control. also we have sync funct
 - speed of playback, speed of selector
 - gating on/off with threshold =  *stop/start playback*
 - +how much we let through (volume of signal - see above) - also inversion of this amount+
-- *TODO for CTRL:add to/subtract from value*: DONE:don't store limited/4095 value but only output* store up to 16 bits depending on mode/eg if % then just do that...
+- *TODO for CTRL:add to/subtract from value*: DEP: +DONE:don't store limited/4095 value but only output/store up to 16 bits depending on mode/eg if % then just do that+
 - marking of zones
 - logical operations to list/zones, start and end, flow, attachments
 
@@ -116,6 +114,8 @@ REC: ADC->overlay to other tape // freeze as swop main tape... // further REC ad
 PLAY: ADC->speed // freeze is swop // do we add to list on swop/play-play? yes try that
 REC+PLAY: ADC->speed/bounce/rec with overlay to other tape // freeze is swop // what does voltage do (overlay same tape minormodes here)
 
+DEP:
+
 // single play zone, option for bounce to extend the single zone // extend any zone with a rec!
 
 *1- basic mode plays back playlist without add to playlist:*
@@ -126,7 +126,7 @@ in RP?
 
 //
 
-Nada: add global from top, invert voltage, ghosts and mirrors - but does these stick around? yes - as livevalue function now
+Nada: add global from top???, invert voltage, ghosts and mirrors - but does these stick around? yes - as livevalue function now
 
 //
 
@@ -463,34 +463,116 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 - minormodes seem to work - test again
 
+** finishing 1/7+
+
+What we have so far:
+
+- Infrastructure tested:
+
+- R_basic adding, P_basic
+- sensitivity on micromode
+
+- Modes we have:
+
+uint32_t (*Nfunc[2])(uint32_t d, uint32_t V_options)={N_basic};
+uint32_t (*Rfunc[4])(uint32_t d, uint32_t V_options, uint32_t* R_options)={R_basic, R_addlodges, R_addlodges_nosilence, R_addlodges_silence};
+uint32_t (*RPfunc[2])(uint32_t d, uint32_t V_options, uint32_t* P_options, uint32_t* R_options, uint32_t RP_options)={RP_basic};
+uint32_t (*Pfunc[2])(uint32_t d, uint32_t V_options, uint32_t* P_options)={P_basic};
+
+- To implement:
+
 * diary notes
+
+TODO:
+
+///
+- swopping again
+- active/inactive and: modes, micromodes, layers etc...
+- test new R modes - leave and come back in, overlap length
+
+- *finish layers where necessary*
+
+TODO: 
+
+*- reclodge with option to extend that zone, or to shift delcnt around - extension is tricky with delcnt pointer..???*
+
+how? 
+
+if option end=MAXREC and...
+
+*- define RP swoppage??? as both R and P*
+*- DONE/to test: fix passing in of mode options PER layer*
+
+
+** 1/7 // 2/7 - to finish and test all infrastructure
+
+- DONEsimplify swop on playback... - is just which sample is which...*
+
+*but swop in REC is more complex and can also be just swop which value is written where - but...*
+
+- DONE:New overcnt for where we leave off after over-run
+
+// DONE and seems work so far... TODO: rewrite playlodge and reclodge (as playlodge) and both now just use delcnt/t only:*
+
+// DONEcheck with reclodgeRP, add extra layers and check rest eg. new overlay
+
+TODO/TESTS:
+
+- test basic R,P and RP (test clicks, fast and slow speeds, overlap and length)
+
+TESTED: overlap/ *length of overlap=18 seconds*
+- DONEadjust all sensitivities in RP/overlay
+
+///
+
+- test and list micromodes so far each mode/state (per active section, per mode and per layer)
+
+V: just sensitivity TESTED
+
+R: 
+
+R_options[0]=f[d].minormode[0][1]&63; // 6 bits  2bits overlay ctrl + 2 bits x2 for 2nd tape overlay options 
+
+//WAS:at moment we just use 2 bits and skip first 2???
+
+2 bits of overlayx of live value on already recorded
+
+P: FIXED
+
+//checked P micromodes
+
+1st bit: reset play to beginning on entry
+f[d].playspeed[0]=(P_options[0]>>1)&3; // speedarray = 2 bits
+tmp=overlayl(tmp, pp, (P_options[f[d].masterL[1]]>>3)&3); // overlay of live value! TOFIX
+if (f[d].masterL[1]==0) sample=overlayx(recordings[d][tmpx]&TOP, sample, (P_options[0]>>5)&3); // deal with overlap of zones in one layer DONE
+
+RP:
+
+RP_options=(f[d].minormode[0][3]&7); // RP: overlay of live onto rec layer 
+
+////
+
+To test:
+DONE- modulations of incoming voltages with REC
+DONE- speeds with playlodge and multiple zones
+
+- check all overlay and overlayx micromodes
+
+*RP overlays seems odd...: as we playback at speed with live overlay but can have different overlayRPs on what is recorded and then played...???*
+
+*confusing as we use overlaid live for different things - maybe no live overlay...*
+
+*overlayRP: 4,5,6 don't really work as loop dies out too easily... also this will happen more with real CTRL...*
 
 ** 26/6
 
-- fixes and fine in simulation but still clicks in all speeds
-- also value still rising in overlay - to adjust senitivities
+- FIXEDfixes and fine in simulation but still clicks in all speeds
 
 ** 25/6
 
-*fix: clicks at 1.0f and high speeds in playback??? - in test4.c playlodge has speed issues with more than one lodge TO FIX!*
+fix: clicks at 1.0f and high speeds in playback??? - in test4.c playlodge has speed issues with more than one lodge TO FIX!*
 
 - now clicks with basic speed...
-
-To test:
-- speeds with playlodge and multiple zones
-- swopping again and options for RP
-
-- micromodes... (<2sec press)... for each state and micromodes are now per layer and mode
-- active/inactive and micromodes
-- overlay and overlayx micromodes
-- test new R modes - leave and come back in, overlap length
-- modulations of incoming voltages with REC
-
-- speeds in playback and micromodes there...
-
-- *finish layers where necessary -*
-
-/////// *playlodge is a mess with everything and speeds too*
 
 - resolved a bit in test4.c for 1.0f but still speed issue - must be in playlodge - see how it sounds
 - DONETODO: port in new bits//test speeds faster with extra zones
@@ -593,7 +675,7 @@ Tests:
 - DONEXXRP mode - should overlay? NOT! we need there new RP_options and reclodgex
 
 //
-*now we have overlayl which is for CTRL layer overlay - test with finished layers*
+*now we have overlayl function which is for CTRL layer overlay - test with finished layers*
 //
 
 - *list overlays for each state!*
@@ -752,7 +834,7 @@ FIX: NOTE for all:   f[d].ind=1; // recording TODO: this will need always to be 
 
 ** 15/6
 
-- *bounce cannot bounce to 2 overlapping zones* - so we need to specify or just catch this...
+- *XXXXX bounce cannot bounce to 2 overlapping zones* - so we need to specify or just catch this...
 
 ** 14/6 ***
 
@@ -933,7 +1015,7 @@ new notebook notes:
 
 time on tape// recorded time vs. real time
 
-- *possible new model with a single zone list for all sections (zone has section etc), all simultaneous and abstracted out completely (so just values)*
+- possible new model with a single zone list for all sections (zone has section etc), all simultaneous and abstracted out completely (so just values)*
 
 - CTRL, VOLTAGE-V, RECV, REC CTRL: CTRL is control and/or records to other layer (CTRL or overlay layer), voltage is overlay
 
@@ -1046,8 +1128,6 @@ new:
 - rec can also be sequential, play can also be overlapping
 
 ?list of: real time eg. 00. in, out -> now becomes delay, length if any, layer/section, linkage
-
-//Q-TODO: simplest op for rec is to write value to: section/layer/array=location using whose_dacc_counter//
 
 how to deal with any linkage if we swop layers... (link is both ways?)
 
@@ -1181,7 +1261,7 @@ orphans and voids
 - merge with others
 - bounce/overlay 
 
-*all is lists for play and record - and operations on lists*  
+ll is lists for play and record - and operations on lists*  
 - what it means to mark as a ghost
 
 *voids/orphans:*
@@ -1197,7 +1277,7 @@ TODO:
 - recheck startup again and again... sometimes on very fast reset...
 - clear up questions/TODO below
 
-+ *do we really want overlay in live value with top/lowest anymore? possibly not but leave as is*
++ do we really want overlay in live value with top/lowest anymore? possibly not but leave as is*
 
 - helper functions to code: eg. making marker points, access to other regions/recordings/sections
 
