@@ -11,6 +11,7 @@
 
 #define MAXREC 1280
 
+
 //  lodgep=f[0].l[0].lodges; // can be passed in - but need to pass both layers
 //  printf("testl: %d \n", lodgep[0].delcnt); 
 // TODO: trial function passing in lodges (but lodges is after layers...)
