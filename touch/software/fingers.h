@@ -35,7 +35,7 @@ typedef struct layers_ {
     typedef struct xx_ {
       enum STATE state; 
       uint32_t active;
-      uint32_t masterL[2]; // current layer - but can also be for R and P - R is masterL[0], P is masterL[1]
+      uint32_t masterL[3]; // current layer - but can also be for R and P - R is masterL[0], P is masterL[1] RP is 2
       uint32_t majormode[4]; // these are now also for each state!
       uint32_t minormode[2][4]; // these are for each state! and for each layer
       uint32_t playspeed[2]; // index into speed arrays

@@ -450,7 +450,6 @@ RP: 4 types of recorded overlay
 ** playing notes/ideas 22/2+
 
 - hard to remember which is active or inactive ... would be nice to find a way to just be able to record one section on its own like instantly and not add to
-
 local recording??? without active/inactive... in loop/rec mode where always records...
 
 like mode is REC and local toggle starts and stops that (instead of active/inactive) but what of minormode and mode changes which depend on active/inactive
@@ -459,7 +458,7 @@ like mode is REC and local toggle starts and stops that (instead of active/inact
 
 - how to say keep a steady offset overlay... (would be like freeze but...)
 
-- to be able to kill one section - erase/reset only one part (i guess through not de-activating all - *shortcut to deactivate all???*)
+- to be able to kill one section - erase/reset only one part (i guess through not de-activating all - *shortcut to activate/deactivate all???*)
 
 - minormodes seem to work - test again
 
@@ -481,34 +480,57 @@ uint32_t (*Pfunc[2])(uint32_t d, uint32_t V_options, uint32_t* P_options)={P_bas
 
 - To implement:
 
+- Questions: 
+
+- of complexity of micromodes per layer/mode, of active/inactive... more playable scheme...
+- of levels of feedback (via. playback) and dying out in feedback (with some overlayRP)
+
 * diary notes
 
-TODO:
+TODO/general:
 
-///
-- swopping again
-- active/inactive and: modes, micromodes, layers etc...
+2 options/micromodes for R and P, RP to implement:
+
+- test active/inactive and: modes, micromodes, layers, options per layer and per mode
 - test new R modes - leave and come back in, overlap length
 
 - *finish layers where necessary*
 
-TODO: 
-
 *- reclodge with option to extend that zone, or to shift delcnt around - extension is tricky with delcnt pointer..???*
 
-how? 
+how? if option end=MAXREC and...
 
-if option end=MAXREC and...
+//////
 
-*- define RP swoppage??? as both R and P*
-*- DONE/to test: fix passing in of mode options PER layer*
+** 3/7
 
+- -idea of overlay smear - CTRL>threshold = hold value on entry ...
+
+TODO:
+- DONE/TESTed: fix swopping in reclodge - 2 options... playlodge just swops values...*
+
+- swop values we read or write to
+- swop lower and upper... so lower can be layer 0(V) or 1(ctrl) 
+
+_ *DONE/to test: check delcnt and realend - with other rec opts - with silence doesn't work - so only delayed/unsynced one - simulate*
+
+DONE/TODO: RP needs re-work with playbacks as options:
+
+- PLAY: playback at speed with live overlay or: playback what we will record = overlay of RECpoint and live overlay - *but that will just be last zone as we don;t overlay them*
+
+- bounce rec: either of those above... - so 2 bits total for all options...
+
+DONE:should RP_options be per layer?*
+
+////
 
 ** 1/7 // 2/7 - to finish and test all infrastructure
 
+*- DONE/to test: fix passing in of mode options PER layer*
+
 - DONEsimplify swop on playback... - is just which sample is which...*
 
-*but swop in REC is more complex and can also be just swop which value is written where - but...*
+DONEbut swop in REC is more complex and can also be just swop which value is written where - but...*
 
 - DONE:New overcnt for where we leave off after over-run
 
@@ -516,7 +538,7 @@ if option end=MAXREC and...
 
 // DONEcheck with reclodgeRP, add extra layers and check rest eg. new overlay
 
-TODO/TESTS:
+DONETODO/TESTS:
 
 - test basic R,P and RP (test clicks, fast and slow speeds, overlap and length)
 

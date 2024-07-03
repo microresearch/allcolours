@@ -1,3 +1,49 @@
+  uint32_t x, y, tmpx, tmpxx, lay;
+    // tape 0 lower   
+  for (x=0;x<rec[f[d].masterL[0]].num_lodges;x++){
+    rec[f[d].masterL[0]].lodges[x].delcnt+=1;
+      if (rec[f[d].masterL[0]].lodges[x].delcnt>rec[f[d].masterL[0]].lodges[x].end){
+      rec[f[d].masterL[0]].lodges[x].delcnt=0;  
+      }
+
+    if (rec[f[d].masterL[0]].lodges[x].delcnt>=rec[f[d].masterL[0]].lodges[x].offset && (rec[f[d].masterL[0]].lodges[x].delcnt<=(rec[f[d].masterL[0]].lodges[x].offset+rec[f[d].masterL[0]].lodges[x].end-rec[f[d].masterL[0]].lodges[x].start))) {
+
+	if (rec[f[d].masterL[0]].lodges[x].offset>=(rec[f[d].masterL[0]].lodges[x].offset-rec[f[d].masterL[0]].lodges[x].start)){
+	    tmpx=((rec[f[d].masterL[0]].lodges[x].delcnt)-(rec[f[d].masterL[0]].lodges[x].offset-rec[f[d].masterL[0]].lodges[x].start));
+	  }
+	  else {
+	    tmpx=((rec[f[d].masterL[0]].lodges[x].delcnt)+(rec[f[d].masterL[0]].lodges[x].start-rec[f[d].masterL[0]].lodges[x].offset));
+	  }
+      tmpxx=overlayRP(value, (recordings[d][tmpx]&TOP), (RP_options)&7); // OVERLAY
+      reclayerlower(tmpxx, tmpx, d);
+    }
+  }
+  // other layer
+  lay=f[d].masterL[0]^1; 
+  for (x=0;x<rec[lay].num_lodges;x++){
+    rec[lay].lodges[x].delcnt+=1;
+      if (rec[lay].lodges[x].delcnt>rec[lay].lodges[x].end){
+      rec[lay].lodges[x].delcnt=0;  
+      }
+
+    if (rec[lay].lodges[x].delcnt>=rec[lay].lodges[x].offset && (rec[lay].lodges[x].delcnt<=(rec[lay].lodges[x].offset+rec[lay].lodges[x].end-rec[lay].lodges[x].start))) {
+
+	if (rec[lay].lodges[x].offset>=(rec[lay].lodges[x].offset-rec[lay].lodges[x].start)){
+	    tmpx=((rec[lay].lodges[x].delcnt)-(rec[lay].lodges[x].offset-rec[lay].lodges[x].start));
+	  }
+	  else {
+	    tmpx=((rec[lay].lodges[x].delcnt)+(rec[lay].lodges[x].start-rec[lay].lodges[x].offset));
+	  }
+	tmpxx=overlayRP(value, (recordings[d][tmpx]&TOP), (RP_options)&7); // OVERLAY
+	reclayerupper(tmpxx, tmpx, d);
+    }
+  }
+ 
+}
+
+
+tmpxx=overlayRP(value, (recordings[d][tmpx]&TOP), (RP_options)&7); // OVERLAY
+
 //TODO: linkage and attachment, does each lodge/zone have a function attached?
 void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t R_options){ // pass in the p/layers
   uint32_t x, y, tmpx, tmpxx, lay;
