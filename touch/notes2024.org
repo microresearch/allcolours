@@ -502,17 +502,23 @@ how? if option end=MAXREC and...
 
 //////
 
+** 4/7
+
+- FIXED:trial silence again
+
 ** 3/7
 
-- -idea of overlay smear - CTRL>threshold = hold value on entry ...
+- *idea of overlay smear - CTRL>threshold = hold value on entry ...*
 
 TODO:
+
+DONE/to test: check delcnt and realend - with other rec opts - with silence doesn't work - so only delayed/unsynced one - simulate*
+working i think in test5 so to port over*
+
 - DONE/TESTed: fix swopping in reclodge - 2 options... playlodge just swops values...*
 
 - swop values we read or write to
 - swop lower and upper... so lower can be layer 0(V) or 1(ctrl) 
-
-_ *DONE/to test: check delcnt and realend - with other rec opts - with silence doesn't work - so only delayed/unsynced one - simulate*
 
 DONE/TODO: RP needs re-work with playbacks as options:
 
