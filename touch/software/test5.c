@@ -175,7 +175,6 @@ void playlodge(float speed1, float speed2, uint32_t d, uint32_t P_options, uint3
     }
 }
 
-
 // TODO: needs two layers???
 uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options, uint32_t tmp){ // add zones on press and offset is silence
   uint32_t tmpp, other, tmpx;
@@ -209,7 +208,7 @@ uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options,
       f[d].rl[f[d].masterL[0]].lodges[0].delay=0; // looping???
       f[d].rl[f[d].masterL[0]].lodges[0].flag=0;
       f[d].rl[f[d].masterL[0]].lodges[0].sil=f[d].rl[f[d].masterL[0]].rcnt;
-      printf("sil %d\n", f[d].rl[f[d].masterL[0]].lodges[0].sil);
+      //      printf("sil %d\n", f[d].rl[f[d].masterL[0]].lodges[0].sil);
       f[d].rl[f[d].masterL[0]].rcnt=0;
       f[d].rl[f[d].masterL[0]].lodges[0].end=MAXREC; 
     } // first lodge
@@ -235,7 +234,7 @@ uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options,
     // low value but did we leave recording
     // in our test code we never enter
     if (f[d].rl[f[d].masterL[0]].ind==1){ // we were recording so set end point of last one and add all delays
-    printf("leave\n");
+      //    printf("leave\n");
       tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1; // lodge we just left
       //      f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=((f[d].rl[f[d].masterL[0]].lodges[tmpx-1].offset)+f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start); 
       f[d].rl[f[d].masterL[0]].lodges[tmpx].end=f[d].rl[f[d].masterL[0]].lodges[tmpx].realend;
@@ -246,8 +245,8 @@ uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t R_options,
 	  else f[d].rl[f[d].masterL[0]].lodges[0].offset=f[d].rl[f[d].masterL[0]].lodges[0].sil;
 	  
 	f[d].rl[f[d].masterL[0]].ind=0; f[d].entryd=0;
-	f[d].rl[f[d].masterL[0]].rcnt=0;
 	}
+	f[d].rl[f[d].masterL[0]].rcnt=0;
     }
   }
   return tmp;
@@ -262,12 +261,21 @@ void R_addlodges_leave_silence(uint32_t d){
 	//	f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=((f[d].rl[f[d].masterL[0]].lodges[tmpx-1].offset)+f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start); 
 	//	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend;  // previous end
 	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
-	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start+1); // FIXed!
+	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start+1+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil); 
 	}
 	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start);
 		else f[d].rl[f[d].masterL[0]].lodges[0].offset=f[d].rl[f[d].masterL[0]].lodges[0].sil;
 	f[d].rl[f[d].masterL[0]].ind=0;
       }
+      else // we were not recording so add silence... but where to add... to own delay and previous delays
+	{
+	  //	  printf("leavin\n");
+	  tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1; // lodge we just left
+	  f[d].rl[f[d].masterL[0]].lodges[tmpx].delay+=f[d].rl[f[d].masterL[0]].rcnt;
+	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
+	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=f[d].rl[f[d].masterL[0]].rcnt; 
+	}
+	}
       f[d].leaver=0;
 }
 
@@ -299,10 +307,17 @@ void main(void){
   for (x=0;x<20;x++){
     R_addlodges_silence(0, 0, 0, x);
   }
-  //  R_addlodges_silence(0, 0, 0, 0);
-  f[0].entryd=0;
+  for (x=20;x>0;x--){
+    R_addlodges_silence(0, 0, 0, x);
+  }
 
+  printf(" numy %d\n",f[0].rl[f[0].masterL[0]].num_lodges);
+  
   R_addlodges_leave_silence(0);
+
+  
+    R_addlodges_silence(0, 0, 0, 0);
+        R_addlodges_silence(0, 0, 0, 0);
   
   for (x=0;x<20;x++){
     R_addlodges_silence(0, 0, 0, x);
@@ -310,6 +325,13 @@ void main(void){
   f[0].entryd=0;
   R_addlodges_leave_silence(0);
 
+  for (x=20;x>0;x--){
+    R_addlodges_silence(0, 0, 0, x);
+  }
+  f[0].entryd=0;
+  R_addlodges_leave_silence(0);
+  
+  
   
     for (x=0;x<f[0].rl[f[0].masterL[0]].num_lodges;x++){
       printf("no: %d offset: %d start: %d realend: %d delay: %d flag %d fulldel %d \n", x, f[0].rl[f[0].masterL[0]].lodges[x].offset, f[0].rl[f[0].masterL[0]].lodges[x].start, f[0].rl[f[0].masterL[0]].lodges[x].realend, f[0].rl[f[0].masterL[0]].lodges[x].delay,   f[0].rl[0].lodges[x].flag, (f[0].rl[f[0].masterL[0]].lodges[x].offset+f[0].rl[f[0].masterL[0]].lodges[x].realend+f[0].rl[f[0].masterL[0]].lodges[x].delay-f[0].rl[f[0].masterL[0]].lodges[x].start));
