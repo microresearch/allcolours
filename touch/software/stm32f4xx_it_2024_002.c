@@ -59,6 +59,8 @@ const uint32_t whichctrl[8]={0,1,2,3,0,1,2,3}; // ref for newADC speeds
 const float *playreff[4]={logfast, logslow, logfast_stop, logslow_stop}; 
 static uint32_t Theldon[8]={0,0,0,0, 0,0,0,0};
 
+static uint32_t error=0;
+
 #include "fingers.h"
 
 void send_command(int command, void *message)
@@ -286,6 +288,7 @@ void resett(uint32_t dacc){
   f[dacc].rl[1].ind=0;					
   f[dacc].ttoggle=0;
   f[dacc].state=N;
+  f[dacc].leaver=0;
   f[dacc].active=1;
   f[dacc].masterL[0]=0;
   f[dacc].masterL[1]=0;
@@ -482,8 +485,11 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
 	    tmpx=((rec[0].lodges[x].delcnt)+(rec[0].lodges[x].start-rec[0].lodges[x].offset));
 	  }
       
-      if (rec[0].lodges[x].over==0) rec[0].lodges[x].realend=tmpx; //**
-      else rec[0].lodges[x].overcnt=tmpx;
+	if (rec[0].lodges[x].over==0) {
+	  rec[0].lodges[x].realend=tmpx; //**
+	  //	  rec[0].lodges[x].delend=rec[0].lodges[x].delcnt; //**
+	}
+	else rec[0].lodges[x].overcnt=tmpx; //??
 
       if (swoptype=0){ // swop values only
 	if (f[d].masterL[0]==0){
@@ -729,83 +735,6 @@ uint32_t R_basic(uint32_t d, uint32_t V_options, uint32_t* R_options){
   return tmp;
 }
 
-// TODO: R_addlodges version but offset is silence between - first zone starts right away...
-/*
-// run counter on entry into function
-// that becomes offset but we need to update delcnt too ???
- */
-
-// TODO: needs two layers???
-uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t* R_options){ // add zones on press and offset is silence
-  uint32_t tmp, tmpp, other, tmpx;
-  if (f[d].entryr==0){ // includes reset now
-    // what to reset?    
-    lastvalue[d]=0;
-    f[d].entryr=1;
-    f[d].leaver=1;
-    f[d].entryd=0;
-    f[d].rl[0].ind=0;
-    f[d].rl[1].ind=0;
-    f[d].rl[0].rcnt=0;
-    f[d].rl[1].rcnt=0;
-  }
-  
-  LAYERSWOPR;
-  tmp=real[d];
-  // CTRL is second value
-  f[d].rl[f[d].masterL[0]].rcnt++;
-  if (tmp>LOWVAL) { // start recording
-    f[d].rl[f[d].masterL[0]].ind=1;
-    if (f[d].entryd==0){
-    f[d].rl[f[d].masterL[0]].num_lodges+=1;
-    if (f[d].rl[f[d].masterL[0]].num_lodges>MAXLODGE) f[d].rl[f[d].masterL[0]].num_lodges=1;
-    if (f[d].rl[f[d].masterL[0]].num_lodges==1){ // first lodge
-      f[d].rl[f[d].masterL[0]].lodges[0].overcnt=0;
-      f[d].rl[f[d].masterL[0]].lodges[0].delcnt=0;
-      f[d].rl[f[d].masterL[0]].lodges[0].delcntt=0; // this is for when we copy to playzones
-      f[d].rl[f[d].masterL[0]].lodges[0].start=0;
-      f[d].rl[f[d].masterL[0]].lodges[0].offset=0; //f[d].rl[f[d].masterL[0]].rcnt; // we need to start now in realtime
-      f[d].rl[f[d].masterL[0]].lodges[0].delay=0; // looping???
-      f[d].rl[f[d].masterL[0]].lodges[0].flag=0;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].sil=0;
-      f[d].rl[f[d].masterL[0]].lodges[0].end=MAXREC; 
-    } // first lodge
-    else {
-      tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].overcnt=0;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].flag=0; 
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcnt=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+1;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcntt=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].delcntt;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].start=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend+1;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].sil=f[d].rl[f[d].masterL[0]].rcnt;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+1;
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].delay=0; // to come later
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].end=MAXREC; // to come later
-      f[d].rl[f[d].masterL[0]].lodges[tmpx-1].flag=1; // stop the last one TODO: remember to reset
-    }
-    f[d].entryd=1;
-    } // entry
-    reclodge(f[d].rl, d, tmp, tmpp, R_options);
-  } // above val
-  else { 
-      // low value but did we leave recording
-    if (f[d].rl[f[d].masterL[0]].ind==1){ // we were recording so set end point of last one and add all delays
-      tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1; // lodge we just left
-      //   f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=((f[d].rl[f[d].masterL[0]].lodges[tmpx-1].offset)+f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start); 
-      f[d].rl[f[d].masterL[0]].lodges[tmpx].end=f[d].rl[f[d].masterL[0]].lodges[tmpx].realend;
-	//	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend;  // previous end
-	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
-	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start+1)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil;
-	  //	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=((f[d].rl[f[d].masterL[0]].lodges[tmpx-1].offset)+f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start); 
-
-	f[d].rl[f[d].masterL[0]].ind=0; f[d].entryd=0;
-	f[d].rl[f[d].masterL[0]].rcnt=0;
-	}
-    }
-  }
-  return tmp;
-}
-
 // TODO: needs two layers???
 uint32_t R_addlodges_nosilence(uint32_t d, uint32_t V_options, uint32_t* R_options){ // add zones on press 
   uint32_t tmp, tmpp, other, tmpx;
@@ -935,21 +864,96 @@ void R_addlodges_leave(uint32_t d){
       f[d].leaver=0;
 }
 
-void R_addlodges_leave_silence(uint32_t d){
+// TODO: needs two layers???
+uint32_t R_addlodges_silence(uint32_t d, uint32_t V_options, uint32_t* R_options){ // add zones on press and offset is silence
+  uint32_t tmpp, other, tmpx, tmp;
+  if (f[d].entryr==0){ // includes reset now
+    // what to reset?    
+    lastvalue[d]=0;
+    f[d].entryr=1;
+    f[d].leaver=1;
+    f[d].entryd=0;
+    f[d].rl[0].ind=0;
+    f[d].rl[1].ind=0;
+    f[d].rl[0].rcnt=0;
+    f[d].rl[1].rcnt=0;
+  }
+  
+  LAYERSWOPR;
+  tmp=real[d];
+  // CTRL is second value
+  f[d].rl[f[d].masterL[0]].rcnt++;
+  if (tmp>LOWVAL) { // start recording
+    f[d].rl[f[d].masterL[0]].ind=1;
+    if (f[d].entryd==0){
+    f[d].rl[f[d].masterL[0]].num_lodges+=1;
+    if (f[d].rl[f[d].masterL[0]].num_lodges>MAXLODGE) f[d].rl[f[d].masterL[0]].num_lodges=1;
+    if (f[d].rl[f[d].masterL[0]].num_lodges==1){ // first lodge
+      f[d].rl[f[d].masterL[0]].lodges[0].overcnt=0;
+      f[d].rl[f[d].masterL[0]].lodges[0].delcnt=0;
+      f[d].rl[f[d].masterL[0]].lodges[0].delcntt=0; // this is for when we copy to playzones
+      f[d].rl[f[d].masterL[0]].lodges[0].start=0;
+      f[d].rl[f[d].masterL[0]].lodges[0].offset=0;//f[d].rl[f[d].masterL[0]].rcnt; as we start recording now
+      f[d].rl[f[d].masterL[0]].lodges[0].delay=0; // looping???
+      f[d].rl[f[d].masterL[0]].lodges[0].flag=0;
+      f[d].rl[f[d].masterL[0]].lodges[0].sil=f[d].rl[f[d].masterL[0]].rcnt;
+      //      printf("sil %d\n", f[d].rl[f[d].masterL[0]].lodges[0].sil);
+      f[d].rl[f[d].masterL[0]].rcnt=0;
+      f[d].rl[f[d].masterL[0]].lodges[0].end=MAXREC; 
+    } // first lodge
+    else {
+      tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1;
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].overcnt=0;
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].flag=0; 
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcnt=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+1;
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].delcntt=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].delcntt;
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].start=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend+1;
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].sil=f[d].rl[f[d].masterL[0]].rcnt;
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+1; // start now
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].delay=0; // to come later
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].end=MAXREC; // to come later
+      f[d].rl[f[d].masterL[0]].lodges[tmpx-1].flag=1; // stop the last one TODO: remember to reset
+    }
+    f[d].entryd=1;
+    } // entry
+    //    printf("aqui\n");
+    reclodge(f[d].rl, d, tmp, tmpp, R_options);
+  } // above val
+  else { 
+    // low value but did we leave recording
+    // in our test code we never enter
+    if (f[d].rl[f[d].masterL[0]].ind==1){ // we were recording so set end point of last one and add all delays
+      tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1; // lodge we just left
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].end=f[d].rl[f[d].masterL[0]].lodges[tmpx].realend;
+	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
+	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start+1)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil;
+	}
+	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start)+f[d].rl[f[d].masterL[0]].lodges[tmpx-1].offset; // add in previous offset???
+	  else f[d].rl[f[d].masterL[0]].lodges[0].offset=f[d].rl[f[d].masterL[0]].lodges[0].sil;
+	  f[d].rl[f[d].masterL[0]].ind=0;
+	  f[d].entryd=0;
+	  f[d].rl[f[d].masterL[0]].rcnt=0;
+    } // ind
+  }
+  return tmp;
+}
+
+void R_addlodges_leave_silence(uint32_t d){ // no add of apres-silence
   uint32_t tmpx;
   // if we were recording then close it...
       if (f[d].rl[f[d].masterL[0]].ind==1){ // we were recording so set end point of last one and add all delays
-	tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1; // lodge we just left
-	f[d].rl[f[d].masterL[0]].lodges[tmpx].end=f[d].rl[f[d].masterL[0]].lodges[tmpx].realend;
-	//	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend;  // previous end
+      tmpx=f[d].rl[f[d].masterL[0]].num_lodges-1; // lodge we just left
+      f[d].rl[f[d].masterL[0]].lodges[tmpx].end=f[d].rl[f[d].masterL[0]].lodges[tmpx].realend;
 	for (uint32_t x=0;x<tmpx;x++){ // previous lodges
-	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start+1); // FIXed!
+	  f[d].rl[f[d].masterL[0]].lodges[x].delay+=(f[d].rl[f[d].masterL[0]].lodges[tmpx].realend-f[d].rl[f[d].masterL[0]].lodges[tmpx].start+1)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil;
 	}
-	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=((f[d].rl[f[d].masterL[0]].lodges[tmpx-1].offset)+f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start); 
-	f[d].rl[f[d].masterL[0]].ind=0;
+	if (tmpx!=0) f[d].rl[f[d].masterL[0]].lodges[tmpx].offset=(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].realend)+f[d].rl[f[d].masterL[0]].lodges[tmpx].sil-(f[d].rl[f[d].masterL[0]].lodges[tmpx-1].start)+f[d].rl[f[d].masterL[0]].lodges[tmpx-1].offset; // add in previous offset???
+	  else f[d].rl[f[d].masterL[0]].lodges[0].offset=f[d].rl[f[d].masterL[0]].lodges[0].sil;
+	  f[d].rl[f[d].masterL[0]].ind=0;
+	  f[d].rl[f[d].masterL[0]].rcnt=0;
       }
       f[d].leaver=0;
-}
+      }
 
 
 void R_nothing_leave(uint32_t d){
@@ -1079,7 +1083,7 @@ uint32_t (*Rfunc[4])(uint32_t d, uint32_t V_options, uint32_t* R_options)={R_bas
 uint32_t (*RPfunc[2])(uint32_t d, uint32_t V_options, uint32_t* P_options, uint32_t* R_options, uint32_t* RP_options)={RP_basic};
 uint32_t (*Pfunc[2])(uint32_t d, uint32_t V_options, uint32_t* P_options)={P_basic};
 
- void (*Rfunc_leave[4])(uint32_t d)={R_nothing_leave, R_addlodges_leave, R_addlodges_leave, R_addlodges_leave_silence};
+void (*Rfunc_leave[4])(uint32_t d)={R_nothing_leave, R_addlodges_leave, R_addlodges_leave, R_addlodges_leave_silence};
  void (*RPfunc_leave[2])(uint32_t d)={RP_nothing_leave};
  void (*Pfunc_leave[2])(uint32_t d)={P_nothing_leave};
 
@@ -1201,6 +1205,8 @@ void TIM2_IRQHandler(void)
 	  }
 	  f[d].entryr=0;
 	}
+
+	if (error) values[d]=4095;
 	
 	// REC+PLAY: ADC->speed/bounce/rec to other // freeze is swop // what does voltage do (overlay same tape minormodes here)
 	if (f[d].state==RP){ 
