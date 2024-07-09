@@ -2,8 +2,6 @@
 
 - video/manual (burnt manual card?)
 
-
-
 ** pyro module for 4 triggers
 
 prog: HEADER from top: reset, MOSI, MISO, SCK, GND = BLACK at top now!
@@ -43,14 +41,19 @@ eg.
 TO TEST!
 1- trigger sets off each oneXX
 2- trigger on first sets off allXX
-3- trigger on first sets off each in series at interval (how that is determined?)
-4- trigger on first sets off first and then primes rest to set off on their own trigger 
-5- pair arms or primes other - so one goes off after other 
-6- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
-X- trigger within time window on all sets off all???  // different size of windows below
-X- same for pairs in window // different size of windows below
+3- trigger on first sets off first and then primes rest to set off on their own trigger 
+4- pair arms or primes other - so one goes off after other 
+5- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
 
-set a delay of x Ms from now
+X- trigger within time window on all sets off all???  // different size of windows below 
+X- same for pairs in window = sets on pairs // different size of windows below
+X- trigger on first sets off each in series at successive interval of X, Y, Z(how that is determined?) 1-2-3-4
+
+sizes of windows: 1 second, 2, 4, 8, 16 = 6,7,8,9 + pairs 10,11,12,13
+
+sizes of interval: 4, 8 = 14,15 or we measure interval...??? - prime on 1st, measure and fire 2nd and use time for next 2
+
+set a delay of x Ms from now ???
 
 TODO more modes ->15
 
@@ -65,12 +68,20 @@ TODO more modes ->15
 - DONEreverse display count (check again) and eliminate the 0
 - DONElength as length of press
 - DONEflash display mode + length etc.
+- DONEswitch all functionality now to interrupts - what was timing??? 100ms for short pulse... now we have 200Hz interrupt.. measured...
+
 - implement and test all modes and timings
 
 *on first mode but we need to pin down approx all timings and if they vary much???*
 
 - video/manual (burnt manual card?)
-- DONE: 28/6/2024 +prototype order jlcpcb - waiting for XTAL!+ but now needs amp part ordered from mouser...
+- 25x order jlcpcb - +waiting for XTAL!-16MHZ+
+
+** 8/7/2024
+
+- DONE:switch all functionality now to interrupts - what was timing??? 100ms for short pulse... so say 5 interrupt = 200Hz
+
+[where was atmega interrupt code - in SIR was TIMER2 = 200Hz]
 
 ** 25/6/2024
 - basic infrastructure implemented, tested though timing still to check... and TESTS of first 2 modes

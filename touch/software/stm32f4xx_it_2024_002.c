@@ -469,7 +469,7 @@ void reclayerlower(uint32_t value, uint32_t place, uint32_t d){
 - swop values we write
 - swop lower and upper... so lower can be layer 0(V) or 1(ctrl) 
  */
-void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options){ // pass in the p/layers
+void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options, uint32_t masterL, uint32_t* res){ // pass in all and the p/layers
   uint32_t x, y, tmpx, tmpxx, swoptype;
   swoptype=(R_options[0]|R_options[1])&1;
   // tape 0 lower
@@ -571,7 +571,7 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
   
 // FIX as above...
 //TODO: linkage and attachment, does each lodge/zone have a function attached?
-// difference from reclodge - uses overlayRP and in last writes to fixed lower layer...why // now it doesn't???
+// genericise difference from reclodge - uses overlayRP
 // and we shouldn't rewrite realend! no option to extend here... and there is no flag!
 void reclodgeRP(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options, uint32_t* RP_options, uint32_t* res){ 
   uint32_t x, y, tmpx, tmpxx, swoptype, sample[2];
@@ -984,7 +984,6 @@ uint32_t RP_basic(uint32_t d, uint32_t V_options, uint32_t* P_options, uint32_t*
     tmpx=f[d].rl[1].num_lodges-1; // lodge we just left - close this one... // R is masterL[0], P is masterL[1]
     f[d].rl[1].lodges[tmpx].end=f[d].rl[1].lodges[tmpx].realend;
     // copy in rec zones to play zones
-    // copy in rec zones to play zones
     f[d].pl[0].num_lodges=f[d].rl[0].num_lodges;
     for (x=0;x<f[d].rl[0].num_lodges;x++){
       f[d].pl[0].lodges[x].delcntt=f[d].rl[0].lodges[x].delcntt;
@@ -1272,7 +1271,6 @@ void TIM2_IRQHandler(void)
 	  modeheld=0;
 	  // if state==0 inc just 0
 	  // ==1 inc depends on masterL[0]
-	  // ==2 inc // TODO: recheck these
 	  if (f[0].active) {
 	    if (f[0].state==0) f[0].minormode[0][0]++;
 	    else if (f[0].state==1) f[0].minormode[f[0].masterL[0]][f[0].state]++;

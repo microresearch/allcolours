@@ -1,3 +1,214 @@
+	if (masterL==0){
+	  tmpxx=overlayx(value, (recordings[d][tmpx]&TOP), (R_options[0])&3); // overlayRP?
+      }
+	      else {
+	tmpxx=overlayx(layerval, (recordings[d][tmpx]&TOP), (R_options[0])&3);
+	      }	
+       reclayerlower(tmpxx, tmpx, d);
+      }
+
+
+
+// for CTRL and/or CTRL layer
+inline static uint32_t overlay(uint32_t ctrl, uint32_t value, uint32_t over){ 
+  uint32_t tmpp;
+  int32_t subs; float nn;
+ 	    if (over==0){ //usual - now swopped for >
+	      if (value>ctrl) tmpp=value; // only if is more than
+	      else tmpp=ctrl;
+	    }
+	    else if (over==1){ 
+	      tmpp=ctrl+value;
+	      if (tmpp>TOP) tmpp=TOP; // as we store full value...
+	    }
+	    else if (over==2){ // mod
+	      tmpp=ctrl+value;
+	      tmpp=tmpp%4096;
+	    }
+	    else if (over==3){ // subtract live and do abs...
+	      subs=value-ctrl;
+	      tmpp=abs(subs);
+	    }
+	    else if (over==4){	    //add VCA/float thing /// but need more bits and more options
+	    nn=ctrl/4095.0;
+	    nn*=(float)value;
+	    tmpp=(uint32_t)nn;
+	    }
+	    else if (over==5){	    //add VCA/float thing /// but need more bits and more options -> 3 bits=8 options...  +2 - mask/threshold!?
+	      ctrl=4095-ctrl;
+	      nn=ctrl/4095.0;
+	      nn*=(float)value;
+	      tmpp=(uint32_t)nn;
+	    }
+	    else if (over==6){ // 	      //	      - mask/threshold
+	      if (ctrl>THRESH) tmpp=value;
+		else tmpp=0;
+	    }
+	    else { 	      //	      - invert/threshold
+	      if (ctrl>THRESH) tmpp=4095-value;
+	    }
+	    return tmpp;
+}
+
+// TODO: smear or smudge of values on entry into threshold...
+inline static uint32_t overlayRP(uint32_t ctrl, uint32_t value, uint32_t over){ // 3 bits - ctrl is live value and value is recorded
+ uint32_t tmpp;
+  int32_t subs; float nn;
+ 	    if (over==1){ //usual - now swopped for >
+	      if (value>ctrl) tmpp=value; // only if is more than
+	      else tmpp=ctrl;
+	    }
+	    else if (over==0){ 
+	      tmpp=ctrl+value;
+	      if (tmpp>TOP) tmpp=TOP; // as we store full value...
+	    }
+	    else if (over==2){ // mod
+	      tmpp=ctrl+value;
+	      tmpp=tmpp%4096;
+	    }
+	    else if (over==3){ // subtract live and do abs... doesn't seem work... 
+	      subs=value-ctrl;
+	      tmpp=abs(subs);
+	    }
+	    else if (over==4){	    //add VCA/float thing /// but need more bits and more options
+	    nn=ctrl/4095.0;
+	    nn*=(float)value;
+	    tmpp=(uint32_t)nn;
+	    }
+	    else if (over==5){	    //add VCA/float thing /// but need more bits and more options -> 3 bits=8 options...  +2 - mask/threshold!?
+	      ctrl=4095-ctrl;
+	      nn=ctrl/4095.0;
+	      nn*=(float)value;
+	      tmpp=(uint32_t)nn;
+	    }
+	    else if (over==6){ // 	      //	      - mask/threshold
+	      if (ctrl>THRESH) tmpp=value;
+		else tmpp=0;
+	    }
+	    else { 	      //	      - invert/threshold
+	      //	      if (ctrl>THRESH) tmpp=4095-value;
+	      //SOLO - overwrite
+	      tmpp=ctrl;
+	    }
+	    return tmpp;
+}
+
+
+
+// FIX as above...
+//TODO: linkage and attachment, does each lodge/zone have a function attached?
+// genericise difference from reclodge - uses overlayRP
+// and we shouldn't rewrite realend! no option to extend here... and there is no flag!
+void reclodgeRP(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options, uint32_t* RP_options, uint32_t* res){ 
+  uint32_t x, y, tmpx, tmpxx, swoptype, sample[2];
+  swoptype=(RP_options[0]|RP_options[1])&1;
+  // tape 0 lower
+  for (x=0;x<rec[0].num_lodges;x++){
+    if (rec[0].lodges[x].flag==0) {
+
+      if (rec[0].lodges[x].delcnt>=rec[0].lodges[x].offset && (rec[0].lodges[x].delcnt<=(rec[0].lodges[x].offset+rec[0].lodges[x].end-rec[0].lodges[x].start))) {
+
+	if (rec[0].lodges[x].offset>=(rec[0].lodges[x].offset-rec[0].lodges[x].start)){
+	    tmpx=((rec[0].lodges[x].delcnt)-(rec[0].lodges[x].offset-rec[0].lodges[x].start));
+	  }
+	  else {
+	    tmpx=((rec[0].lodges[x].delcnt)+(rec[0].lodges[x].start-rec[0].lodges[x].offset));
+	  }
+      
+	//      if (rec[0].lodges[x].over==0) rec[0].lodges[x].realend=tmpx; //**
+	//      else rec[0].lodges[x].overcnt=tmpx;
+
+      if (swoptype=0){ // swop values only
+	if (f[d].masterL[2]==0){
+	  tmpxx=overlayRP(value, (recordings[d][tmpx]&TOP), (RP_options[0]>>2)&7);
+	}
+	else {
+	  tmpxx=overlayRP(layerval, (recordings[d][tmpx]&TOP), (RP_options[0]>>2)&7);
+	      }	
+       reclayerlower(tmpxx, tmpx, d);
+      }
+      else { // swop layers
+	if (f[d].masterL[2]==0){
+	tmpxx=overlayRP(value, (recordings[d][tmpx]&TOP), (RP_options[0]>>2)&7);
+	reclayerlower(tmpxx, tmpx, d);
+	}
+	else {
+	  tmpxx=overlayRP(value, (recordings[d][tmpx]>>16), (RP_options[0]>>2)&7); // fixed
+	  reclayerupper(tmpxx, tmpx, d); 
+	}
+      }
+      sample[0]=tmpxx; // last one
+      }
+      rec[0].lodges[x].delcnt+=1;
+      if (rec[0].lodges[x].delcnt>=(rec[0].lodges[x].offset+rec[0].lodges[x].end+rec[0].lodges[x].delay-rec[0].lodges[x].start)){
+	//	if (rec[0].lodges[x].delcnt>MAXREC){
+	//	  rec[0].lodges[x].realend=MAXREC;
+	//	  rec[0].lodges[x].over=1;
+	//	}
+	rec[0].lodges[x].delcnt=0;  
+      }
+    }
+  }
+  // other layer
+  for (x=0;x<rec[1].num_lodges;x++){
+    if (rec[1].lodges[x].flag==0) {
+
+      if (rec[1].lodges[x].delcnt>=rec[1].lodges[x].offset && (rec[1].lodges[x].delcnt<=(rec[1].lodges[x].offset+rec[1].lodges[x].end-rec[1].lodges[x].start))) {
+
+	if (rec[1].lodges[x].offset>=(rec[1].lodges[x].offset-rec[1].lodges[x].start)){
+	    tmpx=((rec[1].lodges[x].delcnt)-(rec[1].lodges[x].offset-rec[1].lodges[x].start));
+	  }
+	  else {
+	    tmpx=((rec[1].lodges[x].delcnt)+(rec[1].lodges[x].start-rec[1].lodges[x].offset));
+	  }
+      
+	//      if (rec[1].lodges[x].over==0) rec[1].lodges[x].realend=tmpx; //**
+	//      else rec[1].lodges[x].overcnt=tmpx;
+
+      if (swoptype=0){ // swop values only
+	if (f[d].masterL[2]==0){
+	  tmpxx=overlayRP(layerval, (recordings[d][tmpx]>>16), (RP_options[1]>>2)&7); // fixed
+	}
+	else {
+	  tmpxx=overlayRP(value, (recordings[d][tmpx]>>16), (RP_options[1]>>2)&7); // fixed
+	      }	
+	reclayerupper(tmpxx, tmpx, d);
+      }
+      else { // swop layers
+	if (f[d].masterL[2]==0){
+	tmpxx=overlayRP(layerval, (recordings[d][tmpx]>>16), (RP_options[1]>>2)&7);
+	reclayerupper(tmpxx, tmpx, d);
+	}
+	else {
+	  tmpxx=overlayRP(layerval, (recordings[d][tmpx]&TOP), (RP_options[1]>>2)&7); // fixed
+	  reclayerlower(tmpxx, tmpx, d); 
+	}
+      }
+      sample[1]=tmpxx; // last one as no overlay here...
+      }
+      rec[1].lodges[x].delcnt+=1;
+      if (rec[1].lodges[x].delcnt>=(rec[1].lodges[x].offset+rec[1].lodges[x].end+rec[1].lodges[x].delay-rec[1].lodges[x].start)){
+      //	if (rec[1].lodges[x].delcnt>MAXREC){
+      //	  rec[1].lodges[x].realend=MAXREC;
+      //	  rec[1].lodges[x].over=1;
+      //	}
+	rec[1].lodges[x].delcnt=0;  
+      }
+    }
+  }
+    if (f[d].masterL[2]==0){
+    res[0]=sample[0];
+    res[1]=sample[1];
+    }
+    else {
+    res[1]=sample[0];
+    res[0]=sample[1];
+    }
+
+}
+
+
+
 void R_addlodges_leave_silence(uint32_t d){
   uint32_t tmpx;
   // if we were recording then close it...
