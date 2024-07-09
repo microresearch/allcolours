@@ -36,7 +36,7 @@ NO!livevalue/overlay of globals??? - do we want that as can always hand sync
 * 2024.002
 
 *CTRL:*
-- speed of playback, speed of selector
+- speed of playback, speed of selector/selector itself on threshold...
 - gating on/off with threshold =  *stop/start playback*
 - +how much we let through (volume of signal - see above) - also inversion of this amount+
 - *TODO for CTRL:add to/subtract from value*: DEP: +DONE:don't store limited/4095 value but only output/store up to 16 bits depending on mode/eg if % then just do that+
@@ -61,11 +61,13 @@ linked layers - so one layer is X for the other// *attachment* - swop and mark!
 
 *TOGGLES:*
 
-Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+Toggle for each position: short press = operation on position according to mode (eg. swop), longer press (1sec+) toggles position as active/inactive.
+
+[this will maybe change to: branchings of 0/1 binary... and for local reset maybe]
 
 *GROUPS:*
 
-- rec to groups as overlay
+- *rec to groups as overlay*
 - that we want a gesture (CTRL or layer) to be able to move across sections
 
 *ETC:*
@@ -483,24 +485,67 @@ uint32_t (*Pfunc[2])(uint32_t d, uint32_t V_options, uint32_t* P_options)={P_bas
 - Questions: 
 
 - of complexity of micromodes per layer/mode, of active/inactive... more playable scheme...
-- of levels of feedback (via. playback) and dying out in feedback (with some overlayRP)
+- *of levels of feedback (via. playback) and dying out in feedback (with some overlayRP): but if we say have no_silence overlay/rewrite in RP???*
 
 * diary notes
 
-TODO/general:
+TODO/general July 2024:
 
-2 options/micromodes for R and P, RP to implement:
-
+- re-test all infrastructure
 - test active/inactive and: modes, micromodes, layers, options per layer and per mode
 - test new R modes - leave and come back in, overlap length
 
-- *finish layers where necessary*
+////////////////////////TODO:
 
-*- reclodge with option to extend that zone, or to shift delcnt around - extension is tricky with delcnt pointer..???*
+- DONE:can we genericise reclodge and reclodgeRP?? Q of end and realend... and RP in general*
 
-how? if option end=MAXREC and...
+eg. P is:     
+// copy in rec zones to play zones  // or we can have new play zones...
+// swop layers
+// playlodge
+// deal with what is output
 
-//////
+R is in general:
+// swops
+// specify lodges on entry
+// reclodge
+
+RP is: 
+// deal with prev lodges on entry
+// copy in rec zones to play zones  // or we can have new play zones...
+// swop layers
+// playlodge
+// reclodge
+// deal with what is output
+
+** 9/7
+
+- CODE/TEST: enable global/local - if we press one of middle buttons during/simultaneous local toggle 
+
+---> how this could work? write test code for this...
+
+if mode is held  heldon> && we are past LOWVAL - write test code!
+
+////TESTS/DONE:
+
+- DONEcheck logic of layer swop. - rewrite these like addlodges for each layer in turn -finish layers where necessary*
+- DONE*and split reclodge and 
+- DONEsplit playlodge per layer,.,,*
+- test RP with eg. no_silence ops - is now overlay
+- DONEreclodgeRP with option to extend that zone, or to shift delcnt around - extension is tricky with delcnt pointer..???*
+TO TEST: extension is only if we set end: eg...	if (rec[1].lodges[x].end==MAXREC)
+- DONEand pass in all -> reclodge/playlodge eg.swoptype, overlay function -> options
+- TESTfix/test overlap also as passed in or as option to extend end/realend??? (as long as is not MAXREC)
+
+** 8/7
+
+*New scheme for 2 major states: 0[N/R] and 1[P/RP] - so (nearly) always recording in 0... - new file..*
+
+0 is kind of inactive but we have major and minor modes there: minor for voltage and type of overlay, major for record types (none, silences etc)
+
+- binary branches to work down...
+
+- define ideal situation and options...
 
 ** 4/7
 
@@ -512,7 +557,7 @@ how? if option end=MAXREC and...
 
 TODO:
 
-DONE/to test: check delcnt and realend - with other rec opts - with silence doesn't work - so only delayed/unsynced one - simulate*
+DONE/tested: check delcnt and realend - with other rec opts - with silence doesn't work - so only delayed/unsynced one - simulate*
 working i think in test5 so to port over*
 
 - DONE/TESTed: fix swopping in reclodge - 2 options... playlodge just swops values...*
