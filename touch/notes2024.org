@@ -489,11 +489,32 @@ uint32_t (*Pfunc[2])(uint32_t d, uint32_t V_options, uint32_t* P_options)={P_bas
 
 * diary notes
 
+Abstracted-> a series of processes on incoming voltage subjected to ctrl by voltage...
+
 TODO/general July 2024:
 
 - re-test all infrastructure
 - test active/inactive and: modes, micromodes, layers, options per layer and per mode
 - test new R modes - leave and come back in, overlap length
+
+interface notes:
+
+N/R: no feedback, manipulate R lodges. Q of entry 
+RP/P: P lodges, R lodges. Q of entry 
+
+levels:
+
+toggle: swop/reset
+toggle+modifier: state(N/RP), mode, micromode [mode/micromode->advance]
+toggle+CTRL: params on zones -> P or R zones
+CTRL+modifier: ???  CTRL is local to 2 sections - can also be micromode/mode advance or params on zones...
+
+- access to each individual section / active/inactive or just 2 states N/R, RP/P
+- groups
+- multiple layers and branches (we have 2 and 24 lodges)
+- modes and micromodes per section (and micromodes per layer?)
+- how we can define control
+- attachments for ecah lodge
 
 ////////////////////////TODO:
 
@@ -518,20 +539,138 @@ RP is:
 // reclodge
 // deal with what is output
 
+** 12/7 // 13/7
+
+now we have reclodges and playlodges to save memory...
+
+DONE?/TEST?TODO: break up reclodge so is not inside R_addlodge_silence: if value>
+
+- added attachment function f[dacc].rl[0].lodges[y].function - we need to set and reset this... // can also be used for playlodges
+
+DONEbut where do we set this - in addlodge, extendlodge we pass in function
+
+so each lodge also has // see notes:
+
+speedfrom/speed for playlodges only
+overlaytype? at the moment overlay is micromode for each section/layer
+bouncefrom->just for rec lodges???
+currentval -> used for speedfrom and CTRL via lodge is assigned in playlodge and used in playlodge for eg. speed...
+attachment function and attachment linkage... eg. function uses incoming value or currentvalue of lodge X
+
++ value --> parameter of a zone/lodge (is this outside the lodge)
+
+[in CD we have attachment? how? matrix of settings...]
+
+///
+
+*what if we enter RP with no zones?*
+
+///
+
+*functions: overlay=add/subtract/VCA, invert, mask, bounce, speed, stop=gate/threshold=hold, zone itself params, spawn/multiple, mirror, ghost, blank-gap it, swop itself* - what else?
+
+which "functions" belong to playlodge, reclodge (or both)?
+
+playlodge: speedfrom, what is overlay (live?), gate, zone params
+
+reclodge: bouncefrom (which zone/layer, if not), gate, zone params, mirror?
+
+and functions which belong to adding of lodges: spawn/multiply, ghost, blank
+
+where does swop_itself belong?
+
+
+** 10/7
+
+- DONE/test: abstract out eg. add_lodge to functions // but still too complex,,, to divide add_lodges and rec/play lodges -- and functional attachment
+
+eg. trial code for: zone X has its speed from zone Y CTRL layer (playlodge) - but we split V and CTRL in playlodge...
+
+and can be CTRL live or layer....
+
+*or no attachment and is just current value ???*
+
+add/subtract/VCA/invert - is in overlayx,
+speed: and what of speed that we play back CTRL
+stop/gate/hold: flag? - option or function... eg. if VAL>LOWVAL return 1 for start/stop, or just return 1 always plays
+
+
+feedback of zone params: interior to function
+
+is this in playlodge/reclodge - where we get these parameters from?
+
+////
+ 
+how to abstract out interface and abstraction/function (for a generic voltage processor)
+
+- outline functional attachment??? eg. zone X bounces to zone Y
+
+list functions we have somewhere/above:
+
+*functions: overlay=add/subtract/VCA, invert, mask, bounce, speed, stop=gate/threshold=hold, zone itself params, spawn/multiple, mirror, ghost, blank-gap it, swop itself* - what else?
+
+spawn blanks or copies or inverted mirrors
+
+also write same data to both layers...
+
+deal with other sections - *mobile gestures*
+
+// *flip between bounce to same/other - that ops can be one zone on itself - how??? link to own zone layer???*
+
+
+//
+
+- *CODE/TEST: enable global/local - if we press one of middle buttons during/simultaneous local toggle*
+
+see latest notebook notes - to test presses
+
 ** 9/7
 
-- CODE/TEST: enable global/local - if we press one of middle buttons during/simultaneous local toggle 
+- refine/define swop: masterL - as what is played/recorded to lower/upper
+
+why is so confusing
+
+LOWER: layer[0] zones - play/rec as V
+UPPER: layer[1] zones - play/rec as CTRL 
+
+so what we swop... is value (V/CTRL), or which is written to lower or upper.
 
 ---> how this could work? write test code for this...
 
-if mode is held  heldon> && we are past LOWVAL - write test code!
+if mode is held  heldon> && we are past LOWVAL - write test code: 
+
+if (heldon && helder>8 && real[d]>LOWVAL) values[d]=4095; // working...
+
+//
+
+so if we have say section x active with >LOWVAL then a press on mode will inc mode for that section.. (what of micromodes?)
+
+- that need to figure out what middle buttons do vs. toggle also and V, CTRL, layer2:
+
+toggle: state (N/RP), local reset (short, long) ???
+
+///length of X or simultaneous press propels through micromode/mode for each state/layer
+
+CTRL/layer: advance/speed etc...
+
+  O - was mode...
+O   O - left right markers??? - branchings???
+
+- *what we need: independent controls for state, mode and micromode (toggle), reset (all, soft), swop layer, selections of zones, params*
+
+- Q. of latest notes on branches: branch of mode [NR//RP], branch of changing params of play/rec zones (add to, remove, change params)
+- scheme above will cause V or CTRL jump to render active!
+
+//
+
+- *bounce to own layer, bounce to other and swop at some point*
 
 ////TESTS/DONE:
 
 - DONEcheck logic of layer swop. - rewrite these like addlodges for each layer in turn -finish layers where necessary*
-- DONE*and split reclodge and 
+- DONE*split reclodge
 - DONEsplit playlodge per layer,.,,*
-- test RP with eg. no_silence ops - is now overlay
+- test RP with eg. no_silence ops - is now an option for overlayx
 - DONEreclodgeRP with option to extend that zone, or to shift delcnt around - extension is tricky with delcnt pointer..???*
 TO TEST: extension is only if we set end: eg...	if (rec[1].lodges[x].end==MAXREC)
 - DONEand pass in all -> reclodge/playlodge eg.swoptype, overlay function -> options

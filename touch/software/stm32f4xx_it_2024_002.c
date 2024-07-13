@@ -509,8 +509,9 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
 	  tmpxx=overlayx(value, (recordings[d][tmpx]>>16), (R_options[0])&3); // fixed
 	  reclayerupper(tmpxx, tmpx, d); 
 	}
-      }
-      }   
+      } // swop
+      
+      
       rec[0].lodges[x].delcnt+=1;
       if (rec[0].lodges[x].delcnt>=(rec[0].lodges[x].offset+rec[0].lodges[x].end+rec[0].lodges[x].delay-rec[0].lodges[x].start)){
 	if (rec[0].lodges[x].delcnt>MAXREC){

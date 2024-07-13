@@ -256,7 +256,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
 	   break;
 
    case 3: // 3- pair arms or primes other - so one goes off after other .. pair is 0 and 1, 2 and 3
-
+     
      break;
      
    } // end switch
