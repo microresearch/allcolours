@@ -1,4 +1,33 @@
-	if (masterL==0){
+uint32_t playlodge(float speed1, uint32_t d, uint32_t lay, uint32_t* P_options){ 
+  uint32_t x, y, tmpx, tmpxx;
+  uint32_t sample=0;
+  /// first layer
+  for (x=0;x<f[d].pl[lay].num_lodges;x++){
+    f[d].pl[lay].lodges[x].delcntt=mod0(f[d].pl[lay].lodges[x].delcntt+speed1, (f[d].pl[lay].lodges[x].offset+f[d].pl[lay].lodges[x].realend+f[d].pl[lay].lodges[x].delay-f[d].pl[lay].lodges[x].start));
+  }
+  
+    for (x=0;x<f[d].pl[lay].num_lodges;x++){
+      if (f[d].pl[lay].lodges[x].delcntt>=f[d].pl[lay].lodges[x].offset && (f[d].pl[lay].lodges[x].delcntt<=(f[d].pl[lay].lodges[x].offset+f[d].pl[lay].lodges[x].realend-f[d].pl[lay].lodges[x].start))) {     // ***
+
+	if (f[d].pl[lay].lodges[x].offset>=(f[d].pl[lay].lodges[x].offset-f[d].pl[lay].lodges[x].start)){
+	    tmpx=((f[d].pl[lay].lodges[x].delcntt)-(f[d].pl[lay].lodges[x].offset-f[d].pl[lay].lodges[x].start));
+	  }
+	  else {
+	    tmpx=((f[d].pl[lay].lodges[x].delcntt)+(f[d].pl[lay].lodges[x].start-f[d].pl[lay].lodges[x].offset));
+	  }
+	
+	if (tmpx>=MAXREC) tmpx=MAXREC-1;
+
+	if (lay==0) sample=overlayx(recordings[d][tmpx]&TOP, sample, (P_options[0]>>5)&3); // deal with overlap of zones in one layer DONE
+	else sample=overlayx(recordings[d][tmpx]>>16, sample, (P_options[0]>>5)&3); // top layer
+            }
+    }
+    return sample;
+}
+
+
+
+if (masterL==0){
 	  tmpxx=overlayx(value, (recordings[d][tmpx]&TOP), (R_options[0])&3); // overlayRP?
       }
 	      else {
