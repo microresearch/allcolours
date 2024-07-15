@@ -514,17 +514,15 @@ CTRL+modifier: ???  CTRL is local to 2 sections - can also be micromode/mode adv
 - multiple layers and branches (we have 2 and 24 lodges)
 - modes and micromodes per section (and micromodes per layer?)
 - how we can define control
-- attachments for ecah lodge
+- attachments for each lodge
 
 ////////////////////////TODO:
 
 - DONE:can we genericise reclodge and reclodgeRP?? Q of end and realend... and RP in general*
 
-eg. P is:     
-// copy in rec zones to play zones  // or we can have new play zones...
-// swop layers
-// playlodge
-// deal with what is output
+NR:
+
+RPP:
 
 R is in general:
 // swops
@@ -538,6 +536,39 @@ RP is:
 // playlodge
 // reclodge
 // deal with what is output
+
+eg. P is:     
+// copy in rec zones to play zones  // or we can have new play zones...
+// swop layers
+// playlodge
+// deal with what is output
+
+** 15/7
+
+*TO FIX: xmajor issue with overlap as we add lodges...*
+
+1. Solve for extend lodges - mode 0
+2. Solve for add lodges
+
+- issue in rec/addlodges as start advances too far... 
+- case if we have zone 0 which extends to overlap then real length is MAXREC
+- but if we add zone which goes past overlap its length is not MAXREC...
+
+we need to record length from now on and just wrap rec and play..
+
+////
+
+- test all infrastructure, recs:
+//- fixed
+- why is delcntt copy so critical
+- *with if (f[d].rl[0].ind==1) we don't need function in rec but could we need it???*
+
+
+
+////////////////////
+
+- new touch scheme
+- TODO: currentval and bouncefrom, attachment function of rec and for play, PLAN!
 
 ** 12/7 // 13/7
 

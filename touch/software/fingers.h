@@ -4,6 +4,8 @@ typedef struct zonelr_ {
   uint32_t start;
   uint32_t end; // loop point
   uint32_t realend; // where we ended - if overlap then is end??? used in R and P
+  uint32_t length;
+  uint32_t lengthr; // desired length
   uint32_t flag; // used in R
   uint32_t overcnt; // used in R 
   uint32_t over; // overrun - need to reset this at some point
@@ -21,6 +23,7 @@ typedef struct zonelr_ {
 typedef struct zonelp_ { 
   uint32_t start;
   uint32_t end; // loop point
+  uint32_t length;
   uint32_t realend; // where we ended - if overlap then is end??? used in R and P
   uint32_t offset;
   uint32_t delay;
@@ -72,7 +75,7 @@ typedef struct layersP_ {
       uint32_t leavep; // for function for leaving P mode
       uint32_t leaver; // leaving R mode
       uint32_t leaverp;
-      uint32_t entryd;
+      uint32_t entryd[2];
     } hands;
 
 static hands f[8];
