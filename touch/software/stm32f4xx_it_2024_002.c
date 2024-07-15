@@ -348,10 +348,6 @@ void resett(uint32_t dacc){
     f[dacc].rl[0].lodges[y].flag=0;
     f[dacc].rl[1].lodges[y].flag=0;
 
-    f[dacc].pl[0].lodges[y].over=0;
-    f[dacc].pl[1].lodges[y].over=0;
-    f[dacc].pl[0].lodges[y].overcnt=0;
-    f[dacc].pl[1].lodges[y].overcnt=0;
     f[dacc].rl[0].lodges[y].realend=0;
     f[dacc].pl[1].lodges[y].realend=0;
     f[dacc].pl[0].lodges[y].end=0;
@@ -464,12 +460,7 @@ void reclayerlower(uint32_t value, uint32_t place, uint32_t d){
   recordings[d][place]=(recordings[d][place]&TOPS)+(value);
 }
 
-//TODO: linkage and attachment, does each lodge/zone have a function attached?
-/* DONE/to test: two types of swop: (R_options[?]&1)
-- swop values we write
-- swop lower and upper... so lower can be layer 0(V) or 1(ctrl) 
- */
-void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options, uint32_t masterL, uint32_t* res){ // pass in all and the p/layers
+void reclodge(layersr *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options){ // pass in all and the p/layers
   uint32_t x, y, tmpx, tmpxx, swoptype;
   swoptype=(R_options[0]|R_options[1])&1;
   // tape 0 lower
@@ -520,6 +511,7 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
 	}
 	rec[0].lodges[x].delcnt=0;  
       }
+    }
     }
   }
   // other layer
@@ -574,7 +566,7 @@ void reclodge(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32
 //TODO: linkage and attachment, does each lodge/zone have a function attached?
 // genericise difference from reclodge - uses overlayRP
 // and we shouldn't rewrite realend! no option to extend here... and there is no flag!
-void reclodgeRP(layers *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options, uint32_t* RP_options, uint32_t* res){ 
+void reclodgeRP(layersr *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options, uint32_t* RP_options, uint32_t* res){ 
   uint32_t x, y, tmpx, tmpxx, swoptype, sample[2];
   swoptype=(RP_options[0]|RP_options[1])&1;
   // tape 0 lower
@@ -731,7 +723,7 @@ uint32_t R_basic(uint32_t d, uint32_t V_options, uint32_t* R_options){
   
   tmp=real[d];
   tmpp=control[whichctrl[d]];
-
+  //void reclodge(layersr *rec, uint32_t d, uint32_t value, uint32_t layerval, uint32_t* R_options, uint32_t masterL, uint32_t* res){ // pass in all and the p/layers
   reclodge(f[d].rl, d, tmp, tmpp, R_options); // so we just extend the last lodge
   return tmp;
 }
@@ -1039,7 +1031,7 @@ uint32_t P_basic(uint32_t d, uint32_t V_options, uint32_t* P_options){  // CTRL 
     // copy in rec zones to play zones
     f[d].pl[0].num_lodges=f[d].rl[0].num_lodges;
     for (x=0;x<f[d].rl[0].num_lodges;x++){
-      //      f[d].pl[0].lodges[x].delcntt=f[d].rl[0].lodges[x].delcntt; // or as other option
+      f[d].pl[0].lodges[x].delcntt=f[d].rl[0].lodges[x].delcntt; 
       f[d].pl[0].lodges[x].offset=f[d].rl[0].lodges[x].offset;
       f[d].pl[0].lodges[x].delay=f[d].rl[0].lodges[x].delay;
       f[d].pl[0].lodges[x].start=f[d].rl[0].lodges[x].start;
