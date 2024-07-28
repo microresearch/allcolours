@@ -86,7 +86,7 @@ Hard resets everything: check what that is - all modes, all counters, all states
 
 Soft reset: resets rec counter to 0, playlist. We have to return to NADA mode as we can't say play on 0...
 
-Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+//Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
 
 newADC: mode dependent, eg. in nada: geomantic mode journey???, in P, R, RP: overlays...
 
@@ -427,7 +427,7 @@ Hard resets everything: check what that is - all modes, all counters, all states
 
 Soft reset: resets rec counter to 0, playlist. We have to return to NADA mode as we can't say play on 0...
 
-Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
+//Toggle for each position: short press = operation on position according to mode, longer press (1sec+) toggles position as active/inactive.
 
 newADC: mode dependent, eg in nada: geomantic mode journey, in P, R, RP: overlays...
 
@@ -493,18 +493,14 @@ Abstracted-> a series of processes on incoming voltage subjected to ctrl by volt
 
 TODO/general July 2024:
 
-- re-test all infrastructure
-- test active/inactive and: modes, micromodes, layers, options per layer and per mode
-- test new R modes - leave and come back in, overlap length
-
-interface notes:
+new interface notes:
 
 N/R: no feedback, manipulate R lodges. Q of entry 
 RP/P: P lodges, R lodges. Q of entry 
 
-levels:
+*levels:*
 
-toggle: swop/reset
+toggle only: swop/reset that section
 toggle+modifier: state(N/RP), mode, micromode [mode/micromode->advance]
 toggle+CTRL: params on zones -> P or R zones
 CTRL+modifier: ???  CTRL is local to 2 sections - can also be micromode/mode advance or params on zones...
@@ -543,32 +539,172 @@ eg. P is:
 // playlodge
 // deal with what is output
 
-** 15/7
+** 28/7
 
-*TO FIX: xmajor issue with overlap as we add lodges...*
+Notebook notes:
 
-1. Solve for extend lodges - mode 0
-2. Solve for add lodges
+- Jekyll and Hyde - a dismebodied hand is under the control of another, of a ghost, a double
+- relation of groups, mirrors// toggle jekyll and hyde
+- mobile code notes?
+- reclodges<-->playlodges (ghost of ...) paylodges refer to reality of reclodges
+- impulses in - pulse effects flow, reversal etc...
+- more as divination a la dark int (see notes below)... mobile code, all as executable (DIANOS)... at high frequencies... see CD. stack and attachment there...
+- *do we record to 2 levels simultaneously - so one is ghost like in CD?* - as option both are V and under CTRL
 
-- issue in rec/addlodges as start advances too far... 
-- case if we have zone 0 which extends to overlap then real length is MAXREC
-- but if we add zone which goes past overlap its length is not MAXREC...
+- *we need to find a new model also for coding - so far we have our zones and each has layers, manipulation/copy of reclayer to play...*
 
-we need to record length from now on and just wrap rec and play..
+- levels
+- links/groups of sections with simultaneous press!
+
+** 24/7
+
+- re-consider direction: more interested in pulses and mobile code, how can code take a gesture? neural?
+
+paradigm -> hand routing, disembodied hands//no control. pulse, *automatic writing* and channelings, algorithmics, hand coding
+
+also connection to DIANOS device - ouroboros (could this be incorporated? as an extension - series of touch extensions but do we stick with resistive)
+
+///
+
+- potential mismatch of rec and play lodges - how they need to match, how *one is more like a bend, mirror or ghost of the other/s*
+- DONE: abstract out more inside VIA functions, to test and apply to RPmodes
+
+** 23/7 +
+
+TODO:
+- resolve swops, micromodes, resets new schemes... 
+- SORTout of sync on playback - shifts over time and with changes in speed...*
+- DONEto revert to just delcntt: seems better but unsure of overlap: to *TEST*
+- describe full simple model of action and presses, implement and test
+- how we can move towards abstraction which makes all ideas more possible ... --> *abstraction that allows for recursion and embellishment with some simplicity*
+
+// notebook notes:
+
+- how we can have states per layer? that state only changes master/active layer - after swop. to rethink swop
+- problem of overlay in reclodge (say after reset): 
+---> should reclodge do any overlays? Q for multiple zones, 
+---> how fast can we reset one position - both layers =0 
+
+//
+
+*micromode now where P button would be?*
+
+** 22/7+
+
+eg. in RP we can maybe use V also as controlling
+eg. also in NR, contract the zone using CTRL (shorter and shorter) - but there is no feedback...
+
+- how recorded CTRL can control play or rec zones....
+
+TODO:
+
+- DONEtest all infra now:
+
+- implement new toggles and basic modes and test/play:
+
+Q: is if it is press/release of toggle while modifier is held... or press/release of modifier while toggle is held - or both
+
+trial for rec/play - *now we just use REC button to toggle state*
+
+R=NR
+P=RP // and if there is no R zones what do we do...? do not enter?
+
+how we deal with swops under each state? NR=swop R, RP=swop P/or both?
+
+toggle only: swop/reset that section - TODO:to fill in resets (not full one) = toggle and NO modifier, no CTRL...
+
+toggle+modifier: state(NR/RP), mode, micromode [mode/micromode->advance]
+toggle+CTRL: params on zones -> P or R zones
+
+[CTRL+modifier: ???  CTRL is local to 2 sections - can also be micromode/mode advance or params on zones...]
+
+modifier only: global
 
 ////
+
+- genericise functionality - and find framework for ops
+- how could test.c print parallel plays/recs as lines?
+
+** 20/7
+
+- *New schemes:*
+
+- that with NR mode we need to pay more attention to length of
+  loop/zone and what we record, multiple zones or not, zones dictated
+  by gesture or by silence (that means by Voltage or by CTRL)...// *check that function in rec again...*
+
+eg. also how we do silences outside reclodge - how to genericise all...
+
+what voltage is output, what is recorded, what is played...
+
+//
+functions:
+Always rec -> zones (and we need overlays there) // no play 
+RP/overlay // again see what kinds of overlay we have below // play and rec (so live overlay, recorded overlay)
+
+P: live overlay and overlay of zones on each other
+R: overlay value on what is there (see reclodges)
+RP: what overlay is recorded/bounced from/to
+
+define bounce: //bouncefrom - we get currentval from zone x and overlay on reclayer
+
+//
+
+CTRL and feedback of recorded CTRL!
+
+//
+
+- eg. add new islands/zones
+- switch between rec/loop to zones? //simultaneous or not... ????what?
+
+** 19/7
+
+*TO FIX: major issue with overlap as we add lodges...*
+
+TEST!Solved for extend lodges - mode 0
+
+1-addlodges: NONoverlap mess/fine, TODO:test overlap
+
+*overlay writes over itself as start->maxrec* - which can be an option
+
+but we want to start over - overlay in addlodges is odd in all ways
+once we overlay as we have overlapping playlodges...
+
+2-silence
+3-nosilence
+
+//Solve now for add lodges - in progress - and all silences - we need to record length from now on and just wrap rec and play..
+
+////
+
+- finger clock speed???
+
+** 16/7
+
+delay of next delcntt does not include our offset as that is calculated in
+
+- DONE/TEST -  add loop point for rec - play will loop with no delay...*
+- *TO try: null delay in rec = simultaneous record to zones*
+
+Scheme:
+- manipulate zone parameters eg. add/copy zones
+- play/rec zones
+
+TODO:
+- new touch scheme and dual modes only
+- TODO: currentval/done and bouncefrom, attachment function of rec and for play, PLAN!
+
+-->  uint32_t bouncefrom; // lowest bit can be layer 0,1, rest is zone?
+
+bouncefrom layer 0, zone 0
+
+
+** 15/7
 
 - test all infrastructure, recs:
 //- fixed
 - why is delcntt copy so critical
-- *with if (f[d].rl[0].ind==1) we don't need function in rec but could we need it???*
-
-
-
-////////////////////
-
-- new touch scheme
-- TODO: currentval and bouncefrom, attachment function of rec and for play, PLAN!
+- *QQ: with if (f[d].rl[0].ind==1) we don't need function in rec but could we need it???*
 
 ** 12/7 // 13/7
 
@@ -580,7 +716,7 @@ DONE?/TEST?TODO: break up reclodge so is not inside R_addlodge_silence: if value
 
 DONEbut where do we set this - in addlodge, extendlodge we pass in function
 
-so each lodge also has // see notes:
+*so each lodge also has // see notes:*
 
 speedfrom/speed for playlodges only
 overlaytype? at the moment overlay is micromode for each section/layer
@@ -651,7 +787,7 @@ deal with other sections - *mobile gestures*
 
 //
 
-- *CODE/TEST: enable global/local - if we press one of middle buttons during/simultaneous local toggle*
+- CODE/TEST: enable global/local - if we press one of middle buttons during/simultaneous local toggle*
 
 see latest notebook notes - to test presses
 
@@ -737,7 +873,7 @@ working i think in test5 so to port over*
 
 DONE/TODO: RP needs re-work with playbacks as options:
 
-- PLAY: playback at speed with live overlay or: playback what we will record = overlay of RECpoint and live overlay - *but that will just be last zone as we don;t overlay them*
+- PLAY: playback at speed with live overlay or: playback what we will record = overlay of RECpoint and live overlay - *but that will just be last zone as we don;t overlay them ??*
 
 - bounce rec: either of those above... - so 2 bits total for all options...
 
