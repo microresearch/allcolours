@@ -1,4 +1,166 @@
 uint32_t playlodge(float speed1, uint32_t d, uint32_t lay, uint32_t* P_options){ 
+  uint32_t x, y, tmpx, tmpxx, ff;
+  uint32_t sample=0;
+
+    for (x=0;x<f[d].pl[lay].num_lodges;x++){
+    f[d].pl[lay].lodges[x].delcntt=mod0(f[d].pl[lay].lodges[x].delcntt+speed1, (f[d].pl[lay].lodges[x].offset+f[d].pl[lay].lodges[x].length+f[d].pl[lay].lodges[x].delay));
+  }
+
+    for (x=0;x<f[d].pl[lay].num_lodges;x++){
+      if (f[d].pl[lay].lodges[x].delcntt>=f[d].pl[lay].lodges[x].offset && (f[d].pl[lay].lodges[x].delcntt<=(f[d].pl[lay].lodges[x].offset+f[d].pl[lay].lodges[x].length))) {
+	if ((f[d].pl[lay].lodges[x].start+f[d].pl[lay].lodges[x].length)>MAXREC) ff=(MAXREC-f[d].pl[lay].lodges[x].start);
+	else ff=f[d].pl[lay].lodges[x].length;
+	tmpx=f[d].pl[lay].lodges[x].delcnt+f[d].pl[lay].lodges[x].start;
+	if (tmpx>=MAXREC) tmpx=MAXREC-1;
+	f[d].pl[lay].lodges[x].delcnt=mod0(f[d].pl[lay].lodges[x].delcnt+speed1, ff);
+
+	if (lay==0) {
+	  sample=overlayx(recordings[d][tmpx]&TOP, sample, (P_options[0]>>5)&3); // deal with overlap of zones in one layer DONE
+	  f[d].pl[lay].lodges[x].currentval=recordings[d][tmpx]&TOP; // currentval
+	}
+	else {
+	  sample=overlayx(recordings[d][tmpx]>>16, sample, (P_options[0]>>5)&3); // top layer
+	  f[d].pl[lay].lodges[x].currentval=recordings[d][tmpx]>>16; // currentval
+	}
+      }
+        }
+    return sample;
+}
+
+
+inline static void changemode(uint32_t dacc){
+  f[dacc].majormode[f[dacc].state]++;
+  if (f[dacc].majormode[f[dacc].state]>MAXMODE[f[dacc].state]) f[dacc].majormode[f[dacc].state]=0;
+  f[dacc].ttoggle=0;
+  f[dacc].play=0;					
+  f[dacc].rec=0;
+  f[dacc].state=N; // NADA  
+  // TODO: what else we need to reset here
+}
+
+	    else if (modeheld>SOFTRESET && modeheld<FULLRESET){
+	      if (f[0].active) resets(0);
+	      if (f[1].active) resets(1);
+	      if (f[2].active) resets(2);
+	      if (f[3].active) resets(3);
+	      if (f[4].active) resets(4);
+	      if (f[5].active) resets(5);
+	      if (f[6].active) resets(6);
+	      if (f[7].active) resets(7);
+	    }
+	else if (modeheld>LONGMODE && modeheld<SOFTRESET) { // increment major mode if active
+	  modeheld=0;
+	  if (f[0].active) changemode(0);
+	  if (f[1].active) changemode(1);
+	  if (f[2].active) changemode(2);
+	  if (f[3].active) changemode(3);
+	  if (f[4].active) changemode(4);
+	  if (f[5].active) changemode(5);
+	  if (f[6].active) changemode(6);
+	  if (f[7].active) changemode(7);
+	}	
+	else if (modeheld<LONGMODE){ //inc minor mode 
+	  modeheld=0;
+	  // if state==0 inc just 0
+	  // ==1 inc depends on masterL[0]
+	  if (f[0].active) {
+	    if (f[0].state==0) f[0].minormode[0][0]++;
+	    else if (f[0].state==1) f[0].minormode[f[0].masterL[0]][f[0].state]++;
+	    else if (f[0].state==2) f[0].minormode[f[0].masterL[1]][f[0].state]++;
+	    else if (f[0].state==3) f[0].minormode[f[0].masterL[2]][f[0].state]++;
+	    }
+	  if (f[1].active) {
+	    if (f[1].state==0) f[1].minormode[0][0]++;
+	    else if (f[1].state==1) f[1].minormode[f[1].masterL[0]][f[1].state]++;
+	    else if (f[1].state==2) f[1].minormode[f[1].masterL[1]][f[1].state]++;
+	    else if (f[1].state==3) f[1].minormode[f[1].masterL[2]][f[1].state]++;
+	    }
+	  if (f[2].active) {
+	    if (f[2].state==0) f[2].minormode[0][0]++;
+	    else if (f[2].state==1) f[2].minormode[f[2].masterL[0]][f[2].state]++;
+	    else if (f[2].state==2) f[2].minormode[f[2].masterL[1]][f[2].state]++;
+	    else if (f[2].state==3) f[2].minormode[f[2].masterL[2]][f[2].state]++;
+	    }
+	  if (f[3].active) {
+	    if (f[3].state==0) f[3].minormode[0][0]++;
+	    else if (f[3].state==1) f[3].minormode[f[3].masterL[0]][f[3].state]++;
+	    else if (f[3].state==2) f[3].minormode[f[3].masterL[1]][f[3].state]++;
+	    else if (f[3].state==3) f[1].minormode[f[3].masterL[2]][f[3].state]++;
+	    }
+	  if (f[4].active) {
+	    if (f[4].state==0) f[4].minormode[0][0]++;
+	    else if (f[4].state==1) f[4].minormode[f[4].masterL[0]][f[4].state]++;
+	    else if (f[4].state==2) f[4].minormode[f[4].masterL[1]][f[4].state]++;
+	    else if (f[4].state==3) f[4].minormode[f[4].masterL[2]][f[4].state]++;
+	    }
+	  if (f[5].active) {
+	    if (f[5].state==0) f[5].minormode[0][0]++;
+	    else if (f[5].state==1) f[5].minormode[f[5].masterL[0]][f[5].state]++;
+	    else if (f[5].state==2) f[5].minormode[f[5].masterL[1]][f[5].state]++;
+	    else if (f[5].state==3) f[5].minormode[f[5].masterL[2]][f[5].state]++;
+	    }
+	  if (f[6].active) {
+	    if (f[6].state==0) f[6].minormode[0][0]++;
+	    else if (f[6].state==1) f[6].minormode[f[6].masterL[0]][f[6].state]++;
+	    else if (f[6].state==2) f[6].minormode[f[6].masterL[1]][f[6].state]++;
+	    else if (f[6].state==3) f[6].minormode[f[6].masterL[2]][f[6].state]++;
+	    }
+	  if (f[7].active) {
+	    if (f[7].state==0) f[7].minormode[0][0]++;
+	    else if (f[7].state==1) f[7].minormode[f[7].masterL[0]][f[7].state]++;
+	    else if (f[7].state==2) f[7].minormode[f[7].masterL[1]][f[7].state]++;
+	    else if (f[7].state==3) f[7].minormode[f[7].masterL[2]][f[7].state]++;
+	    }
+	}
+
+	} // newmode
+
+
+// togplay and togrec	   
+	if (f[d].active){
+	  if (togplay) f[d].play^=1;
+	  if (togrec) f[d].rec^=1;
+
+	  if (f[d].lastmode==1 && f[d].play==0) { // if we leave RP via. exit from P we are not left in R
+	    f[d].state=N;
+	    f[d].rec=0; // added
+	}
+	else {
+	// logic of states now
+	  if (f[d].rec && f[d].play){
+	    if (f[d].rl[f[d].masterL[0]].num_lodges>0){ // if we have a zone recorded
+	      f[d].state=RP;
+	  }
+	    else {
+	      f[d].state=R; // nothing to play
+	      f[d].play=0; // added 2/7/2024
+	    }
+	  }
+	  else if (f[d].rec)	f[d].state=R;
+	  else if (f[d].play && (f[d].rl[f[d].masterL[0]].num_lodges>0)) f[d].state=P;
+	  else f[d].state=N;
+	}
+	f[d].lastmode=0;
+	} // end of active
+
+
+
+	// REC: 
+	if (f[d].state==R){
+	  LAYERSWOPR;
+	  values[d]=(*Rfunc[f[d].majormode[R]])(d, V_options, R_options);
+	} // end REC
+	else {
+	  if (f[d].leaver){ 
+	    (*Rfunc_leave[f[d].majormode[R]])(d);
+	  }
+	  f[d].entryr=0;
+	}
+
+	//	if (error) values[d]=4095;
+
+
+uint32_t playlodge(float speed1, uint32_t d, uint32_t lay, uint32_t* P_options){ 
   uint32_t x, y, tmpx, tmpxx;
   uint32_t sample=0;
   /// first layer
