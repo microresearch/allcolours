@@ -1,0 +1,442 @@
+EESchema Schematic File Version 4
+LIBS:touch-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 5 8
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text Notes 1505 1395 0    118  ~ 0
+Each out is mix with other input pad (no buffer, no res)
+$Comp
+L Amplifier_Operational:TL074 U10
+U 1 1 5F0CCDFB
+P 2855 2085
+F 0 "U10" H 2855 2452 50  0000 C CNN
+F 1 "TL074" H 2855 2361 50  0000 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2805 2185 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2905 2285 50  0001 C CNN
+	1    2855 2085
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR070
+U 1 1 5F0CCF1C
+P 2500 1985
+F 0 "#PWR070" H 2500 1735 50  0001 C CNN
+F 1 "GND" H 2505 1812 50  0000 C CNN
+F 2 "" H 2500 1985 50  0001 C CNN
+F 3 "" H 2500 1985 50  0001 C CNN
+	1    2500 1985
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R27
+U 1 1 5F0CCF9C
+P 2390 2185
+F 0 "R27" V 2194 2185 50  0000 C CNN
+F 1 "10K" V 2285 2185 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2390 2185 50  0001 C CNN
+F 3 "~" H 2390 2185 50  0001 C CNN
+	1    2390 2185
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R28
+U 1 1 5F0CCFFF
+P 2865 2350
+F 0 "R28" V 2669 2350 50  0000 C CNN
+F 1 "10K" V 2760 2350 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2865 2350 50  0001 C CNN
+F 3 "~" H 2865 2350 50  0001 C CNN
+	1    2865 2350
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2500 1985 2555 1985
+Wire Wire Line
+	2490 2185 2520 2185
+Wire Wire Line
+	2290 2185 2255 2185
+Wire Wire Line
+	2520 2185 2520 2350
+Wire Wire Line
+	2520 2350 2765 2350
+Connection ~ 2520 2185
+Wire Wire Line
+	2520 2185 2555 2185
+Wire Wire Line
+	2965 2350 3155 2350
+Wire Wire Line
+	3155 2350 3155 2085
+Text GLabel 2255 2185 0    50   Input ~ 0
+OUT1TOMIX
+Wire Wire Line
+	3155 2085 3225 2085
+Connection ~ 3155 2085
+Text GLabel 3225 2085 2    63   Input ~ 0
+OUT1
+Wire Wire Line
+	2520 2350 2325 2350
+Connection ~ 2520 2350
+Text GLabel 2325 2350 0    59   Input ~ 0
+B1
+$Comp
+L power:GND #PWR0132
+U 1 1 5F294955
+P 2500 2750
+F 0 "#PWR0132" H 2500 2500 50  0001 C CNN
+F 1 "GND" H 2505 2577 50  0000 C CNN
+F 2 "" H 2500 2750 50  0001 C CNN
+F 3 "" H 2500 2750 50  0001 C CNN
+	1    2500 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R85
+U 1 1 5F29495B
+P 2390 2950
+F 0 "R85" V 2194 2950 50  0000 C CNN
+F 1 "10K" V 2285 2950 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2390 2950 50  0001 C CNN
+F 3 "~" H 2390 2950 50  0001 C CNN
+	1    2390 2950
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R86
+U 1 1 5F294962
+P 2865 3115
+F 0 "R86" V 2669 3115 50  0000 C CNN
+F 1 "10K" V 2760 3115 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 2865 3115 50  0001 C CNN
+F 3 "~" H 2865 3115 50  0001 C CNN
+	1    2865 3115
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2500 2750 2555 2750
+Wire Wire Line
+	2490 2950 2520 2950
+Wire Wire Line
+	2290 2950 2255 2950
+Wire Wire Line
+	2520 2950 2520 3115
+Wire Wire Line
+	2520 3115 2765 3115
+Connection ~ 2520 2950
+Wire Wire Line
+	2520 2950 2555 2950
+Wire Wire Line
+	2965 3115 3155 3115
+Wire Wire Line
+	3155 3115 3155 2850
+Text GLabel 2255 2950 0    50   Input ~ 0
+OUT2TOMIX
+Wire Wire Line
+	3155 2850 3225 2850
+Text GLabel 3225 2850 2    63   Input ~ 0
+OUT2
+Wire Wire Line
+	2520 3115 2325 3115
+Connection ~ 2520 3115
+Text GLabel 2325 3115 0    59   Input ~ 0
+B2
+$Comp
+L power:GND #PWR0134
+U 1 1 5F294F62
+P 4765 2765
+F 0 "#PWR0134" H 4765 2515 50  0001 C CNN
+F 1 "GND" H 4770 2592 50  0000 C CNN
+F 2 "" H 4765 2765 50  0001 C CNN
+F 3 "" H 4765 2765 50  0001 C CNN
+	1    4765 2765
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R88
+U 1 1 5F294F68
+P 4655 2965
+F 0 "R88" V 4459 2965 50  0000 C CNN
+F 1 "10K" V 4550 2965 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 4655 2965 50  0001 C CNN
+F 3 "~" H 4655 2965 50  0001 C CNN
+	1    4655 2965
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R90
+U 1 1 5F294F6F
+P 5130 3130
+F 0 "R90" V 4934 3130 50  0000 C CNN
+F 1 "10K" V 5025 3130 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 5130 3130 50  0001 C CNN
+F 3 "~" H 5130 3130 50  0001 C CNN
+	1    5130 3130
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4765 2765 4820 2765
+Wire Wire Line
+	4755 2965 4785 2965
+Wire Wire Line
+	4555 2965 4520 2965
+Wire Wire Line
+	4785 2965 4785 3130
+Wire Wire Line
+	4785 3130 5030 3130
+Connection ~ 4785 2965
+Wire Wire Line
+	4785 2965 4820 2965
+Wire Wire Line
+	5230 3130 5420 3130
+Wire Wire Line
+	5420 3130 5420 2865
+Text GLabel 4520 2965 0    50   Input ~ 0
+OUT4TOMIX
+Wire Wire Line
+	5420 2865 5490 2865
+Text GLabel 5490 2865 2    63   Input ~ 0
+OUT4
+Wire Wire Line
+	4785 3130 4590 3130
+Connection ~ 4785 3130
+Text GLabel 4590 3130 0    59   Input ~ 0
+B4
+$Comp
+L power:GND #PWR0133
+U 1 1 5F29551F
+P 4710 1865
+F 0 "#PWR0133" H 4710 1615 50  0001 C CNN
+F 1 "GND" H 4715 1692 50  0000 C CNN
+F 2 "" H 4710 1865 50  0001 C CNN
+F 3 "" H 4710 1865 50  0001 C CNN
+	1    4710 1865
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R87
+U 1 1 5F295525
+P 4600 2065
+F 0 "R87" V 4404 2065 50  0000 C CNN
+F 1 "10K" V 4495 2065 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 4600 2065 50  0001 C CNN
+F 3 "~" H 4600 2065 50  0001 C CNN
+	1    4600 2065
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_Small R89
+U 1 1 5F29552C
+P 5075 2230
+F 0 "R89" V 4879 2230 50  0000 C CNN
+F 1 "10K" V 4970 2230 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" H 5075 2230 50  0001 C CNN
+F 3 "~" H 5075 2230 50  0001 C CNN
+	1    5075 2230
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4710 1865 4765 1865
+Wire Wire Line
+	4700 2065 4730 2065
+Wire Wire Line
+	4500 2065 4465 2065
+Wire Wire Line
+	4730 2065 4730 2230
+Wire Wire Line
+	4730 2230 4975 2230
+Connection ~ 4730 2065
+Wire Wire Line
+	4730 2065 4765 2065
+Wire Wire Line
+	5175 2230 5365 2230
+Wire Wire Line
+	5365 2230 5365 1965
+Text GLabel 4465 2065 0    50   Input ~ 0
+OUT3TOMIX
+Wire Wire Line
+	5365 1965 5435 1965
+Text GLabel 5435 1965 2    63   Input ~ 0
+OUT3
+Wire Wire Line
+	4730 2230 4535 2230
+Connection ~ 4730 2230
+Text GLabel 4535 2230 0    59   Input ~ 0
+B3
+$Comp
+L Amplifier_Operational:TL074 U10
+U 3 1 5F295E1B
+P 5065 1965
+F 0 "U10" H 5065 2332 50  0000 C CNN
+F 1 "TL074" H 5065 2241 50  0000 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 5015 2065 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5115 2165 50  0001 C CNN
+	3    5065 1965
+	1    0    0    -1  
+$EndComp
+Connection ~ 5365 1965
+$Comp
+L Amplifier_Operational:TL074 U10
+U 4 1 5F295FB2
+P 5120 2865
+F 0 "U10" H 5120 3232 50  0000 C CNN
+F 1 "TL074" H 5120 3141 50  0000 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 5070 2965 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 5170 3065 50  0001 C CNN
+	4    5120 2865
+	1    0    0    -1  
+$EndComp
+Connection ~ 5420 2865
+$Comp
+L Amplifier_Operational:TL074 U10
+U 2 1 5F2960D2
+P 2855 2850
+F 0 "U10" H 2855 3217 50  0000 C CNN
+F 1 "TL074" H 2855 3126 50  0000 C CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 2805 2950 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 2905 3050 50  0001 C CNN
+	2    2855 2850
+	1    0    0    -1  
+$EndComp
+Connection ~ 3155 2850
+$Comp
+L Amplifier_Operational:TL074 U?
+U 5 1 5F297F4A
+P 6200 2560
+AR Path="/5EBFD180/5F297F4A" Ref="U?"  Part="5" 
+AR Path="/5EED47D5/5F297F4A" Ref="U10"  Part="5" 
+F 0 "U10" H 6158 2606 50  0000 L CNN
+F 1 "TL074" H 6158 2515 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-14_3.9x8.7mm_Pitch1.27mm" H 6150 2660 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl071.pdf" H 6250 2760 50  0001 C CNN
+	5    6200 2560
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 5F297F51
+P 6100 2220
+AR Path="/5EBFD180/5F297F51" Ref="#PWR?"  Part="1" 
+AR Path="/5EED47D5/5F297F51" Ref="#PWR0135"  Part="1" 
+F 0 "#PWR0135" H 6100 2070 50  0001 C CNN
+F 1 "+12V" H 6115 2393 50  0000 C CNN
+F 2 "" H 6100 2220 50  0001 C CNN
+F 3 "" H 6100 2220 50  0001 C CNN
+	1    6100 2220
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR?
+U 1 1 5F297F57
+P 6100 2910
+AR Path="/5EBFD180/5F297F57" Ref="#PWR?"  Part="1" 
+AR Path="/5EED47D5/5F297F57" Ref="#PWR0136"  Part="1" 
+F 0 "#PWR0136" H 6100 3010 50  0001 C CNN
+F 1 "-12V" H 6115 3083 50  0000 C CNN
+F 2 "" H 6100 2910 50  0001 C CNN
+F 3 "" H 6100 2910 50  0001 C CNN
+	1    6100 2910
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6100 2860 6100 2910
+Wire Wire Line
+	6100 2220 6100 2260
+$Comp
+L power:+12V #PWR?
+U 1 1 5F385B3F
+P 6705 2500
+AR Path="/5EBFD180/5F385B3F" Ref="#PWR?"  Part="1" 
+AR Path="/5EED47D5/5F385B3F" Ref="#PWR0165"  Part="1" 
+F 0 "#PWR0165" H 6705 2350 50  0001 C CNN
+F 1 "+12V" H 6720 2673 50  0000 C CNN
+F 2 "" H 6705 2500 50  0001 C CNN
+F 3 "" H 6705 2500 50  0001 C CNN
+	1    6705 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5F385B45
+P 6705 2640
+AR Path="/5EBFD180/5F385B45" Ref="C?"  Part="1" 
+AR Path="/5EED47D5/5F385B45" Ref="C63"  Part="1" 
+F 0 "C63" H 6797 2686 50  0000 L CNN
+F 1 "100nF" H 6797 2595 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 6705 2640 50  0001 C CNN
+F 3 "~" H 6705 2640 50  0001 C CNN
+	1    6705 2640
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F385B4C
+P 6705 2780
+AR Path="/5EBFD180/5F385B4C" Ref="#PWR?"  Part="1" 
+AR Path="/5EED47D5/5F385B4C" Ref="#PWR0166"  Part="1" 
+F 0 "#PWR0166" H 6705 2530 50  0001 C CNN
+F 1 "GND" H 6710 2607 50  0000 C CNN
+F 2 "" H 6705 2780 50  0001 C CNN
+F 3 "" H 6705 2780 50  0001 C CNN
+	1    6705 2780
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6705 2500 6705 2540
+Wire Wire Line
+	6705 2740 6705 2780
+$Comp
+L Device:C_Small C?
+U 1 1 5F385B54
+P 7115 2630
+AR Path="/5EBFD180/5F385B54" Ref="C?"  Part="1" 
+AR Path="/5EED47D5/5F385B54" Ref="C64"  Part="1" 
+F 0 "C64" H 7207 2676 50  0000 L CNN
+F 1 "100nF" H 7207 2585 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 7115 2630 50  0001 C CNN
+F 3 "~" H 7115 2630 50  0001 C CNN
+	1    7115 2630
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F385B5B
+P 7115 2770
+AR Path="/5EBFD180/5F385B5B" Ref="#PWR?"  Part="1" 
+AR Path="/5EED47D5/5F385B5B" Ref="#PWR0167"  Part="1" 
+F 0 "#PWR0167" H 7115 2520 50  0001 C CNN
+F 1 "GND" H 7120 2597 50  0000 C CNN
+F 2 "" H 7115 2770 50  0001 C CNN
+F 3 "" H 7115 2770 50  0001 C CNN
+	1    7115 2770
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7115 2730 7115 2770
+$Comp
+L power:-12V #PWR?
+U 1 1 5F385B62
+P 7005 2365
+AR Path="/5EBFD180/5F385B62" Ref="#PWR?"  Part="1" 
+AR Path="/5EED47D5/5F385B62" Ref="#PWR0168"  Part="1" 
+F 0 "#PWR0168" H 7005 2465 50  0001 C CNN
+F 1 "-12V" H 7020 2538 50  0000 C CNN
+F 2 "" H 7005 2365 50  0001 C CNN
+F 3 "" H 7005 2365 50  0001 C CNN
+	1    7005 2365
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7005 2365 7115 2365
+Wire Wire Line
+	7115 2365 7115 2530
+$EndSCHEMATC
