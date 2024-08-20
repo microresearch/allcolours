@@ -60,6 +60,52 @@ void io_config2 (void) {
        //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
        GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+       // PWM TIM1 on PA8
+       GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_TIM1);
+       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+       GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+       // PWM TIM4 on  //TIM4_CH2 - PB7 pin 59 
+       GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_TIM4);
+       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+       GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+       // PWM - TIM8_CH2 - PC7 pin 38 
+       GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM8);
+       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+       GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+       // - TIM12_CH1 PB14 pin 35 // moved FR6 was pin PB14
+       GPIO_PinAFConfig(GPIOB, GPIO_PinSource14, GPIO_AF_TIM12);
+       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+       GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+       /*
+       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+       //       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+       //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       GPIO_Init(GPIOA, &GPIO_InitStructure);
+       */
+       
+       
        /* DAC channel 1 Configuration */
        DAC_InitTypeDef DAC_InitStructure1;
        DAC_InitStructure1.DAC_Trigger = DAC_Trigger_None;
@@ -265,8 +311,8 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+  // 19/8/2024 now use as PWM so swopped -> PB3 DONE // FR6
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -362,10 +408,126 @@ int main(void)
   //    uint8_t firstByte, secondByte, configBits;
       uint32_t daccount=0;    
 
+      /* TRIAL PWM on
+	 35: TIM12_CH1
+	 38: TIM8_CH2
+	 41: TIM1_CH1 PA8
+	 59: TIM4_CH2
+	 //	 prev PWM code from: segments
+      */
 
-      
-      while(1) {
+  // TIM1 on PA8      
+  TIM_DeInit(TIM1);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+  
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // 
+  TIM_TimeBaseInit(TIM1, &TIM_TimeBase_InitStructure);
+ 
+  TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OC_InitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
+  TIM_OC_InitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+  TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
+  TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
+  //  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this! // for TIM1 to update we needed to comment out - as opposed to in AC but there was TIM3 2/9/2021
+  //  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+  TIM_Cmd(TIM1, ENABLE);
+  TIM_CtrlPWMOutputs(TIM1, ENABLE); // we needed this for timer1 to be added
 
+ //TIM4_CH2 - PB7 pin 59
+  TIM_DeInit(TIM4);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // 
+  TIM_TimeBaseInit(TIM4, &TIM_TimeBase_InitStructure);
+ 
+  TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OC_InitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
+  TIM_OC_InitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+  TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
+  TIM_OC2Init(TIM4, &TIM_OC_InitStructure); 
+  //  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this! // for TIM1 to update we needed to comment out - as opposed to in AC but there was TIM3 2/9/2021
+  //  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+  TIM_Cmd(TIM4, ENABLE);
+  TIM_CtrlPWMOutputs(TIM4, ENABLE); // we needed this for timer1 to be added
+
+  //- TIM8_CH2 - PC7 pin 38 
+  TIM_DeInit(TIM8);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+  
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // 
+  TIM_TimeBaseInit(TIM8, &TIM_TimeBase_InitStructure);
+ 
+  TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OC_InitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
+  TIM_OC_InitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+  TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
+  TIM_OC2Init(TIM8, &TIM_OC_InitStructure); 
+  //  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this! // for TIM1 to update we needed to comment out - as opposed to in AC but there was TIM3 2/9/2021
+  //  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+  TIM_Cmd(TIM8, ENABLE);
+  TIM_CtrlPWMOutputs(TIM8, ENABLE); // we needed this for timer1 to be added
+
+  // TIM12_CH1 PB14 pin 35 
+  TIM_DeInit(TIM12);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM12, ENABLE);
+  
+  TIM_TimeBase_InitStructure.TIM_ClockDivision = TIM_CKD_DIV1; // 0
+  TIM_TimeBase_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBase_InitStructure.TIM_Period = 32; // 
+  TIM_TimeBase_InitStructure.TIM_Prescaler = 8; // 
+  TIM_TimeBaseInit(TIM12, &TIM_TimeBase_InitStructure);
+ 
+  TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OC_InitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
+  TIM_OC_InitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+  TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+  TIM_OC_InitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+  TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
+  TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+  TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
+  TIM_OC1Init(TIM12, &TIM_OC_InitStructure); 
+  //  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this! // for TIM1 to update we needed to comment out - as opposed to in AC but there was TIM3 2/9/2021
+  //  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
+  TIM_Cmd(TIM12, ENABLE);
+  TIM_CtrlPWMOutputs(TIM12, ENABLE); // we needed this for timer1 to be added
+
+  
+  while(1) {
+    TIM1->ARR=160;
+    TIM1->CCR1 = 80; // pulse width
+
+    TIM4->ARR=160;
+    TIM4->CCR1 = 80; // pulse width
+
+    TIM8->ARR=160;
+    TIM8->CCR1 = 80; // pulse width
+
+    TIM12->ARR=160;
+    TIM12->CCR1 = 80; // pulse width
+    
+    
+    
 	//	WRITEDACX;       /// TESTY
       // all now placed in interrupt so is well timed
       // TODO - test freeze and all buttons
@@ -392,7 +554,12 @@ int main(void)
       //  daccount++;
       //  if (daccount==8) daccount=0;  
       //    delay();
-
+    /*    
+    GPIOA->BSRRH = 1<<9;//0b0000000010000000;  // PA8
+    delay();
+    GPIOA->BSRRL = 1<<9;//0b0000000010000000;     
+    delay();
+    */
     }
 }
 

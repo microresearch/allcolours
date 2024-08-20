@@ -905,7 +905,7 @@ void TIM2_IRQHandler(void)
     float spd=0.0; // for new accel tests
     static uint32_t d=0;
     uint32_t j,x,y, tmp, tmpp, tmpy, autre;
-    uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<14, 1<<4}; // 1st 4 are vca, last 4 are volts  
+    uint32_t freezer[8]={1<<8, 1<<4, 1<<13, 1<< 15,  1<<9, 1<<12, 1<<3, 1<<4}; // 1st 4 are vca, last 4 are volts   - changed FR6 to PB3 now!
     static uint32_t modetoggle=0, newmode=0, count=0;
     static uint32_t lasttriggered[11]={0,0,0,0, 0,0,0,0, 0,0,0}, mbreaker=0, breaker[11]={0,0,0,0, 0,0,0,0, 0,0,0};
     static int32_t togrec=0, togplay=0, helder=0, heldon=0, modeheld=0, modechanged=1, first=0;
@@ -973,7 +973,7 @@ void TIM2_IRQHandler(void)
 	else f[d].state=NR;
 	
 	////// TESTY - SET MODES for testing!
-	f[d].majormode[NR]=2;
+	f[d].majormode[NR]=0;
 	f[d].majormode[RP]=0;
 	///////////////////////////////////////////////////////
 	
