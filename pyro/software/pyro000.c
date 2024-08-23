@@ -136,25 +136,25 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    fom=PINB&1;
    if (fom==0) former++;
    
-   shortpress=1;
+   shortpress=0;
    if (shortpress) {
      howlong=15; // length of flash = 1/5
      pulslength=20; // TODO: calibrate // length of pulse = 100ms=20
    }
    else {
-     howlong=150; // longer
+     howlong=120; // longer
      pulslength=400; // TODO: calibrate // 2 seconds
    }
    // display
    
-   counter=0;// TESTY!
+   counter=0;// TESTY display!
    if (armed)  { // flash
      flashcount++;
      if (flashcount>howlong){ 
 	 flasher^=1;
 	 flashcount=0;
        }
-     if (flasher) PORTD|=(((remap[counter])<<4) & 0b00001111); // display - but do flashing on armed with length
+     if (flasher) PORTD|=(((remap[counter])<<4)); // display - but do flashing on armed with length
      else PORTD&=0b00001111; // mask
    }
    else PORTD=(remap[counter])<<4; // display - but do flashing on armed with length
@@ -167,7 +167,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    //   sbi(PORTB,1);
   // DO MODES here mode is counter... 0-14
 
-   counter=5; // TESTY!
+   counter=1; // TESTY!
    switch(counter){
    case 15: // testy
      for (u8 x=0;x<4;x++){
@@ -184,7 +184,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
      }
      break;
 
-     case 0: // 1- trigger sets off each one whenever 
+     case 0: // 1- trigger sets off each one whenever and no re-trigger
      for (u8 x=0;x<4;x++){
        pin[x]=(PINC&(1<<x));
        if (armmed[x] && pin[x] && (last[x]==0) && state[x]==0) { // we just want leading edge... TRIGGER
