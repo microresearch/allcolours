@@ -2,9 +2,61 @@
 
 - video/manual (burnt manual card?)
 
+*- fake trigger//how do we trigger for video... (code-in special delay just for video - say 5s - TESTMODE)*
+
+// desc/for manual card/for website
+
+"Die Grausamkeit des ewigen Tods. Lucifer Antichrist und sein Mutter ein Leib und Sele: ist fix und volatile."
+
+ERD/FUSE is the first eurorack module designed to trigger and initiate
+pyrotechnic or explosive events from within the modular domain.
+
+ERD/FUSE acts as a bridge between gate or control signals, and
+multiple controlled ignition events. Under various operational modes,
+trigger signals are used to ignite either electric matches (ematch) or
+clip-on (talon) igniter in complex sequences.
+
+ERD/FUSE can ignite up to four electric matches or clip-on igniters
+whose cables are inserted into the module, using four trigger signals
+in various combinations according to mode. Ignition can be selected to
+last 100ms (electic match) or 2 seconds (talon).
+
+Operation:
+
+- Connect eurorack power with red stripe (-12v) towards the bottom of the module.
+- Connect a 12v 2A (minimum) power supply (2.1mm jack, centre positive) to the power jack.
+- Select a mode by rotating the mode knob. The selected mode is indicated by the binary display above the row of jacks.
+- Plug the trigger signal into the selected trigger jack (1-4 left to right),
+- Make sure the display LEDs do NOT flash. Clip the ematch or trigger cable copper ends into the relevant port matching the jack (1-4 top down). 
+
+- At a safe distance from the modulor, attach the ematch to the pyrotechnic device to be triggered, following manufacturer's instructions.
+
+- Arm the ERD/FUSE to fire the ematch according to trigger or mode by
+  pressing down the mode select knob and releasing it. A quick press
+  selects 100ms trigger, a press over one second selects 2 second
+  trigger. The mode LEDs will now flash (fast or slow) to indicate
+  that module and the devices are armed and ready. Do NOT approach the
+  devices to be triggered until all devices have successfully fired,
+  and the FUSE display has stopped flashing.
+
+- According to mode and input signal, explosive events will be
+  successively triggered. Once all events attached to all four
+  triggers have been achieved, a new mode can be selected, a new set
+  of triggers can be attached, and the module can be re-armed.
+
+Modes:
+
+ERD/FUSE requires a 12-15V, 40W+ brick power supply with a centre positive
+2.1mm DC jack plug (eg. MEAN WELL GST40A12 Desktop power supply). This
+is not included. The power is plugged on the left side DC JACK.
+
+Technical:
+
+10HP, mA at 12v, 0mA at -12v. 4 gate/pulse/CV inputs (>4v trigger), 4 electric match/talon compatible output pairs. 
+
 ** pyro module for 4 triggers
 
-prog: HEADER from top: reset, MOSI, MISO, SCK, GND = BLACK at top now!
+prog: HEADER from top: reset, MOSI, MISO, SCK, GND // BLACK at top (black, white)
 
 10HP 50.5mm
 
@@ -43,7 +95,7 @@ TO TEST!
 2- trigger on first sets off allXX
 3- trigger on first sets off first and then primes rest to set off on their own trigger 
 4- pair arms or primes other - so one goes off after other 
-5- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
+**5- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
 
 X- trigger within time window on all sets off all???  // different size of windows below 
 X- same for pairs in window = sets on pairs // different size of windows below
@@ -52,6 +104,8 @@ X- trigger on first sets off each in series at successive interval of X, Y, Z(ho
 sizes of windows: 1 second, 2, 4, 8, 16 = 6,7,8,9 + pairs 10,11,12,13
 
 sizes of interval: 4, 8 = 14,15 or we measure interval...??? - prime on 1st, measure and fire 2nd and use time for next 2
+
+X- trigger each one after x second delay...
 
 set a delay of x Ms from now ???
 
@@ -72,10 +126,14 @@ TODO more modes ->15
 
 - implement and test all modes and timings
 
-*on first mode but we need to pin down approx all timings and if they vary much???*
-
 - video/manual (burnt manual card?)
-- 25x order jlcpcb - +waiting for XTAL!-16MHZ+
+- +25x order jlcpcb - +waiting for XTAL!-16MHZ++
+
+** 23/8/2024
+
+- pulled out ignition... TESTed and fixed bug in flashing code...
+- *NOTE: that counter/case we add one to display as there is no zero*
+- *NOTE: TODO: norm to GND, note our firstproto doesn't have the pulldowns.. fixed now and in production*
 
 ** 8/7/2024
 

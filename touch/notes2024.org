@@ -566,16 +566,24 @@ TIM12_CH1. pin 35 setup
 
 - DONEadd amps for PWM signals and buffers->ADC, remove out amps
 
+** 22/8
+
+- working now (not before) with adjustment to voltage out of first stage/PWM - set this gain in the first PWM amplifier...
+- TEST: finger in of other signals/split levels, what is optimal size of gnd around???
+
+
 ** 20/8 TODO/DONE
 
 1- TIM1_CH1 PA8 on pin 41 = working
-2- TIM12_CH1 PB14 pin 35 = working
+2- TIM12_CH1 PB14 pin 35 = workingX-solder
 3- TIM8_CH2 - PC7 pin 38 = working
 4- TIM4_CH2 - PB7 pin 59 = working
 
 // and re-assign freezeFR6 in main.cDONE, freezer[8] in 003.cDONE, and on schematicDONE
 
 added PWM to schematic
+
+// 6v is peak out from LM3900 so just halve this for micro - use 4.7M (approx to adjust) in feedback... and keep diodes on micro inputs
 
 * diary notes
 

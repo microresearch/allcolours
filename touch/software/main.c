@@ -523,8 +523,8 @@ int main(void)
     TIM8->ARR=160;
     TIM8->CCR1 = 80; // pulse width
 
-    TIM12->ARR=160;
-    TIM12->CCR1 = 80; // pulse width
+    TIM12->ARR=100;
+    TIM12->CCR1 = 50; // pulse width // 110 KHz
     
     
     
