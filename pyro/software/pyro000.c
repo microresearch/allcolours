@@ -56,7 +56,8 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
   u8 tmp=0;
   static u8 armed=0, primed[4]={0,0,0,0};
   static uint32_t former=0;
-  static int counter = 0, testing=0; 
+  static int counter = 0; // can go -
+  static uint32_t timer=0; 
   u8 aState, fom=0;
   uint32_t howlong=0;
   static uint32_t flashcount=0, presscnt;
@@ -66,6 +67,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
   static u8 last[4]={0,0,0,0}, pin[4]={0,0,0,0}, state[4]={0,0,0,0};
   static uint32_t counterr[4]={0,0,0,0};
   static u8 armmed[4]={0,0,0,0};
+  static u8 timeof[4]={0,0,0,0};
   const uint32_t remap[15]={8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
 
     /* TODO:
@@ -117,6 +119,10 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        else shortpress=1;
      }
      else { // not armed then reset all // TODO ????
+       primed[0]=0;
+       primed[1]=0;
+       primed[2]=0;
+       primed[3]=0;
        armmed[0]=0;
        armmed[1]=0;
        armmed[2]=0;
@@ -129,6 +135,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        counterr[1]=0;
        counterr[2]=0;
        counterr[3]=0;
+       timer=0;
      }
      presscnt=0;
    } // press
@@ -136,13 +143,13 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    fom=PINB&1;
    if (fom==0) former++;
    
-   shortpress=0;
+   shortpress=0; // TESTY!
    if (shortpress) {
      howlong=15; // length of flash = 1/5
      pulslength=20; // TODO: calibrate // length of pulse = 100ms=20
    }
    else {
-     howlong=120; // longer
+     howlong=120; // longer --> was 120 /// 2000 is 10 seconds
      pulslength=400; // TODO: calibrate // 2 seconds
    }
    // display
@@ -167,9 +174,10 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    //   sbi(PORTB,1);
   // DO MODES here mode is counter... 0-14
 
-   counter=1; // TESTY!
+   counter=14; // TESTY!
+   if (armed){
    switch(counter){
-   case 15: // testy
+   case 16: // testy ONLY
      for (u8 x=0;x<4;x++){
        if (x==0) cbi(PORTD,0);
        else if (x==1) cbi(PORTD,1);
@@ -187,7 +195,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
      case 0: // 1- trigger sets off each one whenever and no re-trigger
      for (u8 x=0;x<4;x++){
        pin[x]=(PINC&(1<<x));
-       if (armmed[x] && pin[x] && (last[x]==0) && state[x]==0) { // we just want leading edge... TRIGGER
+       if (armmed[x] && pin[x] && (last[x]==0) && state[x]==0) { 
 	 state[x]=1; // fired
    }
        last[x]=pin[x];
@@ -196,7 +204,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
 
    case 1: // 2- trigger on first sets off all at once...
      pin[0]=(PINC&1);
-       if (armed && pin[0] && (last[0]==0) && state[0]==0) { 
+       if (pin[0] && (last[0]==0) && state[0]==0) { 
 	 state[0]=1; // fire all
 	 state[1]=1; // fire
 	 state[2]=1; // fire
@@ -207,7 +215,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
 
    case 2://- trigger on first sets off first and then primes rest to set off on their own trigger 
      pin[0]=(PINC&1);
-     if (armed && pin[0] && (last[0]==0) && primed[0]==0 && state[0]==0) { 
+     if (pin[0] && (last[0]==0) && primed[0]==0 && state[0]==0) { 
        primed[0]=1;
        state[0]=1; // fired
      }
@@ -216,7 +224,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        for (u8 x=1;x<4;x++){
        pin[x]=(PINC&(1<<x));
 
-       if (primed[0] && armmed[x] && pin[x] && (last[x]==0) && state[x]==0) { // we just want leading edge... TRIGGER
+       if (primed[0] && armmed[x] && pin[x] && (last[x]==0) && state[x]==0) { 
 	 state[x]=1; // fired
        }
 
@@ -226,25 +234,168 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
 	   break;
 
    case 3: // 3- pair arms or primes other - so one goes off after other .. pair is 0 and 1, 2 and 3
-     
+     pin[0]=(PINC&1);
+     if (pin[0] && (last[0]==0) && primed[0]==0 && state[0]==0) { 
+       primed[0]=1;
+       state[0]=1; // fired
+     }
+
+     pin[2]=(PINC&4);
+     if (pin[2] && (last[2]==0) && primed[2]==0 && state[2]==0) { 
+       primed[2]=1;
+       state[2]=1; // fired
+     }
+
+     pin[1]=(PINC&2);
+     if (primed[0] && armmed[1] && pin[1] && (last[1]==0) && state[1]==0) { 
+       state[1]=1; // fired
+     }
+
+     pin[3]=(PINC&8);
+     if (primed[2] && armmed[3] && pin[3] && (last[3]==0) && state[3]==0) { 
+       state[3]=1; // fired
+     }
+          
+       last[0]=pin[0];
+       last[1]=pin[1];
+       last[2]=pin[2];
+       last[3]=pin[3];       
      break;
 
-     /*
-4- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
+   case 4:      //4- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
+     pin[0]=(PINC&1);
+     if (pin[0] && (last[0]==0) && primed[0]==0 && state[0]==0) { 
+       primed[0]=1;
+       state[0]=1; // fired
+     }
+     
+     pin[1]=(PINC&2);
+     if (primed[0] && armmed[1] && pin[1] && (last[1]==0) && state[1]==0) { 
+       primed[1]=1;
+       state[1]=1; // fired
+     }
 
-      */
-   case 5: // for TEST/VIDEO we want to wait 10 seconds/ no trigger - just deal with [0]
+     pin[2]=(PINC&4);
+     if (primed[1] && armmed[1] && pin[2] && (last[2]==0) && state[2]==0) { 
+       primed[2]=1;
+       state[2]=1; // fired
+     }
+
+     pin[3]=(PINC&8);
+     if (primed[2] && armmed[3] && pin[3] && (last[3]==0) && state[3]==0) { 
+       state[3]=1; // fired
+     }
+     
+       last[0]=pin[0];
+       last[1]=pin[1];
+       last[2]=pin[2];
+       last[3]=pin[3];       
+     break;
+
+     // TEST and do different window sizes (how to test?)
+   case 5: // X- all trigger events within time window on all sets off all???  // different size of windows below 
+     timer++;
+     for (u8 x=0;x<4;x++){
+       pin[x]=(PINC&(1<<x));
+       
+       if (pin[x] && (last[x]==0) && state[x]==0) { 
+	 timeof[x]=timer;
+	 primed[x]=1;
+       }
+       last[x]=pin[x];       
+     }
+     // if they are all in 1 second window  =200
+     if (primed[0]==1 && primed[1]==1 && primed[2]==1 && primed[3]==1 ){
+     if ( (abs(timeof[0]-timeof[1])<200) && (abs(timeof[0]-timeof[2])<200) && (abs(timeof[0]-timeof[3])<200) && (abs(timeof[1]-timeof[2])<200) && (abs(timeof[1]-timeof[3])<200) && (abs(timeof[2]-timeof[3])<200)){
+	 state[0]=1; // fire all
+	 state[1]=1; // fire
+	 state[2]=1; // fire
+	 state[3]=1; // fire
+	 timeof[0]=0; 	 timeof[1]=0;	 timeof[2]=0;	 timeof[3]=0;
+     }
+     }
+     break;
+
+     // X- trigger on first sets off each in series at successive interval of X, Y, Z(how that is determined?) 1-2-3-4
+   case 6:
+     pin[0]=(PINC&1);
+       if (pin[0] && (last[0]==0) && state[0]==0) { 
+	 state[0]=1; // fire all and time next ones
+	 timeof[0]=0;
+	 primed[0]=1;
+       }
+       if (primed[0]==1) {
+	 timeof[0]++;
+	 if (timeof[0]>200) state[1]=1; // 1 second
+	 if (timeof[0]>400) state[2]=1; 
+	 if (timeof[0]>600) state[3]=1; 
+       }
+       last[0]=pin[0];
+     break;
+
+   case 7:      //X- prime on 1st, measure and fire 2nd and use time for next 2 after each other
+     pin[0]=(PINC&1);
+       if (pin[0] && (last[0]==0) && state[0]==0) { 
+	 state[0]=1; // fire all and time next ones
+	 timeof[0]=0;
+	 primed[0]=1;
+       }
+       if (primed[0]==1) {
+	 timeof[0]++;
+	 pin[1]=(PINC&2);
+	 if (armmed[1] && pin[1] && (last[1]==0) && state[1]==0) { 
+	   state[1]=1; // fire
+	   primed[1]=1;
+	   timeof[1]=timeof[0];
+	   timeof[0]=0;
+	 }
+	 if (primed[1]==1 && timeof[0]>timeof[1]) state[2]=1;
+	 if (primed[1]==1 && timeof[0]>(timeof[1]*2)) state[3]=1; 
+       }
+       last[0]=pin[0];
+       last[1]=pin[1];
+     break;
+
+     case 8:      //X- trigger each one after x second delay... 
+     for (u8 x=0;x<4;x++){
+       pin[x]=(PINC&(1<<x));
+       if (armmed[x] && pin[x] && (last[x]==0) && state[x]==0) { 
+	 timeof[x]=0;
+	 primed[x]=1;
+   }
+       if (primed[x] && state[x]==0){
+	 timeof[x]++;
+	 if (timeof[x]>200) {//1 second delay
+	   state[x]=1;
+	 }
+       }
+       last[x]=pin[x];
+     }
+     break;
+    
+
+     
+     //
+     
+     
+     /////////////////////////     /////////////////////////     /////////////////////////     /////////////////////////     /////////////////////////
+     
+   case 14: // also -- for TEST/VIDEO we want to wait 10 seconds/ no trigger - just deal with [0]
        if (armmed[0] && state[0]!=1) { 
-	 testing++;
-	 if (testing>=1200){
+	 timer++;
+	 if (timer>=2000){ // 2000 is 10 seconds
 	   state[0]=1; // fire it
-	   testing=0;
+	   state[1]=1; // fire it
+	   state[2]=1; // fire it
+	   state[3]=1; // fire it
+	   timer=0;
 	 }
    }
        if (armmed[0]==0) armed=0;
        break;
    } // end switch
-
+   } // end armed
+   
    // 22/8/2024 - pulling out ignition from above 
        for (u8 x=0;x<4;x++){
 

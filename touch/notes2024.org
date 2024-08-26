@@ -566,11 +566,14 @@ TIM12_CH1. pin 35 setup
 
 - DONEadd amps for PWM signals and buffers->ADC, remove out amps
 
-** 22/8
 
-- working now (not before) with adjustment to voltage out of first stage/PWM - set this gain in the first PWM amplifier...
-- TEST: finger in of other signals/split levels, what is optimal size of gnd around???
 
+** 22/8->++
+
+- working now (not before) with adjustment to voltage out of first stage/PWM - TODO: set this gain in the first PWM amplifier...
+- TEST: finger in of other signals/split levels, what is optimal size of gnd around??? think not so large?
+- latest aisler has too large gold exposed - could even be very much covered with mask...
+- size of gnd changes gain that we need from HF stage!
 
 ** 20/8 TODO/DONE
 
