@@ -1,0 +1,203 @@
+* define new approach in HW and software
+
+- 2 layers always... "real" and ghosted... regular and ghost...
+
+- ghost/applied to capacitative principle of a signal applied to the finger which is changed by the finger... HF
+(the finger changes a signal (which can itself change according to other fingers)) 
+
+- hands are "attached" - dismembered, spawning=multiple hands/hands multiply...
+
+*so perhaps not one section per hand - but how we attach a disembodied hand to a section*
+
+- generate signal/voltage for 4x PWM (eg. pulsing it, dropping it) + 2x voltage outs
+
+- we have 12 signals out (8 voltages, 4xPWM) and 12 in ADC (8xtouch and 4x signals) - use input voltage (if it is there)...
+
+* new scheme AUGUST 2024
+
+** how it is now 
+
+- removed VCA - output CTRL or ghost: also means we can have more storage as there are now 4 sections - each with V and CTRL
+- remember to change panel circles for I/O!!!
+- Q if we sample V in (was C) and there is nothing there - norm nada to sense nada - like max V? ???*
+- will toggle HF effect cap/incoming?? test*
+
+** older
+
+- can we combine signal routing by fingers and capacitative so 2 ghost layers? exposed and unexposed*
+
+how we route in external signals... vs. PWM - can PWM follow externals (- use 4 extra ADCx - to sample incoming or finger?)
+
+4 or more external signals // finger ins... test dual pad - cap and hf in...
+
+voltage levels and adjustments tricky - now with 12v setup we have say max of 4v from lm3900 (6v with no osc)
+
+and if amplify to 10-12v incoming or PWM... 
+
+Q is if we have amped PWM already on pad or if we always finger in any signal... so then is mix of res and cap // or more res?*
+
+or if we have say PWM which we can remove in software on finger pad and finger in amped signal - most likely...
+
+so we can replay "gestures" through the pads ...
+
+Q is that PWM needs to go to both CTRL and V pads for cap sensing - so is potentially the same for each section...
+
+** TODO// HW mostly
+
+base PCB:
+- remove one set of jacks (lowest)
+- all conditioning of ADC signals is on panel ... 
+- start on kicad
+
+panel:
+
+DONE- how to test PWM pins - we need 4 timers which have LQFP 64 pins available: note that TIM2 is used...
+
+pin 14: TIM5_CH1
+15: TIM5_CH2
+16: TIM9_CH1
+17: TIM9_CH2
+22: TIM3_CH1
+23: TIM3_CH2, TIM1_CH1N??? The complementary output is a "advanced" feature, you must use the dedicated function to start it
+26: TIM3_CH3
+27: TIM3_CH4
+
+35, 36: TIM12_CH1,2
+38: TIM8_CH2
+40: TIM8_CH4
+41: TIM1_CH1
+42: TIM1_CH2
+43: TIM1_CH3
+44: TIM1_CH4
+58: TIM4_CH1x
+59: TIM4_CH2free
+61: TIM4_CH3
+62: TIM4_CH4 // some channels also seem duplicated...
+
+DONEwe have TIM12, 8, 1, 4 to test*
+
+DONEmove FR6 to pin 55=PB3// was PB14/35*
+
+TIM12_CH1. pin 35 setup
+
+- add pins to panel: 12v, 3.3v, PWM 4x, all signal handling/detection is on panel // - remove pins: amped output ???
+
+- DONEadd amps for PWM signals and buffers->ADC, remove out amps
+
+** 22/8->++
+
+hardware:
+- working now (not before) with adjustment to voltage out of first stage/PWM - TODO: set this gain in the first PWM amplifier...
+- TESTed: finger in of other signals/split levels, what is optimal size of gnd around??? think not so large?
+- latest aisler has too large gold exposed - could even be very much covered with mask...
+- size of gnd changes gain that we need from HF stage!
+
+** 20/8 TODO/DONE
+
+1- TIM1_CH1 PA8 on pin 41 = working
+2- TIM12_CH1 PB14 pin 35 = workingX-solder
+3- TIM8_CH2 - PC7 pin 38 = working
+4- TIM4_CH2 - PB7 pin 59 = working
+
+// and re-assign freezeFR6 in main.cDONE, freezer[8] in 003.cDONE, and on schematicDONE
+
+added PWM to schematic
+
+// 6v is peak out from LM3900 so just halve this for micro - use 4.7M (approx to adjust) in feedback... and keep diodes on micro inputs
+
+** new software notes (green notebook) - how to define the instrument and its implementation -<
+
+- divination, disembodied thrown hands, guiding, a disembodied hand continues the gesture
+
+- WORMZ, gravity, what other physical models... finger worm trajectories/targets, slews
+- single gesture immediately plays back and can be overlaid - 
+
+*how we define a single gesture? how a zone is defined?* if it includes silences. toggle to start.end?
+
+To define terms : groups, attachment, gesture, zone, process, bounce... do we need rec and play concepts?
+
+properties of a disembodied hand for worm/crawling simulation// disem. hand instructiin set...
+
+- animal-like crawls, creeps across, scurrying, always creeping ghosts, pulls along by fingers so linear, spider like, sneaky, waiting
+- repeats ghosts and embelishes, intervenes, interpolates, scrabbling new bits, micro-bits, multiplies
+- one hand morphs into another (but needs level of analysis)
+- flips over, upside down
+- cramps up, blood loss and energy, coagulation
+- movement of 5 fingers across a surface, drumming, scurrying
+- reactive - shy, still until something happens or disappears (so inverse - waits for a silent moment to move)
+
+
+*hand at level of gesture, of control and of the movement of a gesture in a larger space - sections are not direct NSEW*
+
+spatialise the board...
+
+stack of processes, of hands/fingers 
+
+//
+
+- attach/detach and link zones and sections (or just attach to different/multiple sections)
+
+attach a process to a zone (or a set of processes)
+ what processes? a recorded zone/gesture, a live gesture, bounced from, automata like worms, bounce
+
+how we do bounce in that model... that it is a re-recording...
+
+operations on a gesture as a defined region. gesture as zone, as recording...
+
+- what ops can be done to a gesture as a defined region: chopped, delayed, copied, spawning, overlay (add, subtract etc), bounced=speed, blanked, mirrored
+- time in and out of recording eg. delays... time of rec, time of play, modify on rec, modify on play (or now idea of play/rec all)
+- disembodied levels/zones
+- further gestures re-animate a hand (hand/zone/gesture object - adventure, what are its properties?)
+
+- bounce, attachment, groupings/sections/mirrors
+
+CTRL and recorded CTRL
+
+gestures take/give a meaning
+
+an algorithmic process is attached...
+
+process can be: algorithmic, pluggable code eg. corewars, DIANOS, planetary movements - process which can be attached (to what?_
+
+multiple autonomous ghost hands which are not just copies, or can be, but can be subjected to differing processes
+
+steering a set of processes which interact (like worms), steering a process which applies to segmenting or segmented gestures
+
+mobile gesture across sections... fly across sections
+
+gestures applied to mode or control of a process, no modes just a journey or sets of operations which change modes of operations
+
+layer or realtime recording and refs into it (eg. one long rec buffer with notation, references into it), always rec? always rec into a ghost buffer for each ...
+
+2 sets of zones for each layer (but do we keep layers, zones now?) - always a ghost...
+
+a hand is a process. autonomous processes like planets...
+
+pulses in - could mean an upward pull - pulses into toggling things... *can we do away with own pulse and use PWM for toggles?*
+
+collision of simulated and real...
+
+** prev relevant
+
+- Jekyll and Hyde - a dismebodied hand is under the control of another, of a ghost, a double
+- relation of groups, mirrors// toggle jekyll and hyde
+- mobile code notes?
+- reclodges<-->playlodges (ghost of ...) paylodges refer to reality of reclodges
+- impulses in - pulse effects flow, reversal etc...
+- more as divination a la dark int (see notes below)... mobile code, all as executable (DIANOS)... at high frequencies... see CD. stack and attachment there...
+- *do we record to 2 levels simultaneously - so one is ghost like in CD?* - as option both are V and under CTRL
+
+- *we need to find a new model also for coding - so far we have our zones and each has layers, manipulation/copy of reclayer to play...*
+
+- levels
+- links/groups of sections with simultaneous press!
+
+*** 24/7
+
+- re-consider direction: more interested in pulses and mobile code, how can code take a gesture? neural?
+
+paradigm -> hand routing, disembodied hands//no control. pulse, *automatic writing* and channelings, algorithmics, hand coding
+
+also connection to DIANOS device - ouroboros (could this be incorporated? as an extension - series of touch extensions but do we stick with resistive)
+
+
