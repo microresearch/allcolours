@@ -227,7 +227,7 @@ int main(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     
     // adc8 is adc1_10 =pc0
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;// | GPIO_Pin_1; PC10  and 11 12
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;// | GPIO_Pin_1; PC10  and 11 12 + added some
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
@@ -238,9 +238,9 @@ int main(void)
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
     
-    //- rec on PB2, play on PB4 - swopped with FR3, push on PB6 
-    //- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!)
-    
+    //- DONE rec on PB2, play on PB4 - swopped with FR3, push on PB6 
+    //- FR1-7 on PB8-15, FR8 on PC4 (inverted ins from 40106 so low is on!) // FR8 is now PB4
+    /*
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
@@ -248,8 +248,8 @@ int main(void)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4; // FR8 now
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -327,7 +327,8 @@ int main(void)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
-  
+
+  /*
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -335,7 +336,8 @@ int main(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
-
+  */
+  
   // TEST - PC8 input from 40106 for freezing/rec/play etc. power it with 3.3v
 
   // led first

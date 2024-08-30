@@ -24,12 +24,13 @@ last 100ms (electic match) or 2 seconds (talon).
 Operation:
 
 - Connect eurorack power with red stripe (-12v) towards the bottom of the module.
-- Connect a 12v 2A (minimum) power supply (2.1mm jack, centre positive) to the power jack.
 - Select a mode by rotating the mode knob. The selected mode is indicated by the binary display above the row of jacks.
 - Plug the trigger signal into the selected trigger jack (1-4 left to right),
 - Make sure the display LEDs do NOT flash. Clip the ematch or trigger cable copper ends into the relevant port matching the jack (1-4 top down). 
 
 - At a safe distance from the modulor, attach the ematch to the pyrotechnic device to be triggered, following manufacturer's instructions.
+
+- Connect a 12v 3A (minimum) power supply (2.1mm jack, centre positive) to the power jack.
 
 - Arm the ERD/FUSE to fire the ematch according to trigger or mode by
   pressing down the mode select knob and releasing it. A quick press
@@ -54,6 +55,31 @@ Technical:
 ERD/FUSE requires a 12-15V, 40W+ brick power supply with a centre positive
 2.1mm DC jack plug (eg. MEAN WELL GST40A12 Desktop power supply). This
 is not included. The power is plugged on the left side DC JACK.
+
+** production notes
+
+/* bad batch // reordered 30/8/2024
+- EACH BOARD: so fix connection, change 2 res and voltage reg*
+- we missed connection on left of two resistors on switch - to fix // added to pcb and to jlcpcb for next one and 100K gnd R24 R2 changed to 1k*
+- also 3.3V and not 5v part for regulator - all fixed in jlcpcb and added norm to GND for trigger ins*
+- minus one first proto ruined... = 24 left...// *and last FET hits cap as last trace was wrong
+*/
+
+- *depth of encode and knob to fix!*
+- washers to raise jacks if necessary but make sure pluggy thing is at right height
+- atmega168p on production, 168 on proto...
+
+** new notes/pre-prod
+
+- we need to test/buy talons or skip that... TALONS ordered 28/8
+
+- +can we fire 4 at once of ematches - test... YES, this works...+
+- ????does fire at once mode make sense when we can fire in serial/parallel... more sequential firing modes...
+- +or we queue so that each fires 1/10, 2 seconds later...+
+
+- fix sometimes press doesn't trigger - depth of knob
+
+- DONEnew mode - doubles/4x trigger length. so first is always first/same and the delay for each one is multiplied...*
 
 ** pyro module for 4 triggers
 
