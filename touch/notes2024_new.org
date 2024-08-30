@@ -13,6 +13,8 @@
 
 - we have 12 signals out (8 voltages, 4xPWM) and 12 in ADC (8xtouch and 4x signals) - use input voltage (if it is there)...
 
+- added 3x ADC for inner circles now so these are more like direction or guiding, whirling and NOT about modes of operation
+
 * new scheme AUGUST 2024
 
 ** how it is now 
@@ -83,6 +85,15 @@ TIM12_CH1. pin 35 setup
 - add pins to panel: 12v, 3.3v, PWM 4x, all signal handling/detection is on panel // - remove pins: amped output ???
 
 - DONEadd amps for PWM signals and buffers->ADC, remove out amps
+
+** 28/8
+
+- in schematic: removed rec, play and push buttons and these are now ADC12,13,14 on PC3,PC4, PC5 IN13,1,15, added protection diodes on these
+- FR8 is moved to PB4 - updated this in macros and set pins for ADC done 
+
+TODO: 
+- which ADC are for incoming V (jack) and need seperate reading: ADC8,9,10,11=PC2/IN12,PC1/IN11,PB0/IN8,PB1/IN9 = was CTRL
+- new major CTRL: adcin13,14,15
 
 ** 22/8->++
 
@@ -157,7 +168,12 @@ gestures take/give a meaning
 
 an algorithmic process is attached...
 
-process can be: algorithmic, pluggable code eg. corewars, DIANOS, planetary movements - process which can be attached (to what?_
+process can be: algorithmic, pluggable code eg. corewars, DIANOS, planetary movements - process which can be attached (to what? what is our defining entity)
+
+
+to start to sketch a layout, that processes can take any form - what they need to know... hand object = live.recorded.indexed
+
+
 
 multiple autonomous ghost hands which are not just copies, or can be, but can be subjected to differing processes
 

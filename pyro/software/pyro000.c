@@ -65,9 +65,10 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
   static u8 flasher=0, shortpress;
   static u8 mode, released, pressed;
   static u8 last[4]={0,0,0,0}, pin[4]={0,0,0,0}, state[4]={0,0,0,0};
-  static uint32_t counterr[4]={0,0,0,0};
+  static uint32_t counterr[4]={0,0,0,0}; // for ignition
   static u8 armmed[4]={0,0,0,0};
-  static u8 timeof[4]={0,0,0,0};
+  static uint32_t timerr[4]={0,0,0,0};
+  static uint32_t timeof[4]={0,0,0,0};
   const uint32_t remap[15]={8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
 
     /* TODO:
@@ -101,12 +102,17 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
     }
    
     // armed or not and length of...
-    if (PINB&1 && former>10) {  // pressed so start to count...
+  if (PINB&1 && former>20) {  // pressed so start to count...
       pressed=1;
       former=0;
    }
+  
+  //       if (pressed) PORTD|=(((remap[counter])<<4)); // TESTY
+  //       else PORTD&=0b00001111; // mask
+
+  
    if (pressed) presscnt++;
-   if (pressed && former>10) { // released
+   if (pressed && former>20) { // released
      former=0;
      pressed=0;
      armed^=1;
@@ -135,6 +141,8 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        counterr[1]=0;
        counterr[2]=0;
        counterr[3]=0;
+       timeof[0]=0; 	 timeof[1]=0;	 timeof[2]=0;	 timeof[3]=0;
+       timerr[0]=0; 	 timerr[1]=0;	 timerr[2]=0;	 timerr[3]=0;
        timer=0;
      }
      presscnt=0;
@@ -154,18 +162,20 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    }
    // display
    
-   counter=0;// TESTY display!
-   if (armed)  { // flash
+   //   counter=14;// TESTY
+   
+      if (armed)  { // flash
      flashcount++;
      if (flashcount>howlong){ 
 	 flasher^=1;
 	 flashcount=0;
        }
+     
      if (flasher) PORTD|=(((remap[counter])<<4)); // display - but do flashing on armed with length
      else PORTD&=0b00001111; // mask
    }
    else PORTD=(remap[counter])<<4; // display - but do flashing on armed with length
-  
+   
      //   else PORTD=0;
    
    //  DONE  - test triggering of igniter: 
@@ -174,9 +184,21 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    //   sbi(PORTB,1);
   // DO MODES here mode is counter... 0-14
 
-   counter=14; // TESTY!
-   if (armed){
+      //         counter=14; // TESTY!
+      //      armed=1; // TESTY!
+
+      if (armed){
    switch(counter){
+   case 17: // testy - fire every 4 second all...
+     for (u8 x=0;x<4;x++){
+       armmed[x]=1;
+       timeof[x]++;
+       if (timeof[x]>800){
+	 timeof[x]=0;
+	 state[x]=1; // fired
+       }
+     }
+       break;
    case 16: // testy ONLY
      for (u8 x=0;x<4;x++){
        if (x==0) cbi(PORTD,0);
@@ -213,7 +235,23 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        last[0]=pin[0];
      break;
 
-   case 2://- trigger on first sets off first and then primes rest to set off on their own trigger 
+     // TODO: 3- simultaneous pairs - trigger on 0 and on 2
+   case 2:
+     pin[0]=(PINC&1);
+       if (pin[0] && (last[0]==0) && state[0]==0) { 
+	 state[0]=1; // fire 
+	 state[1]=1; // fire
+       }
+       pin[2]=(PINC&4);
+       if (pin[2] && (last[2]==0) && state[2]==0) { 
+	 state[2]=1; // fire 
+	 state[3]=1; // fire
+       }
+       last[0]=pin[0];
+       last[2]=pin[2];
+     break;
+     
+   case 3://- trigger on first sets off first and then primes rest to set off on their own trigger 
      pin[0]=(PINC&1);
      if (pin[0] && (last[0]==0) && primed[0]==0 && state[0]==0) { 
        primed[0]=1;
@@ -233,7 +271,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        last[0]=pin[0];
 	   break;
 
-   case 3: // 3- pair arms or primes other - so one goes off after other .. pair is 0 and 1, 2 and 3
+   case 4: // 3- pair arms or primes other - so one goes off after other .. pair is 0 and 1, 2 and 3
      pin[0]=(PINC&1);
      if (pin[0] && (last[0]==0) && primed[0]==0 && state[0]==0) { 
        primed[0]=1;
@@ -262,7 +300,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        last[3]=pin[3];       
      break;
 
-   case 4:      //4- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
+   case 5:      //4- in sequence but on trigger - so one sets 2 ready, 2 sets 3 and 3 sets 4 (ie. only 3 has fired can 4 go on its trigger, ignore before that)
      pin[0]=(PINC&1);
      if (pin[0] && (last[0]==0) && primed[0]==0 && state[0]==0) { 
        primed[0]=1;
@@ -293,7 +331,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
      break;
 
      // TEST and do different window sizes (how to test?)
-   case 5: // X- all trigger events within time window on all sets off all???  // different size of windows below 
+   case 6: // X- all trigger events within time window on all sets off all???  // different size of windows below 
      timer++;
      for (u8 x=0;x<4;x++){
        pin[x]=(PINC&(1<<x));
@@ -317,7 +355,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
      break;
 
      // X- trigger on first sets off each in series at successive interval of X, Y, Z(how that is determined?) 1-2-3-4
-   case 6:
+   case 7:
      pin[0]=(PINC&1);
        if (pin[0] && (last[0]==0) && state[0]==0) { 
 	 state[0]=1; // fire all and time next ones
@@ -333,7 +371,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        last[0]=pin[0];
      break;
 
-   case 7:      //X- prime on 1st, measure and fire 2nd and use time for next 2 after each other
+   case 8:      //X- prime on 1st, measure and fire 2nd and use time for next 2 after each other
      pin[0]=(PINC&1);
        if (pin[0] && (last[0]==0) && state[0]==0) { 
 	 state[0]=1; // fire all and time next ones
@@ -356,7 +394,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        last[1]=pin[1];
      break;
 
-     case 8:      //X- trigger each one after x second delay... 
+     case 9:      //X- trigger each one after x second delay... 
      for (u8 x=0;x<4;x++){
        pin[x]=(PINC&(1<<x));
        if (armmed[x] && pin[x] && (last[x]==0) && state[x]==0) { 
@@ -372,7 +410,34 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        last[x]=pin[x];
      }
      break;
-    
+
+   case 10: //new mode - doubles/4x trigger length. so first is always first/same and the delay for each one is multiplied...*
+     pin[0]=(PINC&1);
+     pin[1]=(PINC&2);
+     pin[2]=(PINC&4);
+     pin[3]=(PINC&8);
+
+       if (pin[0] && (last[0]==0) && state[0]==0) { 
+	 state[0]=1; // fire all and time next ones
+	 timeof[0]=0;
+	 primed[0]=1;
+       }
+       if (primed[0]==1) { // 1st one
+	 timeof[0]++;
+       }
+       
+       if (pin[1] && (last[1]==0) && state[1]==0) { timerr[1]=timeof[0]; primed[1]=1;}
+       if (pin[2] && (last[2]==0) && state[2]==0) { timerr[2]=timeof[0]; primed[2]=1;}
+       if (pin[3] && (last[3]==0) && state[2]==0) { timerr[3]=timeof[0]; primed[3]=1;}
+
+       if (primed[1]==1 && state[1]==0 && (timeof[0]>(timerr[1]*2))) state[1]=1;
+       if (primed[2]==1 && state[2]==0 && (timeof[0]>(timerr[2]*2))) state[2]=1;
+       if (primed[3]==1 && state[3]==0 && (timeof[0]>(timerr[3]*2))) state[3]=1;
+       
+	 last[0]=pin[0];
+	 last[1]=pin[1];
+	 last[2]=pin[2];
+	 last[3]=pin[3];
 
      
      //
@@ -397,7 +462,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    } // end armed
    
    // 22/8/2024 - pulling out ignition from above 
-       for (u8 x=0;x<4;x++){
+             for (u8 x=0;x<4;x++){
 
 	 if (state[x]==1){ // fired
 	   counterr[x]=0;
@@ -419,7 +484,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
 	   state[x]=0;
 	 }	   
 	 }
-       }
+	 }
        if (armmed[0]==0 && armmed[1]==0 && armmed[2]==0 && armmed[3]==0) armed=0;
 }
 
@@ -452,7 +517,7 @@ void main(void)
   TCCR2B |= (1 << CS22);   
   // enable timer compare interrupt
   TIMSK2 |= (1 << OCIE2A);
-  sei();
+    sei();
   aLastState=(PIND&(1<<3))>>3;
 
   while(1){

@@ -1,5 +1,5 @@
 # makefile, written by guido socher
-MCU=atmega168
+MCU=atmega168p # was atmega168 for first proto 
 #MCU=at90s4433
 CC=avr-gcc
 #CEXTRA=-Wa,-adhlns=$(<:.c=.lst)
@@ -11,7 +11,7 @@ OBJCOPY=avr-objcopy
 # optimize for size:
 #CFLAGS=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes -mcall-prologues ${CEXTRA}
 CFLAGS=-mmcu=$(MCU) -Os
-DEVICE = m168
+DEVICE = m168p # one is m168... production is 168p
 AVRDUDE = avrdude -c usbasp -p $(DEVICE)
 FUSEH = 0xdf
 FUSEL = 0xf7
