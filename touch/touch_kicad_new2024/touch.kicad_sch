@@ -267,6 +267,12 @@
     (path "/00000000-0000-0000-0000-00005f99750e/93e01cea-308d-414b-9964-12340024f862"
       (reference "#PWR048") (unit 1) (value "+3.3V") (footprint "")
     )
+    (path "/00000000-0000-0000-0000-00005eed4bc5/464610bc-a240-4516-a8d4-9b75b092b247"
+      (reference "#PWR049") (unit 1) (value "+3.3V") (footprint "")
+    )
+    (path "/00000000-0000-0000-0000-00005eed4bc5/2618ae19-cae0-4e9d-a5ea-b7fab8cf5081"
+      (reference "#PWR050") (unit 1) (value "GND") (footprint "")
+    )
     (path "/00000000-0000-0000-0000-00005eebc3aa/00000000-0000-0000-0000-00005f0a9321"
       (reference "#PWR057") (unit 1) (value "GND") (footprint "")
     )
@@ -726,6 +732,9 @@
     (path "/00000000-0000-0000-0000-00005eebc3aa/51e99d51-fa81-40d5-8fd3-8aec90642665"
       (reference "D15") (unit 1) (value "BAT54S") (footprint "Package_TO_SOT_SMD:SOT-23")
     )
+    (path "/00000000-0000-0000-0000-00005eed4bc5/2d0db279-84ad-4125-a7e6-37508e4a3e2e"
+      (reference "D16") (unit 1) (value "BAT54S") (footprint "Package_TO_SOT_SMD:SOT-23")
+    )
     (path "/00000000-0000-0000-0000-00005ebfd178/00000000-0000-0000-0000-00005c3b711b"
       (reference "J1") (unit 1) (value "Conn_02x05_Odd_Even") (footprint "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm")
     )
@@ -857,6 +866,9 @@
     )
     (path "/8f0e6e90-6ee3-4cb3-84c0-57dc6b04a254/e7daa08b-ded5-49ec-bced-684e2ed2a134"
       (reference "R25") (unit 1) (value "100R") (footprint "Resistor_SMD:R_0805_2012Metric")
+    )
+    (path "/00000000-0000-0000-0000-00005eed4bc5/bc0997ef-145b-4bad-9d52-6958144a89d6"
+      (reference "R26") (unit 1) (value "1K") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/00000000-0000-0000-0000-00005f0cad2e/00000000-0000-0000-0000-00005f118a01"
       (reference "R29") (unit 1) (value "4.7M") (footprint "Resistor_SMD:R_0805_2012Metric")
