@@ -69,6 +69,16 @@ void io_config2 (void) {
        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
        GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+       // PWM TIM1 CH2 on PA9
+       GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_TIM1);
+       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+       GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+       
        // PWM TIM4 on  //TIM4_CH2 - PB7 pin 59 
        GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_TIM4);
        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
@@ -436,7 +446,8 @@ int main(void)
   TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
   TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
-  TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // T1C1E is pin A8?
+  TIM_OC1Init(TIM1, &TIM_OC_InitStructure); // 
+  TIM_OC2Init(TIM1, &TIM_OC_InitStructure); // 
   //  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this! // for TIM1 to update we needed to comment out - as opposed to in AC but there was TIM3 2/9/2021
   //  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
   TIM_Cmd(TIM1, ENABLE);
@@ -508,7 +519,7 @@ int main(void)
   TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OC_InitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
   TIM_OC_InitStructure.TIM_Pulse = 16; // pulse size
-  TIM_OC1Init(TIM12, &TIM_OC_InitStructure); 
+  TIM_OC1Init(TIM12, &TIM_OC_InitStructure);
   //  TIM_ARRPreloadConfig(TIM1, ENABLE); // we needed this! // for TIM1 to update we needed to comment out - as opposed to in AC but there was TIM3 2/9/2021
   //  TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable); 
   TIM_Cmd(TIM12, ENABLE);
@@ -518,10 +529,12 @@ int main(void)
   while(1) {
     TIM1->ARR=160;
     TIM1->CCR1 = 80; // pulse width
+    TIM1->CCR2 = 80; 
 
     TIM4->ARR=160;
     TIM4->CCR1 = 80; // pulse width
 
+    
     TIM8->ARR=160;
     TIM8->CCR1 = 80; // pulse width
 
