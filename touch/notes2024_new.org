@@ -15,6 +15,18 @@
 
 - added 3x ADC for inner circles now so these are more like direction or guiding, whirling and NOT about modes of operation
 
+- if we can add extra PWM (5) for norming of incoming ctrl jacks (amps we have as we amp c2) - *maybe use extra channel - test eg. pin 42:
+  TIM1_CH2 and simultaneously disable of CH1*
+
+TIM1->CCER &= ~TIM_CCER_CC1E;
+If you want to start output on CH1N, and the timer is already started, enable the CC1NE bit:
+
+TIM1->CCER |= TIM_CCER_CC1NE;
+
+or try:
+
+TIM1->CCR1 = 0; // pulse width
+
 * new scheme AUGUST 2024
 
 ** how it is now 
