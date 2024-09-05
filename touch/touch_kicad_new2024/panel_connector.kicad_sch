@@ -495,7 +495,6 @@
   )
 
 
-
   (wire (pts (xy 105.41 85.852) (xy 110.617 85.852))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 1086101d-f813-4ebc-a98b-b00d6a6ff60c)
@@ -591,6 +590,10 @@
   (wire (pts (xy 109.728 93.472) (xy 110.617 93.472))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 978aa16a-3639-447d-820e-92d30bd6d25a)
+  )
+  (wire (pts (xy 123.317 78.232) (xy 124.1806 78.232))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 9870aec6-7698-4b6d-9008-ab3b4fe4a02d)
   )
   (wire (pts (xy 123.317 98.552) (xy 124.46 98.552))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -784,6 +787,13 @@
     (uuid 93be144d-1311-46ce-91f9-1cf939fc46fa)
     (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 0 0 0)
       (effects (font (size 1.27 1.27)) hide)
+    )
+  )
+  (global_label "PWMxamped" (shape input) (at 124.1806 78.232 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid 9f57043a-d149-41d7-8b8a-3cc4114a1b49)
+    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 137.9348 78.1526 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
     )
   )
   (global_label "ADC2" (shape input) (at 124.206 73.152 0) (fields_autoplaced)
