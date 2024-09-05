@@ -529,7 +529,7 @@ int main(void)
   while(1) {
     TIM1->ARR=160;
     TIM1->CCR1 = 80; // pulse width
-    TIM1->CCR2 = 80; 
+    TIM1->CCR2 = 80; // channel 2 
 
     TIM4->ARR=160;
     TIM4->CCR1 = 80; // pulse width
