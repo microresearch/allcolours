@@ -151,7 +151,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    fom=PINB&1;
    if (fom==0) former++;
    
-   shortpress=0; // TESTY!
+   //   shortpress=0; // TESTY!
    if (shortpress) {
      howlong=15; // length of flash = 1/5
      pulslength=20; // TODO: calibrate // length of pulse = 100ms=20
@@ -331,6 +331,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
      break;
 
      // TEST and do different window sizes (how to test?)
+     // TODO: redo so that they fire in sequence on successive windows
    case 6: // X- all trigger events within time window on all sets off all???  // different size of windows below 
      timer++;
      for (u8 x=0;x<4;x++){
