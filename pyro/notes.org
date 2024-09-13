@@ -56,6 +56,10 @@ ERD/FUSE requires a 12-15V, 40W+ brick power supply with a centre positive
 2.1mm DC jack plug (eg. MEAN WELL GST40A12 Desktop power supply). This
 is not included. The power is plugged on the left side DC JACK.
 
+** question
+
+About talons - as measures 7 ohms which is 1.76 amps so we might not be able fire simultaneously (???) - should be disallow/queue that in code?
+
 ** production notes
 
 /* bad batch // reordered 30/8/2024
