@@ -15,7 +15,7 @@
 
 - added 3x ADC for inner circles now so these are more like direction or guiding, whirling and NOT about modes of operation
 
-- if we can add extra PWM (5) for norming of incoming ctrl jacks (amps we have as we amp c2) - *maybe use extra channel - test eg. pin 42:
+- we can add extra PWM (5) for norming of incoming ctrl jacks (amps we have as we amp c2) - *use extra channel - test eg. pin 42:
   TIM1_CH2 and simultaneously disable of CH1*
 
 TIM1->CCER &= ~TIM_CCER_CC1E;
@@ -75,6 +75,7 @@ pin 14: TIM5_CH1
 23: TIM3_CH2, TIM1_CH1N??? The complementary output is a "advanced" feature, you must use the dedicated function to start it
 26: TIM3_CH3
 27: TIM3_CH4
+////////////////////////////////////////////////////////////////////
 
 35, 36: TIM12_CH1,2
 38: TIM8_CH2
@@ -97,6 +98,24 @@ TIM12_CH1. pin 35 setup
 - add pins to panel: 12v, 3.3v, PWM 4x, all signal handling/detection is on panel // - remove pins: amped output ???
 
 - DONEadd amps for PWM signals and buffers->ADC, remove out amps
+
+** 11/9 // 12/9
+
+- *TODO: check for any other pin changes and triple check all - DONEalso duplicates R in panel..*
+
+Pin changes:
+
+- removed - amps on outputs to pads
+
+** 5/9
+
+- +we can add extra PWM (5) for norming of incoming ctrl jacks (amps we have as we amp c2) - use extra channel - test eg. pin 42:  TIM1_CH2 and simultaneously disable of CH1+
+
++Question here of using/test duplicate channel as we will also use this for CTRL centre PWM ...+
+
+*PWMx is now TIM3_ch2 on PB5 pin 57 (was pin 42) and adding dividers for PWM signals, adding on connector pin32* 
+
+/// and will need to be amped so adding extra amp
 
 ** 28/8
 
