@@ -13,8 +13,8 @@ pyrotechnic or explosive events from within the modular domain.
 
 ERD/FUSE acts as a bridge between gate or control signals, and
 multiple controlled ignition events. Under various operational modes,
-trigger signals are used to ignite either electric matches (ematch) or
-clip-on (talon) igniter in complex sequences.
+gate/trigger signals are used to ignite either electric matches
+(ematch) or clip-on (talon) igniter in complex sequences.
 
 ERD/FUSE can ignite up to four electric matches or clip-on igniters
 whose cables are inserted into the module, using four trigger signals
@@ -47,6 +47,21 @@ Operation:
 
 Modes:
 
+1- A trigger signal ignites the corresponding attached device.
+2- A trigger signal ignites the corresponding attached device with a delay of one second.
+3- A trigger signal ignites the corresponding attached device with a delay of four seconds.
+4- A trigger signal on jack 1 ignites device 1 and 2, on jack 3 ignites device 3 and 4.
+5- A trigger on jack 1 ignites device 1 and then primes the rest to ignite on their own trigger signal.
+6- The first in the pair arms primes the other one to ignite on its signal - a pair is 1 and 2, 3 and 4.
+7- Each trigger primes the next in sequence to ignite on its own trigger signal.
+8- Trigger events on ALL jacks within a one second window ignites each device in turn. First all window event sets of first trigger and so on.
+9- A trigger signal on jack 1 ignites each device in turn, with a one second interval between each ignition.
+10- A trigger signal on jack 1 ignites each device in turn, with a four second interval between each ignition.
+11- A trigger signal on jack 1 ignites each device in turn, with a ten second interval between each ignition.
+12- A trigger signal on jack 1 ignites the first device, on jack 2 ignites the second and ignites the next two successively at intervals determined by the time between the first two triggers
+13- The 13th trigger signal ignites the corresponding attached device.
+14- A trigger signal on jack 1 ignites the first device, and triggers on subsequent jacks ignite with a delay which is double the time between their trigger and the first trigger,
+15- Fake mode. Once primed each device ignites in turn at ten second intervals. Trigger signals are ignored.
 
 Technical:
 
@@ -58,7 +73,9 @@ is not included. The power is plugged on the left side DC JACK.
 
 ** question
 
-About talons - as measures 7 ohms which is 1.76 amps so we might not be able fire simultaneously (???) - should be disallow/queue that in code?
+About talons - as measures 7 ohms which is 1.76 amps so we might not be able fire simultaneously (???) - should be disallow/queue that in code YES/how?
+
+- *TODO: different ignition code for talons - queuinh*
 
 ** production notes
 
@@ -164,6 +181,20 @@ TODO more modes ->15
 
 - video/manual (burnt manual card?)
 - +25x order jlcpcb - +waiting for XTAL!-16MHZ++
+
+** 16/9/2024
+
+- tested all modes working fine
+- TODO: expand modes to fill all
+- TODO: try talons with 10A supply and decide on queuing code...
+- test queue code
+
+** 15/9/2024
+
+- we do not have power to fire all talons (2 second mode) so implement as sequence on trigger and no triggers at same time...
+- we can power all efuses...
+
+TODO: queue code and explain in manual...
 
 ** 26/8/2024
 - added all new modes to be tested and refined
@@ -290,3 +321,34 @@ Base PCB (106x50mm) and 10HP panel (128.5x50.5mm) with:
 - All parts can be on the back of PCB
 
 If you can design a not-so-precise base PCB (without panel) so I can test this first without the top panel that would be great!
+
+** discard
+
+     /*
+   case 17: // testy - fire after 4 second all...
+     for (u8 x=0;x<4;x++){
+       armmed[x]=1;
+       timeof[x]++;
+       if (timeof[x]>800){
+	 timeof[x]=0;
+	 state[x]=1; // fired
+       }
+     }
+       break;
+
+   case 16: // testy ONLY
+     for (u8 x=0;x<4;x++){
+       if (x==0) cbi(PORTD,0);
+       else if (x==1) cbi(PORTD,1);
+       else if (x==2) cbi(PORTB,1);
+       else cbi(PORTB,2);
+
+       pin[x]=(PINC&(1<<x));
+       if (x==0 && pin[x]) sbi(PORTD,0);
+       else if (x==1 && pin[x]) sbi(PORTD,1);
+       else if (x==2 && pin[x]) sbi(PORTB,1);
+       else if (pin[x]) sbi(PORTB,2);
+     }
+     break;
+       */
+       
