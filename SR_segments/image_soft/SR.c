@@ -28,8 +28,8 @@ void printbits(unsigned char bitz){
 
 // 
 
-#define MAX (1195000*8)
-#define MAXP (1195000)
+#define MAX (1195000*8*3)
+#define MAXP (1195000*3)
 
 
 unsigned char shifter(unsigned char *buffer, unsigned char *orig){
@@ -67,7 +67,7 @@ int main(void)
   unsigned char bitt,cc;
 
 
-  sfile=fopen("test1.bmp", "r");
+  sfile=fopen("panelx.bmp", "r");
 
   //  read(sfile,buffer,1);
   
@@ -94,8 +94,8 @@ int main(void)
   // we need other processes here... small cycles of bits of x length
   // how we can do 4 srs.. diff speeds...x
     
-    for (y=0;y<3;y++){  
-    shifter(buffer, buffer2);
+    for (y=0;y<2;y++){  
+      //          shifter(buffer, buffer2);
   }
   
   /*
@@ -121,7 +121,7 @@ int main(void)
     for (x=0;x<MAXP;x++){
       tmp=0;
       for (y=0;y<8;y++){ // lowest bit first ???
-	if (buffer[cntt++]&1) tmp+=(1<<y);
+	if (buffer2[cntt++]&1) tmp+=(1<<y);
       }
       bufferp[x]=tmp;      
       //printf("%d ", tmp);
