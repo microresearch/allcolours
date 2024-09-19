@@ -62,7 +62,7 @@ int main(void)
   unsigned char bitt,cc;
   unsigned char shift[4]={0,8,16,24};
 
-  sfile=fopen("test1.bmp", "r");
+  sfile=fopen("panel.bmp", "r");
 
   //  read(sfile,buffer,1);
   
