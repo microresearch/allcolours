@@ -1,0 +1,44 @@
+* POPULUS patch matrix
+
+- touch matrix with routed touch signals as planets 7x7 // following amission schematic multiplied
+
+- where are notebook notes? ??? dark grey ecoqua // foto
+
+TODO:
+- what is size in HP?  28HP=141.9mm x 128.5
+- DONEcan Dorian do the schematic and layout?
+- CLOSEpanel design - melissa... based on last panel...
+- proto order jlcpcb
+- simple manual
+
+- impedance as in patch future sound: where/how much? 1k DONE
+
+** questions
+
+- do we need amp on panel for voltages ...
+
+- matching switches on panel and planets
+
+
+*top copper is at: 137.51, 126.79*
+
+
+1sun SW_A1 
+2moon  
+3mercury
+4venus
+5mars
+6jupiter
+7saturn
+
+conns:
+A1 to A7
+B1 to B7
+c
+d
+e
+f
+g
+
+jacks:
+IN1 OUTA

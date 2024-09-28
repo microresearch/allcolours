@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "pop")(type "KiCad")(uri "/root/projects/ERD_MODULES/all_colours/populus/POPULUS_kicad_old-panelnew")(options "")(descr ""))
+)
