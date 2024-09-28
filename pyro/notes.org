@@ -1,3 +1,41 @@
+** for website/announce
+
+*Die Grausamkeit des ewigen Tods. Lucifer Antichrist und sein Mutter ein Leib und Sele: ist fix und volatile.*
+
+ERD/FUSE is the first eurorack module designed to trigger and initiate pyrotechnic or explosive events from within the modular domain.
+
+ERD/FUSE acts as a bridge between gate or control signals, and multiple controlled ignition events. Under various operational modes, trigger signals are used to ignite either electric matches (ematches) or clip-on (talon or safety) igniters in complex sequences.
+
+ERD/FUSE ships with a set of manual cards in a limited edition of 50. 50 remaining.
+
+Pricing: 266 euros (with free worldwide shipping with tracking number). 20 remain in the first batch
+
+*** Technical:
+
+10HP, 50mA at 12v, 0mA at -12v. 4 gate/pulse/CV inputs (>4v trigger), 4 electric match/talon compatible output pairs.
+
+ERD/FUSE requires a 12-15V, 40W+ brick power supply with a centre positive 2.1mm DC jack plug (eg. MEAN WELL GST40A12 Desktop power supply). This is not included. The power is plugged on the left side DC JACK.
+
+*** Disclaimer:
+
+ERD accepts no responsibility or liability for any damages or injuries relating to the use or mis-use of ERD/FUSE. Please follow all safety instructions and notes included with your chosen ematch or talon, as provided by the manufacturer and follow all operation instructions relating to the safe use of ERD/FUSE. 
+
+*** announce 
+
+Fix and volatile, I'm very excited to announce the triggered release of ERD/FUSE:
+
+ERD/FUSE is the first eurorack module designed to initiate pyrotechnic or explosive events from within the modular domain.
+
+The first batch of 20x ERD/FUSE is now available from:
+
+https://1010.co.uk/org/ERD.html
+
+*Die Grausamkeit des ewigen Tods. Lucifer Antichrist und sein Mutter ein Leib und Sele: ist fix und volatile.*
+
+ERD/FUSE acts as a bridge between gate or control signals, and multiple controlled ignition events. Under various operational modes, trigger signals are used to ignite either electric matches (ematches) or clip-on (talon or safety) igniters in complex sequences.
+
+ERD/FUSE ships with a set of manual cards in a limited edition of 50.
+
 ** description/manual
 
 - video/manual (burnt manual card?)

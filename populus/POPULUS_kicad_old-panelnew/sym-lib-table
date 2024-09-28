@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name "toad2-rescue")(type "Legacy")(uri "/root/projects/ERD_MODULES/all_colours/TOAD/FINAL_FINAL/toad2-rescue.lib")(options "")(descr "")(disabled))
+  (lib (name "allcolours-rescue")(type "Legacy")(uri "/root/projects/ERD_MODULES/all_colours/all_colours_kicad/allcolours-rescue.lib")(options "")(descr "")(disabled))
+  (lib (name "audio-jackerthenvar-pj398")(type "KiCad")(uri "/root/projects/ERD_MODULES/all_colours/TOAD/TOAD_FINAL/audio-jackerthenvar-pj398.kicad_sym")(options "")(descr "")(disabled))
+  (lib (name "local")(type "KiCad")(uri "${KIPRJMOD}/erthenvar2.kicad_sym")(options "")(descr ""))
+)
