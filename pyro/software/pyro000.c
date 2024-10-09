@@ -123,7 +123,7 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
      */
     // set modes
   
-  if (!armed){ // only change mode if we are not armed
+  if (!armed && !pressed){ // only change mode if we are not armed and a press is not in progress
     aState=(PIND&(1<<3))>>3;
      if ((aLastState == 1) && (aState == 0)) {       // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
        if (((PIND&(1<<2))>>2) != aState) { 
@@ -135,6 +135,10 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        if (counter>14) counter=0;
      }
    aLastState = aState; 
+  }
+  else
+    {
+    aLastState=(PIND&(1<<3))>>3;
     }
    
     // armed or not and length of...
@@ -192,6 +196,11 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
        cbi(PORTD,1);
        cbi(PORTB,1);
        cbi(PORTB,2);
+
+       for (u8 x=0;x<4;x++){
+       last[x]=(PINC&(1<<x));
+       }
+       
      }
  
    
@@ -404,18 +413,19 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
      }
      break;
 
-   case 8:      // X- trigger on first sets off each in series at successive interval of X, Y, Z(how that is determined?) 1-2-3-4 // here is one second
+   case 8:      // X- trigger on first sets off each in series at successive interval of X, Y, Z(how that is determined?) 1-2-3-4 // here is two seconds
      pin[0]=(PINC&1);
        if (pin[0] && (last[0]==0) && primed[0]==0) { 
-	 state[0]=1; // fire and time next ones
+	 //	 state[0]=1; // fire and time next ones
 	 timeof[0]=0;
 	 primed[0]=1;
        }
        if (primed[0]==1) {
 	 timeof[0]++;
-	 if (timeof[0]>400 && state[1]==0) state[1]=1; // 1 second
-	 if (timeof[0]>800 && state[2]==0) state[2]=1; 
-	 if (timeof[0]>1000 && state[3]==0) {
+	 if (timeof[0]>400 && state[0]==0) state[0]=1; // 2 second
+	 if (timeof[0]>800 && state[1]==0) state[1]=1; 
+	 if (timeof[0]>1200 && state[2]==0) state[2]=1; 
+	 if (timeof[0]>1600 && state[3]==0) {
 	   state[3]=1;
 	   primed[0]=0;
 	 }
@@ -427,15 +437,16 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    case 9:      // X- trigger on first sets off each in series at successive interval of X, Y, Z(how that is determined?) 1-2-3-4 // here is 4 seconds
      pin[0]=(PINC&1);
        if (pin[0] && (last[0]==0) && primed[0]==0) { 
-	 state[0]=1; // fire and time next ones
+	 //	 state[0]=1; // fire and time next ones
 	 timeof[0]=0;
 	 primed[0]=1;
        }
        if (primed[0]==1) {
 	 timeof[0]++;
-	 if (timeof[0]>800 && state[1]==0) state[1]=1; // 1 second
-	 if (timeof[0]>1600 && state[2]==0) state[2]=1; 
-	 if (timeof[0]>2400 && state[3]==0) {
+	 if (timeof[0]>800 && state[0]==0) state[0]=1; 
+	 if (timeof[0]>1600 && state[1]==0) state[1]=1; 
+	 if (timeof[0]>2400 && state[2]==0) state[2]=1; 
+	 if (timeof[0]>3200 && state[3]==0) {
 	   state[3]=1;
 	   primed[0]=0;
 	 }
@@ -446,15 +457,16 @@ ISR(TIMER2_COMPA_vect){//timer2 interrupt 200 Hz
    case 10:      // X- trigger on first sets off each in series at successive interval of X, Y, Z(how that is determined?) 1-2-3-4 // here is 10 seconds
      pin[0]=(PINC&1);
        if (pin[0] && (last[0]==0) && primed[0]==0) { 
-	 state[0]=1; // fire and time next ones
+	 //	 state[0]=1; // fire and time next ones
 	 timeof[0]=0;
 	 primed[0]=1;
        }
        if (primed[0]==1) {
 	 timeof[0]++;
-	 if (timeof[0]>2000 && state[1]==0) state[1]=1; // 1 second
-	 if (timeof[0]>4000 && state[2]==0) state[2]=1; 
-	 if (timeof[0]>6000 && state[3]==0) {
+	 if (timeof[0]>2000 && state[0]==0) state[0]=1; // 1 second
+	 if (timeof[0]>4000 && state[1]==0) state[1]=1; 
+	 if (timeof[0]>6000 && state[2]==0) state[2]=1; 
+	 if (timeof[0]>8000 && state[3]==0) {
 	   state[3]=1;
 	   primed[0]=0;
 	 }
