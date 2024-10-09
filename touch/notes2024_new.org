@@ -56,7 +56,7 @@ so we can replay "gestures" through the pads ...
 
 Q is that PWM needs to go to both CTRL and V pads for cap sensing - so is potentially the same for each section...
 
-** TODO// HW mostly
+** DONE// HW mostly
 
 base PCB:
 - remove one set of jacks (lowest)
@@ -99,9 +99,37 @@ TIM12_CH1. pin 35 setup
 
 - DONEadd amps for PWM signals and buffers->ADC, remove out amps
 
+** 30/9
+
+- did we fix pad issues on panel?  yes - but still some fixes in graphics
+- fixed 22M in jlcpcb bom and 12v connection on schematic and panel - to check...
+
+- we have prototype to test:
+
+- DAC works on all
+- touch doesn't work 
+
+--- check PWM signals (PWMx not working, all others fine) = 1.6v. PWM comes out on pad at 500mV 100 KHz
+
+--- double check 3900 circuit and ADC conns
+
+- isolate 1st adc for testing - is it the one we think it is? (TIM1)
+
+- 22M we have to GND and not to 12v!!!! - how to fix/test this - and is 22 microohm also  -> tested and working if we mod that (modded for adc0)
+
+//////
+
+- what are new pins for PWM - centre pads are all on PWMx which is TIM3_CH2 // add to software
+
+/////
+
+Software:
+
+Code is viewed as a processor for 4 pairs of control voltages (from any source)...
+
 ** 11/9 // 12/9
 
-- *TODO: check for any other pin changes and triple check all - DONEalso duplicates R in panel..*
+- TODO: check for any other pin changes and triple check all - DONEalso duplicates R in panel..*
 
 Pin changes:
 
